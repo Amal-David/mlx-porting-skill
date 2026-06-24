@@ -1,0 +1,1 @@
+class MysteryModel: pass

@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "entries": [
+    {
+      "source": "source.key",
+      "target": "target.key",
+      "transforms": [
+        {
+          "op": "transpose",
+          "axes": [
+            1,
+            0
+          ]
+        }
+      ],
+      "dtype": "float16",
+      "share_with": null,
+      "note": ""
+    }
+  ],
+  "ignored_source": [],
+  "generated_target": []
+}

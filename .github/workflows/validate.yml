@@ -1,0 +1,25 @@
+name: validate-skill
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install test dependency
+        run: python3 -m pip install --disable-pip-version-check numpy
+      - name: Audit skill
+        run: python3 mlx-model-porting/scripts/audit_skill.py --strict mlx-model-porting
+      - name: Validate source provenance
+        run: python3 mlx-model-porting/scripts/validate_sources.py mlx-model-porting
+      - name: Unit tests
+        run: PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s tests -v

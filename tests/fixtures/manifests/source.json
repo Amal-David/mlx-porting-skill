@@ -1,0 +1,17 @@
+{
+  "tensors": [
+    {
+      "key": "linear.weight",
+      "shape": [
+        3,
+        2
+      ]
+    },
+    {
+      "key": "linear.bias",
+      "shape": [
+        3
+      ]
+    }
+  ]
+}

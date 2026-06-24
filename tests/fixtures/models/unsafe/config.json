@@ -1,0 +1,9 @@
+{
+  "model_type": "mystery",
+  "architectures": [
+    "MysteryModel"
+  ],
+  "auto_map": {
+    "AutoModel": "modeling_mystery.MysteryModel"
+  }
+}

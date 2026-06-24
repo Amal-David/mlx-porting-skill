@@ -1,0 +1,17 @@
+{
+  "tensors": [
+    {
+      "key": "layer.weight",
+      "shape": [
+        2,
+        3
+      ]
+    },
+    {
+      "key": "layer.bias",
+      "shape": [
+        3
+      ]
+    }
+  ]
+}

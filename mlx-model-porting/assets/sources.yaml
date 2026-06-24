@@ -1,0 +1,4596 @@
+{
+  "schema_version": 1,
+  "reviewed": "2026-06-24",
+  "review_depth_definitions": {
+    "synthesized": "Directly informed a runbook, rule, or technique decision.",
+    "screened": "Abstract/readme/code path reviewed for relevance and limits.",
+    "indexed": "Catalogued for future review; do not represent as fully reviewed."
+  },
+  "count": 320,
+  "sources": [
+    {
+      "id": "agent-skills-spec",
+      "title": "Agent Skills specification",
+      "url": "https://agentskills.io/specification",
+      "kind": "official-doc",
+      "owner": "Agent Skills",
+      "topics": [
+        "agent-skills",
+        "format",
+        "validation"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2026-06-24",
+      "note": ""
+    },
+    {
+      "id": "agent-skills-repo",
+      "title": "Anthropic Agent Skills repository",
+      "url": "https://github.com/anthropics/skills",
+      "kind": "repository",
+      "owner": "Anthropic",
+      "topics": [
+        "agent-skills",
+        "examples"
+      ],
+      "review_depth": "screened",
+      "snapshot": "57546260929473d4e0d1c1bb75297be2fdfa1949",
+      "note": ""
+    },
+    {
+      "id": "skills-ref-repo",
+      "title": "Agent Skills reference validator",
+      "url": "https://github.com/agentskills/agentskills",
+      "kind": "repository",
+      "owner": "Agent Skills",
+      "topics": [
+        "agent-skills",
+        "validation"
+      ],
+      "review_depth": "screened",
+      "snapshot": "5d4c1fda3f786fff826c7f56b6cb3341e7f3a911",
+      "note": ""
+    },
+    {
+      "id": "codex-skill-loader",
+      "title": "Codex skill loader implementation",
+      "url": "https://github.com/openai/codex/blob/main/codex-rs/core-skills/src/loader.rs",
+      "kind": "source-code",
+      "owner": "OpenAI",
+      "topics": [
+        "agent-skills",
+        "codex"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "31e428a1ef3396a0e962687e61f11c224b9f4dbc",
+      "note": ""
+    },
+    {
+      "id": "mlx-repo",
+      "title": "MLX array framework repository",
+      "url": "https://github.com/ml-explore/mlx",
+      "kind": "repository",
+      "owner": "Apple MLX",
+      "topics": [
+        "mlx",
+        "runtime",
+        "metal",
+        "cuda"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "96296e9c3075a2389bc5c0f078bf01b5aa377cd9",
+      "note": ""
+    },
+    {
+      "id": "mlx-docs",
+      "title": "MLX documentation",
+      "url": "https://ml-explore.github.io/mlx/build/html/index.html",
+      "kind": "official-doc",
+      "owner": "Apple MLX",
+      "topics": [
+        "mlx",
+        "api",
+        "runtime"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2026-06-24",
+      "note": ""
+    },
+    {
+      "id": "mlx-doc-lazy",
+      "title": "MLX lazy evaluation documentation",
+      "url": "https://ml-explore.github.io/mlx/build/html/usage/lazy_evaluation.html",
+      "kind": "official-doc",
+      "owner": "Apple MLX",
+      "topics": [
+        "mlx",
+        "lazy-evaluation"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2026-06-24",
+      "note": ""
+    },
+    {
+      "id": "mlx-doc-compile",
+      "title": "MLX compilation documentation",
+      "url": "https://ml-explore.github.io/mlx/build/html/usage/compile.html",
+      "kind": "official-doc",
+      "owner": "Apple MLX",
+      "topics": [
+        "mlx",
+        "compile",
+        "fusion"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2026-06-24",
+      "note": ""
+    },
+    {
+      "id": "mlx-doc-fast-sdpa",
+      "title": "MLX fast scaled dot product attention API",
+      "url": "https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.fast.scaled_dot_product_attention.html",
+      "kind": "official-doc",
+      "owner": "Apple MLX",
+      "topics": [
+        "mlx",
+        "attention",
+        "kernels"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2026-06-24",
+      "note": ""
+    },
+    {
+      "id": "mlx-doc-custom-extensions",
+      "title": "MLX custom extensions documentation",
+      "url": "https://ml-explore.github.io/mlx/build/html/dev/extensions.html",
+      "kind": "official-doc",
+      "owner": "Apple MLX",
+      "topics": [
+        "mlx",
+        "metal",
+        "custom-kernels"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2026-06-24",
+      "note": ""
+    },
+    {
+      "id": "mlx-doc-fast-rms-norm",
+      "title": "MLX fast RMSNorm API",
+      "url": "https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.fast.rms_norm.html",
+      "kind": "official-doc",
+      "owner": "Apple MLX",
+      "topics": [
+        "mlx",
+        "normalization",
+        "kernels"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2026-06-24",
+      "note": ""
+    },
+    {
+      "id": "mlx-doc-fast-layer-norm",
+      "title": "MLX fast LayerNorm API",
+      "url": "https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.fast.layer_norm.html",
+      "kind": "official-doc",
+      "owner": "Apple MLX",
+      "topics": [
+        "mlx",
+        "normalization",
+        "kernels"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2026-06-24",
+      "note": ""
+    },
+    {
+      "id": "mlx-doc-fast-rope",
+      "title": "MLX fast RoPE API",
+      "url": "https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.fast.rope.html",
+      "kind": "official-doc",
+      "owner": "Apple MLX",
+      "topics": [
+        "mlx",
+        "rope",
+        "kernels"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2026-06-24",
+      "note": ""
+    },
+    {
+      "id": "mlx-doc-quantized-matmul",
+      "title": "MLX quantized matmul API",
+      "url": "https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.quantized_matmul.html",
+      "kind": "official-doc",
+      "owner": "Apple MLX",
+      "topics": [
+        "mlx",
+        "quantization",
+        "kernels"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2026-06-24",
+      "note": ""
+    },
+    {
+      "id": "mlx-doc-gather-mm",
+      "title": "MLX gather matmul API",
+      "url": "https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.gather_mm.html",
+      "kind": "official-doc",
+      "owner": "Apple MLX",
+      "topics": [
+        "mlx",
+        "gather",
+        "kernels",
+        "moe"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2026-06-24",
+      "note": ""
+    },
+    {
+      "id": "mlx-doc-gather-qmm",
+      "title": "MLX gather quantized matmul API",
+      "url": "https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.gather_qmm.html",
+      "kind": "official-doc",
+      "owner": "Apple MLX",
+      "topics": [
+        "mlx",
+        "gather",
+        "quantization",
+        "kernels",
+        "moe"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2026-06-24",
+      "note": ""
+    },
+    {
+      "id": "mlx-doc-block-masked-mm",
+      "title": "MLX block-masked matmul API",
+      "url": "https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.block_masked_mm.html",
+      "kind": "official-doc",
+      "owner": "Apple MLX",
+      "topics": [
+        "mlx",
+        "block-sparse",
+        "kernels"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2026-06-24",
+      "note": ""
+    },
+    {
+      "id": "mlx-doc-hadamard-transform",
+      "title": "MLX Hadamard transform API",
+      "url": "https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.hadamard_transform.html",
+      "kind": "official-doc",
+      "owner": "Apple MLX",
+      "topics": [
+        "mlx",
+        "hadamard",
+        "quantization",
+        "kernels"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2026-06-24",
+      "note": ""
+    },
+    {
+      "id": "mlx-doc-core-quantize",
+      "title": "MLX core quantize API",
+      "url": "https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.quantize.html",
+      "kind": "official-doc",
+      "owner": "Apple MLX",
+      "topics": [
+        "mlx",
+        "quantization",
+        "low-bit-formats"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2026-06-24",
+      "note": ""
+    },
+    {
+      "id": "mlx-doc-nn-quantize",
+      "title": "MLX neural network quantize API",
+      "url": "https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.nn.quantize.html",
+      "kind": "official-doc",
+      "owner": "Apple MLX",
+      "topics": [
+        "mlx",
+        "quantization",
+        "linear"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2026-06-24",
+      "note": ""
+    },
+    {
+      "id": "mlx-release-0312",
+      "title": "MLX v0.31.2 release",
+      "url": "https://github.com/ml-explore/mlx/releases/tag/v0.31.2",
+      "kind": "release",
+      "owner": "Apple MLX",
+      "topics": [
+        "mlx",
+        "release",
+        "threading",
+        "quantized-matmul"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "68cf2fd",
+      "note": ""
+    },
+    {
+      "id": "mlx-lm-repo",
+      "title": "MLX-LM repository",
+      "url": "https://github.com/ml-explore/mlx-lm",
+      "kind": "repository",
+      "owner": "Apple MLX",
+      "topics": [
+        "mlx",
+        "language-models",
+        "training",
+        "generation"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2c008fd0252b2c569227d12568356ab88ab0560a",
+      "note": ""
+    },
+    {
+      "id": "mlx-lm-release-0313",
+      "title": "MLX-LM v0.31.3 release",
+      "url": "https://github.com/ml-explore/mlx-lm/releases/tag/v0.31.3",
+      "kind": "release",
+      "owner": "Apple MLX",
+      "topics": [
+        "mlx-lm",
+        "cache",
+        "threading"
+      ],
+      "review_depth": "screened",
+      "snapshot": "ed1fca4",
+      "note": ""
+    },
+    {
+      "id": "mlx-lm-convert",
+      "title": "MLX-LM model conversion and quantization",
+      "url": "https://github.com/ml-explore/mlx-lm/blob/main/mlx_lm/convert.py",
+      "kind": "source-code",
+      "owner": "Apple MLX",
+      "topics": [
+        "conversion",
+        "quantization",
+        "weights"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2c008fd0252b2c569227d12568356ab88ab0560a",
+      "note": ""
+    },
+    {
+      "id": "mlx-lm-cache",
+      "title": "MLX-LM cache implementations",
+      "url": "https://github.com/ml-explore/mlx-lm/blob/main/mlx_lm/models/cache.py",
+      "kind": "source-code",
+      "owner": "Apple MLX",
+      "topics": [
+        "kv-cache",
+        "rotating-cache",
+        "quantization"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2c008fd0252b2c569227d12568356ab88ab0560a",
+      "note": ""
+    },
+    {
+      "id": "mlx-lm-speculative",
+      "title": "MLX-LM speculative generation implementation",
+      "url": "https://github.com/ml-explore/mlx-lm/blob/main/mlx_lm/generate.py",
+      "kind": "source-code",
+      "owner": "Apple MLX",
+      "topics": [
+        "speculative-decoding",
+        "generation"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2c008fd0252b2c569227d12568356ab88ab0560a",
+      "note": ""
+    },
+    {
+      "id": "mlx-lm-models",
+      "title": "MLX-LM architecture implementations",
+      "url": "https://github.com/ml-explore/mlx-lm/tree/main/mlx_lm/models",
+      "kind": "source-code",
+      "owner": "Apple MLX",
+      "topics": [
+        "architectures",
+        "language-models"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2c008fd0252b2c569227d12568356ab88ab0560a",
+      "note": ""
+    },
+    {
+      "id": "mlx-examples-repo",
+      "title": "MLX examples repository",
+      "url": "https://github.com/ml-explore/mlx-examples",
+      "kind": "repository",
+      "owner": "Apple MLX",
+      "topics": [
+        "examples",
+        "whisper",
+        "encodec",
+        "diffusion"
+      ],
+      "review_depth": "screened",
+      "snapshot": "796f5b53cab69a3d48a44233ce21aae889e94a08",
+      "note": ""
+    },
+    {
+      "id": "mlx-vlm-repo",
+      "title": "MLX-VLM repository",
+      "url": "https://github.com/Blaizzy/mlx-vlm",
+      "kind": "repository",
+      "owner": "Blaizzy",
+      "topics": [
+        "mlx",
+        "multimodal",
+        "serving"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "6a8cdff6a1f53f46a15d4adb997c3b2d5f621263",
+      "note": ""
+    },
+    {
+      "id": "mlx-vlm-readme",
+      "title": "MLX-VLM serving, caching, and speculative decoding documentation",
+      "url": "https://github.com/Blaizzy/mlx-vlm/blob/main/README.md",
+      "kind": "source-code",
+      "owner": "Blaizzy",
+      "topics": [
+        "speculative-decoding",
+        "prefix-cache",
+        "continuous-batching",
+        "kv-quantization"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "6a8cdff6a1f53f46a15d4adb997c3b2d5f621263",
+      "note": ""
+    },
+    {
+      "id": "mlx-audio-repo",
+      "title": "MLX-Audio repository",
+      "url": "https://github.com/Blaizzy/mlx-audio",
+      "kind": "repository",
+      "owner": "Blaizzy",
+      "topics": [
+        "mlx",
+        "audio",
+        "tts",
+        "stt",
+        "codec"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "412cf7cd381c2a3f6a8189af04a95af24cb415b6",
+      "note": ""
+    },
+    {
+      "id": "mlx-audio-convert",
+      "title": "MLX-Audio conversion implementation",
+      "url": "https://github.com/Blaizzy/mlx-audio/blob/main/mlx_audio/convert.py",
+      "kind": "source-code",
+      "owner": "Blaizzy",
+      "topics": [
+        "audio",
+        "conversion",
+        "quantization",
+        "model-detection"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "412cf7cd381c2a3f6a8189af04a95af24cb415b6",
+      "note": ""
+    },
+    {
+      "id": "mlx-audio-codecs",
+      "title": "MLX-Audio codec implementations",
+      "url": "https://github.com/Blaizzy/mlx-audio/tree/main/mlx_audio/codec/models",
+      "kind": "source-code",
+      "owner": "Blaizzy",
+      "topics": [
+        "audio-codec",
+        "vocoder",
+        "tokenizer"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "412cf7cd381c2a3f6a8189af04a95af24cb415b6",
+      "note": ""
+    },
+    {
+      "id": "mlx-audio-models",
+      "title": "MLX-Audio model implementations",
+      "url": "https://github.com/Blaizzy/mlx-audio/tree/main/mlx_audio",
+      "kind": "source-code",
+      "owner": "Blaizzy",
+      "topics": [
+        "tts",
+        "stt",
+        "sts",
+        "audio"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "412cf7cd381c2a3f6a8189af04a95af24cb415b6",
+      "note": ""
+    },
+    {
+      "id": "mlx-audio-release-044",
+      "title": "MLX-Audio v0.4.4 release",
+      "url": "https://github.com/Blaizzy/mlx-audio/releases/tag/v0.4.4",
+      "kind": "release",
+      "owner": "Blaizzy",
+      "topics": [
+        "audio",
+        "streaming",
+        "cache",
+        "codec"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "a7ef986",
+      "note": ""
+    },
+    {
+      "id": "vllm-mlx-repo",
+      "title": "vLLM-MLX serving repository",
+      "url": "https://github.com/waybarrios/vllm-mlx",
+      "kind": "repository",
+      "owner": "waybarrios",
+      "topics": [
+        "serving",
+        "continuous-batching",
+        "paged-kv",
+        "prefix-cache"
+      ],
+      "review_depth": "screened",
+      "snapshot": "a48c86c1a41900f7d26658471b5f67e5fdd35445",
+      "note": ""
+    },
+    {
+      "id": "mlx-dev-skill",
+      "title": "General MLX development Agent Skill",
+      "url": "https://github.com/ettrickshepherd/mlx-dev-skill",
+      "kind": "repository",
+      "owner": "ettrickshepherd",
+      "topics": [
+        "agent-skills",
+        "mlx",
+        "development"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "99e8bd62dd4f0e1649ae9647a1f7ee65b65d02fe",
+      "note": ""
+    },
+    {
+      "id": "openclaw-mlx-audio",
+      "title": "OpenClaw MLX-Audio integration",
+      "url": "https://github.com/cosformula/openclaw-mlx-audio",
+      "kind": "repository",
+      "owner": "cosformula",
+      "topics": [
+        "agent-skills",
+        "audio",
+        "tts"
+      ],
+      "review_depth": "screened",
+      "snapshot": "",
+      "note": ""
+    },
+    {
+      "id": "mlx-audio-swift",
+      "title": "MLX-Audio Swift repository",
+      "url": "https://github.com/Blaizzy/mlx-audio-swift",
+      "kind": "repository",
+      "owner": "Blaizzy",
+      "topics": [
+        "swift",
+        "audio",
+        "mlx"
+      ],
+      "review_depth": "indexed",
+      "snapshot": "",
+      "note": ""
+    },
+    {
+      "id": "mlx-swift",
+      "title": "MLX Swift repository",
+      "url": "https://github.com/ml-explore/mlx-swift",
+      "kind": "repository",
+      "owner": "Apple MLX",
+      "topics": [
+        "swift",
+        "mlx"
+      ],
+      "review_depth": "screened",
+      "snapshot": "",
+      "note": ""
+    },
+    {
+      "id": "mlx-metal-examples",
+      "title": "MLX Metal kernel examples and tests",
+      "url": "https://github.com/ml-explore/mlx/tree/main/examples/extensions",
+      "kind": "source-code",
+      "owner": "Apple MLX",
+      "topics": [
+        "metal",
+        "custom-kernels"
+      ],
+      "review_depth": "screened",
+      "snapshot": "",
+      "note": ""
+    },
+    {
+      "id": "apple-metal-guide",
+      "title": "Metal compute documentation",
+      "url": "https://developer.apple.com/documentation/metal/performing_calculations_on_a_gpu",
+      "kind": "official-doc",
+      "owner": "Apple",
+      "topics": [
+        "metal",
+        "gpu",
+        "compute"
+      ],
+      "review_depth": "indexed",
+      "snapshot": "",
+      "note": ""
+    },
+    {
+      "id": "apple-mpsgraph",
+      "title": "Metal Performance Shaders Graph documentation",
+      "url": "https://developer.apple.com/documentation/metalperformanceshadersgraph",
+      "kind": "official-doc",
+      "owner": "Apple",
+      "topics": [
+        "metal",
+        "graph",
+        "operators"
+      ],
+      "review_depth": "indexed",
+      "snapshot": "",
+      "note": ""
+    },
+    {
+      "id": "safetensors-repo",
+      "title": "Safetensors format repository",
+      "url": "https://github.com/huggingface/safetensors",
+      "kind": "repository",
+      "owner": "Hugging Face",
+      "topics": [
+        "weights",
+        "security",
+        "serialization"
+      ],
+      "review_depth": "screened",
+      "snapshot": "",
+      "note": ""
+    },
+    {
+      "id": "huggingface-transformers",
+      "title": "Transformers architecture and model repository",
+      "url": "https://github.com/huggingface/transformers",
+      "kind": "repository",
+      "owner": "Hugging Face",
+      "topics": [
+        "source-oracle",
+        "architectures",
+        "model-config"
+      ],
+      "review_depth": "screened",
+      "snapshot": "",
+      "note": ""
+    },
+    {
+      "id": "pytorch-repo",
+      "title": "PyTorch repository",
+      "url": "https://github.com/pytorch/pytorch",
+      "kind": "repository",
+      "owner": "PyTorch",
+      "topics": [
+        "source-oracle",
+        "operators"
+      ],
+      "review_depth": "indexed",
+      "snapshot": "",
+      "note": ""
+    },
+    {
+      "id": "paper-1706-03762",
+      "title": "Attention Is All You Need",
+      "url": "https://arxiv.org/abs/1706.03762",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "transformer",
+        "attention"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "1706.03762",
+      "note": ""
+    },
+    {
+      "id": "paper-1810-04805",
+      "title": "BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding",
+      "url": "https://arxiv.org/abs/1810.04805",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "encoder-transformer"
+      ],
+      "review_depth": "screened",
+      "snapshot": "1810.04805",
+      "note": ""
+    },
+    {
+      "id": "paper-1910-10683",
+      "title": "Exploring the Limits of Transfer Learning with a Unified Text-to-Text Transformer",
+      "url": "https://arxiv.org/abs/1910.10683",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "t5",
+        "encoder-decoder"
+      ],
+      "review_depth": "screened",
+      "snapshot": "1910.10683",
+      "note": ""
+    },
+    {
+      "id": "paper-1910-13461",
+      "title": "BART: Denoising Sequence-to-Sequence Pre-training for Natural Language Generation, Translation, and Comprehension",
+      "url": "https://arxiv.org/abs/1910.13461",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "bart",
+        "encoder-decoder"
+      ],
+      "review_depth": "screened",
+      "snapshot": "1910.13461",
+      "note": ""
+    },
+    {
+      "id": "paper-2010-11929",
+      "title": "An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale",
+      "url": "https://arxiv.org/abs/2010.11929",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "vision-transformer"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2010.11929",
+      "note": ""
+    },
+    {
+      "id": "paper-2204-14198",
+      "title": "Flamingo: a Visual Language Model for Few-Shot Learning",
+      "url": "https://arxiv.org/abs/2204.14198",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "vision-language",
+        "resampler"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2204.14198",
+      "note": ""
+    },
+    {
+      "id": "paper-2301-12597",
+      "title": "BLIP-2: Bootstrapping Language-Image Pre-training with Frozen Image Encoders and Large Language Models",
+      "url": "https://arxiv.org/abs/2301.12597",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "vision-language",
+        "projector"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2301.12597",
+      "note": ""
+    },
+    {
+      "id": "paper-2302-13971",
+      "title": "LLaMA: Open and Efficient Foundation Language Models",
+      "url": "https://arxiv.org/abs/2302.13971",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "decoder-transformer"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2302.13971",
+      "note": ""
+    },
+    {
+      "id": "paper-2304-08485",
+      "title": "Visual Instruction Tuning",
+      "url": "https://arxiv.org/abs/2304.08485",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "llava",
+        "vision-language"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2304.08485",
+      "note": ""
+    },
+    {
+      "id": "paper-2307-09288",
+      "title": "Llama 2: Open Foundation and Fine-Tuned Chat Models",
+      "url": "https://arxiv.org/abs/2307.09288",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "decoder-transformer"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2307.09288",
+      "note": ""
+    },
+    {
+      "id": "paper-2310-06825",
+      "title": "Mistral 7B",
+      "url": "https://arxiv.org/abs/2310.06825",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "decoder-transformer",
+        "sliding-window",
+        "gqa"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2310.06825",
+      "note": ""
+    },
+    {
+      "id": "paper-2401-04088",
+      "title": "Mixtral of Experts",
+      "url": "https://arxiv.org/abs/2401.04088",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "moe",
+        "decoder-transformer"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2401.04088",
+      "note": ""
+    },
+    {
+      "id": "paper-2403-08295",
+      "title": "Gemma: Open Models Based on Gemini Research and Technology",
+      "url": "https://arxiv.org/abs/2403.08295",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "decoder-transformer"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2403.08295",
+      "note": ""
+    },
+    {
+      "id": "paper-2404-14219",
+      "title": "Phi-3 Technical Report: A Highly Capable Language Model Locally on Your Phone",
+      "url": "https://arxiv.org/abs/2404.14219",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "decoder-transformer",
+        "on-device"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2404.14219",
+      "note": ""
+    },
+    {
+      "id": "paper-2407-10671",
+      "title": "Qwen2 Technical Report",
+      "url": "https://arxiv.org/abs/2407.10671",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "decoder-transformer",
+        "moe"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2407.10671",
+      "note": ""
+    },
+    {
+      "id": "paper-2407-21783",
+      "title": "The Llama 3 Herd of Models",
+      "url": "https://arxiv.org/abs/2407.21783",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "decoder-transformer"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2407.21783",
+      "note": ""
+    },
+    {
+      "id": "paper-2408-00118",
+      "title": "Gemma 2: Improving Open Language Models at a Practical Size",
+      "url": "https://arxiv.org/abs/2408.00118",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "decoder-transformer"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2408.00118",
+      "note": ""
+    },
+    {
+      "id": "paper-2405-04434",
+      "title": "DeepSeek-V2: A Strong, Economical, and Efficient Mixture-of-Experts Language Model",
+      "url": "https://arxiv.org/abs/2405.04434",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "moe",
+        "mla",
+        "attention"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2405.04434",
+      "note": ""
+    },
+    {
+      "id": "paper-2412-19437",
+      "title": "DeepSeek-V3 Technical Report",
+      "url": "https://arxiv.org/abs/2412.19437",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "moe",
+        "mtp",
+        "attention"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2412.19437",
+      "note": ""
+    },
+    {
+      "id": "paper-2312-00752",
+      "title": "Mamba: Linear-Time Sequence Modeling with Selective State Spaces",
+      "url": "https://arxiv.org/abs/2312.00752",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "ssm",
+        "recurrent"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2312.00752",
+      "note": ""
+    },
+    {
+      "id": "paper-2405-21060",
+      "title": "Transformers are SSMs: Generalized Models and Efficient Algorithms Through Structured State Space Duality",
+      "url": "https://arxiv.org/abs/2405.21060",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "mamba2",
+        "ssm"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2405.21060",
+      "note": ""
+    },
+    {
+      "id": "paper-2403-19887",
+      "title": "Jamba: A Hybrid Transformer-Mamba Language Model",
+      "url": "https://arxiv.org/abs/2403.19887",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "hybrid",
+        "ssm",
+        "attention",
+        "moe"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2403.19887",
+      "note": ""
+    },
+    {
+      "id": "paper-2305-13048",
+      "title": "RWKV: Reinventing RNNs for the Transformer Era",
+      "url": "https://arxiv.org/abs/2305.13048",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "recurrent",
+        "language-model"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2305.13048",
+      "note": ""
+    },
+    {
+      "id": "paper-2404-07839",
+      "title": "RecurrentGemma: Moving Past Transformers for Efficient Open Language Models",
+      "url": "https://arxiv.org/abs/2404.07839",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "recurrent",
+        "griffin"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2404.07839",
+      "note": ""
+    },
+    {
+      "id": "paper-2402-19427",
+      "title": "Griffin: Mixing Gated Linear Recurrences with Local Attention for Efficient Language Models",
+      "url": "https://arxiv.org/abs/2402.19427",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "recurrent",
+        "hybrid"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2402.19427",
+      "note": ""
+    },
+    {
+      "id": "paper-2307-08621",
+      "title": "Retentive Network: A Successor to Transformer for Large Language Models",
+      "url": "https://arxiv.org/abs/2307.08621",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "recurrent",
+        "linear-attention"
+      ],
+      "review_depth": "indexed",
+      "snapshot": "2307.08621",
+      "note": ""
+    },
+    {
+      "id": "paper-2302-10866",
+      "title": "Hyena Hierarchy: Towards Larger Convolutional Language Models",
+      "url": "https://arxiv.org/abs/2302.10866",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "long-context",
+        "convolution"
+      ],
+      "review_depth": "indexed",
+      "snapshot": "2302.10866",
+      "note": ""
+    },
+    {
+      "id": "paper-2212-09748",
+      "title": "Scalable Diffusion Models with Transformers",
+      "url": "https://arxiv.org/abs/2212.09748",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "dit",
+        "diffusion"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2212.09748",
+      "note": ""
+    },
+    {
+      "id": "paper-2112-10752",
+      "title": "High-Resolution Image Synthesis with Latent Diffusion Models",
+      "url": "https://arxiv.org/abs/2112.10752",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "latent-diffusion"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2112.10752",
+      "note": ""
+    },
+    {
+      "id": "paper-2209-03003",
+      "title": "Flow Straight and Fast: Learning to Generate and Transfer Data with Rectified Flow",
+      "url": "https://arxiv.org/abs/2209.03003",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "rectified-flow"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2209.03003",
+      "note": ""
+    },
+    {
+      "id": "paper-2210-02747",
+      "title": "Flow Matching for Generative Modeling",
+      "url": "https://arxiv.org/abs/2210.02747",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "flow-matching"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2210.02747",
+      "note": ""
+    },
+    {
+      "id": "paper-2403-03206",
+      "title": "Scaling Rectified Flow Transformers for High-Resolution Image Synthesis",
+      "url": "https://arxiv.org/abs/2403.03206",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "stable-diffusion-3",
+        "flow",
+        "transformer"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2403.03206",
+      "note": ""
+    },
+    {
+      "id": "paper-2409-12191",
+      "title": "Qwen2-VL: Enhancing Vision-Language Model’s Perception of the World at Any Resolution",
+      "url": "https://arxiv.org/abs/2409.12191",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "vision-language",
+        "video"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2409.12191",
+      "note": ""
+    },
+    {
+      "id": "paper-2211-17192",
+      "title": "Fast Inference from Transformers via Speculative Decoding",
+      "url": "https://arxiv.org/abs/2211.17192",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "speculative-decoding"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2211.17192",
+      "note": ""
+    },
+    {
+      "id": "paper-2302-01318",
+      "title": "Accelerating Large Language Model Decoding with Speculative Sampling",
+      "url": "https://arxiv.org/abs/2302.01318",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "speculative-decoding"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2302.01318",
+      "note": ""
+    },
+    {
+      "id": "paper-2305-09781",
+      "title": "SpecInfer: Accelerating Generative Large Language Model Serving with Tree-based Speculative Inference and Verification",
+      "url": "https://arxiv.org/abs/2305.09781",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "speculative-decoding",
+        "serving"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2305.09781",
+      "note": ""
+    },
+    {
+      "id": "paper-2309-08168",
+      "title": "Draft & Verify: Lossless Large Language Model Acceleration via Self-Speculative Decoding",
+      "url": "https://arxiv.org/abs/2309.08168",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "self-speculative"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2309.08168",
+      "note": ""
+    },
+    {
+      "id": "paper-2311-08252",
+      "title": "REST: Retrieval-Based Speculative Decoding",
+      "url": "https://arxiv.org/abs/2311.08252",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "retrieval",
+        "speculative-decoding"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2311.08252",
+      "note": ""
+    },
+    {
+      "id": "paper-2401-07851",
+      "title": "Unlocking Efficiency in Large Language Model Inference: A Comprehensive Survey of Speculative Decoding",
+      "url": "https://arxiv.org/abs/2401.07851",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "speculative-decoding",
+        "survey"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2401.07851",
+      "note": ""
+    },
+    {
+      "id": "paper-2401-10774",
+      "title": "Medusa: Simple LLM Inference Acceleration Framework with Multiple Decoding Heads",
+      "url": "https://arxiv.org/abs/2401.10774",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "medusa",
+        "speculative-decoding"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2401.10774",
+      "note": ""
+    },
+    {
+      "id": "paper-2401-15077",
+      "title": "EAGLE: Speculative Sampling Requires Rethinking Feature Uncertainty",
+      "url": "https://arxiv.org/abs/2401.15077",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "eagle",
+        "speculative-decoding"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2401.15077",
+      "note": ""
+    },
+    {
+      "id": "paper-2402-02057",
+      "title": "Break the Sequential Dependency of LLM Inference Using Lookahead Decoding",
+      "url": "https://arxiv.org/abs/2402.02057",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "lookahead-decoding"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2402.02057",
+      "note": ""
+    },
+    {
+      "id": "paper-2402-11131",
+      "title": "Speculative Streaming: Fast LLM Inference without Auxiliary Models",
+      "url": "https://arxiv.org/abs/2402.11131",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "multi-token",
+        "speculative-decoding"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2402.11131",
+      "note": ""
+    },
+    {
+      "id": "paper-2402-13720",
+      "title": "Ouroboros: Speculative Decoding with Large Model Enhanced Drafting",
+      "url": "https://arxiv.org/abs/2402.13720",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "speculative-decoding"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2402.13720",
+      "note": ""
+    },
+    {
+      "id": "paper-2403-09919",
+      "title": "ReDrafter: Faster LLM Inference with Recurrent Drafter",
+      "url": "https://arxiv.org/abs/2403.09919",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "redrafter",
+        "speculative-decoding",
+        "mlx"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2403.09919",
+      "note": ""
+    },
+    {
+      "id": "paper-2404-19124",
+      "title": "Accelerating Production LLMs with Combined Token/Embedding Speculators",
+      "url": "https://arxiv.org/abs/2404.19124",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "speculative-decoding",
+        "multi-token"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2404.19124",
+      "note": "Not Prompt Lookup Decoding; use prompt-lookup-decoding-repo for PLD."
+    },
+    {
+      "id": "paper-2406-16858",
+      "title": "EAGLE-2: Faster Inference of Language Models with Dynamic Draft Trees",
+      "url": "https://arxiv.org/abs/2406.16858",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "eagle2",
+        "speculative-decoding"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2406.16858",
+      "note": ""
+    },
+    {
+      "id": "paper-2407-01955",
+      "title": "S2D: Sorted Speculative Decoding for More Efficient Deployment of Nested Large Language Models",
+      "url": "https://arxiv.org/abs/2407.01955",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "speculative-decoding"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2407.01955",
+      "note": ""
+    },
+    {
+      "id": "paper-2408-08696",
+      "title": "Turning Trash into Treasure: Accelerating Inference of Large Language Models with Token Recycling",
+      "url": "https://arxiv.org/abs/2408.08696",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "token-recycling",
+        "speculative-decoding"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2408.08696",
+      "note": ""
+    },
+    {
+      "id": "paper-2409-00142",
+      "title": "Dynamic Depth Decoding: Faster Speculative Decoding for LLMs",
+      "url": "https://arxiv.org/abs/2409.00142",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "speculative-decoding"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2409.00142",
+      "note": ""
+    },
+    {
+      "id": "paper-2410-03804",
+      "title": "Mixture of Attentions for Speculative Decoding",
+      "url": "https://arxiv.org/abs/2410.03804",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "speculative-decoding",
+        "attention"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2410.03804",
+      "note": ""
+    },
+    {
+      "id": "paper-2412-12639",
+      "title": "Falcon: Faster and Parallel Inference of Large Language Models through Enhanced Semi-Autoregressive Drafting and Custom-Designed Decoding Tree",
+      "url": "https://arxiv.org/abs/2412.12639",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "speculative-decoding"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2412.12639",
+      "note": ""
+    },
+    {
+      "id": "paper-2505-07858",
+      "title": "Scaling Laws for Speculative Decoding",
+      "url": "https://arxiv.org/abs/2505.07858",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "speculative-decoding",
+        "scaling-laws"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2505.07858",
+      "note": ""
+    },
+    {
+      "id": "paper-2505-15380",
+      "title": "Accelerating Autoregressive Speech Synthesis Inference With Speech Speculative Decoding",
+      "url": "https://arxiv.org/abs/2505.15380",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "speech",
+        "speculative-decoding"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2505.15380",
+      "note": ""
+    },
+    {
+      "id": "paper-2505-19201",
+      "title": "DREAM: Drafting with Refined Target Features and Entropy-Adaptive Cross-Attention Fusion for Multimodal Speculative Decoding",
+      "url": "https://arxiv.org/abs/2505.19201",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "multimodal",
+        "speculative-decoding"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2505.19201",
+      "note": ""
+    },
+    {
+      "id": "paper-2505-19645",
+      "title": "MoESD: Unveil Speculative Decoding’s Potential for Accelerating Sparse MoE",
+      "url": "https://arxiv.org/abs/2505.19645",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "moe",
+        "speculative-decoding"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2505.19645",
+      "note": ""
+    },
+    {
+      "id": "paper-2505-22179",
+      "title": "Speculative Decoding Meets Quantization: Compatibility Evaluation and Hierarchical Framework Design",
+      "url": "https://arxiv.org/abs/2505.22179",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "speculative-decoding",
+        "quantization"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2505.22179",
+      "note": ""
+    },
+    {
+      "id": "paper-2505-24544",
+      "title": "Cross-Attention Speculative Decoding",
+      "url": "https://arxiv.org/abs/2505.24544",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "speculative-decoding",
+        "cross-attention"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2505.24544",
+      "note": ""
+    },
+    {
+      "id": "paper-2506-01979",
+      "title": "Speculative Decoding via Hybrid Drafting and Rollback-Aware Branch Parallelism",
+      "url": "https://arxiv.org/abs/2506.01979",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "speculative-decoding"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2506.01979",
+      "note": ""
+    },
+    {
+      "id": "paper-2509-11815",
+      "title": "SpecVLM: Fast Speculative Decoding in Vision-Language Models",
+      "url": "https://arxiv.org/abs/2509.11815",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "vlm",
+        "speculative-decoding"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2509.11815",
+      "note": ""
+    },
+    {
+      "id": "paper-2601-11580",
+      "title": "Speculative Decoding: Performance or Illusion?",
+      "url": "https://arxiv.org/abs/2601.11580",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "speculative-decoding",
+        "serving",
+        "benchmark"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2601.11580",
+      "note": ""
+    },
+    {
+      "id": "paper-2601-19278",
+      "title": "DART: Diffusion-Inspired Speculative Decoding for Fast LLM Inference",
+      "url": "https://arxiv.org/abs/2601.19278",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "speculative-decoding",
+        "diffusion-drafter"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2601.19278",
+      "note": ""
+    },
+    {
+      "id": "paper-2602-06036",
+      "title": "DFlash: Block Diffusion for Flash Speculative Decoding",
+      "url": "https://arxiv.org/abs/2602.06036",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "dflash",
+        "speculative-decoding"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2602.06036",
+      "note": ""
+    },
+    {
+      "id": "paper-2603-08899",
+      "title": "ConFu: Contemplate the Future for Better Speculative Sampling",
+      "url": "https://arxiv.org/abs/2603.08899",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "speculative-decoding"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2603.08899",
+      "note": ""
+    },
+    {
+      "id": "paper-2603-11053",
+      "title": "Speculative Decoding Scaling Laws: Throughput Optimization Made Simple",
+      "url": "https://arxiv.org/abs/2603.11053",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "speculative-decoding",
+        "scaling-laws"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2603.11053",
+      "note": ""
+    },
+    {
+      "id": "paper-2605-30852",
+      "title": "Speculative Pipeline Decoding: Higher-Accuracy and Zero-Bubble Speculation via Pipeline Parallelism",
+      "url": "https://arxiv.org/abs/2605.30852",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "speculative-decoding",
+        "pipeline"
+      ],
+      "review_depth": "indexed",
+      "snapshot": "2605.30852",
+      "note": ""
+    },
+    {
+      "id": "paper-2206-01861",
+      "title": "ZeroQuant: Efficient and Affordable Post-Training Quantization for Large-Scale Transformers",
+      "url": "https://arxiv.org/abs/2206.01861",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "quantization"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2206.01861",
+      "note": ""
+    },
+    {
+      "id": "paper-2208-07339",
+      "title": "LLM.int8(): 8-bit Matrix Multiplication for Transformers at Scale",
+      "url": "https://arxiv.org/abs/2208.07339",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "quantization",
+        "outliers"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2208.07339",
+      "note": ""
+    },
+    {
+      "id": "paper-2210-17323",
+      "title": "GPTQ: Accurate Post-Training Quantization for Generative Pre-trained Transformers",
+      "url": "https://arxiv.org/abs/2210.17323",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "weight-quantization"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2210.17323",
+      "note": ""
+    },
+    {
+      "id": "paper-2211-10438",
+      "title": "SmoothQuant: Accurate and Efficient Post-Training Quantization for Large Language Models",
+      "url": "https://arxiv.org/abs/2211.10438",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "activation-quantization"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2211.10438",
+      "note": ""
+    },
+    {
+      "id": "paper-2305-14314",
+      "title": "QLoRA: Efficient Finetuning of Quantized LLMs",
+      "url": "https://arxiv.org/abs/2305.14314",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "quantization",
+        "lora",
+        "training"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2305.14314",
+      "note": ""
+    },
+    {
+      "id": "paper-2306-00978",
+      "title": "AWQ: Activation-aware Weight Quantization for LLM Compression and Acceleration",
+      "url": "https://arxiv.org/abs/2306.00978",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "weight-quantization"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2306.00978",
+      "note": ""
+    },
+    {
+      "id": "paper-2306-03078",
+      "title": "SpQR: A Sparse-Quantized Representation for Near-Lossless LLM Weight Compression",
+      "url": "https://arxiv.org/abs/2306.03078",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "weight-quantization",
+        "outliers"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2306.03078",
+      "note": ""
+    },
+    {
+      "id": "paper-2306-07629",
+      "title": "SqueezeLLM: Dense-and-Sparse Quantization",
+      "url": "https://arxiv.org/abs/2306.07629",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "weight-quantization"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2306.07629",
+      "note": ""
+    },
+    {
+      "id": "paper-2308-13137",
+      "title": "OmniQuant: Omnidirectionally Calibrated Quantization for Large Language Models",
+      "url": "https://arxiv.org/abs/2308.13137",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "quantization"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2308.13137",
+      "note": ""
+    },
+    {
+      "id": "paper-2309-15531",
+      "title": "Rethinking Channel Dimensions to Isolate Outliers for Low-bit Weight Quantization of Large Language Models",
+      "url": "https://arxiv.org/abs/2309.15531",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "weight-quantization",
+        "outliers"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2309.15531",
+      "note": "Not HQQ; this is the AdaDim paper."
+    },
+    {
+      "id": "paper-2310-16836",
+      "title": "LLM-FP4: 4-Bit Floating-Point Quantized Transformers",
+      "url": "https://arxiv.org/abs/2310.16836",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "fp4",
+        "quantization"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2310.16836",
+      "note": ""
+    },
+    {
+      "id": "paper-2312-03788",
+      "title": "SmoothQuant+: Accurate and Efficient 4-bit Post-Training Weight Quantization for LLM",
+      "url": "https://arxiv.org/abs/2312.03788",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "quantization"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2312.03788",
+      "note": ""
+    },
+    {
+      "id": "paper-2401-06118",
+      "title": "AQLM: Extreme Compression of Large Language Models via Additive Quantization",
+      "url": "https://arxiv.org/abs/2401.06118",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "quantization"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2401.06118",
+      "note": ""
+    },
+    {
+      "id": "paper-2401-18079",
+      "title": "KVQuant: Towards 10 Million Context Length LLM Inference with KV Cache Quantization",
+      "url": "https://arxiv.org/abs/2401.18079",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "kv-quantization"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2401.18079",
+      "note": ""
+    },
+    {
+      "id": "paper-2402-02750",
+      "title": "KIVI: A Tuning-Free Asymmetric 2bit Quantization for KV Cache",
+      "url": "https://arxiv.org/abs/2402.02750",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "kv-quantization"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2402.02750",
+      "note": ""
+    },
+    {
+      "id": "paper-2402-04396",
+      "title": "QuIP#: Even Better LLM Quantization with Hadamard Incoherence and Lattice Codebooks",
+      "url": "https://arxiv.org/abs/2402.04396",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "quantization",
+        "hadamard"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2402.04396",
+      "note": ""
+    },
+    {
+      "id": "paper-2402-17764",
+      "title": "The Era of 1-bit LLMs: All Large Language Models are in 1.58 Bits",
+      "url": "https://arxiv.org/abs/2402.17764",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "bitnet",
+        "quantization"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2402.17764",
+      "note": ""
+    },
+    {
+      "id": "paper-2404-00456",
+      "title": "QuaRot: Outlier-Free 4-Bit Inference in Rotated LLMs",
+      "url": "https://arxiv.org/abs/2404.00456",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "quantization",
+        "rotation",
+        "kv"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2404.00456",
+      "note": ""
+    },
+    {
+      "id": "paper-2405-04532",
+      "title": "QServe: W4A8KV4 Quantization and System Co-design for Efficient LLM Serving",
+      "url": "https://arxiv.org/abs/2405.04532",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "quantization",
+        "serving"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2405.04532",
+      "note": ""
+    },
+    {
+      "id": "paper-2405-16406",
+      "title": "SpinQuant: LLM Quantization with Learned Rotations",
+      "url": "https://arxiv.org/abs/2405.16406",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "quantization",
+        "rotation"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2405.16406",
+      "note": ""
+    },
+    {
+      "id": "paper-2406-03482",
+      "title": "QJL: 1-Bit Quantized JL Transform for KV Cache Quantization with Zero Overhead",
+      "url": "https://arxiv.org/abs/2406.03482",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "kv-quantization"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2406.03482",
+      "note": ""
+    },
+    {
+      "id": "paper-2407-00088",
+      "title": "T-MAC: CPU Renaissance via Table Lookup for Low-Bit LLM Deployment on Edge",
+      "url": "https://arxiv.org/abs/2407.00088",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "low-bit",
+        "edge"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2407.00088",
+      "note": ""
+    },
+    {
+      "id": "paper-2408-08554",
+      "title": "ABQ-LLM: Arbitrary-Bit Quantized Inference Acceleration for Large Language Models",
+      "url": "https://arxiv.org/abs/2408.08554",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "quantization"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2408.08554",
+      "note": ""
+    },
+    {
+      "id": "paper-2410-07505",
+      "title": "CrossQuant: A Post-Training Quantization Method with Smaller Quantization Kernel for Precise Large Language Model Compression",
+      "url": "https://arxiv.org/abs/2410.07505",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "activation-quantization"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2410.07505",
+      "note": ""
+    },
+    {
+      "id": "paper-2410-12168",
+      "title": "COMET: Towards Practical W4A4KV4 LLMs Serving",
+      "url": "https://arxiv.org/abs/2410.12168",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "quantization",
+        "serving"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2410.12168",
+      "note": ""
+    },
+    {
+      "id": "paper-2411-04965",
+      "title": "BitNet a4.8: 4-bit Activations for 1-bit LLMs",
+      "url": "https://arxiv.org/abs/2411.04965",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "bitnet",
+        "activation-quantization"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2411.04965",
+      "note": ""
+    },
+    {
+      "id": "paper-2412-14363",
+      "title": "ResQ: Mixed-Precision Quantization of Large Language Models with Low-Rank Residuals",
+      "url": "https://arxiv.org/abs/2412.14363",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "mixed-precision",
+        "quantization"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2412.14363",
+      "note": ""
+    },
+    {
+      "id": "paper-2501-16383",
+      "title": "RotateKV: Accurate and Robust 2-Bit KV Cache Quantization via Outlier-Aware Adaptive Rotations",
+      "url": "https://arxiv.org/abs/2501.16383",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "kv-quantization",
+        "rotation"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2501.16383",
+      "note": ""
+    },
+    {
+      "id": "paper-2502-04420",
+      "title": "KVTuner: Sensitivity-Aware Layer-Wise Mixed-Precision KV Cache Quantization",
+      "url": "https://arxiv.org/abs/2502.04420",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "kv-quantization",
+        "mixed-precision"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2502.04420",
+      "note": ""
+    },
+    {
+      "id": "paper-2502-15075",
+      "title": "More for Keys, Less for Values: Adaptive KV Cache Quantization",
+      "url": "https://arxiv.org/abs/2502.15075",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "kv-quantization",
+        "mixed-precision"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2502.15075",
+      "note": ""
+    },
+    {
+      "id": "paper-2503-16257",
+      "title": "Plug-and-Play 1.x-Bit KV Cache Quantization for Video Large Language Models",
+      "url": "https://arxiv.org/abs/2503.16257",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "vlm",
+        "kv-quantization"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2503.16257",
+      "note": ""
+    },
+    {
+      "id": "paper-2503-19950",
+      "title": "LogQuant: Log-Distributed 2-Bit Quantization of KV Cache",
+      "url": "https://arxiv.org/abs/2503.19950",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "kv-quantization"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2503.19950",
+      "note": ""
+    },
+    {
+      "id": "paper-2505-03745",
+      "title": "AccLLM: Accelerating Long-Context LLM Inference via Algorithm-Hardware Co-Design",
+      "url": "https://arxiv.org/abs/2505.03745",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "long-context",
+        "quantization"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2505.03745",
+      "note": ""
+    },
+    {
+      "id": "paper-2508-15601",
+      "title": "Efficient Mixed-Precision Large Language Model Inference with TurboMind",
+      "url": "https://arxiv.org/abs/2508.15601",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "mixed-precision",
+        "serving"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2508.15601",
+      "note": ""
+    },
+    {
+      "id": "paper-2604-04722",
+      "title": "Don't Waste Bits! Adaptive KV-Cache Quantization for Lightweight On-Device LLMs",
+      "url": "https://arxiv.org/abs/2604.04722",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "on-device",
+        "kv-quantization"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2604.04722",
+      "note": ""
+    },
+    {
+      "id": "paper-2602-23200",
+      "title": "InnerQ: Hardware-Aware Tuning-Free Quantization of KV Cache for Large Language Models",
+      "url": "https://arxiv.org/abs/2602.23200",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "kv-quantization",
+        "hardware-aware"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2602.23200",
+      "note": ""
+    },
+    {
+      "id": "paper-2606-20474",
+      "title": "UltraQuant: 4-bit KV Caching for Context-Heavy Agents",
+      "url": "https://arxiv.org/abs/2606.20474",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "kv-quantization",
+        "agent-serving"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2606.20474",
+      "note": ""
+    },
+    {
+      "id": "paper-2606-21842",
+      "title": "Agent-Assisted Side-Channel Attacks on Non-Prefix KV Cache in RAG",
+      "url": "https://arxiv.org/abs/2606.21842",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "kv-cache",
+        "side-channel",
+        "rag"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2606.21842",
+      "note": ""
+    },
+    {
+      "id": "paper-2606-24033",
+      "title": "RoPE-Aware Bit Allocation for KV-Cache Quantization",
+      "url": "https://arxiv.org/abs/2606.24033",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "kv-quantization",
+        "rope"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2606.24033",
+      "note": ""
+    },
+    {
+      "id": "paper-2604-19157",
+      "title": "SAW-INT4: System-Aware 4-Bit KV-Cache Quantization for Real-World LLM Serving",
+      "url": "https://arxiv.org/abs/2604.19157",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "kv-quantization",
+        "serving"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2604.19157",
+      "note": ""
+    },
+    {
+      "id": "paper-2605-17757",
+      "title": "OSCAR: Offline Spectral Covariance-Aware Rotation for 2-bit KV Cache Quantization",
+      "url": "https://arxiv.org/abs/2605.17757",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "kv-quantization",
+        "rotation"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2605.17757",
+      "note": ""
+    },
+    {
+      "id": "paper-1911-02150",
+      "title": "Fast Transformer Decoding: One Write-Head is All You Need",
+      "url": "https://arxiv.org/abs/1911.02150",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "mqa",
+        "attention"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "1911.02150",
+      "note": ""
+    },
+    {
+      "id": "paper-2205-14135",
+      "title": "FlashAttention: Fast and Memory-Efficient Exact Attention with IO-Awareness",
+      "url": "https://arxiv.org/abs/2205.14135",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "attention",
+        "kernel"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2205.14135",
+      "note": ""
+    },
+    {
+      "id": "orca-osdi22",
+      "title": "Orca: A Distributed Serving System for Transformer-Based Generative Models",
+      "url": "https://www.usenix.org/conference/osdi22/presentation/yu",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "serving",
+        "continuous-batching"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "OSDI 2022",
+      "note": "Primary USENIX OSDI 2022 source; arXiv:2206.02658 is unrelated."
+    },
+    {
+      "id": "paper-2305-13245",
+      "title": "GQA: Training Generalized Multi-Query Transformer Models from Multi-Head Checkpoints",
+      "url": "https://arxiv.org/abs/2305.13245",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "gqa",
+        "attention"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2305.13245",
+      "note": ""
+    },
+    {
+      "id": "paper-2305-17118",
+      "title": "Scissorhands: Exploiting the Persistence of Importance Hypothesis for LLM KV Cache Compression",
+      "url": "https://arxiv.org/abs/2305.17118",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "kv-pruning"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2305.17118",
+      "note": ""
+    },
+    {
+      "id": "paper-2306-14048",
+      "title": "H2O: Heavy-Hitter Oracle for Efficient Generative Inference of Large Language Models",
+      "url": "https://arxiv.org/abs/2306.14048",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "kv-pruning",
+        "long-context"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2306.14048",
+      "note": ""
+    },
+    {
+      "id": "paper-2307-08691",
+      "title": "FlashAttention-2: Faster Attention with Better Parallelism and Work Partitioning",
+      "url": "https://arxiv.org/abs/2307.08691",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "attention",
+        "kernel"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2307.08691",
+      "note": ""
+    },
+    {
+      "id": "paper-2309-06180",
+      "title": "Efficient Memory Management for Large Language Model Serving with PagedAttention",
+      "url": "https://arxiv.org/abs/2309.06180",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "paged-attention",
+        "serving"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2309.06180",
+      "note": ""
+    },
+    {
+      "id": "paper-2309-17453",
+      "title": "Efficient Streaming Language Models with Attention Sinks",
+      "url": "https://arxiv.org/abs/2309.17453",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "streamingllm",
+        "attention-sinks"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2309.17453",
+      "note": ""
+    },
+    {
+      "id": "paper-2310-01889",
+      "title": "Ring Attention with Blockwise Transformers for Near-Infinite Context",
+      "url": "https://arxiv.org/abs/2310.01889",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "long-context",
+        "distributed-attention"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2310.01889",
+      "note": ""
+    },
+    {
+      "id": "paper-2402-05099",
+      "title": "Hydragen: High-Throughput LLM Inference with Shared Prefixes",
+      "url": "https://arxiv.org/abs/2402.05099",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "prefix-sharing",
+        "serving"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2402.05099",
+      "note": ""
+    },
+    {
+      "id": "paper-2402-06082",
+      "title": "SubGen: Token Generation in Sublinear Time and Memory",
+      "url": "https://arxiv.org/abs/2402.06082",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "kv-compression"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2402.06082",
+      "note": ""
+    },
+    {
+      "id": "paper-2402-15220",
+      "title": "ChunkAttention: Efficient Self-Attention with Prefix-Aware KV Cache and Two-Phase Partition",
+      "url": "https://arxiv.org/abs/2402.15220",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "prefix-cache",
+        "attention"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2402.15220",
+      "note": ""
+    },
+    {
+      "id": "paper-2404-14469",
+      "title": "SnapKV: LLM Knows What You Are Looking for Before Generation",
+      "url": "https://arxiv.org/abs/2404.14469",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "kv-pruning"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2404.14469",
+      "note": ""
+    },
+    {
+      "id": "paper-2405-04437",
+      "title": "vAttention: Dynamic Memory Management for Serving LLMs without PagedAttention",
+      "url": "https://arxiv.org/abs/2405.04437",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "serving",
+        "virtual-memory"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2405.04437",
+      "note": ""
+    },
+    {
+      "id": "paper-2406-02069",
+      "title": "PyramidKV: Dynamic KV Cache Compression based on Pyramidal Information Funneling",
+      "url": "https://arxiv.org/abs/2406.02069",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "kv-compression"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2406.02069",
+      "note": ""
+    },
+    {
+      "id": "paper-2407-08608",
+      "title": "FlashAttention-3: Fast and Accurate Attention with Asynchrony and Low-Precision",
+      "url": "https://arxiv.org/abs/2407.08608",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "attention",
+        "kernel"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2407.08608",
+      "note": ""
+    },
+    {
+      "id": "paper-2407-17678",
+      "title": "Efficient LLM Training and Serving with Heterogeneous Context Sharding among Attention Heads",
+      "url": "https://arxiv.org/abs/2407.17678",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "sparse-attention",
+        "context-sharding"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2407.17678",
+      "note": ""
+    },
+    {
+      "id": "paper-2408-05646",
+      "title": "Eigen Attention: Attention in Low-Rank Space for KV Cache Compression",
+      "url": "https://arxiv.org/abs/2408.05646",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "low-rank",
+        "kv-compression"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2408.05646",
+      "note": ""
+    },
+    {
+      "id": "paper-2412-03594",
+      "title": "BatchLLM: Optimizing Large Batched LLM Inference with Global Prefix Sharing",
+      "url": "https://arxiv.org/abs/2412.03594",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "batching",
+        "prefix-sharing"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2412.03594",
+      "note": ""
+    },
+    {
+      "id": "paper-2412-10319",
+      "title": "SCBench: A KV Cache-Centric Analysis of Long-Context Methods",
+      "url": "https://arxiv.org/abs/2412.10319",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "benchmark",
+        "kv-cache",
+        "long-context"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2412.10319",
+      "note": ""
+    },
+    {
+      "id": "paper-2501-01005",
+      "title": "FlashInfer: Efficient and Customizable Attention Engine for LLM Inference Serving",
+      "url": "https://arxiv.org/abs/2501.01005",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "attention",
+        "serving",
+        "kernels"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2501.01005",
+      "note": ""
+    },
+    {
+      "id": "paper-2502-04077",
+      "title": "AttentionPredictor: Temporal Pattern Matters for Efficient LLM Inference",
+      "url": "https://arxiv.org/abs/2502.04077",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "kv-compression",
+        "attention"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2502.04077",
+      "note": ""
+    },
+    {
+      "id": "paper-2503-14376",
+      "title": "Tiled Flash Linear Attention: More Efficient Linear RNN and xLSTM Kernels",
+      "url": "https://arxiv.org/abs/2503.14376",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "linear-attention",
+        "kernel"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2503.14376",
+      "note": ""
+    },
+    {
+      "id": "paper-2505-22913",
+      "title": "Mustafar: Promoting Unstructured Sparsity for KV Cache Pruning in LLM Inference",
+      "url": "https://arxiv.org/abs/2505.22913",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "kv-pruning",
+        "sparse-attention"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2505.22913",
+      "note": ""
+    },
+    {
+      "id": "paper-2508-02558",
+      "title": "Sparse-dLLM: Accelerating Diffusion LLMs with Dynamic Cache Eviction",
+      "url": "https://arxiv.org/abs/2508.02558",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "diffusion-lm",
+        "sparse-attention"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2508.02558",
+      "note": ""
+    },
+    {
+      "id": "paper-2508-18224",
+      "title": "Flash Sparse Attention: An Alternative Efficient Implementation of Native Sparse Attention Kernel",
+      "url": "https://arxiv.org/abs/2508.18224",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "sparse-attention",
+        "kernel"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2508.18224",
+      "note": ""
+    },
+    {
+      "id": "paper-2509-04377",
+      "title": "PagedEviction: Structured Block-wise KV Cache Pruning for Efficient LLM Inference",
+      "url": "https://arxiv.org/abs/2509.04377",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "kv-pruning",
+        "paged-cache"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2509.04377",
+      "note": ""
+    },
+    {
+      "id": "paper-2509-05165",
+      "title": "KVCompose: Efficient Structured KV Cache Compression with Composite Tokens",
+      "url": "https://arxiv.org/abs/2509.05165",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "kv-compression"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2509.05165",
+      "note": ""
+    },
+    {
+      "id": "paper-2510-00636",
+      "title": "Expected Attention: KV Cache Compression by Estimating Attention from Future Queries Distribution",
+      "url": "https://arxiv.org/abs/2510.00636",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "kv-compression"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2510.00636",
+      "note": ""
+    },
+    {
+      "id": "paper-2512-12087",
+      "title": "BLASST: Dynamic Blocked Attention Sparsity via Softmax Thresholding",
+      "url": "https://arxiv.org/abs/2512.12087",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "sparse-attention"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2512.12087",
+      "note": ""
+    },
+    {
+      "id": "paper-2601-17702",
+      "title": "S3-Attention: Attention-Aligned Endogenous Retrieval for Memory-Bounded Long-Context Inference",
+      "url": "https://arxiv.org/abs/2601.17702",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "retrieval-attention",
+        "long-context"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2601.17702",
+      "note": ""
+    },
+    {
+      "id": "paper-2602-06072",
+      "title": "PackInfer: Compute- and I/O-Efficient Attention for Batched LLM Inference",
+      "url": "https://arxiv.org/abs/2602.06072",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "attention",
+        "batching",
+        "kernel"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2602.06072",
+      "note": ""
+    },
+    {
+      "id": "paper-2604-07815",
+      "title": "AsyncTLS: Efficient Generative LLM Inference with Asynchronous Two-level Sparse Attention",
+      "url": "https://arxiv.org/abs/2604.07815",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "sparse-attention",
+        "offload"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2604.07815",
+      "note": ""
+    },
+    {
+      "id": "paper-2605-18226",
+      "title": "Context Memorization for Efficient Long Context Generation",
+      "url": "https://arxiv.org/abs/2605.18226",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "long-context",
+        "memory"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2605.18226",
+      "note": ""
+    },
+    {
+      "id": "paper-2606-09079",
+      "title": "FlashMemory-DeepSeek-V4: Lightning Index Ultra-Long Context via Lookahead Sparse Attention",
+      "url": "https://arxiv.org/abs/2606.09079",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "long-context",
+        "sparse-attention"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2606.09079",
+      "note": ""
+    },
+    {
+      "id": "paper-1609-03499",
+      "title": "WaveNet: A Generative Model for Raw Audio",
+      "url": "https://arxiv.org/abs/1609.03499",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "audio",
+        "autoregressive",
+        "vocoder"
+      ],
+      "review_depth": "indexed",
+      "snapshot": "1609.03499",
+      "note": ""
+    },
+    {
+      "id": "paper-1703-10135",
+      "title": "Tacotron: Towards End-to-End Speech Synthesis",
+      "url": "https://arxiv.org/abs/1703.10135",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "tts"
+      ],
+      "review_depth": "indexed",
+      "snapshot": "1703.10135",
+      "note": ""
+    },
+    {
+      "id": "paper-1712-05884",
+      "title": "Natural TTS Synthesis by Conditioning WaveNet on Mel Spectrogram Predictions",
+      "url": "https://arxiv.org/abs/1712.05884",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "tacotron2",
+        "tts"
+      ],
+      "review_depth": "indexed",
+      "snapshot": "1712.05884",
+      "note": ""
+    },
+    {
+      "id": "paper-1802-08435",
+      "title": "Efficient Neural Audio Synthesis",
+      "url": "https://arxiv.org/abs/1802.08435",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "wavernn",
+        "vocoder"
+      ],
+      "review_depth": "indexed",
+      "snapshot": "1802.08435",
+      "note": ""
+    },
+    {
+      "id": "paper-1810-11846",
+      "title": "LPCNet: Improving Neural Speech Synthesis Through Linear Prediction",
+      "url": "https://arxiv.org/abs/1810.11846",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "vocoder",
+        "on-device"
+      ],
+      "review_depth": "indexed",
+      "snapshot": "1810.11846",
+      "note": ""
+    },
+    {
+      "id": "paper-1811-00002",
+      "title": "WaveGlow: A Flow-based Generative Network for Speech Synthesis",
+      "url": "https://arxiv.org/abs/1811.00002",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "vocoder",
+        "flow"
+      ],
+      "review_depth": "indexed",
+      "snapshot": "1811.00002",
+      "note": ""
+    },
+    {
+      "id": "paper-1905-09263",
+      "title": "FastSpeech: Fast, Robust and Controllable Text to Speech",
+      "url": "https://arxiv.org/abs/1905.09263",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "tts",
+        "non-autoregressive"
+      ],
+      "review_depth": "indexed",
+      "snapshot": "1905.09263",
+      "note": ""
+    },
+    {
+      "id": "paper-1910-06711",
+      "title": "MelGAN: Generative Adversarial Networks for Conditional Waveform Synthesis",
+      "url": "https://arxiv.org/abs/1910.06711",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "vocoder",
+        "gan"
+      ],
+      "review_depth": "indexed",
+      "snapshot": "1910.06711",
+      "note": ""
+    },
+    {
+      "id": "paper-1910-11480",
+      "title": "Parallel WaveGAN: A Fast Waveform Generation Model Based on Generative Adversarial Networks",
+      "url": "https://arxiv.org/abs/1910.11480",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "vocoder",
+        "gan"
+      ],
+      "review_depth": "indexed",
+      "snapshot": "1910.11480",
+      "note": ""
+    },
+    {
+      "id": "paper-2002-02562",
+      "title": "Transformer Transducer: A Streamable Speech Recognition Model with Transformer Encoders and RNN-T Loss",
+      "url": "https://arxiv.org/abs/2002.02562",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "asr",
+        "streaming",
+        "rnnt"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2002.02562",
+      "note": ""
+    },
+    {
+      "id": "paper-2005-08100",
+      "title": "Conformer: Convolution-augmented Transformer for Speech Recognition",
+      "url": "https://arxiv.org/abs/2005.08100",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "asr",
+        "conformer"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2005.08100",
+      "note": ""
+    },
+    {
+      "id": "paper-2005-11129",
+      "title": "Glow-TTS: A Generative Flow for Text-to-Speech via Monotonic Alignment Search",
+      "url": "https://arxiv.org/abs/2005.11129",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "tts",
+        "flow"
+      ],
+      "review_depth": "indexed",
+      "snapshot": "2005.11129",
+      "note": ""
+    },
+    {
+      "id": "paper-2006-04558",
+      "title": "FastSpeech 2: Fast and High-Quality End-to-End Text to Speech",
+      "url": "https://arxiv.org/abs/2006.04558",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "tts",
+        "non-autoregressive"
+      ],
+      "review_depth": "indexed",
+      "snapshot": "2006.04558",
+      "note": ""
+    },
+    {
+      "id": "paper-2006-11477",
+      "title": "wav2vec 2.0: A Framework for Self-Supervised Learning of Speech Representations",
+      "url": "https://arxiv.org/abs/2006.11477",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "asr",
+        "speech-encoder"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2006.11477",
+      "note": ""
+    },
+    {
+      "id": "paper-2009-00713",
+      "title": "WaveGrad: Estimating Gradients for Waveform Generation",
+      "url": "https://arxiv.org/abs/2009.00713",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "vocoder",
+        "diffusion"
+      ],
+      "review_depth": "indexed",
+      "snapshot": "2009.00713",
+      "note": ""
+    },
+    {
+      "id": "paper-2009-09761",
+      "title": "DiffWave: A Versatile Diffusion Model for Audio Synthesis",
+      "url": "https://arxiv.org/abs/2009.09761",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "audio",
+        "diffusion",
+        "vocoder"
+      ],
+      "review_depth": "indexed",
+      "snapshot": "2009.09761",
+      "note": ""
+    },
+    {
+      "id": "paper-2010-05646",
+      "title": "HiFi-GAN: Generative Adversarial Networks for Efficient and High Fidelity Speech Synthesis",
+      "url": "https://arxiv.org/abs/2010.05646",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "vocoder",
+        "gan"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2010.05646",
+      "note": ""
+    },
+    {
+      "id": "paper-2105-06337",
+      "title": "Grad-TTS: A Diffusion Probabilistic Model for Text-to-Speech",
+      "url": "https://arxiv.org/abs/2105.06337",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "tts",
+        "diffusion"
+      ],
+      "review_depth": "indexed",
+      "snapshot": "2105.06337",
+      "note": ""
+    },
+    {
+      "id": "paper-2106-06103",
+      "title": "Conditional Variational Autoencoder with Adversarial Learning for End-to-End Text-to-Speech",
+      "url": "https://arxiv.org/abs/2106.06103",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "vits",
+        "tts"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2106.06103",
+      "note": ""
+    },
+    {
+      "id": "paper-2106-07447",
+      "title": "HuBERT: Self-Supervised Speech Representation Learning by Masked Prediction of Hidden Units",
+      "url": "https://arxiv.org/abs/2106.07447",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "asr",
+        "speech-encoder"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2106.07447",
+      "note": ""
+    },
+    {
+      "id": "paper-2106-07889",
+      "title": "UnivNet: A Neural Vocoder with Multi-Resolution Spectrogram Discriminators for High-Fidelity Waveform Generation",
+      "url": "https://arxiv.org/abs/2106.07889",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "vocoder"
+      ],
+      "review_depth": "indexed",
+      "snapshot": "2106.07889",
+      "note": ""
+    },
+    {
+      "id": "paper-2107-03312",
+      "title": "SoundStream: An End-to-End Neural Audio Codec",
+      "url": "https://arxiv.org/abs/2107.03312",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "audio-codec",
+        "rvq",
+        "streaming"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2107.03312",
+      "note": ""
+    },
+    {
+      "id": "paper-2110-13900",
+      "title": "WavLM: Large-Scale Self-Supervised Pre-Training for Full Stack Speech Processing",
+      "url": "https://arxiv.org/abs/2110.13900",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "speech-encoder",
+        "asr"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2110.13900",
+      "note": ""
+    },
+    {
+      "id": "paper-2203-02395",
+      "title": "iSTFTNet: Fast and Lightweight Mel-Spectrogram Vocoder Incorporating Inverse Short-Time Fourier Transform",
+      "url": "https://arxiv.org/abs/2203.02395",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "vocoder",
+        "istft"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2203.02395",
+      "note": ""
+    },
+    {
+      "id": "paper-2205-04421",
+      "title": "NaturalSpeech: End-to-End Text to Speech Synthesis with Human-Level Quality",
+      "url": "https://arxiv.org/abs/2205.04421",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "tts"
+      ],
+      "review_depth": "indexed",
+      "snapshot": "2205.04421",
+      "note": ""
+    },
+    {
+      "id": "paper-2206-04658",
+      "title": "BigVGAN: A Universal Neural Vocoder with Large-Scale Training",
+      "url": "https://arxiv.org/abs/2206.04658",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "vocoder",
+        "gan"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2206.04658",
+      "note": ""
+    },
+    {
+      "id": "paper-2206-08317",
+      "title": "Paraformer: Fast and Accurate Parallel Transformer for Non-autoregressive End-to-End Speech Recognition",
+      "url": "https://arxiv.org/abs/2206.08317",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "asr",
+        "non-autoregressive"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2206.08317",
+      "note": ""
+    },
+    {
+      "id": "paper-2209-03143",
+      "title": "AudioLM: a Language Modeling Approach to Audio Generation",
+      "url": "https://arxiv.org/abs/2209.03143",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "audio-lm",
+        "codec-tokens"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2209.03143",
+      "note": ""
+    },
+    {
+      "id": "paper-2209-15352",
+      "title": "AudioGen: Textually Guided Audio Generation",
+      "url": "https://arxiv.org/abs/2209.15352",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "audio-generation",
+        "codec-tokens"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2209.15352",
+      "note": ""
+    },
+    {
+      "id": "paper-2210-13438",
+      "title": "High Fidelity Neural Audio Compression",
+      "url": "https://arxiv.org/abs/2210.13438",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "encodec",
+        "audio-codec"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2210.13438",
+      "note": ""
+    },
+    {
+      "id": "paper-2212-04356",
+      "title": "Robust Speech Recognition via Large-Scale Weak Supervision",
+      "url": "https://arxiv.org/abs/2212.04356",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "whisper",
+        "asr"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2212.04356",
+      "note": ""
+    },
+    {
+      "id": "paper-2301-02111",
+      "title": "Neural Codec Language Models are Zero-Shot Text to Speech Synthesizers",
+      "url": "https://arxiv.org/abs/2301.02111",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "valle",
+        "tts",
+        "audio-codec"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2301.02111",
+      "note": ""
+    },
+    {
+      "id": "paper-2304-09116",
+      "title": "NaturalSpeech 2: Latent Diffusion Models are Natural and Zero-Shot Speech and Singing Synthesizers",
+      "url": "https://arxiv.org/abs/2304.09116",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "tts",
+        "diffusion"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2304.09116",
+      "note": ""
+    },
+    {
+      "id": "paper-2305-09636",
+      "title": "SoundStorm: Efficient Parallel Audio Generation",
+      "url": "https://arxiv.org/abs/2305.09636",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "audio-generation",
+        "parallel-codebooks"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2305.09636",
+      "note": ""
+    },
+    {
+      "id": "paper-2306-00814",
+      "title": "Vocos: Closing the Gap between Time-Domain and Fourier-Based Neural Vocoders for High-Quality Audio Synthesis",
+      "url": "https://arxiv.org/abs/2306.00814",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "vocoder",
+        "fourier"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2306.00814",
+      "note": ""
+    },
+    {
+      "id": "paper-2306-05284",
+      "title": "Simple and Controllable Music Generation",
+      "url": "https://arxiv.org/abs/2306.05284",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "musicgen",
+        "audio-lm",
+        "delay-pattern"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2306.05284",
+      "note": ""
+    },
+    {
+      "id": "paper-2306-06546",
+      "title": "High-Fidelity Audio Compression with Improved RVQGAN",
+      "url": "https://arxiv.org/abs/2306.06546",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "dac",
+        "audio-codec"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2306.06546",
+      "note": ""
+    },
+    {
+      "id": "paper-2306-15687",
+      "title": "Voicebox: Text-Guided Multilingual Universal Speech Generation at Scale",
+      "url": "https://arxiv.org/abs/2306.15687",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "speech-generation",
+        "flow"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2306.15687",
+      "note": ""
+    },
+    {
+      "id": "paper-2308-11596",
+      "title": "SeamlessM4T: Massively Multilingual & Multimodal Machine Translation",
+      "url": "https://arxiv.org/abs/2308.11596",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "speech-to-speech",
+        "asr",
+        "translation"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2308.11596",
+      "note": ""
+    },
+    {
+      "id": "paper-2308-16692",
+      "title": "SpeechTokenizer: Unified Speech Tokenizer for Speech Language Models",
+      "url": "https://arxiv.org/abs/2308.16692",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "speech-tokenizer",
+        "audio-codec"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2308.16692",
+      "note": ""
+    },
+    {
+      "id": "paper-2309-03199",
+      "title": "Matcha-TTS: A Fast TTS Architecture with Conditional Flow Matching",
+      "url": "https://arxiv.org/abs/2309.03199",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "tts",
+        "flow-matching"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2309.03199",
+      "note": ""
+    },
+    {
+      "id": "paper-2309-07405",
+      "title": "FunCodec: A Fundamental, Reproducible and Integrable Open-source Toolkit for Neural Speech Codec",
+      "url": "https://arxiv.org/abs/2309.07405",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "audio-codec",
+        "toolkit"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2309.07405",
+      "note": ""
+    },
+    {
+      "id": "paper-2309-15505",
+      "title": "Finite Scalar Quantization: VQ-VAE Made Simple",
+      "url": "https://arxiv.org/abs/2309.15505",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "fsq",
+        "quantization",
+        "audio-codec"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2309.15505",
+      "note": ""
+    },
+    {
+      "id": "paper-2310-00014",
+      "title": "Fewer-token Neural Speech Codec with Time-invariant Codes",
+      "url": "https://arxiv.org/abs/2310.00014",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "audio-codec",
+        "tts"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2310.00014",
+      "note": ""
+    },
+    {
+      "id": "paper-2310-13289",
+      "title": "SALMONN: Towards Generic Hearing Abilities for Large Language Models",
+      "url": "https://arxiv.org/abs/2310.13289",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "audio-language",
+        "multimodal"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2310.13289",
+      "note": ""
+    },
+    {
+      "id": "paper-2311-00430",
+      "title": "Distil-Whisper: Robust Knowledge Distillation via Large-Scale Pseudo Labelling",
+      "url": "https://arxiv.org/abs/2311.00430",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "asr",
+        "distillation"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2311.00430",
+      "note": ""
+    },
+    {
+      "id": "paper-2312-05187",
+      "title": "Seamless: Multilingual Expressive and Streaming Speech Translation",
+      "url": "https://arxiv.org/abs/2312.05187",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "speech-to-speech",
+        "streaming"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2312.05187",
+      "note": ""
+    },
+    {
+      "id": "paper-2312-17279",
+      "title": "Stateful Conformer with Cache-based Inference for Streaming Automatic Speech Recognition",
+      "url": "https://arxiv.org/abs/2312.17279",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "asr",
+        "streaming",
+        "cache"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2312.17279",
+      "note": ""
+    },
+    {
+      "id": "paper-2401-04577",
+      "title": "MAGNeT: Masked Audio Generation using a Single Non-Autoregressive Transformer",
+      "url": "https://arxiv.org/abs/2401.04577",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "audio-generation",
+        "non-autoregressive"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2401.04577",
+      "note": ""
+    },
+    {
+      "id": "paper-2402-01831",
+      "title": "Audio Flamingo: A Novel Audio Language Model with Few-Shot Learning and Dialogue Abilities",
+      "url": "https://arxiv.org/abs/2402.01831",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "audio-language",
+        "multimodal"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2402.01831",
+      "note": ""
+    },
+    {
+      "id": "paper-2402-13236",
+      "title": "Towards Audio Language Modeling: An Overview",
+      "url": "https://arxiv.org/abs/2402.13236",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "audio-language",
+        "survey",
+        "codec"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2402.13236",
+      "note": ""
+    },
+    {
+      "id": "paper-2404-02781",
+      "title": "CLaM-TTS: Improving Neural Codec Language Model for Zero-Shot Text-to-Speech",
+      "url": "https://arxiv.org/abs/2404.02781",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "tts",
+        "codec-lm"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2404.02781",
+      "note": ""
+    },
+    {
+      "id": "paper-2406-18009",
+      "title": "E2 TTS: Embarrassingly Easy Fully Non-Autoregressive Zero-Shot TTS",
+      "url": "https://arxiv.org/abs/2406.18009",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "tts",
+        "flow-matching"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2406.18009",
+      "note": ""
+    },
+    {
+      "id": "paper-2407-10759",
+      "title": "Qwen2-Audio Technical Report",
+      "url": "https://arxiv.org/abs/2407.10759",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "audio-language",
+        "multimodal"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2407.10759",
+      "note": ""
+    },
+    {
+      "id": "paper-2408-16532",
+      "title": "WavTokenizer: an Efficient Acoustic Discrete Codec Tokenizer for Audio Language Modeling",
+      "url": "https://arxiv.org/abs/2408.16532",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "audio-codec",
+        "low-token-rate"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2408.16532",
+      "note": ""
+    },
+    {
+      "id": "paper-2410-00037",
+      "title": "Moshi: a Speech-Text Foundation Model for Real-Time Dialogue",
+      "url": "https://arxiv.org/abs/2410.00037",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "speech-to-speech",
+        "streaming",
+        "mimi"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2410.00037",
+      "note": ""
+    },
+    {
+      "id": "paper-2410-06885",
+      "title": "F5-TTS: A Fairytaler that Fakes Fluent and Faithful Speech with Flow Matching",
+      "url": "https://arxiv.org/abs/2410.06885",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "tts",
+        "flow-matching"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2410.06885",
+      "note": ""
+    },
+    {
+      "id": "paper-2411-18803",
+      "title": "TS3-Codec: Transformer-Based Simple Streaming Single Codec",
+      "url": "https://arxiv.org/abs/2411.18803",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "audio-codec",
+        "streaming"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2411.18803",
+      "note": ""
+    },
+    {
+      "id": "paper-2411-19842",
+      "title": "Scaling Transformers for Low-Bitrate High-Quality Speech Coding",
+      "url": "https://arxiv.org/abs/2411.19842",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "audio-codec",
+        "fsq"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2411.19842",
+      "note": ""
+    },
+    {
+      "id": "paper-2503-01710",
+      "title": "Spark-TTS: An Efficient LLM-Based Text-to-Speech Model with Single-Stream Decoupled Speech Tokens",
+      "url": "https://arxiv.org/abs/2503.01710",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "tts",
+        "codec-lm"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2503.01710",
+      "note": ""
+    },
+    {
+      "id": "paper-2503-20215",
+      "title": "Qwen2.5-Omni Technical Report",
+      "url": "https://arxiv.org/abs/2503.20215",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "omni",
+        "speech",
+        "streaming"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2503.20215",
+      "note": ""
+    },
+    {
+      "id": "paper-2504-10344",
+      "title": "ALMTokenizer: A Low-bitrate and Semantic-rich Audio Codec Tokenizer for Audio Language Modeling",
+      "url": "https://arxiv.org/abs/2504.10344",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "audio-codec",
+        "semantic-tokens"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2504.10344",
+      "note": ""
+    },
+    {
+      "id": "paper-2504-12339",
+      "title": "GOAT-TTS: LLM-based Text-To-Speech Generation Optimized via a Dual-Branch Architecture",
+      "url": "https://arxiv.org/abs/2504.12339",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "tts",
+        "multi-token"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2504.12339",
+      "note": ""
+    },
+    {
+      "id": "paper-2506-10274",
+      "title": "Discrete Audio Tokens: More Than a Survey!",
+      "url": "https://arxiv.org/abs/2506.10274",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "audio-codec",
+        "benchmark",
+        "survey"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2506.10274",
+      "note": ""
+    },
+    {
+      "id": "paper-2507-12197",
+      "title": "Quantize More, Lose Less: Autoregressive Generation from Residually Quantized Speech Representations",
+      "url": "https://arxiv.org/abs/2507.12197",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "tts",
+        "audio-codec",
+        "parallel-codebooks"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2507.12197",
+      "note": ""
+    },
+    {
+      "id": "paper-2507-18897",
+      "title": "HH-Codec: High Compression High-fidelity Discrete Neural Codec for Spoken Language Modeling",
+      "url": "https://arxiv.org/abs/2507.18897",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "audio-codec"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2507.18897",
+      "note": ""
+    },
+    {
+      "id": "paper-2509-02020",
+      "title": "FireRedTTS-2: Towards Long Conversational Speech Generation for Podcast and Chatbot",
+      "url": "https://arxiv.org/abs/2509.02020",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "tts",
+        "dialogue",
+        "streaming"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2509.02020",
+      "note": ""
+    },
+    {
+      "id": "paper-2510-16841",
+      "title": "SAC: Neural Speech Codec with Semantic-Acoustic Dual-Stream Quantization",
+      "url": "https://arxiv.org/abs/2510.16841",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "audio-codec",
+        "semantic-acoustic"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2510.16841",
+      "note": ""
+    },
+    {
+      "id": "paper-2601-15621",
+      "title": "Qwen3-TTS Technical Report",
+      "url": "https://arxiv.org/abs/2601.15621",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "tts",
+        "dual-track",
+        "streaming"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2601.15621",
+      "note": ""
+    },
+    {
+      "id": "paper-2601-20094",
+      "title": "T-Mimi: A Transformer-based Mimi Decoder for Real-Time On-Phone TTS",
+      "url": "https://arxiv.org/abs/2601.20094",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "audio-codec",
+        "on-device",
+        "quantization"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2601.20094",
+      "note": ""
+    },
+    {
+      "id": "paper-2601-23174",
+      "title": "Beyond Fixed Frames: Dynamic Character-Aligned Speech Tokenization",
+      "url": "https://arxiv.org/abs/2601.23174",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "speech-tokenizer",
+        "variable-rate"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2601.23174",
+      "note": ""
+    },
+    {
+      "id": "paper-2602-04683",
+      "title": "UniAudio 2.0: A Unified Audio Language Model with Text-Aligned Factorized Audio Tokenization",
+      "url": "https://arxiv.org/abs/2602.04683",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "audio-language",
+        "audio-codec"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2602.04683",
+      "note": ""
+    },
+    {
+      "id": "paper-2602-10934",
+      "title": "MOSS-Audio-Tokenizer: Scaling Audio Tokenizers for Future Audio Foundation Models",
+      "url": "https://arxiv.org/abs/2602.10934",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "audio-codec",
+        "transformer"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2602.10934",
+      "note": ""
+    },
+    {
+      "id": "paper-2604-12438",
+      "title": "An Ultra-Low Latency, End-to-End Streaming Speech Synthesis Architecture via Block-Wise Generation and Depth-Wise Codec Decoding",
+      "url": "https://arxiv.org/abs/2604.12438",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "tts",
+        "streaming",
+        "low-latency"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2604.12438",
+      "note": ""
+    },
+    {
+      "id": "paper-2604-14493",
+      "title": "Pushing the Limits of On-Device Streaming ASR: A Compact, High-Accuracy English Model for Low-Latency Inference",
+      "url": "https://arxiv.org/abs/2604.14493",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "asr",
+        "on-device",
+        "quantization"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2604.14493",
+      "note": ""
+    },
+    {
+      "id": "paper-2604-17852",
+      "title": "LLM-Codec: Neural Audio Codec Meets Language Model Objectives",
+      "url": "https://arxiv.org/abs/2604.17852",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "audio-codec",
+        "multi-token",
+        "semantic"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2604.17852",
+      "note": ""
+    },
+    {
+      "id": "repo-fish-speech",
+      "title": "Fish Speech repository",
+      "url": "https://github.com/fishaudio/fish-speech",
+      "kind": "repository",
+      "owner": "Fish Audio",
+      "topics": [
+        "tts",
+        "audio-lm",
+        "codec"
+      ],
+      "review_depth": "screened",
+      "snapshot": "",
+      "note": ""
+    },
+    {
+      "id": "repo-moshi",
+      "title": "Moshi repository",
+      "url": "https://github.com/kyutai-labs/moshi",
+      "kind": "repository",
+      "owner": "Kyutai",
+      "topics": [
+        "streaming-speech",
+        "codec",
+        "duplex"
+      ],
+      "review_depth": "screened",
+      "snapshot": "",
+      "note": ""
+    },
+    {
+      "id": "repo-encodec",
+      "title": "EnCodec repository",
+      "url": "https://github.com/facebookresearch/encodec",
+      "kind": "repository",
+      "owner": "Meta",
+      "topics": [
+        "audio-codec"
+      ],
+      "review_depth": "screened",
+      "snapshot": "",
+      "note": ""
+    },
+    {
+      "id": "repo-dac",
+      "title": "Descript Audio Codec repository",
+      "url": "https://github.com/descriptinc/descript-audio-codec",
+      "kind": "repository",
+      "owner": "Descript",
+      "topics": [
+        "audio-codec"
+      ],
+      "review_depth": "screened",
+      "snapshot": "",
+      "note": ""
+    },
+    {
+      "id": "repo-bigvgan",
+      "title": "BigVGAN repository",
+      "url": "https://github.com/NVIDIA/BigVGAN",
+      "kind": "repository",
+      "owner": "NVIDIA",
+      "topics": [
+        "vocoder"
+      ],
+      "review_depth": "screened",
+      "snapshot": "",
+      "note": ""
+    },
+    {
+      "id": "repo-vocos",
+      "title": "Vocos repository",
+      "url": "https://github.com/gemelo-ai/vocos",
+      "kind": "repository",
+      "owner": "gemelo-ai",
+      "topics": [
+        "vocoder",
+        "fourier"
+      ],
+      "review_depth": "screened",
+      "snapshot": "",
+      "note": ""
+    },
+    {
+      "id": "repo-f5tts",
+      "title": "F5-TTS repository",
+      "url": "https://github.com/SWivid/F5-TTS",
+      "kind": "repository",
+      "owner": "SWivid",
+      "topics": [
+        "tts",
+        "flow-matching"
+      ],
+      "review_depth": "screened",
+      "snapshot": "",
+      "note": ""
+    },
+    {
+      "id": "repo-whisper",
+      "title": "Whisper repository",
+      "url": "https://github.com/openai/whisper",
+      "kind": "repository",
+      "owner": "OpenAI",
+      "topics": [
+        "asr",
+        "whisper"
+      ],
+      "review_depth": "screened",
+      "snapshot": "",
+      "note": ""
+    },
+    {
+      "id": "repo-moonshine",
+      "title": "Moonshine repository",
+      "url": "https://github.com/usefulsensors/moonshine",
+      "kind": "repository",
+      "owner": "Useful Sensors",
+      "topics": [
+        "asr",
+        "on-device"
+      ],
+      "review_depth": "screened",
+      "snapshot": "",
+      "note": ""
+    },
+    {
+      "id": "repo-nemo",
+      "title": "NVIDIA NeMo speech repository",
+      "url": "https://github.com/NVIDIA/NeMo",
+      "kind": "repository",
+      "owner": "NVIDIA",
+      "topics": [
+        "asr",
+        "tts",
+        "parakeet",
+        "canary"
+      ],
+      "review_depth": "screened",
+      "snapshot": "",
+      "note": ""
+    },
+    {
+      "id": "repo-qwen-audio",
+      "title": "Qwen Audio repository",
+      "url": "https://github.com/QwenLM/Qwen-Audio",
+      "kind": "repository",
+      "owner": "Qwen",
+      "topics": [
+        "audio-language"
+      ],
+      "review_depth": "screened",
+      "snapshot": "",
+      "note": ""
+    },
+    {
+      "id": "repo-qwen-omni",
+      "title": "Qwen2.5-Omni repository",
+      "url": "https://github.com/QwenLM/Qwen2.5-Omni",
+      "kind": "repository",
+      "owner": "Qwen",
+      "topics": [
+        "omni",
+        "speech"
+      ],
+      "review_depth": "screened",
+      "snapshot": "",
+      "note": ""
+    },
+    {
+      "id": "repo-stable-audio-tools",
+      "title": "Stable Audio Tools repository",
+      "url": "https://github.com/Stability-AI/stable-audio-tools",
+      "kind": "repository",
+      "owner": "Stability AI",
+      "topics": [
+        "audio-generation",
+        "diffusion"
+      ],
+      "review_depth": "indexed",
+      "snapshot": "",
+      "note": ""
+    },
+    {
+      "id": "repo-audiocraft",
+      "title": "AudioCraft repository",
+      "url": "https://github.com/facebookresearch/audiocraft",
+      "kind": "repository",
+      "owner": "Meta",
+      "topics": [
+        "musicgen",
+        "audiogen",
+        "encodec"
+      ],
+      "review_depth": "screened",
+      "snapshot": "",
+      "note": ""
+    },
+    {
+      "id": "repo-funcodec",
+      "title": "FunCodec repository",
+      "url": "https://github.com/alibaba-damo-academy/FunCodec",
+      "kind": "repository",
+      "owner": "Alibaba",
+      "topics": [
+        "audio-codec"
+      ],
+      "review_depth": "screened",
+      "snapshot": "",
+      "note": ""
+    },
+    {
+      "id": "paper-2106-09685",
+      "title": "LoRA: Low-Rank Adaptation of Large Language Models",
+      "url": "https://arxiv.org/abs/2106.09685",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "lora",
+        "training",
+        "parameter-efficient"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2106.09685",
+      "note": ""
+    },
+    {
+      "id": "dropbox-hqq-repo",
+      "title": "Official HQQ implementation",
+      "url": "https://github.com/dropbox/hqq",
+      "kind": "repository",
+      "owner": "Dropbox",
+      "topics": [
+        "weight-quantization",
+        "hqq"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2026-06-24",
+      "note": "Primary HQQ implementation/source; no MLX support claim by itself."
+    },
+    {
+      "id": "prompt-lookup-decoding-repo",
+      "title": "Prompt Lookup Decoding repository",
+      "url": "https://github.com/apoorvumang/prompt-lookup-decoding",
+      "kind": "repository",
+      "owner": "Apoorv Saxena",
+      "topics": [
+        "prompt-lookup",
+        "speculative-decoding"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2026-06-24",
+      "note": "Primary PLD source; not an MLX implementation by itself."
+    },
+    {
+      "id": "paper-2601-19139",
+      "title": "Native LLM and MLLM Inference at Scale on Apple Silicon",
+      "url": "https://arxiv.org/abs/2601.19139",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "mlx",
+        "serving",
+        "continuous-batching",
+        "prefix-cache",
+        "vlm"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2601.19139",
+      "note": "Used for vllm-mlx source-reported throughput and repeated-media cache ranges; not generalized beyond its benchmark setup."
+    },
+    {
+      "id": "apple-mlx-m5-blog",
+      "title": "Exploring LLMs with MLX and the Neural Accelerators in the M5 GPU",
+      "url": "https://machinelearning.apple.com/research/exploring-llms-mlx-m5",
+      "kind": "technical-blog",
+      "owner": "Apple Machine Learning Research",
+      "topics": [
+        "mlx",
+        "apple-silicon",
+        "llm",
+        "runtime"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2026-06-24",
+      "note": "Practitioner context for MLX on Apple Silicon; not a validation substitute."
+    },
+    {
+      "id": "apple-wwdc25-mlx",
+      "title": "Get started with MLX for Apple silicon",
+      "url": "https://developer.apple.com/videos/play/wwdc2025/315/",
+      "kind": "technical-blog",
+      "owner": "Apple Developer",
+      "topics": [
+        "mlx",
+        "apple-silicon",
+        "lazy-evaluation",
+        "compile"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2026-06-24",
+      "note": "Developer-session context for MLX concepts; cite official MLX docs for API specifics."
+    },
+    {
+      "id": "vllm-blog-anatomy",
+      "title": "Inside vLLM: Anatomy of a High-Throughput LLM Inference System",
+      "url": "https://vllm.ai/blog/2025-09-05-anatomy-of-vllm",
+      "kind": "technical-blog",
+      "owner": "vLLM project",
+      "topics": [
+        "serving",
+        "paged-attention",
+        "continuous-batching",
+        "prefix-cache",
+        "speculative-decoding"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2026-06-24",
+      "note": "Serving-system practitioner context; not MLX-specific implementation evidence."
+    },
+    {
+      "id": "vllm-doc-prefix-caching",
+      "title": "vLLM automatic prefix caching documentation",
+      "url": "https://docs.vllm.ai/en/stable/design/prefix_caching/",
+      "kind": "official-doc",
+      "owner": "vLLM project",
+      "topics": [
+        "prefix-cache",
+        "serving",
+        "kv-cache"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2026-06-24",
+      "note": "General serving reference for prefix-cache behavior; not MLX framework support."
+    },
+    {
+      "id": "sankalp-prompt-cache-blog",
+      "title": "How prompt caching works - Paged Attention and Automatic Prefix Caching",
+      "url": "https://sankalp.bearblog.dev/how-prompt-caching-works/",
+      "kind": "technical-blog",
+      "owner": "Sankalp Mukim",
+      "topics": [
+        "prompt-cache",
+        "paged-attention",
+        "serving"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2026-06-24",
+      "note": "Practitioner explanation for prompt-cache mechanics; validate with implementation sources."
+    },
+    {
+      "id": "nvidia-nvfp4-blog",
+      "title": "Introducing NVFP4 for Efficient and Accurate Low-Precision Inference",
+      "url": "https://developer.nvidia.com/blog/introducing-nvfp4-for-efficient-and-accurate-low-precision-inference/",
+      "kind": "technical-blog",
+      "owner": "NVIDIA",
+      "topics": [
+        "nvfp4",
+        "quantization",
+        "low-bit-formats"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2026-06-24",
+      "note": "Format background for NVFP4; hardware claims are NVIDIA-specific and not MLX proof."
+    },
+    {
+      "id": "spheron-nvfp4-mxfp4-guide",
+      "title": "NVFP4 vs MXFP4: 4-Bit Quantization Format Decision Guide",
+      "url": "https://www.spheron.network/blog/nvfp4-vs-mxfp4-gpu-cloud-4bit-quantization-guide/",
+      "kind": "technical-blog",
+      "owner": "Spheron",
+      "topics": [
+        "nvfp4",
+        "mxfp4",
+        "quantization",
+        "low-bit-formats"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2026-06-24",
+      "note": "Practitioner format comparison; use official MLX docs for supported modes."
+    },
+    {
+      "review_depth": "synthesized",
+      "snapshot": "2026-06-24",
+      "note": "Used only to prove the segmented_mm primitive exists in documented MLX C++; Python and MoE usage still require target validation.",
+      "id": "mlx-doc-cpp-ops",
+      "title": "MLX C++ operations reference",
+      "url": "https://ml-explore.github.io/mlx/build/html/cpp/ops.html",
+      "kind": "official-doc",
+      "owner": "Apple MLX",
+      "topics": [
+        "mlx",
+        "cpp",
+        "kernels",
+        "segmented-mm"
+      ]
+    },
+    {
+      "review_depth": "synthesized",
+      "snapshot": "2026-06-24",
+      "note": "Runtime guide for stream overlap; not a speedup claim without local timeline evidence.",
+      "id": "mlx-doc-streams",
+      "title": "MLX using streams documentation",
+      "url": "https://ml-explore.github.io/mlx/build/html/usage/using_streams.html",
+      "kind": "official-doc",
+      "owner": "Apple MLX",
+      "topics": [
+        "mlx",
+        "streams",
+        "runtime"
+      ]
+    },
+    {
+      "review_depth": "synthesized",
+      "snapshot": "2026-06-24",
+      "note": "Documents asynchronous evaluation API; use with explicit synchronization and determinism gates.",
+      "id": "mlx-doc-async-eval",
+      "title": "MLX async_eval API",
+      "url": "https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.async_eval.html",
+      "kind": "official-doc",
+      "owner": "Apple MLX",
+      "topics": [
+        "mlx",
+        "async-eval",
+        "runtime"
+      ]
+    },
+    {
+      "review_depth": "synthesized",
+      "snapshot": "2026-06-24",
+      "note": "Custom kernels require a reference fallback, shape/dtype coverage, and profile proof.",
+      "id": "mlx-doc-fast-metal-kernel",
+      "title": "MLX fast Metal kernel API",
+      "url": "https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.fast.metal_kernel.html",
+      "kind": "official-doc",
+      "owner": "Apple MLX",
+      "topics": [
+        "mlx",
+        "metal",
+        "custom-kernels"
+      ]
+    },
+    {
+      "review_depth": "synthesized",
+      "snapshot": "2026-06-24",
+      "note": "API reference only; custom functions are not a porting shortcut.",
+      "id": "mlx-doc-custom-function",
+      "title": "MLX custom_function API",
+      "url": "https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.custom_function.html",
+      "kind": "official-doc",
+      "owner": "Apple MLX",
+      "topics": [
+        "mlx",
+        "custom-function",
+        "autograd"
+      ]
+    },
+    {
+      "review_depth": "synthesized",
+      "snapshot": "2c008fd0d8f1d1a3e69a54c4482f18a1068f1d48",
+      "note": "Implementation evidence for SwitchLinear/SwitchGLU-style expert dispatch; check installed revision before use.",
+      "id": "mlx-lm-switch-layers",
+      "title": "MLX-LM Switch/MoE layers implementation",
+      "url": "https://github.com/ml-explore/mlx-lm/blob/main/mlx_lm/models/switch_layers.py",
+      "kind": "source-code",
+      "owner": "Apple MLX",
+      "topics": [
+        "mlx-lm",
+        "moe",
+        "gather-mm",
+        "gather-qmm"
+      ]
+    },
+    {
+      "review_depth": "synthesized",
+      "snapshot": "2026-06-24",
+      "note": "Open proposal with reported speedups; keep experimental until merged and reproduced locally.",
+      "id": "mlx-lm-issue-956",
+      "title": "MLX-LM MoE gate/up fusion proposal",
+      "url": "https://github.com/ml-explore/mlx-lm/issues/956",
+      "kind": "issue-report",
+      "owner": "Apple MLX",
+      "topics": [
+        "mlx-lm",
+        "moe",
+        "fusion",
+        "quantization"
+      ]
+    },
+    {
+      "review_depth": "synthesized",
+      "snapshot": "2211.15841",
+      "note": "Research context for block-sparse MoE; not evidence of MLX inference support.",
+      "id": "paper-2211-15841",
+      "title": "MegaBlocks: Efficient Sparse Training with Mixture-of-Experts",
+      "url": "https://arxiv.org/abs/2211.15841",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "moe",
+        "block-sparse",
+        "training"
+      ]
+    },
+    {
+      "review_depth": "synthesized",
+      "snapshot": "2026-06-24",
+      "note": "Landing documentation for MLX-Audio model and API surfaces.",
+      "id": "mlx-audio-docs",
+      "title": "MLX-Audio documentation",
+      "url": "https://blaizzy.github.io/mlx-audio/",
+      "kind": "official-doc",
+      "owner": "Blaizzy",
+      "topics": [
+        "mlx-audio",
+        "audio",
+        "tts",
+        "stt"
+      ]
+    },
+    {
+      "review_depth": "synthesized",
+      "snapshot": "2026-06-24",
+      "note": "Documents CLI, Python, API, and WebSocket streaming surfaces plus chunk-size trade-offs.",
+      "id": "mlx-audio-streaming-guide",
+      "title": "MLX-Audio streaming audio guide",
+      "url": "https://blaizzy.github.io/mlx-audio/guides/streaming/",
+      "kind": "official-doc",
+      "owner": "Blaizzy",
+      "topics": [
+        "mlx-audio",
+        "streaming",
+        "tts",
+        "stt"
+      ]
+    },
+    {
+      "review_depth": "synthesized",
+      "snapshot": "2026-06-24",
+      "note": "Source for MLX-Audio bit-width, mode, and quality guidance; still requires model-specific listening/WER gates.",
+      "id": "mlx-audio-quantization-guide",
+      "title": "MLX-Audio quantization guide",
+      "url": "https://blaizzy.github.io/mlx-audio/guides/quantization/",
+      "kind": "official-doc",
+      "owner": "Blaizzy",
+      "topics": [
+        "mlx-audio",
+        "quantization",
+        "tts",
+        "stt"
+      ]
+    },
+    {
+      "review_depth": "synthesized",
+      "snapshot": "2026-06-24",
+      "note": "Source for Qwen3-TTS streaming and source-reported short-prompt batch throughput table.",
+      "id": "mlx-audio-qwen3-tts-docs",
+      "title": "MLX-Audio Qwen3-TTS model guide",
+      "url": "https://blaizzy.github.io/mlx-audio/models/tts/qwen3-tts/",
+      "kind": "official-doc",
+      "owner": "Blaizzy",
+      "topics": [
+        "mlx-audio",
+        "qwen3-tts",
+        "tts",
+        "batching",
+        "streaming"
+      ]
+    },
+    {
+      "review_depth": "synthesized",
+      "snapshot": "2026-06-24",
+      "note": "Model-specific streaming/codebook context; do not generalize schedule to arbitrary codecs.",
+      "id": "mlx-audio-moss-tts-docs",
+      "title": "MLX-Audio MOSS-TTS model guide",
+      "url": "https://blaizzy.github.io/mlx-audio/models/tts/moss-tts/",
+      "kind": "official-doc",
+      "owner": "Blaizzy",
+      "topics": [
+        "mlx-audio",
+        "moss-tts",
+        "tts",
+        "streaming"
+      ]
+    },
+    {
+      "review_depth": "synthesized",
+      "snapshot": "2026-06-24",
+      "note": "Model-specific realtime STT API context.",
+      "id": "mlx-audio-voxtral-realtime-docs",
+      "title": "MLX-Audio Voxtral Realtime STT guide",
+      "url": "https://blaizzy.github.io/mlx-audio/models/stt/voxtral-realtime/",
+      "kind": "official-doc",
+      "owner": "Blaizzy",
+      "topics": [
+        "mlx-audio",
+        "voxtral",
+        "stt",
+        "streaming"
+      ]
+    },
+    {
+      "review_depth": "synthesized",
+      "snapshot": "2026-06-24",
+      "note": "Model card evidence for a specific converted artifact; not generic MLX-Audio capability proof.",
+      "id": "hf-moss-tts-model-card",
+      "title": "MOSS-TTS MLX community model card",
+      "url": "https://huggingface.co/mlx-community/MOSS-TTS-8B-8bit",
+      "kind": "repository",
+      "owner": "mlx-community",
+      "topics": [
+        "moss-tts",
+        "model-card",
+        "streaming",
+        "tts"
+      ]
+    },
+    {
+      "review_depth": "synthesized",
+      "snapshot": "a48c86c1a41900f7d26658471b5f67e5fdd35445",
+      "note": "Third-party pinned serving guide; text/VLM evidence must not be promoted to generic audio support.",
+      "id": "vllm-mlx-continuous-batching-guide",
+      "title": "vLLM-MLX continuous batching guide",
+      "url": "https://github.com/waybarrios/vllm-mlx/blob/main/docs/guides/continuous-batching.md",
+      "kind": "source-code",
+      "owner": "waybarrios",
+      "topics": [
+        "vllm-mlx",
+        "continuous-batching",
+        "serving"
+      ]
+    },
+    {
+      "review_depth": "synthesized",
+      "snapshot": "a48c86c1a41900f7d26658471b5f67e5fdd35445",
+      "note": "Source for video FPS/max-frame knobs and multimodal serving caveats.",
+      "id": "vllm-mlx-multimodal-guide",
+      "title": "vLLM-MLX multimodal serving guide",
+      "url": "https://github.com/waybarrios/vllm-mlx/blob/main/docs/guides/multimodal.md",
+      "kind": "source-code",
+      "owner": "waybarrios",
+      "topics": [
+        "vllm-mlx",
+        "multimodal",
+        "video",
+        "serving"
+      ]
+    },
+    {
+      "review_depth": "synthesized",
+      "snapshot": "6a8cdff6a1f53f46a15d4adb997c3b2d5f621263",
+      "note": "Projected-feature cache implementation with bounded LRU; cache key validation remains mandatory.",
+      "id": "mlx-vlm-vision-cache-source",
+      "title": "MLX-VLM vision feature cache implementation",
+      "url": "https://github.com/Blaizzy/mlx-vlm/blob/6a8cdff6a1f53f46a15d4adb997c3b2d5f621263/mlx_vlm/vision_cache.py",
+      "kind": "source-code",
+      "owner": "Blaizzy",
+      "topics": [
+        "mlx-vlm",
+        "vision-cache",
+        "multimodal",
+        "cache"
+      ]
+    },
+    {
+      "review_depth": "synthesized",
+      "snapshot": "6a8cdff6a1f53f46a15d4adb997c3b2d5f621263",
+      "note": "Block hash chain supports multimodal extra hashes and tenant scoping in this pinned implementation.",
+      "id": "mlx-vlm-apc-source",
+      "title": "MLX-VLM automatic prefix cache implementation",
+      "url": "https://github.com/Blaizzy/mlx-vlm/blob/6a8cdff6a1f53f46a15d4adb997c3b2d5f621263/mlx_vlm/apc.py",
+      "kind": "source-code",
+      "owner": "Blaizzy",
+      "topics": [
+        "mlx-vlm",
+        "automatic-prefix-cache",
+        "multimodal",
+        "cache"
+      ]
+    },
+    {
+      "review_depth": "synthesized",
+      "snapshot": "6a8cdff6a1f53f46a15d4adb997c3b2d5f621263",
+      "note": "Implementation evidence for media payload hashes and prefix safety checks.",
+      "id": "mlx-vlm-ar-cache-guards",
+      "title": "MLX-VLM generation cache media guards",
+      "url": "https://github.com/Blaizzy/mlx-vlm/blob/6a8cdff6a1f53f46a15d4adb997c3b2d5f621263/mlx_vlm/generate/ar.py",
+      "kind": "source-code",
+      "owner": "Blaizzy",
+      "topics": [
+        "mlx-vlm",
+        "prefix-cache",
+        "media-hash",
+        "cache-safety"
+      ]
+    },
+    {
+      "review_depth": "synthesized",
+      "snapshot": "a48c86c1a41900f7d26658471b5f67e5fdd35445",
+      "note": "Two-level media preprocessing/vision-encoding cache implementation.",
+      "id": "vllm-mlx-vision-cache-source",
+      "title": "vLLM-MLX vision embedding cache implementation",
+      "url": "https://github.com/waybarrios/vllm-mlx/blob/a48c86c1a41900f7d26658471b5f67e5fdd35445/vllm_mlx/vision_embedding_cache.py",
+      "kind": "source-code",
+      "owner": "waybarrios",
+      "topics": [
+        "vllm-mlx",
+        "vision-cache",
+        "multimodal",
+        "serving"
+      ]
+    },
+    {
+      "review_depth": "synthesized",
+      "snapshot": "a48c86c1a41900f7d26658471b5f67e5fdd35445",
+      "note": "Implementation evidence for multimodal cache integration and media-placeholder safety behavior.",
+      "id": "vllm-mlx-mllm-batch-source",
+      "title": "vLLM-MLX multimodal batch generator implementation",
+      "url": "https://github.com/waybarrios/vllm-mlx/blob/a48c86c1a41900f7d26658471b5f67e5fdd35445/vllm_mlx/mllm_batch_generator.py",
+      "kind": "source-code",
+      "owner": "waybarrios",
+      "topics": [
+        "vllm-mlx",
+        "multimodal",
+        "batching",
+        "prefix-cache"
+      ]
+    },
+    {
+      "review_depth": "synthesized",
+      "snapshot": "a48c86c1a41900f7d26658471b5f67e5fdd35445",
+      "note": "Pinned evidence for memory accounting and cache constraints in third-party serving.",
+      "id": "vllm-mlx-memory-cache-source",
+      "title": "vLLM-MLX memory-aware prefix cache implementation",
+      "url": "https://github.com/waybarrios/vllm-mlx/blob/a48c86c1a41900f7d26658471b5f67e5fdd35445/vllm_mlx/memory_cache.py",
+      "kind": "source-code",
+      "owner": "waybarrios",
+      "topics": [
+        "vllm-mlx",
+        "prefix-cache",
+        "memory",
+        "serving"
+      ]
+    },
+    {
+      "review_depth": "synthesized",
+      "snapshot": "2502.13923",
+      "note": "Research source for Qwen visual token/grid/M-RoPE semantics; not MLX support by itself.",
+      "id": "paper-2502-13923",
+      "title": "Qwen2.5-VL Technical Report",
+      "url": "https://arxiv.org/abs/2502.13923",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "vision-language",
+        "video",
+        "qwen",
+        "mrope"
+      ]
+    },
+    {
+      "review_depth": "synthesized",
+      "snapshot": "2412.13303",
+      "note": "Research source for efficient VLM encoders; replacing encoders is a model change, not a serving optimization.",
+      "id": "paper-2412-13303",
+      "title": "FastVLM: Efficient Vision Encoding for Vision Language Models",
+      "url": "https://arxiv.org/abs/2412.13303",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "vision-language",
+        "visual-token-reduction",
+        "encoder"
+      ]
+    },
+    {
+      "review_depth": "synthesized",
+      "snapshot": "2026-06-24",
+      "note": "Engineering context for FastVLM; do not treat as generic MLX port support.",
+      "id": "apple-fastvlm-blog",
+      "title": "FastVLM Apple Machine Learning Research blog",
+      "url": "https://machinelearning.apple.com/research/fast-vision-language-models",
+      "kind": "technical-blog",
+      "owner": "Apple Machine Learning Research",
+      "topics": [
+        "vision-language",
+        "fastvlm",
+        "visual-token-reduction"
+      ]
+    },
+    {
+      "review_depth": "synthesized",
+      "snapshot": "2412.04467",
+      "note": "Visual-token compression research; requires per-model quality and MLX implementation gates.",
+      "id": "paper-2412-04467",
+      "title": "VisionZip: Longer is Better but Not Necessary in Vision Language Models",
+      "url": "https://arxiv.org/abs/2412.04467",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "vision-language",
+        "visual-token-pruning"
+      ]
+    },
+    {
+      "review_depth": "synthesized",
+      "snapshot": "2403.15388",
+      "note": "Visual-token pruning research; not generic support.",
+      "id": "paper-2403-15388",
+      "title": "LLaVA-PruMerge: Adaptive Token Reduction for Efficient Large Multimodal Models",
+      "url": "https://arxiv.org/abs/2403.15388",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "vision-language",
+        "visual-token-pruning",
+        "llava"
+      ]
+    },
+    {
+      "review_depth": "synthesized",
+      "snapshot": "2026-06-24",
+      "note": "Context for multi-image/video token budgets and evaluation needs.",
+      "id": "llava-onevision-blog",
+      "title": "LLaVA-OneVision release blog",
+      "url": "https://llava-vl.github.io/blog/2024-08-05-llava-onevision/",
+      "kind": "technical-blog",
+      "owner": "LLaVA team",
+      "topics": [
+        "vision-language",
+        "video",
+        "llava"
+      ]
+    }
+  ]
+}

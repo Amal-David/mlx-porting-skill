@@ -1,0 +1,12 @@
+{
+  "model_type": "encodec",
+  "architectures": [
+    "EncodecModel"
+  ],
+  "sample_rate": 24000,
+  "codebook_size": 1024,
+  "num_codebooks": 8,
+  "hop_length": 320,
+  "audio_channels": 1,
+  "license": "mit"
+}

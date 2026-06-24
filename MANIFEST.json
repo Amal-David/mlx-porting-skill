@@ -1,0 +1,464 @@
+{
+  "schema_version": 1,
+  "artifact": "mlx-porting-skill",
+  "version": "0.1.0",
+  "generated_at": "2026-06-24T07:28:46.263225+00:00",
+  "file_count": 91,
+  "files": [
+    {
+      "path": ".github/workflows/daily-research.yml",
+      "size_bytes": 2237,
+      "sha256": "1e60aaa7e536e76b57963215a78e7440602c031e1c1b406e741d5ec82fe87ef8"
+    },
+    {
+      "path": ".github/workflows/validate.yml",
+      "size_bytes": 711,
+      "sha256": "a4405e15df1779c07c0b9f2e9016d12eeb38c75e028a925248eb24cdcdacd5bd"
+    },
+    {
+      "path": ".gitignore",
+      "size_bytes": 194,
+      "sha256": "c3a1e29db5ac54bc3eacb8fa194362dd2e4701f724e5ad1aab3b482ca2df4733"
+    },
+    {
+      "path": "AGENTS.md",
+      "size_bytes": 2763,
+      "sha256": "ae8bc768d0a2f39ce29783454f8adcb77843d8ecdbedd75698b82517c2f5c8f5"
+    },
+    {
+      "path": "CHANGELOG.md",
+      "size_bytes": 1050,
+      "sha256": "66b770035065bc4b263f2843ee56fb3e7daf8cd3895bd3d552a07e75cde25569"
+    },
+    {
+      "path": "CLAUDE.md",
+      "size_bytes": 1886,
+      "sha256": "86c73f83625f126a8c688b4e9201c4a864a92a4152c9fd48479d114318465a77"
+    },
+    {
+      "path": "CONTRIBUTING.md",
+      "size_bytes": 1616,
+      "sha256": "3e4cd09b7f5215835ba3df049cebc2f105ffd44604515d43b91408308e0cded7"
+    },
+    {
+      "path": "EVIDENCE_INDEX.md",
+      "size_bytes": 62281,
+      "sha256": "17f55599b3f5c72ae0475579d56c41aaa57eee19db35ecf354a12899a9deb964"
+    },
+    {
+      "path": "LICENSE",
+      "size_bytes": 9109,
+      "sha256": "a0bb6b93b72e14bf570ab6ee29f1a3d0c25cc0593e8361952ab863321491fda6"
+    },
+    {
+      "path": "README.md",
+      "size_bytes": 3482,
+      "sha256": "e7816028a3e8da20859a39d518705ede610a5cbfcd0ad830a694e8d00bce8607"
+    },
+    {
+      "path": "RESEARCH_REPORT.md",
+      "size_bytes": 8740,
+      "sha256": "b7f6e90c6a7b9245a72c652469d26b6e11b2f37d68d84b621b6a222052dae4ad"
+    },
+    {
+      "path": "VERSION",
+      "size_bytes": 6,
+      "sha256": "e9dd8507f4bf0c6f42458e41aea833ad0bd3f6127272335eee9bf4d58541ed67"
+    },
+    {
+      "path": "adapters/README.md",
+      "size_bytes": 2436,
+      "sha256": "ab6ae2556b79bed801646ccb081e4b8d8b2e9f53a22aa7bf1460383cc8fa3b5c"
+    },
+    {
+      "path": "adapters/antigravity.md",
+      "size_bytes": 419,
+      "sha256": "87c20157a887fc1a74bf6918bcc4529f12c4f6929d0f2dbab38da036e1502dfc"
+    },
+    {
+      "path": "adapters/claude-code.md",
+      "size_bytes": 419,
+      "sha256": "ec01ab55d938ea1d4c08b9019917021fc4948ad83e9e66b56536bebb933a5b08"
+    },
+    {
+      "path": "adapters/codex.md",
+      "size_bytes": 464,
+      "sha256": "4da6f685c221ec8e1709c4cf752562169854e2cc21f1f9e1c57d71a152cb15aa"
+    },
+    {
+      "path": "adapters/cursor.md",
+      "size_bytes": 414,
+      "sha256": "86e12d2558687a6eca937f3ab0530f8bc46a3bc72fc15e01a263072801d638c3"
+    },
+    {
+      "path": "adapters/gemini-cli.md",
+      "size_bytes": 418,
+      "sha256": "7250e9a2db505a9d09782d2af918f7e66855ba6667634aa0c1bdc95d65a4ea12"
+    },
+    {
+      "path": "adapters/github-copilot.md",
+      "size_bytes": 422,
+      "sha256": "5f46a02c70aac0018645946c386e7c2aa7a2791810729802514b18eaf1c2c624"
+    },
+    {
+      "path": "adapters/windsurf.md",
+      "size_bytes": 416,
+      "sha256": "069121fef7796091de38caec8d1a015cc1654d7128233fb3e324c179a4c03cb6"
+    },
+    {
+      "path": "mlx-model-porting/SKILL.md",
+      "size_bytes": 10302,
+      "sha256": "91499b06182ac9528fd5411f33c5a8b07e2fbf23f7458dd63eb32b1f543384f1"
+    },
+    {
+      "path": "mlx-model-porting/assets/BENCHMARK_REPORT.md",
+      "size_bytes": 591,
+      "sha256": "30a47b6d218bfdd4ee7b60ccebd7c4416134578626e620b8e1221957702af28c"
+    },
+    {
+      "path": "mlx-model-porting/assets/CHANGE_REVIEW.md",
+      "size_bytes": 353,
+      "sha256": "e23e8f809455c0ee52c04392f481d4bec99daeda9dc98b8b68afd6da6b47f54b"
+    },
+    {
+      "path": "mlx-model-porting/assets/PORT_PLAN.md",
+      "size_bytes": 749,
+      "sha256": "1cbaff68fa535913fb066d0d67a6650556975781bf81ca3f3e1acf7ec070c0a8"
+    },
+    {
+      "path": "mlx-model-porting/assets/VALIDATION_REPORT.md",
+      "size_bytes": 401,
+      "sha256": "b4c1d9cd834b0e69e2bcd9d1cfeae76f684afe1d3630817c59878bf0a031fa5f"
+    },
+    {
+      "path": "mlx-model-porting/assets/WEIGHT_MAP.json",
+      "size_bytes": 378,
+      "sha256": "2effba88cf7f343fb07f849c5f83d10b45f4239947b7acf1b39660d6137c8f9d"
+    },
+    {
+      "path": "mlx-model-porting/assets/architectures.yaml",
+      "size_bytes": 13520,
+      "sha256": "e5ca2a397d57482f6daab97ff6ff3fffc4d306f6699e6e28ab20f96daff40b51"
+    },
+    {
+      "path": "mlx-model-porting/assets/optimization_guidance.yaml",
+      "size_bytes": 35866,
+      "sha256": "d717f1d1e5d052fe932a73ca66d4cd2778456ea9933f53148fad5cda52b871f4"
+    },
+    {
+      "path": "mlx-model-porting/assets/recommendation-taxonomy.yaml",
+      "size_bytes": 3384,
+      "sha256": "9a6fd02aacdd2a661adbbac01a00f93cbe7a75f7d91f90ca444bf95ad7d99770"
+    },
+    {
+      "path": "mlx-model-porting/assets/sources.yaml",
+      "size_bytes": 130201,
+      "sha256": "32dabe82b17d06b3bcd9fd2b07ff4bd7479ac7f8f981fdf1747c64943a120156"
+    },
+    {
+      "path": "mlx-model-porting/assets/techniques.yaml",
+      "size_bytes": 43790,
+      "sha256": "273f2c040f14c0cb705fa3490461cf4ce3fe7cc8fb9b417b6928ad543e3f8fc8"
+    },
+    {
+      "path": "mlx-model-porting/assets/update-candidates.json",
+      "size_bytes": 37944,
+      "sha256": "494bfa4fc82ac29e7eda4f82c68ce6edfe6b0a60c39a412d7022f816f2fa296e"
+    },
+    {
+      "path": "mlx-model-porting/assets/update-watchlist.json",
+      "size_bytes": 1626,
+      "sha256": "7567e86c6dc2c16c3466233c2303f88d103ecd902400c2e6ddd28c651b05de16"
+    },
+    {
+      "path": "mlx-model-porting/references/attention-and-kv.md",
+      "size_bytes": 4862,
+      "sha256": "c7fa6a7a7928bec198cec0d378965b893d796ed982b9ba3cd0b50b26d3bfa56c"
+    },
+    {
+      "path": "mlx-model-porting/references/benchmarking.md",
+      "size_bytes": 3829,
+      "sha256": "bebb0cf2d1c395ca60d771c89853b1be087f2eecc18c416ffa78a438ce3db723"
+    },
+    {
+      "path": "mlx-model-porting/references/compile-and-kernels.md",
+      "size_bytes": 4132,
+      "sha256": "e2376843a89b50ba015b0b18fdad1dd9abfa93f454cc630916e0c11527c4825d"
+    },
+    {
+      "path": "mlx-model-porting/references/decoding-and-serving.md",
+      "size_bytes": 3833,
+      "sha256": "19ec568003becc19ede1f033ab4d9a89254adb39ae34b3e387b6eb6a6d539a86"
+    },
+    {
+      "path": "mlx-model-porting/references/failure-atlas.md",
+      "size_bytes": 2286,
+      "sha256": "09c43ee893a9343364cc7383ef0949e459834e1d65c6c5fdeef32a547a05d0d8"
+    },
+    {
+      "path": "mlx-model-porting/references/intake-and-routing.md",
+      "size_bytes": 2926,
+      "sha256": "b7e03e4821901e6a02696faaef7b7da94c1d797a092ca74b18416709715e01bb"
+    },
+    {
+      "path": "mlx-model-porting/references/maintenance-and-provenance.md",
+      "size_bytes": 3367,
+      "sha256": "aa0d4ce0a3570c07b9ac1724349e50c34fa324488f596db606f77da5649fdfea"
+    },
+    {
+      "path": "mlx-model-porting/references/model-support-map.md",
+      "size_bytes": 2032,
+      "sha256": "6a83320d8b8dd22f16f4ccd33ad4d694581569bccb12f104bff724ddcd118eaf"
+    },
+    {
+      "path": "mlx-model-porting/references/packaging-and-publication.md",
+      "size_bytes": 1944,
+      "sha256": "593d39ca59de4ccf3786a39957d15af93e73123f162ef6af1073187abcb67114"
+    },
+    {
+      "path": "mlx-model-porting/references/parity-and-testing.md",
+      "size_bytes": 3520,
+      "sha256": "cf10abaaf974e9f1fdf41f74b1ff47e9e04c0e4c7c915fb37ea2b1e4e1195c3c"
+    },
+    {
+      "path": "mlx-model-porting/references/porting-core.md",
+      "size_bytes": 3071,
+      "sha256": "7d87b8392bfe0fdf4209483c608d681cadcda5c29c2f71e977419a7b5d77856e"
+    },
+    {
+      "path": "mlx-model-porting/references/quantization.md",
+      "size_bytes": 3979,
+      "sha256": "0580bd6c1c401aa824011aa33d09ce5f5bb56f925de1112584e0c39cffcede57"
+    },
+    {
+      "path": "mlx-model-porting/references/runbook-asr.md",
+      "size_bytes": 3110,
+      "sha256": "b2b537c0da0f79cda64087fbdc3ef505c0f67f16d7643f56465e6daf437131ca"
+    },
+    {
+      "path": "mlx-model-porting/references/runbook-audio-codec.md",
+      "size_bytes": 3668,
+      "sha256": "6de881226c2f9fed19a6e93aa4d0b566ad38395fc5d17525e51be03840b63545"
+    },
+    {
+      "path": "mlx-model-porting/references/runbook-autoregressive-audio.md",
+      "size_bytes": 3809,
+      "sha256": "dbbdfc8f969a504648594e188516adf47c83d84cea9cd4b6b1f80c17dcfbf877"
+    },
+    {
+      "path": "mlx-model-porting/references/runbook-decoder-transformer.md",
+      "size_bytes": 4235,
+      "sha256": "833e7a6442217f1f031871372c2027b8cbdd54d07dc60b27aa17e4d4bb34d6ba"
+    },
+    {
+      "path": "mlx-model-porting/references/runbook-diffusion-flow.md",
+      "size_bytes": 3225,
+      "sha256": "69308633f5aada618a0fa373c66dd1dd3591b43292b87ba707b56973e813bc65"
+    },
+    {
+      "path": "mlx-model-porting/references/runbook-encoder-decoder.md",
+      "size_bytes": 3077,
+      "sha256": "07465443ec96895c48a714593e60e4f9ec9d764ce1839ff58bf3a1aad491993f"
+    },
+    {
+      "path": "mlx-model-porting/references/runbook-encoder-transformer.md",
+      "size_bytes": 2635,
+      "sha256": "298416a0d05b61152db3bd4ad86124f09aa87e5f4e83e6f245ad9ab833d54d2c"
+    },
+    {
+      "path": "mlx-model-porting/references/runbook-flow-tts.md",
+      "size_bytes": 3170,
+      "sha256": "ad3d096da9dccbd26bb0210a4d4638d3468dd6d8083efd4579f90eff424dbbaf"
+    },
+    {
+      "path": "mlx-model-porting/references/runbook-moe-transformer.md",
+      "size_bytes": 5058,
+      "sha256": "3418479b67a1e70a7ac41d65b909a663e0051e8a5bf0ec63c277e8557ce0fe77"
+    },
+    {
+      "path": "mlx-model-porting/references/runbook-multimodal-omni.md",
+      "size_bytes": 4712,
+      "sha256": "fdd80c6ab00014e7daa4ac5d78074041810174d5efe60be445f1df8089edbd18"
+    },
+    {
+      "path": "mlx-model-porting/references/runbook-separation-enhancement.md",
+      "size_bytes": 2473,
+      "sha256": "4f84719679dab4d785e0b139e9bff5300808b5948e95e156b634c38483f9d88b"
+    },
+    {
+      "path": "mlx-model-porting/references/runbook-ssm-hybrid.md",
+      "size_bytes": 3079,
+      "sha256": "065416e3a66142396f71d5911a2b2caa1dc8651a2e1f4283e64ba9eb6cafcad4"
+    },
+    {
+      "path": "mlx-model-porting/references/runbook-streaming-speech.md",
+      "size_bytes": 4173,
+      "sha256": "5e58174f8eb1168ad1c6dec2264c861a7acd79d34e1e7de86b3202dbba6d0373"
+    },
+    {
+      "path": "mlx-model-porting/references/runbook-vocoder.md",
+      "size_bytes": 2581,
+      "sha256": "a626a210ddf36dabe9c6990e6c277f12c1bc053d724479fc86a1cfcb28a3e092"
+    },
+    {
+      "path": "mlx-model-porting/references/training-and-finetuning.md",
+      "size_bytes": 1660,
+      "sha256": "573b1efa1fc128fc663f7e3d134b445ea9eea657425986089337434ac27ddaa3"
+    },
+    {
+      "path": "mlx-model-porting/scripts/_common.py",
+      "size_bytes": 4176,
+      "sha256": "08b06cfa728ed4d98449601f554060db4eed580272ff35aa5298ae1f620ee4b2"
+    },
+    {
+      "path": "mlx-model-porting/scripts/audit_skill.py",
+      "size_bytes": 7608,
+      "sha256": "4451d9aa0c3ef5ee4b1c9c218f5743e9de04de786daa09e89f391b7cd66b36d7"
+    },
+    {
+      "path": "mlx-model-porting/scripts/benchmark_command.py",
+      "size_bytes": 8526,
+      "sha256": "82cac8749994f44a2c82993aa38d8ed8d8d4b502e74ec9750ca49ebc26eb5868"
+    },
+    {
+      "path": "mlx-model-porting/scripts/compare_tensors.py",
+      "size_bytes": 5849,
+      "sha256": "0c946857f1642858c61135ae52e9f6b13a6eef7a2a64b7b106225a2d9f1b65af"
+    },
+    {
+      "path": "mlx-model-porting/scripts/inspect_model.py",
+      "size_bytes": 17747,
+      "sha256": "2cd6ad34e0b5bd38140a85d3feeee76923d2713f4b869dce2e9844c3fdf550e8"
+    },
+    {
+      "path": "mlx-model-porting/scripts/install_skill.py",
+      "size_bytes": 2466,
+      "sha256": "bb179d144b5b1c83e4f22f4c19bdc71f49026f117c3543ef5e57d9e52e48a004"
+    },
+    {
+      "path": "mlx-model-porting/scripts/make_port_plan.py",
+      "size_bytes": 9607,
+      "sha256": "f18cc22335a1e70749a81ec6d835ceec5fd2b3f490e80d76c1a07def146b478f"
+    },
+    {
+      "path": "mlx-model-porting/scripts/recommend_optimizations.py",
+      "size_bytes": 4977,
+      "sha256": "a9ab301f88b103b063284f0df7b17060f7ae393a1b43db1e63ec72ac12f4021f"
+    },
+    {
+      "path": "mlx-model-porting/scripts/update_sources.py",
+      "size_bytes": 9554,
+      "sha256": "9c81149b2e06453112a37794e55e5631bc5e90534348891cb9b0c7b96a0ae520"
+    },
+    {
+      "path": "mlx-model-porting/scripts/validate_sources.py",
+      "size_bytes": 13600,
+      "sha256": "76ceb5edf5390efc8da5ece8fecd73f6145059c25149dc9a3f3a77a00b46215f"
+    },
+    {
+      "path": "mlx-model-porting/scripts/validate_weight_map.py",
+      "size_bytes": 8238,
+      "sha256": "5d45ab89b3f597bc29812a9217e78e17edb1be637fd8883838c3d1c3ad7e3283"
+    },
+    {
+      "path": "tests/README.md",
+      "size_bytes": 350,
+      "sha256": "904672601ebbb2d0d45342a7c523c33e44f566a432f7434774dd1b6aeb99777b"
+    },
+    {
+      "path": "tests/fixtures/manifests/map.json",
+      "size_bytes": 410,
+      "sha256": "a27b025275ee8842486777f5d0b904c8834fe639d49317fadca366d4f0df642b"
+    },
+    {
+      "path": "tests/fixtures/manifests/source.json",
+      "size_bytes": 187,
+      "sha256": "03b7e3d8230a3b741fcc40de212cf74623146fea1e62a62955b960e58d3ecd04"
+    },
+    {
+      "path": "tests/fixtures/manifests/target.json",
+      "size_bytes": 185,
+      "sha256": "a12b9faaa2ca6665153723fbebea6d80532a1fb216c4873bdfc25f8068c63e16"
+    },
+    {
+      "path": "tests/fixtures/models/codec/config.json",
+      "size_bytes": 210,
+      "sha256": "f03a68ad36f8421192425a33c028527c82ab6284703d9352275115322b0601db"
+    },
+    {
+      "path": "tests/fixtures/models/codec/model.safetensors",
+      "size_bytes": 2098335,
+      "sha256": "5438314d9c2142e043268ebe5122d5d2bf03e81a0fefb84e5dc361f9d7cf5f3d"
+    },
+    {
+      "path": "tests/fixtures/models/decoder/README.md",
+      "size_bytes": 38,
+      "sha256": "d220c62172647f1f6577db67896ef80b44dbae644f77768e8873b684f947175c"
+    },
+    {
+      "path": "tests/fixtures/models/decoder/config.json",
+      "size_bytes": 281,
+      "sha256": "daf51c6b1b3572a24fe7d6227dc1adc62ebee3c1fb2aed175f59be563405195d"
+    },
+    {
+      "path": "tests/fixtures/models/decoder/model.safetensors",
+      "size_bytes": 1763,
+      "sha256": "fcf13b455d7b6af060736aaf19e496b7761bc617c953c8fc2cdda98eb5c5a780"
+    },
+    {
+      "path": "tests/fixtures/models/moe/config.json",
+      "size_bytes": 287,
+      "sha256": "ecb6c77f64053df17a0153f11217d21f0411751ac7ffa23968bebe083433fab2"
+    },
+    {
+      "path": "tests/fixtures/models/moe/model.safetensors",
+      "size_bytes": 760,
+      "sha256": "8afe8d9e1471ab249ba01f8372515ef7ae5077c2f90fccee38cf6c7d2946f3df"
+    },
+    {
+      "path": "tests/fixtures/models/unsafe/config.json",
+      "size_bytes": 145,
+      "sha256": "5276a9e689fc414b775c7113d51f572a91aaa5bb52e7ced461efe2dc5b4ad6be"
+    },
+    {
+      "path": "tests/fixtures/models/unsafe/modeling_mystery.py",
+      "size_bytes": 25,
+      "sha256": "e4e1deff4b8c4634fac79f7de6e6b37aae230a523a57fbfe211a0d5cbcbc907a"
+    },
+    {
+      "path": "tests/fixtures/models/unsafe/pytorch_model.bin",
+      "size_bytes": 17,
+      "sha256": "32c20b21a2f19a244b1ceea5d69129db792dd3fc105a72ea45a2065065953880"
+    },
+    {
+      "path": "tests/fixtures/models/unsafe/setup.py",
+      "size_bytes": 29,
+      "sha256": "0ef0b6d7cd25cd93397d9d23b62a450f2c49c120d59477bb37a46649a4e23444"
+    },
+    {
+      "path": "tests/fixtures/tensors/bad.npz",
+      "size_bytes": 566,
+      "sha256": "d2d62d842123ea8f90eae34b73036de603b2200e5cbe6db843106f4ca7ae6275"
+    },
+    {
+      "path": "tests/fixtures/tensors/close.npz",
+      "size_bytes": 566,
+      "sha256": "74bf9ec30bea0d4eb314e579caef48ddd63560f8aebf4f560ca2da673c259395"
+    },
+    {
+      "path": "tests/fixtures/tensors/source.npz",
+      "size_bytes": 566,
+      "sha256": "5b4e7d7fc123c4c646d10ca441eac47029d66c2253ce59120b7f14752bbb47ea"
+    },
+    {
+      "path": "tests/fixtures/updates/offline.json",
+      "size_bytes": 695,
+      "sha256": "966992c1ee60d17ffc5dcfd1f7fb8186f1ead70c5486cbb1f55bd584d8fb3be6"
+    },
+    {
+      "path": "tests/test_tooling.py",
+      "size_bytes": 12559,
+      "sha256": "e29d8a896e5841636aed53bc2e5c2f3cf26798249bd41176cf3e35b8265d7e9f"
+    }
+  ]
+}

@@ -1,0 +1,580 @@
+{
+  "schema_version": 1,
+  "reviewed": "2026-06-23",
+  "families": [
+    {
+      "id": "dense-decoder-transformer",
+      "runbook": "references/runbook-decoder-transformer.md",
+      "targets": [
+        "mlx-lm",
+        "mlx-vlm",
+        "standalone-mlx"
+      ],
+      "model_type_aliases": [
+        "llama",
+        "mistral",
+        "qwen2",
+        "qwen3",
+        "gemma",
+        "gemma2",
+        "gemma3",
+        "gemma4",
+        "phi",
+        "phi3",
+        "gpt2",
+        "gpt_neox",
+        "falcon",
+        "olmo",
+        "olmo2",
+        "starcoder2",
+        "cohere",
+        "command-r",
+        "yi",
+        "baichuan",
+        "internlm",
+        "internlm2",
+        "minicpm",
+        "exaone",
+        "granite",
+        "apertus"
+      ],
+      "class_patterns": [
+        "ForCausalLM",
+        "CausalLM",
+        "DecoderModel"
+      ],
+      "config_signals": [
+        "num_hidden_layers",
+        "num_attention_heads",
+        "hidden_size",
+        "vocab_size"
+      ],
+      "weight_signals": [
+        "self_attn.q_proj.weight",
+        "mlp.down_proj.weight",
+        "lm_head.weight"
+      ],
+      "state": "per-layer KV cache",
+      "notes": "Route models with routed experts, recurrent state, or multimodal projectors to a more specific family."
+    },
+    {
+      "id": "moe-decoder-transformer",
+      "runbook": "references/runbook-moe-transformer.md",
+      "targets": [
+        "mlx-lm",
+        "standalone-mlx"
+      ],
+      "model_type_aliases": [
+        "mixtral",
+        "qwen2_moe",
+        "qwen3_moe",
+        "deepseek_v2",
+        "deepseek_v3",
+        "dbrx",
+        "grok",
+        "minimax",
+        "ernie4_5_moe",
+        "olmoe",
+        "phimoe",
+        "granitemoe"
+      ],
+      "class_patterns": [
+        "Moe",
+        "MoE",
+        "MixtureOfExperts"
+      ],
+      "config_signals": [
+        "num_experts",
+        "num_local_experts",
+        "num_experts_per_tok",
+        "moe_intermediate_size"
+      ],
+      "weight_signals": [
+        "gate.weight",
+        "experts.0",
+        "router"
+      ],
+      "state": "KV cache plus dynamic expert routing",
+      "notes": "DeepSeek V2/V3 may also require MLA-specific attention handling."
+    },
+    {
+      "id": "encoder-transformer",
+      "runbook": "references/runbook-encoder-transformer.md",
+      "targets": [
+        "standalone-mlx",
+        "mlx-vlm",
+        "mlx-audio"
+      ],
+      "model_type_aliases": [
+        "bert",
+        "roberta",
+        "deberta",
+        "distilbert",
+        "electra",
+        "xlm-roberta",
+        "vit",
+        "dinov2",
+        "siglip",
+        "clip_vision_model"
+      ],
+      "class_patterns": [
+        "ForSequenceClassification",
+        "ForTokenClassification",
+        "Model",
+        "Encoder"
+      ],
+      "config_signals": [
+        "hidden_size",
+        "num_hidden_layers",
+        "num_attention_heads"
+      ],
+      "weight_signals": [
+        "encoder.layer.0",
+        "embeddings.word_embeddings",
+        "pooler"
+      ],
+      "state": "usually stateless full-sequence encoder",
+      "notes": "Modality-specific frontends may require additional runbooks."
+    },
+    {
+      "id": "encoder-decoder-transformer",
+      "runbook": "references/runbook-encoder-decoder.md",
+      "targets": [
+        "standalone-mlx",
+        "mlx-audio"
+      ],
+      "model_type_aliases": [
+        "t5",
+        "mt5",
+        "bart",
+        "mbart",
+        "whisper",
+        "speech_to_text",
+        "seamless_m4t",
+        "nllb",
+        "marian"
+      ],
+      "class_patterns": [
+        "ForConditionalGeneration",
+        "EncoderDecoder",
+        "Seq2Seq"
+      ],
+      "config_signals": [
+        "encoder_layers",
+        "decoder_layers",
+        "is_encoder_decoder"
+      ],
+      "weight_signals": [
+        "encoder.layers.0",
+        "decoder.layers.0",
+        "encoder_attn"
+      ],
+      "state": "encoder states plus decoder self/cross cache",
+      "notes": "Whisper and other ASR models should also use the ASR runbook."
+    },
+    {
+      "id": "ssm-recurrent-hybrid",
+      "runbook": "references/runbook-ssm-hybrid.md",
+      "targets": [
+        "mlx-lm",
+        "standalone-mlx"
+      ],
+      "model_type_aliases": [
+        "mamba",
+        "mamba2",
+        "jamba",
+        "rwkv",
+        "recurrent_gemma",
+        "recurrentgemma",
+        "zamba",
+        "zamba2",
+        "lfm2",
+        "kimi_linear",
+        "deltanet",
+        "hgrn",
+        "griffin"
+      ],
+      "class_patterns": [
+        "Mamba",
+        "RWKV",
+        "Recurrent",
+        "StateSpace",
+        "Hybrid"
+      ],
+      "config_signals": [
+        "state_size",
+        "conv_kernel",
+        "time_step_rank",
+        "layer_types"
+      ],
+      "weight_signals": [
+        "A_log",
+        "dt_proj",
+        "x_proj",
+        "conv1d",
+        "time_mix"
+      ],
+      "state": "recurrent/SSM state; sometimes mixed with KV cache",
+      "notes": "Require full-sequence versus recurrent equivalence tests."
+    },
+    {
+      "id": "diffusion-flow",
+      "runbook": "references/runbook-diffusion-flow.md",
+      "targets": [
+        "standalone-mlx",
+        "mlx-vlm"
+      ],
+      "model_type_aliases": [
+        "dit",
+        "unet_2d_condition",
+        "flux",
+        "sd3_transformer",
+        "stable_diffusion",
+        "rectified_flow",
+        "flow_matching"
+      ],
+      "class_patterns": [
+        "UNet",
+        "DiT",
+        "Transformer2D",
+        "Diffusion",
+        "Flow"
+      ],
+      "config_signals": [
+        "in_channels",
+        "sample_size",
+        "num_train_timesteps"
+      ],
+      "weight_signals": [
+        "time_embedding",
+        "transformer_blocks.0",
+        "down_blocks.0",
+        "up_blocks.0"
+      ],
+      "state": "iterative latent and scheduler state",
+      "notes": "Audio/TTS flow models should also use the flow-TTS runbook."
+    },
+    {
+      "id": "vision-language-omni",
+      "runbook": "references/runbook-multimodal-omni.md",
+      "targets": [
+        "mlx-vlm",
+        "mlx-audio",
+        "standalone-mlx"
+      ],
+      "model_type_aliases": [
+        "llava",
+        "qwen2_vl",
+        "qwen3_vl",
+        "gemma3",
+        "gemma3n",
+        "idefics",
+        "paligemma",
+        "pixtral",
+        "minicpmv",
+        "qwen2_5_omni",
+        "qwen2_audio",
+        "audioflamingo"
+      ],
+      "class_patterns": [
+        "Vision2Seq",
+        "ConditionalGeneration",
+        "Omni",
+        "AudioText"
+      ],
+      "config_signals": [
+        "vision_config",
+        "audio_config",
+        "projector_hidden_act",
+        "image_token_id"
+      ],
+      "weight_signals": [
+        "vision_tower",
+        "multi_modal_projector",
+        "audio_tower",
+        "language_model"
+      ],
+      "state": "modality features plus language cache and optional output-track state",
+      "notes": "Route each component through its native family as well."
+    },
+    {
+      "id": "neural-audio-codec",
+      "runbook": "references/runbook-audio-codec.md",
+      "targets": [
+        "mlx-audio",
+        "standalone-mlx"
+      ],
+      "model_type_aliases": [
+        "encodec",
+        "dac",
+        "mimi",
+        "snac",
+        "s3",
+        "fish_s1_dac",
+        "descript_audio_codec",
+        "wavtokenizer",
+        "moss_audio_tokenizer",
+        "step_audio_codec",
+        "soundstream"
+      ],
+      "class_patterns": [
+        "Codec",
+        "Tokenizer",
+        "AudioEncoder",
+        "AudioDecoder"
+      ],
+      "config_signals": [
+        "sample_rate",
+        "codebook_size",
+        "num_codebooks",
+        "hop_length"
+      ],
+      "weight_signals": [
+        "quantizer",
+        "codebook",
+        "encoder",
+        "decoder"
+      ],
+      "state": "codec convolution/transformer state and optional streaming overlap",
+      "notes": "Vocos/BigVGAN-only checkpoints route to the vocoder family."
+    },
+    {
+      "id": "autoregressive-audio-lm",
+      "runbook": "references/runbook-autoregressive-audio.md",
+      "targets": [
+        "mlx-audio",
+        "standalone-mlx"
+      ],
+      "model_type_aliases": [
+        "bark",
+        "qwen3_tts",
+        "fish_speech",
+        "moshi",
+        "sesame",
+        "zonos",
+        "spark_tts",
+        "chatterbox",
+        "vibevoice",
+        "voxcpm",
+        "voxcpm2",
+        "moss_tts",
+        "moss_ttsd",
+        "higgs_audio",
+        "valle"
+      ],
+      "class_patterns": [
+        "TextToSpeech",
+        "SpeechGeneration",
+        "AudioLM",
+        "Talker"
+      ],
+      "config_signals": [
+        "audio_vocab_size",
+        "num_codebooks",
+        "codec_config",
+        "speaker_embedding_dim"
+      ],
+      "weight_signals": [
+        "talker",
+        "audio_head",
+        "speech_embedding",
+        "codec"
+      ],
+      "state": "one or more autoregressive caches plus codec/vocoder state",
+      "notes": "Inspect delay/interleave and codebook scheduling before generation."
+    },
+    {
+      "id": "flow-diffusion-tts",
+      "runbook": "references/runbook-flow-tts.md",
+      "targets": [
+        "mlx-audio",
+        "standalone-mlx"
+      ],
+      "model_type_aliases": [
+        "f5_tts",
+        "e2_tts",
+        "matcha_tts",
+        "cosyvoice",
+        "flow_tts",
+        "diffusion_tts",
+        "naturalspeech"
+      ],
+      "class_patterns": [
+        "FlowMatching",
+        "DiffusionTTS",
+        "Matcha",
+        "ConditionalFlow"
+      ],
+      "config_signals": [
+        "mel_dim",
+        "n_mel_channels",
+        "ode_method",
+        "nfe_step"
+      ],
+      "weight_signals": [
+        "transformer",
+        "duration",
+        "mel",
+        "flow"
+      ],
+      "state": "iterative acoustic latent plus conditioning",
+      "notes": "Port and validate vocoder/codec independently."
+    },
+    {
+      "id": "vocoder-waveform-decoder",
+      "runbook": "references/runbook-vocoder.md",
+      "targets": [
+        "mlx-audio",
+        "standalone-mlx"
+      ],
+      "model_type_aliases": [
+        "hifigan",
+        "bigvgan",
+        "vocos",
+        "istftnet",
+        "univnet",
+        "waveglow",
+        "melgan",
+        "parallel_wavegan"
+      ],
+      "class_patterns": [
+        "Generator",
+        "Vocoder",
+        "WaveformDecoder"
+      ],
+      "config_signals": [
+        "upsample_rates",
+        "upsample_kernel_sizes",
+        "n_fft",
+        "hop_length"
+      ],
+      "weight_signals": [
+        "ups.0",
+        "resblocks.0",
+        "conv_post",
+        "istft"
+      ],
+      "state": "usually stateless offline; overlap/receptive state when streaming",
+      "notes": "Pay special attention to ConvTranspose and Fourier conventions."
+    },
+    {
+      "id": "automatic-speech-recognition",
+      "runbook": "references/runbook-asr.md",
+      "targets": [
+        "mlx-audio",
+        "standalone-mlx"
+      ],
+      "model_type_aliases": [
+        "whisper",
+        "wav2vec2",
+        "hubert",
+        "parakeet",
+        "canary",
+        "moonshine",
+        "voxtral",
+        "voxtral_realtime",
+        "qwen2_audio",
+        "qwen3_asr",
+        "nemotron_asr",
+        "cohere_asr",
+        "glmasr",
+        "granite_speech",
+        "rnnt",
+        "conformer"
+      ],
+      "class_patterns": [
+        "CTC",
+        "SpeechSeq2Seq",
+        "Transducer",
+        "ASR"
+      ],
+      "config_signals": [
+        "sampling_rate",
+        "feature_size",
+        "ctc_loss_reduction",
+        "num_mel_bins"
+      ],
+      "weight_signals": [
+        "feature_extractor",
+        "encoder",
+        "ctc",
+        "joiner",
+        "predictor"
+      ],
+      "state": "encoder/cache plus decoder/search state",
+      "notes": "Streaming variants should also use the streaming-speech runbook."
+    },
+    {
+      "id": "streaming-speech",
+      "runbook": "references/runbook-streaming-speech.md",
+      "targets": [
+        "mlx-audio",
+        "standalone-mlx"
+      ],
+      "model_type_aliases": [
+        "voxtral_realtime",
+        "moshi",
+        "rnnt",
+        "streaming_conformer",
+        "streaming_tts",
+        "duplex_speech"
+      ],
+      "class_patterns": [
+        "Realtime",
+        "Streaming",
+        "Transducer",
+        "Duplex"
+      ],
+      "config_signals": [
+        "chunk_size",
+        "left_context",
+        "lookahead",
+        "streaming"
+      ],
+      "weight_signals": [
+        "streaming",
+        "state",
+        "predictor",
+        "codec"
+      ],
+      "state": "persistent chunk/recurrent/cache/overlap state",
+      "notes": "Requires chunk partition invariance and flush tests."
+    },
+    {
+      "id": "separation-enhancement",
+      "runbook": "references/runbook-separation-enhancement.md",
+      "targets": [
+        "mlx-audio",
+        "standalone-mlx"
+      ],
+      "model_type_aliases": [
+        "demucs",
+        "mel_roformer",
+        "bs_roformer",
+        "mdxnet",
+        "audio_separator",
+        "speech_enhancement"
+      ],
+      "class_patterns": [
+        "Separator",
+        "Enhancement",
+        "Roformer",
+        "Demucs"
+      ],
+      "config_signals": [
+        "n_fft",
+        "hop_length",
+        "num_stems",
+        "chunk_size"
+      ],
+      "weight_signals": [
+        "mask",
+        "stft",
+        "encoder",
+        "decoder"
+      ],
+      "state": "chunk/overlap state; usually offline full-context model",
+      "notes": "Validate complex layout and overlap-add."
+    }
+  ]
+}

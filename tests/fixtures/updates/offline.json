@@ -1,0 +1,26 @@
+{
+  "repositories": [
+    {
+      "kind": "repository",
+      "repo": "ml-explore/mlx",
+      "head_sha": "fixture-sha",
+      "head_date": "2026-06-23T00:00:00Z",
+      "head_message": "fixture update",
+      "url": "https://github.com/ml-explore/mlx",
+      "topics": ["mlx", "runtime"]
+    }
+  ],
+  "papers": [
+    {
+      "kind": "paper",
+      "query": "MLX inference",
+      "id": "https://arxiv.org/abs/2606.99999",
+      "title": "Fixture MLX Inference Paper",
+      "updated": "2026-06-23T00:00:00Z",
+      "published": "2026-06-23T00:00:00Z",
+      "authors": ["Fixture Author"],
+      "summary": "A non-network test record.",
+      "review_status": "candidate-unreviewed"
+    }
+  ]
+}

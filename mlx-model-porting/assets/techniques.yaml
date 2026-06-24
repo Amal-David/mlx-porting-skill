@@ -1,0 +1,1168 @@
+{
+  "schema_version": 1,
+  "reviewed": "2026-06-24",
+  "statuses": [
+    "native-mlx",
+    "official-mlx-project",
+    "proven-mlx-port",
+    "research-candidate",
+    "rejected-or-superseded"
+  ],
+  "techniques": [
+    {
+      "id": "lazy-eval-boundaries",
+      "title": "Deliberate lazy evaluation boundaries",
+      "category": "runtime",
+      "status": "native-mlx",
+      "applies_to": [
+        "all"
+      ],
+      "use_when": "Graph growth or accidental synchronization dominates.",
+      "avoid_when": "The graph is already bounded and evaluation cost is negligible.",
+      "validation_gate": "No correctness change; reduced dispatch/sync or memory in end-to-end profile.",
+      "evidence": [
+        "mlx-doc-lazy",
+        "mlx-repo"
+      ],
+      "reviewed": "2026-06-23"
+    },
+    {
+      "id": "stable-region-compile",
+      "title": "Compile stable repeated regions",
+      "category": "runtime",
+      "status": "native-mlx",
+      "applies_to": [
+        "all"
+      ],
+      "use_when": "A pure region repeats with stable structure/shapes.",
+      "avoid_when": "Dynamic Python/control/container changes retrace each step.",
+      "validation_gate": "Compile count controlled; cold and warm metrics reported; parity passes.",
+      "evidence": [
+        "mlx-doc-compile"
+      ],
+      "reviewed": "2026-06-23"
+    },
+    {
+      "id": "shapeless-compile",
+      "title": "Shapeless compilation",
+      "category": "runtime",
+      "status": "native-mlx",
+      "applies_to": [
+        "transformer",
+        "audio",
+        "diffusion"
+      ],
+      "use_when": "Multiple legal shapes share the same operation semantics.",
+      "avoid_when": "Shape affects control flow, allocation assumptions, or kernel legality.",
+      "validation_gate": "No hidden retracing; multiple lengths/shapes pass parity and improve workload latency.",
+      "evidence": [
+        "mlx-doc-compile"
+      ],
+      "reviewed": "2026-06-23"
+    },
+    {
+      "id": "async-eval-streams",
+      "title": "Asynchronous evaluation and independent streams",
+      "category": "runtime",
+      "status": "native-mlx",
+      "applies_to": [
+        "multimodal",
+        "streaming",
+        "pipeline"
+      ],
+      "use_when": "Independent work can overlap at useful granularity and dependencies are explicit.",
+      "avoid_when": "Tiny operations, hidden dependencies, or stream races serialize and add complexity.",
+      "validation_gate": "Timeline/end-to-end overlap measured; mx.synchronize boundaries and determinism tests pass.",
+      "evidence": [
+        "mlx-doc-streams",
+        "mlx-doc-async-eval",
+        "mlx-repo"
+      ],
+      "reviewed": "2026-06-24",
+      "rollback_condition": "Disable stream overlap if timeline shows serialization, races, or no end-to-end improvement."
+    },
+    {
+      "id": "fast-sdpa",
+      "title": "MLX fast scaled-dot-product attention",
+      "category": "attention",
+      "status": "native-mlx",
+      "applies_to": [
+        "dense-decoder-transformer",
+        "moe-decoder-transformer",
+        "encoder-transformer",
+        "encoder-decoder-transformer",
+        "vision-language-omni"
+      ],
+      "use_when": "Attention semantics match MHA/GQA/MQA mask, scale, causal and sink behavior.",
+      "avoid_when": "Custom bias/mask/position semantics cannot be represented exactly.",
+      "validation_gate": "Prefill and decode tensor parity plus end-to-end speed across relevant shapes.",
+      "evidence": [
+        "mlx-doc-fast-sdpa"
+      ],
+      "reviewed": "2026-06-23"
+    },
+    {
+      "id": "fused-norm-rope",
+      "title": "Native fused normalization and RoPE",
+      "category": "kernels",
+      "status": "native-mlx",
+      "applies_to": [
+        "transformer",
+        "audio-lm"
+      ],
+      "use_when": "Source epsilon/layout/position semantics match.",
+      "avoid_when": "Source uses different normalization placement or RoPE variant.",
+      "validation_gate": "Primitive parity and measurable end-to-end improvement.",
+      "evidence": [
+        "mlx-doc-fast-rms-norm",
+        "mlx-doc-fast-layer-norm",
+        "mlx-doc-fast-rope"
+      ],
+      "reviewed": "2026-06-24"
+    },
+    {
+      "id": "quantized-matmul",
+      "title": "Native quantized matmul",
+      "category": "quantization",
+      "status": "native-mlx",
+      "applies_to": [
+        "linear-heavy-models"
+      ],
+      "use_when": "Large supported matrix shapes are memory bound.",
+      "avoid_when": "Small/irregular matrices make dequantization or dispatch slower.",
+      "validation_gate": "Quality gate plus end-to-end latency/memory improvement.",
+      "evidence": [
+        "mlx-doc-quantized-matmul",
+        "mlx-release-0312"
+      ],
+      "reviewed": "2026-06-24"
+    },
+    {
+      "id": "gather-segmented-mm",
+      "title": "Gather matmul for indexed expert projections",
+      "category": "kernels",
+      "status": "native-mlx",
+      "applies_to": [
+        "moe-decoder-transformer",
+        "embedding",
+        "reranker"
+      ],
+      "use_when": "MoE or indexed projection dispatch matches matrix-level gather and sorted expert groups are large enough.",
+      "avoid_when": "Token groups are tiny, scatter semantics differ, or host extraction of expert IDs is required.",
+      "validation_gate": "Loop oracle parity including duplicates; sorted and unsorted cases; end-to-end MoE win with tokens/expert histogram.",
+      "evidence": [
+        "mlx-doc-gather-mm",
+        "mlx-doc-gather-qmm",
+        "mlx-lm-switch-layers"
+      ],
+      "reviewed": "2026-06-24",
+      "rollback_condition": "Return to loop or batched-per-expert dispatch if small groups or sorting overhead erase the win."
+    },
+    {
+      "id": "block-masked-mm",
+      "title": "Block-masked matrix multiplication primitive",
+      "category": "kernels",
+      "status": "native-mlx",
+      "applies_to": [
+        "sparse-attention",
+        "moe",
+        "structured-sparsity"
+      ],
+      "use_when": "The operation is truly block-structured with legal block size 32 or 64 and enough blocks are skipped.",
+      "avoid_when": "Mask construction or irregularity dominates, or the caller assumes this is full sparse attention/MoE support.",
+      "validation_gate": "Dense oracle parity, legal block-size check, mask construction time, and workload-level win.",
+      "evidence": [
+        "mlx-doc-block-masked-mm"
+      ],
+      "reviewed": "2026-06-24",
+      "rollback_condition": "Disable if mask overhead dominates or block sparsity is too low."
+    },
+    {
+      "id": "hadamard-rotation",
+      "title": "Hadamard rotations for quantization experiments",
+      "category": "quantization",
+      "status": "research-candidate",
+      "applies_to": [
+        "decoder-transformer",
+        "kv-cache"
+      ],
+      "use_when": "Outliers prevent low-bit quality and a compatible runtime path can be built.",
+      "avoid_when": "No fused/efficient rotated low-bit path or added transforms erase benefit.",
+      "validation_gate": "QuaRot/SpinQuant-style quality plus end-to-end MLX benchmark.",
+      "evidence": [
+        "paper-2404-00456",
+        "paper-2405-16406",
+        "mlx-doc-hadamard-transform"
+      ],
+      "reviewed": "2026-06-24"
+    },
+    {
+      "id": "chunked-prefill",
+      "title": "Chunked prefill/encoder execution",
+      "category": "memory",
+      "status": "official-mlx-project",
+      "applies_to": [
+        "long-context",
+        "long-audio",
+        "multimodal"
+      ],
+      "use_when": "Peak memory or scheduler fairness is limited by long prefill.",
+      "avoid_when": "Chunking changes attention/state semantics or TTFT overhead dominates.",
+      "validation_gate": "Full-prefill parity; peak memory and TTFT/throughput reported.",
+      "evidence": [
+        "mlx-lm-repo",
+        "paper-2309-06180"
+      ],
+      "reviewed": "2026-06-23"
+    },
+    {
+      "id": "full-kv-cache",
+      "title": "Exact growing or preallocated KV cache",
+      "category": "cache",
+      "status": "official-mlx-project",
+      "applies_to": [
+        "autoregressive-transformer"
+      ],
+      "use_when": "Baseline incremental generation.",
+      "avoid_when": "Model is recurrent/SSM or trained for a different cache.",
+      "validation_gate": "Full versus incremental logits and reset/reuse tests.",
+      "evidence": [
+        "mlx-lm-cache"
+      ],
+      "reviewed": "2026-06-23"
+    },
+    {
+      "id": "rotating-kv-cache",
+      "title": "Rotating/sliding-window KV cache",
+      "category": "cache",
+      "status": "official-mlx-project",
+      "applies_to": [
+        "window-trained-transformer"
+      ],
+      "use_when": "Architecture specifies local/window attention or bounded-history mode is accepted.",
+      "avoid_when": "Full-attention model needs exact long-context behavior.",
+      "validation_gate": "Boundary/long-context task quality and position tests.",
+      "evidence": [
+        "mlx-lm-cache",
+        "paper-2309-17453"
+      ],
+      "reviewed": "2026-06-23"
+    },
+    {
+      "id": "prompt-cache",
+      "title": "Prompt cache",
+      "category": "cache",
+      "status": "official-mlx-project",
+      "applies_to": [
+        "repeated-prompts",
+        "agents",
+        "rag"
+      ],
+      "use_when": "Requests share immutable token prefixes.",
+      "avoid_when": "Templates/model/adapters/processors change or prefixes rarely repeat.",
+      "validation_gate": "Cache-key isolation, cold/warm parity, TTFT win.",
+      "evidence": [
+        "mlx-lm-repo"
+      ],
+      "reviewed": "2026-06-23"
+    },
+    {
+      "id": "automatic-prefix-cache",
+      "title": "Block-level automatic prefix caching",
+      "category": "cache",
+      "status": "proven-mlx-port",
+      "support_scope": "third-party-pinned",
+      "applies_to": [
+        "serving",
+        "long-context",
+        "multimodal"
+      ],
+      "use_when": "Concurrent/repeated requests share long prefixes.",
+      "avoid_when": "Single isolated requests or cache overhead/duplication exceeds benefit.",
+      "validation_gate": "Cold/warm memory/disk tests, eviction and namespace isolation.",
+      "evidence": [
+        "mlx-vlm-readme",
+        "paper-2402-15220",
+        "paper-2402-05099"
+      ],
+      "reviewed": "2026-06-23"
+    },
+    {
+      "id": "paged-kv-cache",
+      "title": "Paged KV cache",
+      "category": "serving",
+      "status": "proven-mlx-port",
+      "support_scope": "third-party-pinned",
+      "applies_to": [
+        "continuous-serving"
+      ],
+      "use_when": "Fragmentation and variable-length concurrency limit throughput/memory.",
+      "avoid_when": "Single-stream simple workload does not justify scheduler complexity.",
+      "validation_gate": "Block boundary, cancellation, merge/split, throughput and tail tests.",
+      "evidence": [
+        "vllm-mlx-repo",
+        "paper-2309-06180"
+      ],
+      "reviewed": "2026-06-23"
+    },
+    {
+      "id": "ssd-kv-tier",
+      "title": "Persistent SSD/disk KV tier",
+      "category": "serving",
+      "status": "proven-mlx-port",
+      "support_scope": "third-party-pinned",
+      "applies_to": [
+        "long-lived-agents",
+        "prefix-cache"
+      ],
+      "use_when": "Warm prefixes exceed memory and reuse survives process lifetime.",
+      "avoid_when": "Storage latency/endurance or privacy makes persistence unsuitable.",
+      "validation_gate": "Versioned safe serialization, eviction, cold/warm latency, no executable deserialization.",
+      "evidence": [
+        "mlx-vlm-readme",
+        "vllm-mlx-repo"
+      ],
+      "reviewed": "2026-06-23"
+    },
+    {
+      "id": "uniform-kv-quant",
+      "title": "Uniform KV cache quantization",
+      "category": "quantization",
+      "status": "official-mlx-project",
+      "applies_to": [
+        "long-context",
+        "concurrency"
+      ],
+      "use_when": "KV memory limits context/concurrency and native support exists.",
+      "avoid_when": "Short contexts or quant/dequant overhead dominates.",
+      "validation_gate": "Long-context quality, bytes/token/layer, decode latency.",
+      "evidence": [
+        "mlx-lm-repo",
+        "mlx-vlm-readme",
+        "paper-2402-02750"
+      ],
+      "reviewed": "2026-06-23"
+    },
+    {
+      "id": "turboquant-kv",
+      "title": "TurboQuant KV compression in pinned MLX-VLM paths",
+      "category": "quantization",
+      "status": "proven-mlx-port",
+      "support_scope": "third-party-pinned",
+      "applies_to": [
+        "long-context-vlm",
+        "serving"
+      ],
+      "use_when": "A pinned MLX-VLM implementation supports the target architecture/cache path and KV memory is dominant.",
+      "avoid_when": "Assuming native MLX core support, or combining with unvalidated rotating, sliding, MLA, batching, or prompt-cache paths.",
+      "validation_gate": "Quality across context lengths, cache-composition tests, batch-aware kernel coverage, and end-to-end MLX-VLM benchmark with rollback.",
+      "evidence": [
+        "mlx-vlm-repo",
+        "mlx-vlm-readme"
+      ],
+      "reviewed": "2026-06-24"
+    },
+    {
+      "id": "mixed-precision-kv",
+      "title": "Layerwise/key-value/adaptive mixed-precision KV",
+      "category": "quantization",
+      "status": "research-candidate",
+      "applies_to": [
+        "long-context"
+      ],
+      "use_when": "Uniform KV precision fails quality target and context memory is the measured bottleneck.",
+      "avoid_when": "Complexity, calibration, rotation, or per-token conversion erases gain.",
+      "validation_gate": "Adaptive/RoPE-aware/hardware-aware search reproduced on MLX with long-context quality, bytes/token/layer, and decode latency.",
+      "evidence": [
+        "paper-2502-04420",
+        "paper-2502-15075",
+        "paper-2602-23200",
+        "paper-2604-04722",
+        "paper-2606-20474",
+        "paper-2606-24033"
+      ],
+      "reviewed": "2026-06-24"
+    },
+    {
+      "id": "classic-speculative",
+      "title": "Independent draft-model speculative decoding",
+      "category": "decoding",
+      "status": "official-mlx-project",
+      "applies_to": [
+        "autoregressive-decoder"
+      ],
+      "use_when": "Compatible smaller draft has high acceptance and target verification is efficient.",
+      "avoid_when": "Draft memory/latency, low acceptance, high batch, or quantized verification negates gain.",
+      "validation_gate": "Lossless distribution test, acceptance stats, TTFT/decode/end-to-end benchmark.",
+      "evidence": [
+        "mlx-lm-speculative",
+        "paper-2211-17192",
+        "paper-2302-01318"
+      ],
+      "reviewed": "2026-06-24"
+    },
+    {
+      "id": "prompt-lookup",
+      "title": "Prompt lookup / n-gram speculation",
+      "category": "decoding",
+      "status": "research-candidate",
+      "applies_to": [
+        "repetitive-prompts",
+        "code",
+        "rag"
+      ],
+      "use_when": "Output frequently copies prompt/context sequences and the target MLX runtime implements the drafter.",
+      "avoid_when": "Creative or low-copy workloads, or no tested MLX prompt-lookup path exists.",
+      "validation_gate": "Exactness, hit rate, accepted length, and end-to-end latency reproduced in MLX.",
+      "evidence": [
+        "prompt-lookup-decoding-repo"
+      ],
+      "reviewed": "2026-06-24"
+    },
+    {
+      "id": "medusa",
+      "title": "Medusa multi-head speculative decoding",
+      "category": "decoding",
+      "status": "research-candidate",
+      "applies_to": [
+        "decoder-transformer"
+      ],
+      "use_when": "Compatible trained heads and tree verification path exist.",
+      "avoid_when": "No trained heads or verification overhead dominates low-bit target.",
+      "validation_gate": "Distribution/quality parity, acceptance tree stats, MLX end-to-end win.",
+      "evidence": [
+        "paper-2401-10774",
+        "paper-2505-22179"
+      ],
+      "reviewed": "2026-06-23"
+    },
+    {
+      "id": "eagle-family",
+      "title": "EAGLE/EAGLE3 feature-level speculation",
+      "category": "decoding",
+      "status": "proven-mlx-port",
+      "support_scope": "third-party-pinned",
+      "applies_to": [
+        "compatible-decoder",
+        "vlm"
+      ],
+      "use_when": "Pinned compatible drafter artifacts and target feature interface exist.",
+      "avoid_when": "Architecture/revision mismatch or unsupported feature tap.",
+      "validation_gate": "Drafter compatibility, lossless acceptance, end-to-end benchmark.",
+      "evidence": [
+        "paper-2401-15077",
+        "mlx-vlm-readme"
+      ],
+      "reviewed": "2026-06-23"
+    },
+    {
+      "id": "dflash",
+      "title": "DFlash block-diffusion drafter",
+      "category": "decoding",
+      "status": "proven-mlx-port",
+      "support_scope": "third-party-pinned",
+      "applies_to": [
+        "compatible-decoder",
+        "vlm"
+      ],
+      "use_when": "Current MLX-VLM path and compatible drafter are available.",
+      "avoid_when": "No compatible artifact or drafting latency is not amortized.",
+      "validation_gate": "Exact verification, acceptance/block stats, end-to-end benchmark.",
+      "evidence": [
+        "paper-2602-06036",
+        "mlx-vlm-readme"
+      ],
+      "reviewed": "2026-06-23"
+    },
+    {
+      "id": "mtp",
+      "title": "Native multi-token prediction heads",
+      "category": "decoding",
+      "status": "proven-mlx-port",
+      "support_scope": "third-party-pinned",
+      "applies_to": [
+        "mtp-trained-models"
+      ],
+      "use_when": "Model ships trained MTP heads and runtime supports acceptance/cache update.",
+      "avoid_when": "Retrofitting untrained heads or incompatible sampler.",
+      "validation_gate": "Head/logit parity, acceptance, quality and throughput.",
+      "evidence": [
+        "mlx-vlm-readme",
+        "vllm-mlx-repo"
+      ],
+      "reviewed": "2026-06-23"
+    },
+    {
+      "id": "speech-speculative",
+      "title": "Speculative decoding for autoregressive speech tokens",
+      "category": "decoding",
+      "status": "research-candidate",
+      "applies_to": [
+        "autoregressive-audio-lm"
+      ],
+      "use_when": "Token schedule permits parallel verification and a compatible drafter exists.",
+      "avoid_when": "Delay/codebook scheduling or codec quality breaks under rollback.",
+      "validation_gate": "Token distribution, intelligibility/speaker quality, first-audio and RTF.",
+      "evidence": [
+        "paper-2505-15380"
+      ],
+      "reviewed": "2026-06-23"
+    },
+    {
+      "id": "continuous-batching",
+      "title": "Continuous batching",
+      "category": "serving",
+      "status": "proven-mlx-port",
+      "support_scope": "third-party-pinned",
+      "applies_to": [
+        "server"
+      ],
+      "use_when": "Concurrent requests justify scheduler complexity.",
+      "avoid_when": "Single-user latency is the only objective.",
+      "validation_gate": "Admission/cancel/compaction correctness, P50/P95 latency and throughput.",
+      "evidence": [
+        "mlx-vlm-readme",
+        "vllm-mlx-repo",
+        "orca-osdi22"
+      ],
+      "reviewed": "2026-06-24"
+    },
+    {
+      "id": "prefix-aware-batching",
+      "title": "Shared-prefix batching",
+      "category": "serving",
+      "status": "research-candidate",
+      "applies_to": [
+        "batch-inference",
+        "agents"
+      ],
+      "use_when": "Many requests share a large exact prefix.",
+      "avoid_when": "Prefixes differ or isolated latency is primary.",
+      "validation_gate": "Cache isolation and Hydragen/BatchLLM-style throughput reproduced on MLX.",
+      "evidence": [
+        "paper-2402-05099",
+        "paper-2412-03594"
+      ],
+      "reviewed": "2026-06-23"
+    },
+    {
+      "id": "sparse-prefill",
+      "title": "Attention-guided sparse prefill",
+      "category": "attention",
+      "status": "proven-mlx-port",
+      "support_scope": "third-party-pinned",
+      "applies_to": [
+        "long-context-serving"
+      ],
+      "use_when": "TTFT is dominated by long prefill and quality trade-off is accepted.",
+      "avoid_when": "Exact full-attention behavior is required.",
+      "validation_gate": "Long-context task quality, TTFT, memory and fallback.",
+      "evidence": [
+        "vllm-mlx-repo",
+        "paper-2412-10319"
+      ],
+      "reviewed": "2026-06-23"
+    },
+    {
+      "id": "kv-pruning",
+      "title": "KV cache pruning/eviction",
+      "category": "attention",
+      "status": "research-candidate",
+      "applies_to": [
+        "long-context"
+      ],
+      "use_when": "Memory is dominant and workload tolerates approximate attention.",
+      "avoid_when": "Exact retrieval/reasoning or no quality benchmark.",
+      "validation_gate": "LongBench/retrieval/reasoning plus memory/decode results.",
+      "evidence": [
+        "paper-2306-14048",
+        "paper-2404-14469",
+        "paper-2509-04377"
+      ],
+      "reviewed": "2026-06-23"
+    },
+    {
+      "id": "low-rank-kv",
+      "title": "Low-rank KV/attention projection",
+      "category": "attention",
+      "status": "research-candidate",
+      "applies_to": [
+        "long-context"
+      ],
+      "use_when": "Architecture or retraining supports low-rank representation.",
+      "avoid_when": "Post-hoc projection causes unacceptable drift or extra compute.",
+      "validation_gate": "Task quality and MLX kernel/end-to-end result.",
+      "evidence": [
+        "paper-2408-05646",
+        "paper-2405-04434"
+      ],
+      "reviewed": "2026-06-23"
+    },
+    {
+      "id": "weight-affine-4bit",
+      "title": "Affine 4-bit weight-only quantization",
+      "category": "quantization",
+      "status": "official-mlx-project",
+      "applies_to": [
+        "linear-heavy-models"
+      ],
+      "use_when": "Model is memory-bandwidth limited and quality survives.",
+      "avoid_when": "Small convolutions/recurrent/state/output layers are sensitive or unsupported.",
+      "validation_gate": "Model-specific quality, load/memory, prefill/decode/RTF.",
+      "evidence": [
+        "mlx-lm-convert",
+        "mlx-audio-convert"
+      ],
+      "reviewed": "2026-06-23"
+    },
+    {
+      "id": "weight-mixed-bit",
+      "title": "Mixed-bit weight quantization",
+      "category": "quantization",
+      "status": "official-mlx-project",
+      "applies_to": [
+        "language",
+        "audio"
+      ],
+      "use_when": "Uniform low-bit fails quality and library recipe exists.",
+      "avoid_when": "No sensitivity evidence or recipe cannot be reproduced.",
+      "validation_gate": "Recipe manifest, quality, kernel coverage and end-to-end benchmark.",
+      "evidence": [
+        "mlx-audio-convert",
+        "paper-2401-06118",
+        "paper-2402-04396"
+      ],
+      "reviewed": "2026-06-23"
+    },
+    {
+      "id": "mxfp4-nvfp4-mxfp8",
+      "title": "Native MLX affine/MX/NV low-bit quantization modes",
+      "category": "quantization",
+      "status": "native-mlx",
+      "applies_to": [
+        "linear-heavy-models"
+      ],
+      "use_when": "Runtime/model path supports the format and hardware shapes benefit.",
+      "avoid_when": "Format is only serializable, group-size constraints fail, or activation quantization is requested outside supported Linear modes.",
+      "validation_gate": "Load, parity/quality and end-to-end performance for exact model; `quantize_input=True` only where MLX supports it.",
+      "evidence": [
+        "mlx-doc-core-quantize",
+        "mlx-doc-nn-quantize",
+        "mlx-lm-convert",
+        "mlx-audio-convert"
+      ],
+      "reviewed": "2026-06-24"
+    },
+    {
+      "id": "activation-quant",
+      "title": "Activation quantization",
+      "category": "quantization",
+      "status": "research-candidate",
+      "applies_to": [
+        "large-transformer"
+      ],
+      "use_when": "Weight-only memory is insufficient and efficient kernels exist.",
+      "avoid_when": "No MLX kernel or activation outliers cause quality collapse.",
+      "validation_gate": "Calibration/quality and true end-to-end MLX speed.",
+      "evidence": [
+        "paper-2211-10438",
+        "paper-2404-00456",
+        "paper-2405-04532"
+      ],
+      "reviewed": "2026-06-23"
+    },
+    {
+      "id": "lora",
+      "title": "LoRA adapters",
+      "category": "training",
+      "status": "official-mlx-project",
+      "applies_to": [
+        "language-model",
+        "compatible-linear-model"
+      ],
+      "use_when": "Task/model adaptation is needed without full fine-tuning.",
+      "avoid_when": "Architecture/modules unsupported or adapter provenance missing.",
+      "validation_gate": "Small-batch overfit, save/reload, merged/unmerged parity.",
+      "evidence": [
+        "paper-2106-09685",
+        "mlx-lm-repo"
+      ],
+      "reviewed": "2026-06-23"
+    },
+    {
+      "id": "qlora",
+      "title": "Quantized LoRA training",
+      "category": "training",
+      "status": "research-candidate",
+      "applies_to": [
+        "language-model"
+      ],
+      "use_when": "Memory limits fine-tuning and a compatible quantized training path exists.",
+      "avoid_when": "Runtime supports only inference quantization or optimizer quality is unverified.",
+      "validation_gate": "Training stability, eval quality, memory and reproducibility.",
+      "evidence": [
+        "paper-2305-14314"
+      ],
+      "reviewed": "2026-06-23"
+    },
+    {
+      "id": "codec-search-vectorization",
+      "title": "Vectorized neural-codec codebook search",
+      "category": "audio",
+      "status": "proven-mlx-port",
+      "applies_to": [
+        "neural-audio-codec"
+      ],
+      "use_when": "Quantizer distance/search dominates codec RTF.",
+      "avoid_when": "Codebooks are tiny or memory/layout overhead dominates.",
+      "validation_gate": "Exact code indices against loop/source and end-to-end RTF.",
+      "evidence": [
+        "mlx-audio-codecs",
+        "paper-2107-03312",
+        "paper-2210-13438"
+      ],
+      "reviewed": "2026-06-23"
+    },
+    {
+      "id": "codec-stream-state",
+      "title": "Persistent codec streaming state",
+      "category": "audio",
+      "status": "research-candidate",
+      "applies_to": [
+        "neural-audio-codec",
+        "streaming-speech"
+      ],
+      "use_when": "Codec is causal/streamable and recomputation causes latency.",
+      "avoid_when": "Codec was trained noncausally without a legal streaming mode.",
+      "validation_gate": "Offline/streaming parity, partition invariance, boundary quality.",
+      "evidence": [
+        "paper-2410-00037",
+        "paper-2411-18803"
+      ],
+      "reviewed": "2026-06-24"
+    },
+    {
+      "id": "audio-overlap-add",
+      "title": "Overlap-add mid-generation streaming",
+      "category": "audio",
+      "status": "proven-mlx-port",
+      "applies_to": [
+        "tts",
+        "codec",
+        "vocoder"
+      ],
+      "use_when": "Decoder can emit overlapping chunks with known window/context.",
+      "avoid_when": "Insufficient future context or untested phase/window behavior.",
+      "validation_gate": "No clicks, partition tests, first-audio and RTF win.",
+      "evidence": [
+        "mlx-audio-release-044"
+      ],
+      "reviewed": "2026-06-23"
+    },
+    {
+      "id": "icl-conditioning-cache",
+      "title": "Reference/ICL conditioning cache",
+      "category": "audio",
+      "status": "proven-mlx-port",
+      "applies_to": [
+        "voice-cloning-tts",
+        "omni"
+      ],
+      "use_when": "Repeated requests reuse identical reference conditioning.",
+      "avoid_when": "Reference preprocessing/model/codec changes or privacy policy forbids cache.",
+      "validation_gate": "Strong cache key, cold/warm parity and first-audio improvement.",
+      "evidence": [
+        "mlx-audio-release-044"
+      ],
+      "reviewed": "2026-06-23"
+    },
+    {
+      "id": "low-frame-rate-codec",
+      "title": "Lower frame-rate / fewer-token codec mode",
+      "category": "audio",
+      "status": "research-candidate",
+      "applies_to": [
+        "audio-lm",
+        "tts"
+      ],
+      "use_when": "A compatible trained codec offers lower token rate.",
+      "avoid_when": "Post-hoc downsampling or incompatible LM/codec revisions.",
+      "validation_gate": "Reconstruction and downstream TTS/ASR quality plus end-to-end RTF.",
+      "evidence": [
+        "paper-2408-16532",
+        "paper-2601-15621",
+        "paper-2601-23174"
+      ],
+      "reviewed": "2026-06-23"
+    },
+    {
+      "id": "delay-parallel-codebooks",
+      "title": "Delay/interleave or parallel codebook prediction",
+      "category": "audio",
+      "status": "proven-mlx-port",
+      "applies_to": [
+        "autoregressive-audio-lm"
+      ],
+      "use_when": "Model is trained with a known schedule that exposes parallelism.",
+      "avoid_when": "Schedule is inferred incorrectly or target uses sequential residual dependencies.",
+      "validation_gate": "Exact schedule/token reconstruction and audio quality.",
+      "evidence": [
+        "mlx-audio-release-044",
+        "paper-2306-05284",
+        "paper-2305-09636",
+        "paper-2507-12197"
+      ],
+      "reviewed": "2026-06-24"
+    },
+    {
+      "id": "vocoder-compile",
+      "title": "Compile stable vocoder/codec decoder regions",
+      "category": "audio",
+      "status": "native-mlx",
+      "applies_to": [
+        "vocoder",
+        "codec"
+      ],
+      "use_when": "Stable shapes repeat and convolution/FFT graph is significant.",
+      "avoid_when": "Dynamic shape retracing or compilation cost dominates short clips.",
+      "validation_gate": "Waveform parity, cold/warm RTF, multiple lengths.",
+      "evidence": [
+        "mlx-doc-compile",
+        "mlx-audio-codecs"
+      ],
+      "reviewed": "2026-06-23"
+    },
+    {
+      "id": "streaming-asr-state",
+      "title": "Stateful streaming ASR cache",
+      "category": "audio",
+      "status": "research-candidate",
+      "applies_to": [
+        "streaming-asr"
+      ],
+      "use_when": "Model is trained for constrained context/chunks.",
+      "avoid_when": "Offline full-context encoder has no legal stateful mode.",
+      "validation_gate": "Chunk partition tests, WER/timestamps and latency.",
+      "evidence": [
+        "paper-2312-17279",
+        "paper-2002-02562"
+      ],
+      "reviewed": "2026-06-23"
+    },
+    {
+      "id": "vad-gating",
+      "title": "VAD-gated speech pipeline",
+      "category": "audio",
+      "status": "proven-mlx-port",
+      "applies_to": [
+        "asr",
+        "speech-to-speech"
+      ],
+      "use_when": "Silence dominates workload and recall can be validated.",
+      "avoid_when": "Clipped speech/turn-taking errors are costly or audio is continuous non-speech.",
+      "validation_gate": "Speech recall/endpoint quality plus end-to-end workload RTF.",
+      "evidence": [
+        "mlx-audio-release-044"
+      ],
+      "reviewed": "2026-06-23"
+    },
+    {
+      "id": "moe-top-k-reduction",
+      "title": "Reduce active MoE experts at inference",
+      "category": "moe",
+      "status": "research-candidate",
+      "applies_to": [
+        "moe-decoder-transformer"
+      ],
+      "use_when": "A product explicitly accepts a lossy altered-model mode and quality benchmarks include routing-sensitive prompts.",
+      "avoid_when": "Default porting, parity work, or any claim of preserving the source model.",
+      "validation_gate": "Label as lossy; compare quality, router behavior, latency, and rollback on regression.",
+      "evidence": [
+        "vllm-mlx-repo",
+        "paper-2401-04088",
+        "paper-2405-04434"
+      ],
+      "reviewed": "2026-06-24",
+      "support_scope": "third_party_pinned",
+      "rollback_condition": "Restore trained top-k if quality, routing, or task behavior changes beyond the declared product budget."
+    },
+    {
+      "id": "custom-metal-kernel",
+      "title": "Custom Metal/MLX extension",
+      "category": "kernels",
+      "status": "native-mlx",
+      "applies_to": [
+        "all"
+      ],
+      "use_when": "A stable profiled hotspot lacks an adequate native operation.",
+      "avoid_when": "Parity is incomplete or the win is microbenchmark-only.",
+      "validation_gate": "Reference/fallback, shape/dtype tests, gradients if needed, end-to-end win.",
+      "evidence": [
+        "mlx-doc-custom-extensions"
+      ],
+      "reviewed": "2026-06-23"
+    },
+    {
+      "id": "cache-privacy-review",
+      "title": "Cache privacy and tenant isolation review",
+      "category": "security-privacy",
+      "status": "research-candidate",
+      "applies_to": [
+        "server",
+        "rag",
+        "agents"
+      ],
+      "use_when": "Any prompt, prefix, KV, block, or content cache can be reused across users, tenants, sessions, or persisted tiers.",
+      "avoid_when": "Single-user local-only ports with no persisted or shared cache can document this as not applicable.",
+      "validation_gate": "Namespace isolation, opt-out, cache deletion/persistence policy, timing/leakage review, and malformed request tests.",
+      "evidence": [
+        "paper-2606-21842",
+        "vllm-blog-anatomy",
+        "sankalp-prompt-cache-blog",
+        "vllm-mlx-repo"
+      ],
+      "reviewed": "2026-06-24"
+    },
+    {
+      "id": "segmented-mm-candidate",
+      "title": "Segmented matmul candidate",
+      "category": "kernels",
+      "status": "research-candidate",
+      "applies_to": [
+        "moe-decoder-transformer",
+        "segmented-projection"
+      ],
+      "use_when": "A target MLX build exposes the needed binding and a segment layout exactly matches the source math.",
+      "avoid_when": "Only the C++ primitive is documented or the MoE mapping has not been proven.",
+      "validation_gate": "Minimal segmented-mm oracle against explicit slices before any MoE dispatch claim.",
+      "evidence": [
+        "mlx-doc-cpp-ops"
+      ],
+      "reviewed": "2026-06-24",
+      "rollback_condition": "Reject if Python binding, shape mapping, or loop parity fails."
+    },
+    {
+      "id": "moe-gate-up-fusion",
+      "title": "MoE gate/up projection fusion",
+      "category": "kernels",
+      "status": "research-candidate",
+      "applies_to": [
+        "moe-decoder-transformer"
+      ],
+      "use_when": "A source-compatible fused checkpoint layout or explicit conversion exists and projected shapes are large enough.",
+      "avoid_when": "The runtime proposal is unmerged, checkpoint compatibility is uncertain, or two projections are not the bottleneck.",
+      "validation_gate": "Token-exact parity, old/new checkpoint load tests, and A/B/A end-to-end benchmark.",
+      "evidence": [
+        "mlx-lm-issue-956",
+        "mlx-lm-switch-layers"
+      ],
+      "reviewed": "2026-06-24",
+      "rollback_condition": "Reject if conversion is not reversible or throughput gain is inside noise."
+    },
+    {
+      "id": "expert-weight-quantization",
+      "title": "Per-expert weight quantization",
+      "category": "quantization",
+      "status": "native-mlx",
+      "applies_to": [
+        "moe-decoder-transformer"
+      ],
+      "use_when": "Expert matrices dominate memory and quality is insensitive after per-layer testing.",
+      "avoid_when": "Router, shared gates, norms, or small projections are being quantized blindly.",
+      "validation_gate": "FP baseline, rare-expert prompts, per-expert quality, memory, tok/s, load/save roundtrip.",
+      "evidence": [
+        "mlx-doc-core-quantize",
+        "mlx-doc-gather-qmm",
+        "mlx-lm-switch-layers"
+      ],
+      "reviewed": "2026-06-24",
+      "rollback_condition": "Revert affected experts if rare-expert quality or small-group latency regresses."
+    },
+    {
+      "id": "vision-feature-cache",
+      "title": "Projected vision feature cache",
+      "category": "cache",
+      "status": "proven-mlx-port",
+      "applies_to": [
+        "vision-language-omni",
+        "multimodal-serving"
+      ],
+      "use_when": "Repeated identical media uses the same model, processor, projector, dtype, and preprocessing knobs.",
+      "avoid_when": "Media content, processor revision, projector, dtype, or tenant namespace cannot be keyed reliably.",
+      "validation_gate": "Cold/warm logits parity, content-hash key test, eviction/reset tests, and TTFT/prompt throughput benchmark.",
+      "evidence": [
+        "mlx-vlm-vision-cache-source",
+        "mlx-vlm-readme"
+      ],
+      "reviewed": "2026-06-24",
+      "support_scope": "third_party_pinned",
+      "rollback_condition": "Disable if cache keys miss revision/media fields or warm outputs drift from cold outputs."
+    },
+    {
+      "id": "mllm-content-prefix-cache",
+      "title": "Content-hashed multimodal prefix cache",
+      "category": "cache",
+      "status": "proven-mlx-port",
+      "applies_to": [
+        "vision-language-omni",
+        "multimodal-serving",
+        "long-context-vlm"
+      ],
+      "use_when": "Repeated media plus prompt prefixes recur across requests and the runtime has media-aware prefix safety.",
+      "avoid_when": "Suffix contains new media placeholders not covered by the restored cache or tenant isolation is absent.",
+      "validation_gate": "Media extra hashes, LoRA/adapter/template/processor/tenant keys, cold/warm parity, mixed-batch and eviction tests.",
+      "evidence": [
+        "mlx-vlm-apc-source",
+        "mlx-vlm-ar-cache-guards",
+        "vllm-mlx-mllm-batch-source",
+        "vllm-doc-prefix-caching",
+        "paper-2601-19139"
+      ],
+      "reviewed": "2026-06-24",
+      "support_scope": "third_party_pinned",
+      "rollback_condition": "Disable cross-request reuse if media placeholder safety or namespace isolation fails."
+    },
+    {
+      "id": "mllm-pixel-preprocess-cache",
+      "title": "Multimodal pixel/preprocess cache",
+      "category": "cache",
+      "status": "proven-mlx-port",
+      "applies_to": [
+        "vision-language-omni",
+        "multimodal-serving"
+      ],
+      "use_when": "Image/video preprocessing is repeated and cache keys include media bytes plus all resize/FPS/pixel knobs.",
+      "avoid_when": "Remote URL strings or paths are used as keys without content hashes.",
+      "validation_gate": "Cold/warm processor tensor parity, key invalidation on knob changes, memory accounting, and latency benchmark.",
+      "evidence": [
+        "vllm-mlx-vision-cache-source",
+        "vllm-mlx-multimodal-guide"
+      ],
+      "reviewed": "2026-06-24",
+      "support_scope": "third_party_pinned",
+      "rollback_condition": "Disable if stale media, frame selection, or processor changes can hit the cache."
+    },
+    {
+      "id": "video-input-budgeting",
+      "title": "Video FPS/frame/pixel input budgeting",
+      "category": "preprocessing",
+      "status": "proven-mlx-port",
+      "applies_to": [
+        "vision-language-omni",
+        "video-vlm"
+      ],
+      "use_when": "The user accepts a quality-latency trade-off and the runtime exposes FPS, max-frame, or pixel-budget controls.",
+      "avoid_when": "OCR, small-object, temporal reasoning, or frame-order tasks require full visual detail.",
+      "validation_gate": "Record visual token count, TTFT, decode TPS, peak memory, and task-quality deltas per model family.",
+      "evidence": [
+        "vllm-mlx-multimodal-guide",
+        "paper-2409-12191",
+        "paper-2502-13923"
+      ],
+      "reviewed": "2026-06-24",
+      "support_scope": "third_party_pinned",
+      "rollback_condition": "Restore higher visual budget if quality drops on OCR/diagram/video reasoning probes."
+    },
+    {
+      "id": "visual-token-pruning-or-merge",
+      "title": "Generic visual-token pruning or merging",
+      "category": "preprocessing",
+      "status": "research-candidate",
+      "applies_to": [
+        "vision-language-omni"
+      ],
+      "use_when": "A model-specific pruning method is implemented in MLX and quality gates cover the task domain.",
+      "avoid_when": "Trying to make arbitrary VLMs faster without model-specific visual-token semantics.",
+      "validation_gate": "Per-model token-count, logits/answer quality, OCR/DocVQA/video probes, and rollback threshold.",
+      "evidence": [
+        "paper-2412-04467",
+        "paper-2403-15388",
+        "llava-onevision-blog"
+      ],
+      "reviewed": "2026-06-24",
+      "rollback_condition": "Reject if text/diagram/OCR/video quality regresses or no end-to-end win remains."
+    },
+    {
+      "id": "fastvlm-style-efficient-encoder",
+      "title": "FastVLM-style efficient visual encoder",
+      "category": "architecture-change",
+      "status": "research-candidate",
+      "applies_to": [
+        "vision-language-omni"
+      ],
+      "use_when": "You are training or choosing a different VLM architecture, not merely optimizing an existing port.",
+      "avoid_when": "Porting existing weights where replacing the encoder/projector would invalidate the model.",
+      "validation_gate": "Treat as a new model: retraining/distillation evidence, quality benchmark, and new provenance record.",
+      "evidence": [
+        "paper-2412-13303",
+        "apple-fastvlm-blog"
+      ],
+      "reviewed": "2026-06-24",
+      "rollback_condition": "Do not advertise as an optimization for an existing checkpoint."
+    },
+    {
+      "id": "qwen3-tts-batch-generation",
+      "title": "Qwen3-TTS batch generation",
+      "category": "audio-serving",
+      "status": "proven-mlx-port",
+      "applies_to": [
+        "autoregressive-audio-lm",
+        "tts",
+        "server"
+      ],
+      "use_when": "Multiple Qwen3-TTS requests can be batched with compatible voices/sampling and tail latency budget.",
+      "avoid_when": "Single-user first-audio latency is the only objective or model route lacks batch_generate.",
+      "validation_gate": "Single vs batched parity, mixed voices/lengths, cancellation, TTFB, throughput, memory, and audio quality.",
+      "evidence": [
+        "mlx-audio-qwen3-tts-docs",
+        "mlx-audio-release-044"
+      ],
+      "reviewed": "2026-06-24",
+      "support_scope": "third_party_pinned",
+      "rollback_condition": "Disable batching if TTFB/tail latency or per-request quality regresses."
+    },
+    {
+      "id": "audio-reference-conditioning-cache",
+      "title": "Audio reference / ICL conditioning cache",
+      "category": "cache",
+      "status": "proven-mlx-port",
+      "applies_to": [
+        "autoregressive-audio-lm",
+        "tts",
+        "voice-cloning"
+      ],
+      "use_when": "Repeated reference voice/context conditioning is reused by the same model and quantization recipe.",
+      "avoid_when": "Speaker/reference content, tokenizer/codec, model, or tenant namespace cannot be keyed exactly.",
+      "validation_gate": "Cold/warm parity, cache hit accounting, speaker similarity, privacy namespace, and memory pressure tests.",
+      "evidence": [
+        "mlx-audio-release-044",
+        "mlx-audio-qwen3-tts-docs"
+      ],
+      "reviewed": "2026-06-24",
+      "support_scope": "third_party_pinned",
+      "rollback_condition": "Disable if voice identity, prosody, or tenant isolation drifts."
+    },
+    {
+      "id": "generic-audio-prefix-cache",
+      "title": "Generic audio prefix cache",
+      "category": "cache",
+      "status": "research-candidate",
+      "applies_to": [
+        "audio-lm",
+        "tts",
+        "stt",
+        "speech-to-speech"
+      ],
+      "use_when": "A concrete MLX-Audio model exposes a compatible cache and repeated audio/text prefixes dominate.",
+      "avoid_when": "Borrowing text/VLM prefix-cache speedup numbers for audio without model-specific proof.",
+      "validation_gate": "Model-specific cold/warm parity, cache key, audio quality, WER/CER or speaker similarity, and RTF benchmark.",
+      "evidence": [
+        "mlx-audio-streaming-guide",
+        "paper-2601-15621",
+        "paper-2601-19139"
+      ],
+      "reviewed": "2026-06-24",
+      "rollback_condition": "Reject if cache composition with codec/speaker/state changes outputs or has no audio-specific win."
+    }
+  ]
+}

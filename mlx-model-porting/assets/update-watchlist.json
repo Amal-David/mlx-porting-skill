@@ -1,0 +1,83 @@
+{
+  "schema_version": 1,
+  "repositories": [
+    {
+      "repo": "ml-explore/mlx",
+      "topics": [
+        "runtime",
+        "kernels",
+        "quantization"
+      ]
+    },
+    {
+      "repo": "ml-explore/mlx-lm",
+      "topics": [
+        "language",
+        "conversion",
+        "decoding",
+        "cache"
+      ]
+    },
+    {
+      "repo": "ml-explore/mlx-examples",
+      "topics": [
+        "architectures",
+        "audio",
+        "vision"
+      ]
+    },
+    {
+      "repo": "Blaizzy/mlx-vlm",
+      "topics": [
+        "multimodal",
+        "serving",
+        "speculative"
+      ]
+    },
+    {
+      "repo": "Blaizzy/mlx-audio",
+      "topics": [
+        "audio",
+        "tts",
+        "stt",
+        "codec"
+      ]
+    },
+    {
+      "repo": "waybarrios/vllm-mlx",
+      "topics": [
+        "serving",
+        "cache",
+        "batching"
+      ]
+    },
+    {
+      "repo": "anthropics/skills",
+      "topics": [
+        "agent-skills"
+      ]
+    },
+    {
+      "repo": "openai/codex",
+      "topics": [
+        "agent-skills",
+        "codex"
+      ]
+    }
+  ],
+  "paper_queries": [
+    "MLX Apple Silicon inference optimization",
+    "speculative decoding EAGLE DFlash MTP Medusa",
+    "KV cache quantization long context",
+    "attention inference serving prefix cache continuous batching",
+    "neural audio codec speech tokenizer streaming",
+    "text to speech inference acceleration",
+    "streaming ASR on-device quantization",
+    "Metal GPU custom kernel machine learning"
+  ],
+  "policy": {
+    "auto_modify_recommendations": false,
+    "auto_merge": false,
+    "require_human_review": true
+  }
+}

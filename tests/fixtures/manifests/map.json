@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "entries": [
+    {
+      "source": "linear.weight",
+      "target": "layer.weight",
+      "transforms": [
+        {
+          "op": "transpose",
+          "axes": [
+            1,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "source": "linear.bias",
+      "target": "layer.bias",
+      "transforms": []
+    }
+  ],
+  "ignored_source": [],
+  "generated_target": []
+}

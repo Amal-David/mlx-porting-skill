@@ -1,0 +1,140 @@
+{
+  "schema_version": 1,
+  "reviewed": "2026-06-24",
+  "objective_tags": [
+    {
+      "id": "ttft",
+      "label": "time to first token or first chunk"
+    },
+    {
+      "id": "prefill-throughput",
+      "label": "prompt, encoder, or media prefill throughput"
+    },
+    {
+      "id": "decode-throughput",
+      "label": "steady token/frame decode speed"
+    },
+    {
+      "id": "concurrent-throughput",
+      "label": "aggregate throughput under concurrency"
+    },
+    {
+      "id": "first-audio-latency",
+      "label": "time to first audio or partial transcript"
+    },
+    {
+      "id": "rtf",
+      "label": "real-time factor for audio/speech"
+    },
+    {
+      "id": "peak-memory",
+      "label": "peak unified memory"
+    },
+    {
+      "id": "model-size",
+      "label": "on-disk or loaded model size"
+    },
+    {
+      "id": "quality-retention",
+      "label": "task or perceptual quality retention"
+    },
+    {
+      "id": "privacy-safety",
+      "label": "cache or serving isolation safety"
+    },
+    {
+      "id": "latency",
+      "label": "general latency"
+    },
+    {
+      "id": "throughput",
+      "label": "general throughput"
+    },
+    {
+      "id": "prefill-latency",
+      "label": "prefill latency"
+    },
+    {
+      "id": "decode-latency",
+      "label": "decode latency"
+    },
+    {
+      "id": "long-context",
+      "label": "long-context capacity or quality"
+    },
+    {
+      "id": "concurrency",
+      "label": "request concurrency"
+    },
+    {
+      "id": "tail-latency",
+      "label": "tail latency"
+    },
+    {
+      "id": "streaming-quality",
+      "label": "streaming audio or transcript quality"
+    },
+    {
+      "id": "serving-safety",
+      "label": "serving and cache safety"
+    }
+  ],
+  "tradeoff_dimensions": [
+    "latency",
+    "throughput",
+    "peak_memory",
+    "quality",
+    "implementation_complexity",
+    "portability",
+    "security_privacy"
+  ],
+  "evidence_classes": [
+    "issue_report",
+    "local_benchmark_artifact",
+    "official_api_doc",
+    "pinned_mlx_repo",
+    "primary_paper",
+    "primary_source_code",
+    "release_note",
+    "technical_blog"
+  ],
+  "support_scopes": [
+    "context_only",
+    "local_reproduced",
+    "official_mlx",
+    "official_mlx_project",
+    "paper_only",
+    "third_party_pinned"
+  ],
+  "improvement_band_policy": {
+    "profile_required": "No numeric band may be claimed until measured on the target workload.",
+    "source_reported": "A cited source reports the range; keep its hardware/workload caveat attached.",
+    "local_reproduced": "A local benchmark artifact reproduces the result with metadata and quality gate.",
+    "not_a_speedup": "The item is a correctness, risk, or product-mode decision rather than an optimization claim."
+  },
+  "claim_types": [
+    "algorithm_candidate",
+    "api_support",
+    "audio_quality",
+    "memory",
+    "mlx_implementation",
+    "performance",
+    "quality",
+    "risk_or_negative",
+    "serving_semantics"
+  ],
+  "recommendation_status_order": [
+    "native-mlx",
+    "official-mlx-project",
+    "proven-mlx-port",
+    "research-candidate",
+    "rejected-or-superseded"
+  ],
+  "default_keep_gate": [
+    "correctness/parity passes",
+    "quality stays within declared budget",
+    "end-to-end target metric improves beyond noise",
+    "memory remains inside budget",
+    "rollback condition is written before publishing"
+  ]
+}
