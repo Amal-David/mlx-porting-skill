@@ -1,0 +1,14 @@
+{
+  "name": "neural-audio-codec",
+  "fixture": "models/codec",
+  "expected_family": "neural-audio-codec",
+  "expected_runbook": "references/runbook-audio-codec.md",
+  "expected_weight_keys": [
+    "quantizer.codebook.weight",
+    "encoder.layers.0.conv.weight",
+    "decoder.layers.0.conv.weight"
+  ],
+  "optimization_must_include": "compile-stable-region",
+  "optimization_must_exclude": "fast-sdpa",
+  "seeded_parity_bug": {"shape": [2, 5], "delta": 3.0}
+}

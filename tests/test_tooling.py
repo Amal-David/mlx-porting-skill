@@ -59,7 +59,7 @@ class ToolingTests(unittest.TestCase):
         report = json.loads(result.stdout)
         self.assertTrue(report["ok"], report)
         self.assertEqual(report["sources"], 320)
-        self.assertEqual(report["optimization_methods"], 24)
+        self.assertEqual(report["optimization_methods"], 25)
         self.assertTrue(report["recommendation_taxonomy"])
 
     def test_static_inspection_routes_dense_decoder(self) -> None:
@@ -136,6 +136,129 @@ class ToolingTests(unittest.TestCase):
             self.assertIn("Ready candidates", text)
             self.assertIn("Research experiments", text)
 
+    def test_optimization_guidance_has_no_unreachable_methods(self) -> None:
+        # Every method must be reachable by at least one architecture family via the
+        # same matcher recommend_optimizations.py uses; otherwise it silently never
+        # surfaces. Guards the applies_to vocabulary against drift.
+        def relevant(applies: list, family: str) -> bool:
+            f = family.lower()
+            tokens = set(f.replace("-", " ").split())
+            for value in [str(x).lower() for x in applies]:
+                if value == "all" or value == f or value in f or f in value:
+                    return True
+                if "-" not in value and value in tokens:
+                    return True
+            return False
+
+        families = [f["id"] for f in json.loads((SKILL / "assets" / "architectures.yaml").read_text())["families"]]
+        guidance = json.loads((SKILL / "assets" / "optimization_guidance.yaml").read_text())
+        unreachable = [
+            m["id"]
+            for m in guidance["methods"]
+            if not any(relevant(m.get("applies_to", []), fam) for fam in families)
+        ]
+        self.assertEqual(unreachable, [], f"methods unreachable by any architecture family: {unreachable}")
+
+    def test_recommender_rejects_cuda_only_method(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            inspection = Path(tmp) / "inspection.json"
+            inspection.write_text(json.dumps({"recommended_family": "dense-decoder-transformer"}))
+            result = run_script("recommend_optimizations.py", inspection, "--limit", 50)
+            report = json.loads(result.stdout)
+            ready = {m["id"] for m in report["ready_candidates"]}
+            research = {m["id"] for m in report["research_candidates"]}
+            excluded = {m["id"] for m in report["notable_exclusions"]}
+            self.assertNotIn("cuda-graphs-decode-capture", ready | research)
+            self.assertIn("cuda-graphs-decode-capture", excluded)
+            # Reachability fix: KV-cache quantization must reach a dense decoder.
+            self.assertIn("uniform-kv-quantization", ready | research)
+
+    def test_recommender_holds_candidates_when_intake_blocked(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            inspection = Path(tmp) / "inspection.json"
+            inspection.write_text(json.dumps({
+                "recommended_family": "dense-decoder-transformer",
+                "recommendation_blockers": ["high: remote-code auto_map present"],
+            }))
+            blocked = json.loads(run_script("recommend_optimizations.py", inspection).stdout)
+            self.assertTrue(blocked["blocked"])
+            self.assertEqual(blocked["ready_candidates"], [])
+            self.assertEqual(blocked["research_candidates"], [])
+            self.assertTrue(blocked["held_candidates"])
+            allowed = json.loads(run_script("recommend_optimizations.py", inspection, "--allow-blocked").stdout)
+            self.assertFalse(allowed["blocked"])
+            self.assertTrue(allowed["ready_candidates"])
+
+    def test_recommender_requires_family_and_respects_overrides(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            inspection = Path(tmp) / "inspection.json"
+            inspection.write_text(json.dumps({"recommendation_blockers": []}))
+            # No family anywhere -> hard error, not a silent empty shortlist.
+            run_script("recommend_optimizations.py", inspection, expected=2)
+            # --family override + schema_version + gated stdout (no print when --output is set).
+            output = Path(tmp) / "rec.json"
+            result = run_script(
+                "recommend_optimizations.py", inspection,
+                "--family", "moe-decoder-transformer", "--output", output,
+            )
+            self.assertEqual(result.stdout.strip(), "")
+            report = json.loads(output.read_text())
+            self.assertEqual(report["schema_version"], 1)
+            self.assertEqual(report["family"], "moe-decoder-transformer")
+            # --objective filter narrows to methods that carry that objective.
+            filtered = json.loads(run_script(
+                "recommend_optimizations.py", inspection,
+                "--family", "dense-decoder-transformer", "--objective", "peak-memory", "--limit", 50,
+            ).stdout)
+            surfaced = filtered["ready_candidates"] + filtered["research_candidates"]
+            self.assertTrue(surfaced)
+            guidance = {m["id"]: m for m in json.loads((SKILL / "assets" / "optimization_guidance.yaml").read_text())["methods"]}
+            for item in surfaced:
+                self.assertIn("peak-memory", guidance[item["id"]]["objectives"])
+
+    def test_port_plan_excludes_rejected_methods(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            inspection = Path(tmp) / "inspection.json"
+            plan = Path(tmp) / "PORT_PLAN.md"
+            run_script("inspect_model.py", FIXTURES / "models" / "decoder", "--output", inspection)
+            run_script("make_port_plan.py", inspection, "--output", plan)
+            self.assertNotIn("cuda-graphs-decode-capture", plan.read_text())
+
+    def test_pipeline_chains_inspect_to_plan_recommend_and_validate(self) -> None:
+        # Prove inspect_model.py output feeds plan, recommend, and validate_weight_map
+        # --source with no manual reshaping (guards JSON-schema cohesion across the CLIs).
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp = Path(tmp)
+            inspection = tmp / "inspection.json"
+            run_script("inspect_model.py", FIXTURES / "models" / "decoder", "--output", inspection)
+            data = json.loads(inspection.read_text())
+            self.assertTrue(data["tensors"])
+
+            run_script("make_port_plan.py", inspection, "--output", tmp / "PORT_PLAN.md")
+
+            rec = tmp / "rec.json"
+            run_script("recommend_optimizations.py", inspection, "--output", rec)
+            self.assertEqual(json.loads(rec.read_text())["schema_version"], 1)
+
+            # inspection.json is itself a valid --source manifest for validate_weight_map.
+            target = {"tensors": [{"key": t["key"], "shape": t["shape"]} for t in data["tensors"]]}
+            mapping = {
+                "entries": [{"source": t["key"], "target": t["key"], "transforms": []} for t in data["tensors"]],
+                "ignored_source": [],
+                "generated_target": [],
+            }
+            target_path, map_path, report_path = tmp / "target.json", tmp / "map.json", tmp / "wm.json"
+            target_path.write_text(json.dumps(target))
+            map_path.write_text(json.dumps(mapping))
+            run_script(
+                "validate_weight_map.py",
+                "--source", inspection, "--target", target_path, "--mapping", map_path, "--output", report_path,
+            )
+            report = json.loads(report_path.read_text())
+            self.assertTrue(report["ok"], report)
+            self.assertFalse(report["unexplained_source"])
+            self.assertFalse(report["unexplained_target"])
+
     def test_weight_mapping_transforms_and_coverage(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             output = Path(tmp) / "weight-report.json"
@@ -205,6 +328,144 @@ class ToolingTests(unittest.TestCase):
             self.assertFalse(report["ok"])
             self.assertEqual(report["compared"], 0)
             self.assertTrue(any("no source tensors selected" in failure for failure in report["failures"]))
+
+    def test_compare_tensors_fails_loud_on_nan_and_inf(self) -> None:
+        import numpy as np
+
+        # A regression that treated NaN==NaN (or inf) as a match would keep every other
+        # test green; this guards the finite + equal_nan=False fail-loud contract.
+        for bad_value in (np.nan, np.inf):
+            with tempfile.TemporaryDirectory() as tmp:
+                src = Path(tmp) / "a.npz"
+                dst = Path(tmp) / "b.npz"
+                out = Path(tmp) / "r.json"
+                arr = np.array([[1.0, bad_value], [3.0, 4.0]], dtype=np.float64)
+                np.savez(src, w=arr)
+                np.savez(dst, w=arr.copy())
+                run_script("compare_tensors.py", src, dst, "--output", out, expected=1)
+                report = json.loads(out.read_text())
+                self.assertFalse(report["ok"])
+                self.assertFalse(report["rows"][0]["finite"])
+
+    def test_weight_map_transform_ops_round_trip(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp = Path(tmp)
+            source = {"tensors": [
+                {"key": "reshape.w", "shape": [4, 3]},
+                {"key": "squeeze.w", "shape": [1, 5]},
+                {"key": "unsqueeze.w", "shape": [5]},
+                {"key": "slice.w", "shape": [10]},
+                {"key": "permute.w", "shape": [2, 3, 4]},
+            ]}
+            target = {"tensors": [
+                {"key": "reshape.t", "shape": [2, 6]},
+                {"key": "squeeze.t", "shape": [5]},
+                {"key": "unsqueeze.t", "shape": [1, 5]},
+                {"key": "slice.t", "shape": [3]},
+                {"key": "permute.t", "shape": [4, 2, 3]},
+            ]}
+            mapping = {"entries": [
+                {"source": "reshape.w", "target": "reshape.t", "transforms": [{"op": "reshape", "shape": [-1, 6]}]},
+                {"source": "squeeze.w", "target": "squeeze.t", "transforms": [{"op": "squeeze", "axis": 0}]},
+                {"source": "unsqueeze.w", "target": "unsqueeze.t", "transforms": [{"op": "unsqueeze", "axis": 0}]},
+                {"source": "slice.w", "target": "slice.t", "transforms": [{"op": "slice", "axis": 0, "start": 2, "end": 8, "step": 2}]},
+                {"source": "permute.w", "target": "permute.t", "transforms": [{"op": "permute", "axes": [2, 0, 1]}]},
+            ], "ignored_source": [], "generated_target": []}
+            sp, tp, mp, out = tmp / "s.json", tmp / "t.json", tmp / "m.json", tmp / "r.json"
+            sp.write_text(json.dumps(source))
+            tp.write_text(json.dumps(target))
+            mp.write_text(json.dumps(mapping))
+            run_script("validate_weight_map.py", "--source", sp, "--target", tp, "--mapping", mp, "--output", out)
+            report = json.loads(out.read_text())
+            self.assertTrue(report["ok"], report)
+            shapes = {c["source"]: c["transformed_shape"] for c in report["checks"]}
+            self.assertEqual(shapes["reshape.w"], [2, 6])
+            self.assertEqual(shapes["squeeze.w"], [5])
+            self.assertEqual(shapes["unsqueeze.w"], [1, 5])
+            self.assertEqual(shapes["slice.w"], [3])
+            self.assertEqual(shapes["permute.w"], [4, 2, 3])
+
+    def test_weight_map_transform_ops_reject_invalid(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp = Path(tmp)
+            source = {"tensors": [{"key": "x", "shape": [2, 3]}]}
+            target = {"tensors": [{"key": "y", "shape": [3]}]}
+            mapping = {"entries": [
+                {"source": "x", "target": "y", "transforms": [{"op": "squeeze", "axis": 0}]},
+            ], "ignored_source": [], "generated_target": []}
+            sp, tp, mp, out = tmp / "s.json", tmp / "t.json", tmp / "m.json", tmp / "r.json"
+            sp.write_text(json.dumps(source))
+            tp.write_text(json.dumps(target))
+            mp.write_text(json.dumps(mapping))
+            run_script("validate_weight_map.py", "--source", sp, "--target", tp, "--mapping", mp, "--output", out, expected=1)
+            report = json.loads(out.read_text())
+            self.assertFalse(report["ok"])
+            self.assertTrue(any("squeeze" in error for error in report["errors"]))
+
+    def test_compare_tensors_cosine_gate_complex_and_no_fail(self) -> None:
+        import numpy as np
+
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp = Path(tmp)
+            a, b = tmp / "a.npz", tmp / "b.npz"
+            np.savez(a, v=np.array([1.0, 2.0, 3.0]))
+            np.savez(b, v=np.array([-1.0, -2.0, -3.0]))
+            cos_out = tmp / "cos.json"
+            run_script("compare_tensors.py", a, b, "--cosine-min", "0.99", "--output", cos_out, expected=1)
+            cos = json.loads(cos_out.read_text())
+            self.assertFalse(cos["ok"])
+            self.assertLess(cos["rows"][0]["cosine"], 0.99)
+            # Identical vectors clear the same cosine floor.
+            c = tmp / "c.npz"
+            np.savez(c, v=np.array([1.0, 2.0, 3.0]))
+            run_script("compare_tensors.py", a, c, "--cosine-min", "0.99", "--output", tmp / "cos2.json")
+            # Complex dtype path compares cleanly when identical.
+            ca, cb = tmp / "ca.npz", tmp / "cb.npz"
+            cz = np.array([1 + 2j, 3 - 4j], dtype=np.complex128)
+            np.savez(ca, z=cz)
+            np.savez(cb, z=cz.copy())
+            cx_out = tmp / "cx.json"
+            run_script("compare_tensors.py", ca, cb, "--output", cx_out)
+            self.assertTrue(json.loads(cx_out.read_text())["ok"])
+            # --no-fail reports the mismatch but exits 0 (report-only).
+            d = tmp / "d.npz"
+            np.savez(d, v=np.array([9.0, 9.0, 9.0]))
+            nf_out = tmp / "nf.json"
+            run_script("compare_tensors.py", a, d, "--no-fail", "--output", nf_out)
+            nf = json.loads(nf_out.read_text())
+            self.assertFalse(nf["ok"])
+            self.assertTrue(nf["report_only"])
+
+    def test_benchmark_reports_failure_loudly(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            out = Path(tmp) / "bench.json"
+            run_script(
+                "benchmark_command.py", "--warmup", "0", "--runs", "1", "--output", out,
+                "--", sys.executable, "-c", "import sys; sys.exit(3)", expected=1,
+            )
+            report = json.loads(out.read_text())
+            self.assertFalse(report["ok"])
+            self.assertEqual(report["summary"]["successful_runs"], 0)
+
+    def test_manifest_generate_and_check_detects_drift(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp = Path(tmp)
+            (tmp / "a.txt").write_text("hello")
+            (tmp / "sub").mkdir()
+            (tmp / "sub" / "b.txt").write_text("world")
+            run_script("manifest.py", "generate", "--root", tmp)
+            self.assertTrue((tmp / "MANIFEST.json").exists())
+            run_script("manifest.py", "check", "--root", tmp)  # clean tree verifies
+            # A changed file is caught.
+            (tmp / "a.txt").write_text("HELLO-CHANGED")
+            changed = run_script("manifest.py", "check", "--root", tmp, expected=1)
+            self.assertIn("a.txt", changed.stdout)
+            # Regenerating restores a clean check.
+            run_script("manifest.py", "generate", "--root", tmp)
+            run_script("manifest.py", "check", "--root", tmp)
+            # A newly added file is caught as drift too.
+            (tmp / "c.txt").write_text("new")
+            run_script("manifest.py", "check", "--root", tmp, expected=1)
 
     def test_daily_update_collector_is_review_only_offline(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

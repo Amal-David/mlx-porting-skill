@@ -2,18 +2,18 @@
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
   "version": "0.1.0",
-  "generated_at": "2026-06-24T07:28:46.263225+00:00",
-  "file_count": 91,
+  "generated_at": "2026-06-24T14:22:40.357700+00:00",
+  "file_count": 100,
   "files": [
     {
       "path": ".github/workflows/daily-research.yml",
-      "size_bytes": 2237,
-      "sha256": "1e60aaa7e536e76b57963215a78e7440602c031e1c1b406e741d5ec82fe87ef8"
+      "size_bytes": 2447,
+      "sha256": "d98f446d824c5a86a9c37b60d7e12a4169810e8b217ead0164ecd1fe9a25a301"
     },
     {
       "path": ".github/workflows/validate.yml",
-      "size_bytes": 711,
-      "sha256": "a4405e15df1779c07c0b9f2e9016d12eeb38c75e028a925248eb24cdcdacd5bd"
+      "size_bytes": 824,
+      "sha256": "90da10c40ab88a0df91670bf6d31f54a6db94605b47165a39bf3250cf54e3352"
     },
     {
       "path": ".gitignore",
@@ -52,13 +52,18 @@
     },
     {
       "path": "README.md",
-      "size_bytes": 3482,
-      "sha256": "e7816028a3e8da20859a39d518705ede610a5cbfcd0ad830a694e8d00bce8607"
+      "size_bytes": 4738,
+      "sha256": "ed9aa242f2086a1ea855552f9e604c105778071eb1bfd4cecb7998814d781fc2"
     },
     {
       "path": "RESEARCH_REPORT.md",
       "size_bytes": 8740,
       "sha256": "b7f6e90c6a7b9245a72c652469d26b6e11b2f37d68d84b621b6a222052dae4ad"
+    },
+    {
+      "path": "VALIDATION.md",
+      "size_bytes": 3104,
+      "sha256": "25c7031455c2c4406132bd3b4e9e82aa9c6c254e19be20d02437a960935a14a9"
     },
     {
       "path": "VERSION",
@@ -67,48 +72,48 @@
     },
     {
       "path": "adapters/README.md",
-      "size_bytes": 2436,
-      "sha256": "ab6ae2556b79bed801646ccb081e4b8d8b2e9f53a22aa7bf1460383cc8fa3b5c"
+      "size_bytes": 2437,
+      "sha256": "9df863ec89813715ef85481d4f912f3ace3b1e03351c58d661b2b35e8d52c4e6"
     },
     {
       "path": "adapters/antigravity.md",
-      "size_bytes": 419,
-      "sha256": "87c20157a887fc1a74bf6918bcc4529f12c4f6929d0f2dbab38da036e1502dfc"
+      "size_bytes": 420,
+      "sha256": "2fe58f0584568c93542121ddea921aa8be2a6c1db2285206271e7154abee40a4"
     },
     {
       "path": "adapters/claude-code.md",
-      "size_bytes": 419,
-      "sha256": "ec01ab55d938ea1d4c08b9019917021fc4948ad83e9e66b56536bebb933a5b08"
+      "size_bytes": 420,
+      "sha256": "e3ffc5f5f4949a67ff9dc57969feb10802a0c2fc89e48ba36b4e6bdc43425217"
     },
     {
       "path": "adapters/codex.md",
-      "size_bytes": 464,
-      "sha256": "4da6f685c221ec8e1709c4cf752562169854e2cc21f1f9e1c57d71a152cb15aa"
+      "size_bytes": 466,
+      "sha256": "ce375f320d973a17e9b8a02c7e7414ec69384606848a90351ec19ceb8c3c8f27"
     },
     {
       "path": "adapters/cursor.md",
-      "size_bytes": 414,
-      "sha256": "86e12d2558687a6eca937f3ab0530f8bc46a3bc72fc15e01a263072801d638c3"
+      "size_bytes": 415,
+      "sha256": "324bf84741fdf018604ff0551edcc1ac7e837153eb65208ab0be628c7d0432d0"
     },
     {
       "path": "adapters/gemini-cli.md",
-      "size_bytes": 418,
-      "sha256": "7250e9a2db505a9d09782d2af918f7e66855ba6667634aa0c1bdc95d65a4ea12"
+      "size_bytes": 419,
+      "sha256": "017a2a59ea1184159ed87dd6fdfb13b15d3289bcc946bd3a84066d277a8e6509"
     },
     {
       "path": "adapters/github-copilot.md",
-      "size_bytes": 422,
-      "sha256": "5f46a02c70aac0018645946c386e7c2aa7a2791810729802514b18eaf1c2c624"
+      "size_bytes": 423,
+      "sha256": "cbd66115fc4ba2a7992d671eeaea5690c3b6746cf6fe5827b3ea111ef3216f86"
     },
     {
       "path": "adapters/windsurf.md",
-      "size_bytes": 416,
-      "sha256": "069121fef7796091de38caec8d1a015cc1654d7128233fb3e324c179a4c03cb6"
+      "size_bytes": 417,
+      "sha256": "ea531009b578384bcc216982463912b68d631044c095de7480f4c5cb28d39268"
     },
     {
       "path": "mlx-model-porting/SKILL.md",
-      "size_bytes": 10302,
-      "sha256": "91499b06182ac9528fd5411f33c5a8b07e2fbf23f7458dd63eb32b1f543384f1"
+      "size_bytes": 10531,
+      "sha256": "cc91d14f999af666cdabdb1933decd68f2c3c340f08f72c20f12baa237162619"
     },
     {
       "path": "mlx-model-porting/assets/BENCHMARK_REPORT.md",
@@ -142,8 +147,8 @@
     },
     {
       "path": "mlx-model-porting/assets/optimization_guidance.yaml",
-      "size_bytes": 35866,
-      "sha256": "d717f1d1e5d052fe932a73ca66d4cd2778456ea9933f53148fad5cda52b871f4"
+      "size_bytes": 37262,
+      "sha256": "f22c54c09cf0ee263ae016136c42b852d68d81513de030d4dd912d5dcc6e9e6c"
     },
     {
       "path": "mlx-model-porting/assets/recommendation-taxonomy.yaml",
@@ -157,8 +162,8 @@
     },
     {
       "path": "mlx-model-porting/assets/techniques.yaml",
-      "size_bytes": 43790,
-      "sha256": "273f2c040f14c0cb705fa3490461cf4ce3fe7cc8fb9b417b6928ad543e3f8fc8"
+      "size_bytes": 44521,
+      "sha256": "d3fe5e2e99cc70b024359107717d411bf77d767be84dd2646de609c31e9b8e14"
     },
     {
       "path": "mlx-model-porting/assets/update-candidates.json",
@@ -337,13 +342,18 @@
     },
     {
       "path": "mlx-model-porting/scripts/make_port_plan.py",
-      "size_bytes": 9607,
-      "sha256": "f18cc22335a1e70749a81ec6d835ceec5fd2b3f490e80d76c1a07def146b478f"
+      "size_bytes": 9755,
+      "sha256": "5bec6cf6825d15c9048a298c6616c3fc7877b6f6a2fd3803e15252c78e9f49a8"
+    },
+    {
+      "path": "mlx-model-porting/scripts/manifest.py",
+      "size_bytes": 4139,
+      "sha256": "8d86d9006f09ec07cc502febe55a4ce80d22161757dd145e325a0b9f50c2657a"
     },
     {
       "path": "mlx-model-porting/scripts/recommend_optimizations.py",
-      "size_bytes": 4977,
-      "sha256": "a9ab301f88b103b063284f0df7b17060f7ae393a1b43db1e63ec72ac12f4021f"
+      "size_bytes": 6577,
+      "sha256": "eeb467061be594de4e17d6c01c35b71db65132eeaa4fd7626f110cad7372c5d0"
     },
     {
       "path": "mlx-model-porting/scripts/update_sources.py",
@@ -364,6 +374,16 @@
       "path": "tests/README.md",
       "size_bytes": 350,
       "sha256": "904672601ebbb2d0d45342a7c523c33e44f566a432f7434774dd1b6aeb99777b"
+    },
+    {
+      "path": "tests/fixtures/README.md",
+      "size_bytes": 2105,
+      "sha256": "68b547225bd2505cc0337a010d71e0f6f0a2800733e5cd2f4932fb99df6860bf"
+    },
+    {
+      "path": "tests/fixtures/generate_fixtures.py",
+      "size_bytes": 7076,
+      "sha256": "47afe2c923e65c1a7df139bde01b588b95be726f6315b49f3f479e080da77a8b"
     },
     {
       "path": "tests/fixtures/manifests/map.json",
@@ -387,8 +407,8 @@
     },
     {
       "path": "tests/fixtures/models/codec/model.safetensors",
-      "size_bytes": 2098335,
-      "sha256": "5438314d9c2142e043268ebe5122d5d2bf03e81a0fefb84e5dc361f9d7cf5f3d"
+      "size_bytes": 9363,
+      "sha256": "b103c119f82fad124f31326d45abd73b19298f83612d474391b28bd8887e6dfa"
     },
     {
       "path": "tests/fixtures/models/decoder/README.md",
@@ -403,7 +423,7 @@
     {
       "path": "tests/fixtures/models/decoder/model.safetensors",
       "size_bytes": 1763,
-      "sha256": "fcf13b455d7b6af060736aaf19e496b7761bc617c953c8fc2cdda98eb5c5a780"
+      "sha256": "f7bef31656af8722d2f95951e03866f34398df8464ff9517f483a6b629036a3b"
     },
     {
       "path": "tests/fixtures/models/moe/config.json",
@@ -413,7 +433,7 @@
     {
       "path": "tests/fixtures/models/moe/model.safetensors",
       "size_bytes": 760,
-      "sha256": "8afe8d9e1471ab249ba01f8372515ef7ae5077c2f90fccee38cf6c7d2946f3df"
+      "sha256": "5b229681d2c16b328086b3f804f593186f5d8605bf76cb04b1026a5fd8f08cb3"
     },
     {
       "path": "tests/fixtures/models/unsafe/config.json",
@@ -436,19 +456,34 @@
       "sha256": "0ef0b6d7cd25cd93397d9d23b62a450f2c49c120d59477bb37a46649a4e23444"
     },
     {
+      "path": "tests/fixtures/scenarios/dense-decoder.json",
+      "size_bytes": 472,
+      "sha256": "c39a83fcdeb8d9cc719b2ac5a940a5aae44b0eafa79ff8caac5413189adca01d"
+    },
+    {
+      "path": "tests/fixtures/scenarios/moe-decoder.json",
+      "size_bytes": 469,
+      "sha256": "14314dff9bf50fc167f28a1b11db9419b96606420501e3a79ff2865f2a1484ff"
+    },
+    {
+      "path": "tests/fixtures/scenarios/neural-audio-codec.json",
+      "size_bytes": 459,
+      "sha256": "7bb6fd6a720c97ed744615d0078bf64c15336561c3a02f42fa324db894a46cec"
+    },
+    {
       "path": "tests/fixtures/tensors/bad.npz",
       "size_bytes": 566,
-      "sha256": "d2d62d842123ea8f90eae34b73036de603b2200e5cbe6db843106f4ca7ae6275"
+      "sha256": "6dc0d284653ac7c7d28a4d27c60398aadf0c9546a7cce800f986eb925ceb5196"
     },
     {
       "path": "tests/fixtures/tensors/close.npz",
       "size_bytes": 566,
-      "sha256": "74bf9ec30bea0d4eb314e579caef48ddd63560f8aebf4f560ca2da673c259395"
+      "sha256": "88578e69fbdcb00e08e7a712aece5c46ee644658615fe7165f2e49406450934b"
     },
     {
       "path": "tests/fixtures/tensors/source.npz",
       "size_bytes": 566,
-      "sha256": "5b4e7d7fc123c4c646d10ca441eac47029d66c2253ce59120b7f14752bbb47ea"
+      "sha256": "f7bfdde4dfb1b02ed2c3b8ea109d41afc9e8a6e1b3cc94f048c0a50dd229c236"
     },
     {
       "path": "tests/fixtures/updates/offline.json",
@@ -456,9 +491,19 @@
       "sha256": "966992c1ee60d17ffc5dcfd1f7fb8186f1ead70c5486cbb1f55bd584d8fb3be6"
     },
     {
+      "path": "tests/test_fixtures.py",
+      "size_bytes": 2019,
+      "sha256": "790a34fc18ab720d228d7d3e6f2e31d17e242fe38efd6d6212fc57754606a468"
+    },
+    {
+      "path": "tests/test_scenarios.py",
+      "size_bytes": 4540,
+      "sha256": "545ed098a5eb68c68c1071f83098e0dc85da0631ca71dec23c8c794515d77631"
+    },
+    {
       "path": "tests/test_tooling.py",
-      "size_bytes": 12559,
-      "sha256": "e29d8a896e5841636aed53bc2e5c2f3cf26798249bd41176cf3e35b8265d7e9f"
+      "size_bytes": 27254,
+      "sha256": "4e741e38f309b7d3a7e1e1ec0f110b4ff44a171c1725ed3679bcfc3dfe7d8d63"
     }
   ]
 }

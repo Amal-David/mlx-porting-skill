@@ -21,6 +21,8 @@ jobs:
           python-version: "3.12"
       - name: Install test dependency
         run: python3 -m pip install --disable-pip-version-check numpy
+      - name: Check artifact manifest integrity
+        run: python3 mlx-model-porting/scripts/manifest.py check
       - name: Collect review-only candidates
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -45,6 +47,8 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git checkout -B "$branch"
           git add mlx-model-porting/assets/update-candidates.json
+          python3 mlx-model-porting/scripts/manifest.py generate
+          git add MANIFEST.json
           git commit -m "chore: refresh MLX research candidates"
           git push --force-with-lease origin "$branch"
           gh pr create \

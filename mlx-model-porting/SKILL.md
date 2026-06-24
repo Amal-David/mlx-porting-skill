@@ -114,6 +114,8 @@ Create a weight map with source key, target key, source shape, target shape, tra
 python3 scripts/validate_weight_map.py   --source source-manifest.json   --target target-manifest.json   --mapping WEIGHT_MAP.json
 ```
 
+The `inspection.json` emitted by `inspect_model.py` in step 1 is itself a valid `--source` manifest (its `tensors` list carries the source keys and shapes), so no separate source-manifest export is required for the source side.
+
 Never rely on load-time `strict=False` to conceal missing or extra weights. Categorize every exception as intentionally ignored, generated, shared, or unsupported.
 
 ### 6. Pass the parity ladder

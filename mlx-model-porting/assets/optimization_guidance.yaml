@@ -219,6 +219,8 @@
         "concurrency"
       ],
       "applies_to": [
+        "dense-decoder-transformer",
+        "moe-decoder-transformer",
         "autoregressive-transformer",
         "long-context"
       ],
@@ -262,6 +264,8 @@
         "long-context"
       ],
       "applies_to": [
+        "dense-decoder-transformer",
+        "moe-decoder-transformer",
         "long-context"
       ],
       "recommendation": "Treat layerwise, key/value, RoPE-aware, and hardware-aware KV bit allocation as experiments until reproduced in MLX.",
@@ -668,6 +672,9 @@
         "serving-safety"
       ],
       "applies_to": [
+        "dense-decoder-transformer",
+        "moe-decoder-transformer",
+        "vision-language-omni",
         "server",
         "rag",
         "agents"
@@ -1092,6 +1099,32 @@
         "papers": [],
         "technical_blogs": []
       }
+    },
+    {
+      "id": "cuda-graphs-decode-capture",
+      "technique_id": "cuda-graphs-decode-capture",
+      "category": "runtime",
+      "status": "rejected-or-superseded",
+      "objectives": [
+        "decode-latency"
+      ],
+      "applies_to": [
+        "dense-decoder-transformer",
+        "moe-decoder-transformer"
+      ],
+      "recommendation": "Do not port. CUDA Graphs capture/replay is NVIDIA-specific; the portable MLX analog is mx.compile of the single decode step, which this skill already recommends.",
+      "expected_effect": "No Metal/MLX speedup: there is no CUDA Graphs equivalent on Apple Silicon, so any CUDA-graph latency number is non-transferable.",
+      "tradeoffs": [
+        "Effort spent replicating a CUDA-only launch-capture mechanism instead of using mx.compile.",
+        "Microbenchmark folklore does not establish a Metal/MLX win."
+      ],
+      "validation_gates": [
+        "Not applicable on Metal/MLX; use the mx.compile stable-region gate instead."
+      ],
+      "rollback_conditions": [
+        "Always: this method is rejected for MLX and must not be adopted."
+      ],
+      "evidence_refs": {}
     }
   ]
 }

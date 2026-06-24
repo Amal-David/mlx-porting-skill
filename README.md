@@ -51,13 +51,33 @@ Then ask the agent:
 
 > Use the MLX model porting skill. Port this model to MLX, establish source parity first, and optimize only through benchmarked changes.
 
+## Try it offline (no model download, no Apple Silicon, no network)
+
+The repository ships tiny synthetic fixtures, so you can exercise the whole static pipeline immediately:
+
+```bash
+python3 mlx-model-porting/scripts/inspect_model.py tests/fixtures/models/decoder --output /tmp/inspection.json
+python3 mlx-model-porting/scripts/make_port_plan.py /tmp/inspection.json --output /tmp/PORT_PLAN.md
+python3 mlx-model-porting/scripts/recommend_optimizations.py /tmp/inspection.json --markdown /tmp/OPTIMIZATIONS.md
+```
+
+Expected results for this fixture:
+
+- `inspection.json` → `recommended_family: dense-decoder-transformer`, `recommended_runbook: references/runbook-decoder-transformer.md`;
+- `OPTIMIZATIONS.md` lists `fast-sdpa` and `uniform-kv-quantization` as ready candidates and `cuda-graphs-decode-capture` under **Rejected for MLX (do not port)**.
+
+This exact flow — routing, weight-key coverage, seeded-parity-bug detection, and optimization inclusion/exclusion — is guarded end to end by `tests/test_scenarios.py`.
+
 ## Validation
 
 ```bash
 python3 mlx-model-porting/scripts/audit_skill.py --strict mlx-model-porting
 python3 mlx-model-porting/scripts/validate_sources.py mlx-model-porting
+python3 mlx-model-porting/scripts/manifest.py check
 python3 -m unittest discover -s tests -v
 ```
+
+`VALIDATION.md` states exactly what these offline gates prove versus what still requires an Apple Silicon Mac or network access — readiness is intentionally not overclaimed.
 
 When `skills-ref` is installed, also run:
 

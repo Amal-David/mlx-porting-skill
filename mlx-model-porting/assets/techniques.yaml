@@ -1163,6 +1163,21 @@
       ],
       "reviewed": "2026-06-24",
       "rollback_condition": "Reject if cache composition with codec/speaker/state changes outputs or has no audio-specific win."
+    },
+    {
+      "id": "cuda-graphs-decode-capture",
+      "title": "CUDA Graphs decode-loop capture",
+      "category": "runtime",
+      "status": "rejected-or-superseded",
+      "applies_to": [
+        "dense-decoder-transformer",
+        "moe-decoder-transformer"
+      ],
+      "use_when": "Never on Apple Silicon. This is a CUDA-only mechanism that captures and replays an NVIDIA kernel graph to cut per-step launch overhead.",
+      "avoid_when": "Always for MLX. The portable analog is mx.compile of the single decode step.",
+      "validation_gate": "Not applicable on Metal/MLX; do not port. Use the mx.compile stable-region path and measure dispatch/sync instead.",
+      "evidence": [],
+      "reviewed": "2026-06-24"
     }
   ]
 }

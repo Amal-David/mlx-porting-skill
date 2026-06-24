@@ -1,0 +1,14 @@
+{
+  "name": "dense-decoder",
+  "fixture": "models/decoder",
+  "expected_family": "dense-decoder-transformer",
+  "expected_runbook": "references/runbook-decoder-transformer.md",
+  "expected_weight_keys": [
+    "model.embed_tokens.weight",
+    "lm_head.weight",
+    "model.layers.0.self_attn.q_proj.weight"
+  ],
+  "optimization_must_include": "fast-sdpa",
+  "optimization_must_exclude": "cuda-graphs-decode-capture",
+  "seeded_parity_bug": {"shape": [3, 4], "delta": 5.0}
+}

@@ -5,13 +5,13 @@ Codex discovers repository-scoped skills under `.agents/skills` and user-scoped 
 Repository installation:
 
 ```bash
-python mlx-model-porting/scripts/install_skill.py --dest .agents/skills --mode symlink
+python3 mlx-model-porting/scripts/install_skill.py --dest .agents/skills --mode symlink
 ```
 
 User installation:
 
 ```bash
-python mlx-model-porting/scripts/install_skill.py --dest ~/.agents/skills
+python3 mlx-model-porting/scripts/install_skill.py --dest ~/.agents/skills
 ```
 
 Start a new Codex session or reload skills, then verify `mlx-model-porting` version `0.1.0`.

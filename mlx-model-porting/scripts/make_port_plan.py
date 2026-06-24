@@ -52,9 +52,15 @@ def main() -> int:
             raise SkillError("No detected family; pass --family after manual architecture review")
         selected = next((c for c in candidates if c.get("family") == family), None)
         runbook = (selected or {}).get("runbook") or inspection.get("recommended_runbook") or "manual selection required"
-        proven = [t for t in techniques if relevant(t, family) and t.get("status") != "research-candidate"]
+        proven = [
+            t
+            for t in techniques
+            if relevant(t, family) and t.get("status") not in {"research-candidate", "rejected-or-superseded"}
+        ]
         research = [t for t in techniques if relevant(t, family) and t.get("status") == "research-candidate"]
-        optimization_shortlist = [m for m in optimization_methods if relevant(m, family)]
+        optimization_shortlist = [
+            m for m in optimization_methods if relevant(m, family) and m.get("status") != "rejected-or-superseded"
+        ]
         optimization_shortlist.sort(
             key=lambda m: (
                 {"native-mlx": 0, "official-mlx-project": 1, "proven-mlx-port": 2, "research-candidate": 3}.get(str(m.get("status")), 9),
