@@ -2,7 +2,7 @@
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
   "version": "0.1.0",
-  "generated_at": "2026-06-24T14:22:40.357700+00:00",
+  "generated_at": "2026-06-26T10:21:24.939848+00:00",
   "file_count": 100,
   "files": [
     {
@@ -162,8 +162,8 @@
     },
     {
       "path": "mlx-model-porting/assets/techniques.yaml",
-      "size_bytes": 44521,
-      "sha256": "d3fe5e2e99cc70b024359107717d411bf77d767be84dd2646de609c31e9b8e14"
+      "size_bytes": 44617,
+      "sha256": "3df968e4c5e4455da1e680c9cf8ae896a10899b3e6a958861ecde2d8f4f3a12c"
     },
     {
       "path": "mlx-model-porting/assets/update-candidates.json",
@@ -312,8 +312,8 @@
     },
     {
       "path": "mlx-model-porting/scripts/_common.py",
-      "size_bytes": 4176,
-      "sha256": "08b06cfa728ed4d98449601f554060db4eed580272ff35aa5298ae1f620ee4b2"
+      "size_bytes": 4857,
+      "sha256": "0f035d7953449c83af95760fd6425653cf55cdbcee389a9afa4e3c8eec1b50aa"
     },
     {
       "path": "mlx-model-porting/scripts/audit_skill.py",
@@ -342,8 +342,8 @@
     },
     {
       "path": "mlx-model-porting/scripts/make_port_plan.py",
-      "size_bytes": 9755,
-      "sha256": "5bec6cf6825d15c9048a298c6616c3fc7877b6f6a2fd3803e15252c78e9f49a8"
+      "size_bytes": 9496,
+      "sha256": "e6417f9f971f40d6d278e5ca29e5fe4dfe19def498206dfb1c10cdf6491f7624"
     },
     {
       "path": "mlx-model-porting/scripts/manifest.py",
@@ -352,8 +352,8 @@
     },
     {
       "path": "mlx-model-porting/scripts/recommend_optimizations.py",
-      "size_bytes": 6577,
-      "sha256": "eeb467061be594de4e17d6c01c35b71db65132eeaa4fd7626f110cad7372c5d0"
+      "size_bytes": 6318,
+      "sha256": "556c9a65d1ab6bdb29309b79874e8adf73757867ce8195b1a5a2e799049cad95"
     },
     {
       "path": "mlx-model-porting/scripts/update_sources.py",
@@ -502,8 +502,8 @@
     },
     {
       "path": "tests/test_tooling.py",
-      "size_bytes": 27254,
-      "sha256": "4e741e38f309b7d3a7e1e1ec0f110b4ff44a171c1725ed3679bcfc3dfe7d8d63"
+      "size_bytes": 26935,
+      "sha256": "eadbeae6256b12935303aef8b44b41e94be2a9f7c03eae3f523991377dfe1718"
     }
   ]
 }

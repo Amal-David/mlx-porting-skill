@@ -21,6 +21,8 @@ FIXTURES = ROOT / "tests" / "fixtures"
 if str(SCRIPTS) not in sys.path:
     sys.path.insert(0, str(SCRIPTS))
 
+from _common import applies_to_family  # noqa: E402 - requires SCRIPTS on sys.path above
+
 
 def run_script(name: str, *args: object, expected: int = 0) -> SimpleNamespace:
     old_argv = sys.argv[:]
@@ -138,24 +140,14 @@ class ToolingTests(unittest.TestCase):
 
     def test_optimization_guidance_has_no_unreachable_methods(self) -> None:
         # Every method must be reachable by at least one architecture family via the
-        # same matcher recommend_optimizations.py uses; otherwise it silently never
-        # surfaces. Guards the applies_to vocabulary against drift.
-        def relevant(applies: list, family: str) -> bool:
-            f = family.lower()
-            tokens = set(f.replace("-", " ").split())
-            for value in [str(x).lower() for x in applies]:
-                if value == "all" or value == f or value in f or f in value:
-                    return True
-                if "-" not in value and value in tokens:
-                    return True
-            return False
-
+        # SAME matcher production uses (imported, not re-implemented) so a divergence
+        # between test and production cannot mask a real reachability bug.
         families = [f["id"] for f in json.loads((SKILL / "assets" / "architectures.yaml").read_text())["families"]]
         guidance = json.loads((SKILL / "assets" / "optimization_guidance.yaml").read_text())
         unreachable = [
             m["id"]
             for m in guidance["methods"]
-            if not any(relevant(m.get("applies_to", []), fam) for fam in families)
+            if not any(applies_to_family(m.get("applies_to", []), fam) for fam in families)
         ]
         self.assertEqual(unreachable, [], f"methods unreachable by any architecture family: {unreachable}")
 

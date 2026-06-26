@@ -7,7 +7,7 @@ import sys
 from pathlib import Path
 from typing import Any
 
-from _common import SkillError, load_structured
+from _common import SkillError, applies_to_family, load_structured
 
 SCRIPT_DIR = Path(__file__).resolve().parent
 SKILL_ROOT = SCRIPT_DIR.parent
@@ -24,15 +24,7 @@ def parse_args() -> argparse.Namespace:
 
 
 def relevant(tech: dict[str, Any], family: str) -> bool:
-    values = [str(x).lower() for x in tech.get("applies_to", [])]
-    f = family.lower()
-    tokens = set(f.replace("-", " ").split())
-    for value in values:
-        if value == "all" or value == f or value in f or f in value:
-            return True
-        if "-" not in value and value in tokens:
-            return True
-    return False
+    return applies_to_family(tech.get("applies_to", []), family)
 
 
 def main() -> int:

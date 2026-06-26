@@ -1177,7 +1177,8 @@
       "avoid_when": "Always for MLX. The portable analog is mx.compile of the single decode step.",
       "validation_gate": "Not applicable on Metal/MLX; do not port. Use the mx.compile stable-region path and measure dispatch/sync instead.",
       "evidence": [],
-      "reviewed": "2026-06-24"
+      "reviewed": "2026-06-24",
+      "rollback_condition": "Always: this method is rejected for MLX and must not be adopted."
     }
   ]
 }

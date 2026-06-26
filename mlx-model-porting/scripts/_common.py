@@ -112,3 +112,20 @@ def safe_relpath(root: Path, candidate: Path) -> str:
 def slugify(text: str) -> str:
     value = re.sub(r"[^a-z0-9]+", "-", text.lower()).strip("-")
     return value or "item"
+
+
+def applies_to_family(applies_to: list, family: str) -> bool:
+    """Whether an ``applies_to`` list matches an architecture family id.
+
+    Single source of truth for the fuzzy family matcher shared by
+    ``recommend_optimizations.py``, ``make_port_plan.py``, and the reachability
+    guard test, so production and test semantics cannot silently diverge.
+    """
+    f = family.lower()
+    tokens = set(f.replace("-", " ").split())
+    for value in [str(x).lower() for x in (applies_to or [])]:
+        if value == "all" or value == f or value in f or f in value:
+            return True
+        if "-" not in value and value in tokens:
+            return True
+    return False
