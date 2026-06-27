@@ -81,6 +81,13 @@ targets separately from returned findings. This proves the intended research
 breadth even when a run is only scaffolded and no agent has returned findings
 yet.
 
+For `--iterations 2` or higher, the harness writes each pass under
+`iterations/NN/` and emits top-level `loop.json` and `loop.md` receipts. Each
+iteration records the gap hints it used and the next hints derived from
+`held`/`needs-validation` findings. The next iteration receives those hints,
+which lets the planner switch from deterministic config order to dynamic
+coverage-driven assignment selection without rewriting recommendation assets.
+
 ## Blog Contract
 
 Each agent writes a markdown blog with:
@@ -149,6 +156,20 @@ python3 scripts/research_loop.py \
 Dynamic planning is deterministic: score selected personas from matched
 objective terms and higher-weighted gap terms, keep config order for ties, and
 write selected/held receipts before any executor runs.
+
+Run multiple review-only iterations:
+
+```bash
+python3 scripts/research_loop.py \
+  --objective "Broaden MLX porting evidence beyond GitHub" \
+  --iterations 2 \
+  --offline-fixture tests/fixtures/research_loop/offline_findings.json \
+  --output-dir research-runs/manual-iterative
+```
+
+For a live local worker command, use `--iterations` with `--executor-command`.
+The first pass may run in config order; later passes inherit derived gap hints
+from prior findings and can dynamically reshape the worker roster.
 
 Executor mode is opt-in and mutually exclusive with `--offline-fixture`. The
 command receives these environment variables:

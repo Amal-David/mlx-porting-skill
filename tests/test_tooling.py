@@ -1013,6 +1013,33 @@ class ToolingTests(unittest.TestCase):
             self.assertIn("Assignment planner: dynamic", summary)
             self.assertIn("coverage-skeptic", summary)
 
+    def test_research_loop_iterations_feed_next_gap_hints(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            output_dir = Path(tmp) / "iterative-run"
+            run_script(
+                "research_loop.py",
+                "--run-id", "iterative-loop",
+                "--objective", "Broaden MLX porting evidence beyond GitHub",
+                "--iterations", 2,
+                "--offline-fixture", FIXTURES / "research_loop" / "offline_findings.json",
+                "--output-dir", output_dir,
+            )
+            loop = json.loads((output_dir / "loop.json").read_text())
+            first = json.loads((output_dir / "iterations" / "01" / "synthesis.json").read_text())
+            second = json.loads((output_dir / "iterations" / "02" / "synthesis.json").read_text())
+            self.assertEqual(loop["iteration_count"], 2)
+            self.assertEqual(loop["total_finding_count"], 6)
+            self.assertEqual(first["assignment_planner"]["mode"], "config-order")
+            self.assertEqual(second["assignment_planner"]["mode"], "dynamic")
+            self.assertIn("benchmark", first["next_gap_hints"])
+            self.assertIn("hugging_face", first["next_gap_hints"])
+            self.assertEqual(second["gap_hints"], first["next_gap_hints"])
+            self.assertEqual(loop["iterations"][0]["output_dir"], "iterations/01")
+            self.assertIn("loop.md", {path.name for path in output_dir.iterdir()})
+            loop_markdown = (output_dir / "loop.md").read_text()
+            self.assertIn("Final gap hints", loop_markdown)
+            self.assertIn("iterative-loop-i02", loop_markdown)
+
     def test_research_loop_generates_review_blogs_and_synthesis(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             output_dir = Path(tmp) / "research-run"
@@ -1049,6 +1076,16 @@ class ToolingTests(unittest.TestCase):
             self.assertIn("Planned sampling", blog_text)
             self.assertIn("Candidate findings", blog_text)
             self.assertIn("official-custom-metal-validation", blog_text)
+
+    def test_research_loop_rejects_non_positive_iterations(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            result = run_script(
+                "research_loop.py",
+                "--iterations", 0,
+                "--output-dir", Path(tmp) / "out",
+                expected=2,
+            )
+            self.assertIn("--iterations must be positive", result.stderr)
 
     def test_research_loop_rejects_malformed_findings(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

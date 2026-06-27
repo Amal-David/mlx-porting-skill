@@ -39,6 +39,12 @@ def parse_args() -> argparse.Namespace:
         default=[],
         help="Optional research gap hint used by dynamic assignment planning; may be repeated",
     )
+    parser.add_argument(
+        "--iterations",
+        type=int,
+        default=1,
+        help="Number of review-only research iterations to run",
+    )
     parser.add_argument("--offline-fixture", help="Fixture with returned agent findings; no network is used")
     parser.add_argument(
         "--executor-command",
@@ -92,16 +98,30 @@ def load_config(path: str | Path) -> dict[str, Any]:
 STOP_TERMS = {
     "and",
     "are",
+    "before",
     "for",
     "from",
     "into",
     "mlx",
     "not",
     "only",
+    "or",
+    "should",
+    "source",
     "that",
     "the",
     "this",
+    "to",
     "with",
+    "adding",
+    "claims",
+    "com",
+    "json",
+    "md",
+    "org",
+    "py",
+    "references",
+    "www",
 }
 
 
@@ -665,6 +685,7 @@ def summarize(
         "generated_at": utc_now(),
         "review_only": True,
         "agent_count": len(assignments),
+        "gap_hints": planner_receipt.get("gap_hints", []),
         "execution_counts": execution_counts,
         "finding_count": len(findings),
         "source_lane_counts": lanes,
@@ -683,6 +704,60 @@ def summarize(
             "Do not execute remote model code while investigating candidates.",
         ],
     }
+
+
+def unique_ordered(values: list[str]) -> list[str]:
+    seen = set()
+    result = []
+    for value in values:
+        normalized = value.strip()
+        if not normalized:
+            continue
+        key = normalized.lower()
+        if key in seen:
+            continue
+        seen.add(key)
+        result.append(normalized)
+    return result
+
+
+def derive_next_gap_hints(summary: dict[str, Any], previous_hints: list[str], limit: int = 10) -> list[str]:
+    previous_terms = set()
+    for hint in previous_hints:
+        previous_terms.update(tokenize(hint))
+    counter: Counter[str] = Counter()
+    findings = list(summary.get("needs_validation", [])) + list(summary.get("held", []))
+    for finding in findings:
+        source_lane = str(finding.get("source_lane", ""))
+        if source_lane:
+            counter[source_lane] += 4
+        title_fields: list[Any] = [
+            finding.get("id", ""),
+            finding.get("title", ""),
+        ]
+        detail_fields: list[Any] = [
+            finding.get("summary", ""),
+            finding.get("validation_gate", ""),
+            finding.get("required_next_validation", ""),
+            finding.get("affects", []),
+            finding.get("caveats", []),
+        ]
+        for term in collect_terms(title_fields):
+            if term in previous_terms:
+                continue
+            counter[term] += 2
+        for term in collect_terms(detail_fields):
+            if term in previous_terms:
+                continue
+            counter[term] += 1
+    if not counter:
+        return []
+    ranked = sorted(counter.items(), key=lambda item: (-item[1], item[0]))
+    return [term for term, _ in ranked[:limit]]
+
+
+def merge_gap_hints(existing: list[str], derived: list[str]) -> list[str]:
+    return unique_ordered(existing + derived)
 
 
 def markdown_list(items: list[str]) -> str:
@@ -749,6 +824,9 @@ def write_markdown_summary(output_dir: Path, summary: dict[str, Any]) -> None:
         f"Objective: {summary['objective']}",
         "",
         f"Review only: {summary['review_only']}",
+        f"Iteration: {summary.get('iteration', 1)} of {summary.get('iteration_count', 1)}",
+        f"Gap hints used: {', '.join(summary.get('gap_hints', [])) or 'none'}",
+        f"Next gap hints: {', '.join(summary.get('next_gap_hints', [])) or 'none'}",
         f"Findings: {summary['finding_count']}",
         f"Assignment planner: {summary['assignment_planner']['mode']}",
         f"Non-GitHub lanes covered: {', '.join(summary['non_github_lanes_covered']) or 'none'}",
@@ -781,53 +859,181 @@ def write_markdown_summary(output_dir: Path, summary: dict[str, Any]) -> None:
     (output_dir / "synthesis.md").write_text("\n".join(lines), encoding="utf-8")
 
 
+def run_iteration(
+    args: argparse.Namespace,
+    config: dict[str, Any],
+    run_id: str,
+    output_dir: Path,
+    gap_hints: list[str],
+    iteration: int,
+    iteration_count: int,
+) -> dict[str, Any]:
+    output_dir.mkdir(parents=True, exist_ok=True)
+    assignments, planner_receipt = build_assignments(
+        config,
+        args.objective,
+        run_id,
+        args.agent_count,
+        gap_hints,
+        args.assignment_mode,
+    )
+    executions = None
+    if args.executor_command:
+        fixture, executions = execute_assignments(
+            assignments,
+            args.executor_command,
+            output_dir,
+            run_id,
+            args.execution_timeout,
+        )
+    else:
+        fixture = load_fixture(args.offline_fixture)
+    validate_findings(config, fixture)
+    summary = summarize(config, assignments, planner_receipt, fixture, run_id, args.objective, executions)
+    summary["iteration"] = iteration
+    summary["iteration_count"] = iteration_count
+    summary["gap_hints"] = gap_hints
+    summary["next_gap_hints"] = derive_next_gap_hints(summary, gap_hints)
+    if args.offline_fixture:
+        fixture_path = Path(args.offline_fixture)
+        summary["offline_fixture"] = safe_relpath(Path.cwd(), fixture_path) if fixture_path.exists() else args.offline_fixture
+    if args.executor_command:
+        summary["executor_command"] = args.executor_command
+    dump_json({
+        "schema_version": 1,
+        "run_id": run_id,
+        "objective": args.objective,
+        "generated_at": summary["generated_at"],
+        "iteration": iteration,
+        "iteration_count": iteration_count,
+        "gap_hints": gap_hints,
+        "next_gap_hints": summary["next_gap_hints"],
+        "assignment_planner": planner_receipt,
+        "assignments": assignments,
+    }, output_dir / "assignments.json")
+    dump_json(summary, output_dir / "synthesis.json")
+    write_blogs(output_dir, assignments, fixture)
+    write_markdown_summary(output_dir, summary)
+    return summary
+
+
+def loop_iteration_record(root: Path, summary: dict[str, Any], output_dir: Path) -> dict[str, Any]:
+    return {
+        "iteration": summary["iteration"],
+        "run_id": summary["run_id"],
+        "output_dir": safe_relpath(root, output_dir),
+        "gap_hints": summary.get("gap_hints", []),
+        "next_gap_hints": summary.get("next_gap_hints", []),
+        "assignment_mode": summary.get("assignment_planner", {}).get("mode"),
+        "selected_personas": [
+            row.get("persona_id") for row in summary.get("assignment_planner", {}).get("selected_personas", [])
+        ],
+        "finding_count": summary.get("finding_count", 0),
+        "decision_counts": summary.get("decision_counts", {}),
+        "non_github_lanes_covered": summary.get("non_github_lanes_covered", []),
+        "execution_counts": summary.get("execution_counts", {}),
+    }
+
+
+def build_loop_summary(
+    run_id: str,
+    objective: str,
+    output_dir: Path,
+    records: list[dict[str, Any]],
+    final_gap_hints: list[str],
+) -> dict[str, Any]:
+    decision_counts: Counter[str] = Counter()
+    execution_counts: Counter[str] = Counter()
+    total_findings = 0
+    for record in records:
+        total_findings += int(record.get("finding_count", 0))
+        decision_counts.update(record.get("decision_counts", {}))
+        execution_counts.update(record.get("execution_counts", {}))
+    return {
+        "schema_version": 1,
+        "run_id": run_id,
+        "objective": objective,
+        "generated_at": utc_now(),
+        "review_only": True,
+        "iteration_count": len(records),
+        "total_finding_count": total_findings,
+        "decision_counts": dict(sorted(decision_counts.items())),
+        "execution_counts": dict(sorted(execution_counts.items())),
+        "iterations": records,
+        "final_gap_hints": final_gap_hints,
+        "instructions": [
+            "This loop receipt summarizes review-only research iterations.",
+            "Promote findings only through explicit source, validation, tests, and manifest updates.",
+            "Do not execute remote model code while investigating candidates.",
+        ],
+    }
+
+
+def write_loop_markdown(output_dir: Path, loop_summary: dict[str, Any]) -> None:
+    lines = [
+        f"# Research Loop {loop_summary['run_id']}",
+        "",
+        f"Objective: {loop_summary['objective']}",
+        f"Review only: {loop_summary['review_only']}",
+        f"Iterations: {loop_summary['iteration_count']}",
+        f"Total findings: {loop_summary['total_finding_count']}",
+        f"Final gap hints: {', '.join(loop_summary.get('final_gap_hints', [])) or 'none'}",
+        "",
+        "## Iterations",
+    ]
+    for record in loop_summary["iterations"]:
+        lines.append(
+            f"- {record['iteration']}: {record['run_id']} in {record['output_dir']} "
+            f"({record['assignment_mode']}, {record['finding_count']} findings)"
+        )
+        lines.append(f"  - gap hints: {', '.join(record.get('gap_hints', [])) or 'none'}")
+        lines.append(f"  - next gap hints: {', '.join(record.get('next_gap_hints', [])) or 'none'}")
+        lines.append(f"  - selected personas: {', '.join(record.get('selected_personas', [])) or 'none'}")
+    lines.extend(["", "## Decision Counts"])
+    for decision, count in loop_summary.get("decision_counts", {}).items():
+        lines.append(f"- {decision}: {count}")
+    lines.extend(["", "## Execution Counts"])
+    for state, count in loop_summary.get("execution_counts", {}).items():
+        lines.append(f"- {state}: {count}")
+    lines.append("")
+    (output_dir / "loop.md").write_text("\n".join(lines), encoding="utf-8")
+
+
+def write_loop_receipts(output_dir: Path, loop_summary: dict[str, Any]) -> None:
+    dump_json(loop_summary, output_dir / "loop.json")
+    write_loop_markdown(output_dir, loop_summary)
+
+
 def main() -> int:
     args = parse_args()
     try:
         if args.offline_fixture and args.executor_command:
             raise SkillError("--offline-fixture and --executor-command are mutually exclusive")
+        if args.iterations <= 0:
+            raise SkillError("--iterations must be positive")
         config = load_config(args.config)
         run_id = args.run_id or default_run_id()
         output_dir = Path(args.output_dir)
         output_dir.mkdir(parents=True, exist_ok=True)
-        assignments, planner_receipt = build_assignments(
-            config,
-            args.objective,
-            run_id,
-            args.agent_count,
-            args.gap_hint,
-            args.assignment_mode,
-        )
-        executions = None
-        if args.executor_command:
-            fixture, executions = execute_assignments(
-                assignments,
-                args.executor_command,
-                output_dir,
-                run_id,
-                args.execution_timeout,
+        if args.iterations == 1:
+            summary = run_iteration(args, config, run_id, output_dir, unique_ordered(args.gap_hint), 1, 1)
+            print(f"wrote research loop {run_id} to {output_dir}: {summary['finding_count']} findings")
+            return 0
+
+        gap_hints = unique_ordered(args.gap_hint)
+        records = []
+        for iteration in range(1, args.iterations + 1):
+            iteration_run_id = f"{run_id}-i{iteration:02d}"
+            iteration_dir = output_dir / "iterations" / f"{iteration:02d}"
+            summary = run_iteration(args, config, iteration_run_id, iteration_dir, gap_hints, iteration, args.iterations)
+            records.append(loop_iteration_record(output_dir, summary, iteration_dir))
+            gap_hints = merge_gap_hints(gap_hints, summary.get("next_gap_hints", []))
+        loop_summary = build_loop_summary(run_id, args.objective, output_dir, records, gap_hints)
+        write_loop_receipts(output_dir, loop_summary)
+        print(
+            f"wrote research loop {run_id} to {output_dir}: "
+            f"{loop_summary['total_finding_count']} findings across {args.iterations} iterations"
             )
-        else:
-            fixture = load_fixture(args.offline_fixture)
-        validate_findings(config, fixture)
-        summary = summarize(config, assignments, planner_receipt, fixture, run_id, args.objective, executions)
-        if args.offline_fixture:
-            fixture_path = Path(args.offline_fixture)
-            summary["offline_fixture"] = safe_relpath(Path.cwd(), fixture_path) if fixture_path.exists() else args.offline_fixture
-        if args.executor_command:
-            summary["executor_command"] = args.executor_command
-        dump_json({
-            "schema_version": 1,
-            "run_id": run_id,
-            "objective": args.objective,
-            "generated_at": summary["generated_at"],
-            "assignment_planner": planner_receipt,
-            "assignments": assignments,
-        }, output_dir / "assignments.json")
-        dump_json(summary, output_dir / "synthesis.json")
-        write_blogs(output_dir, assignments, fixture)
-        write_markdown_summary(output_dir, summary)
-        print(f"wrote research loop {run_id} to {output_dir}: {summary['finding_count']} findings")
         return 0
     except (SkillError, OSError, json.JSONDecodeError) as exc:
         print(f"error: {exc}", file=sys.stderr)

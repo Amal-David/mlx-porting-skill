@@ -2,7 +2,7 @@
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
   "version": "0.1.0",
-  "generated_at": "2026-06-27T12:31:37.297675+00:00",
+  "generated_at": "2026-06-27T12:38:52.331382+00:00",
   "file_count": 194,
   "files": [
     {
@@ -52,8 +52,8 @@
     },
     {
       "path": "README.md",
-      "size_bytes": 5126,
-      "sha256": "c012dd3494dae66d84674329ffbee6464c0a03451cd1a388bbf2adef4a5e1a15"
+      "size_bytes": 5163,
+      "sha256": "3e96cd0dc21b3f882eb47a1376ecd99f9805da12de3f49646cabe3a2228db62f"
     },
     {
       "path": "RESEARCH_REPORT.md",
@@ -62,8 +62,8 @@
     },
     {
       "path": "VALIDATION.md",
-      "size_bytes": 5111,
-      "sha256": "b28b781c9bde5aa6aa1dd8bf73ebb39b62e329d6762d87fa544c83f7ecf0d820"
+      "size_bytes": 5156,
+      "sha256": "84120e1d2879edd67bfc7b22a316e89c29731ab7c5cf7a31abad7d2b4207766e"
     },
     {
       "path": "VERSION",
@@ -112,8 +112,8 @@
     },
     {
       "path": "mlx-model-porting/SKILL.md",
-      "size_bytes": 10986,
-      "sha256": "02cc6154cce644cf8d9a8b3965b35ff28f4af23877c10dda583e77d9e7967c85"
+      "size_bytes": 11081,
+      "sha256": "afdcadf74771d6f01b845d70a3969cecae5788ff5fc15b22cf9c2f2d5fb37b63"
     },
     {
       "path": "mlx-model-porting/assets/BENCHMARK_REPORT.md",
@@ -212,8 +212,8 @@
     },
     {
       "path": "mlx-model-porting/references/deep-research-loop.md",
-      "size_bytes": 7284,
-      "sha256": "73a5152e2d16e0b48b05903e6ac3ae46d55979a0ab0515a4e5320adc1fb7fdd8"
+      "size_bytes": 8241,
+      "sha256": "7d81c1c2b1881d26909cd8aae6159ab481e92c4ce99f0e5a66945fe04e8f8119"
     },
     {
       "path": "mlx-model-porting/references/failure-atlas.md",
@@ -227,8 +227,8 @@
     },
     {
       "path": "mlx-model-porting/references/maintenance-and-provenance.md",
-      "size_bytes": 4819,
-      "sha256": "ddda03dee0e7ca5f783fe7bf6eeeb11f6c7cdfd23c811bdec2db0783cad196cd"
+      "size_bytes": 4971,
+      "sha256": "0db81964327b2814821bb96724205888c456a163a2a0abfc43dc476fce28eb13"
     },
     {
       "path": "mlx-model-porting/references/model-support-map.md",
@@ -547,8 +547,8 @@
     },
     {
       "path": "mlx-model-porting/scripts/research_loop.py",
-      "size_bytes": 33656,
-      "sha256": "d5e5d39bddef7a695eafd83f602127e3c9ea147f7b87e469450388c9b610e597"
+      "size_bytes": 41578,
+      "sha256": "ff7186f4944fabdc8b4fbeb7a1abe2a7dd83e85d987b421d9093044ff9313fc4"
     },
     {
       "path": "mlx-model-porting/scripts/update_sources.py",
@@ -972,8 +972,8 @@
     },
     {
       "path": "tests/test_tooling.py",
-      "size_bytes": 63382,
-      "sha256": "3b3741402d84997a56f0ac4810187c3c19be3c2dd966747284431819074d8769"
+      "size_bytes": 65429,
+      "sha256": "d75871cec68c967fe5e8c05b63dcfa46e5e9f1b78f45b9ddd513d5320d9e6967"
     }
   ]
 }
