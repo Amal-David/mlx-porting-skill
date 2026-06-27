@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "reviewed": "2026-06-24",
+  "reviewed": "2026-06-27",
   "evidence_class_definitions": {
     "official_docs": "Official framework or product documentation. Best for API support and constraints.",
     "repositories": "Source repositories, source files, or releases. Best for implementation existence and exact behavior.",
@@ -153,6 +153,52 @@
           "apple-mlx-m5-blog",
           "apple-wwdc25-mlx"
         ]
+      }
+    },
+    {
+      "id": "block-weight-streaming",
+      "technique_id": "block-weight-streaming",
+      "category": "memory",
+      "status": "proven-mlx-port",
+      "objectives": [
+        "peak-memory"
+      ],
+      "applies_to": [
+        "diffusion-flow",
+        "flow-diffusion-tts",
+        "vision-language-omni"
+      ],
+      "recommendation": "For repeated-block models that exceed unified memory, stream block weights from inspectable safetensors into a shared block only after eager parity is established.",
+      "expected_effect": "Profile-required. Source-reported LTX-2 evidence shows resident memory can move from all repeated blocks to the active block plus non-block parameters, but wall time can worsen.",
+      "tradeoffs": [
+        "Page faults and disk reads can erase the memory win.",
+        "Requires exact per-block key maps, strict loading, eviction tests, and an eager fallback.",
+        "Risky for autoregressive decode if every token reloads every block."
+      ],
+      "validation_gates": [
+        "block key coverage",
+        "streamed-vs-eager primitive and full-model parity",
+        "eviction/reload consistency",
+        "peak and steady memory measurement",
+        "wall-time benchmark",
+        "eager fallback path"
+      ],
+      "rollback_conditions": [
+        "streamed outputs drift",
+        "key coverage is incomplete",
+        "eviction reloads stale weights or adapters",
+        "measured memory win is absent",
+        "latency becomes unacceptable"
+      ],
+      "evidence_refs": {
+        "official_docs": [],
+        "repositories": [
+          "dgrauet-ltx2-block-streaming-source",
+          "dgrauet-ltx2-block-streaming-tests",
+          "dgrauet-ltx2-regression-report"
+        ],
+        "papers": [],
+        "technical_blogs": []
       }
     },
     {

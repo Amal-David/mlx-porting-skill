@@ -1,12 +1,12 @@
 {
   "schema_version": 1,
-  "reviewed": "2026-06-24",
+  "reviewed": "2026-06-27",
   "review_depth_definitions": {
     "synthesized": "Directly informed a runbook, rule, or technique decision.",
     "screened": "Abstract/readme/code path reviewed for relevance and limits.",
     "indexed": "Catalogued for future review; do not represent as fully reviewed."
   },
-  "count": 320,
+  "count": 328,
   "sources": [
     {
       "id": "agent-skills-spec",
@@ -4591,6 +4591,137 @@
         "video",
         "llava"
       ]
+    },
+    {
+      "id": "github-mlx-top100-contributors",
+      "title": "GitHub API top contributors for ml-explore/mlx",
+      "url": "https://api.github.com/repos/ml-explore/mlx/contributors?per_page=100",
+      "kind": "repository",
+      "owner": "GitHub / ml-explore",
+      "topics": [
+        "mlx",
+        "contributors",
+        "source-selection"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2026-06-27",
+      "note": "Used to select the top-100 contributor source set for contributor implementation review."
+    },
+    {
+      "id": "dgrauet-ltx2-block-streaming-source",
+      "title": "ltx-2-mlx BlockStreamer implementation",
+      "url": "https://github.com/dgrauet/ltx-2-mlx/blob/3f5897a9582b/packages/ltx-core-mlx/src/ltx_core_mlx/loader/block_streaming.py",
+      "kind": "source-code",
+      "owner": "dgrauet",
+      "topics": [
+        "mlx",
+        "block-streaming",
+        "safetensors",
+        "peak-memory",
+        "diffusion"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "3f5897a9582b",
+      "note": "Pinned implementation evidence for memory-mapped repeated-block weight streaming."
+    },
+    {
+      "id": "dgrauet-ltx2-block-streaming-tests",
+      "title": "ltx-2-mlx block streaming tests",
+      "url": "https://github.com/dgrauet/ltx-2-mlx/blob/3f5897a9582b/tests/test_block_streaming.py",
+      "kind": "source-code",
+      "owner": "dgrauet",
+      "topics": [
+        "mlx",
+        "block-streaming",
+        "parity",
+        "eviction",
+        "tests"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "3f5897a9582b",
+      "note": "Pinned correctness evidence for block discovery, weight binding, streamed/eager parity, and eviction/reload behavior."
+    },
+    {
+      "id": "dgrauet-ltx2-regression-report",
+      "title": "ltx-2-mlx v0.11.0 regression report",
+      "url": "https://github.com/dgrauet/ltx-2-mlx/blob/3f5897a9582b/docs/REGRESSION_TESTS_v0.11.0.md",
+      "kind": "source-code",
+      "owner": "dgrauet",
+      "topics": [
+        "mlx",
+        "block-streaming",
+        "regression-tests",
+        "video-diffusion"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "3f5897a9582b",
+      "note": "Pinned report claiming byte-identical low-RAM/eager output for a q8 LTX-2 path; source-reported, not locally reproduced here."
+    },
+    {
+      "id": "lucasnewman-f5-tts-mlx-repo",
+      "title": "F5-TTS MLX implementation",
+      "url": "https://github.com/lucasnewman/f5-tts-mlx/tree/85d015f62b7c",
+      "kind": "repository",
+      "owner": "lucasnewman",
+      "topics": [
+        "mlx",
+        "tts",
+        "flow-matching",
+        "duration",
+        "vocoder"
+      ],
+      "review_depth": "screened",
+      "snapshot": "85d015f62b7c",
+      "note": "Screened as top-100 contributor implementation context; reinforces existing flow-TTS gates."
+    },
+    {
+      "id": "lucasnewman-vocos-mlx-repo",
+      "title": "Vocos MLX implementation",
+      "url": "https://github.com/lucasnewman/vocos-mlx/tree/18c46027a2fb",
+      "kind": "repository",
+      "owner": "lucasnewman",
+      "topics": [
+        "mlx",
+        "vocoder",
+        "encodec",
+        "audio-codec"
+      ],
+      "review_depth": "screened",
+      "snapshot": "18c46027a2fb",
+      "note": "Screened as top-100 contributor implementation context; reinforces existing vocoder/audio-codec gates."
+    },
+    {
+      "id": "tristanbilot-mlx-benchmark-repo",
+      "title": "mlx-benchmark operation benchmark repository",
+      "url": "https://github.com/TristanBilot/mlx-benchmark/tree/fc7b2fa714bc",
+      "kind": "repository",
+      "owner": "TristanBilot",
+      "topics": [
+        "mlx",
+        "benchmarking",
+        "mx.compile",
+        "mps",
+        "cuda"
+      ],
+      "review_depth": "screened",
+      "snapshot": "fc7b2fa714bc",
+      "note": "Screened as top-100 contributor benchmarking context; useful measurement hygiene, not a port-level optimization claim."
+    },
+    {
+      "id": "mzbac-mlx-sharding-repo",
+      "title": "mlx_sharding distributed inference demo",
+      "url": "https://github.com/mzbac/mlx_sharding/tree/8b01c33cae6c",
+      "kind": "repository",
+      "owner": "mzbac",
+      "topics": [
+        "mlx",
+        "sharding",
+        "pipeline-parallelism",
+        "distributed-inference"
+      ],
+      "review_depth": "screened",
+      "snapshot": "8b01c33cae6c",
+      "note": "Screened as top-100 contributor implementation context; held as research until parity, scheduler, failure, and security gates exist."
     }
   ]
 }

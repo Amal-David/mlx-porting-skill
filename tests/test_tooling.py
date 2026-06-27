@@ -60,8 +60,8 @@ class ToolingTests(unittest.TestCase):
         result = run_script("validate_sources.py", SKILL)
         report = json.loads(result.stdout)
         self.assertTrue(report["ok"], report)
-        self.assertEqual(report["sources"], 320)
-        self.assertEqual(report["optimization_methods"], 25)
+        self.assertEqual(report["sources"], 328)
+        self.assertEqual(report["optimization_methods"], 26)
         self.assertTrue(report["recommendation_taxonomy"])
 
     def test_static_inspection_routes_dense_decoder(self) -> None:
@@ -137,6 +137,25 @@ class ToolingTests(unittest.TestCase):
             text = markdown.read_text()
             self.assertIn("Ready candidates", text)
             self.assertIn("Research experiments", text)
+
+    def test_block_weight_streaming_is_scoped_to_repeated_block_memory_pressure(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            inspection = Path(tmp) / "inspection.json"
+            inspection.write_text(json.dumps({"recommended_family": "diffusion-flow"}))
+            diffusion = json.loads(run_script(
+                "recommend_optimizations.py", inspection,
+                "--objective", "peak-memory", "--limit", 50,
+            ).stdout)
+            diffusion_ready = {m["id"] for m in diffusion["ready_candidates"]}
+            self.assertIn("block-weight-streaming", diffusion_ready)
+
+            inspection.write_text(json.dumps({"recommended_family": "dense-decoder-transformer"}))
+            decoder = json.loads(run_script(
+                "recommend_optimizations.py", inspection,
+                "--objective", "peak-memory", "--limit", 50,
+            ).stdout)
+            decoder_ids = {m["id"] for m in decoder["ready_candidates"] + decoder["research_candidates"]}
+            self.assertNotIn("block-weight-streaming", decoder_ids)
 
     def test_optimization_guidance_has_no_unreachable_methods(self) -> None:
         # Every method must be reachable by at least one architecture family via the

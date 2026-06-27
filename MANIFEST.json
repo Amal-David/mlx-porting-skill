@@ -2,8 +2,8 @@
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
   "version": "0.1.0",
-  "generated_at": "2026-06-26T10:21:24.939848+00:00",
-  "file_count": 100,
+  "generated_at": "2026-06-27T09:03:11.724921+00:00",
+  "file_count": 101,
   "files": [
     {
       "path": ".github/workflows/daily-research.yml",
@@ -112,8 +112,8 @@
     },
     {
       "path": "mlx-model-porting/SKILL.md",
-      "size_bytes": 10531,
-      "sha256": "cc91d14f999af666cdabdb1933decd68f2c3c340f08f72c20f12baa237162619"
+      "size_bytes": 10646,
+      "sha256": "1e7d5d908e42bb4f7bb1e07fd346a65ddd9069d026d5d0118755833f34855b61"
     },
     {
       "path": "mlx-model-porting/assets/BENCHMARK_REPORT.md",
@@ -146,9 +146,14 @@
       "sha256": "e5ca2a397d57482f6daab97ff6ff3fffc4d306f6699e6e28ab20f96daff40b51"
     },
     {
+      "path": "mlx-model-porting/assets/contributor_learnings.json",
+      "size_bytes": 10078,
+      "sha256": "47b25128761bfac2d43826639a7c0d4427f284b9897b78876c90a5340545ff83"
+    },
+    {
       "path": "mlx-model-porting/assets/optimization_guidance.yaml",
-      "size_bytes": 37262,
-      "sha256": "f22c54c09cf0ee263ae016136c42b852d68d81513de030d4dd912d5dcc6e9e6c"
+      "size_bytes": 39076,
+      "sha256": "a01b41e8f838a6a754d8cd1f46e2043932d29d20a567e6438f8961815366c7ec"
     },
     {
       "path": "mlx-model-porting/assets/recommendation-taxonomy.yaml",
@@ -157,13 +162,13 @@
     },
     {
       "path": "mlx-model-porting/assets/sources.yaml",
-      "size_bytes": 130201,
-      "sha256": "32dabe82b17d06b3bcd9fd2b07ff4bd7479ac7f8f981fdf1747c64943a120156"
+      "size_bytes": 134772,
+      "sha256": "501b399f6dd713138a516a1f22965f2e9071f081d9f6bf4aaca7fbf62d8e55b5"
     },
     {
       "path": "mlx-model-porting/assets/techniques.yaml",
-      "size_bytes": 44617,
-      "sha256": "3df968e4c5e4455da1e680c9cf8ae896a10899b3e6a958861ecde2d8f4f3a12c"
+      "size_bytes": 45835,
+      "sha256": "5bf4d70529fe9f8d3e5f6beeda78454a74a9426b7760b3cec202de7fb9f4df80"
     },
     {
       "path": "mlx-model-porting/assets/update-candidates.json",
@@ -502,8 +507,8 @@
     },
     {
       "path": "tests/test_tooling.py",
-      "size_bytes": 26935,
-      "sha256": "eadbeae6256b12935303aef8b44b41e94be2a9f7c03eae3f523991377dfe1718"
+      "size_bytes": 28021,
+      "sha256": "5b7250c85e53699e46b875c930b799ef27af3e976b6c5ed8bd214d0860129be2"
     }
   ]
 }

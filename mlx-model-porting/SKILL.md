@@ -6,7 +6,7 @@ compatibility: Execution and performance validation require an Apple Silicon Mac
 metadata:
   author: mlx-porting-skill
   version: "0.1.0"
-  last-reviewed: "2026-06-24"
+  last-reviewed: "2026-06-27"
 ---
 
 # MLX model porting and optimization
@@ -167,11 +167,12 @@ Default order:
 3. use native fused operations and fast SDPA;
 4. reduce allocations and make state/cache updates explicit;
 5. compile stable regions and control recompilation;
-6. chunk prefill/frontends or stream where the architecture permits;
-7. optimize KV/cache policy and batching;
-8. quantize weights, then KV/state if justified;
-9. add speculative or multi-token decoding only for compatible autoregressive paths;
-10. write a custom Metal kernel only after profiling proves a remaining kernel bottleneck.
+6. chunk prefill/frontends or stream activations where the architecture permits;
+7. stream repeated-block weights only for memory-bound diffusion/flow-style ports after eager parity;
+8. optimize KV/cache policy and batching;
+9. quantize weights, then KV/state if justified;
+10. add speculative or multi-token decoding only for compatible autoregressive paths;
+11. write a custom Metal kernel only after profiling proves a remaining kernel bottleneck.
 
 For every change, record hypothesis, diff, correctness result, benchmark result, memory result, quality result, and keep/revert decision.
 

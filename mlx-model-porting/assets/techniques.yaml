@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "reviewed": "2026-06-24",
+  "reviewed": "2026-06-27",
   "statuses": [
     "native-mlx",
     "official-mlx-project",
@@ -214,6 +214,29 @@
         "paper-2309-06180"
       ],
       "reviewed": "2026-06-23"
+    },
+    {
+      "id": "block-weight-streaming",
+      "title": "Repeated-block weight streaming",
+      "category": "memory",
+      "status": "proven-mlx-port",
+      "support_scope": "third_party_pinned",
+      "applies_to": [
+        "diffusion",
+        "flow-diffusion-tts",
+        "vision-language-omni",
+        "large-repeated-block"
+      ],
+      "use_when": "Repeated block weights dominate resident memory and the model cannot fit the target Mac in eager mode.",
+      "avoid_when": "The eager model already fits, block weights are not the memory bottleneck, or autoregressive decode would reload every block per token without a measured benefit.",
+      "validation_gate": "Block key coverage, streamed-vs-eager parity, eviction/reload consistency, peak-memory measurement, wall-time measurement, and an eager fallback.",
+      "evidence": [
+        "dgrauet-ltx2-block-streaming-source",
+        "dgrauet-ltx2-block-streaming-tests",
+        "dgrauet-ltx2-regression-report"
+      ],
+      "reviewed": "2026-06-27",
+      "rollback_condition": "Disable if streamed outputs drift, key coverage is incomplete, eviction reloads stale weights, or page-fault/disk overhead erases the intended memory win."
     },
     {
       "id": "full-kv-cache",
