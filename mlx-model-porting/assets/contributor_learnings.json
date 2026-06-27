@@ -7,7 +7,50 @@
     "retrieved": "2026-06-27",
     "requested_count": 1000,
     "count": 256,
-    "note": "GitHub returned 256 contributors total across pages 1-10, so the top-1000 request covered every listed contributor available from the contributors API at retrieval time.",
+    "linked_user_count": 256,
+    "anonymous_author_count": 262,
+    "pages_fetched": 3,
+    "note": "GitHub returned 256 linked contributors across pages 1-3; with anon=true it returned 262 author buckets. The top-1000 request covered every linked contributor available from the contributors API at retrieval time, and future refreshes should preserve both counts without storing raw anonymous identities.",
+    "api_receipt": {
+      "api_version": "2022-11-28",
+      "linked_pages": [
+        {
+          "page": 1,
+          "count": 100,
+          "link_header": "<https://api.github.com/repositories/724854743/contributors?per_page=100&page=2>; rel=\"next\", <https://api.github.com/repositories/724854743/contributors?per_page=100&page=3>; rel=\"last\"",
+          "etag": "W/\"5a55156d162f0fe7c184a895a276e41ed8bed5a48aca328267f905c2054188ed\"",
+          "last_modified": "Sat, 27 Jun 2026 09:02:43 GMT"
+        },
+        {
+          "page": 2,
+          "count": 100,
+          "link_header": "<https://api.github.com/repositories/724854743/contributors?per_page=100&page=1>; rel=\"prev\", <https://api.github.com/repositories/724854743/contributors?per_page=100&page=3>; rel=\"next\", <https://api.github.com/repositories/724854743/contributors?per_page=100&page=3>; rel=\"last\", <https://api.github.com/repositories/724854743/contributors?per_page=100&page=1>; rel=\"first\"",
+          "etag": "W/\"a6eca944bd379e640a01fbe840436bc2f5817113a9a6eda9d78c80bb7658a5e4\"",
+          "last_modified": "Sat, 27 Jun 2026 09:02:43 GMT"
+        },
+        {
+          "page": 3,
+          "count": 56,
+          "link_header": "<https://api.github.com/repositories/724854743/contributors?per_page=100&page=2>; rel=\"prev\", <https://api.github.com/repositories/724854743/contributors?per_page=100&page=1>; rel=\"first\"",
+          "etag": "W/\"1f25206f70ac6c2973250bf83b968df89606cc718d4a693fd96967d5b456d1cd\"",
+          "last_modified": "Sat, 27 Jun 2026 09:02:43 GMT"
+        }
+      ],
+      "anonymous_pages": [
+        {
+          "page": 1,
+          "count": 100
+        },
+        {
+          "page": 2,
+          "count": 100
+        },
+        {
+          "page": 3,
+          "count": 62
+        }
+      ]
+    },
     "top1000_logins": [
       "zcbenz",
       "angeloskath",

@@ -21,6 +21,24 @@ The loop samples beyond GitHub:
 GitHub can be useful source evidence, but it must not be the only discovery
 axis for comprehensive skill maintenance.
 
+## Contributor-Scale Sweeps
+
+When researching top contributors, record the requested count and the actual
+API-returned count. For example, the top-1000 MLX contributor sweep requested
+`ml-explore/mlx` contributors pages 1-10 and GitHub returned 256 linked
+contributors, or 262 author buckets with `anon=true`, at retrieval time. Follow
+GitHub `Link` headers rather than assuming all capped pages exist, and store
+status codes, ETags, Last-Modified headers, rate-limit state, the login set,
+matched repositories, inspected snapshots, query errors, and promoted/held
+decisions in `assets/contributor_learnings.json`.
+
+Contributor-owned repositories are source-selection evidence only. Promote a
+learning only when a pinned source path, tests or local validation, affected
+skill surface, validation gate, and rollback condition are recorded. If code or
+repository search is rate-limited, incomplete, or capped, add a backlog item
+rather than treating the long tail as complete. Do not persist raw anonymous
+author identities.
+
 ## Agent Assignments
 
 The harness generates bounded assignments from
@@ -76,9 +94,37 @@ python3 scripts/research_loop.py \
 ```
 
 Without `--offline-fixture`, the script writes assignments and an empty
-review-only synthesis that says no findings were ingested. It does not fetch
-network resources or spawn subagents by itself; the operator or host agent owns
-live delegation and then feeds returned findings back into the harness.
+review-only synthesis that says no findings were ingested.
+
+Run an explicit local worker command for each assignment:
+
+```bash
+python3 scripts/research_loop.py \
+  --objective "Broaden MLX porting evidence beyond GitHub" \
+  --agent-count 6 \
+  --executor-command "python3 local_researcher.py" \
+  --output-dir research-runs/manual-executor
+```
+
+Executor mode is opt-in and mutually exclusive with `--offline-fixture`. The
+command receives these environment variables:
+
+- `MLX_RESEARCH_PERSONA_ID`;
+- `MLX_RESEARCH_PROMPT_PATH`;
+- `MLX_RESEARCH_RESULT_PATH`;
+- `MLX_RESEARCH_RUN_ID`;
+- `MLX_RESEARCH_OUTPUT_DIR`;
+- `MLX_RESEARCH_REVIEW_ONLY=1`.
+
+The worker must write one JSON object to `MLX_RESEARCH_RESULT_PATH` with
+`persona_id`, `decision_notes`, `findings`, and optional `limitations`. The
+harness stores each prompt, result JSON, stdout log, stderr log, exit code, and
+execution state under `agents/` in the run directory. A failed worker exits the
+loop loudly; inspect the saved receipts before retrying.
+
+The script does not fetch network resources by itself or modify recommendation
+assets. In executor mode, the explicit worker command owns any live delegation
+or browsing and must still obey the review-only policy.
 
 ## Promotion Rule
 

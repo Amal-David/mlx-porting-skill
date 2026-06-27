@@ -1,0 +1,404 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-06-27-top1000-contributor-loop",
+  "objective": "Extend MLX contributor implementation learning to the top-1000 contributor request and preserve promotion/backlog decisions",
+  "generated_at": "2026-06-27T10:57:54+00:00",
+  "review_only": true,
+  "agent_count": 6,
+  "execution_counts": {
+    "scaffolded_not_run": 0,
+    "fixture_ingested": 6,
+    "executor_completed": 0,
+    "executor_failed": 0
+  },
+  "finding_count": 10,
+  "source_lane_counts": {
+    "official_docs": 2,
+    "papers": 0,
+    "hugging_face": 0,
+    "packages": 0,
+    "technical_blogs": 0,
+    "community_discussions": 0,
+    "repositories": 7,
+    "repo_local_audit": 1
+  },
+  "non_github_lanes_covered": [
+    "official_docs",
+    "repo_local_audit"
+  ],
+  "decision_counts": {
+    "adopted": 3,
+    "held": 2,
+    "rejected": 0,
+    "needs-validation": 5
+  },
+  "adopted": [
+    {
+      "id": "top1000-contributor-set-covered-available-api",
+      "title": "Top-1000 request covered API-returned linked contributors and recorded the anonymous delta",
+      "summary": "The expanded sweep requested ml-explore/mlx contributors pages 1-10 at 100 per page. GitHub returned 256 linked contributors across pages 1-3, or 262 author buckets with anon=true, so the top-1000 objective covered every linked contributor available through that API at retrieval time.",
+      "source_lane": "repositories",
+      "sources": [
+        {
+          "title": "GitHub list repository contributors API",
+          "url": "https://docs.github.com/en/rest/repos/repos#list-repository-contributors",
+          "accessed": "2026-06-27",
+          "kind": "official-doc"
+        },
+        {
+          "title": "GitHub contributors API for ml-explore/mlx",
+          "url": "https://api.github.com/repos/ml-explore/mlx/contributors?per_page=100&page=1",
+          "accessed": "2026-06-27",
+          "kind": "repository-api"
+        }
+      ],
+      "decision": "adopted",
+      "evidence_level": "official-api-plus-live-snapshot",
+      "validation_gate": "Refresh with Link-header pagination, record requested_count, linked_user_count, anon=true count, pages fetched, status codes, ETags, Last-Modified headers, API version, rate-limit state, and access date.",
+      "affects": [
+        "assets/contributor_learnings.json",
+        "assets/sources.yaml",
+        "references/deep-research-loop.md"
+      ],
+      "caveats": [
+        "GitHub contributor counts can drift and do not imply each contributor owns a relevant MLX model-porting repository.",
+        "Do not persist raw anonymous author identities."
+      ],
+      "required_next_validation": "Re-run contributor retrieval with authenticated requests and compare linked-user plus anon=true counts before claiming refreshed top-1000 coverage.",
+      "persona_id": "official-docs-cartographer"
+    },
+    {
+      "id": "top1000-promoted-block-streaming",
+      "title": "Repeated-block weight streaming has pinned implementation and rollback gates",
+      "summary": "dgrauet/ltx-2-mlx provided inspectable safetensors block streaming code, tests, and a regression report, so the skill now treats repeated-block weight streaming as a proven MLX-port technique for memory-bound diffusion or flow-style models.",
+      "source_lane": "repositories",
+      "sources": [
+        {
+          "title": "ltx-2-mlx BlockStreamer implementation",
+          "url": "https://github.com/dgrauet/ltx-2-mlx/blob/3f5897a9582b/packages/ltx-core-mlx/src/ltx_core_mlx/loader/block_streaming.py",
+          "accessed": "2026-06-27",
+          "kind": "source-code"
+        },
+        {
+          "title": "ltx-2-mlx block streaming tests",
+          "url": "https://github.com/dgrauet/ltx-2-mlx/blob/3f5897a9582b/tests/test_block_streaming.py",
+          "accessed": "2026-06-27",
+          "kind": "source-code"
+        }
+      ],
+      "decision": "adopted",
+      "evidence_level": "pinned-source-plus-tests",
+      "validation_gate": "Block key coverage, streamed-vs-eager parity, eviction/reload consistency, peak-memory measurement, wall-time benchmark, and eager fallback.",
+      "affects": [
+        "assets/optimization_guidance.yaml",
+        "assets/techniques.yaml",
+        "references/benchmarking.md"
+      ],
+      "caveats": [
+        "Wall time can worsen from page faults or disk reads; do not use for eager-fit or per-token reload paths."
+      ],
+      "required_next_validation": "Require local parity and memory/latency measurement on the target model before recommending it in a port plan.",
+      "persona_id": "practitioner-blog-miner"
+    },
+    {
+      "id": "top1000-promoted-grid-sample",
+      "title": "PyTorch-compatible grid_sample custom kernels have enough evidence for scoped guidance",
+      "summary": "katlun-lgtm/mlx-grid-sample provided custom Metal code, correctness tests, and a benchmark harness for 2D/3D grid_sample. The skill now scopes this as a proven MLX-port technique for spatial or volume warping after parity and end-to-end benchmark gates.",
+      "source_lane": "repositories",
+      "sources": [
+        {
+          "title": "mlx-grid-sample custom Metal implementation",
+          "url": "https://github.com/katlun-lgtm/mlx-grid-sample/blob/467385fa2b84/mlx_grid_sample.py",
+          "accessed": "2026-06-27",
+          "kind": "source-code"
+        },
+        {
+          "title": "mlx-grid-sample correctness tests",
+          "url": "https://github.com/katlun-lgtm/mlx-grid-sample/blob/467385fa2b84/test_grid_sample.py",
+          "accessed": "2026-06-27",
+          "kind": "source-code"
+        },
+        {
+          "title": "mlx-grid-sample benchmark harness",
+          "url": "https://github.com/katlun-lgtm/mlx-grid-sample/blob/467385fa2b84/bench_grid_sample.py",
+          "accessed": "2026-06-27",
+          "kind": "source-code"
+        }
+      ],
+      "decision": "adopted",
+      "evidence_level": "pinned-source-plus-local-validation",
+      "validation_gate": "Coordinate order, align_corners, padding mode, interpolation, dtype, layout parity, unsupported-mode declaration, pure-MLX fallback, and end-to-end benchmark.",
+      "affects": [
+        "assets/optimization_guidance.yaml",
+        "assets/techniques.yaml",
+        "references/compile-and-kernels.md"
+      ],
+      "caveats": [
+        "Hold if reflection, nearest, backward, or layout transpose cost matters for the target model."
+      ],
+      "required_next_validation": "Run model-level parity and benchmark before using the kernel in a port.",
+      "persona_id": "practitioner-blog-miner"
+    }
+  ],
+  "held": [
+    {
+      "id": "top1000-source-format-onnx-adjacent",
+      "title": "MLX ONNX export tooling is adjacent evidence, not intake support",
+      "summary": "A top-1000 contributor-owned mlx-onnx repository shows MLX-to-ONNX export ecosystem work, but it does not prove ONNX-to-MLX model intake. Keep ONNX/JAX/TF/GGUF/Core ML intake as a P0 validation backlog.",
+      "source_lane": "repositories",
+      "sources": [
+        {
+          "title": "mlx-onnx export library",
+          "url": "https://github.com/skryl/mlx-onnx/tree/c9aec867c76b",
+          "accessed": "2026-06-27",
+          "kind": "repository"
+        }
+      ],
+      "decision": "held",
+      "evidence_level": "adjacent-ecosystem-context",
+      "validation_gate": "Static manifest extraction and unsupported-op reporting for source formats beyond PyTorch/Hugging Face.",
+      "affects": [
+        "references/intake-and-routing.md",
+        "scripts/inspect_model.py",
+        "assets/research_backlog.json"
+      ],
+      "caveats": [
+        "Export out of MLX is the reverse direction from the skill's model-porting intake path."
+      ],
+      "required_next_validation": "Build source-format fixtures and route them without importing source framework code.",
+      "persona_id": "huggingface-ecosystem-sampler"
+    },
+    {
+      "id": "top1000-paged-kv-moe-reinforces-existing",
+      "title": "Contributor serving repos reinforce paged-KV and MoE gates",
+      "summary": "tiny-llm and mlx-moe show useful paged-KV, continuous batching, quantized expert, and synthetic MoE assembly patterns, but they reinforce existing validation gates rather than introducing a new supported optimization.",
+      "source_lane": "repositories",
+      "sources": [
+        {
+          "title": "tiny-llm MLX serving course repository",
+          "url": "https://github.com/skyzh/tiny-llm/tree/efb0c89fd236",
+          "accessed": "2026-06-27",
+          "kind": "repository"
+        },
+        {
+          "title": "mlx-moe dense-to-MoE assembly scripts",
+          "url": "https://github.com/mzbac/mlx-moe/tree/11088f36eaea",
+          "accessed": "2026-06-27",
+          "kind": "repository"
+        }
+      ],
+      "decision": "held",
+      "evidence_level": "screened-implementation-context",
+      "validation_gate": "Block-boundary, fragmentation, cancellation, sorted/unsorted expert, and loop-oracle checks before changing serving guidance.",
+      "affects": [
+        "references/attention-and-kv.md",
+        "references/decoding-and-serving.md",
+        "references/runbook-moe-transformer.md"
+      ],
+      "caveats": [
+        "Synthetic MoE assembly is model creation or training, not source-preserving conversion."
+      ],
+      "required_next_validation": "Keep as reinforcing context until a concrete port needs these patterns and has local parity fixtures.",
+      "persona_id": "package-registry-scout"
+    }
+  ],
+  "rejected": [],
+  "needs_validation": [
+    {
+      "id": "top1000-link-header-collector-receipts",
+      "title": "Contributor-scale sweeps need Link-header and rate-limit receipts",
+      "summary": "GitHub pagination and API best-practice docs require following Link headers, using authenticated serial requests, and preserving rate-limit/conditional-request receipts. Hard-coded page caps are safety caps, not proof that all pages exist.",
+      "source_lane": "repositories",
+      "sources": [
+        {
+          "title": "GitHub REST API pagination",
+          "url": "https://docs.github.com/en/rest/using-the-rest-api/using-pagination-in-the-rest-api",
+          "accessed": "2026-06-27",
+          "kind": "official-doc"
+        },
+        {
+          "title": "GitHub REST API best practices",
+          "url": "https://docs.github.com/en/rest/using-the-rest-api/best-practices-for-using-the-rest-api",
+          "accessed": "2026-06-27",
+          "kind": "official-doc"
+        }
+      ],
+      "decision": "needs-validation",
+      "evidence_level": "official-api-methodology",
+      "validation_gate": "Collector stops only when no rel=\"next\" remains or the explicit cap is reached; each run stores headers, status codes, retries, rate-limit state, and conditional request metadata.",
+      "affects": [
+        "assets/contributor_learnings.json",
+        "assets/research_backlog.json",
+        "references/deep-research-loop.md"
+      ],
+      "caveats": [
+        "This is collection methodology, not implementation guidance."
+      ],
+      "required_next_validation": "Add or run a collector that saves Link headers, ETags, Last-Modified values, retry records, and rate-limit receipts.",
+      "persona_id": "official-docs-cartographer"
+    },
+    {
+      "id": "top1000-rwkv-ssm-conformer-held",
+      "title": "RWKV, SSM, and Conformer prototypes reinforce validation gaps",
+      "summary": "Contributor-owned RWKV, SSM/Mamba, and Conformer repositories are useful architecture leads, but current snapshots show WIP or incomplete kernels and no packaged parity suite strong enough for supported guidance.",
+      "source_lane": "repositories",
+      "sources": [
+        {
+          "title": "mlx-rwkv WIP recurrent implementation",
+          "url": "https://github.com/dc-dc-dc/mlx-rwkv/tree/45d9f309afa3",
+          "accessed": "2026-06-27",
+          "kind": "repository"
+        },
+        {
+          "title": "mlx-ssm state-space prototype",
+          "url": "https://github.com/j-csc/mlx-ssm/tree/51e2eb3285f7",
+          "accessed": "2026-06-27",
+          "kind": "repository"
+        },
+        {
+          "title": "mlx-conformer Torch-to-MLX port scaffold",
+          "url": "https://github.com/FL33TW00D/mlx-conformer/tree/88809a360184",
+          "accessed": "2026-06-27",
+          "kind": "repository"
+        }
+      ],
+      "decision": "needs-validation",
+      "evidence_level": "screened-implementation-leads",
+      "validation_gate": "Full-sequence versus recurrent parity, source-oracle capture, state reset/reuse tests, and packaged fixtures for SSM/recurrent/ASR paths.",
+      "affects": [
+        "references/runbook-ssm-hybrid.md",
+        "references/runbook-asr.md",
+        "references/model-support-map.md",
+        "assets/research_backlog.json"
+      ],
+      "caveats": [
+        "Prototype code can identify missing gates, but incomplete kernels must not become supported implementation advice."
+      ],
+      "required_next_validation": "Add tiny SSM/RWKV/Conformer golden scenarios before promoting any contributor-derived implementation pattern.",
+      "persona_id": "paper-architecture-scout"
+    },
+    {
+      "id": "source-format-static-intake-expanded",
+      "title": "Static intake must cover source formats beyond PyTorch and Hugging Face",
+      "summary": "Primary docs for ONNX, Flax/Orbax, TensorFlow/Keras, GGUF, Core ML, and safetensors show inspectable metadata surfaces. These can support intake triage and unsupported-op reporting, but not automatic conversion claims.",
+      "source_lane": "official_docs",
+      "sources": [
+        {
+          "title": "ONNX IR specification",
+          "url": "https://github.com/onnx/onnx/blob/main/docs/IR.md",
+          "accessed": "2026-06-27",
+          "kind": "official-doc"
+        },
+        {
+          "title": "TensorFlow SavedModel guide",
+          "url": "https://www.tensorflow.org/guide/saved_model",
+          "accessed": "2026-06-27",
+          "kind": "official-doc"
+        },
+        {
+          "title": "Hugging Face Hub GGUF documentation",
+          "url": "https://huggingface.co/docs/hub/en/gguf",
+          "accessed": "2026-06-27",
+          "kind": "official-doc"
+        }
+      ],
+      "decision": "needs-validation",
+      "evidence_level": "official-format-docs",
+      "validation_gate": "Add tiny fixtures and deterministic manifest tests for each source format; emit unsupported-op and missing-provenance reports without importing model code.",
+      "affects": [
+        "references/intake-and-routing.md",
+        "scripts/inspect_model.py",
+        "assets/research_backlog.json"
+      ],
+      "caveats": [
+        "Format metadata supports routing and risk review only; it does not prove an MLX implementation path."
+      ],
+      "required_next_validation": "Implement source-format fixtures and make ambiguous checkpoint-only repos fail loud.",
+      "persona_id": "huggingface-ecosystem-sampler"
+    },
+    {
+      "id": "top1000-long-tail-rescreening-needed",
+      "title": "Top-1000 contributor research needs repeatable long-tail rescreening",
+      "summary": "The sweep found 71 repository-search matches and retained earlier code-search results, but GitHub code search rate limits interrupted several code queries. Search is lead generation, not proof that the long tail was exhausted, so preserve this as an explicit backlog item.",
+      "source_lane": "repo_local_audit",
+      "sources": [
+        {
+          "title": "GitHub REST search API",
+          "url": "https://docs.github.com/en/rest/search/search",
+          "accessed": "2026-06-27",
+          "kind": "official-doc"
+        },
+        {
+          "title": "Top-1000 contributor learnings artifact",
+          "url": "file:///Users/amal/Downloads/mlx-porting-skill/mlx-model-porting/assets/contributor_learnings.json",
+          "accessed": "2026-06-27",
+          "kind": "repo-local-audit"
+        }
+      ],
+      "decision": "needs-validation",
+      "evidence_level": "coverage-gap-audit",
+      "validation_gate": "Replay contributor retrieval and repo/code queries with rate-limit receipts, then classify new matches as adopted, held, rejected, or backlog.",
+      "affects": [
+        "assets/contributor_learnings.json",
+        "assets/research_backlog.json",
+        "references/deep-research-loop.md"
+      ],
+      "caveats": [
+        "A contributor-owned MLX repository is not enough to promote implementation guidance without a pinned path, tests, and local validation."
+      ],
+      "required_next_validation": "Automate or manually rerun the long-tail sweep when GitHub search budget is available.",
+      "persona_id": "coverage-skeptic"
+    },
+    {
+      "id": "coverage-gaps-need-family-specific-fixtures",
+      "title": "Underserved model families need family-specific fixtures before support language",
+      "summary": "Non-generative CV, graph/geometric/scientific ML, time-series, structured, and recsys ports have source-framework semantics that generic encoder or VLM parity checks do not cover.",
+      "source_lane": "official_docs",
+      "sources": [
+        {
+          "title": "TorchVision operators documentation",
+          "url": "https://docs.pytorch.org/vision/0.9/ops.html",
+          "accessed": "2026-06-27",
+          "kind": "official-doc"
+        },
+        {
+          "title": "PyTorch Geometric MessagePassing tutorial",
+          "url": "https://pytorch-geometric.readthedocs.io/en/2.6.0/tutorial/create_gnn.html",
+          "accessed": "2026-06-27",
+          "kind": "official-doc"
+        },
+        {
+          "title": "Hugging Face Time Series Transformer docs",
+          "url": "https://huggingface.co/docs/transformers/en/model_doc/time_series_transformer",
+          "accessed": "2026-06-27",
+          "kind": "official-doc"
+        }
+      ],
+      "decision": "needs-validation",
+      "evidence_level": "official-source-framework-semantics",
+      "validation_gate": "Create minimal fixtures for detection/masks, graph scatter/equivariance, forecasting covariate leakage, and tabular/recsys jagged categorical features before adding support language.",
+      "affects": [
+        "assets/research_backlog.json",
+        "assets/architectures.yaml",
+        "references/model-support-map.md",
+        "references/parity-and-testing.md"
+      ],
+      "caveats": [
+        "Framework docs prove source semantics, not MLX support."
+      ],
+      "required_next_validation": "Keep existing P1 backlog items separate and add golden scenarios before extending architecture support.",
+      "persona_id": "coverage-skeptic"
+    }
+  ],
+  "limitations": [
+    "The top-1000 request used the GitHub contributors API and returned 256 linked contributors and 262 anon=true author buckets at retrieval time.",
+    "Repository search matched 71 candidate repositories; several GitHub code-search queries hit rate limits and remain backlog.",
+    "Only two implementation learnings were promoted, both with pinned evidence and explicit validation gates."
+  ],
+  "instructions": [
+    "This synthesis is review material, not an automatic recommendation merge.",
+    "Promote findings only through explicit source, validation, tests, and manifest updates.",
+    "Do not execute remote model code while investigating candidates."
+  ],
+  "offline_fixture": "mlx-model-porting/research-runs/2026-06-27-top1000-contributor-loop/returned_findings.json"
+}

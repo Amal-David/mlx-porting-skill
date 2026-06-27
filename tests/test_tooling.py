@@ -574,6 +574,49 @@ class ToolingTests(unittest.TestCase):
             )
             self.assertIn("missing required fields: sources", result.stderr)
 
+    def test_research_loop_executor_records_receipts(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            output_dir = Path(tmp) / "executor-run"
+            fake_executor = FIXTURES / "research_loop" / "fake_executor.py"
+            run_script(
+                "research_loop.py",
+                "--run-id", "executor-loop",
+                "--objective", "Prove local executor receipt flow",
+                "--agent-count", 2,
+                "--executor-command", f"{sys.executable} {fake_executor}",
+                "--output-dir", output_dir,
+            )
+            assignments = json.loads((output_dir / "assignments.json").read_text())
+            synthesis = json.loads((output_dir / "synthesis.json").read_text())
+            self.assertEqual(synthesis["finding_count"], 2)
+            self.assertEqual(synthesis["execution_counts"]["executor_completed"], 2)
+            self.assertEqual(synthesis["execution_counts"]["executor_failed"], 0)
+            self.assertEqual(synthesis["execution_counts"]["scaffolded_not_run"], 0)
+            self.assertIn("executor_command", synthesis)
+            for assignment in assignments["assignments"]:
+                execution = assignment["execution"]
+                self.assertEqual(execution["kind"], "local-executor")
+                self.assertEqual(execution["state"], "executor_completed")
+                self.assertEqual(execution["exit_code"], 0)
+                for key in ("prompt_path", "stdout_path", "stderr_path", "result_path"):
+                    self.assertTrue((output_dir / execution[key]).exists(), key)
+                result = json.loads((output_dir / execution["result_path"]).read_text())
+                self.assertEqual(result["persona_id"], assignment["persona_id"])
+            blog = output_dir / "blogs" / "official-docs-cartographer.md"
+            self.assertIn("fake-executor-official-docs-cartographer", blog.read_text())
+
+    def test_research_loop_rejects_fixture_and_executor_together(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            fake_executor = FIXTURES / "research_loop" / "fake_executor.py"
+            result = run_script(
+                "research_loop.py",
+                "--offline-fixture", FIXTURES / "research_loop" / "offline_findings.json",
+                "--executor-command", f"{sys.executable} {fake_executor}",
+                "--output-dir", Path(tmp) / "out",
+                expected=2,
+            )
+            self.assertIn("mutually exclusive", result.stderr)
+
     def test_benchmark_harness_and_installer_dry_run(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             tmp_path = Path(tmp)

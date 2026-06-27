@@ -58,7 +58,7 @@ Use `validate_sources.py --check-urls` only when network access is explicitly al
 
 ## Deep research loop
 
-Use `scripts/research_loop.py` for broad ecosystem learning that should sample beyond GitHub. The loop generates researcher assignments, accepts returned findings, writes per-agent blogs, and produces a review-only synthesis. It does not fetch network resources, spawn subagents, or modify recommendation assets by itself.
+Use `scripts/research_loop.py` for broad ecosystem learning that should sample beyond GitHub. The loop generates researcher assignments, accepts returned findings, writes per-agent blogs, and produces a review-only synthesis. By default it does not fetch network resources, spawn subagents, or modify recommendation assets. Executor mode can run an explicit local worker command for each assignment, but it must preserve prompts, stdout, stderr, result JSON, exit code, and execution state as review receipts.
 
 Every deep loop should record which personas were only scaffolded and which returned findings were ingested. Treat package registries, Hugging Face model cards, technical blogs, papers, and community discussions as distinct evidence classes with different promotion bars. Package and model-card metadata can justify prioritization and linting rules, but not benchmark or implementation support by itself.
 

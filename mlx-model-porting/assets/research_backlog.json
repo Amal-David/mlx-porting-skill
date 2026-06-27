@@ -21,7 +21,7 @@
       "priority": "P0",
       "status": "needs-validation",
       "summary": "Static intake should expand to source formats such as ONNX, JAX/Flax, TensorFlow/Keras, GGUF, Core ML, and checkpoint-only repos.",
-      "required_gate": "Static manifest extraction without import or execution, framework layout conventions, unsupported-op report, deterministic weight-map coverage, and no silent fallback to manual routing.",
+      "required_gate": "Static manifest extraction without import or execution: ONNX ModelProto/opset/initializer/external-data inspection, Flax/Orbax tree metadata, TensorFlow SavedModel and Keras archive signatures/config, GGUF header/metadata/tensor table with source-provenance checks, Core ML package metadata, safetensors-only hold rules, unsupported-op reports, deterministic weight-map coverage, and no silent fallback to manual routing.",
       "source": "mlx-model-porting/research-runs/2026-06-27-deep-research-loop/synthesis.json",
       "affected": [
         "references/intake-and-routing.md",
@@ -30,11 +30,24 @@
       ]
     },
     {
+      "id": "top1000-contributor-long-tail-rescreening",
+      "priority": "P1",
+      "status": "needs-validation",
+      "summary": "The top-1000 contributor sweep requested all ml-explore/mlx contributor pages, refreshed 256 linked contributors and 262 anon=true author buckets, and screened 71 repository matches, but GitHub code-search rate limits interrupted several long-tail queries.",
+      "required_gate": "Refresh contributors by following GitHub Link headers until no rel=\"next\" remains or the explicit cap is reached; record requested count, linked count, anon=true count without raw anonymous identities, status codes, ETags, Last-Modified headers, rate-limit state, repository/code search total_count and incomplete_results, replay missed queries, inspect newly matched repos by architecture/source-format family, and record each result as adopted, held, rejected, or backlog.",
+      "source": "mlx-model-porting/research-runs/2026-06-27-top1000-contributor-loop/synthesis.json",
+      "affected": [
+        "assets/contributor_learnings.json",
+        "assets/sources.yaml",
+        "research-runs/"
+      ]
+    },
+    {
       "id": "non-generative-cv",
       "priority": "P1",
       "status": "needs-research",
       "summary": "Non-generative computer vision ports need first-class guidance for CNNs, ConvNeXt/EfficientNet, detection, segmentation, OCR/layout, SAM-like masks, depth, and pose.",
-      "required_gate": "Preprocessing parity, NCHW/NHWC conversion, logits/masks/boxes parity, IoU/mAP/top-k gates, and NMS/ROIAlign/grid-sample fallback tests.",
+      "required_gate": "Preprocessing parity, NCHW/NHWC conversion, logits/masks/boxes parity, coordinate and resize semantics, IoU/mAP/top-k gates, and readable MLX or NumPy fallbacks for NMS, ROIAlign, and grid-sample-like paths.",
       "source": "codex-subagent://019f08a0-1e40-7b31-ad73-4328676b9018",
       "affected": [
         "assets/architectures.yaml",
@@ -47,7 +60,7 @@
       "priority": "P1",
       "status": "needs-research",
       "summary": "Structured, tabular, time-series, recommender, and ranking models are not first-class porting families.",
-      "required_gate": "Scaler/normalizer parity, categorical vocab and missing-value policy, ragged/sequence batching, temporal leakage checks, NDCG/AUC/forecast-error task gates.",
+      "required_gate": "Scaler/normalizer parity, lag construction, observed-mask handling, context/prediction split, known-future covariate leakage checks, categorical vocab and missing-value policy, jagged offsets/lengths and embedding pooling parity, candidate-id versus score-based retrieval checks, NDCG/AUC/top-k/forecast-error task gates.",
       "source": "codex-subagent://019f08a0-1e40-7b31-ad73-4328676b9018",
       "affected": [
         "assets/architectures.yaml",
@@ -59,7 +72,7 @@
       "priority": "P1",
       "status": "needs-research",
       "summary": "GNN, point-cloud, protein, equivariant, simulator, and chemistry ports are absent from the current first-class coverage map.",
-      "required_gate": "Scatter/segment/reduce parity, permutation invariance or equivariance tests, neighbor-list/radius graph fixtures, ragged batching, and units/symmetry constraints.",
+      "required_gate": "Scatter/segment/reduce parity, permutation invariance, rotation/reflection equivariance probes, neighbor-list/radius graph fixtures, ragged batching, sparse/dense aggregation comparisons, and units/symmetry/energy-force constraints.",
       "source": "codex-subagent://019f08a0-1e40-7b31-ad73-4328676b9018",
       "affected": [
         "references/compile-and-kernels.md",

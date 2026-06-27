@@ -4,6 +4,9 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
+import shlex
+import subprocess
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
@@ -23,6 +26,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--run-id", default=None)
     parser.add_argument("--agent-count", type=int, default=None)
     parser.add_argument("--offline-fixture", help="Fixture with returned agent findings; no network is used")
+    parser.add_argument(
+        "--executor-command",
+        help="Explicit local command to run once per assignment; writes JSON to MLX_RESEARCH_RESULT_PATH",
+    )
+    parser.add_argument("--execution-timeout", type=float, default=120.0)
     parser.add_argument("--output-dir", required=True)
     return parser.parse_args()
 
@@ -109,6 +117,154 @@ def load_fixture(path: str | Path | None) -> dict[str, Any]:
     return data
 
 
+def rel_output_path(output_dir: Path, path: Path) -> str:
+    return safe_relpath(output_dir, path)
+
+
+def stringify_process_output(value: str | bytes | None) -> str:
+    if value is None:
+        return ""
+    if isinstance(value, bytes):
+        return value.decode("utf-8", errors="replace")
+    return value
+
+
+def render_executor_prompt(assignment: dict[str, Any]) -> str:
+    return "\n".join([
+        f"# {assignment['title']}",
+        "",
+        "## Mission",
+        assignment.get("mission", ""),
+        "",
+        "## Prompt",
+        assignment["prompt"],
+        "",
+        "## Result Contract",
+        "Write one JSON object to MLX_RESEARCH_RESULT_PATH with persona_id, decision_notes, findings, and optional limitations.",
+        "Do not execute remote model code.",
+        "",
+    ])
+
+
+def load_executor_result(result_path: Path, persona_id: str) -> dict[str, Any]:
+    if not result_path.exists():
+        raise SkillError("executor did not write result JSON")
+    data = load_structured(result_path)
+    if not isinstance(data, dict):
+        raise SkillError("executor result must be an object")
+    if data.get("persona_id") != persona_id:
+        raise SkillError(
+            f"executor result persona_id mismatch: expected {persona_id}, got {data.get('persona_id') or '<missing>'}"
+        )
+    return data
+
+
+def execute_assignments(
+    assignments: list[dict[str, Any]],
+    command: str,
+    output_dir: Path,
+    run_id: str,
+    timeout: float,
+) -> tuple[dict[str, Any], dict[str, dict[str, Any]]]:
+    if timeout <= 0:
+        raise SkillError("--execution-timeout must be positive")
+    try:
+        command_parts = shlex.split(command)
+    except ValueError as exc:
+        raise SkillError(f"could not parse --executor-command: {exc}") from exc
+    if not command_parts:
+        raise SkillError("--executor-command must not be empty")
+
+    agent_dir = output_dir / "agents"
+    agent_dir.mkdir(parents=True, exist_ok=True)
+    agents = []
+    executions: dict[str, dict[str, Any]] = {}
+    failures = []
+
+    for assignment in assignments:
+        persona_id = assignment["persona_id"]
+        slug = slugify(persona_id)
+        prompt_path = agent_dir / f"{slug}.prompt.md"
+        result_path = agent_dir / f"{slug}.result.json"
+        stdout_path = agent_dir / f"{slug}.stdout.txt"
+        stderr_path = agent_dir / f"{slug}.stderr.txt"
+        prompt_path.write_text(render_executor_prompt(assignment), encoding="utf-8")
+
+        started_at = utc_now()
+        exit_code: int | None = None
+        timed_out = False
+        stdout = ""
+        stderr = ""
+        failure_reason = None
+        try:
+            completed = subprocess.run(
+                command_parts,
+                cwd=Path.cwd(),
+                env={
+                    **os.environ,
+                    "MLX_RESEARCH_PERSONA_ID": persona_id,
+                    "MLX_RESEARCH_PROMPT_PATH": str(prompt_path),
+                    "MLX_RESEARCH_RESULT_PATH": str(result_path),
+                    "MLX_RESEARCH_RUN_ID": run_id,
+                    "MLX_RESEARCH_OUTPUT_DIR": str(output_dir),
+                    "MLX_RESEARCH_REVIEW_ONLY": "1",
+                },
+                capture_output=True,
+                text=True,
+                timeout=timeout,
+            )
+            exit_code = completed.returncode
+            stdout = stringify_process_output(completed.stdout)
+            stderr = stringify_process_output(completed.stderr)
+        except subprocess.TimeoutExpired as exc:
+            timed_out = True
+            stdout = stringify_process_output(exc.stdout)
+            stderr = stringify_process_output(exc.stderr)
+            failure_reason = f"executor timed out after {timeout:g}s"
+
+        stdout_path.write_text(stdout, encoding="utf-8")
+        stderr_path.write_text(stderr, encoding="utf-8")
+
+        state = "executor_failed"
+        if failure_reason is None and exit_code != 0:
+            failure_reason = f"executor exited with {exit_code}"
+        if failure_reason is None:
+            try:
+                agents.append(load_executor_result(result_path, persona_id))
+                state = "executor_completed"
+            except (SkillError, OSError, json.JSONDecodeError) as exc:
+                failure_reason = str(exc)
+
+        record: dict[str, Any] = {
+            "kind": "local-executor",
+            "state": state,
+            "executor": command,
+            "prompt_path": rel_output_path(output_dir, prompt_path),
+            "log_path": rel_output_path(output_dir, stdout_path),
+            "stdout_path": rel_output_path(output_dir, stdout_path),
+            "stderr_path": rel_output_path(output_dir, stderr_path),
+            "result_path": rel_output_path(output_dir, result_path),
+            "exit_code": exit_code,
+            "timed_out": timed_out,
+            "started_at": started_at,
+            "finished_at": utc_now(),
+        }
+        if failure_reason:
+            record["failure_reason"] = failure_reason
+            failures.append(f"{persona_id}: {failure_reason}")
+        executions[persona_id] = record
+
+    if failures:
+        raise SkillError("executor failed for " + "; ".join(failures))
+    return {
+        "schema_version": 1,
+        "agents": agents,
+        "limitations": [
+            "Findings came from an explicit local executor command and remain review-only until promoted separately."
+        ],
+    }, executions
+
+
 def validate_findings(config: dict[str, Any], fixture: dict[str, Any]) -> None:
     lane_ids = {lane["id"] for lane in config["source_lanes"]}
     decision_ids = {state["id"] for state in config["decision_states"]}
@@ -156,7 +312,14 @@ def flatten_findings(fixture: dict[str, Any]) -> list[dict[str, Any]]:
     return rows
 
 
-def summarize(config: dict[str, Any], assignments: list[dict[str, Any]], fixture: dict[str, Any], run_id: str, objective: str) -> dict[str, Any]:
+def summarize(
+    config: dict[str, Any],
+    assignments: list[dict[str, Any]],
+    fixture: dict[str, Any],
+    run_id: str,
+    objective: str,
+    executions: dict[str, dict[str, Any]] | None = None,
+) -> dict[str, Any]:
     findings = flatten_findings(fixture)
     decision_counts = {state["id"]: 0 for state in config["decision_states"]}
     lanes: dict[str, int] = {lane["id"]: 0 for lane in config["source_lanes"]}
@@ -165,9 +328,14 @@ def summarize(config: dict[str, Any], assignments: list[dict[str, Any]], fixture
         lanes[finding["source_lane"]] += 1
     non_github_lanes = sorted(lane for lane, count in lanes.items() if count and lane != "repositories")
     returned_personas = {agent.get("persona_id") for agent in fixture.get("agents", [])}
-    execution_counts = {"scaffolded_not_run": 0, "fixture_ingested": 0}
+    execution_counts = {"scaffolded_not_run": 0, "fixture_ingested": 0, "executor_completed": 0, "executor_failed": 0}
+    executions = executions or {}
     for assignment in assignments:
-        if assignment["persona_id"] in returned_personas:
+        if assignment["persona_id"] in executions:
+            assignment["execution"] = executions[assignment["persona_id"]]
+            state = assignment["execution"].get("state", "executor_failed")
+            execution_counts[state] = execution_counts.get(state, 0) + 1
+        elif assignment["persona_id"] in returned_personas:
             assignment["execution"] = {
                 "kind": "offline-fixture",
                 "state": "fixture_ingested",
@@ -283,17 +451,31 @@ def write_markdown_summary(output_dir: Path, summary: dict[str, Any]) -> None:
 def main() -> int:
     args = parse_args()
     try:
+        if args.offline_fixture and args.executor_command:
+            raise SkillError("--offline-fixture and --executor-command are mutually exclusive")
         config = load_config(args.config)
         run_id = args.run_id or default_run_id()
         output_dir = Path(args.output_dir)
         output_dir.mkdir(parents=True, exist_ok=True)
         assignments = build_assignments(config, args.objective, run_id, args.agent_count)
-        fixture = load_fixture(args.offline_fixture)
+        executions = None
+        if args.executor_command:
+            fixture, executions = execute_assignments(
+                assignments,
+                args.executor_command,
+                output_dir,
+                run_id,
+                args.execution_timeout,
+            )
+        else:
+            fixture = load_fixture(args.offline_fixture)
         validate_findings(config, fixture)
-        summary = summarize(config, assignments, fixture, run_id, args.objective)
+        summary = summarize(config, assignments, fixture, run_id, args.objective, executions)
         if args.offline_fixture:
             fixture_path = Path(args.offline_fixture)
             summary["offline_fixture"] = safe_relpath(Path.cwd(), fixture_path) if fixture_path.exists() else args.offline_fixture
+        if args.executor_command:
+            summary["executor_command"] = args.executor_command
         dump_json({
             "schema_version": 1,
             "run_id": run_id,
