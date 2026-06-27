@@ -2,8 +2,8 @@
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
   "version": "0.1.0",
-  "generated_at": "2026-06-27T10:21:50.157364+00:00",
-  "file_count": 101,
+  "generated_at": "2026-06-27T10:42:50.243152+00:00",
+  "file_count": 116,
   "files": [
     {
       "path": ".github/workflows/daily-research.yml",
@@ -52,8 +52,8 @@
     },
     {
       "path": "README.md",
-      "size_bytes": 4738,
-      "sha256": "ed9aa242f2086a1ea855552f9e604c105778071eb1bfd4cecb7998814d781fc2"
+      "size_bytes": 5050,
+      "sha256": "0f67b7b5ae38cf19985e2f49631bcd9353bf96c700823e75615f9a55f5701efb"
     },
     {
       "path": "RESEARCH_REPORT.md",
@@ -62,8 +62,8 @@
     },
     {
       "path": "VALIDATION.md",
-      "size_bytes": 3104,
-      "sha256": "25c7031455c2c4406132bd3b4e9e82aa9c6c254e19be20d02437a960935a14a9"
+      "size_bytes": 3376,
+      "sha256": "19577d82ecd9e5f65a3fa7833b24916f3f5b4e572e99614db3a560603920c85f"
     },
     {
       "path": "VERSION",
@@ -112,13 +112,13 @@
     },
     {
       "path": "mlx-model-porting/SKILL.md",
-      "size_bytes": 10646,
-      "sha256": "1e7d5d908e42bb4f7bb1e07fd346a65ddd9069d026d5d0118755833f34855b61"
+      "size_bytes": 10727,
+      "sha256": "6739150e77dd195456eb452d4d4bd955295f309b3a8ae0d7cbc80bcb68d7cb2a"
     },
     {
       "path": "mlx-model-porting/assets/BENCHMARK_REPORT.md",
-      "size_bytes": 591,
-      "sha256": "30a47b6d218bfdd4ee7b60ccebd7c4416134578626e620b8e1221957702af28c"
+      "size_bytes": 776,
+      "sha256": "01287e73039dca40f94952119c8b0a079caefad73be06d16895dea3648be7488"
     },
     {
       "path": "mlx-model-porting/assets/CHANGE_REVIEW.md",
@@ -132,8 +132,8 @@
     },
     {
       "path": "mlx-model-porting/assets/VALIDATION_REPORT.md",
-      "size_bytes": 401,
-      "sha256": "b4c1d9cd834b0e69e2bcd9d1cfeae76f684afe1d3630817c59878bf0a031fa5f"
+      "size_bytes": 444,
+      "sha256": "f7d486193d625cd2fc4d486e8299c08bc99a5a6d222416aeef150ae420c99ef6"
     },
     {
       "path": "mlx-model-porting/assets/WEIGHT_MAP.json",
@@ -161,9 +161,19 @@
       "sha256": "9a6fd02aacdd2a661adbbac01a00f93cbe7a75f7d91f90ca444bf95ad7d99770"
     },
     {
+      "path": "mlx-model-porting/assets/research_backlog.json",
+      "size_bytes": 4108,
+      "sha256": "bae6eef392090b5c7b8026bace70e4ec9ec619b3229c584ec07f4ed5d8a5cd75"
+    },
+    {
+      "path": "mlx-model-porting/assets/research_loop_config.json",
+      "size_bytes": 6042,
+      "sha256": "fe819de1d1b0783b111b9d4bea5b03b31acdffa579e6c101079cfb653f5d34bd"
+    },
+    {
       "path": "mlx-model-porting/assets/sources.yaml",
-      "size_bytes": 140939,
-      "sha256": "dfb9980321476f72aed5a2c4aeca9856b011253f90024e499ee77864b7c0b8f9"
+      "size_bytes": 145688,
+      "sha256": "02b8c8fe60b56357862b5e6277d222ffd8da8bf8844cf1f9c1efe6d7603db559"
     },
     {
       "path": "mlx-model-porting/assets/techniques.yaml",
@@ -182,23 +192,28 @@
     },
     {
       "path": "mlx-model-porting/references/attention-and-kv.md",
-      "size_bytes": 4862,
-      "sha256": "c7fa6a7a7928bec198cec0d378965b893d796ed982b9ba3cd0b50b26d3bfa56c"
+      "size_bytes": 5481,
+      "sha256": "e7d87f2921d994397a0e11c1dd69e55b3a1faf14c7758a6e2f649e1c6fe51645"
     },
     {
       "path": "mlx-model-porting/references/benchmarking.md",
-      "size_bytes": 3829,
-      "sha256": "bebb0cf2d1c395ca60d771c89853b1be087f2eecc18c416ffa78a438ce3db723"
+      "size_bytes": 4580,
+      "sha256": "b5588993881213ea7a108131125a65689635dd79ecfa65314ac23be95d515e82"
     },
     {
       "path": "mlx-model-porting/references/compile-and-kernels.md",
-      "size_bytes": 4507,
-      "sha256": "ebfa47be248af13f569a00430c5c0b18b230c99adad8f54ce3cf0d142f55bea6"
+      "size_bytes": 4806,
+      "sha256": "a0f79ead4526421f0b43695431b21b43b61242694c56ae994d958ce9152c64d5"
     },
     {
       "path": "mlx-model-porting/references/decoding-and-serving.md",
-      "size_bytes": 3833,
-      "sha256": "19ec568003becc19ede1f033ab4d9a89254adb39ae34b3e387b6eb6a6d539a86"
+      "size_bytes": 4564,
+      "sha256": "c81244a8eca45e40930d75c47eaba4a44185acf123f356314d2355202c45bc1d"
+    },
+    {
+      "path": "mlx-model-porting/references/deep-research-loop.md",
+      "size_bytes": 3369,
+      "sha256": "1bf47539f373f1343cfbb2866d53acc08bd07512d468760e5fdb734ebe4e7d8a"
     },
     {
       "path": "mlx-model-porting/references/failure-atlas.md",
@@ -212,8 +227,8 @@
     },
     {
       "path": "mlx-model-porting/references/maintenance-and-provenance.md",
-      "size_bytes": 3367,
-      "sha256": "aa0d4ce0a3570c07b9ac1724349e50c34fa324488f596db606f77da5649fdfea"
+      "size_bytes": 4120,
+      "sha256": "5d1ed6691093049ea14bdd809d2c12a17480b31723814c1ec905168293aafbe4"
     },
     {
       "path": "mlx-model-porting/references/model-support-map.md",
@@ -222,8 +237,8 @@
     },
     {
       "path": "mlx-model-porting/references/packaging-and-publication.md",
-      "size_bytes": 1944,
-      "sha256": "593d39ca59de4ccf3786a39957d15af93e73123f162ef6af1073187abcb67114"
+      "size_bytes": 3086,
+      "sha256": "e377af28453c16965fb4ffa395cdcd782ba41304e88c0e337840f4959d871d8c"
     },
     {
       "path": "mlx-model-porting/references/parity-and-testing.md",
@@ -242,8 +257,8 @@
     },
     {
       "path": "mlx-model-porting/references/runbook-asr.md",
-      "size_bytes": 3110,
-      "sha256": "b2b537c0da0f79cda64087fbdc3ef505c0f67f16d7643f56465e6daf437131ca"
+      "size_bytes": 3399,
+      "sha256": "51805b475b0e73740d97a17c5e116f035416b71e34177e106d524701f0fa95f3"
     },
     {
       "path": "mlx-model-porting/references/runbook-audio-codec.md",
@@ -252,8 +267,8 @@
     },
     {
       "path": "mlx-model-porting/references/runbook-autoregressive-audio.md",
-      "size_bytes": 3809,
-      "sha256": "dbbdfc8f969a504648594e188516adf47c83d84cea9cd4b6b1f80c17dcfbf877"
+      "size_bytes": 4089,
+      "sha256": "9401f0e39a78fea3fef46ff70c86e9206872e7342df16b8a2f6b58d1d396ca19"
     },
     {
       "path": "mlx-model-porting/references/runbook-decoder-transformer.md",
@@ -287,8 +302,8 @@
     },
     {
       "path": "mlx-model-porting/references/runbook-multimodal-omni.md",
-      "size_bytes": 4712,
-      "sha256": "fdd80c6ab00014e7daa4ac5d78074041810174d5efe60be445f1df8089edbd18"
+      "size_bytes": 4767,
+      "sha256": "0e8bd53f9311eb475be7cf241a7e59ba48922a967d0b59be72ffb9e654c0375d"
     },
     {
       "path": "mlx-model-porting/references/runbook-separation-enhancement.md",
@@ -314,6 +329,56 @@
       "path": "mlx-model-porting/references/training-and-finetuning.md",
       "size_bytes": 1660,
       "sha256": "573b1efa1fc128fc663f7e3d134b445ea9eea657425986089337434ac27ddaa3"
+    },
+    {
+      "path": "mlx-model-porting/research-runs/2026-06-27-deep-research-loop/assignments.json",
+      "size_bytes": 8042,
+      "sha256": "74af43f2970b123657ee36cab15fd536fc631138d5348ce54c56f898428230c5"
+    },
+    {
+      "path": "mlx-model-porting/research-runs/2026-06-27-deep-research-loop/blogs/coverage-skeptic.md",
+      "size_bytes": 3370,
+      "sha256": "2e3f48a4aa8f79b9fcfdf97af7ad74115c851e3a43289fa2d3b1a12847821f2c"
+    },
+    {
+      "path": "mlx-model-porting/research-runs/2026-06-27-deep-research-loop/blogs/huggingface-ecosystem-sampler.md",
+      "size_bytes": 1749,
+      "sha256": "092280f7931b647653ff3cffdf8aadedcb10cb15cf72e2c1a4ca81d2e478664f"
+    },
+    {
+      "path": "mlx-model-porting/research-runs/2026-06-27-deep-research-loop/blogs/official-docs-cartographer.md",
+      "size_bytes": 2889,
+      "sha256": "c114c70d8114305652ad7054f7b0d4e906123330df76e76aed9f2910a7ccf502"
+    },
+    {
+      "path": "mlx-model-porting/research-runs/2026-06-27-deep-research-loop/blogs/package-registry-scout.md",
+      "size_bytes": 2695,
+      "sha256": "12c9a83c21020d54fb4a34919b7af0cc5b40c78c5758f09a4381c4914eac9421"
+    },
+    {
+      "path": "mlx-model-porting/research-runs/2026-06-27-deep-research-loop/blogs/paper-architecture-scout.md",
+      "size_bytes": 1069,
+      "sha256": "6c3e7c91ed3b60a10a2a8cb736092dbee5e8815e52f280e070cf0ee9fbbfa479"
+    },
+    {
+      "path": "mlx-model-porting/research-runs/2026-06-27-deep-research-loop/blogs/practitioner-blog-miner.md",
+      "size_bytes": 880,
+      "sha256": "623c2f2fa33b4044c5666d54199784f360ef02e0cfd59904b78b2156fad837a4"
+    },
+    {
+      "path": "mlx-model-porting/research-runs/2026-06-27-deep-research-loop/returned_findings.json",
+      "size_bytes": 27144,
+      "sha256": "3d729c6466ac41ec387a782b325aa05c58572bac5aaf7f6de772f6e406633d23"
+    },
+    {
+      "path": "mlx-model-porting/research-runs/2026-06-27-deep-research-loop/synthesis.json",
+      "size_bytes": 25492,
+      "sha256": "9065875f81c94745f034dd8a2e7a6a249f468b708f9378a368427abbda2628fe"
+    },
+    {
+      "path": "mlx-model-porting/research-runs/2026-06-27-deep-research-loop/synthesis.md",
+      "size_bytes": 5766,
+      "sha256": "c556d6d339bc2ba1192cec4a25b996944f44f5f69088f361c569daac338f5e63"
     },
     {
       "path": "mlx-model-porting/scripts/_common.py",
@@ -359,6 +424,11 @@
       "path": "mlx-model-porting/scripts/recommend_optimizations.py",
       "size_bytes": 6318,
       "sha256": "556c9a65d1ab6bdb29309b79874e8adf73757867ce8195b1a5a2e799049cad95"
+    },
+    {
+      "path": "mlx-model-porting/scripts/research_loop.py",
+      "size_bytes": 14192,
+      "sha256": "08e8c2db618edac1bcde010cd097d29eb094567e7986a068ac0512fee595dfca"
     },
     {
       "path": "mlx-model-porting/scripts/update_sources.py",
@@ -461,6 +531,11 @@
       "sha256": "0ef0b6d7cd25cd93397d9d23b62a450f2c49c120d59477bb37a46649a4e23444"
     },
     {
+      "path": "tests/fixtures/research_loop/offline_findings.json",
+      "size_bytes": 4489,
+      "sha256": "38590f656b73b3205ab3e62ab442edb6951207dc9459390dcf09513828f05b2c"
+    },
+    {
       "path": "tests/fixtures/scenarios/dense-decoder.json",
       "size_bytes": 472,
       "sha256": "c39a83fcdeb8d9cc719b2ac5a940a5aae44b0eafa79ff8caac5413189adca01d"
@@ -507,8 +582,8 @@
     },
     {
       "path": "tests/test_tooling.py",
-      "size_bytes": 29086,
-      "sha256": "9a277bc3888dce8ae9afddaa526b64b43bfbe3d81ee3a748ecd3df9fcdfa1290"
+      "size_bytes": 32479,
+      "sha256": "f8d2ca204000994d744a964586b2cae47785105ca091bb160fc23a7d3ed23fb8"
     }
   ]
 }

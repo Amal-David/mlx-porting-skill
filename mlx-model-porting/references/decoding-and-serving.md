@@ -47,9 +47,15 @@ Use native auxiliary heads when supplied by the model. Verify head ordering, acc
 
 Use only where a tested MLX implementation and compatible drafter artifact exist. Measure drafting latency and verification geometry rather than relying on advertised theoretical speedup.
 
+When package or model-card evidence names explicit target/drafter pairings, record those pairings as compatibility constraints. Validate acceptance rate, accepted tokens per verification step, drafter cache/window size, verification cache update, and memory overhead. A low acceptance setting or too-small drafter cache can make speculation slower than the baseline.
+
 ### Speech speculative decoding
 
 Autoregressive speech tokens can be drafted and verified, but acceptance must respect delay/codebook structure and audio quality. Measure first-audio latency, RTF, intelligibility, and discontinuities.
+
+### Reasoning and thinking budgets
+
+For Qwen-style or other reasoning-budget controls, treat the budget as tokenizer and logit-processor behavior. Capture start/end delimiter token IDs, forced-transition behavior, stop criteria, and whether the source can force an end-of-thinking token. Do not generalize one model family's reasoning controls to every decoder.
 
 ## Continuous batching
 

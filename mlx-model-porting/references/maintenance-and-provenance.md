@@ -56,6 +56,12 @@ python3 scripts/validate_sources.py .
 
 Use `validate_sources.py --check-urls` only when network access is explicitly allowed. It checks HTTPS reachability and evidence wiring; it never imports model code or executes repository content.
 
+## Deep research loop
+
+Use `scripts/research_loop.py` for broad ecosystem learning that should sample beyond GitHub. The loop generates researcher assignments, accepts returned findings, writes per-agent blogs, and produces a review-only synthesis. It does not fetch network resources, spawn subagents, or modify recommendation assets by itself.
+
+Every deep loop should record which personas were only scaffolded and which returned findings were ingested. Treat package registries, Hugging Face model cards, technical blogs, papers, and community discussions as distinct evidence classes with different promotion bars. Package and model-card metadata can justify prioritization and linting rules, but not benchmark or implementation support by itself.
+
 ## Candidate promotion
 
 A candidate moves from `indexed` to `screened` after relevance and source integrity review. It moves to `synthesized` only after a rule/runbook is updated with:

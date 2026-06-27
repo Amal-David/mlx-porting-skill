@@ -1,0 +1,538 @@
+{
+  "schema_version": 1,
+  "agents": [
+    {
+      "persona_id": "official-docs-cartographer",
+      "decision_notes": [
+        "Official MLX docs are adoption-quality for API existence, but performance claims still need local benchmarks.",
+        "Earlier guessed custom-extension URLs returned 404; only reachable docs are cited."
+      ],
+      "findings": [
+        {
+          "id": "official-custom-metal-validation",
+          "title": "Custom Metal kernels need official API plus local fallback gates",
+          "summary": "The official MLX docs expose custom Metal kernel surfaces, but the skill should keep treating every custom kernel as mode-scoped until a readable fallback, parity oracle, and end-to-end benchmark exist.",
+          "source_lane": "official_docs",
+          "sources": [
+            {
+              "title": "MLX Custom Metal Kernels documentation",
+              "url": "https://ml-explore.github.io/mlx/build/html/dev/custom_metal_kernels.html",
+              "accessed": "2026-06-27",
+              "kind": "official-doc"
+            },
+            {
+              "title": "mlx.core.fast.metal_kernel API",
+              "url": "https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.fast.metal_kernel.html",
+              "accessed": "2026-06-27",
+              "kind": "official-doc"
+            }
+          ],
+          "decision": "adopted",
+          "evidence_level": "official-api-plus-local-validation-required",
+          "validation_gate": "Pin MLX version, keep a pure-MLX or NumPy fallback, compare kernel outputs against an oracle, and benchmark end-to-end before claiming speedup.",
+          "affects": [
+            "references/compile-and-kernels.md",
+            "references/deep-research-loop.md",
+            "assets/research_loop_config.json"
+          ],
+          "caveats": [
+            "Official API support does not prove a specific model port benefits."
+          ],
+          "required_next_validation": "Keep each custom kernel finding tied to mode coverage, fallback, local parity tests, and model-level benchmark evidence."
+        },
+        {
+          "id": "official-memory-fit-gate",
+          "title": "MLX memory APIs should back fit claims",
+          "summary": "MLX exposes peak-memory measurement and a graph-evaluation memory limit API, so model-fit claims should include peak memory and budget-pressure experiments instead of relying on a single successful run.",
+          "source_lane": "official_docs",
+          "sources": [
+            {
+              "title": "mlx.core.get_peak_memory API",
+              "url": "https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.get_peak_memory.html",
+              "accessed": "2026-06-27",
+              "kind": "official-doc"
+            },
+            {
+              "title": "mlx.core.set_memory_limit API",
+              "url": "https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.set_memory_limit.html",
+              "accessed": "2026-06-27",
+              "kind": "official-doc"
+            }
+          ],
+          "decision": "adopted",
+          "evidence_level": "official-api",
+          "validation_gate": "Record active/cache/peak memory and a memory-limit experiment when the port claims to fit a target Mac.",
+          "affects": [
+            "references/benchmarking.md",
+            "assets/BENCHMARK_REPORT.md"
+          ],
+          "caveats": [
+            "set_memory_limit is not a latency or quality proof."
+          ],
+          "required_next_validation": "Add live benchmark examples only when a real port run provides raw memory counters."
+        },
+        {
+          "id": "official-mlxfn-export-smoke",
+          "title": ".mlxfn export is an optional shape/dtype-specific smoke gate",
+          "summary": "MLX function export can support a release smoke test, but exported behavior is tied to example shapes/dtypes unless shapeless export is used deliberately.",
+          "source_lane": "official_docs",
+          "sources": [
+            {
+              "title": "MLX exporting functions documentation",
+              "url": "https://ml-explore.github.io/mlx/build/html/usage/export.html",
+              "accessed": "2026-06-27",
+              "kind": "official-doc"
+            }
+          ],
+          "decision": "adopted",
+          "evidence_level": "official-api",
+          "validation_gate": "Record example input shapes, dtypes, enclosed arrays, and shapeless-export choice; load and run the export as a smoke test.",
+          "affects": [
+            "references/packaging-and-publication.md",
+            "assets/VALIDATION_REPORT.md"
+          ],
+          "caveats": [
+            ".mlxfn is not a replacement for normal Python/config/weight artifacts."
+          ],
+          "required_next_validation": "Use only for ports with a stable callable inference surface."
+        },
+        {
+          "id": "official-compile-state-checklist",
+          "title": "Compiled decode state needs explicit stale-state checks",
+          "summary": "The MLX compile documentation makes shape/type/input-count and captured-state behavior important enough to test concretely in compiled decode loops.",
+          "source_lane": "official_docs",
+          "sources": [
+            {
+              "title": "MLX compilation documentation",
+              "url": "https://ml-explore.github.io/mlx/build/html/usage/compile.html",
+              "accessed": "2026-06-27",
+              "kind": "official-doc"
+            }
+          ],
+          "decision": "adopted",
+          "evidence_level": "official-api",
+          "validation_gate": "Run multiple lengths or chunk sizes, verify consecutive state/cache mutation, and test refreshed captured settings.",
+          "affects": [
+            "references/compile-and-kernels.md"
+          ],
+          "caveats": [
+            "The skill already had general compile guidance; this finding only made it more testable."
+          ],
+          "required_next_validation": "Add a concrete compiled decode fixture if the repo later ships runtime examples."
+        }
+      ]
+    },
+    {
+      "persona_id": "paper-architecture-scout",
+      "decision_notes": [
+        "The paper source is strong enough for a research lead, but not enough to mark serving techniques supported in this skill without pinned implementation and local gates."
+      ],
+      "findings": [
+        {
+          "id": "paper-vllm-mlx-serving-patterns",
+          "title": "Apple Silicon serving papers should feed validation-first serving research",
+          "summary": "The vllm-mlx paper reports continuous batching and content-based vision prefix caching on Apple Silicon, which is relevant to MLX serving guidance but still needs implementation-level review and local reproduction before promotion.",
+          "source_lane": "papers",
+          "sources": [
+            {
+              "title": "Native LLM and MLLM Inference at Scale on Apple Silicon",
+              "url": "https://arxiv.org/abs/2601.19139",
+              "accessed": "2026-06-27",
+              "kind": "paper"
+            }
+          ],
+          "decision": "needs-validation",
+          "evidence_level": "paper-reported",
+          "validation_gate": "Pin source implementation, reproduce a text and multimodal serving benchmark, and check quality/cache correctness before promoting serving guidance.",
+          "affects": [
+            "references/decoding-and-serving.md",
+            "references/runbook-multimodal-omni.md",
+            "assets/optimization_guidance.yaml"
+          ],
+          "caveats": [
+            "Paper benchmarks are source-reported and workload-specific."
+          ],
+          "required_next_validation": "Deep-review the implementation surfaces and add local serving/correctness gates before any supported technique upgrade."
+        }
+      ]
+    },
+    {
+      "persona_id": "huggingface-ecosystem-sampler",
+      "decision_notes": [
+        "Hugging Face metadata is useful for prioritization, especially when GitHub contributor mining misses demand signals."
+      ],
+      "findings": [
+        {
+          "id": "hf-mlx-demand-sampling",
+          "title": "Hugging Face MLX metadata should drive coverage priorities, not support claims",
+          "summary": "Current Hugging Face metadata shows heavily downloaded MLX-tagged quantized multimodal models and MLX ASR models, so the skill should use HF as a demand and artifact-shape sampler while requiring separate implementation validation.",
+          "source_lane": "hugging_face",
+          "sources": [
+            {
+              "title": "Hugging Face MLX model search",
+              "url": "https://huggingface.co/models?library=mlx&search=mlx",
+              "accessed": "2026-06-27",
+              "kind": "model-index"
+            },
+            {
+              "title": "mlx-community/parakeet-tdt-0.6b-v3 model card",
+              "url": "https://huggingface.co/mlx-community/parakeet-tdt-0.6b-v3",
+              "accessed": "2026-06-27",
+              "kind": "model-card"
+            },
+            {
+              "title": "lmstudio-community/gemma-4-E4B-it-MLX-4bit model card",
+              "url": "https://huggingface.co/lmstudio-community/gemma-4-E4B-it-MLX-4bit",
+              "accessed": "2026-06-27",
+              "kind": "model-card"
+            }
+          ],
+          "decision": "needs-validation",
+          "evidence_level": "ecosystem-prioritization",
+          "validation_gate": "For each prioritized family, sample model card, license, tokenizer/processor files, config, source framework, and source oracle requirements.",
+          "affects": [
+            "references/model-support-map.md",
+            "references/runbook-asr.md",
+            "references/runbook-multimodal-omni.md"
+          ],
+          "caveats": [
+            "Downloads and tags do not prove source-preserving port feasibility."
+          ],
+          "required_next_validation": "Turn top HF demand clusters into representative golden scenarios or runbook gaps."
+        },
+        {
+          "id": "hf-model-card-publication-lint",
+          "title": "Hugging Face MLX publications need model-card linting",
+          "summary": "MLX model cards expose mutable but important metadata such as library name, tags, base model, license, quantization, and custom-code/package requirements.",
+          "source_lane": "hugging_face",
+          "sources": [
+            {
+              "title": "mlx-community/Nemotron-Labs-Diffusion-3B-4bit model card",
+              "url": "https://huggingface.co/mlx-community/Nemotron-Labs-Diffusion-3B-4bit",
+              "accessed": "2026-06-27",
+              "kind": "model-card"
+            }
+          ],
+          "decision": "adopted",
+          "evidence_level": "metadata-lint",
+          "validation_gate": "Check library tags, base model, license, quantization metadata, custom-code requirement, and minimum package versions before publication.",
+          "affects": [
+            "references/packaging-and-publication.md",
+            "references/maintenance-and-provenance.md",
+            "assets/sources.yaml"
+          ],
+          "caveats": [
+            "HF cards are mutable and community-maintained; they are metadata evidence, not benchmark proof."
+          ],
+          "required_next_validation": "Add a model-card lint script only when publication automation is introduced."
+        }
+      ]
+    },
+    {
+      "persona_id": "package-registry-scout",
+      "decision_notes": [
+        "Package registry state changes faster than static repo guidance; research runs should record versions sampled."
+      ],
+      "findings": [
+        {
+          "id": "pypi-version-drift-sampling",
+          "title": "Package registries should be sampled in research loops",
+          "summary": "Current PyPI metadata exposes active releases for mlx, mlx-lm, mlx-vlm, and mlx-audio; the skill should capture package versions during research so guidance does not silently rely on stale CLI or API assumptions.",
+          "source_lane": "packages",
+          "sources": [
+            {
+              "title": "PyPI mlx package metadata",
+              "url": "https://pypi.org/pypi/mlx/json",
+              "accessed": "2026-06-27",
+              "kind": "package-metadata"
+            },
+            {
+              "title": "PyPI mlx-lm package metadata",
+              "url": "https://pypi.org/pypi/mlx-lm/json",
+              "accessed": "2026-06-27",
+              "kind": "package-metadata"
+            },
+            {
+              "title": "PyPI mlx-vlm package metadata",
+              "url": "https://pypi.org/pypi/mlx-vlm/json",
+              "accessed": "2026-06-27",
+              "kind": "package-metadata"
+            },
+            {
+              "title": "PyPI mlx-audio package metadata",
+              "url": "https://pypi.org/pypi/mlx-audio/json",
+              "accessed": "2026-06-27",
+              "kind": "package-metadata"
+            }
+          ],
+          "decision": "adopted",
+          "evidence_level": "package-metadata",
+          "validation_gate": "Record package name, version, release date when available, and affected CLI/API surface before changing commands or compatibility guidance.",
+          "affects": [
+            "assets/research_loop_config.json",
+            "references/maintenance-and-provenance.md"
+          ],
+          "caveats": [
+            "Package metadata does not prove behavior or backward compatibility."
+          ],
+          "required_next_validation": "Add package-version fields to future live collector records when network execution is implemented."
+        },
+        {
+          "id": "pypi-batched-cache-isolation",
+          "title": "Batched cache isolation needs explicit contamination tests",
+          "summary": "mlx-lm package metadata includes a yanked release note for batched KV-cache cross contamination, which is enough to require mixed-batch isolation tests in serving guidance.",
+          "source_lane": "packages",
+          "sources": [
+            {
+              "title": "mlx-lm PyPI package metadata",
+              "url": "https://pypi.org/project/mlx-lm/",
+              "accessed": "2026-06-27",
+              "kind": "package-metadata"
+            }
+          ],
+          "decision": "adopted",
+          "evidence_level": "package-release-metadata",
+          "validation_gate": "Test mixed prompts, shared prefixes, divergent suffixes, cancellation, reset, and cache reuse in the same batch.",
+          "affects": [
+            "references/attention-and-kv.md",
+            "references/decoding-and-serving.md"
+          ],
+          "caveats": [
+            "PyPI gives the failure label, not root-cause details."
+          ],
+          "required_next_validation": "Add a concrete batch-cache regression when a serving harness exists."
+        },
+        {
+          "id": "pypi-audio-dependency-frontends",
+          "title": "Audio ports need optional dependency and frontend matrices",
+          "summary": "mlx-audio package metadata names optional language/frontend and compression dependencies, so audio and ASR runbooks should capture dependency-driven frontend differences.",
+          "source_lane": "packages",
+          "sources": [
+            {
+              "title": "mlx-audio PyPI package metadata",
+              "url": "https://pypi.org/project/mlx-audio/",
+              "accessed": "2026-06-27",
+              "kind": "package-metadata"
+            }
+          ],
+          "decision": "adopted",
+          "evidence_level": "package-metadata",
+          "validation_gate": "Record optional dependency paths and compare frontend/postprocessing output for every advertised install extra.",
+          "affects": [
+            "references/runbook-autoregressive-audio.md",
+            "references/runbook-asr.md",
+            "references/packaging-and-publication.md"
+          ],
+          "caveats": [
+            "PyPI project descriptions are not independently verified by PyPI."
+          ],
+          "required_next_validation": "Validate per model and language path."
+        },
+        {
+          "id": "pypi-vlm-cache-and-speculation-caveats",
+          "title": "VLM package metadata should tighten cache and speculative gates",
+          "summary": "mlx-vlm package metadata describes path-keyed vision feature caching, speculative decoding pairings/windows, thinking budgets, and TurboQuant caveats; the skill should retain stronger cache keys and require acceptance/window/tokenizer gates.",
+          "source_lane": "packages",
+          "sources": [
+            {
+              "title": "mlx-vlm PyPI package metadata",
+              "url": "https://pypi.org/project/mlx-vlm/",
+              "accessed": "2026-06-27",
+              "kind": "package-metadata"
+            },
+            {
+              "title": "TurboQuant paper",
+              "url": "https://arxiv.org/abs/2504.19874",
+              "accessed": "2026-06-27",
+              "kind": "paper"
+            }
+          ],
+          "decision": "adopted",
+          "evidence_level": "package-metadata-plus-paper-lead",
+          "validation_gate": "Use content/processor/model-hash cache keys, test speculative acceptance and drafter windows, capture thinking delimiter IDs, and keep TurboQuant batch caveats attached.",
+          "affects": [
+            "references/runbook-multimodal-omni.md",
+            "references/decoding-and-serving.md",
+            "references/attention-and-kv.md"
+          ],
+          "caveats": [
+            "Package feature descriptions are leads until checked against pinned implementation source and local workloads."
+          ],
+          "required_next_validation": "Pin MLX-VLM source surfaces before upgrading any technique status."
+        }
+      ]
+    },
+    {
+      "persona_id": "practitioner-blog-miner",
+      "decision_notes": [
+        "Technical blogs are useful leads for failures and benchmark protocol, but broad blog indexes are not adoption evidence."
+      ],
+      "findings": [
+        {
+          "id": "technical-blog-benchmark-caveat",
+          "title": "Technical blog claims need benchmark protocol capture",
+          "summary": "Technical posts can reveal MLX deployment or optimization tactics, but the skill should not ingest speed claims unless hardware, software versions, workload, baseline, and quality gates are recorded.",
+          "source_lane": "technical_blogs",
+          "sources": [
+            {
+              "title": "Apple Machine Learning Research",
+              "url": "https://machinelearning.apple.com/",
+              "accessed": "2026-06-27",
+              "kind": "technical-blog-index"
+            }
+          ],
+          "decision": "held",
+          "evidence_level": "lead-only",
+          "validation_gate": "Identify specific posts, extract exact benchmark protocol, and reproduce or convert into a validation checklist before changing optimization guidance.",
+          "affects": [
+            "references/benchmarking.md",
+            "assets/update-watchlist.json"
+          ],
+          "caveats": [
+            "A broad blog index is not a concrete implementation source."
+          ],
+          "required_next_validation": "Collect specific MLX-relevant blog posts and attach benchmark metadata."
+        }
+      ]
+    },
+    {
+      "persona_id": "coverage-skeptic",
+      "decision_notes": [
+        "The repo-local audit found the largest strategic gap: validation coverage is much narrower than declared architecture coverage.",
+        "Source-format and non-generative-domain coverage need dedicated tracks that GitHub contributor mining will not reliably surface."
+      ],
+      "findings": [
+        {
+          "id": "golden-scenario-family-coverage-gap",
+          "title": "Golden scenarios cover only 3 of 14 declared architecture families",
+          "summary": "The skill declares 14 architecture families, but the golden scenario harness covers dense decoder, MoE decoder, and neural audio codec only; comprehensive MLX porting needs scenario gates for every declared family.",
+          "source_lane": "repo_local_audit",
+          "sources": [
+            {
+              "title": "tests/test_scenarios.py expected coverage",
+              "url": "file:/Users/amal/Downloads/mlx-porting-skill/tests/test_scenarios.py",
+              "accessed": "2026-06-27",
+              "kind": "repo-local-test"
+            },
+            {
+              "title": "architectures.yaml declared families",
+              "url": "file:/Users/amal/Downloads/mlx-porting-skill/mlx-model-porting/assets/architectures.yaml",
+              "accessed": "2026-06-27",
+              "kind": "repo-local-asset"
+            }
+          ],
+          "decision": "needs-validation",
+          "evidence_level": "repo-local-audit",
+          "validation_gate": "Each declared family gets a fixture that routes correctly, proves source weight keys, catches a seeded parity bug, and includes or excludes a family-specific optimization.",
+          "affects": [
+            "tests/fixtures/scenarios",
+            "tests/test_scenarios.py",
+            "VALIDATION.md"
+          ],
+          "caveats": [
+            "This is validation debt, not a direct porting technique."
+          ],
+          "required_next_validation": "Create a follow-up task graph for golden scenarios across the 11 uncovered families."
+        },
+        {
+          "id": "non-hf-source-format-gap",
+          "title": "Source-format coverage should expand beyond PyTorch and Hugging Face",
+          "summary": "The front-door skill description and intake flow emphasize PyTorch and Hugging Face; comprehensive MLX porting also needs static intake for ONNX, JAX/Flax, TensorFlow/Keras, GGUF, Core ML, and checkpoint-only repos.",
+          "source_lane": "repo_local_audit",
+          "sources": [
+            {
+              "title": "SKILL.md source scope",
+              "url": "file:/Users/amal/Downloads/mlx-porting-skill/mlx-model-porting/SKILL.md",
+              "accessed": "2026-06-27",
+              "kind": "repo-local-skill"
+            },
+            {
+              "title": "intake-and-routing.md",
+              "url": "file:/Users/amal/Downloads/mlx-porting-skill/mlx-model-porting/references/intake-and-routing.md",
+              "accessed": "2026-06-27",
+              "kind": "repo-local-reference"
+            }
+          ],
+          "decision": "needs-validation",
+          "evidence_level": "repo-local-audit",
+          "validation_gate": "Add static manifest extraction without import/execution, framework layout conventions, unsupported-op reporting, and deterministic weight-map coverage for each source format.",
+          "affects": [
+            "references/intake-and-routing.md",
+            "scripts/inspect_model.py",
+            "tests/fixtures/models"
+          ],
+          "caveats": [
+            "Adding formats changes intake scope and needs careful unsupported-path reporting."
+          ],
+          "required_next_validation": "Shape a source-format intake workstream with fixtures for at least ONNX and JAX/Flax first."
+        },
+        {
+          "id": "missing-domain-runbooks-gap",
+          "title": "Non-generative CV, structured/time-series/recsys, graph/scientific ML, and training need dedicated tracks",
+          "summary": "Contributor mining did not cover several important MLX porting domains. The skill should add research tracks for non-generative computer vision, structured and time-series models, graph/scientific ML, and training/fine-tuning as port targets.",
+          "source_lane": "repo_local_audit",
+          "sources": [
+            {
+              "title": "Subagent coverage audit for MLX porting skill",
+              "url": "codex-subagent://019f08a0-1e40-7b31-ad73-4328676b9018",
+              "accessed": "2026-06-27",
+              "kind": "subagent-audit"
+            }
+          ],
+          "decision": "needs-validation",
+          "evidence_level": "repo-local-audit",
+          "validation_gate": "Each new track needs an architecture/runbook entry, model-support row, quality metrics, static inspection fixtures, and task-specific parity gates.",
+          "affects": [
+            "assets/architectures.yaml",
+            "references/model-support-map.md",
+            "references/parity-and-testing.md",
+            "references/training-and-finetuning.md"
+          ],
+          "caveats": [
+            "This is too broad for one promotion; split into follow-up workstreams."
+          ],
+          "required_next_validation": "Prioritize CV and source-format intake before adding lower-demand families."
+        },
+        {
+          "id": "review-only-agent-harness-design",
+          "title": "Dynamic research harness should scaffold prompts and record execution state",
+          "summary": "A separate review artifact lane fits the repo better than automatic asset mutation: default runs should scaffold prompts and mark agents not run, while explicit returned findings are ingested with blogs and synthesis.",
+          "source_lane": "repo_local_audit",
+          "sources": [
+            {
+              "title": "Subagent harness architecture audit",
+              "url": "codex-subagent://019f08a0-03eb-7861-a33a-6927175c9b7b",
+              "accessed": "2026-06-27",
+              "kind": "subagent-audit"
+            },
+            {
+              "title": "maintenance-and-provenance.md review-only update pipeline",
+              "url": "file:/Users/amal/Downloads/mlx-porting-skill/mlx-model-porting/references/maintenance-and-provenance.md",
+              "accessed": "2026-06-27",
+              "kind": "repo-local-reference"
+            }
+          ],
+          "decision": "adopted",
+          "evidence_level": "repo-local-audit",
+          "validation_gate": "Harness tests must prove scaffolded_not_run versus fixture_ingested states, review-only policy, blog generation, and malformed finding rejection.",
+          "affects": [
+            "scripts/research_loop.py",
+            "assets/research_loop_config.json",
+            "references/deep-research-loop.md",
+            "tests/test_tooling.py"
+          ],
+          "caveats": [
+            "The script does not spawn host subagents by itself; the host agent performs live delegation and records returned findings."
+          ],
+          "required_next_validation": "Add executor subcommands only when the repo needs to run child processes directly."
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "This loop used live host subagents for repo-local audit and harness architecture, but source-collection automation is still scaffold/fixture-based.",
+    "The Hugging Face result was gathered through the installed Hugging Face connector; detailed model-card parsing remains a follow-up.",
+    "The arXiv source was sampled through the arXiv API and should be deep-reviewed before any serving technique promotion.",
+    "Some guessed MLX doc URLs returned 404 and were excluded from evidence."
+  ]
+}

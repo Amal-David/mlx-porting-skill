@@ -60,7 +60,7 @@ class ToolingTests(unittest.TestCase):
         result = run_script("validate_sources.py", SKILL)
         report = json.loads(result.stdout)
         self.assertTrue(report["ok"], report)
-        self.assertEqual(report["sources"], 339)
+        self.assertEqual(report["sources"], 348)
         self.assertEqual(report["optimization_methods"], 27)
         self.assertTrue(report["recommendation_taxonomy"])
 
@@ -511,6 +511,68 @@ class ToolingTests(unittest.TestCase):
             self.assertEqual(report["papers"][0]["review_status"], "candidate-unreviewed")
             self.assertTrue(any("Do not execute code" in line for line in report["instructions"]))
             self.assertIn("1 repositories, 1 paper candidates", result.stdout)
+
+    def test_research_loop_generates_review_blogs_and_synthesis(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            output_dir = Path(tmp) / "research-run"
+            run_script(
+                "research_loop.py",
+                "--run-id", "fixture-loop",
+                "--objective", "Broaden MLX porting evidence beyond GitHub",
+                "--offline-fixture", FIXTURES / "research_loop" / "offline_findings.json",
+                "--output-dir", output_dir,
+            )
+            assignments = json.loads((output_dir / "assignments.json").read_text())
+            synthesis = json.loads((output_dir / "synthesis.json").read_text())
+            self.assertTrue(synthesis["review_only"])
+            self.assertEqual(synthesis["finding_count"], 3)
+            self.assertEqual(synthesis["execution_counts"]["fixture_ingested"], 3)
+            self.assertEqual(synthesis["execution_counts"]["scaffolded_not_run"], 3)
+            self.assertEqual(synthesis["decision_counts"]["adopted"], 1)
+            self.assertIn("official_docs", synthesis["non_github_lanes_covered"])
+            self.assertIn("hugging_face", synthesis["non_github_lanes_covered"])
+            self.assertIn("technical_blogs", synthesis["non_github_lanes_covered"])
+            self.assertIn("tests/fixtures/research_loop/offline_findings.json", synthesis["offline_fixture"])
+            self.assertEqual(len(assignments["assignments"]), 6)
+            self.assertEqual(assignments["assignments"][0]["execution"]["state"], "fixture_ingested")
+            self.assertEqual(assignments["assignments"][-1]["execution"]["state"], "scaffolded_not_run")
+            prompt = assignments["assignments"][0]["prompt"]
+            self.assertIn("Do not execute remote model code", prompt)
+            blog = output_dir / "blogs" / "official-docs-cartographer.md"
+            self.assertTrue(blog.exists())
+            blog_text = blog.read_text()
+            self.assertIn("Candidate findings", blog_text)
+            self.assertIn("official-custom-metal-validation", blog_text)
+
+    def test_research_loop_rejects_malformed_findings(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            fixture = Path(tmp) / "bad_findings.json"
+            fixture.write_text(json.dumps({
+                "agents": [
+                    {
+                        "persona_id": "official-docs-cartographer",
+                        "findings": [
+                            {
+                                "id": "missing-source",
+                                "title": "Missing source should fail",
+                                "summary": "No source provenance.",
+                                "source_lane": "official_docs",
+                                "decision": "held",
+                                "evidence_level": "lead-only",
+                                "validation_gate": "None",
+                                "affects": ["references/benchmarking.md"],
+                            }
+                        ],
+                    }
+                ]
+            }))
+            result = run_script(
+                "research_loop.py",
+                "--offline-fixture", fixture,
+                "--output-dir", Path(tmp) / "out",
+                expected=2,
+            )
+            self.assertIn("missing required fields: sources", result.stderr)
 
     def test_benchmark_harness_and_installer_dry_run(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

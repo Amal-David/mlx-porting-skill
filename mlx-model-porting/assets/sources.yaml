@@ -6,7 +6,7 @@
     "screened": "Abstract/readme/code path reviewed for relevance and limits.",
     "indexed": "Catalogued for future review; do not represent as fully reviewed."
   },
-  "count": 339,
+  "count": 348,
   "sources": [
     {
       "id": "agent-skills-spec",
@@ -4900,6 +4900,150 @@
       "review_depth": "screened",
       "snapshot": "c9aec867c76b",
       "note": "Screened as top-1000 contributor context; export tooling is useful adjacent work but not a model-to-MLX porting technique."
+    },
+    {
+      "id": "mlx-doc-set-memory-limit",
+      "title": "MLX set_memory_limit API",
+      "url": "https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.set_memory_limit.html",
+      "kind": "official-doc",
+      "owner": "Apple MLX",
+      "topics": [
+        "mlx",
+        "memory",
+        "benchmarking"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2026-06-27",
+      "note": "Official API evidence for graph-evaluation memory-limit experiments; not a quality or latency proof."
+    },
+    {
+      "id": "mlx-doc-get-peak-memory",
+      "title": "MLX get_peak_memory API",
+      "url": "https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.get_peak_memory.html",
+      "kind": "official-doc",
+      "owner": "Apple MLX",
+      "topics": [
+        "mlx",
+        "memory",
+        "benchmarking"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2026-06-27",
+      "note": "Official API evidence for peak-memory measurement in benchmark and fit gates."
+    },
+    {
+      "id": "mlx-doc-export",
+      "title": "MLX exporting functions documentation",
+      "url": "https://ml-explore.github.io/mlx/build/html/usage/export.html",
+      "kind": "official-doc",
+      "owner": "Apple MLX",
+      "topics": [
+        "mlx",
+        "export",
+        "packaging",
+        "smoke-test"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2026-06-27",
+      "note": "Official API evidence for optional .mlxfn release smoke tests with shape/dtype caveats."
+    },
+    {
+      "id": "pypi-mlx-lm",
+      "title": "mlx-lm PyPI package metadata",
+      "url": "https://pypi.org/project/mlx-lm/",
+      "kind": "release",
+      "owner": "ml-explore",
+      "topics": [
+        "mlx-lm",
+        "package",
+        "cache",
+        "serving"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2026-06-27",
+      "note": "Package metadata evidence for release/version and prompt-cache caveats; PyPI text alone is not implementation proof."
+    },
+    {
+      "id": "pypi-mlx-vlm",
+      "title": "mlx-vlm PyPI package metadata",
+      "url": "https://pypi.org/project/mlx-vlm/",
+      "kind": "release",
+      "owner": "Blaizzy / contributors",
+      "topics": [
+        "mlx-vlm",
+        "package",
+        "vlm",
+        "speculative-decoding",
+        "cache"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2026-06-27",
+      "note": "Package metadata evidence for feature-cache, speculative decoding, and TurboQuant leads; validate against pinned source before promotion."
+    },
+    {
+      "id": "pypi-mlx-audio",
+      "title": "mlx-audio PyPI package metadata",
+      "url": "https://pypi.org/project/mlx-audio/",
+      "kind": "release",
+      "owner": "Blaizzy / contributors",
+      "topics": [
+        "mlx-audio",
+        "package",
+        "tts",
+        "asr",
+        "dependencies"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2026-06-27",
+      "note": "Package metadata evidence for audio dependency and model-matrix review gates; validate per model."
+    },
+    {
+      "id": "hf-nemotron-diffusion-mlx-card",
+      "title": "mlx-community Nemotron-Labs-Diffusion-3B-4bit model card",
+      "url": "https://huggingface.co/mlx-community/Nemotron-Labs-Diffusion-3B-4bit",
+      "kind": "repository",
+      "owner": "mlx-community",
+      "topics": [
+        "mlx",
+        "hugging-face",
+        "model-card",
+        "publication"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2026-06-27",
+      "note": "Mutable HF model-card evidence for publication metadata linting, not benchmark or implementation proof."
+    },
+    {
+      "id": "paper-2504-19874",
+      "title": "TurboQuant: Ultra-Efficient and Accurate KV Cache Quantization for Long Context LLM Inference",
+      "url": "https://arxiv.org/abs/2504.19874",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "kv-cache",
+        "quantization",
+        "long-context",
+        "mlx-vlm"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2504.19874",
+      "note": "Paper evidence for TurboQuant research context; not official MLX core support."
+    },
+    {
+      "id": "hf-mlx-model-search-2026-06-27",
+      "title": "Hugging Face MLX model search snapshot",
+      "url": "https://huggingface.co/models?library=mlx&search=mlx",
+      "kind": "repository",
+      "owner": "Hugging Face",
+      "topics": [
+        "mlx",
+        "hugging-face",
+        "source-selection",
+        "coverage"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2026-06-27",
+      "note": "Used for demand and artifact-shape sampling only; downloads and tags are not implementation evidence."
     }
   ]
 }

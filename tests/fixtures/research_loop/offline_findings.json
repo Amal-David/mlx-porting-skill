@@ -1,0 +1,106 @@
+{
+  "schema_version": 1,
+  "agents": [
+    {
+      "persona_id": "official-docs-cartographer",
+      "decision_notes": [
+        "Official documentation can constrain supported API claims but still needs a local port validation path."
+      ],
+      "findings": [
+        {
+          "id": "official-custom-metal-validation",
+          "title": "Custom kernels need explicit MLX API and fallback validation",
+          "summary": "Treat custom Metal kernels as supported only when the MLX custom-kernel API path, shape contract, fallback, and parity tests are recorded.",
+          "source_lane": "official_docs",
+          "sources": [
+            {
+              "title": "MLX custom extensions documentation",
+              "url": "https://ml-explore.github.io/mlx/build/html/dev/custom_extensions.html",
+              "accessed": "2026-06-27",
+              "kind": "official-doc"
+            }
+          ],
+          "decision": "adopted",
+          "evidence_level": "official-api-plus-local-validation-required",
+          "validation_gate": "Pin MLX version, test fallback, and compare kernel outputs to a readable MLX or NumPy oracle.",
+          "affects": [
+            "references/compile-and-kernels.md",
+            "assets/techniques.yaml"
+          ],
+          "caveats": [
+            "Official API support does not prove a model-level speedup."
+          ],
+          "required_next_validation": "Run targeted kernel parity and end-to-end benchmarks before promoting any specific kernel."
+        }
+      ]
+    },
+    {
+      "persona_id": "huggingface-ecosystem-sampler",
+      "decision_notes": [
+        "Model-card popularity helps prioritize architecture coverage but is not implementation evidence."
+      ],
+      "findings": [
+        {
+          "id": "hf-task-demand-prioritization",
+          "title": "Use Hugging Face task/library metadata to prioritize porting coverage",
+          "summary": "Hugging Face model metadata can reveal high-demand tasks and artifact shapes, but should feed a coverage backlog rather than supported implementation claims.",
+          "source_lane": "hugging_face",
+          "sources": [
+            {
+              "title": "Hugging Face model metadata search",
+              "url": "https://huggingface.co/models?search=mlx",
+              "accessed": "2026-06-27",
+              "kind": "model-index"
+            }
+          ],
+          "decision": "needs-validation",
+          "evidence_level": "ecosystem-prioritization",
+          "validation_gate": "Sample model cards, licenses, configs, processors, and source frameworks before adding a runbook or architecture family.",
+          "affects": [
+            "references/model-support-map.md",
+            "assets/architectures.yaml"
+          ],
+          "caveats": [
+            "Metadata does not prove an MLX implementation path."
+          ],
+          "required_next_validation": "Collect representative model cards for each gap and map them to source-oracle requirements."
+        }
+      ]
+    },
+    {
+      "persona_id": "practitioner-blog-miner",
+      "decision_notes": [
+        "Practitioner reports are good at revealing failure modes, but claims need independent reproduction."
+      ],
+      "findings": [
+        {
+          "id": "blog-benchmark-caveat",
+          "title": "Keep benchmark claims attached to hardware and workload",
+          "summary": "Blog benchmarks should be ingested as leads unless they include hardware, software version, workload, baseline, and quality gate.",
+          "source_lane": "technical_blogs",
+          "sources": [
+            {
+              "title": "Apple machine learning research blog",
+              "url": "https://machinelearning.apple.com/",
+              "accessed": "2026-06-27",
+              "kind": "technical-blog"
+            }
+          ],
+          "decision": "held",
+          "evidence_level": "lead-only",
+          "validation_gate": "Reproduce benchmark or convert claim into a profile checklist before changing optimization guidance.",
+          "affects": [
+            "references/benchmarking.md"
+          ],
+          "caveats": [
+            "The fixture source is broad and not a specific benchmark claim."
+          ],
+          "required_next_validation": "Identify specific MLX-relevant benchmark posts and record exact protocol details."
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "Fixture is deterministic and does not represent a full live research pass."
+  ]
+}

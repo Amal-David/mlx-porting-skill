@@ -78,7 +78,7 @@ Capture:
 ### VLM cache taxonomy
 
 - Pixel/preprocess cache: key by decoded media bytes plus resize, crop, FPS, max-frame, pixel-budget, processor revision, dtype, and tenant namespace.
-- Projected-feature cache: key by model revision, processor revision, projector version, adapter, quantization, media content hash, and processing knobs. Compare cold/warm logits before trusting generated answers.
+- Projected-feature cache: key by model revision, processor revision, projector version, adapter, quantization, media content hash, and processing knobs. A path-only key is insufficient for reusable guidance. Compare cold/warm logits before trusting generated answers.
 - Prompt KV/APC cache: require token prefix hash plus multimodal extra hashes. Reject reuse when the suffix contains media placeholders that are not fully covered by the restored cache.
 - Disk warm cache: treat as persistence with privacy, deletion, versioning, checksum, and storage-pressure gates.
 

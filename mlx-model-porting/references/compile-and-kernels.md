@@ -29,6 +29,8 @@ Watch for recompilation caused by:
 
 Use shapeless compilation only when operation semantics permit and benchmark both compile overhead and steady execution. If the target relies on very recent MLX fixes for shapeless compile, gather/reduce, or custom-kernel behavior, record the exact MLX commit or release. A fix merged on main is not publishable support for users pinned to the latest PyPI package until that package contains it.
 
+For compiled decode or streaming steps, make stale-state failure testable: run at least two sequence lengths or chunk sizes, verify cache/state mutation across consecutive calls, and include a closure-constant change or explicit state-refresh test when the source path mutates generation settings.
+
 ### 5. Streams and overlap
 
 Use separate streams only for genuinely independent work with enough granularity. Validate dependencies explicitly. Candidate use cases include overlapping CPU preprocessing with GPU work, independent encoder branches, or asynchronous materialization. Avoid stream complexity for tiny operations.

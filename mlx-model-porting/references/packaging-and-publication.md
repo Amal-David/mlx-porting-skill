@@ -10,6 +10,7 @@
 - smoke-test fixtures and expected summaries;
 - model card with original attribution and license;
 - compatibility table for MLX and package versions;
+- Hugging Face model-card metadata when publishing there: `library_name`, tags, base model, license, quantization, custom-code requirement, and minimum package versions;
 - raw benchmark and quality reports;
 - known limitations and unsupported paths.
 
@@ -35,6 +36,24 @@ Not acceptable:
 - “2× faster” without baseline, hardware, workload, and raw results.
 - “Works on MLX” when only one untested path loads.
 - “Official” for a community port.
+
+## Optional `.mlxfn` export smoke
+
+For ports that expose a stable callable inference surface, add an optional MLX function-export smoke test. Record the example input shapes, dtypes, enclosed arrays, and whether shapeless export is used. Treat `.mlxfn` as a release smoke artifact, not a replacement for normal Python/config/weight publication, and do not imply it supports untested shapes or processors.
+
+## Hugging Face publication lint
+
+Before uploading a converted checkpoint or adapter, lint the model card for:
+
+- source model and revision;
+- `library_name`/tags that match the actual loader;
+- base model and quantization fields;
+- license and gated-use terms;
+- custom-code or main-branch package requirements;
+- tokenizer/processor compatibility;
+- unsupported modes such as batching, streaming, training, or speculative decoding.
+
+Hugging Face cards are mutable metadata. Use them for publication hygiene and artifact-shape sampling, not as benchmark evidence.
 
 ## Publication checklist
 

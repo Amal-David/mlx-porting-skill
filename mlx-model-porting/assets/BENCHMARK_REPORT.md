@@ -9,6 +9,8 @@ Template only; this file is not evidence that a benchmark has been run.
 - Model revision:
 - Precision/quantization:
 - Workload:
+- MLX memory limit experiment:
+- Operator/system memory settings:
 
 ## Raw result files
 
@@ -23,6 +25,13 @@ Template only; this file is not evidence that a benchmark has been run.
 |---|---:|---:|---:|---:|---:|---:|
 | Baseline | | | | | | |
 | Candidate | | | | | | |
+
+## Memory fit
+
+- MLX active/cache/peak memory:
+- `set_memory_limit` value/result:
+- Fits claim supported?:
+- Caveats:
 
 ## Decision
 

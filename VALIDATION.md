@@ -25,6 +25,7 @@ manifest gates. Each item below is enforced by a runnable pass/fail test.
 | Weight-map shape transforms (reshape/squeeze/unsqueeze/slice/permute) are correct | `test_weight_map_transform_ops_*` |
 | The CLI pipeline chains (`inspect → plan → recommend → validate_weight_map`) | `test_pipeline_chains_inspect_to_plan_recommend_and_validate` |
 | Fixtures are reproducible and auditable from a generator | `tests/test_fixtures.py` |
+| The deep research loop emits review-only assignments, blogs, synthesis, and rejects malformed findings | `test_research_loop_*` |
 | The distributed artifact has no silent file drift | `scripts/manifest.py check` |
 | Source provenance is well-formed; supported techniques cite implementation evidence | `scripts/validate_sources.py` |
 
@@ -40,6 +41,7 @@ manifest gates. Each item below is enforced by a runnable pass/fail test.
 
 - Source link health: `scripts/validate_sources.py --check-urls`.
 - Upstream revision pin-drift detection and the live daily-research pipeline.
+- Live execution of external research subagents or network collectors; offline tests cover the harness contract and fixture ingestion only.
 
 ## Offline gate commands
 

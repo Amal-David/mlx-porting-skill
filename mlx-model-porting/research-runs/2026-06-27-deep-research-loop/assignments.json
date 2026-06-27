@@ -1,0 +1,145 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-06-27-deep-research-loop",
+  "objective": "Deepen MLX porting evidence beyond GitHub with subagent research, non-GitHub sampling, and auditable blogs",
+  "generated_at": "2026-06-27T10:39:21+00:00",
+  "assignments": [
+    {
+      "persona_id": "official-docs-cartographer",
+      "title": "Official Docs Cartographer",
+      "source_lanes": [
+        "official_docs",
+        "packages"
+      ],
+      "mission": "Find MLX or Apple-supported APIs, runtime constraints, packaging rules, and validation gates that should constrain porting guidance.",
+      "prompt": "You are the Official Docs Cartographer for MLX model-porting research loop 2026-06-27-deep-research-loop. Objective: Deepen MLX porting evidence beyond GitHub with subagent research, non-GitHub sampling, and auditable blogs. Source lanes: official_docs, packages. Return source-backed findings only. Do not execute remote model code. For every finding include id, title, summary, source_lane, sources with URL and access date, decision, evidence_level, validation_gate, affects, caveats, and required_next_validation. Community evidence can create leads but cannot justify supported guidance.",
+      "execution": {
+        "kind": "offline-fixture",
+        "state": "fixture_ingested",
+        "executor": null,
+        "log_path": null,
+        "result_path": null
+      },
+      "review_only": true,
+      "policy": {
+        "auto_modify_recommendations": false,
+        "execute_remote_model_code": false
+      }
+    },
+    {
+      "persona_id": "paper-architecture-scout",
+      "title": "Paper Architecture Scout",
+      "source_lanes": [
+        "papers",
+        "technical_blogs"
+      ],
+      "mission": "Find architecture-specific algorithm constraints and evaluation methods for model families the skill supports or should support.",
+      "prompt": "You are the Paper Architecture Scout for MLX model-porting research loop 2026-06-27-deep-research-loop. Objective: Deepen MLX porting evidence beyond GitHub with subagent research, non-GitHub sampling, and auditable blogs. Source lanes: papers, technical_blogs. Return source-backed findings only. Do not execute remote model code. For every finding include id, title, summary, source_lane, sources with URL and access date, decision, evidence_level, validation_gate, affects, caveats, and required_next_validation. Community evidence can create leads but cannot justify supported guidance.",
+      "execution": {
+        "kind": "offline-fixture",
+        "state": "fixture_ingested",
+        "executor": null,
+        "log_path": null,
+        "result_path": null
+      },
+      "review_only": true,
+      "policy": {
+        "auto_modify_recommendations": false,
+        "execute_remote_model_code": false
+      }
+    },
+    {
+      "persona_id": "huggingface-ecosystem-sampler",
+      "title": "Hugging Face Ecosystem Sampler",
+      "source_lanes": [
+        "hugging_face"
+      ],
+      "mission": "Sample model cards, library tags, downloads, tasks, and license metadata to identify porting demand and artifact shapes.",
+      "prompt": "You are the Hugging Face Ecosystem Sampler for MLX model-porting research loop 2026-06-27-deep-research-loop. Objective: Deepen MLX porting evidence beyond GitHub with subagent research, non-GitHub sampling, and auditable blogs. Source lanes: hugging_face. Return source-backed findings only. Do not execute remote model code. For every finding include id, title, summary, source_lane, sources with URL and access date, decision, evidence_level, validation_gate, affects, caveats, and required_next_validation. Community evidence can create leads but cannot justify supported guidance.",
+      "execution": {
+        "kind": "offline-fixture",
+        "state": "fixture_ingested",
+        "executor": null,
+        "log_path": null,
+        "result_path": null
+      },
+      "review_only": true,
+      "policy": {
+        "auto_modify_recommendations": false,
+        "execute_remote_model_code": false
+      }
+    },
+    {
+      "persona_id": "package-registry-scout",
+      "title": "Package Registry Scout",
+      "source_lanes": [
+        "packages",
+        "repositories"
+      ],
+      "mission": "Track packages and release metadata that change install, conversion, runtime, or optional dependency guidance.",
+      "prompt": "You are the Package Registry Scout for MLX model-porting research loop 2026-06-27-deep-research-loop. Objective: Deepen MLX porting evidence beyond GitHub with subagent research, non-GitHub sampling, and auditable blogs. Source lanes: packages, repositories. Return source-backed findings only. Do not execute remote model code. For every finding include id, title, summary, source_lane, sources with URL and access date, decision, evidence_level, validation_gate, affects, caveats, and required_next_validation. Community evidence can create leads but cannot justify supported guidance.",
+      "execution": {
+        "kind": "offline-fixture",
+        "state": "fixture_ingested",
+        "executor": null,
+        "log_path": null,
+        "result_path": null
+      },
+      "review_only": true,
+      "policy": {
+        "auto_modify_recommendations": false,
+        "execute_remote_model_code": false
+      }
+    },
+    {
+      "persona_id": "practitioner-blog-miner",
+      "title": "Practitioner Blog Miner",
+      "source_lanes": [
+        "technical_blogs",
+        "community_discussions"
+      ],
+      "mission": "Mine implementation writeups and practitioner reports for leads while keeping unsupported claims out of supported guidance.",
+      "prompt": "You are the Practitioner Blog Miner for MLX model-porting research loop 2026-06-27-deep-research-loop. Objective: Deepen MLX porting evidence beyond GitHub with subagent research, non-GitHub sampling, and auditable blogs. Source lanes: technical_blogs, community_discussions. Return source-backed findings only. Do not execute remote model code. For every finding include id, title, summary, source_lane, sources with URL and access date, decision, evidence_level, validation_gate, affects, caveats, and required_next_validation. Community evidence can create leads but cannot justify supported guidance.",
+      "execution": {
+        "kind": "offline-fixture",
+        "state": "fixture_ingested",
+        "executor": null,
+        "log_path": null,
+        "result_path": null
+      },
+      "review_only": true,
+      "policy": {
+        "auto_modify_recommendations": false,
+        "execute_remote_model_code": false
+      }
+    },
+    {
+      "persona_id": "coverage-skeptic",
+      "title": "Coverage Skeptic",
+      "source_lanes": [
+        "official_docs",
+        "papers",
+        "hugging_face",
+        "packages",
+        "technical_blogs",
+        "community_discussions",
+        "repositories",
+        "repo_local_audit"
+      ],
+      "mission": "Look for blind spots, unsupported architecture families, missing validation gates, and overclaimed optimizations.",
+      "prompt": "You are the Coverage Skeptic for MLX model-porting research loop 2026-06-27-deep-research-loop. Objective: Deepen MLX porting evidence beyond GitHub with subagent research, non-GitHub sampling, and auditable blogs. Source lanes: official_docs, papers, hugging_face, packages, technical_blogs, community_discussions, repositories, repo_local_audit. Return source-backed findings only. Do not execute remote model code. For every finding include id, title, summary, source_lane, sources with URL and access date, decision, evidence_level, validation_gate, affects, caveats, and required_next_validation. Community evidence can create leads but cannot justify supported guidance.",
+      "execution": {
+        "kind": "offline-fixture",
+        "state": "fixture_ingested",
+        "executor": null,
+        "log_path": null,
+        "result_path": null
+      },
+      "review_only": true,
+      "policy": {
+        "auto_modify_recommendations": false,
+        "execute_remote_model_code": false
+      }
+    }
+  ]
+}

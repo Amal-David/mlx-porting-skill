@@ -42,6 +42,8 @@ Useful for concurrent serving and prefix sharing, but add scheduler and block-ta
 
 For multi-tenant RAG or non-prefix cache fusion, include cache-privacy review. Cache timing and chunk-boundary behavior can leak information, so namespace isolation, padding/constant-time policy, tenant controls, and opt-out behavior belong in the serving gate.
 
+For batched generation, add an isolation regression that would fail if KV or prompt-cache state crosses requests. Include mixed prompts, shared prefixes, divergent suffixes, cancellation, and cache reset/reuse in the same batch. Treat release notes or package metadata about cache contamination as a reason to add tests, not as root-cause proof.
+
 ### Disk/SSD tiering
 
 Treat as a serving policy, not a free latency win. Benchmark serialization, restore, checksum/versioning, eviction, and storage pressure. Never deserialize untrusted executable objects.
@@ -53,6 +55,8 @@ Start with native/proven uniform KV quantization where supported. Measure long-c
 Recent research candidates include layerwise/key-value sensitivity search, RoPE-aware key bit allocation, hardware-aware grouping, and agent-workload-oriented 4-bit KV paths. Do not copy GPU-specific speedups into MLX claims. Promote one only after an MLX implementation proves quality, bytes/token/layer, quantize/dequantize overhead, decode latency, and fallback behavior on the target workload.
 
 Do not assume KV quantization composes with every cache class or serving mode. Validate prompt-cache save/load, rotating cache, batching, trimming, `max_kv_size`, and cache reset/reuse interactions before advertising a combined mode.
+
+For TurboQuant-style or packed custom-kernel KV paths, keep the batch caveat attached: third-party package metadata and papers are not native MLX-core support, and source-reported gains must be rechecked for batch-aware kernels, cache composition, and fallback behavior.
 
 Required checks:
 

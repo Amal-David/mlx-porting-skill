@@ -1,0 +1,81 @@
+{
+  "schema_version": 1,
+  "reviewed": "2026-06-27",
+  "objective": "Track deep-research gaps needed before the MLX porting skill can credibly claim comprehensive coverage.",
+  "items": [
+    {
+      "id": "golden-scenarios-all-families",
+      "priority": "P0",
+      "status": "needs-validation",
+      "summary": "Golden scenarios currently cover only dense decoder, MoE decoder, and neural audio codec despite 14 declared architecture families.",
+      "required_gate": "Each declared family routes correctly, proves source weight keys, catches a seeded parity bug, and includes or excludes one family-specific optimization.",
+      "source": "mlx-model-porting/research-runs/2026-06-27-deep-research-loop/synthesis.json",
+      "affected": [
+        "tests/fixtures/scenarios",
+        "tests/test_scenarios.py",
+        "VALIDATION.md"
+      ]
+    },
+    {
+      "id": "source-formats-beyond-pytorch-hf",
+      "priority": "P0",
+      "status": "needs-validation",
+      "summary": "Static intake should expand to source formats such as ONNX, JAX/Flax, TensorFlow/Keras, GGUF, Core ML, and checkpoint-only repos.",
+      "required_gate": "Static manifest extraction without import or execution, framework layout conventions, unsupported-op report, deterministic weight-map coverage, and no silent fallback to manual routing.",
+      "source": "mlx-model-porting/research-runs/2026-06-27-deep-research-loop/synthesis.json",
+      "affected": [
+        "references/intake-and-routing.md",
+        "scripts/inspect_model.py",
+        "tests/fixtures/models"
+      ]
+    },
+    {
+      "id": "non-generative-cv",
+      "priority": "P1",
+      "status": "needs-research",
+      "summary": "Non-generative computer vision ports need first-class guidance for CNNs, ConvNeXt/EfficientNet, detection, segmentation, OCR/layout, SAM-like masks, depth, and pose.",
+      "required_gate": "Preprocessing parity, NCHW/NHWC conversion, logits/masks/boxes parity, IoU/mAP/top-k gates, and NMS/ROIAlign/grid-sample fallback tests.",
+      "source": "codex-subagent://019f08a0-1e40-7b31-ad73-4328676b9018",
+      "affected": [
+        "assets/architectures.yaml",
+        "references/model-support-map.md",
+        "references/parity-and-testing.md"
+      ]
+    },
+    {
+      "id": "structured-timeseries-recsys",
+      "priority": "P1",
+      "status": "needs-research",
+      "summary": "Structured, tabular, time-series, recommender, and ranking models are not first-class porting families.",
+      "required_gate": "Scaler/normalizer parity, categorical vocab and missing-value policy, ragged/sequence batching, temporal leakage checks, NDCG/AUC/forecast-error task gates.",
+      "source": "codex-subagent://019f08a0-1e40-7b31-ad73-4328676b9018",
+      "affected": [
+        "assets/architectures.yaml",
+        "references/model-support-map.md"
+      ]
+    },
+    {
+      "id": "graph-geometric-scientific",
+      "priority": "P1",
+      "status": "needs-research",
+      "summary": "GNN, point-cloud, protein, equivariant, simulator, and chemistry ports are absent from the current first-class coverage map.",
+      "required_gate": "Scatter/segment/reduce parity, permutation invariance or equivariance tests, neighbor-list/radius graph fixtures, ragged batching, and units/symmetry constraints.",
+      "source": "codex-subagent://019f08a0-1e40-7b31-ad73-4328676b9018",
+      "affected": [
+        "references/compile-and-kernels.md",
+        "references/model-support-map.md"
+      ]
+    },
+    {
+      "id": "training-as-port-target",
+      "priority": "P2",
+      "status": "needs-research",
+      "summary": "Training and fine-tuning guidance should become a full port target with adapter, distillation, checkpointing, optimizer-state, resume, and trainable custom-kernel tracks.",
+      "required_gate": "Tiny overfit, loss/gradient parity, optimizer state round-trip, checkpoint resume, deterministic seed, and memory graph-retention check.",
+      "source": "codex-subagent://019f08a0-1e40-7b31-ad73-4328676b9018",
+      "affected": [
+        "references/training-and-finetuning.md"
+      ]
+    }
+  ]
+}

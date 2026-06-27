@@ -21,7 +21,7 @@ This repository is deliberately **not** a single giant prompt. It has four layer
 - neural audio codecs, autoregressive audio LMs, flow/diffusion TTS, vocoders, ASR, streaming speech, and separation;
 - weight/KV/mixed-bit quantization, prompt caching, continuous batching, speculative decoding, and serving;
 - benchmark gates that prevent unsupported speedup claims;
-- a review-only daily update pipeline that never auto-merges research changes.
+- review-only daily and deep-research loops that never auto-merge research changes.
 
 ## Install
 
@@ -89,7 +89,9 @@ skills-ref validate ./mlx-model-porting
 
 `RESEARCH_REPORT.md` explains the landscape and design. `EVIDENCE_INDEX.md` renders the complete source catalogue, while `mlx-model-porting/assets/sources.yaml` is the machine-readable evidence index with review depth. A source marked `indexed` has been catalogued but must not be represented as fully reviewed. A source marked `synthesized` directly informed a runbook or decision rule.
 
-Current corpus review date: **2026-06-24**.
+For broad ecosystem research, use `mlx-model-porting/scripts/research_loop.py`. It generates bounded researcher assignments, ingests returned findings, writes per-agent blogs, and emits a review-only synthesis under `mlx-model-porting/research-runs/` without modifying recommendation assets automatically.
+
+Current corpus review date: **2026-06-27**.
 
 ## Versioning
 
