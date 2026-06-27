@@ -963,6 +963,7 @@ class ToolingTests(unittest.TestCase):
             self.assertGreater(synthesis["planned_sample_target_counts"]["papers"], 0)
             self.assertEqual(synthesis["sampling_coverage"]["sampled_target_count"], 0)
             self.assertGreater(synthesis["sampling_coverage"]["unsampled_target_count"], 0)
+            self.assertEqual(synthesis["review_gate"]["status"], "pass")
             self.assertIn("assignment_planner", assignments)
             first = assignments["assignments"][0]
             self.assertEqual(first["planning"]["persona_id"], "official-docs-cartographer")
@@ -979,6 +980,8 @@ class ToolingTests(unittest.TestCase):
             self.assertIn("## Sources sampled\n- None", blog_text)
             self.assertIn("Sampling coverage", blog_text)
             self.assertIn("Unmatched planned targets", blog_text)
+            summary = (output_dir / "synthesis.md").read_text()
+            self.assertIn("Review gate: pass", summary)
 
     def test_research_loop_dynamic_planner_selects_gap_personas(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -1026,6 +1029,9 @@ class ToolingTests(unittest.TestCase):
                 "--run-id", "iterative-loop",
                 "--objective", "Broaden MLX porting evidence beyond GitHub",
                 "--iterations", 2,
+                "--min-sampled-targets", 2,
+                "--min-non-github-lanes", 3,
+                "--require-source-lane", "hugging_face",
                 "--offline-fixture", FIXTURES / "research_loop" / "offline_findings.json",
                 "--output-dir", output_dir,
             )
@@ -1036,6 +1042,8 @@ class ToolingTests(unittest.TestCase):
             self.assertEqual(loop["total_finding_count"], 6)
             self.assertEqual(loop["sampling_coverage"]["sampled_target_count"], 4)
             self.assertEqual(loop["sampling_coverage"]["unplanned_source_count"], 2)
+            self.assertEqual(loop["review_gate"]["status"], "pass")
+            self.assertEqual(first["review_gate"]["status"], "pass")
             self.assertEqual(first["assignment_planner"]["mode"], "config-order")
             self.assertEqual(second["assignment_planner"]["mode"], "dynamic")
             self.assertIn("benchmark", first["next_gap_hints"])
@@ -1046,6 +1054,7 @@ class ToolingTests(unittest.TestCase):
             loop_markdown = (output_dir / "loop.md").read_text()
             self.assertIn("Final gap hints", loop_markdown)
             self.assertIn("sampling coverage", loop_markdown)
+            self.assertIn("Review gate: pass", loop_markdown)
             self.assertIn("iterative-loop-i02", loop_markdown)
 
     def test_research_loop_generates_review_blogs_and_synthesis(self) -> None:
@@ -1068,6 +1077,7 @@ class ToolingTests(unittest.TestCase):
             self.assertEqual(synthesis["assignment_planner"]["mode"], "config-order")
             self.assertEqual(synthesis["sampling_coverage"]["sampled_target_count"], 2)
             self.assertEqual(synthesis["sampling_coverage"]["unplanned_source_count"], 1)
+            self.assertEqual(synthesis["review_gate"]["status"], "pass")
             self.assertIn("official_docs", synthesis["non_github_lanes_covered"])
             self.assertIn("hugging_face", synthesis["non_github_lanes_covered"])
             self.assertIn("technical_blogs", synthesis["non_github_lanes_covered"])
@@ -1091,6 +1101,52 @@ class ToolingTests(unittest.TestCase):
             self.assertIn("MLX custom extensions documentation", blog_text)
             self.assertIn("Candidate findings", blog_text)
             self.assertIn("official-custom-metal-validation", blog_text)
+
+    def test_research_loop_review_gate_fails_loud_after_writing_receipts(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            output_dir = Path(tmp) / "gate-fail-run"
+            result = run_script(
+                "research_loop.py",
+                "--run-id", "gate-fail-loop",
+                "--objective", "Require sampled evidence before skill updates",
+                "--agent-count", 2,
+                "--min-sampled-targets", 1,
+                "--fail-on-review-gate",
+                "--output-dir", output_dir,
+                expected=2,
+            )
+            self.assertIn("review gate failed", result.stderr)
+            self.assertTrue((output_dir / "assignments.json").exists())
+            self.assertTrue((output_dir / "synthesis.md").exists())
+            synthesis = json.loads((output_dir / "synthesis.json").read_text())
+            self.assertEqual(synthesis["finding_count"], 0)
+            self.assertEqual(synthesis["review_gate"]["status"], "fail")
+            self.assertFalse(synthesis["review_gate"]["ready_for_skill_update"])
+            self.assertIn("sampled_planned_targets observed 0, required 1", synthesis["review_gate"]["blocked_reasons"])
+            summary = (output_dir / "synthesis.md").read_text()
+            self.assertIn("Review gate: fail", summary)
+
+    def test_research_loop_review_gate_passes_fixture_thresholds(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            output_dir = Path(tmp) / "gate-pass-run"
+            run_script(
+                "research_loop.py",
+                "--run-id", "gate-pass-loop",
+                "--objective", "Require multi-source evidence before skill updates",
+                "--min-sampled-targets", 2,
+                "--min-non-github-lanes", 3,
+                "--require-source-lane", "hugging_face",
+                "--offline-fixture", FIXTURES / "research_loop" / "offline_findings.json",
+                "--output-dir", output_dir,
+            )
+            synthesis = json.loads((output_dir / "synthesis.json").read_text())
+            gate = synthesis["review_gate"]
+            self.assertEqual(gate["status"], "pass")
+            self.assertTrue(gate["ready_for_skill_update"])
+            self.assertEqual(gate["requirements"]["min_sampled_targets"], 2)
+            self.assertEqual(gate["requirements"]["min_non_github_lanes"], 3)
+            self.assertEqual(gate["requirements"]["required_source_lanes"], ["hugging_face"])
+            self.assertTrue(all(check["status"] == "pass" for check in gate["checks"]))
 
     def test_research_loop_rejects_non_positive_iterations(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

@@ -57,6 +57,29 @@ def parse_args() -> argparse.Namespace:
         default=1,
         help="Maximum local executor workers to run concurrently",
     )
+    parser.add_argument(
+        "--min-sampled-targets",
+        type=int,
+        default=0,
+        help="Minimum matched planned sample targets required for the review gate",
+    )
+    parser.add_argument(
+        "--min-non-github-lanes",
+        type=int,
+        default=0,
+        help="Minimum non-GitHub source lanes with returned findings required for the review gate",
+    )
+    parser.add_argument(
+        "--require-source-lane",
+        action="append",
+        default=[],
+        help="Require at least one returned finding from this configured source lane; may be repeated",
+    )
+    parser.add_argument(
+        "--fail-on-review-gate",
+        action="store_true",
+        help="Exit non-zero after writing receipts when the review gate does not pass",
+    )
     parser.add_argument("--execution-timeout", type=float, default=120.0)
     parser.add_argument("--output-dir", required=True)
     return parser.parse_args()
@@ -815,6 +838,68 @@ def planned_sampling_summary(assignments: list[dict[str, Any]], config: dict[str
     }
 
 
+def review_check(name: str, observed: int, required: int, detail: str) -> dict[str, Any]:
+    status = "pass" if observed >= required else "fail"
+    return {
+        "name": name,
+        "status": status,
+        "observed": observed,
+        "required": required,
+        "detail": detail,
+    }
+
+
+def build_review_gate(
+    sampling_coverage: dict[str, Any],
+    source_lane_counts: dict[str, int],
+    non_github_lanes_covered: list[str],
+    requirements: dict[str, Any],
+) -> dict[str, Any]:
+    checks = [
+        review_check(
+            "sampled_planned_targets",
+            int(sampling_coverage.get("sampled_target_count", 0)),
+            int(requirements.get("min_sampled_targets", 0)),
+            "Matched planned sampling targets returned by agents or fixtures.",
+        ),
+        review_check(
+            "non_github_lanes_covered",
+            len(non_github_lanes_covered),
+            int(requirements.get("min_non_github_lanes", 0)),
+            "Non-GitHub source lanes with at least one returned finding.",
+        ),
+    ]
+    for lane_id in requirements.get("required_source_lanes", []):
+        checks.append(
+            review_check(
+                f"required_source_lane:{lane_id}",
+                int(source_lane_counts.get(lane_id, 0)),
+                1,
+                f"Returned findings from required source lane `{lane_id}`.",
+            )
+        )
+    blocked_reasons = [
+        (
+            f"{check['name']} observed {check['observed']}, "
+            f"required {check['required']}"
+        )
+        for check in checks
+        if check["status"] != "pass"
+    ]
+    status = "pass" if not blocked_reasons else "fail"
+    return {
+        "status": status,
+        "ready_for_skill_update": status == "pass",
+        "requirements": {
+            "min_sampled_targets": int(requirements.get("min_sampled_targets", 0)),
+            "min_non_github_lanes": int(requirements.get("min_non_github_lanes", 0)),
+            "required_source_lanes": list(requirements.get("required_source_lanes", [])),
+        },
+        "checks": checks,
+        "blocked_reasons": blocked_reasons,
+    }
+
+
 def summarize(
     config: dict[str, Any],
     assignments: list[dict[str, Any]],
@@ -823,6 +908,7 @@ def summarize(
     run_id: str,
     objective: str,
     executions: dict[str, dict[str, Any]] | None = None,
+    review_requirements: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     findings = flatten_findings(fixture)
     decision_counts = {state["id"]: 0 for state in config["decision_states"]}
@@ -851,6 +937,12 @@ def summarize(
         else:
             execution_counts["scaffolded_not_run"] += 1
     sampling_coverage = sampling_coverage_summary(assignments, fixture)
+    review_gate = build_review_gate(
+        sampling_coverage,
+        lanes,
+        non_github_lanes,
+        review_requirements or {},
+    )
     return {
         "schema_version": 1,
         "run_id": run_id,
@@ -864,6 +956,7 @@ def summarize(
         "source_lane_counts": lanes,
         "non_github_lanes_covered": non_github_lanes,
         "sampling_coverage": sampling_coverage,
+        "review_gate": review_gate,
         "assignment_planner": planner_receipt,
         **planned_sampling_summary(assignments, config),
         "decision_counts": decision_counts,
@@ -893,6 +986,23 @@ def unique_ordered(values: list[str]) -> list[str]:
         seen.add(key)
         result.append(normalized)
     return result
+
+
+def review_gate_requirements(args: argparse.Namespace, config: dict[str, Any]) -> dict[str, Any]:
+    if args.min_sampled_targets < 0:
+        raise SkillError("--min-sampled-targets must be non-negative")
+    if args.min_non_github_lanes < 0:
+        raise SkillError("--min-non-github-lanes must be non-negative")
+    required_source_lanes = unique_ordered(args.require_source_lane)
+    known_lanes = {lane["id"] for lane in config["source_lanes"]}
+    unknown = sorted(lane_id for lane_id in required_source_lanes if lane_id not in known_lanes)
+    if unknown:
+        raise SkillError(f"--require-source-lane references unknown lanes: {', '.join(unknown)}")
+    return {
+        "min_sampled_targets": args.min_sampled_targets,
+        "min_non_github_lanes": args.min_non_github_lanes,
+        "required_source_lanes": required_source_lanes,
+    }
 
 
 def derive_next_gap_hints(summary: dict[str, Any], previous_hints: list[str], limit: int = 10) -> list[str]:
@@ -1019,6 +1129,7 @@ def write_blogs(output_dir: Path, assignments: list[dict[str, Any]], fixture: di
 
 
 def write_markdown_summary(output_dir: Path, summary: dict[str, Any]) -> None:
+    review_gate = summary.get("review_gate", {})
     lines = [
         f"# Research Loop {summary['run_id']}",
         "",
@@ -1031,6 +1142,7 @@ def write_markdown_summary(output_dir: Path, summary: dict[str, Any]) -> None:
         f"Findings: {summary['finding_count']}",
         f"Sampling coverage: {summary['sampling_coverage']['sampled_target_count']}/{summary['sampling_coverage']['planned_target_count']} planned targets",
         f"Unplanned returned sources: {summary['sampling_coverage']['unplanned_source_count']}",
+        f"Review gate: {review_gate.get('status', 'unknown')}",
         f"Assignment planner: {summary['assignment_planner']['mode']}",
         f"Non-GitHub lanes covered: {', '.join(summary['non_github_lanes_covered']) or 'none'}",
         f"Planned non-GitHub sample targets: {summary['planned_non_github_sample_target_count']}",
@@ -1047,6 +1159,14 @@ def write_markdown_summary(output_dir: Path, summary: dict[str, Any]) -> None:
     ])
     for decision, count in summary["decision_counts"].items():
         lines.append(f"- {decision}: {count}")
+    lines.extend(["", "## Review Gate"])
+    lines.append(f"- status: {review_gate.get('status', 'unknown')}")
+    lines.append(
+        f"- ready for skill update: {str(review_gate.get('ready_for_skill_update', False)).lower()}"
+    )
+    lines.append("- blocked reasons:")
+    for reason in review_gate.get("blocked_reasons", []) or ["None"]:
+        lines.append(f"  - {reason}")
     for section, key in [
         ("Adopted", "adopted"),
         ("Held", "held"),
@@ -1070,6 +1190,7 @@ def run_iteration(
     gap_hints: list[str],
     iteration: int,
     iteration_count: int,
+    review_requirements: dict[str, Any],
 ) -> dict[str, Any]:
     output_dir.mkdir(parents=True, exist_ok=True)
     assignments, planner_receipt = build_assignments(
@@ -1093,7 +1214,16 @@ def run_iteration(
     else:
         fixture = load_fixture(args.offline_fixture)
     validate_findings(config, fixture)
-    summary = summarize(config, assignments, planner_receipt, fixture, run_id, args.objective, executions)
+    summary = summarize(
+        config,
+        assignments,
+        planner_receipt,
+        fixture,
+        run_id,
+        args.objective,
+        executions,
+        review_requirements,
+    )
     summary["iteration"] = iteration
     summary["iteration_count"] = iteration_count
     summary["gap_hints"] = gap_hints
@@ -1145,6 +1275,46 @@ def loop_iteration_record(root: Path, summary: dict[str, Any], output_dir: Path)
         "decision_counts": summary.get("decision_counts", {}),
         "non_github_lanes_covered": summary.get("non_github_lanes_covered", []),
         "execution_counts": summary.get("execution_counts", {}),
+        "review_gate": summary.get("review_gate", {}),
+    }
+
+
+def aggregate_review_gate(records: list[dict[str, Any]]) -> dict[str, Any]:
+    passed = 0
+    blocked_reasons = []
+    iteration_statuses = []
+    for record in records:
+        gate = record.get("review_gate", {})
+        status = gate.get("status", "fail")
+        if status == "pass":
+            passed += 1
+        else:
+            reasons = gate.get("blocked_reasons", []) or ["review gate did not pass"]
+            for reason in reasons:
+                blocked_reasons.append(f"iteration {record.get('iteration')}: {reason}")
+        iteration_statuses.append({
+            "iteration": record.get("iteration"),
+            "run_id": record.get("run_id"),
+            "status": status,
+            "ready_for_skill_update": gate.get("ready_for_skill_update", False),
+        })
+    status = "pass" if passed == len(records) else "fail"
+    return {
+        "status": status,
+        "ready_for_skill_update": status == "pass",
+        "requirements": {
+            "all_iterations_pass": True,
+        },
+        "checks": [
+            review_check(
+                "iterations_passing_review_gate",
+                passed,
+                len(records),
+                "All iterations must pass their per-run review gate.",
+            )
+        ],
+        "blocked_reasons": blocked_reasons,
+        "iteration_statuses": iteration_statuses,
     }
 
 
@@ -1175,6 +1345,7 @@ def build_loop_summary(
         "decision_counts": dict(sorted(decision_counts.items())),
         "execution_counts": dict(sorted(execution_counts.items())),
         "sampling_coverage": dict(sorted(sampling_counts.items())),
+        "review_gate": aggregate_review_gate(records),
         "iterations": records,
         "final_gap_hints": final_gap_hints,
         "instructions": [
@@ -1186,6 +1357,7 @@ def build_loop_summary(
 
 
 def write_loop_markdown(output_dir: Path, loop_summary: dict[str, Any]) -> None:
+    review_gate = loop_summary.get("review_gate", {})
     lines = [
         f"# Research Loop {loop_summary['run_id']}",
         "",
@@ -1195,6 +1367,7 @@ def write_loop_markdown(output_dir: Path, loop_summary: dict[str, Any]) -> None:
         f"Total findings: {loop_summary['total_finding_count']}",
         f"Sampling coverage: {loop_summary.get('sampling_coverage', {}).get('sampled_target_count', 0)}/{loop_summary.get('sampling_coverage', {}).get('planned_target_count', 0)} planned targets",
         f"Unplanned returned sources: {loop_summary.get('sampling_coverage', {}).get('unplanned_source_count', 0)}",
+        f"Review gate: {review_gate.get('status', 'unknown')}",
         f"Final gap hints: {', '.join(loop_summary.get('final_gap_hints', [])) or 'none'}",
         "",
         "## Iterations",
@@ -1213,6 +1386,16 @@ def write_loop_markdown(output_dir: Path, loop_summary: dict[str, Any]) -> None:
             f"{coverage.get('planned_target_count', 0)} planned targets; "
             f"{coverage.get('unplanned_source_count', 0)} unplanned sources"
         )
+        iteration_gate = record.get("review_gate", {})
+        lines.append(f"  - review gate: {iteration_gate.get('status', 'unknown')}")
+    lines.extend(["", "## Review Gate"])
+    lines.append(f"- status: {review_gate.get('status', 'unknown')}")
+    lines.append(
+        f"- ready for skill update: {str(review_gate.get('ready_for_skill_update', False)).lower()}"
+    )
+    lines.append("- blocked reasons:")
+    for reason in review_gate.get("blocked_reasons", []) or ["None"]:
+        lines.append(f"  - {reason}")
     lines.extend(["", "## Decision Counts"])
     for decision, count in loop_summary.get("decision_counts", {}).items():
         lines.append(f"- {decision}: {count}")
@@ -1228,6 +1411,16 @@ def write_loop_receipts(output_dir: Path, loop_summary: dict[str, Any]) -> None:
     write_loop_markdown(output_dir, loop_summary)
 
 
+def review_gate_failed(receipt: dict[str, Any]) -> bool:
+    return receipt.get("review_gate", {}).get("status") != "pass"
+
+
+def review_gate_failure_message(receipt: dict[str, Any]) -> str:
+    gate = receipt.get("review_gate", {})
+    reasons = gate.get("blocked_reasons", []) or ["review gate did not pass"]
+    return "review gate failed: " + "; ".join(reasons)
+
+
 def main() -> int:
     args = parse_args()
     try:
@@ -1238,12 +1431,25 @@ def main() -> int:
         if args.executor_workers <= 0:
             raise SkillError("--executor-workers must be positive")
         config = load_config(args.config)
+        review_requirements = review_gate_requirements(args, config)
         run_id = args.run_id or default_run_id()
         output_dir = Path(args.output_dir)
         output_dir.mkdir(parents=True, exist_ok=True)
         if args.iterations == 1:
-            summary = run_iteration(args, config, run_id, output_dir, unique_ordered(args.gap_hint), 1, 1)
+            summary = run_iteration(
+                args,
+                config,
+                run_id,
+                output_dir,
+                unique_ordered(args.gap_hint),
+                1,
+                1,
+                review_requirements,
+            )
             print(f"wrote research loop {run_id} to {output_dir}: {summary['finding_count']} findings")
+            if args.fail_on_review_gate and review_gate_failed(summary):
+                print(f"error: {review_gate_failure_message(summary)}", file=sys.stderr)
+                return 2
             return 0
 
         gap_hints = unique_ordered(args.gap_hint)
@@ -1251,7 +1457,16 @@ def main() -> int:
         for iteration in range(1, args.iterations + 1):
             iteration_run_id = f"{run_id}-i{iteration:02d}"
             iteration_dir = output_dir / "iterations" / f"{iteration:02d}"
-            summary = run_iteration(args, config, iteration_run_id, iteration_dir, gap_hints, iteration, args.iterations)
+            summary = run_iteration(
+                args,
+                config,
+                iteration_run_id,
+                iteration_dir,
+                gap_hints,
+                iteration,
+                args.iterations,
+                review_requirements,
+            )
             records.append(loop_iteration_record(output_dir, summary, iteration_dir))
             gap_hints = merge_gap_hints(gap_hints, summary.get("next_gap_hints", []))
         loop_summary = build_loop_summary(run_id, args.objective, output_dir, records, gap_hints)
@@ -1259,7 +1474,10 @@ def main() -> int:
         print(
             f"wrote research loop {run_id} to {output_dir}: "
             f"{loop_summary['total_finding_count']} findings across {args.iterations} iterations"
-            )
+        )
+        if args.fail_on_review_gate and review_gate_failed(loop_summary):
+            print(f"error: {review_gate_failure_message(loop_summary)}", file=sys.stderr)
+            return 2
         return 0
     except (SkillError, OSError, json.JSONDecodeError) as exc:
         print(f"error: {exc}", file=sys.stderr)

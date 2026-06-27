@@ -84,12 +84,24 @@ returned findings. This proves both intended breadth and actual sampled
 coverage, even when a run is only scaffolded and no agent has returned findings
 yet.
 
+When a loop is intended to feed skill updates, add an explicit review gate:
+`--min-sampled-targets`, `--min-non-github-lanes`, and repeated
+`--require-source-lane` options record the minimum evidence expected before the
+run can be considered ready. `synthesis.json` and `synthesis.md` include the
+gate status, checks, and blocked reasons. With `--fail-on-review-gate`, the
+harness still writes assignments, blogs, and synthesis receipts, then exits
+non-zero if the gate fails. A passing gate only says the research sampled the
+requested breadth; it does not promote a technique without the usual source,
+validation, test, and rollback evidence.
+
 For `--iterations 2` or higher, the harness writes each pass under
 `iterations/NN/` and emits top-level `loop.json` and `loop.md` receipts. Each
 iteration records the gap hints it used and the next hints derived from
 `held`/`needs-validation` findings. The next iteration receives those hints,
 which lets the planner switch from deterministic config order to dynamic
 coverage-driven assignment selection without rewriting recommendation assets.
+Loop receipts aggregate the per-iteration review gates and remain failed until
+every iteration passes its own gate.
 
 ## Blog Contract
 
@@ -180,6 +192,19 @@ python3 scripts/research_loop.py \
 For a live local worker command, use `--iterations` with `--executor-command`.
 The first pass may run in config order; later passes inherit derived gap hints
 from prior findings and can dynamically reshape the worker roster.
+
+Require evidence breadth before treating a run as review-ready:
+
+```bash
+python3 scripts/research_loop.py \
+  --objective "Broaden MLX porting evidence beyond GitHub" \
+  --offline-fixture tests/fixtures/research_loop/offline_findings.json \
+  --min-sampled-targets 2 \
+  --min-non-github-lanes 3 \
+  --require-source-lane hugging_face \
+  --fail-on-review-gate \
+  --output-dir research-runs/manual-gated
+```
 
 Executor mode is opt-in and mutually exclusive with `--offline-fixture`. The
 command receives these environment variables:

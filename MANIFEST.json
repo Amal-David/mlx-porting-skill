@@ -2,7 +2,7 @@
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
   "version": "0.1.0",
-  "generated_at": "2026-06-27T12:53:03.446559+00:00",
+  "generated_at": "2026-06-27T13:03:52.554176+00:00",
   "file_count": 194,
   "files": [
     {
@@ -62,8 +62,8 @@
     },
     {
       "path": "VALIDATION.md",
-      "size_bytes": 5242,
-      "sha256": "f44347187e739f28572619c9f0ad65e5a0262446feac7fb666f16196ae8a20a3"
+      "size_bytes": 5266,
+      "sha256": "06339f7a30a82fb2ac36717c3ebc8e3ba56d9201df73183cc3b43e6e703d64fc"
     },
     {
       "path": "VERSION",
@@ -112,8 +112,8 @@
     },
     {
       "path": "mlx-model-porting/SKILL.md",
-      "size_bytes": 11247,
-      "sha256": "a2315e943bae12bac1bfde9648c926c2d0862f68b2d887f5277d593988af117f"
+      "size_bytes": 11333,
+      "sha256": "3036c9d9ab02486d84de73f98f86c5dcd9fcaf864b80e98810f75346bc104576"
     },
     {
       "path": "mlx-model-porting/assets/BENCHMARK_REPORT.md",
@@ -212,8 +212,8 @@
     },
     {
       "path": "mlx-model-porting/references/deep-research-loop.md",
-      "size_bytes": 8851,
-      "sha256": "e1b4827950d50bcb3239dd7ec65d393803474fac2096d44b6fe84e5383abb818"
+      "size_bytes": 10024,
+      "sha256": "5b0cb286c3df51172a728d9938677705805499a719dd7066f86faa91b5871311"
     },
     {
       "path": "mlx-model-porting/references/failure-atlas.md",
@@ -547,8 +547,8 @@
     },
     {
       "path": "mlx-model-porting/scripts/research_loop.py",
-      "size_bytes": 52033,
-      "sha256": "5a366310e6423bae2e1f273981b9756c02081220268fbe37e540de41ea7f25f2"
+      "size_bytes": 59919,
+      "sha256": "783b5264b32abf584d499bd0da7a57aaf1ed40a5e7f66d2da3410c4fcb5be758"
     },
     {
       "path": "mlx-model-porting/scripts/update_sources.py",
@@ -972,8 +972,8 @@
     },
     {
       "path": "tests/test_tooling.py",
-      "size_bytes": 69789,
-      "sha256": "0c35ba8b6855e57a1380b64ab9acfa8d6b39f544160a7a33f604e0ff462cf404"
+      "size_bytes": 72978,
+      "sha256": "782f4b86969967ffda0eea786b2d9276af7607726df29ef01eedbfa5ae75a129"
     }
   ]
 }
