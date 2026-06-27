@@ -7,7 +7,7 @@ import sys
 from pathlib import Path
 from typing import Any
 
-from _common import SkillError, load_structured
+from _common import SkillError, applies_to_family, load_structured
 
 SCRIPT_DIR = Path(__file__).resolve().parent
 SKILL_ROOT = SCRIPT_DIR.parent
@@ -24,15 +24,7 @@ def parse_args() -> argparse.Namespace:
 
 
 def relevant(tech: dict[str, Any], family: str) -> bool:
-    values = [str(x).lower() for x in tech.get("applies_to", [])]
-    f = family.lower()
-    tokens = set(f.replace("-", " ").split())
-    for value in values:
-        if value == "all" or value == f or value in f or f in value:
-            return True
-        if "-" not in value and value in tokens:
-            return True
-    return False
+    return applies_to_family(tech.get("applies_to", []), family)
 
 
 def main() -> int:
@@ -52,9 +44,15 @@ def main() -> int:
             raise SkillError("No detected family; pass --family after manual architecture review")
         selected = next((c for c in candidates if c.get("family") == family), None)
         runbook = (selected or {}).get("runbook") or inspection.get("recommended_runbook") or "manual selection required"
-        proven = [t for t in techniques if relevant(t, family) and t.get("status") != "research-candidate"]
+        proven = [
+            t
+            for t in techniques
+            if relevant(t, family) and t.get("status") not in {"research-candidate", "rejected-or-superseded"}
+        ]
         research = [t for t in techniques if relevant(t, family) and t.get("status") == "research-candidate"]
-        optimization_shortlist = [m for m in optimization_methods if relevant(m, family)]
+        optimization_shortlist = [
+            m for m in optimization_methods if relevant(m, family) and m.get("status") != "rejected-or-superseded"
+        ]
         optimization_shortlist.sort(
             key=lambda m: (
                 {"native-mlx": 0, "official-mlx-project": 1, "proven-mlx-port": 2, "research-candidate": 3}.get(str(m.get("status")), 9),

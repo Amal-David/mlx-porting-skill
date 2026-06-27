@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "reviewed": "2026-06-24",
+  "reviewed": "2026-06-27",
   "statuses": [
     "native-mlx",
     "official-mlx-project",
@@ -214,6 +214,29 @@
         "paper-2309-06180"
       ],
       "reviewed": "2026-06-23"
+    },
+    {
+      "id": "block-weight-streaming",
+      "title": "Repeated-block weight streaming",
+      "category": "memory",
+      "status": "proven-mlx-port",
+      "support_scope": "third_party_pinned",
+      "applies_to": [
+        "diffusion",
+        "flow-diffusion-tts",
+        "vision-language-omni",
+        "large-repeated-block"
+      ],
+      "use_when": "Repeated block weights dominate resident memory and the model cannot fit the target Mac in eager mode.",
+      "avoid_when": "The eager model already fits, block weights are not the memory bottleneck, or autoregressive decode would reload every block per token without a measured benefit.",
+      "validation_gate": "Block key coverage, streamed-vs-eager parity, eviction/reload consistency, peak-memory measurement, wall-time measurement, and an eager fallback.",
+      "evidence": [
+        "dgrauet-ltx2-block-streaming-source",
+        "dgrauet-ltx2-block-streaming-tests",
+        "dgrauet-ltx2-regression-report"
+      ],
+      "reviewed": "2026-06-27",
+      "rollback_condition": "Disable if streamed outputs drift, key coverage is incomplete, eviction reloads stale weights, or page-fault/disk overhead erases the intended memory win."
     },
     {
       "id": "full-kv-cache",
@@ -903,6 +926,29 @@
       "reviewed": "2026-06-23"
     },
     {
+      "id": "grid-sample-metal-kernel",
+      "title": "PyTorch-compatible grid_sample Metal kernel",
+      "category": "kernels",
+      "status": "proven-mlx-port",
+      "support_scope": "local_reproduced",
+      "applies_to": [
+        "diffusion-flow",
+        "vision-language-omni",
+        "video-vlm",
+        "spatial-warp"
+      ],
+      "use_when": "The source model depends on PyTorch grid_sample-style image or volume warping and native/pure-MLX operations cannot meet the target profile.",
+      "avoid_when": "Reflection padding, nearest mode, backward gradients, or unsupported layouts are required, or a readable MLX reference has not passed parity.",
+      "validation_gate": "Coordinate-order, align_corners, padding, dtype, and layout parity against NumPy/Torch; boundary tests; pure-MLX fallback; end-to-end benchmark.",
+      "evidence": [
+        "katlun-grid-sample-source",
+        "katlun-grid-sample-tests",
+        "katlun-grid-sample-benchmark"
+      ],
+      "reviewed": "2026-06-27",
+      "rollback_condition": "Return to the pure-MLX/reference path if unsupported modes are needed, parity drifts, transposes dominate, or end-to-end latency does not improve."
+    },
+    {
       "id": "cache-privacy-review",
       "title": "Cache privacy and tenant isolation review",
       "category": "security-privacy",
@@ -1163,6 +1209,22 @@
       ],
       "reviewed": "2026-06-24",
       "rollback_condition": "Reject if cache composition with codec/speaker/state changes outputs or has no audio-specific win."
+    },
+    {
+      "id": "cuda-graphs-decode-capture",
+      "title": "CUDA Graphs decode-loop capture",
+      "category": "runtime",
+      "status": "rejected-or-superseded",
+      "applies_to": [
+        "dense-decoder-transformer",
+        "moe-decoder-transformer"
+      ],
+      "use_when": "Never on Apple Silicon. This is a CUDA-only mechanism that captures and replays an NVIDIA kernel graph to cut per-step launch overhead.",
+      "avoid_when": "Always for MLX. The portable analog is mx.compile of the single decode step.",
+      "validation_gate": "Not applicable on Metal/MLX; do not port. Use the mx.compile stable-region path and measure dispatch/sync instead.",
+      "evidence": [],
+      "reviewed": "2026-06-24",
+      "rollback_condition": "Always: this method is rejected for MLX and must not be adopted."
     }
   ]
 }

@@ -1,0 +1,13 @@
+{
+  "name": "moe-decoder",
+  "fixture": "models/moe",
+  "expected_family": "moe-decoder-transformer",
+  "expected_runbook": "references/runbook-moe-transformer.md",
+  "expected_weight_keys": [
+    "model.layers.0.block_sparse_moe.gate.weight",
+    "model.layers.0.block_sparse_moe.experts.0.w1.weight"
+  ],
+  "optimization_must_include": "fast-sdpa",
+  "optimization_must_exclude": "cuda-graphs-decode-capture",
+  "seeded_parity_bug": {"shape": [4, 4], "delta": 8.0}
+}

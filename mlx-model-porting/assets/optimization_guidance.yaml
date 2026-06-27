@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "reviewed": "2026-06-24",
+  "reviewed": "2026-06-27",
   "evidence_class_definitions": {
     "official_docs": "Official framework or product documentation. Best for API support and constraints.",
     "repositories": "Source repositories, source files, or releases. Best for implementation existence and exact behavior.",
@@ -156,6 +156,52 @@
       }
     },
     {
+      "id": "block-weight-streaming",
+      "technique_id": "block-weight-streaming",
+      "category": "memory",
+      "status": "proven-mlx-port",
+      "objectives": [
+        "peak-memory"
+      ],
+      "applies_to": [
+        "diffusion-flow",
+        "flow-diffusion-tts",
+        "vision-language-omni"
+      ],
+      "recommendation": "For repeated-block models that exceed unified memory, stream block weights from inspectable safetensors into a shared block only after eager parity is established.",
+      "expected_effect": "Profile-required. Source-reported LTX-2 evidence shows resident memory can move from all repeated blocks to the active block plus non-block parameters, but wall time can worsen.",
+      "tradeoffs": [
+        "Page faults and disk reads can erase the memory win.",
+        "Requires exact per-block key maps, strict loading, eviction tests, and an eager fallback.",
+        "Risky for autoregressive decode if every token reloads every block."
+      ],
+      "validation_gates": [
+        "block key coverage",
+        "streamed-vs-eager primitive and full-model parity",
+        "eviction/reload consistency",
+        "peak and steady memory measurement",
+        "wall-time benchmark",
+        "eager fallback path"
+      ],
+      "rollback_conditions": [
+        "streamed outputs drift",
+        "key coverage is incomplete",
+        "eviction reloads stale weights or adapters",
+        "measured memory win is absent",
+        "latency becomes unacceptable"
+      ],
+      "evidence_refs": {
+        "official_docs": [],
+        "repositories": [
+          "dgrauet-ltx2-block-streaming-source",
+          "dgrauet-ltx2-block-streaming-tests",
+          "dgrauet-ltx2-regression-report"
+        ],
+        "papers": [],
+        "technical_blogs": []
+      }
+    },
+    {
       "id": "native-low-bit-weight-quantization",
       "technique_id": "mxfp4-nvfp4-mxfp8",
       "category": "quantization",
@@ -219,6 +265,8 @@
         "concurrency"
       ],
       "applies_to": [
+        "dense-decoder-transformer",
+        "moe-decoder-transformer",
         "autoregressive-transformer",
         "long-context"
       ],
@@ -262,6 +310,8 @@
         "long-context"
       ],
       "applies_to": [
+        "dense-decoder-transformer",
+        "moe-decoder-transformer",
         "long-context"
       ],
       "recommendation": "Treat layerwise, key/value, RoPE-aware, and hardware-aware KV bit allocation as experiments until reproduced in MLX.",
@@ -668,6 +718,9 @@
         "serving-safety"
       ],
       "applies_to": [
+        "dense-decoder-transformer",
+        "moe-decoder-transformer",
+        "vision-language-omni",
         "server",
         "rag",
         "agents"
@@ -1092,6 +1145,79 @@
         "papers": [],
         "technical_blogs": []
       }
+    },
+    {
+      "id": "spatial-grid-sample-kernel",
+      "technique_id": "grid-sample-metal-kernel",
+      "category": "kernels",
+      "status": "proven-mlx-port",
+      "objectives": [
+        "latency",
+        "throughput"
+      ],
+      "applies_to": [
+        "diffusion-flow",
+        "vision-language-omni"
+      ],
+      "recommendation": "Use only when the source model actually depends on PyTorch grid_sample-style spatial or volume warping; first lock a readable MLX/NumPy reference, then consider a custom Metal kernel for the profiled warp.",
+      "expected_effect": "Profile-required. Local Apple M4 Pro / MLX 0.30.4 reproduction of the pinned 3D benchmark showed about 10x kernel-level speedup versus the repo's pure-MLX gather baseline, but end-to-end benefit depends on model use.",
+      "tradeoffs": [
+        "Pinned implementation covers forward bilinear/trilinear sampling with zeros or border padding, not reflection, nearest mode, or training gradients.",
+        "Channels-last layout avoids transposes, but PyTorch-style NCHW wrappers may copy.",
+        "Custom Metal code adds maintenance and MLX-version compatibility risk."
+      ],
+      "validation_gates": [
+        "coordinate order and align_corners parity",
+        "zeros/border padding and out-of-range boundary tests",
+        "NumPy or Torch oracle parity for 2D and 3D cases",
+        "pure-MLX fallback path",
+        "shape/dtype/layout coverage",
+        "end-to-end model benchmark"
+      ],
+      "rollback_conditions": [
+        "unsupported source grid_sample mode is required",
+        "oracle parity drifts",
+        "layout transposes dominate",
+        "kernel speedup does not improve the end-to-end model"
+      ],
+      "evidence_refs": {
+        "official_docs": [
+          "mlx-doc-custom-extensions"
+        ],
+        "repositories": [
+          "katlun-grid-sample-source",
+          "katlun-grid-sample-tests",
+          "katlun-grid-sample-benchmark"
+        ],
+        "papers": [],
+        "technical_blogs": []
+      }
+    },
+    {
+      "id": "cuda-graphs-decode-capture",
+      "technique_id": "cuda-graphs-decode-capture",
+      "category": "runtime",
+      "status": "rejected-or-superseded",
+      "objectives": [
+        "decode-latency"
+      ],
+      "applies_to": [
+        "dense-decoder-transformer",
+        "moe-decoder-transformer"
+      ],
+      "recommendation": "Do not port. CUDA Graphs capture/replay is NVIDIA-specific; the portable MLX analog is mx.compile of the single decode step, which this skill already recommends.",
+      "expected_effect": "No Metal/MLX speedup: there is no CUDA Graphs equivalent on Apple Silicon, so any CUDA-graph latency number is non-transferable.",
+      "tradeoffs": [
+        "Effort spent replicating a CUDA-only launch-capture mechanism instead of using mx.compile.",
+        "Microbenchmark folklore does not establish a Metal/MLX win."
+      ],
+      "validation_gates": [
+        "Not applicable on Metal/MLX; use the mx.compile stable-region gate instead."
+      ],
+      "rollback_conditions": [
+        "Always: this method is rejected for MLX and must not be adopted."
+      ],
+      "evidence_refs": {}
     }
   ]
 }

@@ -21,5 +21,7 @@ jobs:
         run: python3 mlx-model-porting/scripts/audit_skill.py --strict mlx-model-porting
       - name: Validate source provenance
         run: python3 mlx-model-porting/scripts/validate_sources.py mlx-model-porting
+      - name: Check artifact manifest integrity
+        run: python3 mlx-model-porting/scripts/manifest.py check
       - name: Unit tests
         run: PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s tests -v

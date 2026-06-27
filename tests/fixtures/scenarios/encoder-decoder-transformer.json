@@ -1,0 +1,14 @@
+{
+  "name": "encoder-decoder-transformer",
+  "fixture": "models/encoder_decoder",
+  "expected_family": "encoder-decoder-transformer",
+  "expected_runbook": "references/runbook-encoder-decoder.md",
+  "expected_weight_keys": [
+    "encoder.layers.0.self_attn.q.weight",
+    "decoder.layers.0.self_attn.q.weight",
+    "decoder.layers.0.encoder_attn.k.weight"
+  ],
+  "optimization_must_include": "fast-sdpa",
+  "optimization_must_exclude": "qwen3-tts-batch-generation",
+  "seeded_parity_bug": {"shape": [4, 3], "delta": 5.0}
+}

@@ -1,0 +1,21 @@
+{
+  "model_type": "hifigan",
+  "architectures": [
+    "HiFiGANGenerator"
+  ],
+  "upsample_rates": [
+    8,
+    8,
+    2,
+    2
+  ],
+  "upsample_kernel_sizes": [
+    16,
+    16,
+    4,
+    4
+  ],
+  "n_fft": 1024,
+  "hop_length": 256,
+  "license": "mit"
+}

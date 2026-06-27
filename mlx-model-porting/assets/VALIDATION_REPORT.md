@@ -11,6 +11,7 @@ Template only; this file is not evidence that a port has been validated.
 | Cache/state | | | | |
 | Task quality | | | | |
 | Boundary/streaming | | | | |
+| Optional `.mlxfn` export smoke | | | | |
 
 ## First divergence investigations
 

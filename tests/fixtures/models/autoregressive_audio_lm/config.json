@@ -1,0 +1,13 @@
+{
+  "model_type": "bark",
+  "architectures": [
+    "BarkModel"
+  ],
+  "audio_vocab_size": 64,
+  "num_codebooks": 8,
+  "codec_config": {
+    "sample_rate": 24000
+  },
+  "speaker_embedding_dim": 8,
+  "license": "mit"
+}

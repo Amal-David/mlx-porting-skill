@@ -14,6 +14,7 @@ Record:
 - dtype, weight quantization, KV/state quantization;
 - prompt/audio/image length, generated length, batch/concurrency;
 - cache state, compile state, warm/cold condition;
+- MLX active/cache/peak memory counters, and any `set_memory_limit` experiment;
 - seed and sampling parameters;
 - measured quality gate.
 - for cache tests, cold/warm state, cache key fields, hit/miss counts, eviction policy, namespace/tenant setting, and persistence path;
@@ -65,6 +66,12 @@ Record:
 7. Re-run the baseline after the candidate to detect thermal drift.
 8. Benchmark realistic and adversarial sizes; many kernels switch paths by shape.
 9. Write the rollback condition before running the candidate, then apply the same condition to the raw results.
+
+## Memory fit gates
+
+Do not say a model "fits" because one prompt completed once. Record MLX peak memory and run an explicit memory-budget experiment when memory is part of the claim. `mx.get_peak_memory()` can support peak measurement, and `mx.set_memory_limit()` can test graph-evaluation behavior under pressure, but the limit is not a quality, latency, or system-stability proof by itself.
+
+Treat operator-level system settings such as macOS `iogpu.wired_limit_mb` as environment notes only. Never run or recommend them as an automatic optimization, and keep them out of reproducible benchmark commands unless the user explicitly chose that operating configuration.
 
 ## Claim record
 

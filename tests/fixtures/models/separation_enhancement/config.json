@@ -1,0 +1,11 @@
+{
+  "model_type": "demucs",
+  "architectures": [
+    "DemucsModel"
+  ],
+  "n_fft": 1024,
+  "hop_length": 256,
+  "num_stems": 4,
+  "chunk_size": 4096,
+  "license": "mit"
+}

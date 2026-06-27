@@ -56,6 +56,16 @@ python3 scripts/validate_sources.py .
 
 Use `validate_sources.py --check-urls` only when network access is explicitly allowed. It checks HTTPS reachability and evidence wiring; it never imports model code or executes repository content.
 
+## Golden scenario gate
+
+`tests.test_scenarios` must cover every family in `assets/architectures.yaml`. When adding or renaming an architecture family, update `tests/fixtures/generate_fixtures.py`, add a tiny scenario under `tests/fixtures/scenarios/`, and keep the full-family scorecard at full marks for routing, runbook selection, weight-key coverage, seeded parity failure, and optimization inclusion/exclusion. Synthetic scenarios prove skill routing only; they do not prove real-model conversion support.
+
+## Deep research loop
+
+Use `scripts/research_loop.py` for broad ecosystem learning that should sample beyond GitHub. The loop generates researcher assignments, accepts returned findings, writes per-agent blogs, and produces a review-only synthesis with planned-versus-sampled coverage receipts. Multi-iteration runs write top-level `loop.json`/`loop.md` receipts and feed held or needs-validation findings into the next pass as derived gap hints. By default it does not fetch network resources, spawn subagents, or modify recommendation assets. Executor mode can run an explicit local worker command for each assignment, including bounded parallel workers through `--executor-workers`, but it must preserve prompts, stdout, stderr, result JSON, exit code, worker count, and execution state as review receipts.
+
+Every deep loop should record which personas were only scaffolded and which returned findings were ingested. Treat package registries, Hugging Face model cards, technical blogs, papers, and community discussions as distinct evidence classes with different promotion bars. Package and model-card metadata can justify prioritization and linting rules, but not benchmark or implementation support by itself.
+
 ## Candidate promotion
 
 A candidate moves from `indexed` to `screened` after relevance and source integrity review. It moves to `synthesized` only after a rule/runbook is updated with:

@@ -1,12 +1,12 @@
 {
   "schema_version": 1,
-  "reviewed": "2026-06-24",
+  "reviewed": "2026-06-27",
   "review_depth_definitions": {
     "synthesized": "Directly informed a runbook, rule, or technique decision.",
     "screened": "Abstract/readme/code path reviewed for relevance and limits.",
     "indexed": "Catalogued for future review; do not represent as fully reviewed."
   },
-  "count": 320,
+  "count": 348,
   "sources": [
     {
       "id": "agent-skills-spec",
@@ -4591,6 +4591,459 @@
         "video",
         "llava"
       ]
+    },
+    {
+      "id": "github-mlx-top100-contributors",
+      "title": "GitHub API top contributors for ml-explore/mlx",
+      "url": "https://api.github.com/repos/ml-explore/mlx/contributors?per_page=100",
+      "kind": "repository",
+      "owner": "GitHub / ml-explore",
+      "topics": [
+        "mlx",
+        "contributors",
+        "source-selection"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2026-06-27",
+      "note": "Used to select the top-100 contributor source set for contributor implementation review."
+    },
+    {
+      "id": "dgrauet-ltx2-block-streaming-source",
+      "title": "ltx-2-mlx BlockStreamer implementation",
+      "url": "https://github.com/dgrauet/ltx-2-mlx/blob/3f5897a9582b/packages/ltx-core-mlx/src/ltx_core_mlx/loader/block_streaming.py",
+      "kind": "source-code",
+      "owner": "dgrauet",
+      "topics": [
+        "mlx",
+        "block-streaming",
+        "safetensors",
+        "peak-memory",
+        "diffusion"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "3f5897a9582b",
+      "note": "Pinned implementation evidence for memory-mapped repeated-block weight streaming."
+    },
+    {
+      "id": "dgrauet-ltx2-block-streaming-tests",
+      "title": "ltx-2-mlx block streaming tests",
+      "url": "https://github.com/dgrauet/ltx-2-mlx/blob/3f5897a9582b/tests/test_block_streaming.py",
+      "kind": "source-code",
+      "owner": "dgrauet",
+      "topics": [
+        "mlx",
+        "block-streaming",
+        "parity",
+        "eviction",
+        "tests"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "3f5897a9582b",
+      "note": "Pinned correctness evidence for block discovery, weight binding, streamed/eager parity, and eviction/reload behavior."
+    },
+    {
+      "id": "dgrauet-ltx2-regression-report",
+      "title": "ltx-2-mlx v0.11.0 regression report",
+      "url": "https://github.com/dgrauet/ltx-2-mlx/blob/3f5897a9582b/docs/REGRESSION_TESTS_v0.11.0.md",
+      "kind": "source-code",
+      "owner": "dgrauet",
+      "topics": [
+        "mlx",
+        "block-streaming",
+        "regression-tests",
+        "video-diffusion"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "3f5897a9582b",
+      "note": "Pinned report claiming byte-identical low-RAM/eager output for a q8 LTX-2 path; source-reported, not locally reproduced here."
+    },
+    {
+      "id": "lucasnewman-f5-tts-mlx-repo",
+      "title": "F5-TTS MLX implementation",
+      "url": "https://github.com/lucasnewman/f5-tts-mlx/tree/85d015f62b7c",
+      "kind": "repository",
+      "owner": "lucasnewman",
+      "topics": [
+        "mlx",
+        "tts",
+        "flow-matching",
+        "duration",
+        "vocoder"
+      ],
+      "review_depth": "screened",
+      "snapshot": "85d015f62b7c",
+      "note": "Screened as top-100 contributor implementation context; reinforces existing flow-TTS gates."
+    },
+    {
+      "id": "lucasnewman-vocos-mlx-repo",
+      "title": "Vocos MLX implementation",
+      "url": "https://github.com/lucasnewman/vocos-mlx/tree/18c46027a2fb",
+      "kind": "repository",
+      "owner": "lucasnewman",
+      "topics": [
+        "mlx",
+        "vocoder",
+        "encodec",
+        "audio-codec"
+      ],
+      "review_depth": "screened",
+      "snapshot": "18c46027a2fb",
+      "note": "Screened as top-100 contributor implementation context; reinforces existing vocoder/audio-codec gates."
+    },
+    {
+      "id": "tristanbilot-mlx-benchmark-repo",
+      "title": "mlx-benchmark operation benchmark repository",
+      "url": "https://github.com/TristanBilot/mlx-benchmark/tree/fc7b2fa714bc",
+      "kind": "repository",
+      "owner": "TristanBilot",
+      "topics": [
+        "mlx",
+        "benchmarking",
+        "mx.compile",
+        "mps",
+        "cuda"
+      ],
+      "review_depth": "screened",
+      "snapshot": "fc7b2fa714bc",
+      "note": "Screened as top-100 contributor benchmarking context; useful measurement hygiene, not a port-level optimization claim."
+    },
+    {
+      "id": "mzbac-mlx-sharding-repo",
+      "title": "mlx_sharding distributed inference demo",
+      "url": "https://github.com/mzbac/mlx_sharding/tree/8b01c33cae6c",
+      "kind": "repository",
+      "owner": "mzbac",
+      "topics": [
+        "mlx",
+        "sharding",
+        "pipeline-parallelism",
+        "distributed-inference"
+      ],
+      "review_depth": "screened",
+      "snapshot": "8b01c33cae6c",
+      "note": "Screened as top-100 contributor implementation context; held as research until parity, scheduler, failure, and security gates exist."
+    },
+    {
+      "id": "github-mlx-top1000-contributors",
+      "title": "GitHub API top contributors for ml-explore/mlx pages 1-10",
+      "url": "https://api.github.com/repos/ml-explore/mlx/contributors?per_page=100&page=1",
+      "kind": "repository",
+      "owner": "GitHub / ml-explore",
+      "topics": [
+        "mlx",
+        "contributors",
+        "source-selection"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2026-06-27",
+      "note": "Used to request the top-1000 contributor source set; GitHub returned 256 contributors across the paginated API. Future refreshes should use scripts/collect_contributors.py so Link headers and receipt metadata are preserved."
+    },
+    {
+      "id": "katlun-grid-sample-source",
+      "title": "mlx-grid-sample custom Metal implementation",
+      "url": "https://github.com/katlun-lgtm/mlx-grid-sample/blob/467385fa2b84/mlx_grid_sample.py",
+      "kind": "source-code",
+      "owner": "katlun-lgtm",
+      "topics": [
+        "mlx",
+        "custom-kernel",
+        "grid-sample",
+        "spatial-warp",
+        "video"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "467385fa2b84",
+      "note": "Pinned implementation evidence for PyTorch-compatible 2D/3D grid_sample kernels using mx.fast.metal_kernel."
+    },
+    {
+      "id": "katlun-grid-sample-tests",
+      "title": "mlx-grid-sample correctness tests",
+      "url": "https://github.com/katlun-lgtm/mlx-grid-sample/blob/467385fa2b84/test_grid_sample.py",
+      "kind": "source-code",
+      "owner": "katlun-lgtm",
+      "topics": [
+        "mlx",
+        "custom-kernel",
+        "grid-sample",
+        "parity",
+        "tests"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "467385fa2b84",
+      "note": "Pinned correctness evidence for align_corners and zeros/border padding parity against NumPy and optional Torch."
+    },
+    {
+      "id": "katlun-grid-sample-benchmark",
+      "title": "mlx-grid-sample benchmark harness",
+      "url": "https://github.com/katlun-lgtm/mlx-grid-sample/blob/467385fa2b84/bench_grid_sample.py",
+      "kind": "source-code",
+      "owner": "katlun-lgtm",
+      "topics": [
+        "mlx",
+        "custom-kernel",
+        "grid-sample",
+        "benchmarking"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "467385fa2b84",
+      "note": "Pinned benchmark harness comparing the custom 3D grid_sample kernel with a pure-MLX gather baseline."
+    },
+    {
+      "id": "skyzh-tiny-llm-repo",
+      "title": "tiny-llm MLX serving course repository",
+      "url": "https://github.com/skyzh/tiny-llm/tree/efb0c89fd236",
+      "kind": "repository",
+      "owner": "skyzh",
+      "topics": [
+        "mlx",
+        "paged-kv",
+        "continuous-batching",
+        "moe",
+        "gather-qmm"
+      ],
+      "review_depth": "screened",
+      "snapshot": "efb0c89fd236",
+      "note": "Screened as top-1000 contributor implementation context; reinforces existing paged-cache and MoE validation gates."
+    },
+    {
+      "id": "mzbac-mlx-moe-repo",
+      "title": "mlx-moe dense-to-MoE assembly scripts",
+      "url": "https://github.com/mzbac/mlx-moe/tree/11088f36eaea",
+      "kind": "repository",
+      "owner": "mzbac",
+      "topics": [
+        "mlx",
+        "moe",
+        "lora",
+        "quantization"
+      ],
+      "review_depth": "screened",
+      "snapshot": "11088f36eaea",
+      "note": "Screened as top-1000 contributor implementation context; held as synthetic MoE assembly rather than source-preserving porting guidance."
+    },
+    {
+      "id": "dc-dc-dc-mlx-rwkv-repo",
+      "title": "mlx-rwkv WIP recurrent implementation",
+      "url": "https://github.com/dc-dc-dc/mlx-rwkv/tree/45d9f309afa3",
+      "kind": "repository",
+      "owner": "dc-dc-dc",
+      "topics": [
+        "mlx",
+        "rwkv",
+        "recurrent",
+        "safetensors"
+      ],
+      "review_depth": "screened",
+      "snapshot": "45d9f309afa3",
+      "note": "Screened as top-1000 contributor implementation context; held because README marks it WIP and local code still relies on NumPy state shifting."
+    },
+    {
+      "id": "j-csc-mlx-ssm-repo",
+      "title": "mlx-ssm state-space prototype",
+      "url": "https://github.com/j-csc/mlx-ssm/tree/51e2eb3285f7",
+      "kind": "repository",
+      "owner": "j-csc",
+      "topics": [
+        "mlx",
+        "ssm",
+        "mamba",
+        "state-space"
+      ],
+      "review_depth": "screened",
+      "snapshot": "51e2eb3285f7",
+      "note": "Screened as top-1000 contributor implementation context; held because key SSM/Mamba kernels are incomplete."
+    },
+    {
+      "id": "fl33twood-mlx-conformer-repo",
+      "title": "mlx-conformer Torch-to-MLX port scaffold",
+      "url": "https://github.com/FL33TW00D/mlx-conformer/tree/88809a360184",
+      "kind": "repository",
+      "owner": "FL33TW00D",
+      "topics": [
+        "mlx",
+        "conformer",
+        "asr",
+        "padding-mask"
+      ],
+      "review_depth": "screened",
+      "snapshot": "88809a360184",
+      "note": "Screened as top-1000 contributor implementation context; reinforces existing ASR/Conformer parity needs but lacks a packaged test suite."
+    },
+    {
+      "id": "goekdeniz-mixtral-from-scratch-repo",
+      "title": "Mixtral from scratch in MLX",
+      "url": "https://github.com/Goekdeniz-Guelmez/Mixtral-from-scratch-in-MLX/tree/f08477a06ed9",
+      "kind": "repository",
+      "owner": "Goekdeniz-Guelmez",
+      "topics": [
+        "mlx",
+        "mixtral",
+        "moe",
+        "lora"
+      ],
+      "review_depth": "screened",
+      "snapshot": "f08477a06ed9",
+      "note": "Screened as top-1000 contributor implementation context; reinforces MoE loop-oracle and training gates but was not promoted as new guidance."
+    },
+    {
+      "id": "skryl-mlx-onnx-repo",
+      "title": "mlx-onnx export library",
+      "url": "https://github.com/skryl/mlx-onnx/tree/c9aec867c76b",
+      "kind": "repository",
+      "owner": "skryl",
+      "topics": [
+        "mlx",
+        "onnx",
+        "export",
+        "graph-ir"
+      ],
+      "review_depth": "screened",
+      "snapshot": "c9aec867c76b",
+      "note": "Screened as top-1000 contributor context; export tooling is useful adjacent work but not a model-to-MLX porting technique."
+    },
+    {
+      "id": "mlx-doc-set-memory-limit",
+      "title": "MLX set_memory_limit API",
+      "url": "https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.set_memory_limit.html",
+      "kind": "official-doc",
+      "owner": "Apple MLX",
+      "topics": [
+        "mlx",
+        "memory",
+        "benchmarking"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2026-06-27",
+      "note": "Official API evidence for graph-evaluation memory-limit experiments; not a quality or latency proof."
+    },
+    {
+      "id": "mlx-doc-get-peak-memory",
+      "title": "MLX get_peak_memory API",
+      "url": "https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.get_peak_memory.html",
+      "kind": "official-doc",
+      "owner": "Apple MLX",
+      "topics": [
+        "mlx",
+        "memory",
+        "benchmarking"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2026-06-27",
+      "note": "Official API evidence for peak-memory measurement in benchmark and fit gates."
+    },
+    {
+      "id": "mlx-doc-export",
+      "title": "MLX exporting functions documentation",
+      "url": "https://ml-explore.github.io/mlx/build/html/usage/export.html",
+      "kind": "official-doc",
+      "owner": "Apple MLX",
+      "topics": [
+        "mlx",
+        "export",
+        "packaging",
+        "smoke-test"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2026-06-27",
+      "note": "Official API evidence for optional .mlxfn release smoke tests with shape/dtype caveats."
+    },
+    {
+      "id": "pypi-mlx-lm",
+      "title": "mlx-lm PyPI package metadata",
+      "url": "https://pypi.org/project/mlx-lm/",
+      "kind": "release",
+      "owner": "ml-explore",
+      "topics": [
+        "mlx-lm",
+        "package",
+        "cache",
+        "serving"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2026-06-27",
+      "note": "Package metadata evidence for release/version and prompt-cache caveats; PyPI text alone is not implementation proof."
+    },
+    {
+      "id": "pypi-mlx-vlm",
+      "title": "mlx-vlm PyPI package metadata",
+      "url": "https://pypi.org/project/mlx-vlm/",
+      "kind": "release",
+      "owner": "Blaizzy / contributors",
+      "topics": [
+        "mlx-vlm",
+        "package",
+        "vlm",
+        "speculative-decoding",
+        "cache"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2026-06-27",
+      "note": "Package metadata evidence for feature-cache, speculative decoding, and TurboQuant leads; validate against pinned source before promotion."
+    },
+    {
+      "id": "pypi-mlx-audio",
+      "title": "mlx-audio PyPI package metadata",
+      "url": "https://pypi.org/project/mlx-audio/",
+      "kind": "release",
+      "owner": "Blaizzy / contributors",
+      "topics": [
+        "mlx-audio",
+        "package",
+        "tts",
+        "asr",
+        "dependencies"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2026-06-27",
+      "note": "Package metadata evidence for audio dependency and model-matrix review gates; validate per model."
+    },
+    {
+      "id": "hf-nemotron-diffusion-mlx-card",
+      "title": "mlx-community Nemotron-Labs-Diffusion-3B-4bit model card",
+      "url": "https://huggingface.co/mlx-community/Nemotron-Labs-Diffusion-3B-4bit",
+      "kind": "repository",
+      "owner": "mlx-community",
+      "topics": [
+        "mlx",
+        "hugging-face",
+        "model-card",
+        "publication"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2026-06-27",
+      "note": "Mutable HF model-card evidence for publication metadata linting, not benchmark or implementation proof."
+    },
+    {
+      "id": "paper-2504-19874",
+      "title": "TurboQuant: Ultra-Efficient and Accurate KV Cache Quantization for Long Context LLM Inference",
+      "url": "https://arxiv.org/abs/2504.19874",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "kv-cache",
+        "quantization",
+        "long-context",
+        "mlx-vlm"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2504.19874",
+      "note": "Paper evidence for TurboQuant research context; not official MLX core support."
+    },
+    {
+      "id": "hf-mlx-model-search-2026-06-27",
+      "title": "Hugging Face MLX model search snapshot",
+      "url": "https://huggingface.co/models?library=mlx&search=mlx",
+      "kind": "repository",
+      "owner": "Hugging Face",
+      "topics": [
+        "mlx",
+        "hugging-face",
+        "source-selection",
+        "coverage"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2026-06-27",
+      "note": "Used for demand and artifact-shape sampling only; downloads and tags are not implementation evidence."
     }
   ]
 }

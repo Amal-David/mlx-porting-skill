@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "reviewed": "2026-06-24",
+  "reviewed": "2026-06-27",
   "objective_tags": [
     {
       "id": "ttft",
@@ -130,6 +130,46 @@
     "research-candidate",
     "rejected-or-superseded"
   ],
+  "advisor_buckets": [
+    {
+      "id": "validated-locally",
+      "label": "Validated locally",
+      "description": "Reproduced by a local test, benchmark, parity fixture, or skill validation gate for this port or skill.",
+      "requires_user_opt_in": false
+    },
+    {
+      "id": "validated-source-theory",
+      "label": "Validated by source or theory",
+      "description": "Backed by official MLX/API docs, a pinned implementation, or primary paper, but still requiring local confirmation for the chosen model.",
+      "requires_user_opt_in": false
+    },
+    {
+      "id": "benchmark-required",
+      "label": "Benchmark required",
+      "description": "Safe to try after parity, but no speedup or memory number may be claimed until measured on target hardware and workload.",
+      "requires_user_opt_in": false
+    },
+    {
+      "id": "experimental-approach",
+      "label": "Experimental approach",
+      "description": "Promising contributor, blog, repository, paper, package, or research-loop learning that is not promotion-ready for supported guidance.",
+      "requires_user_opt_in": true,
+      "prompt": "This is an experimental approach. Do you want to try it?"
+    },
+    {
+      "id": "rejected-do-not-use",
+      "label": "Rejected / do not use",
+      "description": "Incompatible, unsafe, contradicted, license-blocked, CUDA-only, or superseded.",
+      "requires_user_opt_in": false
+    }
+  ],
+  "status_to_advisor_bucket": {
+    "native-mlx": "validated-source-theory",
+    "official-mlx-project": "validated-source-theory",
+    "proven-mlx-port": "benchmark-required",
+    "research-candidate": "experimental-approach",
+    "rejected-or-superseded": "rejected-do-not-use"
+  },
   "default_keep_gate": [
     "correctness/parity passes",
     "quality stays within declared budget",

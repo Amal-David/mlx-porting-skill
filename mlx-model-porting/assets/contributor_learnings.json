@@ -1,0 +1,871 @@
+{
+  "schema_version": 1,
+  "reviewed": "2026-06-27",
+  "research_question": "What implementation-level MLX porting lessons can be taken from dgrauet and repositories associated with the top 1000 contributors to ml-explore/mlx?",
+  "advisor_buckets": {
+    "validated": {
+      "description": "Contributor-derived learnings already promoted into supported skill guidance or optimization assets with validation gates and rollback conditions.",
+      "learning_ids": [
+        "block-weight-streaming",
+        "grid-sample-spatial-kernel"
+      ]
+    },
+    "reinforces_existing_guidance": {
+      "description": "Contributor evidence that supports existing skill guidance but does not require a new standalone recommendation.",
+      "learning_ids": [
+        "audio-flow-tts-duration-vocoder-gates",
+        "operation-benchmark-hygiene",
+        "paged-kv-and-gather-qmm-serving"
+      ]
+    },
+    "experimental_approaches": {
+      "description": "Promising but unvalidated contributor/repository learnings. Present these as experimental approaches and require explicit user opt-in before helping execute them.",
+      "requires_user_opt_in": true,
+      "prompt": "This is an experimental approach. Do you want to try it?",
+      "learning_ids": [
+        "layer-eval-watchdog-guard",
+        "layer-range-network-sharding",
+        "synthetic-moe-assembly",
+        "rwkv-ssm-conformer-prototypes"
+      ]
+    },
+    "context_only": {
+      "description": "Adjacent ecosystem context that should inform research backlog only, not model-porting execution guidance.",
+      "learning_ids": [
+        "mlx-onnx-export-adjacent"
+      ]
+    }
+  },
+  "contributor_set": {
+    "source": "https://api.github.com/repos/ml-explore/mlx/contributors?per_page=100&page=1..10",
+    "retrieved": "2026-06-27",
+    "requested_count": 1000,
+    "count": 256,
+    "linked_user_count": 256,
+    "anonymous_author_count": 262,
+    "pages_fetched": 3,
+    "note": "GitHub returned 256 linked contributors across pages 1-3; with anon=true it returned 262 author buckets. The top-1000 request covered every linked contributor available from the contributors API at retrieval time, and future refreshes should use scripts/collect_contributors.py to preserve both counts without storing raw anonymous identities.",
+    "collector_script": "scripts/collect_contributors.py",
+    "api_receipt": {
+      "api_version": "2022-11-28",
+      "linked_pages": [
+        {
+          "page": 1,
+          "count": 100,
+          "link_header": "<https://api.github.com/repositories/724854743/contributors?per_page=100&page=2>; rel=\"next\", <https://api.github.com/repositories/724854743/contributors?per_page=100&page=3>; rel=\"last\"",
+          "etag": "W/\"5a55156d162f0fe7c184a895a276e41ed8bed5a48aca328267f905c2054188ed\"",
+          "last_modified": "Sat, 27 Jun 2026 09:02:43 GMT"
+        },
+        {
+          "page": 2,
+          "count": 100,
+          "link_header": "<https://api.github.com/repositories/724854743/contributors?per_page=100&page=1>; rel=\"prev\", <https://api.github.com/repositories/724854743/contributors?per_page=100&page=3>; rel=\"next\", <https://api.github.com/repositories/724854743/contributors?per_page=100&page=3>; rel=\"last\", <https://api.github.com/repositories/724854743/contributors?per_page=100&page=1>; rel=\"first\"",
+          "etag": "W/\"a6eca944bd379e640a01fbe840436bc2f5817113a9a6eda9d78c80bb7658a5e4\"",
+          "last_modified": "Sat, 27 Jun 2026 09:02:43 GMT"
+        },
+        {
+          "page": 3,
+          "count": 56,
+          "link_header": "<https://api.github.com/repositories/724854743/contributors?per_page=100&page=2>; rel=\"prev\", <https://api.github.com/repositories/724854743/contributors?per_page=100&page=1>; rel=\"first\"",
+          "etag": "W/\"1f25206f70ac6c2973250bf83b968df89606cc718d4a693fd96967d5b456d1cd\"",
+          "last_modified": "Sat, 27 Jun 2026 09:02:43 GMT"
+        }
+      ],
+      "anonymous_pages": [
+        {
+          "page": 1,
+          "count": 100
+        },
+        {
+          "page": 2,
+          "count": 100
+        },
+        {
+          "page": 3,
+          "count": 62
+        }
+      ]
+    },
+    "top1000_logins": [
+      "zcbenz",
+      "angeloskath",
+      "jagrit06",
+      "barronalex",
+      "nastya236",
+      "chunyang-wen",
+      "dc-dc-dc",
+      "NripeshN",
+      "stemann",
+      "CC-Yeh",
+      "davidkoski",
+      "Lyxot",
+      "dhiltgen",
+      "MillaFleurs",
+      "madrob",
+      "dastrobu",
+      "abeleinin",
+      "nicolov",
+      "dependabot[bot]",
+      "andresy",
+      "Pablosinyores",
+      "XXXXRT666",
+      "m0saan",
+      "ZJUGuoShuai",
+      "aisk",
+      "qflen",
+      "arn4",
+      "katlun-lgtm",
+      "Rifur13",
+      "Satyam12singh",
+      "sofinvalery",
+      "wangkuiyi",
+      "obchain",
+      "ManishAradwad",
+      "Vlor999",
+      "wrmsr",
+      "incertum",
+      "Maalvi14",
+      "jbochi",
+      "kainzhong",
+      "ishtihoss",
+      "eltociear",
+      "hazemessamm",
+      "gboduljak",
+      "dogukanveziroglu",
+      "AvikantSrivastava",
+      "Anri-Lombard",
+      "Aristide021",
+      "tillahoffmann",
+      "umbertomig",
+      "JayYun98",
+      "zachschillaci27",
+      "hdeng-apple",
+      "xnorai",
+      "aturker1",
+      "andportnoy",
+      "louen",
+      "jdeschena",
+      "lucasnewman",
+      "amirhossein-razlighi",
+      "adityasingh2400",
+      "bpkeene",
+      "CameronChurchwell",
+      "danilopeixoto",
+      "hinriksnaer",
+      "jmousseau",
+      "jessegross",
+      "Brooooooklyn",
+      "mlaves",
+      "noahfarr",
+      "a1eaiactaest",
+      "pcuenca",
+      "discobot",
+      "robert-johansson",
+      "Saanidhyavats",
+      "sugatoray",
+      "kernelpool",
+      "TristanBilot",
+      "cvnad1",
+      "devYRPauli",
+      "djphoenix",
+      "chrismicah",
+      "jhavukainen",
+      "jiyzhang",
+      "jjuang-apple",
+      "mm65x",
+      "pchintar",
+      "wickgit",
+      "Alex-X-W",
+      "aicayzer",
+      "Viditagarwal7479",
+      "gathierry",
+      "bhargavyagnik",
+      "Redempt1onzzZZ",
+      "Stealeristaken",
+      "mzbac",
+      "scyyh11",
+      "chimezie",
+      "chrisoffner3d",
+      "ChristophePRAT",
+      "cyrilzakka",
+      "eyupcanakman",
+      "csukuangfj",
+      "ParamThakkar123",
+      "nsantavas",
+      "ngoldbaum",
+      "LeonEricsson",
+      "kellen-sun",
+      "k78ma",
+      "jbarrow",
+      "j-csc",
+      "Jckwind",
+      "harsh-sutariya",
+      "Goekdeniz-Guelmez",
+      "wisefool769",
+      "jaju",
+      "bjornefisk",
+      "suryawanshishantanu6",
+      "LeSingh1",
+      "JingzheShi",
+      "IamShubhamGupto",
+      "Skonor",
+      "SputNikPlop",
+      "postmalloc",
+      "smpanaro",
+      "Stv-X",
+      "thesuryash",
+      "suvan-kumar",
+      "tosh",
+      "tianenchong",
+      "jlwitthuhn",
+      "menzHSE",
+      "matinsaurralde",
+      "matthewfernst",
+      "raselmandol",
+      "hxu296",
+      "mdegans",
+      "gmin7",
+      "NeuralNoble",
+      "NAThompson",
+      "starskyreverie",
+      "nkasmanoff",
+      "bilousoleksandr",
+      "olilarkin",
+      "pdevine",
+      "phansel",
+      "plpxsk",
+      "pHequals7",
+      "psolanki",
+      "Wei-Sheng-Wang",
+      "jrp2014",
+      "junpeiz",
+      "minghuaw",
+      "mt-caret",
+      "b0kch01",
+      "noahsmartin",
+      "rltakashige",
+      "romanoneg",
+      "rushyam",
+      "russellizadi",
+      "serenposh",
+      "stefpi",
+      "nullhook",
+      "vskiwi",
+      "wgu9",
+      "will-march",
+      "tgymnich",
+      "tomo-oga",
+      "vaguilar",
+      "xthomaswang",
+      "yaroslavyaroslav",
+      "zuhorer",
+      "YingboMa",
+      "54yyyu",
+      "youtalk",
+      "zamderax",
+      "Ziqiao-git",
+      "vovw",
+      "c0g",
+      "charan-003",
+      "declanhealy2",
+      "grananqvist",
+      "gufengc",
+      "hwiesmann",
+      "ashridh",
+      "Bahaatbb",
+      "bigsnarfdude",
+      "carlocab",
+      "ricky-chaoju",
+      "yuchaoran2011",
+      "ccostes",
+      "FL33TW00D",
+      "thechriswebb",
+      "iExalt",
+      "Clydingus",
+      "cocoa-xu",
+      "dfalbel",
+      "dseredkin",
+      "dwisdom0",
+      "devin-lai",
+      "dexwritescode",
+      "dgovil",
+      "abhilashreddys",
+      "adurham",
+      "adi-dhulipala",
+      "skyzh",
+      "alexshepard",
+      "skryl",
+      "AlexCheema",
+      "ameszy",
+      "AndreSlavescu",
+      "andreyvelich",
+      "aneeshk1412",
+      "Commit2Cosmos",
+      "goingreen",
+      "guptaaryan16",
+      "nuniz",
+      "AtakanTekparmak",
+      "austin362667",
+      "awni",
+      "ita9naiwa",
+      "booxter",
+      "Isalia20",
+      "ivanfioravanti",
+      "jeethu",
+      "josharian",
+      "jsoref",
+      "venkatramnank",
+      "kashif",
+      "krishi-saripalli",
+      "lancelotblanchard",
+      "keli-wen",
+      "LxYuan0420",
+      "LVivona",
+      "luke-carlson",
+      "Leikoe",
+      "madhav1k",
+      "manuelcandales",
+      "domschl",
+      "fdwr",
+      "emircanerol",
+      "emmanuel-ferdman",
+      "enochkan",
+      "dotvignesh",
+      "wsvn53",
+      "Evanev7",
+      "Mistobaan",
+      "finnvoor",
+      "franckverrot",
+      "gmondada",
+      "gautamkrishnar",
+      "GaetanLepage",
+      "belkakari",
+      "GriffinMB",
+      "fijimunkii",
+      "henrhie"
+    ],
+    "repo_search_matches": [
+      "mzbac/mlx-moe",
+      "Goekdeniz-Guelmez/mlx-lm-lora",
+      "skyzh/tiny-llm",
+      "lucasnewman/f5-tts-mlx",
+      "Goekdeniz-Guelmez/mlx-lm-lora-example-notebooks",
+      "Goekdeniz-Guelmez/Mixtral-from-scratch-in-MLX",
+      "Goekdeniz-Guelmez/mlx-lm-lens",
+      "abeleinin/mlx-xLSTM",
+      "mzbac/mlx-chat-ui",
+      "mzbac/kooka-server",
+      "Goekdeniz-Guelmez/MLX-LoRA-Studio",
+      "dc-dc-dc/mlx-rwkv",
+      "Goekdeniz-Guelmez/moshi-finetune-mlx",
+      "j-csc/mlx-ssm",
+      "noahfarr/rlx",
+      "jrp2014/check_models",
+      "lucasnewman/e2-tts-mlx",
+      "ivanfioravanti/hn_local_image",
+      "mzbac/mlx-lora",
+      "chimezie/mlx-tuning-fork",
+      "mzbac/mlx.promptcache",
+      "Leikoe/llama-index-multi-modal-llms-mlx",
+      "jbarrow/mlx-playground",
+      "Goekdeniz-Guelmez/mlx-embeddings-lora",
+      "Goekdeniz-Guelmez/mlx-KANama",
+      "mzbac/flux.swift",
+      "menzHSE/mlx-vae",
+      "mzbac/mlx_sharding",
+      "nkasmanoff/mlx-llava-finetuning",
+      "TristanBilot/mlx-benchmark",
+      "mzbac/mlx-moe-models",
+      "mzbac/mlx-hubert",
+      "dc-dc-dc/mlxin",
+      "katlun-lgtm/mlx-grid-sample",
+      "FL33TW00D/mlx-conformer",
+      "amirhossein-razlighi/mlx3D",
+      "guptaaryan16/mlx-catalyst",
+      "lucasnewman/descript-mlx",
+      "lucasnewman/mlx2coreai",
+      "lucasnewman/mlx2coreml",
+      "Goekdeniz-Guelmez/MLX-Benchmark",
+      "wangkuiyi/wangkuiyi.github.io",
+      "mzbac/mlx-llm-server",
+      "djphoenix/mlx-ctc",
+      "mzbac/swift-mlx-server",
+      "abeleinin/Metal-Puzzles",
+      "skryl/mlx-onnx",
+      "dc-dc-dc/mlx-sana",
+      "abeleinin/mlx-distributions",
+      "mzbac/zimage.swift",
+      "plpxsk/pikaGPT",
+      "mzbac/vibevoice.swift",
+      "mzbac/mlx.voxtral",
+      "mzbac/mlx.embeddings",
+      "skryl/mlx-ruby",
+      "skryl/mlx-ruby-lm",
+      "Goekdeniz-Guelmez/mlx-kan",
+      "tillahoffmann/jax-mps",
+      "vovw/gpt2",
+      "amirhossein-razlighi/Metal_Puzzles",
+      "ivanfioravanti/llm_context_benchmarks",
+      "mzbac/qwen.image.swift",
+      "domschl/HuggingFaceGuidedTourForMac",
+      "awni/voxmlx",
+      "ivanfioravanti/fasterliveportrait-mlx",
+      "AlexCheema/talos-vs-macbook",
+      "dexwritescode/neurons",
+      "mzbac/voxtral-mini.swift",
+      "mzbac/SwiftAgent",
+      "ivanfioravanti/wine_variety_classification",
+      "Goekdeniz-Guelmez/Goekdeniz-Guelmez"
+    ]
+  },
+  "inspected_repositories": [
+    {
+      "repo": "dgrauet/ltx-2-mlx",
+      "url": "https://github.com/dgrauet/ltx-2-mlx",
+      "snapshot": "3f5897a9582b",
+      "why_inspected": "User-provided seed account; pure MLX LTX-2 video/audio diffusion port with memory-oriented implementation work.",
+      "decision": "adopted-one-learning",
+      "surfaces": [
+        "packages/ltx-core-mlx/src/ltx_core_mlx/loader/block_streaming.py",
+        "tests/test_block_streaming.py",
+        "docs/REGRESSION_TESTS_v0.11.0.md",
+        "README.md"
+      ]
+    },
+    {
+      "repo": "dgrauet/claude-skill-mlx-porting",
+      "url": "https://github.com/dgrauet/claude-skill-mlx-porting",
+      "snapshot": "632949b81f91",
+      "why_inspected": "Original skill repository from the seed account.",
+      "decision": "context-only",
+      "surfaces": [
+        "README/SKILL material"
+      ]
+    },
+    {
+      "repo": "lucasnewman/f5-tts-mlx",
+      "url": "https://github.com/lucasnewman/f5-tts-mlx",
+      "snapshot": "85d015f62b7c",
+      "top100_contributor_rank": 59,
+      "decision": "held-reinforces-existing-guidance",
+      "surfaces": [
+        "f5_tts_mlx/cfm.py",
+        "f5_tts_mlx/generate.py",
+        "README.md"
+      ]
+    },
+    {
+      "repo": "lucasnewman/vocos-mlx",
+      "url": "https://github.com/lucasnewman/vocos-mlx",
+      "snapshot": "18c46027a2fb",
+      "top100_contributor_rank": 59,
+      "decision": "held-reinforces-existing-guidance",
+      "surfaces": [
+        "vocos_mlx/encodec.py",
+        "vocos_mlx/model.py",
+        "vocos_mlx/mel.py",
+        "README.md"
+      ]
+    },
+    {
+      "repo": "lucasnewman/nanospeech",
+      "url": "https://github.com/lucasnewman/nanospeech",
+      "snapshot": "d89cd9b8e4e5",
+      "top100_contributor_rank": 59,
+      "decision": "held-reinforces-existing-guidance",
+      "surfaces": [
+        "nanospeech/nanospeech_mlx.py",
+        "tutorial/README.md"
+      ]
+    },
+    {
+      "repo": "TristanBilot/mlx-benchmark",
+      "url": "https://github.com/TristanBilot/mlx-benchmark",
+      "snapshot": "fc7b2fa714bc",
+      "top100_contributor_rank": 78,
+      "decision": "held-context-only",
+      "surfaces": [
+        "mlx_benchmark/base_benchmark.py",
+        "mlx_benchmark/run_benchmark.py",
+        "CONTRIBUTING.md",
+        "README.md"
+      ]
+    },
+    {
+      "repo": "mzbac/mlx_sharding",
+      "url": "https://github.com/mzbac/mlx_sharding",
+      "snapshot": "8b01c33cae6c",
+      "top100_contributor_rank": 96,
+      "decision": "held-research-candidate-only",
+      "surfaces": [
+        "shard/server/model/llama.py",
+        "shard/server/model/deepseek_v2.py",
+        "sharding_weight.py",
+        "README.md"
+      ]
+    },
+    {
+      "repo": "mzbac/mlx-llm-server",
+      "url": "https://github.com/mzbac/mlx-llm-server",
+      "snapshot": "f37dad7d051e",
+      "top100_contributor_rank": 96,
+      "decision": "screened-no-new-porting-rule",
+      "surfaces": [
+        "mlx_llm_server/app.py",
+        "README.md"
+      ]
+    },
+    {
+      "repo": "ml-explore/mlx-lm",
+      "url": "https://github.com/ml-explore/mlx-lm",
+      "snapshot": "2ed22318cd6a",
+      "decision": "official-baseline-already-covered",
+      "surfaces": [
+        "mlx_lm/models/cache.py",
+        "mlx_lm/generate.py",
+        "mlx_lm/tuner/trainer.py"
+      ]
+    },
+    {
+      "repo": "ml-explore/mlx-examples",
+      "url": "https://github.com/ml-explore/mlx-examples",
+      "snapshot": "796f5b53cab6",
+      "decision": "official-baseline-already-covered",
+      "surfaces": [
+        "whisper/test.py",
+        "whisper/README.md"
+      ]
+    },
+    {
+      "repo": "Blaizzy/mlx-vlm",
+      "url": "https://github.com/Blaizzy/mlx-vlm",
+      "snapshot": "ea5ad0e4a7ae",
+      "decision": "ecosystem-context-already-covered",
+      "surfaces": [
+        "cache and multimodal serving paths"
+      ]
+    },
+    {
+      "repo": "Blaizzy/mlx-audio",
+      "url": "https://github.com/Blaizzy/mlx-audio",
+      "snapshot": "348e1c0a1689",
+      "decision": "ecosystem-context-already-covered",
+      "surfaces": [
+        "mlx_audio/utils.py",
+        "mlx_audio/tts models"
+      ]
+    },
+    {
+      "repo": "katlun-lgtm/mlx-grid-sample",
+      "url": "https://github.com/katlun-lgtm/mlx-grid-sample",
+      "snapshot": "467385fa2b84",
+      "top1000_contributor_rank": 28,
+      "why_inspected": "Top-1000 contributor-owned custom Metal implementation for PyTorch-style spatial and volume sampling in MLX.",
+      "decision": "adopted-one-learning",
+      "surfaces": [
+        "mlx_grid_sample.py",
+        "test_grid_sample.py",
+        "bench_grid_sample.py",
+        "README.md"
+      ],
+      "local_validation": {
+        "date": "2026-06-27",
+        "hardware": "Apple M4 Pro",
+        "mlx": "0.30.4",
+        "test_command": "python3 test_grid_sample.py",
+        "test_result": "PASS: 2D and 3D align_corners False/True with zeros/border padding, plus optional Torch 3D cross-check.",
+        "benchmark_command": "python3 bench_grid_sample.py",
+        "benchmark_result": "3D volume warp custom kernel matched pure-MLX gather baseline; fp32 0.370 ms vs 3.962 ms, fp16 0.273 ms vs 2.711 ms on this machine."
+      }
+    },
+    {
+      "repo": "skyzh/tiny-llm",
+      "url": "https://github.com/skyzh/tiny-llm",
+      "snapshot": "efb0c89fd236",
+      "top1000_contributor_rank": 206,
+      "why_inspected": "High-signal top-1000 contributor-owned MLX serving implementation with paged KV, continuous batching, quantized linear, and MoE examples.",
+      "decision": "held-reinforces-existing-guidance",
+      "surfaces": [
+        "src/tiny_llm_ref/paged_kv_cache.py",
+        "src/tiny_llm_ref/kv_cache.py",
+        "src/tiny_llm_ref/moe.py",
+        "README.md"
+      ]
+    },
+    {
+      "repo": "mzbac/mlx-moe",
+      "url": "https://github.com/mzbac/mlx-moe",
+      "snapshot": "11088f36eaea",
+      "top1000_contributor_rank": 96,
+      "why_inspected": "Top-ranked top-1000 contributor-owned scripts for assembling and fine-tuning MoE models in MLX.",
+      "decision": "held-research-candidate-only",
+      "surfaces": [
+        "moe.py",
+        "mixral.py",
+        "quantize.py",
+        "fuse.py",
+        "README.md"
+      ]
+    },
+    {
+      "repo": "dc-dc-dc/mlx-rwkv",
+      "url": "https://github.com/dc-dc-dc/mlx-rwkv",
+      "snapshot": "45d9f309afa3",
+      "top1000_contributor_rank": 7,
+      "why_inspected": "High-rank contributor-owned RWKV recurrent MLX prototype.",
+      "decision": "held-wip",
+      "surfaces": [
+        "rwkv.py",
+        "convert.py",
+        "README.md"
+      ]
+    },
+    {
+      "repo": "j-csc/mlx-ssm",
+      "url": "https://github.com/j-csc/mlx-ssm",
+      "snapshot": "51e2eb3285f7",
+      "top1000_contributor_rank": 111,
+      "why_inspected": "Top-1000 contributor-owned SSM/Mamba MLX prototype.",
+      "decision": "held-incomplete",
+      "surfaces": [
+        "models/s4.py",
+        "models/mamba.py",
+        "models/ssm.py",
+        "convert.py"
+      ]
+    },
+    {
+      "repo": "FL33TW00D/mlx-conformer",
+      "url": "https://github.com/FL33TW00D/mlx-conformer",
+      "snapshot": "88809a360184",
+      "top1000_contributor_rank": 192,
+      "why_inspected": "Top-1000 contributor-owned Torch Conformer to MLX port scaffold.",
+      "decision": "held-reinforces-existing-guidance",
+      "surfaces": [
+        "ref.py",
+        "main.py",
+        "README.md"
+      ]
+    },
+    {
+      "repo": "Goekdeniz-Guelmez/Mixtral-from-scratch-in-MLX",
+      "url": "https://github.com/Goekdeniz-Guelmez/Mixtral-from-scratch-in-MLX",
+      "snapshot": "f08477a06ed9",
+      "top1000_contributor_rank": 114,
+      "why_inspected": "Top-1000 contributor-owned Mixtral/MoE implementation and training scripts in MLX.",
+      "decision": "held-reinforces-existing-guidance",
+      "surfaces": [
+        "Mixtral.py",
+        "one_file_ref.py",
+        "add_LoRA.py"
+      ]
+    },
+    {
+      "repo": "skryl/mlx-onnx",
+      "url": "https://github.com/skryl/mlx-onnx",
+      "snapshot": "c9aec867c76b",
+      "top1000_contributor_rank": 208,
+      "why_inspected": "Top-1000 contributor-owned MLX graph/ONNX export tooling.",
+      "decision": "held-adjacent-context-only",
+      "surfaces": [
+        "README.md",
+        "docs/python-interface.md",
+        "docs/supported-mlx-ops.md"
+      ]
+    }
+  ],
+  "learnings": [
+    {
+      "id": "block-weight-streaming",
+      "status": "adopted",
+      "evidence": [
+        "dgrauet/ltx-2-mlx block_streaming.py shows memory-mapped safetensors, per-block key maps, shared block rebinding, eviction, and reload.",
+        "dgrauet/ltx-2-mlx tests assert block discovery, weight binding, eager-versus-streamed output equality, and eviction/reload consistency.",
+        "dgrauet/ltx-2-mlx regression report records byte-identical low-RAM versus eager output for a q8 LTX-2 path."
+      ],
+      "porting_skill_change": "Add a proven-mlx-port optimization method for block weight streaming from inspectable safetensors, scoped to repeated-block models that exceed unified-memory budget.",
+      "validation_gate": "Block-count/key coverage, streamed-vs-eager parity on a tiny fixture, eviction/reload test, peak-memory measurement, and fallback eager path.",
+      "rollback_condition": "Disable streaming if outputs drift, block key coverage is incomplete, eviction reloads stale weights, or disk/page-fault overhead erases the memory benefit."
+    },
+    {
+      "id": "layer-eval-watchdog-guard",
+      "status": "held",
+      "evidence": [
+        "dgrauet/ltx-2-mlx documents per-layer eval cadence knobs for Gemma/DiT command-buffer watchdog risk under system contention."
+      ],
+      "reason_held": "The skill already recommends deliberate lazy-evaluation boundaries; add a note in runtime guidance, but do not create a separate optimization method without a repo-local watchdog reproducer."
+    },
+    {
+      "id": "audio-flow-tts-duration-vocoder-gates",
+      "status": "held-reinforces-existing-guidance",
+      "evidence": [
+        "lucasnewman/f5-tts-mlx separates duration prediction, mel generation, vocoder decode, quantized model selection, and reference-audio format requirements.",
+        "lucasnewman/vocos-mlx keeps EnCodec chunk length/stride and bandwidth-dependent quantizer selection explicit."
+      ],
+      "reason_held": "Existing flow-TTS, vocoder, audio-codec, and streaming-speech runbooks already require these gates."
+    },
+    {
+      "id": "operation-benchmark-hygiene",
+      "status": "held-reinforces-existing-guidance",
+      "evidence": [
+        "TristanBilot/mlx-benchmark uses explicit mx.eval for MLX timings, backend separation, compiled versus uncompiled variants, and contribution guidance requiring enough free memory."
+      ],
+      "reason_held": "The skill already separates microbenchmarks from end-to-end claims and requires hardware/workload metadata; no new supported optimization follows from operation tables alone."
+    },
+    {
+      "id": "layer-range-network-sharding",
+      "status": "held-research-candidate-only",
+      "evidence": [
+        "mzbac/mlx_sharding demonstrates layer-range loading, shard-specific safetensors, and gRPC tensor handoff for distributed inference."
+      ],
+      "reason_held": "The implementation is explicitly a demo/start point and lacks enough parity, failure, cancellation, scheduler, and security evidence to become supported porting guidance."
+    },
+    {
+      "id": "grid-sample-spatial-kernel",
+      "status": "adopted",
+      "evidence": [
+        "katlun-lgtm/mlx-grid-sample implements 2D bilinear and 3D trilinear grid_sample as mx.fast.metal_kernel with explicit PyTorch coordinate, align_corners, padding, dtype, and channels-last layout semantics.",
+        "test_grid_sample.py checks 2D and 3D zeros/border padding with align_corners true and false against a NumPy oracle and optionally Torch.",
+        "bench_grid_sample.py compares the custom 3D kernel with a pure-MLX gather baseline; local reproduction on Apple M4 Pro / MLX 0.30.4 passed parity and showed a kernel-level win for the benchmark shape."
+      ],
+      "porting_skill_change": "Add a proven-mlx-port optimization method for PyTorch-compatible grid_sample custom kernels, scoped to spatial/volume-warping ports with explicit parity and end-to-end benchmark gates.",
+      "validation_gate": "Coordinate order, align_corners, padding mode, interpolation, dtype, and layout parity against NumPy/Torch; unsupported-mode declaration; pure-MLX fallback; end-to-end benchmark.",
+      "rollback_condition": "Disable or hold if reflection/nearest/backward semantics are required, parity drifts, layout transposes dominate, or the model-level benchmark does not improve."
+    },
+    {
+      "id": "paged-kv-and-gather-qmm-serving",
+      "status": "held-reinforces-existing-guidance",
+      "evidence": [
+        "skyzh/tiny-llm implements a model-owned paged KV pool, block tables, context lengths, release/rewind behavior, and dense compatibility gathering.",
+        "skyzh/tiny-llm implements grouped MoE expert linear with sorted expert ids and mx.gather_qmm for quantized experts."
+      ],
+      "reason_held": "Existing paged KV, continuous batching, and MoE gather/qmm guidance already requires block-boundary, fragmentation, cancellation, sorted/unsorted, and loop-oracle checks."
+    },
+    {
+      "id": "synthetic-moe-assembly",
+      "status": "held-research-candidate-only",
+      "evidence": [
+        "mzbac/mlx-moe assembles experts from multiple dense models, initializes routing/gate behavior, and documents required gate fine-tuning before use."
+      ],
+      "reason_held": "This is architecture creation/fine-tuning, not a source-preserving port optimization. It should remain a lossy/product-mode experiment unless a task explicitly asks to train or publish a new MoE."
+    },
+    {
+      "id": "rwkv-ssm-conformer-prototypes",
+      "status": "held-insufficient-evidence",
+      "evidence": [
+        "dc-dc-dc/mlx-rwkv is marked WIP and still uses NumPy conversion for time_shift in the hot recurrent path.",
+        "j-csc/mlx-ssm contains pass/TODO placeholders for key SSM and Mamba kernels.",
+        "FL33TW00D/mlx-conformer preserves useful Torch reference and key_padding_mask code paths but lacks a packaged parity test suite."
+      ],
+      "reason_held": "The current SSM/recurrent/ASR runbooks already require full-sequence versus recurrent parity, state tests, and source oracle capture; these prototypes do not justify new supported guidance."
+    },
+    {
+      "id": "mlx-onnx-export-adjacent",
+      "status": "held-adjacent-context-only",
+      "evidence": [
+        "skryl/mlx-onnx provides MLX graph/ONNX export tooling and tests, but it targets export out of MLX rather than porting models into MLX."
+      ],
+      "reason_held": "Useful adjacent ecosystem context, but not a model-to-MLX porting technique for this skill."
+    }
+  ],
+  "screening": {
+    "matched_repo_count": 71,
+    "repo_query_limit_per_query": 250,
+    "repo_queries": [
+      "mlx in:name,description,readme",
+      "\"mlx.core\" in:readme",
+      "\"import mlx\" in:readme",
+      "\"mlx-lm\" in:readme",
+      "\"mlx-vlm\" in:readme",
+      "\"mlx-audio\" in:readme",
+      "mlx safetensors in:readme",
+      "mlx quantization in:readme",
+      "mlx lora in:readme"
+    ],
+    "code_queries": [
+      "mlx.core language:Python",
+      "\"import mlx.core\" language:Python",
+      "\"import mlx.nn\" language:Python",
+      "\"from mlx\" language:Python",
+      "\"mx.eval\" language:Python",
+      "\"mx.compile\" language:Python",
+      "\"load_weights\" \"mlx\" language:Python",
+      "\"fast.scaled_dot_product_attention\" language:Python",
+      "\"gather_mm\" language:Python"
+    ],
+    "query_errors": [
+      {
+        "kind": "code",
+        "query": "\"from mlx\" language:Python",
+        "summary": "GitHub code search API rate limit exceeded during this query; repo-search and earlier code-search results were retained."
+      },
+      {
+        "kind": "code",
+        "query": "\"mx.eval\" language:Python",
+        "summary": "GitHub code search API rate limit exceeded during this query; repo-search and earlier code-search results were retained."
+      },
+      {
+        "kind": "code",
+        "query": "\"mx.compile\" language:Python",
+        "summary": "GitHub code search API rate limit exceeded during this query; repo-search and earlier code-search results were retained."
+      },
+      {
+        "kind": "code",
+        "query": "\"load_weights\" \"mlx\" language:Python",
+        "summary": "GitHub code search API rate limit exceeded during this query; repo-search and earlier code-search results were retained."
+      },
+      {
+        "kind": "code",
+        "query": "\"fast.scaled_dot_product_attention\" language:Python",
+        "summary": "GitHub code search API rate limit exceeded during this query; repo-search and earlier code-search results were retained."
+      },
+      {
+        "kind": "code",
+        "query": "\"gather_mm\" language:Python",
+        "summary": "GitHub code search API rate limit exceeded during this query; repo-search and earlier code-search results were retained."
+      }
+    ],
+    "top_ranked_matches": [
+      "mzbac/mlx-moe",
+      "Goekdeniz-Guelmez/mlx-lm-lora",
+      "skyzh/tiny-llm",
+      "lucasnewman/f5-tts-mlx",
+      "Goekdeniz-Guelmez/mlx-lm-lora-example-notebooks",
+      "Goekdeniz-Guelmez/Mixtral-from-scratch-in-MLX",
+      "Goekdeniz-Guelmez/mlx-lm-lens",
+      "abeleinin/mlx-xLSTM",
+      "mzbac/mlx-chat-ui",
+      "mzbac/kooka-server",
+      "Goekdeniz-Guelmez/MLX-LoRA-Studio",
+      "dc-dc-dc/mlx-rwkv",
+      "Goekdeniz-Guelmez/moshi-finetune-mlx",
+      "j-csc/mlx-ssm",
+      "noahfarr/rlx",
+      "jrp2014/check_models",
+      "lucasnewman/e2-tts-mlx",
+      "ivanfioravanti/hn_local_image",
+      "mzbac/mlx-lora",
+      "chimezie/mlx-tuning-fork",
+      "mzbac/mlx.promptcache",
+      "Leikoe/llama-index-multi-modal-llms-mlx",
+      "jbarrow/mlx-playground",
+      "Goekdeniz-Guelmez/mlx-embeddings-lora",
+      "Goekdeniz-Guelmez/mlx-KANama",
+      "mzbac/flux.swift",
+      "menzHSE/mlx-vae",
+      "mzbac/mlx_sharding",
+      "nkasmanoff/mlx-llava-finetuning",
+      "TristanBilot/mlx-benchmark",
+      "mzbac/mlx-moe-models",
+      "mzbac/mlx-hubert",
+      "dc-dc-dc/mlxin",
+      "katlun-lgtm/mlx-grid-sample",
+      "FL33TW00D/mlx-conformer",
+      "amirhossein-razlighi/mlx3D",
+      "guptaaryan16/mlx-catalyst",
+      "lucasnewman/descript-mlx",
+      "lucasnewman/mlx2coreai",
+      "lucasnewman/mlx2coreml"
+    ]
+  }
+}

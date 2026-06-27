@@ -29,6 +29,8 @@ Watch for recompilation caused by:
 
 Use shapeless compilation only when operation semantics permit and benchmark both compile overhead and steady execution. If the target relies on very recent MLX fixes for shapeless compile, gather/reduce, or custom-kernel behavior, record the exact MLX commit or release. A fix merged on main is not publishable support for users pinned to the latest PyPI package until that package contains it.
 
+For compiled decode or streaming steps, make stale-state failure testable: run at least two sequence lengths or chunk sizes, verify cache/state mutation across consecutive calls, and include a closure-constant change or explicit state-refresh test when the source path mutates generation settings.
+
 ### 5. Streams and overlap
 
 Use separate streams only for genuinely independent work with enough granularity. Validate dependencies explicitly. Candidate use cases include overlapping CPU preprocessing with GPU work, independent encoder branches, or asynchronous materialization. Avoid stream complexity for tiny operations.
@@ -54,9 +56,18 @@ Required deliverables:
 - fallback path;
 - end-to-end benchmark proving material value.
 
-Common candidates in model ports include unusual fused projections, codec quantizer distance/search, recurrent scan, specialized convolution/upsampling, sparse expert dispatch, and streaming overlap-add. None is automatically worthwhile.
+Common candidates in model ports include unusual fused projections, codec quantizer distance/search, recurrent scan, specialized convolution/upsampling, PyTorch-style spatial or volume sampling, sparse expert dispatch, and streaming overlap-add. None is automatically worthwhile.
 
 For MoE, `gather_mm`/`gather_qmm` are native indexed matmul paths, while `segmented_mm` and block-masked MoE layouts need an oracle and shape legality check before being advertised as supported.
+
+For `grid_sample`-style ports, write down the exact coordinate order, `align_corners`, padding mode, interpolation mode, dtype, and layout contract. Treat a custom kernel as valid only for the modes it tests; do not silently extend a bilinear/trilinear forward kernel to reflection padding, nearest sampling, or training gradients.
+
+For graph, point-cloud, and scientific ports, treat scatter/segment reductions,
+neighbor search, radius graphs, ragged batching, spherical harmonics, tensor
+products, and energy/force heads as separate validation surfaces. Dense adjacency
+rewrites can be useful for tiny correctness fixtures, but they are not a
+general support claim. Equivariant layers need explicit rotation, reflection,
+translation, and permutation probes before benchmark metrics matter.
 
 ## Anti-patterns
 

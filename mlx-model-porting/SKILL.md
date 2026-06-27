@@ -6,7 +6,7 @@ compatibility: Execution and performance validation require an Apple Silicon Mac
 metadata:
   author: mlx-porting-skill
   version: "0.1.0"
-  last-reviewed: "2026-06-24"
+  last-reviewed: "2026-06-27"
 ---
 
 # MLX model porting and optimization
@@ -26,7 +26,8 @@ Produce a **correct, reproducible, architecture-aware MLX implementation**. Corr
 7. **Do not translate CUDA folklore mechanically.** A CUDA technique is only a research candidate until its Metal/MLX bottleneck and implementation are demonstrated.
 8. **Never hide quality regressions behind throughput.** For audio, language, vision, and generative models, use task-specific quality checks in addition to tensor tolerances.
 9. **Do not publish converted weights without license and provenance checks.** Preserve the original model card, attribution, generation config, tokenizer/processor files, and conversion recipe.
-10. **Daily research automation is review-only.** It may collect and rank candidates, but must not silently rewrite runbooks or merge recommendations.
+10. **Daily research automation is review-only.** It may collect and rank candidates, but must not silently rewrite runbooks or merge recommendations. Use the promotion-review ledger to separate findings ready for skill-update review from validation backlog and rejected leads.
+11. **Experimental approaches require explicit opt-in.** Label unvalidated contributor, blog, paper, or repository learnings as experimental approaches, state the missing validation gate, and ask before helping execute them: “This is an experimental approach. Do you want to try it?” Continue only if the user explicitly says to try it.
 
 ## Workflow
 
@@ -51,6 +52,12 @@ Read [intake and routing](references/intake-and-routing.md). Confirm:
 - target Mac, memory budget, latency/throughput objective, and quality objective.
 
 Do not begin implementation if the architecture, source revision, or evaluation target remains ambiguous. Record uncertainties in `PORT_PLAN.md` rather than guessing.
+
+When the user wants model-specific directions, CLI-style advice, or a UI-style
+“what can I do with this model?” answer, read
+[model advisor playbook](references/model-advisor-playbook.md). Use it to
+produce validated, benchmark-required, experimental, and rejected branches from
+the current research assets before execution.
 
 ### 2. Select the closest proven MLX reference
 
@@ -114,6 +121,8 @@ Create a weight map with source key, target key, source shape, target shape, tra
 python3 scripts/validate_weight_map.py   --source source-manifest.json   --target target-manifest.json   --mapping WEIGHT_MAP.json
 ```
 
+The `inspection.json` emitted by `inspect_model.py` in step 1 is itself a valid `--source` manifest (its `tensors` list carries the source keys and shapes), so no separate source-manifest export is required for the source side.
+
 Never rely on load-time `strict=False` to conceal missing or extra weights. Categorize every exception as intentionally ignored, generated, shared, or unsupported.
 
 ### 6. Pass the parity ladder
@@ -158,6 +167,16 @@ Consult `assets/optimization_guidance.yaml`, `assets/recommendation-taxonomy.yam
 4. [quantization](references/quantization.md)
 5. [training and fine-tuning](references/training-and-finetuning.md)
 
+Before recommending or trying an optimization for a specific model, classify each option:
+
+- **validated locally**: reproduced by a local test, benchmark, or fixture for this skill or the current port;
+- **validated by source or theory**: backed by official MLX/API docs, a pinned implementation, or primary paper, but still requiring local confirmation for the chosen model;
+- **benchmark-required**: safe to try after parity, but no speedup or memory number may be claimed until measured on the target Mac and workload;
+- **experimental approach**: promising from contributor, blog, repository, or research-loop evidence, but not promotion-ready for supported guidance;
+- **rejected/do not use**: incompatible, unsafe, contradicted, license-blocked, CUDA-only, or superseded.
+
+For an experimental approach, run a short plan session first. Say why it is promising, why it is experimental, the required validation and rollback gate, then ask: “This is an experimental approach. Do you want to try it?” If the user does not explicitly agree to try it, keep the approach in the report/backlog and continue only with validated or benchmark-required guidance.
+
 Default order:
 
 1. remove unintended evaluations and host transfers;
@@ -165,11 +184,12 @@ Default order:
 3. use native fused operations and fast SDPA;
 4. reduce allocations and make state/cache updates explicit;
 5. compile stable regions and control recompilation;
-6. chunk prefill/frontends or stream where the architecture permits;
-7. optimize KV/cache policy and batching;
-8. quantize weights, then KV/state if justified;
-9. add speculative or multi-token decoding only for compatible autoregressive paths;
-10. write a custom Metal kernel only after profiling proves a remaining kernel bottleneck.
+6. chunk prefill/frontends or stream activations where the architecture permits;
+7. stream repeated-block weights only for memory-bound diffusion/flow-style ports after eager parity;
+8. optimize KV/cache policy and batching;
+9. quantize weights, then KV/state if justified;
+10. add speculative or multi-token decoding only for compatible autoregressive paths;
+11. write a custom Metal kernel only after profiling proves a remaining kernel bottleneck.
 
 For every change, record hypothesis, diff, correctness result, benchmark result, memory result, quality result, and keep/revert decision.
 
@@ -215,4 +235,5 @@ Stop and report rather than improvising when:
 
 ## Maintenance
 
-For source review, security, and the daily candidate pipeline, read [maintenance and provenance](references/maintenance-and-provenance.md). Run `scripts/audit_skill.py` and `scripts/validate_sources.py` before distributing this skill.
+For source review, security, daily candidates, and broad multi-agent research loops, read [maintenance and provenance](references/maintenance-and-provenance.md) and [deep research loop](references/deep-research-loop.md). Use research-loop gap hints when the worker roster should be selected dynamically from the objective rather than fixed config order, subagent handoff packets and campaign receipts when delegating real researchers, `scripts/run_research_campaign.py` when an explicit local researcher command should execute a campaign wave by wave, `--follow-next-wave-scaffold` when that local campaign should run bounded adaptive follow-up waves after ingest, `--ingest-subagent-results` when separately spawned researchers have written their result files, worker-authored blog ingestion when researchers write to `MLX_RESEARCH_BLOG_PATH`, `--require-worker-blog-contract` when incomplete worker blogs should fail a campaign after receipts are written, `--require-explicit-sampling-receipts` when matched planned targets must be backed by worker-declared target receipts, `--iterations` when held or needs-validation findings should drive follow-up sampling, post-ingest `next_wave_scaffold` receipts when an external dispatcher needs to create the next adaptive wave from current gap hints, `--until-review-gate` when that loop should stop after enough sampled evidence is returned, `--executor-workers` only for explicit local review workers that preserve receipts, sampling coverage, evidence-matrix, and learning-dossier receipts to distinguish matched targets, substitutions, repeated sources, thin lanes, cross-agent citation links, learned findings, validation backlog, and next research actions, review gates when a deep run must prove minimum sampled breadth before skill updates, and the promotion-review ledger when deciding which findings can move toward asset/runbook edits. Run `scripts/audit_skill.py` and `scripts/validate_sources.py` before distributing this skill.
+When `assets/architectures.yaml` changes, keep the golden scenario gate in `tests/test_scenarios.py` at full family coverage.

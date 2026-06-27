@@ -1,0 +1,14 @@
+{
+  "name": "graph-message-passing",
+  "fixture": "models/graph_message_passing",
+  "expected_family": "graph-message-passing",
+  "expected_runbook": "references/runbook-graph-message-passing.md",
+  "expected_weight_keys": [
+    "node_encoder.weight",
+    "convs.0.lin.weight",
+    "classifier.weight"
+  ],
+  "optimization_must_include": "compile-stable-region",
+  "optimization_must_exclude": "fast-sdpa",
+  "seeded_parity_bug": {"shape": [5, 8], "delta": 2.75}
+}

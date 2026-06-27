@@ -17,6 +17,7 @@ Record:
 - transformer family, cache, and positional encoding;
 - stopping rules and length/duration controls;
 - codec/vocoder decode pipeline;
+- optional frontend dependencies such as language normalizers, phonemizers, tokenizers, and external encoders;
 - streaming unit and minimum lookahead.
 
 ## Source oracle checkpoints
@@ -60,6 +61,7 @@ Capture:
 - semantic and acoustic rates confused;
 - text/reference prompt template differs;
 - reference audio resampling/loudness differs;
+- optional dependency path changes frontend output, language handling, or compressed audio output;
 - independent stream caches advanced inconsistently;
 - stopping one stream prematurely;
 - sampling parameters shared when source uses per-stream settings;
@@ -81,6 +83,7 @@ Capture:
 ## Quality and performance gates
 
 - token/logit parity before waveform review;
+- dependency matrix for optional language/frontend/compression paths;
 - intelligibility, speaker similarity, duration, language, and prosody checks;
 - no codebook/delay corruption under long generation;
 - time to first audio, steady RTF, and total RTF reported separately;

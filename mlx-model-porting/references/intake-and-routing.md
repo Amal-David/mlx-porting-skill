@@ -22,7 +22,23 @@ Create one immutable record before coding:
 Do not import the model package during initial inspection. Read:
 
 - `config.json`, `generation_config.json`, processor/preprocessor configs;
-- safetensors headers and shard index;
+- safetensors headers and shard index, with a checkpoint-only hold when
+  `config.json`, tokenizer/processor metadata, or provenance sidecars are
+  missing;
+- ONNX `ModelProto` metadata: IR version, opsets, graph inputs/outputs,
+  initializers, node operator/domain counts, external-data references, and
+  conservative operator coverage reports with unsupported-op hold conditions;
+- GGUF headers and metadata: version, metadata keys, architecture, tokenizer
+  model, source/base-model provenance keys, file type, quantization version, and
+  tensor table;
+- Flax/Orbax checkpoint metadata: msgpack artifacts, checkpoint metadata files,
+  tree paths, and params-tree hold conditions;
+- TensorFlow/Keras metadata: SavedModel signature keys, method names, variable
+  file presence, static TensorFlow operator names, Keras archive config, layer
+  classes, layer coverage reports, and weight members;
+- Core ML package metadata: package manifest version, root model identifier,
+  model files, weight files, and an explicit unavailable operator-coverage
+  report until Core ML spec decoding exists;
 - repository tree and Python filenames;
 - model card frontmatter and license files;
 - `auto_map`, custom architecture names, and nonstandard config keys;
@@ -30,6 +46,25 @@ Do not import the model package during initial inspection. Read:
 - tied embeddings, shared submodules, and adapter metadata.
 
 Run `scripts/inspect_model.py`. Network download is opt-in.
+
+ONNX, GGUF, Flax/Orbax, TensorFlow SavedModel, Keras archive, and Core ML
+package support here is static intake only. It can identify routing signals and
+hold conditions, but it is not conversion support. Before using any of these
+formats for a port, record unsupported operators, source/base-model provenance,
+tokenizer or processor compatibility, source-framework oracle outputs, and an
+MLX parity fixture.
+
+Static coverage reports are conservative. A listed operator or layer only means
+the name maps to ordinary MLX primitives during triage; it does not prove shape,
+dtype, broadcasting, layout, control-flow, preprocessing, or numerical parity.
+Likewise, recognizable safetensors weight keys may produce architecture
+candidates, but a safetensors-only checkpoint must stay blocked until config,
+tokenizer or processor metadata, license/provenance, and a source oracle exist.
+
+When a source-format manifest exposes tensor shapes, such as ONNX initializers
+or GGUF tensor tables, it may feed `validate_weight_map.py` for deterministic
+shape coverage. Formats without static tensor shapes must fail loud instead of
+pretending coverage is complete.
 
 ## Architecture routing signals
 

@@ -1,0 +1,14 @@
+{
+  "name": "autoregressive-audio-lm",
+  "fixture": "models/autoregressive_audio_lm",
+  "expected_family": "autoregressive-audio-lm",
+  "expected_runbook": "references/runbook-autoregressive-audio.md",
+  "expected_weight_keys": [
+    "semantic.talker.layers.0.self_attn.q_proj.weight",
+    "audio_head.weight",
+    "speech_embedding.weight"
+  ],
+  "optimization_must_include": "qwen3-tts-batch-generation",
+  "optimization_must_exclude": "fast-sdpa",
+  "seeded_parity_bug": {"shape": [3, 5], "delta": 7.0}
+}

@@ -21,7 +21,7 @@ This repository is deliberately **not** a single giant prompt. It has four layer
 - neural audio codecs, autoregressive audio LMs, flow/diffusion TTS, vocoders, ASR, streaming speech, and separation;
 - weight/KV/mixed-bit quantization, prompt caching, continuous batching, speculative decoding, and serving;
 - benchmark gates that prevent unsupported speedup claims;
-- a review-only daily update pipeline that never auto-merges research changes.
+- review-only daily and deep-research loops that never auto-merge research changes.
 
 ## Install
 
@@ -51,13 +51,33 @@ Then ask the agent:
 
 > Use the MLX model porting skill. Port this model to MLX, establish source parity first, and optimize only through benchmarked changes.
 
+## Try it offline (no model download, no Apple Silicon, no network)
+
+The repository ships tiny synthetic fixtures, so you can exercise the whole static pipeline immediately:
+
+```bash
+python3 mlx-model-porting/scripts/inspect_model.py tests/fixtures/models/decoder --output /tmp/inspection.json
+python3 mlx-model-porting/scripts/make_port_plan.py /tmp/inspection.json --output /tmp/PORT_PLAN.md
+python3 mlx-model-porting/scripts/recommend_optimizations.py /tmp/inspection.json --markdown /tmp/OPTIMIZATIONS.md
+```
+
+Expected results for this fixture:
+
+- `inspection.json` → `recommended_family: dense-decoder-transformer`, `recommended_runbook: references/runbook-decoder-transformer.md`;
+- `OPTIMIZATIONS.md` lists `fast-sdpa` and `uniform-kv-quantization` as ready candidates and `cuda-graphs-decode-capture` under **Rejected for MLX (do not port)**.
+
+This exact flow — routing, weight-key coverage, seeded-parity-bug detection, and optimization inclusion/exclusion — is guarded end to end by `tests/test_scenarios.py`.
+
 ## Validation
 
 ```bash
 python3 mlx-model-porting/scripts/audit_skill.py --strict mlx-model-porting
 python3 mlx-model-porting/scripts/validate_sources.py mlx-model-porting
+python3 mlx-model-porting/scripts/manifest.py check
 python3 -m unittest discover -s tests -v
 ```
+
+`VALIDATION.md` states exactly what these offline gates prove versus what still requires an Apple Silicon Mac or network access — readiness is intentionally not overclaimed.
 
 When `skills-ref` is installed, also run:
 
@@ -69,7 +89,9 @@ skills-ref validate ./mlx-model-porting
 
 `RESEARCH_REPORT.md` explains the landscape and design. `EVIDENCE_INDEX.md` renders the complete source catalogue, while `mlx-model-porting/assets/sources.yaml` is the machine-readable evidence index with review depth. A source marked `indexed` has been catalogued but must not be represented as fully reviewed. A source marked `synthesized` directly informed a runbook or decision rule.
 
-Current corpus review date: **2026-06-24**.
+For broad ecosystem research, use `mlx-model-porting/scripts/research_loop.py`. It generates bounded researcher assignments, can dynamically choose agents from objective terms and `--gap-hint` inputs, writes subagent handoff packets and campaign receipts, can run bounded local executor workers or ingest externally written subagent results, ingests returned findings and worker-authored blogs, validates blog-section contracts while preserving generated fallbacks, validates optional explicit sampling-target receipts, and emits review-only `synthesis`, sampling coverage, cross-agent evidence matrix, promotion-review ledger, plus fixed or review-gate-adaptive multi-iteration `loop` receipts with aggregate promotion-review rollups, loop-level learning dossiers, and post-ingest `next_wave_scaffold` commands for adaptive external dispatch under `mlx-model-porting/research-runs/` without modifying recommendation assets automatically. Use `mlx-model-porting/scripts/run_research_campaign.py` when an explicit local researcher command should execute the campaign receipt wave by wave, preserve `campaign-run` receipts, and optionally follow next-wave scaffold receipts for bounded adaptive local loops.
+
+Current corpus review date: **2026-06-27**.
 
 ## Versioning
 

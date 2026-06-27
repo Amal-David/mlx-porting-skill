@@ -68,6 +68,12 @@ Each mapping entry should record:
 
 Model-specific `sanitize()` functions are useful, but the transformations must remain testable and documented.
 
+`validate_weight_map.py` accepts normal inspection reports with safetensors
+headers and static source-format reports that expose tensor shapes, currently
+ONNX initializers and GGUF tensor tables. That validation proves deterministic
+shape coverage only; it does not prove operator lowering, source-framework
+behavior, or MLX numeric parity.
+
 ## Completion criteria for the minimal port
 
 - all required weights accounted for;

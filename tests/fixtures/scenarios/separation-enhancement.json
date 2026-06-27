@@ -1,0 +1,14 @@
+{
+  "name": "separation-enhancement",
+  "fixture": "models/separation_enhancement",
+  "expected_family": "separation-enhancement",
+  "expected_runbook": "references/runbook-separation-enhancement.md",
+  "expected_weight_keys": [
+    "mask.estimator.weight",
+    "stft.proj.weight",
+    "encoder.layers.0.conv.weight"
+  ],
+  "optimization_must_include": "compile-stable-region",
+  "optimization_must_exclude": "fast-sdpa",
+  "seeded_parity_bug": {"shape": [2, 2, 3], "delta": 4.0}
+}

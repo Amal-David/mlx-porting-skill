@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "reviewed": "2026-06-23",
+  "reviewed": "2026-06-27",
   "families": [
     {
       "id": "dense-decoder-transformer",
@@ -135,6 +135,122 @@
       ],
       "state": "usually stateless full-sequence encoder",
       "notes": "Modality-specific frontends may require additional runbooks."
+    },
+    {
+      "id": "non-generative-cv-backbone",
+      "runbook": "references/runbook-non-generative-cv.md",
+      "targets": [
+        "standalone-mlx"
+      ],
+      "model_type_aliases": [
+        "resnet",
+        "convnext",
+        "efficientnet",
+        "swin",
+        "beit"
+      ],
+      "class_patterns": [
+        "ForImageClassification",
+        "ImageClassification",
+        "ConvNext",
+        "ResNet",
+        "EfficientNet"
+      ],
+      "config_signals": [
+        "image_size",
+        "num_channels",
+        "num_labels",
+        "id2label"
+      ],
+      "weight_signals": [
+        "conv1.weight",
+        "features.0",
+        "stages.0",
+        "classifier.weight"
+      ],
+      "state": "stateless image backbone plus classifier or embedding head",
+      "notes": "Backbone/classifier and feature-extraction only; detection, segmentation, promptable masks, OCR, depth, and pose need separate CV runbooks and fixtures."
+    },
+    {
+      "id": "graph-message-passing",
+      "runbook": "references/runbook-graph-message-passing.md",
+      "targets": [
+        "standalone-mlx"
+      ],
+      "model_type_aliases": [
+        "gcn",
+        "graphsage",
+        "gat",
+        "gin",
+        "mpnn",
+        "graph_neural_network"
+      ],
+      "class_patterns": [
+        "GCN",
+        "GraphSAGE",
+        "GAT",
+        "GIN",
+        "MessagePassing",
+        "GraphNeuralNetwork"
+      ],
+      "config_signals": [
+        "num_node_features",
+        "num_edge_features",
+        "num_layers",
+        "aggregation",
+        "add_self_loops"
+      ],
+      "weight_signals": [
+        "node_encoder",
+        "edge_encoder",
+        "convs.0",
+        "message_mlp",
+        "classifier.weight"
+      ],
+      "state": "graph topology plus node/edge feature tensors; usually stateless per graph",
+      "notes": "GCN/GAT/GraphSAGE-style message passing only; point-cloud, equivariant, protein, chemistry, and energy/force scientific models need separate fixtures and gates."
+    },
+    {
+      "id": "time-series-forecasting",
+      "runbook": "references/runbook-time-series-forecasting.md",
+      "targets": [
+        "standalone-mlx"
+      ],
+      "model_type_aliases": [
+        "time_series_transformer",
+        "timeseriestransformer",
+        "chronos",
+        "timesfm",
+        "patchtst",
+        "informer",
+        "autoformer",
+        "forecasting"
+      ],
+      "class_patterns": [
+        "TimeSeriesTransformer",
+        "Forecasting",
+        "Chronos",
+        "TimesFM",
+        "PatchTST",
+        "Informer",
+        "Autoformer"
+      ],
+      "config_signals": [
+        "context_length",
+        "prediction_length",
+        "lags_sequence",
+        "num_time_features",
+        "scaling"
+      ],
+      "weight_signals": [
+        "time_feature_projection",
+        "past_value_embedding",
+        "encoder.layers.0",
+        "decoder.layers.0",
+        "distribution_projector"
+      ],
+      "state": "forecast context windows, covariates, scaler state, and prediction horizon",
+      "notes": "Forecasting only; tabular, ranking, recommender, and generic structured-data loaders need separate fixtures and gates."
     },
     {
       "id": "encoder-decoder-transformer",

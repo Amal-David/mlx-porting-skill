@@ -23,12 +23,57 @@ def parse_args() -> argparse.Namespace:
 
 def tensor_map(data: Any) -> dict[str, dict[str, Any]]:
     if isinstance(data, dict) and isinstance(data.get("tensors"), list):
-        return {str(x["key"]): x for x in data["tensors"] if isinstance(x, dict) and "key" in x}
+        tensors = {str(x["key"]): x for x in data["tensors"] if isinstance(x, dict) and "key" in x}
+        if tensors or "source_format_summary" not in data:
+            return tensors
     if isinstance(data, dict) and isinstance(data.get("tensors"), dict):
-        return {str(k): v for k, v in data["tensors"].items() if isinstance(v, dict)}
+        tensors = {str(k): v for k, v in data["tensors"].items() if isinstance(v, dict)}
+        if tensors or "source_format_summary" not in data:
+            return tensors
+    if isinstance(data, dict) and isinstance(data.get("source_format_summary"), dict):
+        tensors = source_format_tensor_map(data["source_format_summary"])
+        if tensors:
+            return tensors
+        raise SkillError("Source-format manifests do not expose static tensor shapes usable for weight-map validation")
     if isinstance(data, dict) and all(isinstance(v, dict) and "shape" in v for v in data.values()):
         return {str(k): v for k, v in data.items()}
     raise SkillError("Manifest must contain tensors as a list of {key, shape} or a key->spec mapping")
+
+
+def source_format_tensor_map(summary: dict[str, Any]) -> dict[str, dict[str, Any]]:
+    tensors: dict[str, dict[str, Any]] = {}
+    manifests = summary.get("manifests", [])
+    if not isinstance(manifests, list):
+        return tensors
+    for manifest in manifests:
+        if not isinstance(manifest, dict):
+            continue
+        fmt = manifest.get("format")
+        if fmt == "onnx":
+            for item in manifest.get("graph", {}).get("initializers", []):
+                if not isinstance(item, dict) or not item.get("name"):
+                    continue
+                shape = item.get("shape")
+                if isinstance(shape, list) and all(isinstance(x, int) for x in shape):
+                    tensors[str(item["name"])] = {
+                        "key": str(item["name"]),
+                        "shape": list(shape),
+                        "dtype": item.get("dtype"),
+                        "source_format": "onnx",
+                    }
+        elif fmt == "gguf":
+            for item in manifest.get("tensors", []):
+                if not isinstance(item, dict) or not item.get("name"):
+                    continue
+                shape = item.get("shape")
+                if isinstance(shape, list) and all(isinstance(x, int) for x in shape):
+                    tensors[str(item["name"])] = {
+                        "key": str(item["name"]),
+                        "shape": list(shape),
+                        "dtype": item.get("type"),
+                        "source_format": "gguf",
+                    }
+    return tensors
 
 
 def shape_of(spec: dict[str, Any]) -> list[int]:

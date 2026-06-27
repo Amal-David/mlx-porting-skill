@@ -1,0 +1,20 @@
+meta_graphs {
+  graph_def {
+    node { name: "matmul" op: "MatMul" }
+    node { name: "nms" op: "NonMaxSuppressionV5" }
+  }
+  signature_def {
+    key: "serving_default"
+    value {
+      inputs {
+        key: "input_ids"
+        value { name: "serving_default_input_ids:0" dtype: DT_FLOAT }
+      }
+      outputs {
+        key: "logits"
+        value { name: "StatefulPartitionedCall:0" dtype: DT_FLOAT }
+      }
+      method_name: "tensorflow/serving/predict"
+    }
+  }
+}

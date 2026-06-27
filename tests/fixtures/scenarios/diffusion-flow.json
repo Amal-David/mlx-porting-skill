@@ -1,0 +1,14 @@
+{
+  "name": "diffusion-flow",
+  "fixture": "models/diffusion_flow",
+  "expected_family": "diffusion-flow",
+  "expected_runbook": "references/runbook-diffusion-flow.md",
+  "expected_weight_keys": [
+    "time_embedding.linear_1.weight",
+    "transformer_blocks.0.attn.to_q.weight",
+    "down_blocks.0.resnets.0.conv1.weight"
+  ],
+  "optimization_must_include": "block-weight-streaming",
+  "optimization_must_exclude": "qwen3-tts-batch-generation",
+  "seeded_parity_bug": {"shape": [2, 3, 2], "delta": 6.0}
+}

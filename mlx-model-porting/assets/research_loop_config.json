@@ -1,0 +1,428 @@
+{
+  "schema_version": 1,
+  "review_only": true,
+  "default_agent_count": 6,
+  "source_lanes": [
+    {
+      "id": "official_docs",
+      "title": "Official Apple and MLX documentation",
+      "examples": [
+        "https://ml-explore.github.io/mlx/build/html/index.html",
+        "https://developer.apple.com/metal/"
+      ],
+      "planner_keywords": [
+        "api",
+        "docs",
+        "kernel",
+        "metal",
+        "runtime",
+        "packaging",
+        "fallback"
+      ],
+      "sample_targets": [
+        {
+          "title": "MLX documentation index",
+          "kind": "official-doc",
+          "url": "https://ml-explore.github.io/mlx/build/html/index.html",
+          "sampling_goal": "Confirm supported MLX APIs and current behavior before promoting guidance."
+        },
+        {
+          "title": "MLX custom Metal kernels",
+          "kind": "official-doc",
+          "url": "https://ml-explore.github.io/mlx/build/html/dev/custom_metal_kernels.html",
+          "sampling_goal": "Check kernel API constraints, fallback expectations, and validation caveats."
+        },
+        {
+          "title": "Apple Metal developer documentation",
+          "kind": "official-doc",
+          "url": "https://developer.apple.com/metal/",
+          "sampling_goal": "Verify Apple runtime and packaging constraints that affect custom kernels."
+        }
+      ],
+      "evidence_role": "supported API, runtime behavior, packaging, and validation contract"
+    },
+    {
+      "id": "papers",
+      "title": "Papers and technical reports",
+      "examples": [
+        "arXiv",
+        "conference proceedings",
+        "model technical reports"
+      ],
+      "planner_keywords": [
+        "paper",
+        "architecture",
+        "algorithm",
+        "metric",
+        "evaluation",
+        "quality"
+      ],
+      "sample_targets": [
+        {
+          "title": "arXiv MLX framework search",
+          "kind": "paper-search",
+          "url": "https://arxiv.org/search/?query=MLX+framework&searchtype=all",
+          "sampling_goal": "Find MLX-specific papers and separate claims from reproducible MLX evidence."
+        },
+        {
+          "title": "arXiv on-device transformer search",
+          "kind": "paper-search",
+          "url": "https://arxiv.org/search/?query=on-device+transformer+inference&searchtype=all",
+          "sampling_goal": "Find architecture and metric gaps relevant to local Apple-silicon ports."
+        },
+        {
+          "title": "Papers with Code MLX search",
+          "kind": "paper-index",
+          "url": "https://paperswithcode.com/search?q=MLX",
+          "sampling_goal": "Identify paper-linked implementations that need source and license review."
+        }
+      ],
+      "evidence_role": "architecture semantics, quality metrics, and algorithmic constraints"
+    },
+    {
+      "id": "hugging_face",
+      "title": "Hugging Face model and library metadata",
+      "examples": [
+        "model cards",
+        "library tags",
+        "Space demos",
+        "dataset cards"
+      ],
+      "planner_keywords": [
+        "huggingface",
+        "hf",
+        "model-card",
+        "task",
+        "license",
+        "ranking",
+        "recommender",
+        "tabular",
+        "forecasting"
+      ],
+      "sample_targets": [
+        {
+          "title": "Hugging Face MLX model search",
+          "kind": "model-index",
+          "url": "https://huggingface.co/models?search=mlx",
+          "sampling_goal": "Sample model cards, task tags, licenses, library tags, and artifact shapes."
+        },
+        {
+          "title": "mlx-community organization",
+          "kind": "model-index",
+          "url": "https://huggingface.co/mlx-community",
+          "sampling_goal": "Track common publication metadata and model families in MLX conversions."
+        },
+        {
+          "title": "Hugging Face Transformers MLX search",
+          "kind": "docs-search",
+          "url": "https://huggingface.co/docs/transformers/search?query=mlx",
+          "sampling_goal": "Check current library surfaces before relying on ecosystem guidance."
+        }
+      ],
+      "evidence_role": "model popularity, artifact shape, license, config, tokenizer, and task coverage"
+    },
+    {
+      "id": "packages",
+      "title": "Package registries and release metadata",
+      "examples": [
+        "PyPI",
+        "conda-forge",
+        "Apple package docs"
+      ],
+      "planner_keywords": [
+        "package",
+        "pypi",
+        "install",
+        "dependency",
+        "release",
+        "version",
+        "registry"
+      ],
+      "sample_targets": [
+        {
+          "title": "PyPI mlx metadata",
+          "kind": "package-metadata",
+          "url": "https://pypi.org/pypi/mlx/json",
+          "sampling_goal": "Capture current release metadata before changing base MLX guidance."
+        },
+        {
+          "title": "PyPI mlx-lm metadata",
+          "kind": "package-metadata",
+          "url": "https://pypi.org/pypi/mlx-lm/json",
+          "sampling_goal": "Check CLI and converter package drift for language-model ports."
+        },
+        {
+          "title": "PyPI mlx-vlm metadata",
+          "kind": "package-metadata",
+          "url": "https://pypi.org/pypi/mlx-vlm/json",
+          "sampling_goal": "Check multimodal package drift and optional dependency surfaces."
+        },
+        {
+          "title": "PyPI mlx-audio metadata",
+          "kind": "package-metadata",
+          "url": "https://pypi.org/pypi/mlx-audio/json",
+          "sampling_goal": "Check audio model package drift, quantization modes, and CLI surfaces."
+        }
+      ],
+      "evidence_role": "install surfaces, version drift, dependency boundaries, and release cadence"
+    },
+    {
+      "id": "technical_blogs",
+      "title": "Technical blogs and engineering reports",
+      "examples": [
+        "vendor engineering blogs",
+        "maintainer posts",
+        "benchmark writeups"
+      ],
+      "planner_keywords": [
+        "blog",
+        "benchmark",
+        "writeup",
+        "practitioner",
+        "production",
+        "caveat"
+      ],
+      "sample_targets": [
+        {
+          "title": "Apple Machine Learning Research",
+          "kind": "technical-blog-index",
+          "url": "https://machinelearning.apple.com/",
+          "sampling_goal": "Find Apple-authored implementation constraints or benchmark caveats."
+        },
+        {
+          "title": "MLX examples discussions and notes",
+          "kind": "maintainer-notes",
+          "url": "https://ml-explore.github.io/mlx-examples/",
+          "sampling_goal": "Find maintained examples that expose operational or benchmark details."
+        }
+      ],
+      "evidence_role": "implementation details, benchmark caveats, and production constraints"
+    },
+    {
+      "id": "community_discussions",
+      "title": "Community discussions",
+      "examples": [
+        "forums",
+        "Discord exports when supplied",
+        "Reddit",
+        "issue discussions"
+      ],
+      "planner_keywords": [
+        "community",
+        "forum",
+        "reddit",
+        "discord",
+        "pain",
+        "issue"
+      ],
+      "sample_targets": [
+        {
+          "title": "Apple Developer Forums MLX search",
+          "kind": "forum-search",
+          "url": "https://developer.apple.com/forums/search/?q=MLX",
+          "sampling_goal": "Collect pain points and leads without promoting them as supported guidance."
+        },
+        {
+          "title": "LocalLLaMA MLX search",
+          "kind": "community-search",
+          "url": "https://www.reddit.com/r/LocalLLaMA/search/?q=MLX&restrict_sr=1",
+          "sampling_goal": "Sample user pain points, hardware caveats, and candidate follow-up repos."
+        }
+      ],
+      "evidence_role": "pain points and candidate leads only; never sufficient for supported guidance"
+    },
+    {
+      "id": "repositories",
+      "title": "Repository source evidence",
+      "examples": [
+        "official repos",
+        "third-party implementations"
+      ],
+      "planner_keywords": [
+        "github",
+        "repository",
+        "repo",
+        "implementation",
+        "contributor",
+        "tests",
+        "conversion"
+      ],
+      "sample_targets": [
+        {
+          "title": "ml-explore/mlx",
+          "kind": "repository",
+          "url": "https://github.com/ml-explore/mlx",
+          "sampling_goal": "Prefer official implementation and tests for supported MLX behavior."
+        },
+        {
+          "title": "ml-explore/mlx-lm",
+          "kind": "repository",
+          "url": "https://github.com/ml-explore/mlx-lm",
+          "sampling_goal": "Inspect official language-model conversion and serving patterns."
+        },
+        {
+          "title": "ml-explore/mlx-examples",
+          "kind": "repository",
+          "url": "https://github.com/ml-explore/mlx-examples",
+          "sampling_goal": "Inspect maintained examples for architecture and validation patterns."
+        }
+      ],
+      "evidence_role": "implementation proof, tests, conversion scripts, and benchmark harnesses"
+    },
+    {
+      "id": "repo_local_audit",
+      "title": "Repo-local coverage audit",
+      "examples": [
+        "existing runbooks",
+        "validators",
+        "fixtures",
+        "tests"
+      ],
+      "planner_keywords": [
+        "backlog",
+        "coverage",
+        "validation",
+        "fixture",
+        "runbook",
+        "gap",
+        "ranking",
+        "recommender",
+        "tabular",
+        "forecasting"
+      ],
+      "sample_targets": [
+        {
+          "title": "Research backlog",
+          "kind": "local-file",
+          "path": "assets/research_backlog.json",
+          "sampling_goal": "Keep live research tied to current validated and unvalidated gaps."
+        },
+        {
+          "title": "Validation contract",
+          "kind": "local-file",
+          "path": "../VALIDATION.md",
+          "sampling_goal": "Check whether a finding has an existing pass/fail gate."
+        },
+        {
+          "title": "Tooling tests",
+          "kind": "local-file",
+          "path": "../tests/test_tooling.py",
+          "sampling_goal": "Find harness behavior that needs targeted regression tests."
+        }
+      ],
+      "evidence_role": "coverage gaps, missing gates, and local validation debt"
+    }
+  ],
+  "personas": [
+    {
+      "id": "official-docs-cartographer",
+      "title": "Official Docs Cartographer",
+      "source_lanes": [
+        "official_docs",
+        "packages"
+      ],
+      "mission": "Find MLX or Apple-supported APIs, runtime constraints, packaging rules, and validation gates that should constrain porting guidance."
+    },
+    {
+      "id": "paper-architecture-scout",
+      "title": "Paper Architecture Scout",
+      "source_lanes": [
+        "papers",
+        "technical_blogs"
+      ],
+      "mission": "Find architecture-specific algorithm constraints and evaluation methods for model families the skill supports or should support."
+    },
+    {
+      "id": "huggingface-ecosystem-sampler",
+      "title": "Hugging Face Ecosystem Sampler",
+      "source_lanes": [
+        "hugging_face"
+      ],
+      "mission": "Sample model cards, library tags, downloads, tasks, and license metadata to identify porting demand and artifact shapes."
+    },
+    {
+      "id": "package-registry-scout",
+      "title": "Package Registry Scout",
+      "source_lanes": [
+        "packages",
+        "repositories"
+      ],
+      "mission": "Track packages and release metadata that change install, conversion, runtime, or optional dependency guidance."
+    },
+    {
+      "id": "practitioner-blog-miner",
+      "title": "Practitioner Blog Miner",
+      "source_lanes": [
+        "technical_blogs",
+        "community_discussions"
+      ],
+      "mission": "Mine implementation writeups and practitioner reports for leads while keeping unsupported claims out of supported guidance."
+    },
+    {
+      "id": "coverage-skeptic",
+      "title": "Coverage Skeptic",
+      "source_lanes": [
+        "official_docs",
+        "papers",
+        "hugging_face",
+        "packages",
+        "technical_blogs",
+        "community_discussions",
+        "repositories",
+        "repo_local_audit"
+      ],
+      "mission": "Look for blind spots, unsupported architecture families, missing validation gates, and overclaimed optimizations."
+    }
+  ],
+  "decision_states": [
+    {
+      "id": "adopted",
+      "meaning": "Evidence is strong enough to update a concrete skill asset, reference, test, or source record after validation."
+    },
+    {
+      "id": "held",
+      "meaning": "Useful lead, but evidence is not sufficient for supported guidance."
+    },
+    {
+      "id": "rejected",
+      "meaning": "Not relevant, unsafe, contradicted, or incompatible with source-preserving MLX porting."
+    },
+    {
+      "id": "needs-validation",
+      "meaning": "Potentially important, but requires a local MLX path, parity test, benchmark, or license review before use."
+    }
+  ],
+  "finding_required_fields": [
+    "id",
+    "title",
+    "summary",
+    "source_lane",
+    "sources",
+    "decision",
+    "evidence_level",
+    "validation_gate",
+    "affects"
+  ],
+  "review_policy": {
+    "auto_modify_recommendations": false,
+    "auto_promote_sources": false,
+    "execute_remote_model_code": false,
+    "minimum_adoption_evidence": [
+      "source URL and access date",
+      "implementation or official API surface",
+      "validation gate",
+      "rollback or hold condition",
+      "affected skill asset or runbook"
+    ],
+    "community_evidence_limit": "Community discussions can identify leads but cannot by themselves justify supported guidance."
+  },
+  "blog_sections": [
+    "Assignment",
+    "Planned sampling",
+    "Sources sampled",
+    "Sampling coverage",
+    "Candidate findings",
+    "Decision notes",
+    "Open validation"
+  ]
+}

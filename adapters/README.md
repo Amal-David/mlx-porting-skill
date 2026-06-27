@@ -5,7 +5,7 @@
 The safest installer contract is explicit:
 
 ```bash
-python mlx-model-porting/scripts/install_skill.py --dest PATH_TO_CLIENT_SKILLS_ROOT
+python3 mlx-model-porting/scripts/install_skill.py --dest PATH_TO_CLIENT_SKILLS_ROOT
 ```
 
 This avoids silently installing into the wrong profile when products rename or move their discovery roots.

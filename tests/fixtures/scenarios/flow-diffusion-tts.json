@@ -1,0 +1,14 @@
+{
+  "name": "flow-diffusion-tts",
+  "fixture": "models/flow_diffusion_tts",
+  "expected_family": "flow-diffusion-tts",
+  "expected_runbook": "references/runbook-flow-tts.md",
+  "expected_weight_keys": [
+    "transformer.layers.0.attn.q_proj.weight",
+    "duration_predictor.proj.weight",
+    "flow.estimator.weight"
+  ],
+  "optimization_must_include": "block-weight-streaming",
+  "optimization_must_exclude": "fast-sdpa",
+  "seeded_parity_bug": {"shape": [5, 2], "delta": 5.5}
+}

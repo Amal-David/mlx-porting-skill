@@ -10,6 +10,7 @@ Record:
 
 - sample rate, channel handling, resampling and VAD;
 - feature frontend: waveform conv, log-mel, STFT, learned encoder;
+- external runtime dependencies for decode, resampling, VAD, compression, or language-specific normalization;
 - encoder type and subsampling factor;
 - decoder type: CTC, RNNT, attention seq2seq, LLM decoder, NAR editor;
 - tokenizer, language/task prompts, timestamp tokens;
@@ -60,6 +61,7 @@ Capture:
 - no-speech or suppression processors omitted;
 - chunk timestamp offsets drift;
 - text normalization differences mistaken for acoustic errors;
+- optional dependency missing or changed, causing a different frontend or postprocessing path;
 - VAD clipping initial/final phonemes.
 
 ## Optimization ladder
@@ -77,6 +79,7 @@ Capture:
 ## Completion gates
 
 - WER/CER and language coverage versus source;
+- dependency/frontend matrix for each advertised install extra or optional decoder;
 - timestamps and segment boundaries checked;
 - short, long, silence, noise, and code-switch fixtures;
 - offline versus streaming quality and latency;

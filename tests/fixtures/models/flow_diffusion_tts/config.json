@@ -1,0 +1,11 @@
+{
+  "model_type": "f5_tts",
+  "architectures": [
+    "F5TTSModel"
+  ],
+  "mel_dim": 80,
+  "n_mel_channels": 80,
+  "ode_method": "euler",
+  "nfe_step": 16,
+  "license": "mit"
+}
