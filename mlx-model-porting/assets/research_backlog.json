@@ -21,14 +21,15 @@
       "id": "source-formats-beyond-pytorch-hf",
       "priority": "P0",
       "status": "needs-validation",
-      "summary": "Static intake now emits ONNX, GGUF, Flax/Orbax, TensorFlow SavedModel, Keras archive, and Core ML package manifests, with conservative operator/layer coverage reports for ONNX, TensorFlow, and Keras. Safetensors-only hold rules, checkpoint-only edge cases, and deterministic source-to-MLX weight-map coverage remain.",
-      "required_gate": "Static manifest extraction without import or execution: keep ONNX ModelProto/opset/initializer/external-data inspection, GGUF header/metadata/tensor table coverage, Flax/Orbax tree metadata, TensorFlow SavedModel and Keras archive signatures/config, Core ML package metadata, and ONNX/TensorFlow/Keras static coverage reports green; add safetensors-only hold rules, deterministic weight-map coverage, checkpoint-only repo fixtures, and no silent fallback to manual routing.",
+      "summary": "Static intake now emits ONNX, GGUF, Flax/Orbax, TensorFlow SavedModel, Keras archive, Core ML package, and safetensors-checkpoint manifests, with conservative operator/layer coverage reports for ONNX, TensorFlow, and Keras. Deterministic source-to-MLX weight-map coverage and broader checkpoint-only repo fixtures remain.",
+      "required_gate": "Static manifest extraction without import or execution: keep ONNX ModelProto/opset/initializer/external-data inspection, GGUF header/metadata/tensor table coverage, Flax/Orbax tree metadata, TensorFlow SavedModel and Keras archive signatures/config, Core ML package metadata, ONNX/TensorFlow/Keras static coverage reports, and safetensors-only checkpoint holds green; add deterministic weight-map coverage, broader checkpoint-only repo fixtures, and no silent fallback to manual routing.",
       "source": "mlx-model-porting/research-runs/2026-06-27-deep-research-loop/synthesis.json",
       "affected": [
         "references/intake-and-routing.md",
         "scripts/inspect_model.py",
         "tests/fixtures/source_formats",
-        "tests/fixtures/models"
+        "tests/fixtures/models",
+        "tests/test_tooling.py"
       ]
     },
     {

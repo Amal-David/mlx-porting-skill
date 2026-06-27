@@ -22,7 +22,9 @@ Create one immutable record before coding:
 Do not import the model package during initial inspection. Read:
 
 - `config.json`, `generation_config.json`, processor/preprocessor configs;
-- safetensors headers and shard index;
+- safetensors headers and shard index, with a checkpoint-only hold when
+  `config.json`, tokenizer/processor metadata, or provenance sidecars are
+  missing;
 - ONNX `ModelProto` metadata: IR version, opsets, graph inputs/outputs,
   initializers, node operator/domain counts, external-data references, and
   conservative operator coverage reports with unsupported-op hold conditions;
@@ -55,6 +57,9 @@ MLX parity fixture.
 Static coverage reports are conservative. A listed operator or layer only means
 the name maps to ordinary MLX primitives during triage; it does not prove shape,
 dtype, broadcasting, layout, control-flow, preprocessing, or numerical parity.
+Likewise, recognizable safetensors weight keys may produce architecture
+candidates, but a safetensors-only checkpoint must stay blocked until config,
+tokenizer or processor metadata, license/provenance, and a source oracle exist.
 
 ## Architecture routing signals
 

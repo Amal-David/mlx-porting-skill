@@ -426,6 +426,16 @@ meta_graphs {
 
     written.append(write_keras_archive(root / "source_formats" / "keras_archive" / "tiny.keras"))
 
+    safetensors_only_root = root / "source_formats" / "safetensors_only"
+    safetensors_only_tensors = {
+        "model.layers.0.self_attn.q_proj.weight": ("F16", [8, 8]),
+        "model.layers.0.mlp.down_proj.weight": ("F16", [8, 16]),
+        "lm_head.weight": ("F16", [32, 8]),
+    }
+    st_path = safetensors_only_root / "model.safetensors"
+    write_safetensors(st_path, safetensors_only_tensors, "safetensors-only")
+    written.append(st_path)
+
     coreml_root = root / "source_formats" / "coreml_package" / "Tiny.mlpackage"
     written.append(write_text(coreml_root / "Manifest.json", json.dumps({
         "fileFormatVersion": "1.0.0",

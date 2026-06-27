@@ -2,8 +2,8 @@
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
   "version": "0.1.0",
-  "generated_at": "2026-06-27T11:27:41.421149+00:00",
-  "file_count": 170,
+  "generated_at": "2026-06-27T11:32:05.552221+00:00",
+  "file_count": 171,
   "files": [
     {
       "path": ".github/workflows/daily-research.yml",
@@ -62,8 +62,8 @@
     },
     {
       "path": "VALIDATION.md",
-      "size_bytes": 3923,
-      "sha256": "9e1015ce833e7205052ab68b6a3a2f315ef0196cfcce3bbea77a31bc6516fc5f"
+      "size_bytes": 4012,
+      "sha256": "29129d4658ecb3b1fcd49984925a3fdfc015928274c386612c875d65a9f24d69"
     },
     {
       "path": "VERSION",
@@ -162,8 +162,8 @@
     },
     {
       "path": "mlx-model-porting/assets/research_backlog.json",
-      "size_bytes": 6156,
-      "sha256": "2c968181b55bbdad2df08c96a0d2c34f2f2962ccfedd1aa14b7f1f817dbc165f"
+      "size_bytes": 6208,
+      "sha256": "d6db5979e34a56e5ebb51398e13c5e498e4ca4d0e8c70acef5235d9d34090971"
     },
     {
       "path": "mlx-model-porting/assets/research_loop_config.json",
@@ -222,8 +222,8 @@
     },
     {
       "path": "mlx-model-porting/references/intake-and-routing.md",
-      "size_bytes": 4513,
-      "sha256": "00b6772cff5e84e438b6f6eec578890ddc4b1b2a7d6a78f524a73258ecc34562"
+      "size_bytes": 4861,
+      "sha256": "e18e3e5aad3cc5fd19933cb2585b6815df5f2409320599260697c8f3e798173a"
     },
     {
       "path": "mlx-model-porting/references/maintenance-and-provenance.md",
@@ -452,8 +452,8 @@
     },
     {
       "path": "mlx-model-porting/scripts/inspect_model.py",
-      "size_bytes": 56457,
-      "sha256": "5ad69ad2718704f41f35e2e0403f58224eff952fd752bbf15dd3e670b497220b"
+      "size_bytes": 58925,
+      "sha256": "5e29a6669799628dfd9a88f07cc8f0e35ebccd39db62bf12b5196254492d5d09"
     },
     {
       "path": "mlx-model-porting/scripts/install_skill.py",
@@ -507,8 +507,8 @@
     },
     {
       "path": "tests/fixtures/generate_fixtures.py",
-      "size_bytes": 17820,
-      "sha256": "82fe6274f65871bb133564e37683b6ccaee278c24c59851fe7bcc5e27d027c4d"
+      "size_bytes": 18272,
+      "sha256": "16da3a56acf86a1b9d34737d976d79691b61dd4e0e2a9fc7d294237a6153af9b"
     },
     {
       "path": "tests/fixtures/manifests/map.json",
@@ -806,6 +806,11 @@
       "sha256": "420f9110dc29d608ed7b39578c55912bafab7e63c74ac7f36c7480f43fed548c"
     },
     {
+      "path": "tests/fixtures/source_formats/safetensors_only/model.safetensors",
+      "size_bytes": 1166,
+      "sha256": "099d101d5d04b8d247e57d15b022627986a546ea7f3f3b3b092b2cef9fe3d8dc"
+    },
+    {
       "path": "tests/fixtures/source_formats/tensorflow_saved_model/saved_model.pbtxt",
       "size_bytes": 473,
       "sha256": "a5031ed9fc8b833774aaecb8ff23851680f3d75cdd9accc46ac3505729530052"
@@ -852,8 +857,8 @@
     },
     {
       "path": "tests/test_tooling.py",
-      "size_bytes": 48165,
-      "sha256": "8933c01518d23410a2239dbbe07fff4bffba2a3e0e881fc35222c29d4a74f4a3"
+      "size_bytes": 49394,
+      "sha256": "423a378d79b850a2fcc5780b956fbc076a01d382bdfa5aa8be8944f997262afa"
     }
   ]
 }

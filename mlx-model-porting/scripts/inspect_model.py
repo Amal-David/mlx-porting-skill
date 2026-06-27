@@ -1054,6 +1054,50 @@ def inspect_source_formats(root: Path) -> tuple[list[dict[str, Any]], list[str]]
     return manifests, errors
 
 
+def inspect_safetensors_checkpoint(
+    root: Path,
+    configs: dict[str, dict[str, Any]],
+    tensors: list[dict[str, Any]],
+    file_records: list[dict[str, Any]],
+) -> dict[str, Any] | None:
+    safetensors_files = sorted({str(tensor.get("file")) for tensor in tensors if tensor.get("file")})
+    if not safetensors_files or "config.json" in configs:
+        return None
+    paths = {str(rec["path"]) for rec in file_records}
+    config_files = sorted(configs)
+    sidecar_files = sorted(
+        path for path in paths
+        if Path(path).name.lower().startswith(("readme", "license", "copying", "notice"))
+        or path.endswith((".json", ".txt", ".md", ".model", ".tiktoken"))
+    )
+    processor_configs = [
+        name for name in config_files
+        if name in {"tokenizer_config.json", "preprocessor_config.json", "processor_config.json", "feature_extractor_config.json"}
+    ]
+    manifest: dict[str, Any] = {
+        "format": "safetensors-checkpoint",
+        "path": "." if root.is_dir() else root.name,
+        "safetensors_files": safetensors_files,
+        "tensor_count": len(tensors),
+        "tensor_key_samples": [str(tensor.get("key")) for tensor in tensors[:20]],
+        "config_files": config_files,
+        "processor_config_files": processor_configs,
+        "sidecar_files": sidecar_files,
+        "limitations": [
+            "Safetensors headers prove tensor names and shapes only; they do not prove architecture, preprocessing, tokenizer, or source provenance."
+        ],
+        "hold_conditions": [
+            "Missing config.json; architecture routing is weight-key-only and must remain blocked.",
+            "Record source/base-model provenance, license, tokenizer or processor metadata, and source-framework oracle outputs before mapping weights.",
+        ],
+    }
+    if not processor_configs:
+        manifest["hold_conditions"].append("Missing tokenizer/processor metadata; preprocessing and postprocessing cannot be inferred.")
+    if not sidecar_files:
+        manifest["hold_conditions"].append("Missing model card, license, or provenance sidecar files.")
+    return manifest
+
+
 def extract_license(root: Path, configs: dict[str, dict[str, Any]]) -> dict[str, Any]:
     values: list[dict[str, str]] = []
     for name, cfg in configs.items():
@@ -1162,6 +1206,8 @@ def recommendation_blockers(
         if manifest.get("format") == "gguf"
     ):
         blockers.append("GGUF source/base-model provenance is missing or incomplete")
+    if "safetensors-checkpoint" in format_names:
+        blockers.append("safetensors checkpoint is missing required config or provenance metadata")
     if high_risks.intersection({"remote-code", "unsafe-serialization", "no-safe-weights"}):
         blockers.append("high-risk remote-code or unsafe-serialization flags require manual review")
     return blockers
@@ -1219,6 +1265,9 @@ def main() -> int:
         configs = load_configs(root)
         tensors, tensor_metadata, tensor_errors = inspect_tensors(root)
         source_format_manifests, source_format_errors = inspect_source_formats(root)
+        checkpoint_manifest = inspect_safetensors_checkpoint(root, configs, tensors, files)
+        if checkpoint_manifest:
+            source_format_manifests.append(checkpoint_manifest)
         tensor_keys = [t["key"] for t in tensors]
         candidates = architecture_scores(registry, configs, tensor_keys)
         risks = detect_risks(root, configs, files)

@@ -263,6 +263,22 @@ class ToolingTests(unittest.TestCase):
             self.assertIn("Missing source/base-model provenance metadata.", manifest["hold_conditions"])
             self.assertIn("GGUF source/base-model provenance is missing or incomplete", report["recommendation_blockers"])
 
+    def test_static_inspection_holds_safetensors_only_checkpoint(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            output = Path(tmp) / "inspection.json"
+            run_script("inspect_model.py", FIXTURES / "source_formats" / "safetensors_only", "--output", output)
+            report = json.loads(output.read_text())
+            self.assertEqual(report["source_format_summary"]["formats"], ["safetensors-checkpoint"])
+            manifest = report["source_format_summary"]["manifests"][0]
+            self.assertEqual(manifest["format"], "safetensors-checkpoint")
+            self.assertEqual(manifest["safetensors_files"], ["model.safetensors"])
+            self.assertEqual(manifest["tensor_count"], 3)
+            self.assertIn("lm_head.weight", manifest["tensor_key_samples"])
+            self.assertEqual(report["architecture_candidates"][0]["family"], "dense-decoder-transformer")
+            self.assertIsNone(report["recommended_family"])
+            self.assertTrue(any("Missing config.json" in condition for condition in manifest["hold_conditions"]))
+            self.assertIn("safetensors checkpoint is missing required config or provenance metadata", report["recommendation_blockers"])
+
     def test_static_inspection_reports_flax_orbax_source_format_manifest(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             output = Path(tmp) / "inspection.json"
