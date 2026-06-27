@@ -14,7 +14,7 @@ manifest gates. Each item below is enforced by a runnable pass/fail test.
 
 | Claim | Guard |
 |---|---|
-| An agent routes a model to the correct family **and** runbook | `tests/test_scenarios.py` (16/16 declared families with fixtures) |
+| An agent routes a model to the correct family **and** runbook | `tests/test_scenarios.py` (17/17 declared families with fixtures) |
 | Expected source weight keys are present after inspection | `tests/test_scenarios.py` |
 | A **seeded parity bug is caught** by the parity stage | `tests/test_scenarios.py` (compare_tensors must fail) |
 | The right optimizations are recommended and wrong ones are **not** | `tests/test_scenarios.py`, `test_tooling.py` |
@@ -37,8 +37,10 @@ manifest gates. Each item below is enforced by a runnable pass/fail test.
 - Real MLX-vs-PyTorch numeric parity on an actual ported block or model.
 - Latency / throughput / peak-memory benchmarks and any speedup number.
 - Quantization, KV-cache, and speculative-decoding quality on real weights.
-- End-to-end real-model conversion runs for the 16 architecture families; the
+- End-to-end real-model conversion runs for the 17 architecture families; the
   offline scenarios prove routing and guard behavior, not real checkpoint support.
+- Tabular, ranking, and recommender support; the offline forecasting scenario
+  proves only time-series forecasting routing and guards.
 - Dense vision, promptable masks, OCR, depth, and pose support; the offline CV
   backbone scenario proves only image-backbone/classifier routing and guards.
 - Point-cloud, equivariant, protein, chemistry, and energy/force scientific

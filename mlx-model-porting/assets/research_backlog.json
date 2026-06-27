@@ -7,7 +7,7 @@
       "id": "golden-scenarios-all-families",
       "priority": "P0",
       "status": "validated",
-      "summary": "Golden scenarios now cover all 16 declared architecture families with reproducible synthetic fixtures.",
+      "summary": "Golden scenarios now cover all 17 declared architecture families with reproducible synthetic fixtures.",
       "required_gate": "Keep `tests.test_scenarios` green at full family coverage: each declared family must route correctly, select the expected runbook, prove source weight keys, catch a seeded parity bug, and include or exclude one relevant optimization.",
       "source": "mlx-model-porting/research-runs/2026-06-27-deep-research-loop/synthesis.json",
       "affected": [
@@ -85,13 +85,16 @@
       "id": "structured-timeseries-recsys",
       "priority": "P1",
       "status": "needs-validation",
-      "summary": "Live HF sampling found explicit tabular task demand, populated time-series model metadata despite a task-page gap, and a clearer near-term text-ranking lane than a generic recommender claim. Loader families must be split before implementation.",
-      "required_gate": "Create separate fixtures for tabular/skops or deep tabular, Chronos or TimesFM forecasting, cross-encoder text ranking, and later recommender subfamilies. Gates must include scaler/normalizer parity, lag construction, observed-mask handling, context/prediction split, quantile or forecast-patch parity, known-future covariate leakage checks, categorical vocab and missing-value policy, jagged offsets/lengths and embedding pooling parity, pair-score parity, candidate-id versus score-based retrieval checks, NDCG/AUC/top-k/forecast-error task gates, loader family, remote-code risk, and rollback condition.",
+      "summary": "Structured/time-series research now has first offline forecasting routing coverage with a synthetic Time-Series-Transformer-style fixture and runbook. Tabular/skops, deep tabular, text ranking, and recommender subfamilies remain validation backlog.",
+      "required_gate": "Keep the time-series forecasting scenario green, then create separate fixtures for tabular/skops or deep tabular, cross-encoder text ranking, and later recommender subfamilies. Gates must include scaler/normalizer parity, lag construction, observed-mask handling, context/prediction split, quantile or forecast-patch parity, known-future covariate leakage checks, categorical vocab and missing-value policy, jagged offsets/lengths and embedding pooling parity, pair-score parity, candidate-id versus score-based retrieval checks, NDCG/AUC/top-k/forecast-error task gates, loader family, remote-code risk, and rollback condition.",
       "source": "mlx-model-porting/research-runs/2026-06-27-live-multi-source-gap-run/synthesis.json",
       "affected": [
         "assets/architectures.yaml",
+        "references/runbook-time-series-forecasting.md",
         "references/model-support-map.md",
-        "references/parity-and-testing.md"
+        "references/parity-and-testing.md",
+        "tests/fixtures/scenarios/time-series-forecasting.json",
+        "tests/fixtures/models/time_series_forecasting"
       ]
     },
     {

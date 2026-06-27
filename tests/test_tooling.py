@@ -153,7 +153,7 @@ class ToolingTests(unittest.TestCase):
     def test_skill_audit_passes(self) -> None:
         result = run_script("audit_skill.py", SKILL)
         self.assertIn("Audit passed.", result.stdout)
-        self.assertIn("Architecture families: 16", result.stdout)
+        self.assertIn("Architecture families: 17", result.stdout)
 
     def test_source_provenance_validation_passes(self) -> None:
         result = run_script("validate_sources.py", SKILL)

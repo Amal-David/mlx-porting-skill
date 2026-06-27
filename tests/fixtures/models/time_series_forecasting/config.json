@@ -1,0 +1,28 @@
+{
+  "model_type": "time_series_transformer",
+  "architectures": [
+    "TimeSeriesTransformerForPrediction"
+  ],
+  "context_length": 12,
+  "prediction_length": 4,
+  "lags_sequence": [
+    1,
+    2,
+    3,
+    6
+  ],
+  "num_time_features": 3,
+  "num_static_categorical_features": 1,
+  "cardinality": [
+    5
+  ],
+  "input_size": 1,
+  "d_model": 8,
+  "num_heads": 2,
+  "encoder_layers": 1,
+  "decoder_layers": 1,
+  "distribution_output": "student_t",
+  "scaling": "mean",
+  "torch_dtype": "float16",
+  "license": "apache-2.0"
+}

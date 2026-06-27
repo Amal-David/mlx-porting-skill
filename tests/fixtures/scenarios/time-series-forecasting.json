@@ -1,0 +1,14 @@
+{
+  "name": "time-series-forecasting",
+  "fixture": "models/time_series_forecasting",
+  "expected_family": "time-series-forecasting",
+  "expected_runbook": "references/runbook-time-series-forecasting.md",
+  "expected_weight_keys": [
+    "past_value_embedding.weight",
+    "time_feature_projection.weight",
+    "distribution_projector.proj.weight"
+  ],
+  "optimization_must_include": "compile-stable-region",
+  "optimization_must_exclude": "fast-sdpa",
+  "seeded_parity_bug": {"shape": [2, 4, 3], "delta": 2.25}
+}

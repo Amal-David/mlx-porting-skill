@@ -2,8 +2,8 @@
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
   "version": "0.1.0",
-  "generated_at": "2026-06-27T12:17:29.382968+00:00",
-  "file_count": 190,
+  "generated_at": "2026-06-27T12:24:21.846374+00:00",
+  "file_count": 194,
   "files": [
     {
       "path": ".github/workflows/daily-research.yml",
@@ -62,8 +62,8 @@
     },
     {
       "path": "VALIDATION.md",
-      "size_bytes": 4938,
-      "sha256": "56c6a66ccc5745af718d9205b97a5362e91d38daf266b79d845e7054bd8f577d"
+      "size_bytes": 5074,
+      "sha256": "ecbcf709a9cfbe4527665de3ae17d7458f16345b770228796971e54b0296c262"
     },
     {
       "path": "VERSION",
@@ -142,8 +142,8 @@
     },
     {
       "path": "mlx-model-porting/assets/architectures.yaml",
-      "size_bytes": 15541,
-      "sha256": "67d211b5c1aec5aabd735aaed6df730fbf951d2eb6c70a9431e15f81033c0ddc"
+      "size_bytes": 16713,
+      "sha256": "4c12b6dfa79f96165d9f8117be1fa1b9ce99d315145f8965834760d6d1ec1ff5"
     },
     {
       "path": "mlx-model-porting/assets/contributor_learnings.json",
@@ -162,8 +162,8 @@
     },
     {
       "path": "mlx-model-porting/assets/research_backlog.json",
-      "size_bytes": 10045,
-      "sha256": "098d98a6818a86fd29f1a3a3e7af598beacaa2b6b0a2763b52a1c665cbdfd71f"
+      "size_bytes": 10251,
+      "sha256": "adb91ce9c549392a6dfaf9636d2a40b59cdf4acd2a73c3ad1fae5bd2ef683b63"
     },
     {
       "path": "mlx-model-porting/assets/research_loop_config.json",
@@ -232,8 +232,8 @@
     },
     {
       "path": "mlx-model-porting/references/model-support-map.md",
-      "size_bytes": 4519,
-      "sha256": "650e38a429d0ffe08f9fc951c9ae525b972ffdfe0e48e43939e17738f16887b6"
+      "size_bytes": 4714,
+      "sha256": "ea361ddd343a27cc28059e6027968b0336ec50d1d56a64d9a81b704282eb536f"
     },
     {
       "path": "mlx-model-porting/references/packaging-and-publication.md",
@@ -242,8 +242,8 @@
     },
     {
       "path": "mlx-model-porting/references/parity-and-testing.md",
-      "size_bytes": 4846,
-      "sha256": "4160d2599055543357c2d694be3565eecb3dd4491c7baec57f83a036cfeec1ef"
+      "size_bytes": 5057,
+      "sha256": "9b8089838fa24ba55b4cd2f9efd9f0f8fa351571b7671123903fa5de68ff7319"
     },
     {
       "path": "mlx-model-porting/references/porting-core.md",
@@ -329,6 +329,11 @@
       "path": "mlx-model-porting/references/runbook-streaming-speech.md",
       "size_bytes": 4173,
       "sha256": "5e58174f8eb1168ad1c6dec2264c861a7acd79d34e1e7de86b3202dbba6d0373"
+    },
+    {
+      "path": "mlx-model-porting/references/runbook-time-series-forecasting.md",
+      "size_bytes": 3749,
+      "sha256": "46da2ca5b6f64bb183448ce7a3bf3e8a7df848c3bc21bbc31b389338bbfb87a2"
     },
     {
       "path": "mlx-model-porting/references/runbook-vocoder.md",
@@ -572,8 +577,8 @@
     },
     {
       "path": "tests/fixtures/generate_fixtures.py",
-      "size_bytes": 19859,
-      "sha256": "155bba2f0ed52f0dcb02584a117f0ff52379cda67def7e225f332c3ebfd8b76f"
+      "size_bytes": 20994,
+      "sha256": "54019789847527b310fea66e418427436ab12d327b60eda7a190037fd9d0f21a"
     },
     {
       "path": "tests/fixtures/manifests/map.json",
@@ -736,6 +741,16 @@
       "sha256": "d638fa58dc9a3168c182c67a42769836f33add3fee9b1a05817ea979158dd882"
     },
     {
+      "path": "tests/fixtures/models/time_series_forecasting/config.json",
+      "size_bytes": 525,
+      "sha256": "1b1358e24fb4a98fce6feb4a815a3bde55b23b774e66cfc11c21b9dc5b844a75"
+    },
+    {
+      "path": "tests/fixtures/models/time_series_forecasting/model.safetensors",
+      "size_bytes": 902,
+      "sha256": "a064b651d51d5e68a61775b8d8fafd0fb360d1a38b86bb17f0b53d3ec4b70788"
+    },
+    {
       "path": "tests/fixtures/models/unsafe/config.json",
       "size_bytes": 145,
       "sha256": "5276a9e689fc414b775c7113d51f572a91aaa5bb52e7ced461efe2dc5b4ad6be"
@@ -856,6 +871,11 @@
       "sha256": "61be7444d177a81a211321d699b9ccab55e74ba0181cf294f5460c5316e1d1ef"
     },
     {
+      "path": "tests/fixtures/scenarios/time-series-forecasting.json",
+      "size_bytes": 513,
+      "sha256": "6b22c65eb4f5cd1a1cb3af17d8858d2b09efbec11d57f3e43ff2feb1bb024385"
+    },
+    {
       "path": "tests/fixtures/scenarios/vision-language-omni.json",
       "size_bytes": 567,
       "sha256": "dc6aa462220f145bf17042a25075014ec210bd996123d0c04fd2c90cec05c614"
@@ -953,7 +973,7 @@
     {
       "path": "tests/test_tooling.py",
       "size_bytes": 60966,
-      "sha256": "1762af592cd7acab3f9a34016809aec4367e7eef07543202744126a0b85485c3"
+      "sha256": "c4843eb65e64511fd2beba0df56fb5666ae613712488afe966574df9b38ce9c2"
     }
   ]
 }

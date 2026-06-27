@@ -50,10 +50,13 @@ Tensor allclose is not enough when approximations are introduced.
   detection and segmentation; prompt-to-mask IoU for SAM-like models;
   AbsRel/RMSE/delta metrics for depth; COCO OKS/AP for pose; normalized edit
   distance or text-line accuracy for OCR.
-- Structured and forecasting: scaler and lag-construction parity, fixed
+- Time-series forecasting: scaler and lag-construction parity, fixed
   context/prediction splits, quantile or forecast tensor parity, leakage checks
   for known-future covariates, and forecast-error metrics appropriate to the
   source benchmark.
+- Structured and tabular loaders: scaler/normalizer parity, categorical vocab
+  and missing-value policy, preprocessing leakage checks, and task metrics
+  appropriate to the source estimator or deep tabular model.
 - Ranking and recommender subfamilies: pair-score parity, top-k ordering
   stability, NDCG, AUC/AP, retrieval recall, and candidate-id versus score-based
   retrieval checks.
