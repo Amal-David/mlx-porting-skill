@@ -1458,6 +1458,168 @@ def planned_sampling_summary(assignments: list[dict[str, Any]], config: dict[str
     }
 
 
+def evidence_source_key(source: dict[str, Any]) -> str:
+    return normalize_locator(source.get("url")) or normalize_locator(source.get("title"))
+
+
+def build_evidence_matrix(
+    config: dict[str, Any],
+    findings: list[dict[str, Any]],
+    sampling_coverage: dict[str, Any],
+    planned_summary: dict[str, Any],
+) -> dict[str, Any]:
+    lane_ids = [lane["id"] for lane in config["source_lanes"]]
+    source_entries: dict[str, dict[str, Any]] = {}
+    lane_citation_counts: Counter[str] = Counter()
+    lane_unique_sources: dict[str, set[str]] = {lane_id: set() for lane_id in lane_ids}
+    lane_finding_counts: Counter[str] = Counter()
+    lane_sampled_targets: Counter[str] = Counter()
+    decision_counts: Counter[str] = Counter()
+    seen_source_citations: set[tuple[str, str, str]] = set()
+
+    for coverage in sampling_coverage.get("assignments", []):
+        for target in coverage.get("sampled_targets", []):
+            lane_sampled_targets[str(target.get("source_lane", ""))] += 1
+
+    for finding in findings:
+        finding_id = str(finding.get("id", ""))
+        persona_id = str(finding.get("persona_id", ""))
+        source_lane = str(finding.get("source_lane", ""))
+        decision = str(finding.get("decision", ""))
+        lane_finding_counts[source_lane] += 1
+        decision_counts[decision] += 1
+        for source in finding.get("sources", []):
+            if not isinstance(source, dict):
+                continue
+            key = evidence_source_key(source)
+            if not key:
+                continue
+            citation_key = (key, finding_id, persona_id)
+            if citation_key in seen_source_citations:
+                continue
+            seen_source_citations.add(citation_key)
+            lane_citation_counts[source_lane] += 1
+            lane_unique_sources.setdefault(source_lane, set()).add(key)
+            entry = source_entries.setdefault(
+                key,
+                {
+                    "key": key,
+                    "title": source.get("title") or source.get("url") or key,
+                    "url": source.get("url", ""),
+                    "kinds": [],
+                    "accessed_dates": [],
+                    "source_lanes": [],
+                    "source_lane_counts": {},
+                    "decision_counts": {},
+                    "persona_ids": [],
+                    "finding_ids": [],
+                    "findings": [],
+                    "sampled_targets": [],
+                    "citation_count": 0,
+                },
+            )
+            entry["citation_count"] += 1
+            if source.get("kind"):
+                entry["kinds"].append(str(source["kind"]))
+            if source.get("accessed"):
+                entry["accessed_dates"].append(str(source["accessed"]))
+            entry["source_lanes"].append(source_lane)
+            entry["source_lane_counts"][source_lane] = entry["source_lane_counts"].get(source_lane, 0) + 1
+            entry["decision_counts"][decision] = entry["decision_counts"].get(decision, 0) + 1
+            entry["persona_ids"].append(persona_id)
+            entry["finding_ids"].append(finding_id)
+            entry["findings"].append({
+                "id": finding_id,
+                "title": finding.get("title", ""),
+                "decision": decision,
+                "source_lane": source_lane,
+                "persona_id": persona_id,
+            })
+            sampled_target = {
+                "title": source.get("sampled_target_title", ""),
+                "locator": source.get("sampled_target_locator", ""),
+            }
+            if sampled_target["title"] or sampled_target["locator"]:
+                entry["sampled_targets"].append(sampled_target)
+
+    sources = []
+    for entry in source_entries.values():
+        entry["kinds"] = unique_ordered(entry["kinds"])
+        entry["accessed_dates"] = unique_ordered(entry["accessed_dates"])
+        entry["source_lanes"] = unique_ordered(entry["source_lanes"])
+        entry["persona_ids"] = unique_ordered(entry["persona_ids"])
+        entry["finding_ids"] = unique_ordered(entry["finding_ids"])
+        entry["sampled_targets"] = [
+            dict(row)
+            for row in {
+                (target.get("title", ""), target.get("locator", "")): target
+                for target in entry["sampled_targets"]
+            }.values()
+        ]
+        entry["finding_count"] = len(entry["finding_ids"])
+        sources.append(entry)
+    sources.sort(key=lambda row: (-int(row.get("citation_count", 0)), row.get("key", "")))
+
+    planned_targets = planned_summary.get("planned_sample_target_counts", {})
+    lane_rows = []
+    thin_lanes = []
+    uncited_lanes = []
+    for lane_id in lane_ids:
+        planned_count = int(planned_targets.get(lane_id, 0))
+        sampled_count = int(lane_sampled_targets.get(lane_id, 0))
+        citation_count = int(lane_citation_counts.get(lane_id, 0))
+        unique_count = len(lane_unique_sources.get(lane_id, set()))
+        if planned_count and citation_count == 0:
+            status = "uncited"
+        elif planned_count and sampled_count < planned_count:
+            status = "thin"
+        elif citation_count:
+            status = "covered"
+        else:
+            status = "not_planned"
+        lane_row = {
+            "source_lane": lane_id,
+            "planned_target_count": planned_count,
+            "sampled_target_count": sampled_count,
+            "finding_count": int(lane_finding_counts.get(lane_id, 0)),
+            "source_citation_count": citation_count,
+            "unique_source_count": unique_count,
+            "status": status,
+        }
+        lane_rows.append(lane_row)
+        if status == "thin":
+            thin_lanes.append(lane_row)
+        elif status == "uncited":
+            uncited_lanes.append(lane_row)
+
+    return {
+        "schema_version": 1,
+        "review_only": True,
+        "citation_policy": "Repeated source citation is corroboration context only; it does not promote guidance without validation gates.",
+        "unique_source_count": len(sources),
+        "source_citation_count": len(seen_source_citations),
+        "source_lane_counts": {lane_id: int(lane_citation_counts.get(lane_id, 0)) for lane_id in lane_ids},
+        "finding_decision_counts": {state["id"]: int(decision_counts.get(state["id"], 0)) for state in config["decision_states"]},
+        "source_lanes": lane_rows,
+        "thin_source_lanes": thin_lanes,
+        "uncited_source_lanes": uncited_lanes,
+        "top_sources": [
+            {
+                "key": row["key"],
+                "title": row["title"],
+                "url": row["url"],
+                "citation_count": row["citation_count"],
+                "finding_count": row["finding_count"],
+                "source_lanes": row["source_lanes"],
+                "finding_ids": row["finding_ids"],
+                "decision_counts": row["decision_counts"],
+            }
+            for row in sources[:10]
+        ],
+        "sources": sources,
+    }
+
+
 def review_check(name: str, observed: int, required: int, detail: str) -> dict[str, Any]:
     status = "pass" if observed >= required else "fail"
     return {
@@ -1711,6 +1873,8 @@ def summarize(
         review_requirements or {},
     )
     promotion_review = build_promotion_review(config, findings)
+    planned_summary = planned_sampling_summary(assignments, config)
+    evidence_matrix = build_evidence_matrix(config, findings, sampling_coverage, planned_summary)
     return {
         "schema_version": 1,
         "run_id": run_id,
@@ -1726,8 +1890,9 @@ def summarize(
         "sampling_coverage": sampling_coverage,
         "review_gate": review_gate,
         "promotion_review": promotion_review,
+        "evidence_matrix": evidence_matrix,
         "assignment_planner": planner_receipt,
-        **planned_sampling_summary(assignments, config),
+        **planned_summary,
         "decision_counts": decision_counts,
         "adopted": [f for f in findings if f["decision"] == "adopted"],
         "held": [f for f in findings if f["decision"] == "held"],
@@ -2059,6 +2224,7 @@ def write_markdown_summary(output_dir: Path, summary: dict[str, Any]) -> None:
     review_gate = summary.get("review_gate", {})
     promotion_review = summary.get("promotion_review", {})
     blog_contract = summary.get("blog_contract", {})
+    evidence_matrix = summary.get("evidence_matrix", {})
     lines = [
         f"# Research Loop {summary['run_id']}",
         "",
@@ -2102,6 +2268,48 @@ def write_markdown_summary(output_dir: Path, summary: dict[str, Any]) -> None:
     lines.append("- blocked reasons:")
     for reason in review_gate.get("blocked_reasons", []) or ["None"]:
         lines.append(f"  - {reason}")
+    lines.extend([
+        "",
+        "## Evidence Matrix",
+        "- review-only: true",
+        f"- unique sources: {evidence_matrix.get('unique_source_count', 0)}",
+        f"- source citations: {evidence_matrix.get('source_citation_count', 0)}",
+        f"- citation policy: {evidence_matrix.get('citation_policy', 'Repeated source citation is review context only.')}",
+        "",
+        "### Source Lanes",
+    ])
+    lane_rows = []
+    for lane in evidence_matrix.get("source_lanes", []):
+        lane_rows.append(
+            (
+                f"{lane['source_lane']}: {lane['unique_source_count']} unique sources, "
+                f"{lane['source_citation_count']} citations, "
+                f"{lane['sampled_target_count']}/{lane['planned_target_count']} sampled targets "
+                f"({lane['status']})"
+            )
+        )
+    lines.append(markdown_list(lane_rows))
+    lines.extend(["", "### Top Cited Sources"])
+    top_rows = []
+    for source in evidence_matrix.get("top_sources", []):
+        top_rows.append(
+            (
+                f"{source['title']} - {source['citation_count']} citation(s), "
+                f"findings: {', '.join(source.get('finding_ids', [])) or 'none'}"
+            )
+        )
+    lines.append(markdown_list(top_rows))
+    lines.extend(["", "### Thin Source Lanes"])
+    thin_rows = []
+    for lane in evidence_matrix.get("thin_source_lanes", []) + evidence_matrix.get("uncited_source_lanes", []):
+        thin_rows.append(
+            (
+                f"{lane['source_lane']}: {lane['sampled_target_count']}/"
+                f"{lane['planned_target_count']} sampled targets, "
+                f"{lane['source_citation_count']} source citations ({lane['status']})"
+            )
+        )
+    lines.append(markdown_list(thin_rows))
     lines.extend([
         "",
         "## Promotion Review",

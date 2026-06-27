@@ -967,6 +967,13 @@ class ToolingTests(unittest.TestCase):
             self.assertGreater(synthesis["planned_sample_target_counts"]["papers"], 0)
             self.assertEqual(synthesis["sampling_coverage"]["sampled_target_count"], 0)
             self.assertGreater(synthesis["sampling_coverage"]["unsampled_target_count"], 0)
+            self.assertEqual(synthesis["evidence_matrix"]["unique_source_count"], 0)
+            self.assertEqual(synthesis["evidence_matrix"]["source_citation_count"], 0)
+            official_lane = next(
+                lane for lane in synthesis["evidence_matrix"]["source_lanes"]
+                if lane["source_lane"] == "official_docs"
+            )
+            self.assertEqual(official_lane["status"], "uncited")
             self.assertEqual(synthesis["review_gate"]["status"], "pass")
             self.assertIn("assignment_planner", assignments)
             first = assignments["assignments"][0]
@@ -1374,6 +1381,103 @@ class ToolingTests(unittest.TestCase):
             self.assertIn("Candidate findings", blog_text)
             self.assertIn("official-custom-metal-validation", blog_text)
 
+    def test_research_loop_builds_evidence_matrix(self) -> None:
+        with tempfile.TemporaryDirectory(dir=ROOT) as tmp:
+            tmp_path = Path(tmp)
+            shared_source = {
+                "title": "MLX documentation index",
+                "url": "https://ml-explore.github.io/mlx/build/html/index.html",
+                "accessed": "2026-06-27",
+                "kind": "official-doc",
+                "sampled_target_title": "MLX documentation index",
+                "sampled_target_locator": "https://ml-explore.github.io/mlx/build/html/index.html",
+            }
+            fixture = tmp_path / "evidence_matrix.json"
+            fixture.write_text(json.dumps({
+                "agents": [
+                    {
+                        "persona_id": "official-docs-cartographer",
+                        "findings": [
+                            {
+                                "id": "shared-official",
+                                "title": "Shared official source",
+                                "summary": "The shared source is cited by one official-docs finding.",
+                                "source_lane": "official_docs",
+                                "sources": [
+                                    shared_source,
+                                    {
+                                        "title": "MLX custom Metal kernels",
+                                        "url": "https://ml-explore.github.io/mlx/build/html/dev/custom_metal_kernels.html",
+                                        "accessed": "2026-06-27",
+                                        "kind": "official-doc",
+                                        "sampled_target_title": "MLX custom Metal kernels",
+                                        "sampled_target_locator": "https://ml-explore.github.io/mlx/build/html/dev/custom_metal_kernels.html",
+                                    },
+                                ],
+                                "decision": "adopted",
+                                "evidence_level": "deterministic-test-fixture",
+                                "validation_gate": "Evidence matrix rows must preserve source links.",
+                                "affects": ["references/deep-research-loop.md"],
+                                "caveats": ["Repeated citation is not promotion evidence."],
+                                "required_next_validation": "Review the evidence matrix before editing guidance.",
+                            }
+                        ],
+                    },
+                    {
+                        "persona_id": "paper-architecture-scout",
+                        "findings": [
+                            {
+                                "id": "shared-paper",
+                                "title": "Shared source from paper lane",
+                                "summary": "The same source URL can be cited by another researcher and lane.",
+                                "source_lane": "papers",
+                                "sources": [shared_source],
+                                "decision": "held",
+                                "evidence_level": "deterministic-test-fixture",
+                                "validation_gate": "Evidence matrix rows must deduplicate by normalized source locator.",
+                                "affects": ["references/deep-research-loop.md"],
+                                "caveats": ["This proves matrix behavior only."],
+                                "required_next_validation": "Inspect source-lane coverage before promotion.",
+                            }
+                        ],
+                    },
+                ],
+            }), encoding="utf-8")
+            output_dir = tmp_path / "evidence-matrix-run"
+            run_script(
+                "research_loop.py",
+                "--run-id", "evidence-matrix-loop",
+                "--agent-count", 2,
+                "--offline-fixture", fixture,
+                "--output-dir", output_dir,
+            )
+            synthesis = json.loads((output_dir / "synthesis.json").read_text())
+            matrix = synthesis["evidence_matrix"]
+            self.assertTrue(matrix["review_only"])
+            self.assertEqual(matrix["unique_source_count"], 2)
+            self.assertEqual(matrix["source_citation_count"], 3)
+            self.assertEqual(matrix["source_lane_counts"]["official_docs"], 2)
+            self.assertEqual(matrix["source_lane_counts"]["papers"], 1)
+            self.assertEqual(matrix["finding_decision_counts"]["adopted"], 1)
+            self.assertEqual(matrix["finding_decision_counts"]["held"], 1)
+            shared = next(
+                source for source in matrix["sources"]
+                if source["key"] == "https://ml-explore.github.io/mlx/build/html/index.html"
+            )
+            self.assertEqual(shared["citation_count"], 2)
+            self.assertEqual(shared["finding_count"], 2)
+            self.assertEqual(set(shared["finding_ids"]), {"shared-official", "shared-paper"})
+            self.assertEqual(set(shared["persona_ids"]), {"official-docs-cartographer", "paper-architecture-scout"})
+            self.assertEqual(set(shared["source_lanes"]), {"official_docs", "papers"})
+            self.assertEqual(shared["decision_counts"], {"adopted": 1, "held": 1})
+            self.assertEqual(matrix["top_sources"][0]["key"], shared["key"])
+            self.assertTrue(any(lane["source_lane"] == "packages" for lane in matrix["uncited_source_lanes"]))
+            summary = (output_dir / "synthesis.md").read_text()
+            self.assertIn("## Evidence Matrix", summary)
+            self.assertIn("unique sources: 2", summary)
+            self.assertIn("MLX documentation index - 2 citation(s)", summary)
+            self.assertIn("packages: 0/", summary)
+
     def test_research_loop_builds_promotion_review_ledger(self) -> None:
         with tempfile.TemporaryDirectory(dir=ROOT) as tmp:
             tmp_path = Path(tmp)
@@ -1773,6 +1877,8 @@ class ToolingTests(unittest.TestCase):
             self.assertEqual(synthesis["finding_count"], 1)
             self.assertTrue(synthesis["ingested_subagent_results"])
             self.assertEqual(synthesis["execution_counts"]["subagent_result_ingested"], 1)
+            self.assertEqual(synthesis["evidence_matrix"]["unique_source_count"], 1)
+            self.assertEqual(synthesis["evidence_matrix"]["source_citation_count"], 1)
             self.assertEqual(synthesis["subagent_dispatch"]["execution_mode"], "external-subagent")
             self.assertEqual(subagents["execution_mode"], "external-subagent")
             self.assertEqual(execution["kind"], "external-subagent")
@@ -1878,6 +1984,8 @@ class ToolingTests(unittest.TestCase):
             self.assertEqual(synthesis["execution_counts"]["executor_failed"], 0)
             self.assertEqual(synthesis["execution_counts"]["scaffolded_not_run"], 0)
             self.assertIn("executor_command", synthesis)
+            self.assertEqual(synthesis["evidence_matrix"]["unique_source_count"], 1)
+            self.assertEqual(synthesis["evidence_matrix"]["source_citation_count"], 2)
             self.assertEqual(synthesis["executor_workers"], 1)
             self.assertEqual(synthesis["executor_actual_workers"], 1)
             self.assertEqual(synthesis["subagent_dispatch"]["execution_mode"], "local-executor")

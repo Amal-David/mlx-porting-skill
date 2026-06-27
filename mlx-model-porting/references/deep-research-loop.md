@@ -150,6 +150,15 @@ considered for a skill asset or runbook edit, not that the edit has happened.
 An `adopted` finding that lacks required next validation or rollback/caveat
 metadata is held in `validation_backlog` with explicit blockers.
 
+Each `synthesis.json` also includes an `evidence_matrix` receipt. The matrix
+deduplicates returned source locators across agents, links each source back to
+finding IDs and persona IDs, counts source-lane citations and finding decisions,
+and flags planned source lanes that remained thin or uncited. Use it to review
+cross-agent coverage and corroboration context before deciding what to sample
+next. Repeated citation is not promotion evidence by itself; promotion still
+requires source provenance, a concrete MLX validation gate, tests, and rollback
+or caveat metadata.
+
 For `--iterations 2` or higher, the harness writes each pass under
 `iterations/NN/` and emits top-level `loop.json` and `loop.md` receipts. Each
 iteration records the gap hints it used and the next hints derived from
