@@ -1,0 +1,623 @@
+{
+  "schema_version": 1,
+  "agents": [
+    {
+      "persona_id": "official-docs-cartographer",
+      "decision_notes": [
+        "Official MLX docs sampled are current MLX 0.31.2 documentation pages accessed on 2026-06-27.",
+        "Adopted findings are adoption-quality for backlog and reference guidance only; they do not establish training parity for any model family.",
+        "The existing training-as-port-target backlog item should be enriched with concrete MLX API contracts and validation gates before any support claim."
+      ],
+      "findings": [
+        {
+          "id": "official-autograd-value-and-grad-contract",
+          "title": "Autograd gives a concrete training-loop contract",
+          "summary": "MLX exposes scalar-loss gradient APIs for arbitrary callables and Module trainable parameters, so training guidance can require loss and gradient-tree parity without claiming a trained port works.",
+          "source_lane": "official_docs",
+          "sources": [
+            {
+              "title": "mlx.core.value_and_grad",
+              "url": "https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.value_and_grad.html",
+              "accessed": "2026-06-27",
+              "kind": "official-api-doc"
+            },
+            {
+              "title": "mlx.nn.value_and_grad",
+              "url": "https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.nn.value_and_grad.html",
+              "accessed": "2026-06-27",
+              "kind": "official-api-doc"
+            },
+            {
+              "title": "MLX Module documentation",
+              "url": "https://ml-explore.github.io/mlx/build/html/python/nn/module.html",
+              "accessed": "2026-06-27",
+              "kind": "official-api-doc"
+            }
+          ],
+          "decision": "adopted",
+          "evidence_level": "official-api-documentation",
+          "validation_gate": "For any training-capable port, compare scalar loss, gradient tree keys, gradient shapes, selected gradient values, and frozen/trainable membership against a source oracle before optimizer updates.",
+          "affects": [
+            "references/training-and-finetuning.md",
+            "references/parity-and-testing.md",
+            "assets/research_backlog.json"
+          ],
+          "caveats": [
+            "The differentiated function must return a scalar loss, or a tuple whose first element is scalar.",
+            "Module gradient APIs differentiate trainable parameters, so frozen-base and adapter boundaries need explicit tests."
+          ],
+          "required_next_validation": "Add a tiny local fixture for loss and gradient parity in one frozen-base adapter case and one full-train case."
+        },
+        {
+          "id": "official-training-checkpoint-resume-contract",
+          "title": "Training checkpoints need model, optimizer, random, scheduler, and data state",
+          "summary": "MLX Module and optimizer docs support serializing weights and optimizer state, but optimizer state alone is not sufficient for exact resume because configuration, scheduler, random state, and data cursor live outside a plain state tree.",
+          "source_lane": "official_docs",
+          "sources": [
+            {
+              "title": "MLX Module documentation",
+              "url": "https://ml-explore.github.io/mlx/build/html/python/nn/module.html",
+              "accessed": "2026-06-27",
+              "kind": "official-api-doc"
+            },
+            {
+              "title": "mlx.nn.Module.load_weights",
+              "url": "https://ml-explore.github.io/mlx/build/html/python/nn/_autosummary/mlx.nn.Module.load_weights.html",
+              "accessed": "2026-06-27",
+              "kind": "official-api-doc"
+            },
+            {
+              "title": "MLX Optimizers",
+              "url": "https://ml-explore.github.io/mlx/build/html/python/optimizers.html",
+              "accessed": "2026-06-27",
+              "kind": "official-doc"
+            },
+            {
+              "title": "Saving and Loading Arrays",
+              "url": "https://ml-explore.github.io/mlx/build/html/usage/saving_and_loading.html",
+              "accessed": "2026-06-27",
+              "kind": "official-doc"
+            }
+          ],
+          "decision": "adopted",
+          "evidence_level": "official-api-documentation",
+          "validation_gate": "Train N steps, save model weights, optimizer state, optimizer class/config, scheduler config, random state, and data cursor; reload and prove next loss, optimizer state, and parameter delta match an uninterrupted run.",
+          "affects": [
+            "references/training-and-finetuning.md",
+            "references/parity-and-testing.md",
+            "references/packaging-and-publication.md"
+          ],
+          "caveats": [
+            "Module state is not optimizer state or random state.",
+            "strict=False can hide missing or mismatched weights unless a key and shape manifest exists.",
+            "Adapter-only saves are not exact training resume."
+          ],
+          "required_next_validation": "Define a training checkpoint manifest and test strict full-weight reload plus explicit partial-adapter reload on a tiny MLX Module."
+        },
+        {
+          "id": "official-compiled-training-state-gate",
+          "title": "Compiled training requires explicit state capture",
+          "summary": "MLX compile guidance and official examples show compiled training must capture model state, optimizer state, and random state for stochastic modules; eager parity should precede compiled training claims.",
+          "source_lane": "official_docs",
+          "sources": [
+            {
+              "title": "MLX Compilation",
+              "url": "https://ml-explore.github.io/mlx/build/html/usage/compile.html",
+              "accessed": "2026-06-27",
+              "kind": "official-doc"
+            },
+            {
+              "title": "MLX Examples MNIST training loop",
+              "url": "https://github.com/ml-explore/mlx-examples/blob/main/mnist/main.py",
+              "accessed": "2026-06-27",
+              "kind": "official-repository-code"
+            },
+            {
+              "title": "MLX-LM trainer",
+              "url": "https://github.com/ml-explore/mlx-lm/blob/main/mlx_lm/tuner/trainer.py",
+              "accessed": "2026-06-27",
+              "kind": "official-repository-code"
+            }
+          ],
+          "decision": "adopted",
+          "evidence_level": "official-docs-plus-official-code",
+          "validation_gate": "Compare eager versus compiled loss and parameter updates, capture model and optimizer state as inputs/outputs, include random state when stochastic layers are active, and run at least two legal shapes to catch stale state or retracing.",
+          "affects": [
+            "references/training-and-finetuning.md",
+            "references/compile-and-kernels.md",
+            "references/parity-and-testing.md"
+          ],
+          "caveats": [
+            "Compiled training is an optimization after eager correctness.",
+            "Closure-captured arrays can behave as constants unless passed or captured explicitly.",
+            "Shapeless compilation needs separate validation for shape-dependent graphs."
+          ],
+          "required_next_validation": "Create a tiny eager-versus-compiled train-step fixture with dropout enabled and disabled."
+        },
+        {
+          "id": "official-training-memory-and-lora-gates",
+          "title": "Memory APIs and official LoRA paths define conservative training gates",
+          "summary": "MLX memory counters, memory limits, gradient checkpointing, and MLX-LM LoRA code provide reference patterns for training-memory and adapter validation, but not a general non-LLM training claim.",
+          "source_lane": "official_docs",
+          "sources": [
+            {
+              "title": "mlx.core.get_peak_memory",
+              "url": "https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.get_peak_memory.html",
+              "accessed": "2026-06-27",
+              "kind": "official-api-doc"
+            },
+            {
+              "title": "mlx.core.checkpoint",
+              "url": "https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.checkpoint.html",
+              "accessed": "2026-06-27",
+              "kind": "official-api-doc"
+            },
+            {
+              "title": "MLX-LM LoRA documentation",
+              "url": "https://github.com/ml-explore/mlx-lm/blob/main/mlx_lm/LORA.md",
+              "accessed": "2026-06-27",
+              "kind": "official-repository-doc"
+            },
+            {
+              "title": "MLX examples LoRA script",
+              "url": "https://github.com/ml-explore/mlx-examples/blob/main/lora/lora.py",
+              "accessed": "2026-06-27",
+              "kind": "official-repository-code"
+            }
+          ],
+          "decision": "adopted",
+          "evidence_level": "official-api-and-official-repository-evidence",
+          "validation_gate": "A training support claim must log active/cache/peak memory over repeated steps, compare checkpoint on/off gradients, verify adapter key coverage and trainable parameter count, and test adapter resume separately from exact optimizer-state resume.",
+          "affects": [
+            "references/training-and-finetuning.md",
+            "references/benchmarking.md",
+            "assets/research_backlog.json"
+          ],
+          "caveats": [
+            "Active memory alone is not a fit claim.",
+            "LoRA support lists are LLM-family specific and should not be generalized to audio, diffusion, vision, or arbitrary architectures."
+          ],
+          "required_next_validation": "Add a local training-memory probe and a first-class LLM adapter validation slice using a tiny dataset."
+        }
+      ]
+    },
+    {
+      "persona_id": "paper-architecture-scout",
+      "decision_notes": [
+        "Prioritize coverage by operator semantics, not model popularity.",
+        "Implementation feasibility in MLX remains needs-validation unless a reproducible MLX path is proven.",
+        "Validation gates should combine deterministic parity fixtures with task-level metrics."
+      ],
+      "findings": [
+        {
+          "id": "cv-backbones-convnet-family",
+          "title": "Modern ConvNet backbones should become a first-class validation track",
+          "summary": "ResNet, ConvNeXt, and EfficientNet cover core non-generative image backbones with residual, depthwise, large-kernel, normalization, activation, pooling, and classifier-head semantics that the current generative/audio map does not exercise.",
+          "source_lane": "papers",
+          "sources": [
+            {
+              "title": "Deep Residual Learning for Image Recognition",
+              "url": "https://arxiv.org/abs/1512.03385",
+              "accessed": "2026-06-27",
+              "kind": "paper"
+            },
+            {
+              "title": "A ConvNet for the 2020s",
+              "url": "https://arxiv.org/abs/2201.03545",
+              "accessed": "2026-06-27",
+              "kind": "paper"
+            },
+            {
+              "title": "EfficientNet: Rethinking Model Scaling for Convolutional Neural Networks",
+              "url": "https://arxiv.org/abs/1905.11946",
+              "accessed": "2026-06-27",
+              "kind": "paper"
+            },
+            {
+              "title": "mlx.nn.Conv2d documentation",
+              "url": "https://ml-explore.github.io/mlx/build/html/python/nn/_autosummary/mlx.nn.Conv2d.html",
+              "accessed": "2026-06-27",
+              "kind": "official-doc"
+            }
+          ],
+          "decision": "needs-validation",
+          "evidence_level": "primary-papers-plus-official-op-doc",
+          "validation_gate": "For each backbone, require preprocessing parity, per-layer deterministic output parity, top-k sanity on a fixed image slice, and explicit NHWC/NCHW tests for convolution and pooling.",
+          "affects": [
+            "references/model-support-map.md",
+            "references/parity-and-testing.md",
+            "assets/research_backlog.json"
+          ],
+          "caveats": [
+            "Depthwise/grouped convolution, stochastic depth/drop-path, and checkpoint layout conversion need separate checks.",
+            "Published top-1 numbers are context, not a small-fixture acceptance threshold."
+          ],
+          "required_next_validation": "Create synthetic parity fixtures for Conv2d, depthwise Conv2d, BatchNorm/LayerNorm, pooling, and residual add."
+        },
+        {
+          "id": "dense-prediction-and-promptable-vision-gates",
+          "title": "Detection, segmentation, OCR, depth, pose, and SAM-like masks need family-specific gates",
+          "summary": "Mask R-CNN, DETR, DeepLabv3+, U-Net, CRNN/PP-OCR, SAM/SAM2, Depth Anything, and HRNet introduce postprocessing, prompt, dense map, coordinate, sequence-decoding, and task-metric gates that generic encoder or VLM coverage cannot prove.",
+          "source_lane": "papers",
+          "sources": [
+            {
+              "title": "Mask R-CNN",
+              "url": "https://openaccess.thecvf.com/content_ICCV_2017/papers/He_Mask_R-CNN_ICCV_2017_paper.pdf",
+              "accessed": "2026-06-27",
+              "kind": "paper"
+            },
+            {
+              "title": "End-to-End Object Detection with Transformers",
+              "url": "https://arxiv.org/abs/2005.12872",
+              "accessed": "2026-06-27",
+              "kind": "paper"
+            },
+            {
+              "title": "Segment Anything",
+              "url": "https://arxiv.org/abs/2304.02643",
+              "accessed": "2026-06-27",
+              "kind": "paper"
+            },
+            {
+              "title": "Depth Anything V2",
+              "url": "https://arxiv.org/abs/2406.09414",
+              "accessed": "2026-06-27",
+              "kind": "paper"
+            },
+            {
+              "title": "PP-OCR: A Practical Ultra Lightweight OCR System",
+              "url": "https://arxiv.org/abs/2009.09941",
+              "accessed": "2026-06-27",
+              "kind": "paper"
+            }
+          ],
+          "decision": "needs-validation",
+          "evidence_level": "primary-papers-and-benchmark-semantics",
+          "validation_gate": "Require fixed-image parity for boxes, masks, depth maps, keypoints, OCR logits/decoded strings, and postprocessed predictions; task gates must use the relevant AP, IoU, Dice, edit-distance, AbsRel/RMSE, or OKS metric.",
+          "affects": [
+            "references/model-support-map.md",
+            "references/parity-and-testing.md",
+            "assets/research_backlog.json"
+          ],
+          "caveats": [
+            "DETR and SAM are transformer-heavy but non-generative; they should be tracked by task semantics.",
+            "Semantic segmentation support does not imply instance, panoptic, promptable, or OCR support."
+          ],
+          "required_next_validation": "Start with one semantic segmentation fixture and one prompt-to-mask fixture before detection and OCR expansion."
+        },
+        {
+          "id": "gnn-point-cloud-equivariant-science-gates",
+          "title": "Graph, point-cloud, and scientific ports need sparse and symmetry tests",
+          "summary": "GNNs, point clouds, equivariant molecular models, and protein/chemistry systems require message passing, neighbor search, scatter/segment reductions, ragged batching, permutation invariance, rotation/reflection equivariance, and domain metrics beyond ordinary tensor allclose.",
+          "source_lane": "papers",
+          "sources": [
+            {
+              "title": "Semi-Supervised Classification with Graph Convolutional Networks",
+              "url": "https://arxiv.org/abs/1609.02907",
+              "accessed": "2026-06-27",
+              "kind": "paper"
+            },
+            {
+              "title": "PointNet: Deep Learning on Point Sets for 3D Classification and Segmentation",
+              "url": "https://arxiv.org/abs/1612.00593",
+              "accessed": "2026-06-27",
+              "kind": "paper"
+            },
+            {
+              "title": "E(n) Equivariant Graph Neural Networks",
+              "url": "https://arxiv.org/abs/2102.09844",
+              "accessed": "2026-06-27",
+              "kind": "paper"
+            },
+            {
+              "title": "e3nn: Euclidean Neural Networks",
+              "url": "https://arxiv.org/abs/2207.09453",
+              "accessed": "2026-06-27",
+              "kind": "paper"
+            },
+            {
+              "title": "Open Catalyst Challenge",
+              "url": "https://opencatalystproject.org/challenge.html",
+              "accessed": "2026-06-27",
+              "kind": "benchmark-docs"
+            }
+          ],
+          "decision": "needs-validation",
+          "evidence_level": "primary-papers-plus-benchmark-docs",
+          "validation_gate": "Pass toy graph aggregation, point-set permutation, neighbor-list, equivariance, and energy/force fixtures before any larger checkpoint support; task gates should use OGB, ModelNet/ShapeNet, QM9, Open Catalyst, or protein-structure metrics as applicable.",
+          "affects": [
+            "references/model-support-map.md",
+            "references/compile-and-kernels.md",
+            "references/parity-and-testing.md",
+            "assets/research_backlog.json"
+          ],
+          "caveats": [
+            "Dense adjacency rewrites may be acceptable for tiny correctness fixtures only.",
+            "A scalar output can pass while vector/tensor equivariance is broken.",
+            "Protein pipelines include non-neural preprocessing that must be scoped explicitly."
+          ],
+          "required_next_validation": "Inventory MLX scatter, segment, sparse, indexing, spherical-harmonic, tensor-product, and neighbor-list needs for one GCN-like and one EGNN-like target."
+        }
+      ]
+    },
+    {
+      "persona_id": "huggingface-ecosystem-sampler",
+      "decision_notes": [
+        "Hugging Face task pages, API filters, model-card metadata, and sibling files are demand and artifact-shape evidence only.",
+        "Broad product labels must be split into loader families before implementation work.",
+        "Recommender evidence currently points more to embedding retrieval and reranking than one canonical recommender-task implementation."
+      ],
+      "findings": [
+        {
+          "id": "hf-tabular-time-series-artifact-demand",
+          "title": "Tabular and time-series demand exists, but artifact shapes diverge",
+          "summary": "HF exposes tabular task pages and time-series model/API demand, while sampled TabPFN, Nori, Chronos, TimesFM, and Time Series Transformer sources show heterogeneous checkpoint, config, loader, and output semantics.",
+          "source_lane": "hugging_face",
+          "sources": [
+            {
+              "title": "Hugging Face Tasks: Tabular Classification",
+              "url": "https://huggingface.co/tasks/tabular-classification",
+              "accessed": "2026-06-27",
+              "kind": "hf-task-page"
+            },
+            {
+              "title": "Hugging Face Tasks: Tabular Regression",
+              "url": "https://huggingface.co/tasks/tabular-regression",
+              "accessed": "2026-06-27",
+              "kind": "hf-task-page"
+            },
+            {
+              "title": "Transformers docs: Time Series Transformer",
+              "url": "https://huggingface.co/docs/transformers/model_doc/time_series_transformer",
+              "accessed": "2026-06-27",
+              "kind": "hf-docs"
+            },
+            {
+              "title": "amazon/chronos-2 model card",
+              "url": "https://huggingface.co/amazon/chronos-2",
+              "accessed": "2026-06-27",
+              "kind": "hf-model-card"
+            }
+          ],
+          "decision": "needs-validation",
+          "evidence_level": "strong-demand-and-artifact-metadata",
+          "validation_gate": "Before support, load pinned artifacts locally, run deterministic rows or time-series fixtures, and compare outputs against the source package including scaler, lag, context, quantile, and forecast-patch semantics.",
+          "affects": [
+            "references/model-support-map.md",
+            "references/parity-and-testing.md",
+            "assets/research_backlog.json"
+          ],
+          "caveats": [
+            "The expected time-series task page URL checked as unavailable, while model APIs and docs remain populated.",
+            "T5-like model_type is insufficient for Chronos-style forecasting semantics.",
+            "Tabular repos may use custom libraries or non-safetensors checkpoint formats."
+          ],
+          "required_next_validation": "Probe one sklearn/skops baseline, one deep tabular foundation repo, and one Chronos or TimesFM target with fixed fixture inputs."
+        },
+        {
+          "id": "hf-ranking-recsys-split",
+          "title": "Ranking is a clearer near-term target than generic recommender support",
+          "summary": "HF text-ranking has mature task pages and cross-encoder artifacts, while recommender searches are noisy and mix embedding retrieval, reranking, classifiers, Keras, graph, and generative chat recommenders.",
+          "source_lane": "hugging_face",
+          "sources": [
+            {
+              "title": "Hugging Face Tasks: Text Ranking",
+              "url": "https://huggingface.co/tasks/text-ranking",
+              "accessed": "2026-06-27",
+              "kind": "hf-task-page"
+            },
+            {
+              "title": "cross-encoder/ms-marco-MiniLM-L6-v2 model card",
+              "url": "https://huggingface.co/cross-encoder/ms-marco-MiniLM-L6-v2",
+              "accessed": "2026-06-27",
+              "kind": "hf-model-card"
+            },
+            {
+              "title": "Hugging Face Models API: search=recommender",
+              "url": "https://huggingface.co/api/models?search=recommender&sort=downloads&direction=-1&limit=20",
+              "accessed": "2026-06-27",
+              "kind": "hf-model-api"
+            }
+          ],
+          "decision": "needs-validation",
+          "evidence_level": "strong-for-ranking-moderate-for-recommender-demand",
+          "validation_gate": "For a pinned reranker, MLX must match source pair scores and preserve top-k ordering on a fixed query/passage set; generic recommender coverage must first classify embedding, cross-encoder, classifier, Keras, graph, and generative artifacts.",
+          "affects": [
+            "references/model-support-map.md",
+            "references/parity-and-testing.md",
+            "assets/research_backlog.json"
+          ],
+          "caveats": [
+            "Some rerankers are decoder or VLM based and should not be grouped with small cross-encoders.",
+            "Recommendation quality needs domain datasets and ranking metrics.",
+            "Search results are noisy and include generative chat recommenders."
+          ],
+          "required_next_validation": "Start with cross-encoder/ms-marco-MiniLM-L6-v2 and compare CrossEncoder.predict scores and rank order."
+        },
+        {
+          "id": "hf-non-generative-cv-artifact-families",
+          "title": "HF CV task pages identify concrete early validation targets",
+          "summary": "Object detection, image segmentation, depth estimation, and image feature extraction have strong HF task and model-card surfaces, with candidates such as Table Transformer/DETR, SegFormer, Depth Anything V2, and DINOv2 exposing distinct preprocessing and postprocessing contracts.",
+          "source_lane": "hugging_face",
+          "sources": [
+            {
+              "title": "Hugging Face Tasks: Object Detection",
+              "url": "https://huggingface.co/tasks/object-detection",
+              "accessed": "2026-06-27",
+              "kind": "hf-task-page"
+            },
+            {
+              "title": "Hugging Face Tasks: Image Segmentation",
+              "url": "https://huggingface.co/tasks/image-segmentation",
+              "accessed": "2026-06-27",
+              "kind": "hf-task-page"
+            },
+            {
+              "title": "Hugging Face Tasks: Depth Estimation",
+              "url": "https://huggingface.co/tasks/depth-estimation",
+              "accessed": "2026-06-27",
+              "kind": "hf-task-page"
+            },
+            {
+              "title": "facebook/dinov2-small model card",
+              "url": "https://huggingface.co/facebook/dinov2-small",
+              "accessed": "2026-06-27",
+              "kind": "hf-model-card"
+            }
+          ],
+          "decision": "needs-validation",
+          "evidence_level": "strong-task-and-artifact-metadata",
+          "validation_gate": "Support requires preprocessing parity, raw tensor parity, and postprocessed output parity for each architecture family; feature extraction also needs pooled/unpooled tensor and cosine-similarity checks.",
+          "affects": [
+            "references/model-support-map.md",
+            "references/parity-and-testing.md",
+            "assets/research_backlog.json"
+          ],
+          "caveats": [
+            "DETR-like and YOLO-like models require different postprocessing.",
+            "Semantic segmentation is not panoptic, instance, promptable, or background-removal support.",
+            "timm and transformers variants have different loader paths."
+          ],
+          "required_next_validation": "Pin DINOv2-small, SegFormer-B0, Depth-Anything-V2-Small, and one DETR/Table Transformer target for separate fixture design."
+        },
+        {
+          "id": "hf-library-tag-taxonomy-needed",
+          "title": "Library tags and sibling files should drive candidate taxonomy before implementation",
+          "summary": "Sampled HF categories map to transformers, sentence-transformers, timm, ultralytics, tabpfn, skops, keras, LightGBM, ONNX Runtime, diffusers, and custom-code repos; a single task tag can hide multiple incompatible execution paths.",
+          "source_lane": "hugging_face",
+          "sources": [
+            {
+              "title": "Hugging Face Models API: text-ranking sorted by downloads",
+              "url": "https://huggingface.co/api/models?filter=text-ranking&sort=downloads&direction=-1&limit=12",
+              "accessed": "2026-06-27",
+              "kind": "hf-model-api"
+            },
+            {
+              "title": "Hugging Face Models API: object-detection sorted by downloads",
+              "url": "https://huggingface.co/api/models?filter=object-detection&sort=downloads&direction=-1&limit=10",
+              "accessed": "2026-06-27",
+              "kind": "hf-model-api"
+            },
+            {
+              "title": "Hugging Face Models API: tabular-regression sorted by downloads",
+              "url": "https://huggingface.co/api/models?filter=tabular-regression&sort=downloads&direction=-1&limit=10",
+              "accessed": "2026-06-27",
+              "kind": "hf-model-api"
+            }
+          ],
+          "decision": "adopted",
+          "evidence_level": "strong-metadata-diversity",
+          "validation_gate": "Every research-derived candidate entry must declare loader family, required source package, remote-code risk, fixture type, parity metric, and rollback condition before promotion.",
+          "affects": [
+            "references/intake-and-routing.md",
+            "assets/research_backlog.json"
+          ],
+          "caveats": [
+            "Hub metadata can be incomplete or stale.",
+            "Sibling-file presence does not prove loadability.",
+            "A single pipeline_tag can hide multiple incompatible execution paths."
+          ],
+          "required_next_validation": "Sample at least five repos per target lane and manually verify one representative per loader family."
+        }
+      ]
+    },
+    {
+      "persona_id": "coverage-skeptic",
+      "decision_notes": [
+        "Local full coverage currently means full coverage of declared families, not every useful MLX porting domain.",
+        "Official MLX examples show useful reference patterns for CIFAR/ResNet, SAM, GCN, and LoRA, but examples are not support claims.",
+        "The four gap areas should become actionable backlog/reference updates until they have routing, fixtures, parity gates, task-quality gates, and rollback conditions."
+      ],
+      "findings": [
+        {
+          "id": "coverage-map-beyond-14-guardrail",
+          "title": "Comprehensiveness claims must stay bounded until new families are validated",
+          "summary": "The repo validates 14 declared families, while non-generative CV, structured/time-series/recsys, graph/scientific, and training remain backlog-level tracks that need architecture entries, fixtures, and gates before support language changes.",
+          "source_lane": "repo_local_audit",
+          "sources": [
+            {
+              "title": "Local architectures registry",
+              "url": "file:///Users/amal/Downloads/mlx-porting-skill/mlx-model-porting/assets/architectures.yaml",
+              "accessed": "2026-06-27",
+              "kind": "repo-file"
+            },
+            {
+              "title": "Local golden scenario harness",
+              "url": "file:///Users/amal/Downloads/mlx-porting-skill/tests/test_scenarios.py",
+              "accessed": "2026-06-27",
+              "kind": "repo-file"
+            },
+            {
+              "title": "Local research backlog",
+              "url": "file:///Users/amal/Downloads/mlx-porting-skill/mlx-model-porting/assets/research_backlog.json",
+              "accessed": "2026-06-27",
+              "kind": "repo-file"
+            }
+          ],
+          "decision": "adopted",
+          "evidence_level": "repo-local-audit",
+          "validation_gate": "For each new family, add an architecture registry entry, model-support-map row, runbook or reference section, synthetic fixture, golden scenario, seeded parity failure, optimization inclusion/exclusion check, and validation limitation update.",
+          "affects": [
+            "references/model-support-map.md",
+            "assets/research_backlog.json",
+            "VALIDATION.md"
+          ],
+          "caveats": [
+            "This audit did not run tests.",
+            "The current suite proves declared-family coverage only."
+          ],
+          "required_next_validation": "After any family expansion, run unit discovery, skill audit, source validation, manifest check, and targeted scenario tests."
+        },
+        {
+          "id": "official-examples-are-seeds-not-support",
+          "title": "Official MLX examples seed future tracks but do not prove broad support",
+          "summary": "MLX examples for CIFAR/ResNet, Segment Anything, GCN, and LoRA are valuable starting points for non-generative CV, graph/scientific, and training tracks, but each needs a porting-specific fixture and task-quality gate before the skill can claim support.",
+          "source_lane": "repositories",
+          "sources": [
+            {
+              "title": "MLX examples: CIFAR and ResNets",
+              "url": "https://github.com/ml-explore/mlx-examples/tree/main/cifar",
+              "accessed": "2026-06-27",
+              "kind": "official-mlx-example"
+            },
+            {
+              "title": "MLX examples: Segment Anything",
+              "url": "https://github.com/ml-explore/mlx-examples/tree/main/segment_anything",
+              "accessed": "2026-06-27",
+              "kind": "official-mlx-example"
+            },
+            {
+              "title": "MLX examples: Graph Convolutional Network",
+              "url": "https://github.com/ml-explore/mlx-examples/tree/main/gcn",
+              "accessed": "2026-06-27",
+              "kind": "official-mlx-example"
+            },
+            {
+              "title": "MLX examples: Fine-Tuning with LoRA or QLoRA",
+              "url": "https://github.com/ml-explore/mlx-examples/tree/main/lora",
+              "accessed": "2026-06-27",
+              "kind": "official-mlx-example"
+            }
+          ],
+          "decision": "needs-validation",
+          "evidence_level": "official-examples-plus-local-gap",
+          "validation_gate": "Each example-derived track needs a deterministic source oracle, artifact/weight parity, primitive/block parity, task-quality metric, and rollback/hold condition before promotion.",
+          "affects": [
+            "references/model-support-map.md",
+            "assets/research_backlog.json"
+          ],
+          "caveats": [
+            "Example availability is not a conversion or checkpoint support claim.",
+            "Detection, segmentation, graph, and training introduce different failure modes from existing runbooks."
+          ],
+          "required_next_validation": "Create scoped tasks for ResNet/CIFAR, SAM mask generation, GCN message passing, and LoRA tiny-overfit fixtures."
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "Findings came from parallel subagent research and were normalized into the research-loop schema before promotion.",
+    "No remote model code was executed and no real MLX-vs-source parity run was performed in this research slice.",
+    "Unsupported evidence remains needs-validation or held; the skill must not claim support for new families until fixtures and gates exist."
+  ]
+}

@@ -2,8 +2,8 @@
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
   "version": "0.1.0",
-  "generated_at": "2026-06-27T11:44:22.405087+00:00",
-  "file_count": 171,
+  "generated_at": "2026-06-27T11:57:32.030704+00:00",
+  "file_count": 181,
   "files": [
     {
       "path": ".github/workflows/daily-research.yml",
@@ -162,8 +162,8 @@
     },
     {
       "path": "mlx-model-porting/assets/research_backlog.json",
-      "size_bytes": 7268,
-      "sha256": "94de7718a8093408141cc16edd74b1c9aa1a1d0a4cee8bb24f19010662784269"
+      "size_bytes": 9218,
+      "sha256": "b2c3ea871514391dc906747c19de4e41d954665cf1cccf157e6f15b30e617983"
     },
     {
       "path": "mlx-model-porting/assets/research_loop_config.json",
@@ -202,8 +202,8 @@
     },
     {
       "path": "mlx-model-porting/references/compile-and-kernels.md",
-      "size_bytes": 4806,
-      "sha256": "a0f79ead4526421f0b43695431b21b43b61242694c56ae994d958ce9152c64d5"
+      "size_bytes": 5266,
+      "sha256": "aadd4e09d5b4e63f2f9eba5734b811f5435c1513b3977b8c9c58de562ddefccb"
     },
     {
       "path": "mlx-model-porting/references/decoding-and-serving.md",
@@ -232,8 +232,8 @@
     },
     {
       "path": "mlx-model-porting/references/model-support-map.md",
-      "size_bytes": 2032,
-      "sha256": "6a83320d8b8dd22f16f4ccd33ad4d694581569bccb12f104bff724ddcd118eaf"
+      "size_bytes": 4478,
+      "sha256": "ff7177e967976b70e81c16cf81c6329e85e2a49bef9591311f5ae539a02bdae2"
     },
     {
       "path": "mlx-model-porting/references/packaging-and-publication.md",
@@ -242,8 +242,8 @@
     },
     {
       "path": "mlx-model-porting/references/parity-and-testing.md",
-      "size_bytes": 3520,
-      "sha256": "cf10abaaf974e9f1fdf41f74b1ff47e9e04c0e4c7c915fb37ea2b1e4e1195c3c"
+      "size_bytes": 4757,
+      "sha256": "a5544ea4a844341b675619985560981d1da0685486769ab0a2819f2a7f6c9b62"
     },
     {
       "path": "mlx-model-porting/references/porting-core.md",
@@ -327,8 +327,8 @@
     },
     {
       "path": "mlx-model-porting/references/training-and-finetuning.md",
-      "size_bytes": 1660,
-      "sha256": "573b1efa1fc128fc663f7e3d134b445ea9eea657425986089337434ac27ddaa3"
+      "size_bytes": 4268,
+      "sha256": "71e2333c156387de8c876dffcba386ebb06f58ef21e25311247516cd352a9c2d"
     },
     {
       "path": "mlx-model-porting/research-runs/2026-06-27-deep-research-loop/assignments.json",
@@ -379,6 +379,56 @@
       "path": "mlx-model-porting/research-runs/2026-06-27-deep-research-loop/synthesis.md",
       "size_bytes": 5766,
       "sha256": "c556d6d339bc2ba1192cec4a25b996944f44f5f69088f361c569daac338f5e63"
+    },
+    {
+      "path": "mlx-model-porting/research-runs/2026-06-27-live-multi-source-gap-run/assignments.json",
+      "size_bytes": 38381,
+      "sha256": "9c5f34702b1ead2c8b9d4377e97051c0b4846dd7b6a6a16ef9b8b01bfd040cdf"
+    },
+    {
+      "path": "mlx-model-porting/research-runs/2026-06-27-live-multi-source-gap-run/blogs/coverage-skeptic.md",
+      "size_bytes": 5008,
+      "sha256": "19da50ff5b8dbdb7d929a000654c65f05d523879634857bcc9ceceebb53046b8"
+    },
+    {
+      "path": "mlx-model-porting/research-runs/2026-06-27-live-multi-source-gap-run/blogs/huggingface-ecosystem-sampler.md",
+      "size_bytes": 4824,
+      "sha256": "ecf222054275f7a5a4a82ba40ab5b14195a679420e61878569edd1c315e5e923"
+    },
+    {
+      "path": "mlx-model-porting/research-runs/2026-06-27-live-multi-source-gap-run/blogs/official-docs-cartographer.md",
+      "size_bytes": 5045,
+      "sha256": "e2360c942ec78c7b3b6577a1e8e4ce759f3bff372c883af683b23a5dd07cd5a6"
+    },
+    {
+      "path": "mlx-model-porting/research-runs/2026-06-27-live-multi-source-gap-run/blogs/package-registry-scout.md",
+      "size_bytes": 914,
+      "sha256": "252e06281d93fc95fa9840f485086d112f3d0489c50aa51bd216666d6523ce8d"
+    },
+    {
+      "path": "mlx-model-porting/research-runs/2026-06-27-live-multi-source-gap-run/blogs/paper-architecture-scout.md",
+      "size_bytes": 4279,
+      "sha256": "ec6f8354a7c46899364ee46f553c38cc02de458ff155e0caed30839ff9104825"
+    },
+    {
+      "path": "mlx-model-porting/research-runs/2026-06-27-live-multi-source-gap-run/blogs/practitioner-blog-miner.md",
+      "size_bytes": 796,
+      "sha256": "510f8c33581c206bb17e1e40573388493b210c22b42a620226821cbacb444422"
+    },
+    {
+      "path": "mlx-model-porting/research-runs/2026-06-27-live-multi-source-gap-run/normalized_findings.json",
+      "size_bytes": 33649,
+      "sha256": "65ad342769efd340134b31b132d82e66cdc2832acd520995eb3d688c9749606e"
+    },
+    {
+      "path": "mlx-model-porting/research-runs/2026-06-27-live-multi-source-gap-run/synthesis.json",
+      "size_bytes": 35615,
+      "sha256": "47ca6d040e48398334614e137de798b1cf6e65f304ba56837850e1a6c9e64e67"
+    },
+    {
+      "path": "mlx-model-porting/research-runs/2026-06-27-live-multi-source-gap-run/synthesis.md",
+      "size_bytes": 5287,
+      "sha256": "d63e788a4e9e4f27b71b575c650ce9c8a1b573a187a580b908b549f412eeb801"
     },
     {
       "path": "mlx-model-porting/research-runs/2026-06-27-top1000-contributor-loop/assignments.json",

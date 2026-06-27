@@ -62,6 +62,13 @@ For MoE, `gather_mm`/`gather_qmm` are native indexed matmul paths, while `segmen
 
 For `grid_sample`-style ports, write down the exact coordinate order, `align_corners`, padding mode, interpolation mode, dtype, and layout contract. Treat a custom kernel as valid only for the modes it tests; do not silently extend a bilinear/trilinear forward kernel to reflection padding, nearest sampling, or training gradients.
 
+For graph, point-cloud, and scientific ports, treat scatter/segment reductions,
+neighbor search, radius graphs, ragged batching, spherical harmonics, tensor
+products, and energy/force heads as separate validation surfaces. Dense adjacency
+rewrites can be useful for tiny correctness fixtures, but they are not a
+general support claim. Equivariant layers need explicit rotation, reflection,
+translation, and permutation probes before benchmark metrics matter.
+
 ## Anti-patterns
 
 - writing a Metal kernel before establishing parity;

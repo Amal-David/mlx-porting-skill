@@ -46,6 +46,26 @@ Tensor allclose is not enough when approximations are introduced.
 - Codec/vocoder: SI-SDR/SNR where appropriate, spectral distance, PESQ/STOI where licensed and applicable, and perceptual review.
 - VLM: task/benchmark sample agreement and visual-token path tests.
 - Diffusion/flow: fixed-seed latent and output metrics plus perceptual/task review.
+- Non-generative CV: top-k accuracy for classification; IoU/AP/Dice for
+  detection and segmentation; prompt-to-mask IoU for SAM-like models;
+  AbsRel/RMSE/delta metrics for depth; COCO OKS/AP for pose; normalized edit
+  distance or text-line accuracy for OCR.
+- Structured and forecasting: scaler and lag-construction parity, fixed
+  context/prediction splits, quantile or forecast tensor parity, leakage checks
+  for known-future covariates, and forecast-error metrics appropriate to the
+  source benchmark.
+- Ranking and recommender subfamilies: pair-score parity, top-k ordering
+  stability, NDCG, AUC/AP, retrieval recall, and candidate-id versus score-based
+  retrieval checks.
+- Graph, point-cloud, and scientific ML: scatter/segment/reduce parity,
+  permutation invariance, neighbor-list determinism, rotation/reflection
+  equivariance, unit constraints, and task metrics such as OGB accuracy/ROC-AUC,
+  ModelNet/ShapeNet accuracy or mIoU, molecular MAE/RMSE, and energy/force
+  errors.
+- Training/fine-tuning: scalar loss parity, selected gradient parity,
+  trainable-parameter membership, tiny-overfit behavior, checkpoint-resume next
+  loss and parameter delta, adapter merge/fuse parity, and memory
+  graph-retention checks.
 
 ## Tolerance policy
 

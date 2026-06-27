@@ -64,10 +64,24 @@
     {
       "id": "non-generative-cv",
       "priority": "P1",
-      "status": "needs-research",
-      "summary": "Non-generative computer vision ports need first-class guidance for CNNs, ConvNeXt/EfficientNet, detection, segmentation, OCR/layout, SAM-like masks, depth, and pose.",
-      "required_gate": "Preprocessing parity, NCHW/NHWC conversion, logits/masks/boxes parity, coordinate and resize semantics, IoU/mAP/top-k gates, and readable MLX or NumPy fallbacks for NMS, ROIAlign, and grid-sample-like paths.",
-      "source": "codex-subagent://019f08a0-1e40-7b31-ad73-4328676b9018",
+      "status": "needs-validation",
+      "summary": "Live multi-source research split non-generative CV into backbones, dense/promptable vision, OCR, depth, pose, and feature-extraction targets. Official MLX examples and HF task metadata are useful seeds but do not prove support.",
+      "required_gate": "Add scoped fixtures before support claims: ResNet/CIFAR-style classification, SAM-style prompt-to-mask, DINOv2 feature extraction, SegFormer semantic segmentation, Depth-Anything relative depth, and later DETR/Table Transformer boxes. Gates must include preprocessing parity, NCHW/NHWC conversion, logits/masks/boxes/depth/keypoint/string parity, coordinate and resize semantics, IoU/AP/Dice/AbsRel/RMSE/OKS/edit-distance/top-k metrics, and readable MLX or NumPy fallbacks for NMS, ROIAlign, and grid-sample-like paths.",
+      "source": "mlx-model-porting/research-runs/2026-06-27-live-multi-source-gap-run/synthesis.json",
+      "affected": [
+        "assets/architectures.yaml",
+        "references/model-support-map.md",
+        "references/parity-and-testing.md",
+        "references/compile-and-kernels.md"
+      ]
+    },
+    {
+      "id": "structured-timeseries-recsys",
+      "priority": "P1",
+      "status": "needs-validation",
+      "summary": "Live HF sampling found explicit tabular task demand, populated time-series model metadata despite a task-page gap, and a clearer near-term text-ranking lane than a generic recommender claim. Loader families must be split before implementation.",
+      "required_gate": "Create separate fixtures for tabular/skops or deep tabular, Chronos or TimesFM forecasting, cross-encoder text ranking, and later recommender subfamilies. Gates must include scaler/normalizer parity, lag construction, observed-mask handling, context/prediction split, quantile or forecast-patch parity, known-future covariate leakage checks, categorical vocab and missing-value policy, jagged offsets/lengths and embedding pooling parity, pair-score parity, candidate-id versus score-based retrieval checks, NDCG/AUC/top-k/forecast-error task gates, loader family, remote-code risk, and rollback condition.",
+      "source": "mlx-model-porting/research-runs/2026-06-27-live-multi-source-gap-run/synthesis.json",
       "affected": [
         "assets/architectures.yaml",
         "references/model-support-map.md",
@@ -75,38 +89,30 @@
       ]
     },
     {
-      "id": "structured-timeseries-recsys",
-      "priority": "P1",
-      "status": "needs-research",
-      "summary": "Structured, tabular, time-series, recommender, and ranking models are not first-class porting families.",
-      "required_gate": "Scaler/normalizer parity, lag construction, observed-mask handling, context/prediction split, known-future covariate leakage checks, categorical vocab and missing-value policy, jagged offsets/lengths and embedding pooling parity, candidate-id versus score-based retrieval checks, NDCG/AUC/top-k/forecast-error task gates.",
-      "source": "codex-subagent://019f08a0-1e40-7b31-ad73-4328676b9018",
-      "affected": [
-        "assets/architectures.yaml",
-        "references/model-support-map.md"
-      ]
-    },
-    {
       "id": "graph-geometric-scientific",
       "priority": "P1",
-      "status": "needs-research",
-      "summary": "GNN, point-cloud, protein, equivariant, simulator, and chemistry ports are absent from the current first-class coverage map.",
-      "required_gate": "Scatter/segment/reduce parity, permutation invariance, rotation/reflection equivariance probes, neighbor-list/radius graph fixtures, ragged batching, sparse/dense aggregation comparisons, and units/symmetry/energy-force constraints.",
-      "source": "codex-subagent://019f08a0-1e40-7b31-ad73-4328676b9018",
+      "status": "needs-validation",
+      "summary": "Live paper and repo-local research confirmed graph, point-cloud, equivariant, protein, chemistry, and scientific ports need message-passing and symmetry-specific gates before support claims.",
+      "required_gate": "Start with a GCN-style message-passing fixture, then point-cloud neighbor/sampling fixtures and one equivariant or energy-force fixture. Gates must include scatter/segment/reduce parity, permutation invariance, rotation/reflection equivariance probes, neighbor-list/radius graph fixtures, ragged batching, sparse/dense aggregation comparisons, units/symmetry/energy-force constraints, and task metrics such as OGB accuracy/ROC-AUC, ModelNet/ShapeNet accuracy or mIoU, molecular MAE/RMSE, and energy/force errors.",
+      "source": "mlx-model-porting/research-runs/2026-06-27-live-multi-source-gap-run/synthesis.json",
       "affected": [
         "references/compile-and-kernels.md",
-        "references/model-support-map.md"
+        "references/model-support-map.md",
+        "references/parity-and-testing.md"
       ]
     },
     {
       "id": "training-as-port-target",
       "priority": "P2",
-      "status": "needs-research",
-      "summary": "Training and fine-tuning guidance should become a full port target with adapter, distillation, checkpointing, optimizer-state, resume, and trainable custom-kernel tracks.",
-      "required_gate": "Tiny overfit, loss/gradient parity, optimizer state round-trip, checkpoint resume, deterministic seed, and memory graph-retention check.",
-      "source": "codex-subagent://019f08a0-1e40-7b31-ad73-4328676b9018",
+      "status": "needs-validation",
+      "summary": "Official MLX autograd, Module, optimizer, compile, memory, checkpoint, and LoRA references now define a concrete training-port contract, but no local training parity fixture has been run.",
+      "required_gate": "Add a tiny training fixture before support claims: scalar loss parity, selected gradient parity, trainable/frozen parameter membership, tiny overfit, optimizer state round-trip, exact checkpoint resume with optimizer config, scheduler, random state, data cursor and accumulation remainder, deterministic seed replay, train/eval mode checks, adapter key/shape manifest, adapter merge/fuse parity, eager-vs-compiled state-capture parity, gradient-checkpoint on/off parity, active/cache/peak memory logs, and memory graph-retention checks.",
+      "source": "mlx-model-porting/research-runs/2026-06-27-live-multi-source-gap-run/synthesis.json",
       "affected": [
-        "references/training-and-finetuning.md"
+        "references/training-and-finetuning.md",
+        "references/parity-and-testing.md",
+        "references/compile-and-kernels.md",
+        "references/benchmarking.md"
       ]
     }
   ]

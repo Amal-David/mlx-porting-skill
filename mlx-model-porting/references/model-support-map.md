@@ -20,3 +20,24 @@ This file guides source selection; it is not a promise that every upstream check
 | Separation/enhancement | MLX-Audio STS models | original model repository | `runbook-separation-enhancement.md` |
 
 Before copying a pattern, inspect its revision, tests, config schema, and weight conversion path. Similar class names do not imply identical cache or tensor semantics.
+
+## Candidate tracks, not supported families yet
+
+The live multi-source research run on 2026-06-27 found strong demand and
+reference patterns outside the 14 declared families. These tracks are not
+supported until they gain architecture registry entries, runbooks or reference
+sections, synthetic fixtures, golden scenarios, seeded parity failures, and
+task-specific validation gates.
+
+| Candidate track | Evidence seed | First validation gate |
+|---|---|---|
+| Non-generative CV backbones | MLX CIFAR/ResNet examples, ResNet/ConvNeXt/EfficientNet papers, HF image feature extraction cards | preprocessing parity, NCHW/NHWC layout checks, Conv2d/depthwise/grouped convolution fixtures, pooling/norm/residual parity, fixed-image top-k sanity |
+| Dense and promptable vision | SAM example, DETR/Mask R-CNN/DeepLab/SAM/Depth Anything/HRNet/OCR sources, HF detection/segmentation/depth task pages | fixed-image logits, boxes, masks, prompts, depth maps, keypoints, OCR logits/decoded strings, and postprocessed outputs with IoU/AP/Dice/AbsRel/RMSE/OKS/edit-distance gates |
+| Structured, tabular, and forecasting | HF tabular task pages, Chronos/TimesFM/Time Series Transformer metadata | scaler/normalizer parity, lag and context construction, observed masks, known-future covariate leakage checks, fixed forecast tensor/quantile parity |
+| Ranking and recommender subfamilies | HF text-ranking task page, cross-encoder and recommender search samples | pair-score parity, top-k ordering stability, NDCG/AUC/top-k task gates, and a taxonomy split between embeddings, cross-encoders, classifiers, graph recommenders, and generative recommenders |
+| Graph, point-cloud, and scientific ML | MLX GCN example, GNN/PointNet/EGNN/e3nn/Open Catalyst sources | scatter/segment/reduce parity, ragged batching, neighbor-list fixtures, permutation invariance, rotation/reflection equivariance, and energy/force or domain-metric gates |
+| Training and fine-tuning as a port target | MLX autograd/module/optimizer/compile docs, MLX-LM and examples LoRA trainers | loss/gradient parity, tiny overfit, optimizer-state round trip, exact checkpoint resume, train/eval mode checks, adapter merge/fuse parity, and memory graph-retention checks |
+
+Candidate evidence from Hugging Face metadata must be classified by loader
+family, required source package, remote-code risk, fixture type, parity metric,
+and rollback condition before it influences implementation guidance.
