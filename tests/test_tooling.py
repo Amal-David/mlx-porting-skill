@@ -1123,6 +1123,81 @@ class ToolingTests(unittest.TestCase):
             self.assertTrue(first_wave["agents"][0]["result_path"].startswith("iterations/01/agents/"))
             self.assertTrue(second_wave["agents"][0]["result_path"].startswith("iterations/02/agents/"))
 
+    def test_research_campaign_runner_runs_agents_and_ingests_wave(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            output_dir = Path(tmp) / "runner-campaign"
+            fake_executor = FIXTURES / "research_loop" / "fake_executor.py"
+            run_script(
+                "research_loop.py",
+                "--run-id", "runner-campaign-loop",
+                "--objective", "Run campaign agents from campaign receipt",
+                "--agent-count", 2,
+                "--output-dir", output_dir,
+            )
+            run_script(
+                "run_research_campaign.py",
+                "--campaign", output_dir / "campaign.json",
+                "--agent-command", f"{sys.executable} {fake_executor}",
+                "--workers", 2,
+                "--execution-timeout", 10,
+            )
+            receipt = json.loads((output_dir / "campaign-run.json").read_text())
+            synthesis = json.loads((output_dir / "synthesis.json").read_text())
+            self.assertEqual(receipt["state"], "completed")
+            self.assertFalse(receipt["skip_ingest"])
+            self.assertEqual(receipt["failure_count"], 0)
+            self.assertEqual(len(receipt["waves"]), 1)
+            wave = receipt["waves"][0]
+            self.assertEqual(wave["state"], "wave_completed")
+            self.assertEqual(wave["ingest"]["state"], "ingest_completed")
+            self.assertEqual(wave["agent_count"], 2)
+            self.assertTrue(all(agent["state"] == "agent_completed" for agent in wave["agents"]))
+            self.assertTrue(all(agent["result_exists"] for agent in wave["agents"]))
+            self.assertTrue((output_dir / wave["agents"][0]["stdout_path"]).exists())
+            self.assertTrue((output_dir / wave["ingest"]["stdout_path"]).exists())
+            self.assertEqual(synthesis["finding_count"], 2)
+            self.assertTrue(synthesis["ingested_subagent_results"])
+            self.assertEqual(synthesis["execution_counts"]["subagent_result_ingested"], 2)
+            self.assertIn("Research Campaign Run runner-campaign-loop", (output_dir / "campaign-run.md").read_text())
+
+    def test_research_campaign_runner_fails_loud_and_preserves_worker_logs(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            output_dir = Path(tmp) / "runner-fail-campaign"
+            fake_executor = FIXTURES / "research_loop" / "fake_executor.py"
+            run_script(
+                "research_loop.py",
+                "--run-id", "runner-fail-loop",
+                "--objective", "Preserve campaign runner failure receipts",
+                "--agent-count", 1,
+                "--output-dir", output_dir,
+            )
+            os.environ["MLX_FAKE_EXECUTOR_FAIL"] = "1"
+            try:
+                result = run_script(
+                    "run_research_campaign.py",
+                    "--campaign", output_dir / "campaign.json",
+                    "--agent-command", f"{sys.executable} {fake_executor}",
+                    "--execution-timeout", 10,
+                    expected=2,
+                )
+            finally:
+                os.environ.pop("MLX_FAKE_EXECUTOR_FAIL", None)
+            self.assertIn("campaign run failed", result.stderr)
+            receipt = json.loads((output_dir / "campaign-run.json").read_text())
+            wave = receipt["waves"][0]
+            agent = wave["agents"][0]
+            self.assertEqual(receipt["state"], "failed")
+            self.assertEqual(receipt["failure_count"], 1)
+            self.assertEqual(wave["state"], "wave_failed")
+            self.assertEqual(wave["ingest"]["state"], "not_started")
+            self.assertEqual(agent["state"], "agent_failed")
+            self.assertEqual(agent["exit_code"], 3)
+            self.assertIn("agent command exited with 3", agent["failure_reason"])
+            stderr_text = (output_dir / agent["stderr_path"]).read_text()
+            self.assertIn("forced fake executor failure", stderr_text)
+            self.assertFalse((output_dir / agent["result_path"]).exists())
+            self.assertIn("agent command exited with 3", (output_dir / "campaign-run.md").read_text())
+
     def test_research_loop_iterations_feed_next_gap_hints(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             output_dir = Path(tmp) / "iterative-run"

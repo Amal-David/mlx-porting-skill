@@ -2,8 +2,8 @@
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
   "version": "0.1.0",
-  "generated_at": "2026-06-27T13:45:10.027125+00:00",
-  "file_count": 194,
+  "generated_at": "2026-06-27T13:54:07.893470+00:00",
+  "file_count": 195,
   "files": [
     {
       "path": ".github/workflows/daily-research.yml",
@@ -52,8 +52,8 @@
     },
     {
       "path": "README.md",
-      "size_bytes": 5392,
-      "sha256": "1b7fe1f7570153e68a1ef904321449a24a96064c9517d3ca5fe1a86900d30161"
+      "size_bytes": 5578,
+      "sha256": "94afa2898ea5670e6563852541c007b9c55ca885fe591e39119d7f08f494a240"
     },
     {
       "path": "RESEARCH_REPORT.md",
@@ -62,8 +62,8 @@
     },
     {
       "path": "VALIDATION.md",
-      "size_bytes": 5438,
-      "sha256": "9b263a8896e20ff90c76d40fe640a6d37c1642d87e9a79c1869334b945d6c014"
+      "size_bytes": 5561,
+      "sha256": "2aa91a2a085c8473d765c902bf96b263f189453e2a8827148f71c1c264fe81cb"
     },
     {
       "path": "VERSION",
@@ -112,8 +112,8 @@
     },
     {
       "path": "mlx-model-porting/SKILL.md",
-      "size_bytes": 11686,
-      "sha256": "329cf9eaba4597c974d164acd2acefc19be12702e9e7a40364fb2b48fe076454"
+      "size_bytes": 11803,
+      "sha256": "56ee72e6c69ace1a24323de9f7e65ba138abd045d9939ab63a5ca7b4709a0877"
     },
     {
       "path": "mlx-model-porting/assets/BENCHMARK_REPORT.md",
@@ -212,8 +212,8 @@
     },
     {
       "path": "mlx-model-porting/references/deep-research-loop.md",
-      "size_bytes": 13974,
-      "sha256": "74e20df0a06420ebec1bf8b4c684a40586264c9a51b0c6535e354eb6ec981150"
+      "size_bytes": 15063,
+      "sha256": "78edc2339d4d8aa93d0b41eaadc81406f3945a055ac313a1c5ce638da28cf716"
     },
     {
       "path": "mlx-model-porting/references/failure-atlas.md",
@@ -549,6 +549,11 @@
       "path": "mlx-model-porting/scripts/research_loop.py",
       "size_bytes": 86503,
       "sha256": "5f0e46cb55f170300f6022b9bb44f95f7829623e60eb74ab5386b1de83bcbaee"
+    },
+    {
+      "path": "mlx-model-porting/scripts/run_research_campaign.py",
+      "size_bytes": 17736,
+      "sha256": "60963b63c727bd4b66029f4998e2360bad3b66b2504e5fe0eb1416dafef07012"
     },
     {
       "path": "mlx-model-porting/scripts/update_sources.py",
@@ -972,8 +977,8 @@
     },
     {
       "path": "tests/test_tooling.py",
-      "size_bytes": 91913,
-      "sha256": "2dc7678c98d7bf6de532933211bba7049283ab7dd450b0d64d42bef7ee53d034"
+      "size_bytes": 96070,
+      "sha256": "e05609214d98ddfc7eeab948f464327497c43fedeeed0b93882ff2a4b1e80d9d"
     }
   ]
 }

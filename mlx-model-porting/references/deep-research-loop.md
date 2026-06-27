@@ -103,6 +103,12 @@ selected agents, assignment and prompt paths, expected result and blog paths,
 safe launch constraints, and the exact per-wave `command_args` for rerunning
 ingestion with `--ingest-subagent-results`. External dispatchers should consume
 the campaign receipt instead of inferring launch state from internal file names.
+When the dispatcher is an explicit local command, use
+`scripts/run_research_campaign.py` to execute the campaign receipt wave by wave.
+The runner starts one process per listed agent up to `--workers`, passes the
+standard `MLX_RESEARCH_*` environment, preserves stdout/stderr/exit-code logs
+under `campaign-run-logs/`, invokes the recorded ingest command by default,
+and writes `campaign-run.json` plus `campaign-run.md`.
 
 When a loop is intended to feed skill updates, add an explicit review gate:
 `--min-sampled-targets`, `--min-non-github-lanes`, and repeated
@@ -265,6 +271,23 @@ The same command arguments are recorded under
 `campaign.json -> waves[].ingest.command_args`, including run id, objective,
 selected agent count, assignment mode, gap hints, review-gate requirements, and
 the wave output directory.
+
+Run a campaign with an explicit local researcher command:
+
+```bash
+python3 scripts/run_research_campaign.py \
+  --campaign research-runs/manual-dispatch/campaign.json \
+  --agent-command "python3 local_researcher.py" \
+  --workers 6 \
+  --execution-timeout 300
+```
+
+The runner does not fetch network resources by itself and does not execute
+remote model code. The explicit researcher command owns any live browsing or
+delegation and must still write one result JSON per agent. Use `--dry-run` to
+write a launch plan without executing workers, or `--skip-ingest` when a human
+operator wants to inspect returned result files before running the recorded
+ingest command.
 
 Require evidence breadth before treating a run as review-ready:
 
