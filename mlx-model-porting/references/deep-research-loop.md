@@ -55,8 +55,11 @@ author identities.
 ## Agent Assignments
 
 The harness generates bounded assignments from
-`assets/research_loop_config.json`. A live operator can hand those assignments
-to subagents. Tests and offline automation use fixture findings instead of live
+`assets/research_loop_config.json`. By default it keeps deterministic config
+order for repeatability. Pass gap hints or `--assignment-mode dynamic` when the
+loop should choose the worker roster from the current objective, source-lane
+keywords, and known coverage gaps. A live operator can hand those assignments to
+subagents. Tests and offline automation use fixture findings instead of live
 agents or network.
 
 Each assignment must tell the researcher:
@@ -70,10 +73,13 @@ Each assignment must tell the researcher:
 - that community evidence can only create leads.
 
 The generated `assignments.json` includes `sample_plan` objects for every
-persona, and `synthesis.json` reports planned source-lane counts, planned
-sample-target counts, and planned non-GitHub sample targets separately from
-returned findings. This proves the intended research breadth even when a run is
-only scaffolded and no agent has returned findings yet.
+persona plus an `assignment_planner` receipt that records selected and held
+personas, source-lane counts, matched objective or gap terms, and selection
+reasons. `synthesis.json` repeats the planner receipt and reports planned
+source-lane counts, planned sample-target counts, and planned non-GitHub sample
+targets separately from returned findings. This proves the intended research
+breadth even when a run is only scaffolded and no agent has returned findings
+yet.
 
 ## Blog Contract
 
@@ -127,6 +133,22 @@ python3 scripts/research_loop.py \
   --executor-command "python3 local_researcher.py" \
   --output-dir research-runs/manual-executor
 ```
+
+Choose agents dynamically for known gaps:
+
+```bash
+python3 scripts/research_loop.py \
+  --objective "Investigate ranking, recommender, and package-release gaps" \
+  --agent-count 3 \
+  --gap-hint ranking \
+  --gap-hint recommender \
+  --gap-hint package \
+  --output-dir research-runs/manual-dynamic
+```
+
+Dynamic planning is deterministic: score selected personas from matched
+objective terms and higher-weighted gap terms, keep config order for ties, and
+write selected/held receipts before any executor runs.
 
 Executor mode is opt-in and mutually exclusive with `--offline-fixture`. The
 command receives these environment variables:

@@ -5,9 +5,11 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import re
 import shlex
 import subprocess
 import sys
+from collections import Counter
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -25,6 +27,18 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--objective", default="Deepen MLX model-porting evidence beyond GitHub")
     parser.add_argument("--run-id", default=None)
     parser.add_argument("--agent-count", type=int, default=None)
+    parser.add_argument(
+        "--assignment-mode",
+        choices=("auto", "config-order", "dynamic"),
+        default="auto",
+        help="Use config order, or dynamically score personas from objective/gap hints",
+    )
+    parser.add_argument(
+        "--gap-hint",
+        action="append",
+        default=[],
+        help="Optional research gap hint used by dynamic assignment planning; may be repeated",
+    )
     parser.add_argument("--offline-fixture", help="Fixture with returned agent findings; no network is used")
     parser.add_argument(
         "--executor-command",
@@ -75,12 +89,193 @@ def load_config(path: str | Path) -> dict[str, Any]:
     return config
 
 
-def select_personas(config: dict[str, Any], count: int | None) -> list[dict[str, Any]]:
+STOP_TERMS = {
+    "and",
+    "are",
+    "for",
+    "from",
+    "into",
+    "mlx",
+    "not",
+    "only",
+    "that",
+    "the",
+    "this",
+    "with",
+}
+
+
+def tokenize(value: str) -> set[str]:
+    return {term for term in re.findall(r"[a-z0-9]+", value.lower()) if len(term) > 1 and term not in STOP_TERMS}
+
+
+def objective_tokens(value: str) -> set[str]:
+    terms = tokenize(value)
+    if re.search(r"\b(?:beyond|non|outside)[-\s]+github\b", value.lower()):
+        terms.discard("github")
+    return terms
+
+
+def collect_terms(value: Any) -> set[str]:
+    if isinstance(value, str):
+        return tokenize(value)
+    if isinstance(value, dict):
+        terms: set[str] = set()
+        for item in value.values():
+            terms.update(collect_terms(item))
+        return terms
+    if isinstance(value, list):
+        terms = set()
+        for item in value:
+            terms.update(collect_terms(item))
+        return terms
+    return set()
+
+
+def lane_terms(lane: dict[str, Any]) -> set[str]:
+    fields = {
+        "id": lane.get("id"),
+        "title": lane.get("title"),
+        "evidence_role": lane.get("evidence_role"),
+        "examples": lane.get("examples", []),
+        "planner_keywords": lane.get("planner_keywords", []),
+        "sample_targets": lane.get("sample_targets", []),
+    }
+    return collect_terms(fields)
+
+
+def persona_terms(config: dict[str, Any], persona: dict[str, Any]) -> set[str]:
+    lanes = lane_catalog(config)
+    fields = {
+        "id": persona.get("id"),
+        "title": persona.get("title"),
+        "mission": persona.get("mission"),
+        "source_lanes": persona.get("source_lanes", []),
+        "planner_keywords": persona.get("planner_keywords", []),
+    }
+    terms = collect_terms(fields)
+    for lane_id in persona.get("source_lanes", []):
+        lane = lanes.get(lane_id)
+        if lane:
+            terms.update(lane_terms(lane))
+    return terms
+
+
+def persona_own_terms(persona: dict[str, Any]) -> set[str]:
+    return collect_terms({
+        "id": persona.get("id"),
+        "title": persona.get("title"),
+        "mission": persona.get("mission"),
+        "planner_keywords": persona.get("planner_keywords", []),
+    })
+
+
+def requested_agent_count(config: dict[str, Any], count: int | None) -> int:
     personas = list(config.get("personas", []))
     requested = count or int(config.get("default_agent_count") or len(personas))
     if requested <= 0:
         raise SkillError("--agent-count must be positive")
-    return personas[: min(requested, len(personas))]
+    return min(requested, len(personas))
+
+
+def planning_reason(record: dict[str, Any]) -> list[str]:
+    reasons = []
+    if record["score"] == 0:
+        reasons.append("No objective or gap terms matched; kept deterministic config-order fallback.")
+    if record["matched_gap_terms"]:
+        reasons.append(f"Matched gap terms: {', '.join(record['matched_gap_terms'])}.")
+    if record["matched_objective_terms"]:
+        reasons.append(f"Matched objective terms: {', '.join(record['matched_objective_terms'])}.")
+    if record["source_lanes"]:
+        reasons.append(f"Covers source lanes: {', '.join(record['source_lanes'])}.")
+    return reasons
+
+
+def plan_personas(
+    config: dict[str, Any],
+    objective: str,
+    count: int | None,
+    gap_hints: list[str],
+    assignment_mode: str,
+) -> tuple[list[dict[str, Any]], dict[str, Any]]:
+    personas = list(config.get("personas", []))
+    requested = requested_agent_count(config, count)
+    objective_terms = objective_tokens(objective)
+    gap_terms = set()
+    for hint in gap_hints:
+        gap_terms.update(tokenize(hint))
+    mode = assignment_mode
+    if mode == "auto":
+        mode = "dynamic" if gap_terms else "config-order"
+
+    scored = []
+    for index, persona in enumerate(personas):
+        terms = persona_terms(config, persona)
+        own_terms = persona_own_terms(persona)
+        matched_objective = sorted(terms & objective_terms)
+        matched_gap = sorted(terms & gap_terms)
+        own_objective = sorted(own_terms & objective_terms)
+        own_gap = sorted(own_terms & gap_terms)
+        score = len(matched_objective) + (3 * len(matched_gap)) + len(own_objective) + (2 * len(own_gap))
+        if mode == "config-order":
+            score = 0
+            matched_objective = []
+            matched_gap = []
+        record = {
+            "persona_id": persona["id"],
+            "title": persona["title"],
+            "rank": index + 1,
+            "config_order": index + 1,
+            "score": score,
+            "source_lanes": persona.get("source_lanes", []),
+            "matched_objective_terms": matched_objective,
+            "matched_gap_terms": matched_gap,
+        }
+        record["reasons"] = planning_reason(record)
+        scored.append((persona, record))
+
+    if mode == "dynamic":
+        scored.sort(key=lambda item: (-item[1]["score"], item[1]["config_order"]))
+
+    selected_pairs = scored[:requested]
+    held_pairs = scored[requested:]
+    selected_ids = {record["persona_id"] for _, record in selected_pairs}
+    lane_counts = Counter()
+    selected_records = []
+    for rank, (persona, record) in enumerate(selected_pairs, 1):
+        record = dict(record)
+        record["rank"] = rank
+        selected_records.append(record)
+        for lane in persona.get("source_lanes", []):
+            lane_counts[lane] += 1
+    held_records = []
+    for _, record in held_pairs:
+        held = dict(record)
+        held["held_reason"] = "agent-count cap" if held["persona_id"] not in selected_ids else "selected"
+        held_records.append(held)
+    receipt = {
+        "schema_version": 1,
+        "mode": mode,
+        "requested_agent_count": requested,
+        "objective_terms": sorted(objective_terms),
+        "gap_hints": gap_hints,
+        "gap_terms": sorted(gap_terms),
+        "selected_personas": selected_records,
+        "held_personas": held_records,
+        "selected_source_lane_counts": dict(sorted(lane_counts.items())),
+        "selection_policy": (
+            "dynamic score = matched objective terms + 3 * matched gap terms, with a small bonus for direct persona matches; ties keep config order"
+            if mode == "dynamic"
+            else "deterministic config order"
+        ),
+    }
+    selected_personas = []
+    selected_receipts = {record["persona_id"]: record for record in selected_records}
+    for persona, _ in selected_pairs:
+        row = dict(persona)
+        row["_planning"] = selected_receipts[persona["id"]]
+        selected_personas.append(row)
+    return selected_personas, receipt
 
 
 def lane_catalog(config: dict[str, Any]) -> dict[str, dict[str, Any]]:
@@ -143,10 +338,18 @@ def render_sample_plan(plan: list[dict[str, Any]]) -> str:
     return "\n".join(lines)
 
 
-def build_assignments(config: dict[str, Any], objective: str, run_id: str, count: int | None) -> list[dict[str, Any]]:
+def build_assignments(
+    config: dict[str, Any],
+    objective: str,
+    run_id: str,
+    count: int | None,
+    gap_hints: list[str],
+    assignment_mode: str,
+) -> tuple[list[dict[str, Any]], dict[str, Any]]:
     policy = config.get("review_policy", {})
     assignments = []
-    for persona in select_personas(config, count):
+    personas, planner_receipt = plan_personas(config, objective, count, gap_hints, assignment_mode)
+    for persona in personas:
         sample_plan = sample_plan_for_persona(config, persona)
         prompt = (
             f"You are the {persona['title']} for MLX model-porting research loop {run_id}. "
@@ -174,13 +377,14 @@ def build_assignments(config: dict[str, Any], objective: str, run_id: str, count
                 "log_path": None,
                 "result_path": None,
             },
+            "planning": persona.get("_planning", {}),
             "review_only": True,
             "policy": {
                 "auto_modify_recommendations": policy.get("auto_modify_recommendations", False),
                 "execute_remote_model_code": policy.get("execute_remote_model_code", False),
             },
         })
-    return assignments
+    return assignments, planner_receipt
 
 
 def load_fixture(path: str | Path | None) -> dict[str, Any]:
@@ -422,6 +626,7 @@ def planned_sampling_summary(assignments: list[dict[str, Any]], config: dict[str
 def summarize(
     config: dict[str, Any],
     assignments: list[dict[str, Any]],
+    planner_receipt: dict[str, Any],
     fixture: dict[str, Any],
     run_id: str,
     objective: str,
@@ -464,6 +669,7 @@ def summarize(
         "finding_count": len(findings),
         "source_lane_counts": lanes,
         "non_github_lanes_covered": non_github_lanes,
+        "assignment_planner": planner_receipt,
         **planned_sampling_summary(assignments, config),
         "decision_counts": decision_counts,
         "adopted": [f for f in findings if f["decision"] == "adopted"],
@@ -544,11 +750,20 @@ def write_markdown_summary(output_dir: Path, summary: dict[str, Any]) -> None:
         "",
         f"Review only: {summary['review_only']}",
         f"Findings: {summary['finding_count']}",
+        f"Assignment planner: {summary['assignment_planner']['mode']}",
         f"Non-GitHub lanes covered: {', '.join(summary['non_github_lanes_covered']) or 'none'}",
         f"Planned non-GitHub sample targets: {summary['planned_non_github_sample_target_count']}",
         "",
-        "## Decision Counts",
+        "## Selected Agents",
     ]
+    for selected in summary["assignment_planner"].get("selected_personas", []):
+        lines.append(
+            f"- {selected['persona_id']}: score {selected['score']} - {'; '.join(selected.get('reasons', []))}"
+        )
+    lines.extend([
+        "",
+        "## Decision Counts",
+    ])
     for decision, count in summary["decision_counts"].items():
         lines.append(f"- {decision}: {count}")
     for section, key in [
@@ -575,7 +790,14 @@ def main() -> int:
         run_id = args.run_id or default_run_id()
         output_dir = Path(args.output_dir)
         output_dir.mkdir(parents=True, exist_ok=True)
-        assignments = build_assignments(config, args.objective, run_id, args.agent_count)
+        assignments, planner_receipt = build_assignments(
+            config,
+            args.objective,
+            run_id,
+            args.agent_count,
+            args.gap_hint,
+            args.assignment_mode,
+        )
         executions = None
         if args.executor_command:
             fixture, executions = execute_assignments(
@@ -588,7 +810,7 @@ def main() -> int:
         else:
             fixture = load_fixture(args.offline_fixture)
         validate_findings(config, fixture)
-        summary = summarize(config, assignments, fixture, run_id, args.objective, executions)
+        summary = summarize(config, assignments, planner_receipt, fixture, run_id, args.objective, executions)
         if args.offline_fixture:
             fixture_path = Path(args.offline_fixture)
             summary["offline_fixture"] = safe_relpath(Path.cwd(), fixture_path) if fixture_path.exists() else args.offline_fixture
@@ -599,6 +821,7 @@ def main() -> int:
             "run_id": run_id,
             "objective": args.objective,
             "generated_at": summary["generated_at"],
+            "assignment_planner": planner_receipt,
             "assignments": assignments,
         }, output_dir / "assignments.json")
         dump_json(summary, output_dir / "synthesis.json")

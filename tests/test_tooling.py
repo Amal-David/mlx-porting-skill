@@ -957,10 +957,13 @@ class ToolingTests(unittest.TestCase):
             synthesis = json.loads((output_dir / "synthesis.json").read_text())
             self.assertEqual(synthesis["finding_count"], 0)
             self.assertEqual(synthesis["execution_counts"]["scaffolded_not_run"], 2)
+            self.assertEqual(synthesis["assignment_planner"]["mode"], "config-order")
             self.assertGreater(synthesis["planned_non_github_sample_target_count"], 0)
             self.assertGreater(synthesis["planned_source_lane_counts"]["official_docs"], 0)
             self.assertGreater(synthesis["planned_sample_target_counts"]["papers"], 0)
+            self.assertIn("assignment_planner", assignments)
             first = assignments["assignments"][0]
+            self.assertEqual(first["planning"]["persona_id"], "official-docs-cartographer")
             self.assertEqual(first["sample_plan"][0]["source_lane"], "official_docs")
             self.assertIn("evidence_role", first["sample_plan"][0])
             self.assertGreater(len(first["sample_plan"][0]["targets"]), 0)
@@ -971,6 +974,44 @@ class ToolingTests(unittest.TestCase):
             self.assertIn("Planned sampling", blog_text)
             self.assertIn("MLX documentation index", blog_text)
             self.assertIn("## Sources sampled\n- None", blog_text)
+
+    def test_research_loop_dynamic_planner_selects_gap_personas(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            output_dir = Path(tmp) / "dynamic-run"
+            run_script(
+                "research_loop.py",
+                "--run-id", "dynamic-loop",
+                "--objective", "Investigate ranking recommender package release gaps beyond GitHub",
+                "--agent-count", 3,
+                "--gap-hint", "ranking",
+                "--gap-hint", "recommender",
+                "--gap-hint", "package",
+                "--output-dir", output_dir,
+            )
+            assignments = json.loads((output_dir / "assignments.json").read_text())
+            synthesis = json.loads((output_dir / "synthesis.json").read_text())
+            planner = synthesis["assignment_planner"]
+            selected = [row["persona_id"] for row in planner["selected_personas"]]
+            held = [row["persona_id"] for row in planner["held_personas"]]
+            self.assertEqual(planner["mode"], "dynamic")
+            self.assertEqual(assignments["assignment_planner"]["mode"], "dynamic")
+            self.assertEqual(selected[0], "coverage-skeptic")
+            self.assertIn("huggingface-ecosystem-sampler", selected)
+            self.assertIn("package-registry-scout", selected)
+            self.assertIn("official-docs-cartographer", held)
+            self.assertNotEqual(selected, [
+                "official-docs-cartographer",
+                "paper-architecture-scout",
+                "huggingface-ecosystem-sampler",
+            ])
+            self.assertGreater(planner["selected_source_lane_counts"]["hugging_face"], 0)
+            self.assertGreater(planner["selected_source_lane_counts"]["packages"], 0)
+            for row in planner["selected_personas"]:
+                self.assertGreater(row["score"], 0)
+                self.assertTrue(row["reasons"])
+            summary = (output_dir / "synthesis.md").read_text()
+            self.assertIn("Assignment planner: dynamic", summary)
+            self.assertIn("coverage-skeptic", summary)
 
     def test_research_loop_generates_review_blogs_and_synthesis(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -989,6 +1030,7 @@ class ToolingTests(unittest.TestCase):
             self.assertEqual(synthesis["execution_counts"]["fixture_ingested"], 3)
             self.assertEqual(synthesis["execution_counts"]["scaffolded_not_run"], 3)
             self.assertEqual(synthesis["decision_counts"]["adopted"], 1)
+            self.assertEqual(synthesis["assignment_planner"]["mode"], "config-order")
             self.assertIn("official_docs", synthesis["non_github_lanes_covered"])
             self.assertIn("hugging_face", synthesis["non_github_lanes_covered"])
             self.assertIn("technical_blogs", synthesis["non_github_lanes_covered"])

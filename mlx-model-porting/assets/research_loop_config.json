@@ -10,6 +10,15 @@
         "https://ml-explore.github.io/mlx/build/html/index.html",
         "https://developer.apple.com/metal/"
       ],
+      "planner_keywords": [
+        "api",
+        "docs",
+        "kernel",
+        "metal",
+        "runtime",
+        "packaging",
+        "fallback"
+      ],
       "sample_targets": [
         {
           "title": "MLX documentation index",
@@ -39,6 +48,14 @@
         "arXiv",
         "conference proceedings",
         "model technical reports"
+      ],
+      "planner_keywords": [
+        "paper",
+        "architecture",
+        "algorithm",
+        "metric",
+        "evaluation",
+        "quality"
       ],
       "sample_targets": [
         {
@@ -71,6 +88,17 @@
         "Space demos",
         "dataset cards"
       ],
+      "planner_keywords": [
+        "huggingface",
+        "hf",
+        "model-card",
+        "task",
+        "license",
+        "ranking",
+        "recommender",
+        "tabular",
+        "forecasting"
+      ],
       "sample_targets": [
         {
           "title": "Hugging Face MLX model search",
@@ -100,6 +128,15 @@
         "PyPI",
         "conda-forge",
         "Apple package docs"
+      ],
+      "planner_keywords": [
+        "package",
+        "pypi",
+        "install",
+        "dependency",
+        "release",
+        "version",
+        "registry"
       ],
       "sample_targets": [
         {
@@ -137,6 +174,14 @@
         "maintainer posts",
         "benchmark writeups"
       ],
+      "planner_keywords": [
+        "blog",
+        "benchmark",
+        "writeup",
+        "practitioner",
+        "production",
+        "caveat"
+      ],
       "sample_targets": [
         {
           "title": "Apple Machine Learning Research",
@@ -162,6 +207,14 @@
         "Reddit",
         "issue discussions"
       ],
+      "planner_keywords": [
+        "community",
+        "forum",
+        "reddit",
+        "discord",
+        "pain",
+        "issue"
+      ],
       "sample_targets": [
         {
           "title": "Apple Developer Forums MLX search",
@@ -184,6 +237,15 @@
       "examples": [
         "official repos",
         "third-party implementations"
+      ],
+      "planner_keywords": [
+        "github",
+        "repository",
+        "repo",
+        "implementation",
+        "contributor",
+        "tests",
+        "conversion"
       ],
       "sample_targets": [
         {
@@ -215,6 +277,18 @@
         "validators",
         "fixtures",
         "tests"
+      ],
+      "planner_keywords": [
+        "backlog",
+        "coverage",
+        "validation",
+        "fixture",
+        "runbook",
+        "gap",
+        "ranking",
+        "recommender",
+        "tabular",
+        "forecasting"
       ],
       "sample_targets": [
         {
