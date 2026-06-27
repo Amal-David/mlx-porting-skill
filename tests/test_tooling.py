@@ -50,6 +50,97 @@ def run_script(name: str, *args: object, expected: int = 0) -> SimpleNamespace:
     return SimpleNamespace(returncode=code, stdout=stdout.getvalue(), stderr=stderr.getvalue())
 
 
+def proto_varint(value: int) -> bytes:
+    out = bytearray()
+    while value >= 0x80:
+        out.append((value & 0x7F) | 0x80)
+        value >>= 7
+    out.append(value)
+    return bytes(out)
+
+
+def proto_field_varint(field: int, value: int) -> bytes:
+    return proto_varint((field << 3) | 0) + proto_varint(value)
+
+
+def proto_field_bytes(field: int, value: bytes | str) -> bytes:
+    raw = value.encode("utf-8") if isinstance(value, str) else value
+    return proto_varint((field << 3) | 2) + proto_varint(len(raw)) + raw
+
+
+def onnx_value_info(name: str, dtype: int, shape: list[int]) -> bytes:
+    dims = b"".join(proto_field_bytes(1, proto_field_varint(1, dim)) for dim in shape)
+    tensor_type = proto_field_varint(1, dtype) + proto_field_bytes(2, dims)
+    type_proto = proto_field_bytes(1, tensor_type)
+    return proto_field_bytes(1, name) + proto_field_bytes(2, type_proto)
+
+
+def tiny_onnx_model() -> bytes:
+    node = (
+        proto_field_bytes(1, "input")
+        + proto_field_bytes(1, "weight")
+        + proto_field_bytes(2, "output")
+        + proto_field_bytes(3, "matmul_0")
+        + proto_field_bytes(4, "MatMul")
+    )
+    tensor = (
+        proto_field_bytes(1, proto_varint(2) + proto_varint(3))
+        + proto_field_varint(2, 1)
+        + proto_field_bytes(8, "weight")
+        + proto_field_bytes(9, b"\x00" * 24)
+    )
+    graph = (
+        proto_field_bytes(1, node)
+        + proto_field_bytes(2, "tiny_graph")
+        + proto_field_bytes(5, tensor)
+        + proto_field_bytes(11, onnx_value_info("input", 1, [1, 2]))
+        + proto_field_bytes(12, onnx_value_info("output", 1, [1, 3]))
+    )
+    opset = proto_field_bytes(1, "") + proto_field_varint(2, 17)
+    return proto_field_varint(1, 8) + proto_field_bytes(2, "fixture") + proto_field_bytes(7, graph) + proto_field_bytes(8, opset)
+
+
+def gguf_string(value: str) -> bytes:
+    raw = value.encode("utf-8")
+    return len(raw).to_bytes(8, "little") + raw
+
+
+def gguf_kv_string(key: str, value: str) -> bytes:
+    return gguf_string(key) + (8).to_bytes(4, "little") + gguf_string(value)
+
+
+def gguf_kv_u32(key: str, value: int) -> bytes:
+    return gguf_string(key) + (4).to_bytes(4, "little") + value.to_bytes(4, "little")
+
+
+def tiny_gguf_model(include_provenance: bool = True) -> bytes:
+    metadata = [
+        gguf_kv_string("general.architecture", "llama"),
+        gguf_kv_string("general.name", "tiny-gguf"),
+        gguf_kv_string("tokenizer.ggml.model", "llama"),
+        gguf_kv_u32("general.file_type", 0),
+        gguf_kv_u32("general.quantization_version", 2),
+    ]
+    if include_provenance:
+        metadata.insert(2, gguf_kv_string("general.source.url", "https://example.invalid/source"))
+    tensor = (
+        gguf_string("blk.0.attn_q.weight")
+        + (2).to_bytes(4, "little")
+        + (2).to_bytes(8, "little")
+        + (3).to_bytes(8, "little")
+        + (0).to_bytes(4, "little")
+        + (0).to_bytes(8, "little")
+    )
+    return (
+        b"GGUF"
+        + (3).to_bytes(4, "little")
+        + (1).to_bytes(8, "little")
+        + len(metadata).to_bytes(8, "little")
+        + b"".join(metadata)
+        + tensor
+    )
+
+
 class ToolingTests(unittest.TestCase):
     def test_skill_audit_passes(self) -> None:
         result = run_script("audit_skill.py", SKILL)
@@ -98,6 +189,66 @@ class ToolingTests(unittest.TestCase):
             self.assertTrue({"remote-code", "unsafe-serialization", "custom-code", "dependency-install", "no-safe-weights"}.issubset(risk_types))
             self.assertIsNone(report["recommended_family"])
             self.assertTrue(report["recommendation_blockers"])
+
+    def test_static_inspection_reports_onnx_source_format_manifest(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            model_dir = Path(tmp) / "onnx"
+            model_dir.mkdir()
+            (model_dir / "model.onnx").write_bytes(tiny_onnx_model())
+            output = Path(tmp) / "inspection.json"
+            run_script("inspect_model.py", model_dir, "--output", output)
+            report = json.loads(output.read_text())
+            self.assertEqual(report["source_format_summary"]["formats"], ["onnx"])
+            manifest = report["source_format_summary"]["manifests"][0]
+            self.assertEqual(manifest["format"], "onnx")
+            self.assertEqual(manifest["ir_version"], 8)
+            self.assertEqual(manifest["opsets"][0]["version"], 17)
+            self.assertEqual(manifest["graph"]["name"], "tiny_graph")
+            self.assertEqual(manifest["graph"]["op_types"], {"MatMul": 1})
+            self.assertEqual(manifest["graph"]["inputs"][0]["shape"], [1, 2])
+            self.assertEqual(manifest["graph"]["outputs"][0]["dtype"], "FLOAT")
+            self.assertEqual(manifest["graph"]["initializers"][0]["shape"], [2, 3])
+            self.assertEqual(manifest["graph"]["initializers"][0]["parameters"], 6)
+            self.assertEqual(manifest["graph"]["initializers"][0]["raw_data_bytes"], 24)
+            self.assertIn("source-format static intake is triage-only", report["recommendation_blockers"][0])
+
+    def test_static_inspection_reports_gguf_source_format_manifest(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            model_dir = Path(tmp) / "gguf"
+            model_dir.mkdir()
+            (model_dir / "model.gguf").write_bytes(tiny_gguf_model())
+            output = Path(tmp) / "inspection.json"
+            run_script("inspect_model.py", model_dir, "--output", output)
+            report = json.loads(output.read_text())
+            self.assertEqual(report["source_format_summary"]["formats"], ["gguf"])
+            manifest = report["source_format_summary"]["manifests"][0]
+            self.assertEqual(manifest["format"], "gguf")
+            self.assertEqual(manifest["version"], 3)
+            self.assertEqual(manifest["header"]["magic"], "GGUF")
+            self.assertEqual(manifest["header"]["alignment"], 32)
+            self.assertEqual(manifest["architecture"], "llama")
+            self.assertEqual(manifest["tokenizer_model"], "llama")
+            self.assertEqual(manifest["quantization_version"], 2)
+            self.assertIn("general.source.url", manifest["source_provenance_keys"])
+            self.assertEqual(manifest["quantization_summary"]["quantized_tensor_count"], 0)
+            self.assertEqual(manifest["tensors"][0]["name"], "blk.0.attn_q.weight")
+            self.assertEqual(manifest["tensors"][0]["shape"], [2, 3])
+            self.assertEqual(manifest["tensors"][0]["type"], "F32")
+            self.assertEqual(manifest["tensors"][0]["relative_data_offset"], 0)
+            self.assertGreaterEqual(manifest["tensors"][0]["absolute_data_offset"], manifest["tensor_data_start_offset"])
+            self.assertIn("source-format static intake is triage-only", report["recommendation_blockers"][0])
+
+    def test_static_inspection_blocks_gguf_without_source_provenance(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            model_dir = Path(tmp) / "gguf"
+            model_dir.mkdir()
+            (model_dir / "model.gguf").write_bytes(tiny_gguf_model(include_provenance=False))
+            output = Path(tmp) / "inspection.json"
+            run_script("inspect_model.py", model_dir, "--output", output)
+            report = json.loads(output.read_text())
+            manifest = report["source_format_summary"]["manifests"][0]
+            self.assertIn("Missing source/base-model provenance metadata.", manifest["hold_conditions"])
+            self.assertIn("GGUF source/base-model provenance is missing or incomplete", report["recommendation_blockers"])
 
     def test_port_plan_is_architecture_and_evidence_aware(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

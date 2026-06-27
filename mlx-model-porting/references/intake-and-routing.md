@@ -23,6 +23,12 @@ Do not import the model package during initial inspection. Read:
 
 - `config.json`, `generation_config.json`, processor/preprocessor configs;
 - safetensors headers and shard index;
+- ONNX `ModelProto` metadata: IR version, opsets, graph inputs/outputs,
+  initializers, node operator/domain counts, external-data references, and
+  unsupported-op hold conditions;
+- GGUF headers and metadata: version, metadata keys, architecture, tokenizer
+  model, source/base-model provenance keys, file type, quantization version, and
+  tensor table;
 - repository tree and Python filenames;
 - model card frontmatter and license files;
 - `auto_map`, custom architecture names, and nonstandard config keys;
@@ -30,6 +36,12 @@ Do not import the model package during initial inspection. Read:
 - tied embeddings, shared submodules, and adapter metadata.
 
 Run `scripts/inspect_model.py`. Network download is opt-in.
+
+ONNX and GGUF support here is static intake only. It can identify routing
+signals and hold conditions, but it is not conversion support. Before using
+either format for a port, record unsupported operators, source/base-model
+provenance, tokenizer or processor compatibility, and a source-oracle parity
+fixture.
 
 ## Architecture routing signals
 

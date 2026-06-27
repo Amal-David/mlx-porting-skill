@@ -2,7 +2,7 @@
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
   "version": "0.1.0",
-  "generated_at": "2026-06-27T10:58:47.620243+00:00",
+  "generated_at": "2026-06-27T11:09:32.972153+00:00",
   "file_count": 127,
   "files": [
     {
@@ -162,8 +162,8 @@
     },
     {
       "path": "mlx-model-porting/assets/research_backlog.json",
-      "size_bytes": 5791,
-      "sha256": "1f99c596bc1c9f08a01e0b6fd9ebb11947f3d6d4191062c52fa2660b57374a95"
+      "size_bytes": 5852,
+      "sha256": "a261d7de1e2ae501dac036f5e9287d24ce5e66aabb7c76cbfa8792deb63fde20"
     },
     {
       "path": "mlx-model-porting/assets/research_loop_config.json",
@@ -222,8 +222,8 @@
     },
     {
       "path": "mlx-model-porting/references/intake-and-routing.md",
-      "size_bytes": 2926,
-      "sha256": "b7e03e4821901e6a02696faaef7b7da94c1d797a092ca74b18416709715e01bb"
+      "size_bytes": 3592,
+      "sha256": "2bf38b1074ab1371c203192b6ae0f33adb9a15bcf020bf12967f182bb43f99a0"
     },
     {
       "path": "mlx-model-porting/references/maintenance-and-provenance.md",
@@ -452,8 +452,8 @@
     },
     {
       "path": "mlx-model-porting/scripts/inspect_model.py",
-      "size_bytes": 17747,
-      "sha256": "2cd6ad34e0b5bd38140a85d3feeee76923d2713f4b869dce2e9844c3fdf550e8"
+      "size_bytes": 41388,
+      "sha256": "f05d88d448526186b163f2001a5f454135f6db9759b3dc3388a915831a58d977"
     },
     {
       "path": "mlx-model-porting/scripts/install_skill.py",
@@ -637,8 +637,8 @@
     },
     {
       "path": "tests/test_tooling.py",
-      "size_bytes": 35018,
-      "sha256": "b8b18768605e96cf9caf61b50778d4d4458ca1b10c1ce62012f39c3b4fb3e131"
+      "size_bytes": 42144,
+      "sha256": "661c343242e017a4c7c4179bd7705c77a027864c1c0c8d70f1a4ca0c02619669"
     }
   ]
 }
