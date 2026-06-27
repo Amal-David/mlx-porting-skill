@@ -97,11 +97,19 @@ validation, test, and rollback evidence.
 For `--iterations 2` or higher, the harness writes each pass under
 `iterations/NN/` and emits top-level `loop.json` and `loop.md` receipts. Each
 iteration records the gap hints it used and the next hints derived from
-`held`/`needs-validation` findings. The next iteration receives those hints,
-which lets the planner switch from deterministic config order to dynamic
-coverage-driven assignment selection without rewriting recommendation assets.
-Loop receipts aggregate the per-iteration review gates and remain failed until
-every iteration passes its own gate.
+`held`/`needs-validation` findings. If a review gate fails, the next hints also
+include failed checks and unmatched planned sampling targets. The next iteration
+receives those hints, which lets the planner switch from deterministic config
+order to dynamic coverage-driven assignment selection without rewriting
+recommendation assets. Fixed loop receipts aggregate the per-iteration review
+gates and remain failed until every iteration passes its own gate.
+
+Use `--until-review-gate` when `--iterations` should be a cap rather than a
+fixed count. In that adaptive mode, the loop stops as soon as an iteration
+passes its review gate; otherwise it records `iteration_cap_exhausted`.
+Adaptive loop readiness is based on the final completed iteration, so earlier
+failed iterations are treated as review-only sampling passes rather than
+permanent failures.
 
 ## Blog Contract
 
@@ -192,6 +200,20 @@ python3 scripts/research_loop.py \
 For a live local worker command, use `--iterations` with `--executor-command`.
 The first pass may run in config order; later passes inherit derived gap hints
 from prior findings and can dynamically reshape the worker roster.
+
+Stop a bounded campaign once the review gate passes:
+
+```bash
+python3 scripts/research_loop.py \
+  --objective "Broaden MLX porting evidence beyond GitHub" \
+  --iterations 5 \
+  --until-review-gate \
+  --executor-workers 3 \
+  --executor-command "python3 local_researcher.py" \
+  --min-sampled-targets 8 \
+  --min-non-github-lanes 4 \
+  --output-dir research-runs/manual-adaptive
+```
 
 Require evidence breadth before treating a run as review-ready:
 

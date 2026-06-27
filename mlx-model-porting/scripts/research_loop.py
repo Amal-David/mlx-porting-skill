@@ -46,6 +46,11 @@ def parse_args() -> argparse.Namespace:
         default=1,
         help="Number of review-only research iterations to run",
     )
+    parser.add_argument(
+        "--until-review-gate",
+        action="store_true",
+        help="Treat --iterations as a cap and stop once the review gate passes",
+    )
     parser.add_argument("--offline-fixture", help="Fixture with returned agent findings; no network is used")
     parser.add_argument(
         "--executor-command",
@@ -1005,6 +1010,13 @@ def review_gate_requirements(args: argparse.Namespace, config: dict[str, Any]) -
     }
 
 
+def add_terms(counter: Counter[str], values: Any, weight: int, previous_terms: set[str]) -> None:
+    for term in collect_terms(values):
+        if term in previous_terms:
+            continue
+        counter[term] += weight
+
+
 def derive_next_gap_hints(summary: dict[str, Any], previous_hints: list[str], limit: int = 10) -> list[str]:
     previous_terms = set()
     for hint in previous_hints:
@@ -1034,6 +1046,30 @@ def derive_next_gap_hints(summary: dict[str, Any], previous_hints: list[str], li
             if term in previous_terms:
                 continue
             counter[term] += 1
+    review_gate = summary.get("review_gate", {})
+    if review_gate.get("status") != "pass":
+        for reason in review_gate.get("blocked_reasons", []):
+            add_terms(counter, reason, 3, previous_terms)
+        for check in review_gate.get("checks", []):
+            if check.get("status") == "pass":
+                continue
+            name = str(check.get("name", ""))
+            if name.startswith("required_source_lane:"):
+                lane_id = name.split(":", 1)[1]
+                if lane_id not in previous_hints:
+                    counter[lane_id] += 5
+            add_terms(counter, [name, check.get("detail", "")], 2, previous_terms)
+        for assignment in summary.get("sampling_coverage", {}).get("assignments", []):
+            for target in assignment.get("unsampled_targets", []):
+                lane_id = str(target.get("source_lane", ""))
+                if lane_id and lane_id not in previous_hints:
+                    counter[lane_id] += 4
+                add_terms(
+                    counter,
+                    [target.get("title", ""), target.get("kind", ""), target.get("locator", "")],
+                    2,
+                    previous_terms,
+                )
     if not counter:
         return []
     ranked = sorted(counter.items(), key=lambda item: (-item[1], item[0]))
@@ -1279,7 +1315,40 @@ def loop_iteration_record(root: Path, summary: dict[str, Any], output_dir: Path)
     }
 
 
-def aggregate_review_gate(records: list[dict[str, Any]]) -> dict[str, Any]:
+def aggregate_review_gate(records: list[dict[str, Any]], mode: str) -> dict[str, Any]:
+    if mode == "final_iteration":
+        final = records[-1] if records else {}
+        final_gate = final.get("review_gate", {})
+        final_passed = final_gate.get("status") == "pass"
+        return {
+            "status": "pass" if final_passed else "fail",
+            "ready_for_skill_update": final_passed,
+            "requirements": {
+                "final_iteration_pass": True,
+            },
+            "checks": [
+                review_check(
+                    "final_iteration_review_gate",
+                    1 if final_passed else 0,
+                    1,
+                    "Adaptive loops require the final completed iteration to pass its review gate.",
+                )
+            ],
+            "blocked_reasons": [
+                f"final iteration {final.get('iteration')}: {reason}"
+                for reason in final_gate.get("blocked_reasons", []) or ["review gate did not pass"]
+            ] if not final_passed else [],
+            "iteration_statuses": [
+                {
+                    "iteration": record.get("iteration"),
+                    "run_id": record.get("run_id"),
+                    "status": record.get("review_gate", {}).get("status", "fail"),
+                    "ready_for_skill_update": record.get("review_gate", {}).get("ready_for_skill_update", False),
+                }
+                for record in records
+            ],
+        }
+
     passed = 0
     blocked_reasons = []
     iteration_statuses = []
@@ -1324,6 +1393,9 @@ def build_loop_summary(
     output_dir: Path,
     records: list[dict[str, Any]],
     final_gap_hints: list[str],
+    iteration_cap: int,
+    stop_reason: str,
+    until_review_gate: bool,
 ) -> dict[str, Any]:
     decision_counts: Counter[str] = Counter()
     execution_counts: Counter[str] = Counter()
@@ -1341,11 +1413,16 @@ def build_loop_summary(
         "generated_at": utc_now(),
         "review_only": True,
         "iteration_count": len(records),
+        "iteration_cap": iteration_cap,
+        "until_review_gate": until_review_gate,
+        "stop_reason": stop_reason,
+        "stopped_after_review_gate": stop_reason == "review_gate_passed",
+        "iteration_cap_exhausted": stop_reason == "iteration_cap_exhausted",
         "total_finding_count": total_findings,
         "decision_counts": dict(sorted(decision_counts.items())),
         "execution_counts": dict(sorted(execution_counts.items())),
         "sampling_coverage": dict(sorted(sampling_counts.items())),
-        "review_gate": aggregate_review_gate(records),
+        "review_gate": aggregate_review_gate(records, "final_iteration" if until_review_gate else "all_iterations"),
         "iterations": records,
         "final_gap_hints": final_gap_hints,
         "instructions": [
@@ -1364,6 +1441,9 @@ def write_loop_markdown(output_dir: Path, loop_summary: dict[str, Any]) -> None:
         f"Objective: {loop_summary['objective']}",
         f"Review only: {loop_summary['review_only']}",
         f"Iterations: {loop_summary['iteration_count']}",
+        f"Iteration cap: {loop_summary.get('iteration_cap', loop_summary['iteration_count'])}",
+        f"Adaptive until review gate: {str(loop_summary.get('until_review_gate', False)).lower()}",
+        f"Stop reason: {loop_summary.get('stop_reason', 'fixed_iterations_complete')}",
         f"Total findings: {loop_summary['total_finding_count']}",
         f"Sampling coverage: {loop_summary.get('sampling_coverage', {}).get('sampled_target_count', 0)}/{loop_summary.get('sampling_coverage', {}).get('planned_target_count', 0)} planned targets",
         f"Unplanned returned sources: {loop_summary.get('sampling_coverage', {}).get('unplanned_source_count', 0)}",
@@ -1435,7 +1515,7 @@ def main() -> int:
         run_id = args.run_id or default_run_id()
         output_dir = Path(args.output_dir)
         output_dir.mkdir(parents=True, exist_ok=True)
-        if args.iterations == 1:
+        if args.iterations == 1 and not args.until_review_gate:
             summary = run_iteration(
                 args,
                 config,
@@ -1454,6 +1534,7 @@ def main() -> int:
 
         gap_hints = unique_ordered(args.gap_hint)
         records = []
+        stop_reason = "fixed_iterations_complete"
         for iteration in range(1, args.iterations + 1):
             iteration_run_id = f"{run_id}-i{iteration:02d}"
             iteration_dir = output_dir / "iterations" / f"{iteration:02d}"
@@ -1469,11 +1550,26 @@ def main() -> int:
             )
             records.append(loop_iteration_record(output_dir, summary, iteration_dir))
             gap_hints = merge_gap_hints(gap_hints, summary.get("next_gap_hints", []))
-        loop_summary = build_loop_summary(run_id, args.objective, output_dir, records, gap_hints)
+            if args.until_review_gate and not review_gate_failed(summary):
+                stop_reason = "review_gate_passed"
+                break
+        else:
+            if args.until_review_gate:
+                stop_reason = "iteration_cap_exhausted"
+        loop_summary = build_loop_summary(
+            run_id,
+            args.objective,
+            output_dir,
+            records,
+            gap_hints,
+            args.iterations,
+            stop_reason,
+            args.until_review_gate,
+        )
         write_loop_receipts(output_dir, loop_summary)
         print(
             f"wrote research loop {run_id} to {output_dir}: "
-            f"{loop_summary['total_finding_count']} findings across {args.iterations} iterations"
+            f"{loop_summary['total_finding_count']} findings across {loop_summary['iteration_count']} iterations"
         )
         if args.fail_on_review_gate and review_gate_failed(loop_summary):
             print(f"error: {review_gate_failure_message(loop_summary)}", file=sys.stderr)

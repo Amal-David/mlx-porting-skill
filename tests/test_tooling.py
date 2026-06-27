@@ -1057,6 +1057,65 @@ class ToolingTests(unittest.TestCase):
             self.assertIn("Review gate: pass", loop_markdown)
             self.assertIn("iterative-loop-i02", loop_markdown)
 
+    def test_research_loop_until_review_gate_stops_after_passing_iteration(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            output_dir = Path(tmp) / "adaptive-pass-run"
+            result = run_script(
+                "research_loop.py",
+                "--run-id", "adaptive-pass-loop",
+                "--objective", "Stop once enough non-GitHub evidence is sampled",
+                "--iterations", 3,
+                "--until-review-gate",
+                "--min-sampled-targets", 2,
+                "--min-non-github-lanes", 3,
+                "--require-source-lane", "hugging_face",
+                "--offline-fixture", FIXTURES / "research_loop" / "offline_findings.json",
+                "--output-dir", output_dir,
+            )
+            loop = json.loads((output_dir / "loop.json").read_text())
+            self.assertIn("across 1 iterations", result.stdout)
+            self.assertEqual(loop["iteration_count"], 1)
+            self.assertEqual(loop["iteration_cap"], 3)
+            self.assertTrue(loop["until_review_gate"])
+            self.assertEqual(loop["stop_reason"], "review_gate_passed")
+            self.assertTrue(loop["stopped_after_review_gate"])
+            self.assertFalse(loop["iteration_cap_exhausted"])
+            self.assertEqual(loop["review_gate"]["status"], "pass")
+            self.assertTrue((output_dir / "iterations" / "01" / "synthesis.json").exists())
+            self.assertFalse((output_dir / "iterations" / "02").exists())
+            loop_markdown = (output_dir / "loop.md").read_text()
+            self.assertIn("Stop reason: review_gate_passed", loop_markdown)
+
+    def test_research_loop_until_review_gate_uses_coverage_hints_until_cap(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            output_dir = Path(tmp) / "adaptive-cap-run"
+            run_script(
+                "research_loop.py",
+                "--run-id", "adaptive-cap-loop",
+                "--objective", "Keep sampling until enough evidence is returned",
+                "--iterations", 2,
+                "--until-review-gate",
+                "--agent-count", 2,
+                "--min-sampled-targets", 1,
+                "--output-dir", output_dir,
+            )
+            loop = json.loads((output_dir / "loop.json").read_text())
+            first = json.loads((output_dir / "iterations" / "01" / "synthesis.json").read_text())
+            second = json.loads((output_dir / "iterations" / "02" / "synthesis.json").read_text())
+            self.assertEqual(loop["iteration_count"], 2)
+            self.assertEqual(loop["iteration_cap"], 2)
+            self.assertEqual(loop["stop_reason"], "iteration_cap_exhausted")
+            self.assertFalse(loop["stopped_after_review_gate"])
+            self.assertTrue(loop["iteration_cap_exhausted"])
+            self.assertEqual(loop["review_gate"]["status"], "fail")
+            self.assertIn("sampled_planned_targets observed 0, required 1", loop["review_gate"]["blocked_reasons"][0])
+            self.assertTrue(first["next_gap_hints"])
+            self.assertTrue({"official_docs", "papers"} & set(first["next_gap_hints"]))
+            self.assertEqual(second["gap_hints"], first["next_gap_hints"])
+            self.assertEqual(second["assignment_planner"]["mode"], "dynamic")
+            loop_markdown = (output_dir / "loop.md").read_text()
+            self.assertIn("Stop reason: iteration_cap_exhausted", loop_markdown)
+
     def test_research_loop_generates_review_blogs_and_synthesis(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             output_dir = Path(tmp) / "research-run"
