@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import concurrent.futures
 import json
 import os
 import re
@@ -49,6 +50,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--executor-command",
         help="Explicit local command to run once per assignment; writes JSON to MLX_RESEARCH_RESULT_PATH",
+    )
+    parser.add_argument(
+        "--executor-workers",
+        type=int,
+        default=1,
+        help="Maximum local executor workers to run concurrently",
     )
     parser.add_argument("--execution-timeout", type=float, default=120.0)
     parser.add_argument("--output-dir", required=True)
@@ -464,9 +471,12 @@ def execute_assignments(
     output_dir: Path,
     run_id: str,
     timeout: float,
+    workers: int,
 ) -> tuple[dict[str, Any], dict[str, dict[str, Any]]]:
     if timeout <= 0:
         raise SkillError("--execution-timeout must be positive")
+    if workers <= 0:
+        raise SkillError("--executor-workers must be positive")
     try:
         command_parts = shlex.split(command)
     except ValueError as exc:
@@ -476,11 +486,9 @@ def execute_assignments(
 
     agent_dir = output_dir / "agents"
     agent_dir.mkdir(parents=True, exist_ok=True)
-    agents = []
-    executions: dict[str, dict[str, Any]] = {}
-    failures = []
+    actual_workers = min(workers, len(assignments)) if assignments else 1
 
-    for assignment in assignments:
+    def execute_one(index: int, assignment: dict[str, Any]) -> tuple[int, dict[str, Any] | None, dict[str, Any], str | None]:
         persona_id = assignment["persona_id"]
         slug = slugify(persona_id)
         prompt_path = agent_dir / f"{slug}.prompt.md"
@@ -525,11 +533,12 @@ def execute_assignments(
         stderr_path.write_text(stderr, encoding="utf-8")
 
         state = "executor_failed"
+        agent = None
         if failure_reason is None and exit_code != 0:
             failure_reason = f"executor exited with {exit_code}"
         if failure_reason is None:
             try:
-                agents.append(load_executor_result(result_path, persona_id))
+                agent = load_executor_result(result_path, persona_id)
                 state = "executor_completed"
             except (SkillError, OSError, json.JSONDecodeError) as exc:
                 failure_reason = str(exc)
@@ -538,6 +547,9 @@ def execute_assignments(
             "kind": "local-executor",
             "state": state,
             "executor": command,
+            "assignment_index": index,
+            "executor_workers": workers,
+            "executor_actual_workers": actual_workers,
             "prompt_path": rel_output_path(output_dir, prompt_path),
             "log_path": rel_output_path(output_dir, stdout_path),
             "stdout_path": rel_output_path(output_dir, stdout_path),
@@ -550,14 +562,54 @@ def execute_assignments(
         }
         if failure_reason:
             record["failure_reason"] = failure_reason
-            failures.append(f"{persona_id}: {failure_reason}")
+        failure = f"{persona_id}: {failure_reason}" if failure_reason else None
+        return index, agent, record, failure
+
+    results: list[tuple[int, dict[str, Any] | None, dict[str, Any], str | None]] = []
+    if actual_workers == 1:
+        for index, assignment in enumerate(assignments):
+            results.append(execute_one(index, assignment))
+    else:
+        with concurrent.futures.ThreadPoolExecutor(max_workers=actual_workers) as pool:
+            future_to_index = {
+                pool.submit(execute_one, index, assignment): index
+                for index, assignment in enumerate(assignments)
+            }
+            for future in concurrent.futures.as_completed(future_to_index):
+                try:
+                    results.append(future.result())
+                except OSError as exc:
+                    index = future_to_index[future]
+                    persona_id = assignments[index]["persona_id"]
+                    results.append((index, None, {
+                        "kind": "local-executor",
+                        "state": "executor_failed",
+                        "executor": command,
+                        "assignment_index": index,
+                        "executor_workers": workers,
+                        "executor_actual_workers": actual_workers,
+                        "failure_reason": str(exc),
+                    }, f"{persona_id}: {exc}"))
+
+    results.sort(key=lambda row: row[0])
+    agents = []
+    executions: dict[str, dict[str, Any]] = {}
+    failures = []
+    for index, agent, record, failure in results:
+        persona_id = assignments[index]["persona_id"]
+        if agent is not None:
+            agents.append(agent)
         executions[persona_id] = record
+        if failure:
+            failures.append(failure)
 
     if failures:
         raise SkillError("executor failed for " + "; ".join(failures))
     return {
         "schema_version": 1,
         "agents": agents,
+        "executor_workers": workers,
+        "executor_actual_workers": actual_workers,
         "limitations": [
             "Findings came from an explicit local executor command and remain review-only until promoted separately."
         ],
@@ -885,6 +937,7 @@ def run_iteration(
             output_dir,
             run_id,
             args.execution_timeout,
+            args.executor_workers,
         )
     else:
         fixture = load_fixture(args.offline_fixture)
@@ -899,6 +952,8 @@ def run_iteration(
         summary["offline_fixture"] = safe_relpath(Path.cwd(), fixture_path) if fixture_path.exists() else args.offline_fixture
     if args.executor_command:
         summary["executor_command"] = args.executor_command
+        summary["executor_workers"] = args.executor_workers
+        summary["executor_actual_workers"] = fixture.get("executor_actual_workers", args.executor_workers)
     dump_json({
         "schema_version": 1,
         "run_id": run_id,
@@ -925,6 +980,8 @@ def loop_iteration_record(root: Path, summary: dict[str, Any], output_dir: Path)
         "gap_hints": summary.get("gap_hints", []),
         "next_gap_hints": summary.get("next_gap_hints", []),
         "assignment_mode": summary.get("assignment_planner", {}).get("mode"),
+        "executor_workers": summary.get("executor_workers"),
+        "executor_actual_workers": summary.get("executor_actual_workers"),
         "selected_personas": [
             row.get("persona_id") for row in summary.get("assignment_planner", {}).get("selected_personas", [])
         ],
@@ -1011,6 +1068,8 @@ def main() -> int:
             raise SkillError("--offline-fixture and --executor-command are mutually exclusive")
         if args.iterations <= 0:
             raise SkillError("--iterations must be positive")
+        if args.executor_workers <= 0:
+            raise SkillError("--executor-workers must be positive")
         config = load_config(args.config)
         run_id = args.run_id or default_run_id()
         output_dir = Path(args.output_dir)

@@ -1136,11 +1136,15 @@ class ToolingTests(unittest.TestCase):
             self.assertEqual(synthesis["execution_counts"]["executor_failed"], 0)
             self.assertEqual(synthesis["execution_counts"]["scaffolded_not_run"], 0)
             self.assertIn("executor_command", synthesis)
+            self.assertEqual(synthesis["executor_workers"], 1)
+            self.assertEqual(synthesis["executor_actual_workers"], 1)
             for assignment in assignments["assignments"]:
                 execution = assignment["execution"]
                 self.assertEqual(execution["kind"], "local-executor")
                 self.assertEqual(execution["state"], "executor_completed")
                 self.assertEqual(execution["exit_code"], 0)
+                self.assertEqual(execution["executor_workers"], 1)
+                self.assertEqual(execution["executor_actual_workers"], 1)
                 self.assertIn("sample_plan", assignment)
                 for key in ("prompt_path", "stdout_path", "stderr_path", "result_path"):
                     self.assertTrue((output_dir / execution[key]).exists(), key)
@@ -1150,6 +1154,61 @@ class ToolingTests(unittest.TestCase):
                 self.assertIn("Sampling plan", prompt)
             blog = output_dir / "blogs" / "official-docs-cartographer.md"
             self.assertIn("fake-executor-official-docs-cartographer", blog.read_text())
+
+    def test_research_loop_executor_workers_run_in_parallel(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_path = Path(tmp)
+            output_dir = tmp_path / "parallel-run"
+            marker_dir = tmp_path / "markers"
+            fake_executor = FIXTURES / "research_loop" / "fake_executor.py"
+            os.environ["MLX_FAKE_EXECUTOR_SLEEP"] = "0.2"
+            os.environ["MLX_FAKE_EXECUTOR_CONCURRENCY_DIR"] = str(marker_dir)
+            try:
+                run_script(
+                    "research_loop.py",
+                    "--run-id", "parallel-loop",
+                    "--objective", "Prove parallel local executor receipt flow",
+                    "--agent-count", 3,
+                    "--executor-workers", 3,
+                    "--executor-command", f"{sys.executable} {fake_executor}",
+                    "--output-dir", output_dir,
+                )
+            finally:
+                os.environ.pop("MLX_FAKE_EXECUTOR_SLEEP", None)
+                os.environ.pop("MLX_FAKE_EXECUTOR_CONCURRENCY_DIR", None)
+            assignments = json.loads((output_dir / "assignments.json").read_text())
+            synthesis = json.loads((output_dir / "synthesis.json").read_text())
+            self.assertEqual(synthesis["finding_count"], 3)
+            self.assertEqual(synthesis["executor_workers"], 3)
+            self.assertEqual(synthesis["executor_actual_workers"], 3)
+            self.assertEqual([row["execution"]["assignment_index"] for row in assignments["assignments"]], [0, 1, 2])
+            self.assertEqual([agent["persona_id"] for agent in synthesis["held"]], [
+                "official-docs-cartographer",
+                "paper-architecture-scout",
+                "huggingface-ecosystem-sampler",
+            ])
+            active_counts = [
+                json.loads(path.read_text())["active_count"]
+                for path in marker_dir.glob("*.json")
+            ]
+            self.assertEqual(len(active_counts), 3)
+            self.assertGreater(max(active_counts), 1)
+            for assignment in assignments["assignments"]:
+                execution = assignment["execution"]
+                self.assertEqual(execution["executor_workers"], 3)
+                self.assertEqual(execution["executor_actual_workers"], 3)
+                stdout = (output_dir / execution["stdout_path"]).read_text()
+                self.assertIn("active workers observed", stdout)
+
+    def test_research_loop_rejects_non_positive_executor_workers(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            result = run_script(
+                "research_loop.py",
+                "--executor-workers", 0,
+                "--output-dir", Path(tmp) / "out",
+                expected=2,
+            )
+            self.assertIn("--executor-workers must be positive", result.stderr)
 
     def test_research_loop_rejects_fixture_and_executor_together(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

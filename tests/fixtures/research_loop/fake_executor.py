@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 import os
 import sys
+import time
 from pathlib import Path
 
 
@@ -15,6 +16,23 @@ def main() -> int:
     persona_id = os.environ["MLX_RESEARCH_PERSONA_ID"]
     result_path = Path(os.environ["MLX_RESEARCH_RESULT_PATH"])
     slug = persona_id.replace("_", "-")
+    sleep_seconds = float(os.environ.get("MLX_FAKE_EXECUTOR_SLEEP", "0") or "0")
+    marker_dir = os.environ.get("MLX_FAKE_EXECUTOR_CONCURRENCY_DIR")
+    marker_path = None
+    active_count = None
+    if marker_dir:
+        marker_root = Path(marker_dir)
+        marker_root.mkdir(parents=True, exist_ok=True)
+        marker_path = marker_root / f"{slug}.active"
+        marker_path.write_text(str(time.time()), encoding="utf-8")
+        time.sleep(min(max(sleep_seconds, 0.1), 0.25))
+        active_count = len(list(marker_root.glob("*.active")))
+        (marker_root / f"{slug}.json").write_text(json.dumps({
+            "persona_id": persona_id,
+            "active_count": active_count,
+        }, indent=2), encoding="utf-8")
+    elif sleep_seconds > 0:
+        time.sleep(sleep_seconds)
     result_path.write_text(json.dumps({
         "persona_id": persona_id,
         "decision_notes": [
@@ -47,7 +65,11 @@ def main() -> int:
             }
         ]
     }, indent=2), encoding="utf-8")
+    if marker_path:
+        marker_path.unlink(missing_ok=True)
     print(f"wrote fake finding for {persona_id}")
+    if active_count is not None:
+        print(f"active workers observed: {active_count}")
     return 0
 
 

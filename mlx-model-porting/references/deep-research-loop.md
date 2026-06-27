@@ -137,9 +137,15 @@ Run an explicit local worker command for each assignment:
 python3 scripts/research_loop.py \
   --objective "Broaden MLX porting evidence beyond GitHub" \
   --agent-count 6 \
+  --executor-workers 3 \
   --executor-command "python3 local_researcher.py" \
   --output-dir research-runs/manual-executor
 ```
+
+Use `--executor-workers N` to run up to `N` local worker processes at once.
+Each assignment still gets its own prompt, result JSON, stdout, stderr, exit
+code, worker-count receipt, and execution state. Output order remains
+assignment-order deterministic even when workers finish out of order.
 
 Choose agents dynamically for known gaps:
 
