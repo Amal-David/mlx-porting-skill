@@ -76,12 +76,19 @@ def onnx_value_info(name: str, dtype: int, shape: list[int]) -> bytes:
 
 
 def tiny_onnx_model() -> bytes:
-    node = (
+    matmul_node = (
         proto_field_bytes(1, "input")
         + proto_field_bytes(1, "weight")
-        + proto_field_bytes(2, "output")
+        + proto_field_bytes(2, "matmul_output")
         + proto_field_bytes(3, "matmul_0")
         + proto_field_bytes(4, "MatMul")
+    )
+    unsupported_node = (
+        proto_field_bytes(1, "boxes")
+        + proto_field_bytes(1, "scores")
+        + proto_field_bytes(2, "output")
+        + proto_field_bytes(3, "nms_0")
+        + proto_field_bytes(4, "NonMaxSuppression")
     )
     tensor = (
         proto_field_bytes(1, proto_varint(2) + proto_varint(3))
@@ -90,7 +97,8 @@ def tiny_onnx_model() -> bytes:
         + proto_field_bytes(9, b"\x00" * 24)
     )
     graph = (
-        proto_field_bytes(1, node)
+        proto_field_bytes(1, matmul_node)
+        + proto_field_bytes(1, unsupported_node)
         + proto_field_bytes(2, "tiny_graph")
         + proto_field_bytes(5, tensor)
         + proto_field_bytes(11, onnx_value_info("input", 1, [1, 2]))
@@ -204,12 +212,17 @@ class ToolingTests(unittest.TestCase):
             self.assertEqual(manifest["ir_version"], 8)
             self.assertEqual(manifest["opsets"][0]["version"], 17)
             self.assertEqual(manifest["graph"]["name"], "tiny_graph")
-            self.assertEqual(manifest["graph"]["op_types"], {"MatMul": 1})
+            self.assertEqual(manifest["graph"]["op_types"], {"MatMul": 1, "NonMaxSuppression": 1})
+            self.assertEqual(manifest["operator_coverage"]["covered"], {"MatMul": 1})
+            self.assertEqual(manifest["operator_coverage"]["unsupported_or_unclassified"], {"NonMaxSuppression": 1})
+            self.assertEqual(manifest["operator_coverage"]["covered_count"], 1)
+            self.assertEqual(manifest["operator_coverage"]["unsupported_or_unclassified_count"], 1)
             self.assertEqual(manifest["graph"]["inputs"][0]["shape"], [1, 2])
             self.assertEqual(manifest["graph"]["outputs"][0]["dtype"], "FLOAT")
             self.assertEqual(manifest["graph"]["initializers"][0]["shape"], [2, 3])
             self.assertEqual(manifest["graph"]["initializers"][0]["parameters"], 6)
             self.assertEqual(manifest["graph"]["initializers"][0]["raw_data_bytes"], 24)
+            self.assertTrue(any("NonMaxSuppression" in condition for condition in manifest["hold_conditions"]))
             self.assertIn("source-format static intake is triage-only", report["recommendation_blockers"][0])
 
     def test_static_inspection_reports_gguf_source_format_manifest(self) -> None:
@@ -275,8 +288,12 @@ class ToolingTests(unittest.TestCase):
             self.assertEqual(manifest["saved_model_files"], ["saved_model.pbtxt"])
             self.assertIn("serving_default", manifest["signature_keys"])
             self.assertIn("tensorflow/serving/predict", manifest["method_names"])
+            self.assertEqual(manifest["operator_counts"], {"MatMul": 1, "NonMaxSuppressionV5": 1})
+            self.assertEqual(manifest["operator_coverage"]["covered"], {"MatMul": 1})
+            self.assertEqual(manifest["operator_coverage"]["unsupported_or_unclassified"], {"NonMaxSuppressionV5": 1})
             self.assertTrue(manifest["variables"]["present"])
             self.assertIn("variables/variables.index", manifest["variables"]["files"])
+            self.assertTrue(any("NonMaxSuppressionV5" in condition for condition in manifest["hold_conditions"]))
             self.assertIn("source-format static intake is triage-only", report["recommendation_blockers"][0])
 
     def test_static_inspection_reports_keras_archive_manifest(self) -> None:
@@ -289,9 +306,12 @@ class ToolingTests(unittest.TestCase):
             self.assertEqual(manifest["format"], "keras-archive")
             self.assertEqual(manifest["metadata"]["keras_version"], "3.0.0")
             self.assertEqual(manifest["class_name"], "Functional")
-            self.assertEqual(manifest["layer_count"], 2)
-            self.assertEqual(manifest["layer_class_names"], ["InputLayer", "Dense"])
+            self.assertEqual(manifest["layer_count"], 3)
+            self.assertEqual(manifest["layer_class_names"], ["InputLayer", "Dense", "Lambda"])
+            self.assertEqual(manifest["layer_coverage"]["covered"], {"Dense": 1, "InputLayer": 1})
+            self.assertEqual(manifest["layer_coverage"]["unsupported_or_unclassified"], {"Lambda": 1})
             self.assertEqual(manifest["weight_files"], ["model.weights.h5"])
+            self.assertTrue(any("Lambda" in condition for condition in manifest["hold_conditions"]))
             self.assertIn("source-format static intake is triage-only", report["recommendation_blockers"][0])
 
     def test_static_inspection_reports_coreml_package_manifest(self) -> None:
@@ -307,6 +327,8 @@ class ToolingTests(unittest.TestCase):
             self.assertEqual(manifest["manifest"]["item_count"], 2)
             self.assertEqual(manifest["model_files"], ["Data/com.apple.CoreML/model.mlmodel"])
             self.assertEqual(manifest["weight_files"], ["Data/com.apple.CoreML/weights/weight.bin"])
+            self.assertEqual(manifest["operator_coverage"]["coverage_state"], "unavailable")
+            self.assertIn("Core ML protobuf/spec decoding", manifest["operator_coverage"]["reason"])
             self.assertIn("source-format static intake is triage-only", report["recommendation_blockers"][0])
 
     def test_port_plan_is_architecture_and_evidence_aware(self) -> None:

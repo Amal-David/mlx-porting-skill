@@ -25,16 +25,18 @@ Do not import the model package during initial inspection. Read:
 - safetensors headers and shard index;
 - ONNX `ModelProto` metadata: IR version, opsets, graph inputs/outputs,
   initializers, node operator/domain counts, external-data references, and
-  unsupported-op hold conditions;
+  conservative operator coverage reports with unsupported-op hold conditions;
 - GGUF headers and metadata: version, metadata keys, architecture, tokenizer
   model, source/base-model provenance keys, file type, quantization version, and
   tensor table;
 - Flax/Orbax checkpoint metadata: msgpack artifacts, checkpoint metadata files,
   tree paths, and params-tree hold conditions;
 - TensorFlow/Keras metadata: SavedModel signature keys, method names, variable
-  file presence, Keras archive config, layer classes, and weight members;
+  file presence, static TensorFlow operator names, Keras archive config, layer
+  classes, layer coverage reports, and weight members;
 - Core ML package metadata: package manifest version, root model identifier,
-  model files, and weight files;
+  model files, weight files, and an explicit unavailable operator-coverage
+  report until Core ML spec decoding exists;
 - repository tree and Python filenames;
 - model card frontmatter and license files;
 - `auto_map`, custom architecture names, and nonstandard config keys;
@@ -49,6 +51,10 @@ hold conditions, but it is not conversion support. Before using any of these
 formats for a port, record unsupported operators, source/base-model provenance,
 tokenizer or processor compatibility, source-framework oracle outputs, and an
 MLX parity fixture.
+
+Static coverage reports are conservative. A listed operator or layer only means
+the name maps to ordinary MLX primitives during triage; it does not prove shape,
+dtype, broadcasting, layout, control-flow, preprocessing, or numerical parity.
 
 ## Architecture routing signals
 

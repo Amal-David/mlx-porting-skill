@@ -110,6 +110,25 @@ GGUF_TENSOR_TYPES = {
 MAX_FORMAT_FILE_BYTES = 256 * 1024 * 1024
 GGUF_DEFAULT_ALIGNMENT = 32
 STATIC_TEXT_LIMIT = 2 * 1024 * 1024
+ONNX_STATIC_COVERED_OPS = {
+    "Abs", "Add", "Cast", "Concat", "Constant", "Cos", "Div", "Equal", "Erf",
+    "Exp", "Flatten", "Gather", "Gemm", "LayerNormalization", "Log",
+    "MatMul", "Mul", "Neg", "Pow", "ReduceMean", "Relu", "Reshape",
+    "Shape", "Sigmoid", "Sin", "Slice", "Softmax", "Split", "Sqrt",
+    "Sub", "Tanh", "Transpose", "Unsqueeze",
+}
+TENSORFLOW_STATIC_COVERED_OPS = {
+    "Add", "BatchMatMulV2", "BiasAdd", "Cast", "ConcatV2", "Const",
+    "Einsum", "Erf", "Exp", "GatherV2", "Identity", "MatMul", "Mul",
+    "NoOp", "Pack", "Placeholder", "RealDiv", "Relu", "Reshape",
+    "Rsqrt", "Shape", "Softmax", "Square", "StridedSlice", "Sub",
+    "Tanh", "Transpose",
+}
+KERAS_STATIC_COVERED_LAYERS = {
+    "Activation", "Add", "Concatenate", "Conv1D", "Conv2D", "Dense",
+    "Dropout", "Embedding", "Flatten", "InputLayer", "LayerNormalization",
+    "MultiHeadAttention", "Reshape", "Softmax",
+}
 
 CONFIG_NAMES = [
     "config.json",
@@ -455,6 +474,41 @@ def onnx_external_data_holds(graph: dict[str, Any]) -> list[str]:
     return holds
 
 
+def static_coverage_report(
+    observed_counts: dict[str, int],
+    covered_names: set[str],
+    *,
+    subject: str,
+    unavailable_reason: str | None = None,
+) -> dict[str, Any]:
+    if unavailable_reason:
+        return {
+            "scope": "static-triage",
+            "subject": subject,
+            "coverage_state": "unavailable",
+            "reason": unavailable_reason,
+            "total_count": 0,
+            "covered_count": 0,
+            "unsupported_or_unclassified_count": 0,
+            "covered": {},
+            "unsupported_or_unclassified": {},
+        }
+    covered = {name: count for name, count in sorted(observed_counts.items()) if name in covered_names}
+    unknown = {name: count for name, count in sorted(observed_counts.items()) if name not in covered_names}
+    total = sum(observed_counts.values())
+    return {
+        "scope": "static-triage",
+        "subject": subject,
+        "coverage_state": "partial" if observed_counts else "empty",
+        "total_count": total,
+        "covered_count": sum(covered.values()),
+        "unsupported_or_unclassified_count": sum(unknown.values()),
+        "covered": covered,
+        "unsupported_or_unclassified": unknown,
+        "note": "Static coverage means the name maps to ordinary MLX primitives; it is not conversion support.",
+    }
+
+
 def inspect_onnx_file(path: Path, root: Path) -> dict[str, Any]:
     if path.stat().st_size > MAX_FORMAT_FILE_BYTES:
         return {
@@ -516,6 +570,11 @@ def inspect_onnx_file(path: Path, root: Path) -> dict[str, Any]:
     if graph and not graph.get("initializers"):
         manifest["hold_conditions"].append("No initializer metadata was found; weight coverage cannot be inferred.")
     if graph:
+        coverage = static_coverage_report(graph.get("op_types", {}), ONNX_STATIC_COVERED_OPS, subject="onnx-operators")
+        manifest["operator_coverage"] = coverage
+        if coverage["unsupported_or_unclassified_count"]:
+            names = ", ".join(coverage["unsupported_or_unclassified"])
+            manifest["hold_conditions"].append(f"Unsupported or unclassified ONNX operators require review: {names}.")
         manifest["hold_conditions"].extend(onnx_external_data_holds(graph))
     return manifest
 
@@ -775,15 +834,19 @@ def inspect_saved_model_dir(path: Path, root: Path) -> dict[str, Any]:
     signature_keys = sorted(set(re.findall(r'(?m)^\s*key:\s*"([^"]+)"', text)))
     method_names = sorted(set(re.findall(r'(?m)^\s*method_name:\s*"([^"]+)"', text)))
     tensor_names = sorted(set(re.findall(r'(?m)^\s*name:\s*"([^"]+)"', text)))
+    op_counts = dict(sorted(_counts(re.findall(r'\bop:\s*"([^"]+)"', text)).items()))
     variable_dir = path / "variables"
     variable_files = sorted(rel_display(p, path) for p in variable_dir.glob("*") if p.is_file()) if variable_dir.exists() else []
-    return {
+    coverage = static_coverage_report(op_counts, TENSORFLOW_STATIC_COVERED_OPS, subject="tensorflow-operators")
+    manifest = {
         "format": "tensorflow-savedmodel",
         "path": rel_display(path, root),
         "saved_model_files": [name for name, exists in {"saved_model.pb": pb.exists(), "saved_model.pbtxt": pbtxt.exists()}.items() if exists],
         "signature_keys": signature_keys,
         "method_names": method_names,
         "tensor_names": tensor_names[:50],
+        "operator_counts": op_counts,
+        "operator_coverage": coverage,
         "variables": {
             "present": bool(variable_files),
             "files": variable_files,
@@ -797,6 +860,10 @@ def inspect_saved_model_dir(path: Path, root: Path) -> dict[str, Any]:
             "Do not load SavedModel objects during intake; parse signatures statically or in a sandboxed source-oracle step.",
         ],
     }
+    if coverage["unsupported_or_unclassified_count"]:
+        names = ", ".join(coverage["unsupported_or_unclassified"])
+        manifest["hold_conditions"].append(f"Unsupported or unclassified TensorFlow operators require review: {names}.")
+    return manifest
 
 
 def inspect_keras_archive(path: Path, root: Path) -> dict[str, Any]:
@@ -844,6 +911,13 @@ def inspect_keras_archive(path: Path, root: Path) -> dict[str, Any]:
         for layer in layers
         if isinstance(layer, dict) and layer.get("class_name")
     ][:50]
+    layer_counts = dict(sorted(_counts(manifest["layer_class_names"]).items()))
+    coverage = static_coverage_report(layer_counts, KERAS_STATIC_COVERED_LAYERS, subject="keras-layers")
+    manifest["layer_counts"] = layer_counts
+    manifest["layer_coverage"] = coverage
+    if coverage["unsupported_or_unclassified_count"]:
+        names = ", ".join(coverage["unsupported_or_unclassified"])
+        manifest["hold_conditions"].append(f"Unsupported or unclassified Keras layers require review: {names}.")
     manifest["weight_files"] = [
         name for name in manifest.get("entries", [])
         if name.endswith((".weights.h5", ".h5"))
@@ -857,6 +931,12 @@ def inspect_coreml_artifact(path: Path, root: Path) -> dict[str, Any]:
             "format": "coreml-model",
             "path": rel_display(path, root),
             "size_bytes": path.stat().st_size,
+            "operator_coverage": static_coverage_report(
+                {},
+                set(),
+                subject="coreml-operators",
+                unavailable_reason="Core ML protobuf/spec decoding is not implemented in static intake.",
+            ),
             "limitations": [
                 "Core ML protobuf metadata is not decoded by static intake yet."
             ],
@@ -880,6 +960,12 @@ def inspect_coreml_artifact(path: Path, root: Path) -> dict[str, Any]:
         },
         "model_files": model_files,
         "weight_files": weight_files,
+        "operator_coverage": static_coverage_report(
+            {},
+            set(),
+            subject="coreml-operators",
+            unavailable_reason="Core ML protobuf/spec decoding is not implemented in static intake.",
+        ),
         "limitations": [
             "Core ML package metadata supports intake triage only; compiled/runtime semantics are not source-preserving proof."
         ],

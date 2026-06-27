@@ -25,7 +25,7 @@ manifest gates. Each item below is enforced by a runnable pass/fail test.
 | Weight-map shape transforms (reshape/squeeze/unsqueeze/slice/permute) are correct | `test_weight_map_transform_ops_*` |
 | The CLI pipeline chains (`inspect → plan → recommend → validate_weight_map`) | `test_pipeline_chains_inspect_to_plan_recommend_and_validate` |
 | Fixtures are reproducible and auditable from a generator | `tests/test_fixtures.py` |
-| Static source-format manifests hold recommendations for ONNX, GGUF, Flax/Orbax, TensorFlow SavedModel, Keras archive, and Core ML package artifacts | `test_static_inspection_reports_*_source_format_manifest`, `test_static_inspection_reports_*_manifest` |
+| Static source-format manifests hold recommendations and report conservative operator/layer coverage for ONNX, GGUF, Flax/Orbax, TensorFlow SavedModel, Keras archive, and Core ML package artifacts | `test_static_inspection_reports_*_source_format_manifest`, `test_static_inspection_reports_*_manifest` |
 | The deep research loop emits review-only assignments, blogs, synthesis, and rejects malformed findings | `test_research_loop_*` |
 | The distributed artifact has no silent file drift | `scripts/manifest.py check` |
 | Source provenance is well-formed; supported techniques cite implementation evidence | `scripts/validate_sources.py` |

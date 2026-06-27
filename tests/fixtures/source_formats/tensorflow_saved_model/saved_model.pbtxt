@@ -1,4 +1,8 @@
 meta_graphs {
+  graph_def {
+    node { name: "matmul" op: "MatMul" }
+    node { name: "nms" op: "NonMaxSuppressionV5" }
+  }
   signature_def {
     key: "serving_default"
     value {

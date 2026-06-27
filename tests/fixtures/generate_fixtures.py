@@ -362,6 +362,7 @@ def write_keras_archive(path: Path) -> Path:
             "layers": [
                 {"class_name": "InputLayer", "config": {"name": "tokens"}},
                 {"class_name": "Dense", "config": {"name": "projection", "units": 4}},
+                {"class_name": "Lambda", "config": {"name": "custom_postprocess"}},
             ],
         },
     }
@@ -400,6 +401,10 @@ def write_source_format_fixtures(root: Path) -> list[Path]:
     saved_model_root = root / "source_formats" / "tensorflow_saved_model"
     written.append(write_text(saved_model_root / "saved_model.pbtxt", """
 meta_graphs {
+  graph_def {
+    node { name: "matmul" op: "MatMul" }
+    node { name: "nms" op: "NonMaxSuppressionV5" }
+  }
   signature_def {
     key: "serving_default"
     value {
