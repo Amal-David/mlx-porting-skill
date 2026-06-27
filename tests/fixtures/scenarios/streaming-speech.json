@@ -1,0 +1,14 @@
+{
+  "name": "streaming-speech",
+  "fixture": "models/streaming_speech",
+  "expected_family": "streaming-speech",
+  "expected_runbook": "references/runbook-streaming-speech.md",
+  "expected_weight_keys": [
+    "streaming.encoder.layers.0.weight",
+    "state_cache.proj.weight",
+    "predictor.embed.weight"
+  ],
+  "optimization_must_include": "audio-streaming-and-cache",
+  "optimization_must_exclude": "fast-sdpa",
+  "seeded_parity_bug": {"shape": [2, 4], "delta": 8.0}
+}

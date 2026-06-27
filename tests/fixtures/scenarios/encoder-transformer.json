@@ -1,0 +1,14 @@
+{
+  "name": "encoder-transformer",
+  "fixture": "models/encoder",
+  "expected_family": "encoder-transformer",
+  "expected_runbook": "references/runbook-encoder-transformer.md",
+  "expected_weight_keys": [
+    "embeddings.word_embeddings.weight",
+    "encoder.layer.0.attention.self.query.weight",
+    "pooler.dense.weight"
+  ],
+  "optimization_must_include": "fast-sdpa",
+  "optimization_must_exclude": "qwen3-tts-batch-generation",
+  "seeded_parity_bug": {"shape": [2, 7], "delta": 4.5}
+}

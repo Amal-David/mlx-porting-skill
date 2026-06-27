@@ -1,0 +1,14 @@
+{
+  "name": "vision-language-omni",
+  "fixture": "models/vision_language_omni",
+  "expected_family": "vision-language-omni",
+  "expected_runbook": "references/runbook-multimodal-omni.md",
+  "expected_weight_keys": [
+    "vision_tower.encoder.layers.0.self_attn.q_proj.weight",
+    "multi_modal_projector.linear_1.weight",
+    "language_model.model.layers.0.self_attn.q_proj.weight"
+  ],
+  "optimization_must_include": "content-prefix-cache-vlm",
+  "optimization_must_exclude": "qwen3-tts-batch-generation",
+  "seeded_parity_bug": {"shape": [3, 2, 2], "delta": 6.5}
+}

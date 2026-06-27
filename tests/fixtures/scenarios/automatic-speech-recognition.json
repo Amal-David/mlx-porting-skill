@@ -1,0 +1,14 @@
+{
+  "name": "automatic-speech-recognition",
+  "fixture": "models/asr",
+  "expected_family": "automatic-speech-recognition",
+  "expected_runbook": "references/runbook-asr.md",
+  "expected_weight_keys": [
+    "feature_extractor.conv_layers.0.conv.weight",
+    "encoder.layers.0.attention.q_proj.weight",
+    "ctc.weight"
+  ],
+  "optimization_must_include": "compile-stable-region",
+  "optimization_must_exclude": "fast-sdpa",
+  "seeded_parity_bug": {"shape": [2, 6], "delta": 4.0}
+}

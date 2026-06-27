@@ -24,7 +24,7 @@ from test_tooling import FIXTURES, SKILL, run_script
 
 SCENARIOS_DIR = FIXTURES / "scenarios"
 ALL_FAMILIES = {f["id"] for f in json.loads((SKILL / "assets" / "architectures.yaml").read_text())["families"]}
-EXPECTED_COVERED = {"dense-decoder-transformer", "moe-decoder-transformer", "neural-audio-codec"}
+EXPECTED_COVERED = ALL_FAMILIES
 
 
 class ScenarioHarnessTests(unittest.TestCase):

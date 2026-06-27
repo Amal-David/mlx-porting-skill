@@ -1,0 +1,11 @@
+{
+  "model_type": "wav2vec2",
+  "architectures": [
+    "Wav2Vec2ForCTC"
+  ],
+  "sampling_rate": 16000,
+  "feature_size": 80,
+  "ctc_loss_reduction": "mean",
+  "num_mel_bins": 80,
+  "license": "apache-2.0"
+}

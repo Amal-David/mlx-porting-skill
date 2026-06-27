@@ -56,6 +56,10 @@ python3 scripts/validate_sources.py .
 
 Use `validate_sources.py --check-urls` only when network access is explicitly allowed. It checks HTTPS reachability and evidence wiring; it never imports model code or executes repository content.
 
+## Golden scenario gate
+
+`tests.test_scenarios` must cover every family in `assets/architectures.yaml`. When adding or renaming an architecture family, update `tests/fixtures/generate_fixtures.py`, add a tiny scenario under `tests/fixtures/scenarios/`, and keep the 14/14-style scorecard at full marks for routing, runbook selection, weight-key coverage, seeded parity failure, and optimization inclusion/exclusion. Synthetic scenarios prove skill routing only; they do not prove real-model conversion support.
+
 ## Deep research loop
 
 Use `scripts/research_loop.py` for broad ecosystem learning that should sample beyond GitHub. The loop generates researcher assignments, accepts returned findings, writes per-agent blogs, and produces a review-only synthesis. By default it does not fetch network resources, spawn subagents, or modify recommendation assets. Executor mode can run an explicit local worker command for each assignment, but it must preserve prompts, stdout, stderr, result JSON, exit code, and execution state as review receipts.

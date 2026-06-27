@@ -1,0 +1,12 @@
+{
+  "model_type": "mamba",
+  "architectures": [
+    "MambaForCausalLM"
+  ],
+  "hidden_size": 8,
+  "state_size": 4,
+  "conv_kernel": 4,
+  "time_step_rank": 2,
+  "vocab_size": 32,
+  "license": "apache-2.0"
+}

@@ -1,0 +1,14 @@
+{
+  "name": "vocoder-waveform-decoder",
+  "fixture": "models/vocoder",
+  "expected_family": "vocoder-waveform-decoder",
+  "expected_runbook": "references/runbook-vocoder.md",
+  "expected_weight_keys": [
+    "ups.0.weight",
+    "resblocks.0.convs1.0.weight",
+    "conv_post.weight"
+  ],
+  "optimization_must_include": "audio-streaming-and-cache",
+  "optimization_must_exclude": "fast-sdpa",
+  "seeded_parity_bug": {"shape": [2, 5], "delta": 4.0}
+}

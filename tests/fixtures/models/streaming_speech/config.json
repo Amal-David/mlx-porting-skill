@@ -1,0 +1,11 @@
+{
+  "model_type": "rnnt",
+  "architectures": [
+    "StreamingConformerRNNT"
+  ],
+  "chunk_size": 16,
+  "left_context": 4,
+  "lookahead": 2,
+  "streaming": true,
+  "license": "apache-2.0"
+}

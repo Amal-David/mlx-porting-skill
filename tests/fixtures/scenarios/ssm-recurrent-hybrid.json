@@ -1,0 +1,14 @@
+{
+  "name": "ssm-recurrent-hybrid",
+  "fixture": "models/ssm_hybrid",
+  "expected_family": "ssm-recurrent-hybrid",
+  "expected_runbook": "references/runbook-ssm-hybrid.md",
+  "expected_weight_keys": [
+    "backbone.layers.0.mixer.A_log",
+    "backbone.layers.0.mixer.dt_proj.weight",
+    "backbone.layers.0.mixer.conv1d.weight"
+  ],
+  "optimization_must_include": "compile-stable-region",
+  "optimization_must_exclude": "fast-sdpa",
+  "seeded_parity_bug": {"shape": [3, 3], "delta": 9.0}
+}

@@ -1,0 +1,14 @@
+{
+  "model_type": "llava",
+  "architectures": [
+    "LlavaForConditionalGeneration"
+  ],
+  "vision_config": {
+    "hidden_size": 8,
+    "num_hidden_layers": 1
+  },
+  "projector_hidden_act": "gelu",
+  "image_token_id": 32000,
+  "vocab_size": 32,
+  "license": "apache-2.0"
+}

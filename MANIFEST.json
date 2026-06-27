@@ -2,8 +2,8 @@
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
   "version": "0.1.0",
-  "generated_at": "2026-06-27T11:09:32.972153+00:00",
-  "file_count": 127,
+  "generated_at": "2026-06-27T11:16:57.405739+00:00",
+  "file_count": 160,
   "files": [
     {
       "path": ".github/workflows/daily-research.yml",
@@ -62,8 +62,8 @@
     },
     {
       "path": "VALIDATION.md",
-      "size_bytes": 3376,
-      "sha256": "19577d82ecd9e5f65a3fa7833b24916f3f5b4e572e99614db3a560603920c85f"
+      "size_bytes": 3417,
+      "sha256": "84666b3189c5bdb4834f1ef57f818384100a5e3cc3c6a3cb9c5e3323c9687083"
     },
     {
       "path": "VERSION",
@@ -112,8 +112,8 @@
     },
     {
       "path": "mlx-model-porting/SKILL.md",
-      "size_bytes": 10727,
-      "sha256": "6739150e77dd195456eb452d4d4bd955295f309b3a8ae0d7cbc80bcb68d7cb2a"
+      "size_bytes": 10853,
+      "sha256": "f27202432cf7811154aae07f1f5bb82e11dad38c834fd9d3bfe6555a878cfdbb"
     },
     {
       "path": "mlx-model-porting/assets/BENCHMARK_REPORT.md",
@@ -162,8 +162,8 @@
     },
     {
       "path": "mlx-model-porting/assets/research_backlog.json",
-      "size_bytes": 5852,
-      "sha256": "a261d7de1e2ae501dac036f5e9287d24ce5e66aabb7c76cbfa8792deb63fde20"
+      "size_bytes": 5937,
+      "sha256": "b519b0b1aff82ebc73f52213d1f36b20d47ab4c12e8f8704be0a14286e1a29e9"
     },
     {
       "path": "mlx-model-porting/assets/research_loop_config.json",
@@ -227,8 +227,8 @@
     },
     {
       "path": "mlx-model-porting/references/maintenance-and-provenance.md",
-      "size_bytes": 4307,
-      "sha256": "84df3eab91de78da6854543e09a889f143f97ad1fda67409197ac986e187f2cd"
+      "size_bytes": 4819,
+      "sha256": "cd93459ab2bf5fa93e0fa9a960e660230365af6c8d807aa29967b0b496e73c32"
     },
     {
       "path": "mlx-model-porting/references/model-support-map.md",
@@ -507,8 +507,8 @@
     },
     {
       "path": "tests/fixtures/generate_fixtures.py",
-      "size_bytes": 7076,
-      "sha256": "47afe2c923e65c1a7df139bde01b588b95be726f6315b49f3f479e080da77a8b"
+      "size_bytes": 13762,
+      "sha256": "c15cfddeb78568f6bb9fbf9140897b3c671e74a43811ada00188d97271837ffb"
     },
     {
       "path": "tests/fixtures/manifests/map.json",
@@ -524,6 +524,26 @@
       "path": "tests/fixtures/manifests/target.json",
       "size_bytes": 185,
       "sha256": "a12b9faaa2ca6665153723fbebea6d80532a1fb216c4873bdfc25f8068c63e16"
+    },
+    {
+      "path": "tests/fixtures/models/asr/config.json",
+      "size_bytes": 207,
+      "sha256": "8002e6fcb4bf880ddda733c6b99dd1aa3a037caddae30d4f31a7652b0207e1fa"
+    },
+    {
+      "path": "tests/fixtures/models/asr/model.safetensors",
+      "size_bytes": 1829,
+      "sha256": "e5419afacb0eebd60d77cf04f72339544429220d142ca9fb93958eb93fc61a79"
+    },
+    {
+      "path": "tests/fixtures/models/autoregressive_audio_lm/config.json",
+      "size_bytes": 217,
+      "sha256": "0c04fd03f2650bfc263f2694054eb6737fc245c37abe4ea4e5e120ca376c6258"
+    },
+    {
+      "path": "tests/fixtures/models/autoregressive_audio_lm/model.safetensors",
+      "size_bytes": 2660,
+      "sha256": "8530a022e08bd52c5efc6246959d922063e28abbced891100cbbb7bfe6b1d195"
     },
     {
       "path": "tests/fixtures/models/codec/config.json",
@@ -551,6 +571,46 @@
       "sha256": "f7bef31656af8722d2f95951e03866f34398df8464ff9517f483a6b629036a3b"
     },
     {
+      "path": "tests/fixtures/models/diffusion_flow/config.json",
+      "size_bytes": 200,
+      "sha256": "dff0cc552adf4f299c838c011c52b72b2e4cee079b639a8f34a122adcf4ed9f1"
+    },
+    {
+      "path": "tests/fixtures/models/diffusion_flow/model.safetensors",
+      "size_bytes": 1793,
+      "sha256": "a3947d765639020ad9c6ec3f0aa7de6e23e3bfa2e45248d4babc8a9fe392c637"
+    },
+    {
+      "path": "tests/fixtures/models/encoder/config.json",
+      "size_bytes": 190,
+      "sha256": "d286ef6d19da75309a28e6d4a419fa8f58e01b04f0b52d84c8bce05ef8bef768"
+    },
+    {
+      "path": "tests/fixtures/models/encoder/model.safetensors",
+      "size_bytes": 1045,
+      "sha256": "b3dc182f972c95cfb3c5028d8d3651478c90d92b5c5627110ca35d6eaca93815"
+    },
+    {
+      "path": "tests/fixtures/models/encoder_decoder/config.json",
+      "size_bytes": 241,
+      "sha256": "00505d5c3444e18ba3a178aa6ac3f7c5f02701bb076b00b4ef053f10c38384f6"
+    },
+    {
+      "path": "tests/fixtures/models/encoder_decoder/model.safetensors",
+      "size_bytes": 673,
+      "sha256": "fcdf66d9c9c419452e3211d7912b0657767a0d7a701ca20f31e4470c52b17cd5"
+    },
+    {
+      "path": "tests/fixtures/models/flow_diffusion_tts/config.json",
+      "size_bytes": 176,
+      "sha256": "f9ba40767b597077634c4259d62778f00e2eff491de8450deebfe50e425526ac"
+    },
+    {
+      "path": "tests/fixtures/models/flow_diffusion_tts/model.safetensors",
+      "size_bytes": 2018,
+      "sha256": "d8d296236363b9a82fe5a60dfdd4849425cc712e9d1f7e5999fbec614a1b32a2"
+    },
+    {
       "path": "tests/fixtures/models/moe/config.json",
       "size_bytes": 287,
       "sha256": "ecb6c77f64053df17a0153f11217d21f0411751ac7ffa23968bebe083433fab2"
@@ -559,6 +619,36 @@
       "path": "tests/fixtures/models/moe/model.safetensors",
       "size_bytes": 760,
       "sha256": "5b229681d2c16b328086b3f804f593186f5d8605bf76cb04b1026a5fd8f08cb3"
+    },
+    {
+      "path": "tests/fixtures/models/separation_enhancement/config.json",
+      "size_bytes": 171,
+      "sha256": "015dbec5d6e28deb3b07ae4f585bd63bab38d5dd7d23b09c35e9c8c29da1c512"
+    },
+    {
+      "path": "tests/fixtures/models/separation_enhancement/model.safetensors",
+      "size_bytes": 816,
+      "sha256": "95744c48ceb0733c366f54a655e6296fec642785cc5e6419807c3efe56862c42"
+    },
+    {
+      "path": "tests/fixtures/models/ssm_hybrid/config.json",
+      "size_bytes": 206,
+      "sha256": "8d08d3ddf12abe433cb7c581f71e762989eaa8afb5342a4e8ec1ac31f9a6e1d0"
+    },
+    {
+      "path": "tests/fixtures/models/ssm_hybrid/model.safetensors",
+      "size_bytes": 1330,
+      "sha256": "07230c0a317b5b4720b18c250036ebd5d24f91d200b1ed86f44dbf68b6ea202d"
+    },
+    {
+      "path": "tests/fixtures/models/streaming_speech/config.json",
+      "size_bytes": 189,
+      "sha256": "cb26e5591d8d3e1e7445cf32b3eb960185293b5f078b6b6b1247c3b9b03fd009"
+    },
+    {
+      "path": "tests/fixtures/models/streaming_speech/model.safetensors",
+      "size_bytes": 1234,
+      "sha256": "d638fa58dc9a3168c182c67a42769836f33add3fee9b1a05817ea979158dd882"
     },
     {
       "path": "tests/fixtures/models/unsafe/config.json",
@@ -581,6 +671,26 @@
       "sha256": "0ef0b6d7cd25cd93397d9d23b62a450f2c49c120d59477bb37a46649a4e23444"
     },
     {
+      "path": "tests/fixtures/models/vision_language_omni/config.json",
+      "size_bytes": 273,
+      "sha256": "062a9d69a39ea2cf71f0e17ddd605356dd3aee3eb73746c0e4ea82900a172c32"
+    },
+    {
+      "path": "tests/fixtures/models/vision_language_omni/model.safetensors",
+      "size_bytes": 708,
+      "sha256": "085ba26278dc6a6336052c8d550af4caed1ab3084a255a4b070823ec68e985e8"
+    },
+    {
+      "path": "tests/fixtures/models/vocoder/config.json",
+      "size_bytes": 254,
+      "sha256": "df1ad590353a08e90d0b04c7d634dc5560ee733ba1bf775911ad7f81d1940617"
+    },
+    {
+      "path": "tests/fixtures/models/vocoder/model.safetensors",
+      "size_bytes": 1386,
+      "sha256": "ed92924bec4adc5960bcb1b70e090d4ed76b29831f291661ba43ad184e0130f4"
+    },
+    {
       "path": "tests/fixtures/research_loop/fake_executor.py",
       "size_bytes": 2106,
       "sha256": "097b2b4815c4367ec83d943eace393980c30b780244cae7e2a80ae27c6fc31f6"
@@ -591,9 +701,39 @@
       "sha256": "38590f656b73b3205ab3e62ab442edb6951207dc9459390dcf09513828f05b2c"
     },
     {
+      "path": "tests/fixtures/scenarios/automatic-speech-recognition.json",
+      "size_bytes": 481,
+      "sha256": "41065e511f33285ea9908df5cd26c14360a4eccd8c612326dd891d007e980181"
+    },
+    {
+      "path": "tests/fixtures/scenarios/autoregressive-audio-lm.json",
+      "size_bytes": 508,
+      "sha256": "8ccf2ebb8894e8062c47f39f430b82da92f261037ff23820a7277b47b45ab448"
+    },
+    {
       "path": "tests/fixtures/scenarios/dense-decoder.json",
       "size_bytes": 472,
       "sha256": "c39a83fcdeb8d9cc719b2ac5a940a5aae44b0eafa79ff8caac5413189adca01d"
+    },
+    {
+      "path": "tests/fixtures/scenarios/diffusion-flow.json",
+      "size_bytes": 506,
+      "sha256": "1d60581bc17da056b49e2eac6a351697e597809d465edc25594815806cbdb0ec"
+    },
+    {
+      "path": "tests/fixtures/scenarios/encoder-decoder-transformer.json",
+      "size_bytes": 523,
+      "sha256": "2468dccb1279bfde94ac76836199bb5f2f4a24295c1e926927d5cac6f42df805"
+    },
+    {
+      "path": "tests/fixtures/scenarios/encoder-transformer.json",
+      "size_bytes": 490,
+      "sha256": "f9eab02c82e66a58030245870456f652c9e9cc4905442dda219d486401d4d1aa"
+    },
+    {
+      "path": "tests/fixtures/scenarios/flow-diffusion-tts.json",
+      "size_bytes": 479,
+      "sha256": "d0741bab852ba0890fac793738d35c036c5d7baa12e013ce95a3f3e8ef7b85b9"
     },
     {
       "path": "tests/fixtures/scenarios/moe-decoder.json",
@@ -604,6 +744,31 @@
       "path": "tests/fixtures/scenarios/neural-audio-codec.json",
       "size_bytes": 459,
       "sha256": "7bb6fd6a720c97ed744615d0078bf64c15336561c3a02f42fa324db894a46cec"
+    },
+    {
+      "path": "tests/fixtures/scenarios/separation-enhancement.json",
+      "size_bytes": 482,
+      "sha256": "7418ab4f23f52e29e6c2591cb48aaeb080712b8282863bca8004a91e00091db0"
+    },
+    {
+      "path": "tests/fixtures/scenarios/ssm-recurrent-hybrid.json",
+      "size_bytes": 490,
+      "sha256": "ce88d0fa0db069f7c405ec8f1590513edbd53ee0dc4ee3a62a23b4adcc096477"
+    },
+    {
+      "path": "tests/fixtures/scenarios/streaming-speech.json",
+      "size_bytes": 472,
+      "sha256": "61be7444d177a81a211321d699b9ccab55e74ba0181cf294f5460c5316e1d1ef"
+    },
+    {
+      "path": "tests/fixtures/scenarios/vision-language-omni.json",
+      "size_bytes": 567,
+      "sha256": "dc6aa462220f145bf17042a25075014ec210bd996123d0c04fd2c90cec05c614"
+    },
+    {
+      "path": "tests/fixtures/scenarios/vocoder-waveform-decoder.json",
+      "size_bytes": 447,
+      "sha256": "7c6c8edabe1bb5102b3c36dd9eb38953fd5b71f0746e6ef13deaa92954670a9b"
     },
     {
       "path": "tests/fixtures/tensors/bad.npz",
@@ -632,8 +797,8 @@
     },
     {
       "path": "tests/test_scenarios.py",
-      "size_bytes": 4540,
-      "sha256": "545ed098a5eb68c68c1071f83098e0dc85da0631ca71dec23c8c794515d77631"
+      "size_bytes": 4474,
+      "sha256": "0678d3288301ea2449d9501e2e556a394820389172ec9d3bd0410ee7cc501d17"
     },
     {
       "path": "tests/test_tooling.py",

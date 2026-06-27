@@ -1,0 +1,13 @@
+{
+  "model_type": "t5",
+  "architectures": [
+    "T5ForConditionalGeneration"
+  ],
+  "encoder_layers": 2,
+  "decoder_layers": 2,
+  "is_encoder_decoder": true,
+  "d_model": 8,
+  "num_heads": 2,
+  "vocab_size": 32,
+  "license": "apache-2.0"
+}

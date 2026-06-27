@@ -5,7 +5,7 @@ still **requires Apple Silicon or network access**. It exists so readiness is ne
 overclaimed: passing the offline suite does **not** prove a real model ports correctly
 on a Mac — it proves the method, routing, and guards behave as documented.
 
-Corpus / validation review date: **2026-06-24**.
+Corpus / validation review date: **2026-06-27**.
 
 ## Demonstrated offline (no Apple Silicon, no model download, no network)
 
@@ -14,7 +14,7 @@ manifest gates. Each item below is enforced by a runnable pass/fail test.
 
 | Claim | Guard |
 |---|---|
-| An agent routes a model to the correct family **and** runbook | `tests/test_scenarios.py` (3 families with fixtures) |
+| An agent routes a model to the correct family **and** runbook | `tests/test_scenarios.py` (14/14 declared families with fixtures) |
 | Expected source weight keys are present after inspection | `tests/test_scenarios.py` |
 | A **seeded parity bug is caught** by the parity stage | `tests/test_scenarios.py` (compare_tensors must fail) |
 | The right optimizations are recommended and wrong ones are **not** | `tests/test_scenarios.py`, `test_tooling.py` |
@@ -34,8 +34,8 @@ manifest gates. Each item below is enforced by a runnable pass/fail test.
 - Real MLX-vs-PyTorch numeric parity on an actual ported block or model.
 - Latency / throughput / peak-memory benchmarks and any speedup number.
 - Quantization, KV-cache, and speculative-decoding quality on real weights.
-- End-to-end runs for the 11 families that have no offline routing fixture yet
-  (listed by `tests/test_scenarios.py` on every run).
+- End-to-end real-model conversion runs for the 14 architecture families; the
+  offline scenarios prove routing and guard behavior, not real checkpoint support.
 
 ## Requires network access (not proven here)
 

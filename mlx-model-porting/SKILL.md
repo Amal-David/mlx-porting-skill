@@ -219,3 +219,4 @@ Stop and report rather than improvising when:
 ## Maintenance
 
 For source review, security, daily candidates, and broad multi-agent research loops, read [maintenance and provenance](references/maintenance-and-provenance.md) and [deep research loop](references/deep-research-loop.md). Run `scripts/audit_skill.py` and `scripts/validate_sources.py` before distributing this skill.
+When `assets/architectures.yaml` changes, keep the golden scenario gate in `tests/test_scenarios.py` at full family coverage.
