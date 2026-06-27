@@ -53,6 +53,12 @@ Read [intake and routing](references/intake-and-routing.md). Confirm:
 
 Do not begin implementation if the architecture, source revision, or evaluation target remains ambiguous. Record uncertainties in `PORT_PLAN.md` rather than guessing.
 
+When the user wants model-specific directions, CLI-style advice, or a UI-style
+“what can I do with this model?” answer, read
+[model advisor playbook](references/model-advisor-playbook.md). Use it to
+produce validated, benchmark-required, experimental, and rejected branches from
+the current research assets before execution.
+
 ### 2. Select the closest proven MLX reference
 
 Consult [model support map](references/model-support-map.md) and `assets/architectures.yaml`.

@@ -2,8 +2,8 @@
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
   "version": "0.1.0",
-  "generated_at": "2026-06-27T18:03:08.419555+00:00",
-  "file_count": 195,
+  "generated_at": "2026-06-27T18:10:09.457483+00:00",
+  "file_count": 196,
   "files": [
     {
       "path": ".github/workflows/daily-research.yml",
@@ -112,8 +112,8 @@
     },
     {
       "path": "mlx-model-porting/SKILL.md",
-      "size_bytes": 14154,
-      "sha256": "da292094266988cfe8298392cbb5c40ea151c2a81c35894aaf55ab09dfa7aff4"
+      "size_bytes": 14484,
+      "sha256": "c647ad5bd72c8490701c7c633caf621ccd7186beb4707bad165ca9ea63c253bc"
     },
     {
       "path": "mlx-model-porting/assets/BENCHMARK_REPORT.md",
@@ -229,6 +229,11 @@
       "path": "mlx-model-porting/references/maintenance-and-provenance.md",
       "size_bytes": 5096,
       "sha256": "0659664c2a27fa127b068c215bd572a345ab4e4e2d90643e9addb0a68cef792b"
+    },
+    {
+      "path": "mlx-model-porting/references/model-advisor-playbook.md",
+      "size_bytes": 14478,
+      "sha256": "cac1b90c3429d6660e41efbc4a167aea5ca30bacefb380a037dcb93ddd05a140"
     },
     {
       "path": "mlx-model-porting/references/model-support-map.md",
@@ -977,8 +982,8 @@
     },
     {
       "path": "tests/test_tooling.py",
-      "size_bytes": 133508,
-      "sha256": "8c289cf234649172de94425a5698b41d4fcf5b091a82c473e95006e46c8f0c79"
+      "size_bytes": 134583,
+      "sha256": "4ded6229e455632ef85f0d29b11cf8fc11886339fb41a8ee2df977ae94e82f07"
     }
   ]
 }

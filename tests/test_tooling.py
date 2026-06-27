@@ -413,6 +413,31 @@ class ToolingTests(unittest.TestCase):
         )
         self.assertTrue(backlog["advisor_status_mapping"]["needs-validation"]["requires_user_opt_in"])
 
+    def test_model_advisor_playbook_covers_recent_research_branches(self) -> None:
+        skill_text = (SKILL / "SKILL.md").read_text()
+        playbook = (SKILL / "references" / "model-advisor-playbook.md").read_text()
+
+        self.assertIn("model-advisor-playbook.md", skill_text)
+        for required in [
+            "contributor_learnings.json",
+            "research_backlog.json",
+            "recommendation-taxonomy.yaml",
+            "optimization_guidance.yaml",
+            "This is an experimental approach. Do you want to try it?",
+            "block-weight-streaming",
+            "spatial-grid-sample-kernel",
+            "audio-flow-tts-duration-vocoder-gates",
+            "layer-eval-watchdog-guard",
+            "layer-range-network-sharding",
+            "rwkv-ssm-conformer-prototypes",
+            "source-formats-beyond-pytorch-hf",
+            "non-generative-cv",
+            "structured-timeseries-recsys",
+            "graph-geometric-scientific",
+            "training-as-port-target",
+        ]:
+            self.assertIn(required, playbook)
+
     def test_block_weight_streaming_is_scoped_to_repeated_block_memory_pressure(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             inspection = Path(tmp) / "inspection.json"
