@@ -115,6 +115,13 @@ selected agents, assignment and prompt paths, expected result and blog paths,
 safe launch constraints, and the exact per-wave `command_args` for rerunning
 ingestion with `--ingest-subagent-results`. External dispatchers should consume
 the campaign receipt instead of inferring launch state from internal file names.
+For non-final iterative waves, `synthesis.json` and the matching campaign wave
+also include a `next_wave_scaffold` receipt. That handoff preserves the
+review-gate, sampling, blog-contract, agent-count, and dynamic-assignment flags,
+then points the next wave at the current wave's derived `next_gap_hints`. Run
+the scaffold command only after the current wave's worker result files have
+been ingested, so follow-up assignments are based on observed gaps rather than
+stale planned coverage.
 When the dispatcher is an explicit local command, use
 `scripts/run_research_campaign.py` to execute the campaign receipt wave by wave.
 The runner starts one process per listed agent up to `--workers`, passes the
@@ -168,7 +175,9 @@ of orchestration. Agents within a wave may run in parallel, but dynamic later
 waves should be scaffolded after prior wave ingestion when returned findings
 need to drive the next gap hints. The top-level campaign receipt marks these
 wave dependencies so the dispatcher can avoid launching stale follow-up
-assignments.
+assignments. When a wave includes `next_wave_scaffold`, use that command as the
+dispatcher input for wave N+1 after the recorded ingest command has succeeded.
+Final waves set `next_wave_expected` to false and omit the scaffold receipt.
 
 ## Blog Contract
 

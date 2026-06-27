@@ -56,6 +56,18 @@ def parse_args() -> argparse.Namespace:
         help="Number of review-only research iterations to run",
     )
     parser.add_argument(
+        "--iteration-index",
+        type=int,
+        default=None,
+        help="Advanced orchestration metadata for a single scaffolded wave",
+    )
+    parser.add_argument(
+        "--iteration-count-total",
+        type=int,
+        default=None,
+        help="Advanced orchestration metadata for the total planned wave count",
+    )
+    parser.add_argument(
         "--until-review-gate",
         action="store_true",
         help="Treat --iterations as a cap and stop once the review gate passes",
@@ -663,6 +675,11 @@ def append_review_gate_command_args(command_args: list[str], requirements: dict[
         command_args.append("--require-explicit-sampling-receipts")
 
 
+def append_failure_command_args(command_args: list[str], summary: dict[str, Any]) -> None:
+    if summary.get("fail_on_review_gate"):
+        command_args.append("--fail-on-review-gate")
+
+
 def append_blog_contract_command_args(command_args: list[str], summary: dict[str, Any]) -> None:
     if summary.get("require_worker_blog_contract"):
         command_args.append("--require-worker-blog-contract")
@@ -689,6 +706,7 @@ def ingest_command_args_for_wave(summary: dict[str, Any], output_dir: Path) -> l
         command_args,
         summary.get("review_gate", {}).get("requirements", {}),
     )
+    append_failure_command_args(command_args, summary)
     append_blog_contract_command_args(command_args, summary)
     command_args.extend([
         "--ingest-subagent-results",
@@ -702,6 +720,75 @@ def campaign_rel_path(root: Path, wave_output_dir: Path, relative_path: str | No
     if not relative_path:
         return None
     return safe_relpath(root, wave_output_dir / relative_path)
+
+
+def next_iteration_run_id(run_id: str, next_iteration: int) -> str:
+    if re.search(r"-i\d{2}$", run_id):
+        return re.sub(r"-i\d{2}$", f"-i{next_iteration:02d}", run_id)
+    return f"{run_id}-i{next_iteration:02d}"
+
+
+def next_wave_output_dir(output_dir: Path, next_iteration: int) -> Path:
+    if re.fullmatch(r"\d{2}", output_dir.name):
+        return output_dir.parent / f"{next_iteration:02d}"
+    return output_dir.parent / f"{output_dir.name}-i{next_iteration:02d}"
+
+
+def build_next_wave_scaffold(
+    summary: dict[str, Any],
+    args: argparse.Namespace,
+    output_dir: Path,
+) -> dict[str, Any] | None:
+    iteration = int(summary.get("iteration", 1))
+    iteration_count = int(summary.get("iteration_count", 1))
+    if iteration >= iteration_count:
+        return None
+    next_iteration = iteration + 1
+    next_run_id = next_iteration_run_id(str(summary["run_id"]), next_iteration)
+    next_output_dir = next_wave_output_dir(output_dir, next_iteration)
+    gap_hints = summary.get("next_gap_hints", [])
+    command_args = ["python3", "scripts/research_loop.py"]
+    if str(args.config) != str(DEFAULT_CONFIG):
+        command_args.extend(["--config", str(args.config)])
+    command_args.extend([
+        "--run-id",
+        next_run_id,
+        "--objective",
+        str(summary["objective"]),
+        "--agent-count",
+        str(summary.get("agent_count", 0)),
+        "--assignment-mode",
+        "dynamic",
+        "--iteration-index",
+        str(next_iteration),
+        "--iteration-count-total",
+        str(iteration_count),
+    ])
+    for hint in gap_hints:
+        command_args.extend(["--gap-hint", str(hint)])
+    append_review_gate_command_args(command_args, summary.get("review_gate", {}).get("requirements", {}))
+    append_failure_command_args(command_args, summary)
+    append_blog_contract_command_args(command_args, summary)
+    command_args.extend(["--output-dir", str(next_output_dir)])
+    return {
+        "schema_version": 1,
+        "review_only": True,
+        "status": "ready_after_current_wave_ingest",
+        "current_iteration": iteration,
+        "next_iteration": next_iteration,
+        "iteration_count": iteration_count,
+        "run_id": next_run_id,
+        "output_dir": str(next_output_dir),
+        "assignment_mode": "dynamic",
+        "gap_hints": gap_hints,
+        "command_args": command_args,
+        "requires_current_wave_ingestion": True,
+        "instructions": [
+            "Run the current wave ingest command after worker result files are present.",
+            "Then run this scaffold command to create the next wave from the derived gap hints.",
+            "Do not execute remote model code or modify recommendation assets during research.",
+        ],
+    }
 
 
 def build_campaign_agent(root: Path, wave_output_dir: Path, agent: dict[str, Any]) -> dict[str, Any]:
@@ -786,6 +873,7 @@ def build_campaign_wave(
                 else "Single-wave campaign."
             ),
         },
+        **({"next_wave_scaffold": summary["next_wave_scaffold"]} if summary.get("next_wave_scaffold") else {}),
     }
 
 
@@ -857,6 +945,10 @@ def write_campaign_markdown(output_dir: Path, campaign: dict[str, Any]) -> None:
             f"  - ingest command args: {shlex.join(wave['ingest']['command_args'])}",
             f"  - dependency: {wave['wave_dependency']['reason']}",
         ])
+        if wave.get("next_wave_scaffold"):
+            lines.append(
+                f"  - next-wave scaffold command args: {shlex.join(wave['next_wave_scaffold']['command_args'])}"
+            )
         for agent in wave["agents"]:
             lines.append(
                 f"  - {agent['persona_id']}: {agent['assignment_path']} -> {agent['result_path']}"
@@ -2134,6 +2226,7 @@ def run_iteration(
     summary["iteration_count"] = iteration_count
     summary["gap_hints"] = gap_hints
     summary["next_gap_hints"] = derive_next_gap_hints(summary, gap_hints)
+    summary["next_wave_expected"] = iteration < iteration_count
     if args.offline_fixture:
         fixture_path = Path(args.offline_fixture)
         summary["offline_fixture"] = safe_relpath(Path.cwd(), fixture_path) if fixture_path.exists() else args.offline_fixture
@@ -2143,9 +2236,13 @@ def run_iteration(
         summary["executor_actual_workers"] = fixture.get("executor_actual_workers", args.executor_workers)
     if args.ingest_subagent_results:
         summary["ingested_subagent_results"] = True
+    summary["fail_on_review_gate"] = bool(args.fail_on_review_gate)
     summary["require_worker_blog_contract"] = bool(args.require_worker_blog_contract)
     summary["blog_receipts"] = write_blogs(output_dir, assignments, fixture, blog_required_sections(config))
     summary["blog_contract"] = summarize_blog_contract(summary["blog_receipts"])
+    next_wave = build_next_wave_scaffold(summary, args, output_dir)
+    if next_wave:
+        summary["next_wave_scaffold"] = next_wave
     summary["subagent_dispatch"] = write_subagent_handoffs(
         output_dir,
         assignments,
@@ -2563,6 +2660,15 @@ def main() -> int:
             raise SkillError("--iterations must be positive")
         if args.executor_workers <= 0:
             raise SkillError("--executor-workers must be positive")
+        if (args.iteration_index is None) != (args.iteration_count_total is None):
+            raise SkillError("--iteration-index and --iteration-count-total must be provided together")
+        if args.iteration_index is not None:
+            if args.iteration_index <= 0 or args.iteration_count_total <= 0:
+                raise SkillError("--iteration-index and --iteration-count-total must be positive")
+            if args.iteration_index > args.iteration_count_total:
+                raise SkillError("--iteration-index cannot exceed --iteration-count-total")
+            if args.iterations != 1:
+                raise SkillError("--iteration-index is only valid for single-wave scaffolds")
         config = load_config(args.config)
         review_requirements = review_gate_requirements(args, config)
         run_id = args.run_id or default_run_id()
@@ -2575,8 +2681,8 @@ def main() -> int:
                 run_id,
                 output_dir,
                 unique_ordered(args.gap_hint),
-                1,
-                1,
+                args.iteration_index or 1,
+                args.iteration_count_total or 1,
                 review_requirements,
             )
             print(f"wrote research loop {run_id} to {output_dir}: {summary['finding_count']} findings")

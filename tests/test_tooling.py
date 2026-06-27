@@ -1092,6 +1092,8 @@ class ToolingTests(unittest.TestCase):
                 "--iterations", 2,
                 "--agent-count", 2,
                 "--min-sampled-targets", 1,
+                "--require-explicit-sampling-receipts",
+                "--require-worker-blog-contract",
                 "--output-dir", output_dir,
             )
             campaign = json.loads((output_dir / "campaign.json").read_text())
@@ -1116,12 +1118,32 @@ class ToolingTests(unittest.TestCase):
             self.assertEqual(second_wave["assignment_mode"], second["assignment_planner"]["mode"])
             self.assertEqual(second_wave["assignment_mode"], "dynamic")
             self.assertEqual(second_wave["gap_hints"], first["next_gap_hints"])
+            scaffold = first["next_wave_scaffold"]
+            self.assertTrue(first["next_wave_expected"])
+            self.assertFalse(second["next_wave_expected"])
+            self.assertNotIn("next_wave_scaffold", second)
+            self.assertEqual(first_wave["next_wave_scaffold"], scaffold)
+            self.assertEqual(scaffold["next_iteration"], 2)
+            self.assertEqual(scaffold["iteration_count"], 2)
+            self.assertEqual(scaffold["assignment_mode"], "dynamic")
+            self.assertEqual(scaffold["gap_hints"], first["next_gap_hints"])
+            scaffold_command = scaffold["command_args"]
+            self.assertEqual(scaffold_command[scaffold_command.index("--run-id") + 1], "campaign-iterative-loop-i02")
+            self.assertEqual(scaffold_command[scaffold_command.index("--iteration-index") + 1], "2")
+            self.assertEqual(scaffold_command[scaffold_command.index("--iteration-count-total") + 1], "2")
+            self.assertIn("--require-explicit-sampling-receipts", scaffold_command)
+            self.assertIn("--require-worker-blog-contract", scaffold_command)
+            self.assertEqual(scaffold_command[scaffold_command.index("--min-sampled-targets") + 1], "1")
+            self.assertEqual(scaffold_command[scaffold_command.index("--output-dir") + 1], str(output_dir / "iterations" / "02"))
             second_command = second_wave["ingest"]["command_args"]
             for hint in second_wave["gap_hints"]:
                 self.assertIn(hint, second_command)
+                self.assertIn(hint, scaffold_command)
             self.assertEqual(second_command[second_command.index("--output-dir") + 1], str(output_dir / "iterations" / "02"))
             self.assertTrue(first_wave["agents"][0]["result_path"].startswith("iterations/01/agents/"))
             self.assertTrue(second_wave["agents"][0]["result_path"].startswith("iterations/02/agents/"))
+            campaign_markdown = (output_dir / "campaign.md").read_text()
+            self.assertIn("next-wave scaffold command args", campaign_markdown)
 
     def test_research_campaign_runner_runs_agents_and_ingests_wave(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
