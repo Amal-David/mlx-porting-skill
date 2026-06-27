@@ -84,6 +84,15 @@ returned findings. This proves both intended breadth and actual sampled
 coverage, even when a run is only scaffolded and no agent has returned findings
 yet.
 
+Returned source objects may include `sampled_target_title` and/or
+`sampled_target_locator` to declare which planned sample target the source was
+intended to satisfy. The harness validates those explicit receipts against the
+assignment sample plan, records valid, missing, and invalid receipt counts in
+`sampling_coverage`, and surfaces invalid claims in generated blogs. Use
+`--require-explicit-sampling-receipts` when matched planned targets must be
+backed by worker-declared target receipts rather than inferred URL/title
+matching alone.
+
 Every run also writes a root `subagents.json` dispatch manifest plus per-agent
 packets under `agents/*.assignment.json` and `agents/*.prompt.md`. These files
 are the stable handoff surface for a human operator or external orchestrator to
@@ -119,6 +128,9 @@ harness still writes assignments, blogs, and synthesis receipts, then exits
 non-zero if the gate fails. A passing gate only says the research sampled the
 requested breadth; it does not promote a technique without the usual source,
 validation, test, and rollback evidence.
+Add `--require-explicit-sampling-receipts` to fail the review gate when a
+sampled planned target lacks an explicit source receipt or when a returned
+source claims a target outside that assignment's sample plan.
 
 For `--iterations 2` or higher, the harness writes each pass under
 `iterations/NN/` and emits top-level `loop.json` and `loop.md` receipts. Each
@@ -298,6 +310,7 @@ python3 scripts/research_loop.py \
   --min-sampled-targets 2 \
   --min-non-github-lanes 3 \
   --require-source-lane hugging_face \
+  --require-explicit-sampling-receipts \
   --fail-on-review-gate \
   --output-dir research-runs/manual-gated
 ```

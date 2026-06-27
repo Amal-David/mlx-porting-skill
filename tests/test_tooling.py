@@ -1384,6 +1384,168 @@ class ToolingTests(unittest.TestCase):
             self.assertEqual(gate["requirements"]["required_source_lanes"], ["hugging_face"])
             self.assertTrue(all(check["status"] == "pass" for check in gate["checks"]))
 
+    def test_research_loop_accepts_valid_explicit_sampling_receipts(self) -> None:
+        with tempfile.TemporaryDirectory(dir=ROOT) as tmp:
+            tmp_path = Path(tmp)
+            fixture = tmp_path / "explicit_valid.json"
+            fixture.write_text(json.dumps({
+                "agents": [
+                    {
+                        "persona_id": "official-docs-cartographer",
+                        "decision_notes": ["Explicit receipt points this source at the planned docs-index target."],
+                        "findings": [
+                            {
+                                "id": "explicit-receipt-valid",
+                                "title": "Explicit target receipt can prove sampled coverage",
+                                "summary": "A returned source can identify which planned sample target it satisfied.",
+                                "source_lane": "official_docs",
+                                "sources": [
+                                    {
+                                        "title": "MLX quick start documentation",
+                                        "url": "https://ml-explore.github.io/mlx/build/html/usage/quick_start.html",
+                                        "accessed": "2026-06-27",
+                                        "kind": "official-doc",
+                                        "sampled_target_title": "MLX documentation index",
+                                        "sampled_target_locator": "https://ml-explore.github.io/mlx/build/html/index.html",
+                                    }
+                                ],
+                                "decision": "held",
+                                "evidence_level": "deterministic-test-fixture",
+                                "validation_gate": "Explicit target receipts must match the assignment sample plan.",
+                                "affects": ["references/deep-research-loop.md"],
+                                "caveats": ["This proves receipt validation only."],
+                                "required_next_validation": "Run a live campaign and inspect returned target receipts.",
+                            }
+                        ],
+                    }
+                ],
+            }), encoding="utf-8")
+            output_dir = tmp_path / "explicit-valid-run"
+            run_script(
+                "research_loop.py",
+                "--run-id", "explicit-valid-loop",
+                "--agent-count", 1,
+                "--offline-fixture", fixture,
+                "--min-sampled-targets", 1,
+                "--require-explicit-sampling-receipts",
+                "--fail-on-review-gate",
+                "--output-dir", output_dir,
+            )
+            synthesis = json.loads((output_dir / "synthesis.json").read_text())
+            coverage = synthesis["sampling_coverage"]
+            self.assertEqual(synthesis["review_gate"]["status"], "pass")
+            self.assertEqual(coverage["sampled_target_count"], 1)
+            self.assertEqual(coverage["valid_explicit_sampling_receipt_count"], 1)
+            self.assertEqual(coverage["invalid_explicit_sampling_receipt_count"], 0)
+            self.assertEqual(coverage["sampled_target_missing_explicit_receipt_count"], 0)
+            first_target = coverage["assignments"][0]["sampled_targets"][0]
+            self.assertEqual(first_target["explicit_receipts"][0]["sampled_target_title"], "MLX documentation index")
+            blog = (output_dir / "blogs" / "official-docs-cartographer.md").read_text()
+            self.assertIn("Explicit sampling receipts: 1 valid, 0 invalid", blog)
+
+    def test_research_loop_required_explicit_sampling_receipts_fails_when_missing(self) -> None:
+        with tempfile.TemporaryDirectory(dir=ROOT) as tmp:
+            tmp_path = Path(tmp)
+            fixture = tmp_path / "explicit_missing.json"
+            fixture.write_text(json.dumps({
+                "agents": [
+                    {
+                        "persona_id": "official-docs-cartographer",
+                        "findings": [
+                            {
+                                "id": "explicit-receipt-missing",
+                                "title": "Missing explicit target receipt should block strict runs",
+                                "summary": "The source matches a planned target by URL but omits the explicit target receipt.",
+                                "source_lane": "official_docs",
+                                "sources": [
+                                    {
+                                        "title": "MLX documentation index",
+                                        "url": "https://ml-explore.github.io/mlx/build/html/index.html",
+                                        "accessed": "2026-06-27",
+                                        "kind": "official-doc",
+                                    }
+                                ],
+                                "decision": "held",
+                                "evidence_level": "deterministic-test-fixture",
+                                "validation_gate": "Strict sampling runs require explicit target receipts.",
+                                "affects": ["references/deep-research-loop.md"],
+                                "caveats": ["This proves the review gate only."],
+                                "required_next_validation": "Add sampled_target_title or sampled_target_locator to returned sources.",
+                            }
+                        ],
+                    }
+                ],
+            }), encoding="utf-8")
+            output_dir = tmp_path / "explicit-missing-run"
+            result = run_script(
+                "research_loop.py",
+                "--run-id", "explicit-missing-loop",
+                "--agent-count", 1,
+                "--offline-fixture", fixture,
+                "--min-sampled-targets", 1,
+                "--require-explicit-sampling-receipts",
+                "--fail-on-review-gate",
+                "--output-dir", output_dir,
+                expected=2,
+            )
+            self.assertIn("explicit_sampling_receipts observed 0, required 1", result.stderr)
+            synthesis = json.loads((output_dir / "synthesis.json").read_text())
+            self.assertEqual(synthesis["review_gate"]["status"], "fail")
+            self.assertEqual(synthesis["sampling_coverage"]["sampled_target_missing_explicit_receipt_count"], 1)
+
+    def test_research_loop_required_explicit_sampling_receipts_fails_invalid_claims(self) -> None:
+        with tempfile.TemporaryDirectory(dir=ROOT) as tmp:
+            tmp_path = Path(tmp)
+            fixture = tmp_path / "explicit_invalid.json"
+            fixture.write_text(json.dumps({
+                "agents": [
+                    {
+                        "persona_id": "official-docs-cartographer",
+                        "findings": [
+                            {
+                                "id": "explicit-receipt-invalid",
+                                "title": "Invalid explicit target receipt should block strict runs",
+                                "summary": "The source claims a target outside the planned assignment sample plan.",
+                                "source_lane": "official_docs",
+                                "sources": [
+                                    {
+                                        "title": "MLX documentation index",
+                                        "url": "https://ml-explore.github.io/mlx/build/html/index.html",
+                                        "accessed": "2026-06-27",
+                                        "kind": "official-doc",
+                                        "sampled_target_locator": "https://example.com/not-in-the-plan",
+                                    }
+                                ],
+                                "decision": "held",
+                                "evidence_level": "deterministic-test-fixture",
+                                "validation_gate": "Explicit target receipts must stay inside the assignment sample plan.",
+                                "affects": ["references/deep-research-loop.md"],
+                                "caveats": ["This proves invalid receipt detection only."],
+                                "required_next_validation": "Use the planned target title or locator from the assignment packet.",
+                            }
+                        ],
+                    }
+                ],
+            }), encoding="utf-8")
+            output_dir = tmp_path / "explicit-invalid-run"
+            result = run_script(
+                "research_loop.py",
+                "--run-id", "explicit-invalid-loop",
+                "--agent-count", 1,
+                "--offline-fixture", fixture,
+                "--min-sampled-targets", 1,
+                "--require-explicit-sampling-receipts",
+                "--fail-on-review-gate",
+                "--output-dir", output_dir,
+                expected=2,
+            )
+            self.assertIn("invalid_explicit_sampling_receipts observed 1, required <= 0", result.stderr)
+            synthesis = json.loads((output_dir / "synthesis.json").read_text())
+            coverage = synthesis["sampling_coverage"]
+            self.assertEqual(coverage["invalid_explicit_sampling_receipt_count"], 1)
+            invalid = coverage["assignments"][0]["invalid_sampling_receipts"][0]
+            self.assertEqual(invalid["sampled_target_locator"], "https://example.com/not-in-the-plan")
+
     def test_research_loop_rejects_non_positive_iterations(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             result = run_script(

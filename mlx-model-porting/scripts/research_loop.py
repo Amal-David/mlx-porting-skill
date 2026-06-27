@@ -86,6 +86,11 @@ def parse_args() -> argparse.Namespace:
         help="Exit non-zero after writing receipts when the review gate does not pass",
     )
     parser.add_argument(
+        "--require-explicit-sampling-receipts",
+        action="store_true",
+        help="Require returned sources to declare the planned sample target they satisfied",
+    )
+    parser.add_argument(
         "--ingest-subagent-results",
         action="store_true",
         help="Read existing per-agent result JSON files from the generated handoff paths",
@@ -419,6 +424,7 @@ def build_assignments(
             "decision, evidence_level, validation_gate, affects, caveats, and required_next_validation. "
             "Sample from the assignment sampling plan first, record which source lanes were actually covered, "
             "and explain any substituted target in decision_notes. "
+            "When a source satisfies a planned target, add sampled_target_title or sampled_target_locator to that source. "
             "Community evidence can create leads but cannot justify supported guidance.\n\n"
             "Sampling plan:\n"
             f"{render_sample_plan(sample_plan)}"
@@ -581,6 +587,10 @@ def write_subagent_handoffs(
                     "caveats",
                     "required_next_validation",
                 ],
+                "source_optional_fields": [
+                    "sampled_target_title",
+                    "sampled_target_locator",
+                ],
             },
             "blog_contract": {
                 "path": rel_paths["blog"],
@@ -643,6 +653,8 @@ def append_review_gate_command_args(command_args: list[str], requirements: dict[
         command_args.extend(["--min-non-github-lanes", str(min_non_github)])
     for lane_id in requirements.get("required_source_lanes", []):
         command_args.extend(["--require-source-lane", str(lane_id)])
+    if requirements.get("require_explicit_sampling_receipts"):
+        command_args.append("--require-explicit-sampling-receipts")
 
 
 def ingest_command_args_for_wave(summary: dict[str, Any], output_dir: Path) -> list[str]:
@@ -1139,6 +1151,17 @@ def source_match_keys(source: dict[str, Any]) -> set[str]:
     } - {""}
 
 
+def source_explicit_target_keys(source: dict[str, Any]) -> set[str]:
+    return {
+        normalize_locator(source.get("sampled_target_locator")),
+        normalize_locator(source.get("sampled_target_title")),
+    } - {""}
+
+
+def source_has_explicit_sampling_receipt(source: dict[str, Any]) -> bool:
+    return bool(source_explicit_target_keys(source))
+
+
 def target_match_keys(target: dict[str, Any]) -> set[str]:
     return {
         normalize_locator(target.get("locator")),
@@ -1166,6 +1189,8 @@ def sources_for_agent(agent: dict[str, Any]) -> list[dict[str, Any]]:
                 "url": source.get("url", ""),
                 "kind": source.get("kind", ""),
                 "accessed": source.get("accessed", ""),
+                "sampled_target_title": source.get("sampled_target_title", ""),
+                "sampled_target_locator": source.get("sampled_target_locator", ""),
             })
     return rows
 
@@ -1190,15 +1215,44 @@ def assignment_sampling_coverage(assignment: dict[str, Any], agent: dict[str, An
     matched_source_indexes: set[int] = set()
     sampled_targets = []
     unsampled_targets = []
+    valid_explicit_receipt_source_indexes: set[int] = set()
+    invalid_sampling_receipts = []
+    for index, source in enumerate(returned_sources):
+        explicit_keys = source_explicit_target_keys(source)
+        if not explicit_keys:
+            continue
+        valid = any(
+            target.get("source_lane") == source.get("source_lane")
+            and explicit_keys & target_match_keys(target)
+            for target in planned_targets
+        )
+        if valid:
+            valid_explicit_receipt_source_indexes.add(index)
+        else:
+            invalid_sampling_receipts.append({
+                "finding_id": source.get("finding_id", ""),
+                "source_lane": source.get("source_lane", ""),
+                "title": source.get("title", ""),
+                "url": source.get("url", ""),
+                "sampled_target_title": source.get("sampled_target_title", ""),
+                "sampled_target_locator": source.get("sampled_target_locator", ""),
+            })
     for target in planned_targets:
         matches = []
+        explicit_receipts = []
         keys = target_match_keys(target)
         for index, source in enumerate(returned_sources):
-            if keys & source_match_keys(source):
+            source_keys = source_match_keys(source)
+            explicit_keys = source_explicit_target_keys(source)
+            if target.get("source_lane") == source.get("source_lane") and keys & (source_keys | explicit_keys):
                 matches.append(source)
                 matched_source_indexes.add(index)
+                if explicit_keys and keys & explicit_keys:
+                    explicit_receipts.append(source)
         row = dict(target)
         row["matched_sources"] = matches
+        row["explicit_receipts"] = explicit_receipts
+        row["missing_explicit_sampling_receipt"] = bool(matches and not explicit_receipts)
         if matches:
             sampled_targets.append(row)
         else:
@@ -1208,6 +1262,8 @@ def assignment_sampling_coverage(assignment: dict[str, Any], agent: dict[str, An
     ]
     planned_count = len(planned_targets)
     sampled_count = len(sampled_targets)
+    missing_explicit_count = sum(1 for target in sampled_targets if target["missing_explicit_sampling_receipt"])
+    explicit_receipt_count = sum(1 for source in returned_sources if source_has_explicit_sampling_receipt(source))
     return {
         "persona_id": assignment.get("persona_id", ""),
         "planned_target_count": planned_count,
@@ -1215,10 +1271,15 @@ def assignment_sampling_coverage(assignment: dict[str, Any], agent: dict[str, An
         "unsampled_target_count": len(unsampled_targets),
         "returned_source_count": len(returned_sources),
         "unplanned_source_count": len(unplanned_sources),
+        "explicit_sampling_receipt_count": explicit_receipt_count,
+        "valid_explicit_sampling_receipt_count": len(valid_explicit_receipt_source_indexes),
+        "invalid_explicit_sampling_receipt_count": len(invalid_sampling_receipts),
+        "sampled_target_missing_explicit_receipt_count": missing_explicit_count,
         "coverage_ratio": (sampled_count / planned_count) if planned_count else None,
         "sampled_targets": sampled_targets,
         "unsampled_targets": unsampled_targets,
         "unplanned_sources": unplanned_sources,
+        "invalid_sampling_receipts": invalid_sampling_receipts,
     }
 
 
@@ -1235,6 +1296,10 @@ def sampling_coverage_summary(assignments: list[dict[str, Any]], fixture: dict[s
         totals["unsampled_target_count"] += coverage["unsampled_target_count"]
         totals["returned_source_count"] += coverage["returned_source_count"]
         totals["unplanned_source_count"] += coverage["unplanned_source_count"]
+        totals["explicit_sampling_receipt_count"] += coverage["explicit_sampling_receipt_count"]
+        totals["valid_explicit_sampling_receipt_count"] += coverage["valid_explicit_sampling_receipt_count"]
+        totals["invalid_explicit_sampling_receipt_count"] += coverage["invalid_explicit_sampling_receipt_count"]
+        totals["sampled_target_missing_explicit_receipt_count"] += coverage["sampled_target_missing_explicit_receipt_count"]
     planned = totals["planned_target_count"]
     sampled = totals["sampled_target_count"]
     return {
@@ -1243,6 +1308,10 @@ def sampling_coverage_summary(assignments: list[dict[str, Any]], fixture: dict[s
         "unsampled_target_count": totals["unsampled_target_count"],
         "returned_source_count": totals["returned_source_count"],
         "unplanned_source_count": totals["unplanned_source_count"],
+        "explicit_sampling_receipt_count": totals["explicit_sampling_receipt_count"],
+        "valid_explicit_sampling_receipt_count": totals["valid_explicit_sampling_receipt_count"],
+        "invalid_explicit_sampling_receipt_count": totals["invalid_explicit_sampling_receipt_count"],
+        "sampled_target_missing_explicit_receipt_count": totals["sampled_target_missing_explicit_receipt_count"],
         "coverage_ratio": (sampled / planned) if planned else None,
         "assignments": assignments_coverage,
     }
@@ -1285,6 +1354,19 @@ def review_check(name: str, observed: int, required: int, detail: str) -> dict[s
     return {
         "name": name,
         "status": status,
+        "comparison": "at_least",
+        "observed": observed,
+        "required": required,
+        "detail": detail,
+    }
+
+
+def review_check_at_most(name: str, observed: int, required: int, detail: str) -> dict[str, Any]:
+    status = "pass" if observed <= required else "fail"
+    return {
+        "name": name,
+        "status": status,
+        "comparison": "at_most",
         "observed": observed,
         "required": required,
         "detail": detail,
@@ -1320,10 +1402,28 @@ def build_review_gate(
                 f"Returned findings from required source lane `{lane_id}`.",
             )
         )
+    if requirements.get("require_explicit_sampling_receipts"):
+        checks.append(
+            review_check(
+                "explicit_sampling_receipts",
+                int(sampling_coverage.get("sampled_target_count", 0))
+                - int(sampling_coverage.get("sampled_target_missing_explicit_receipt_count", 0)),
+                int(sampling_coverage.get("sampled_target_count", 0)),
+                "Matched planned sampling targets backed by explicit worker-declared target receipts.",
+            )
+        )
+        checks.append(
+            review_check_at_most(
+                "invalid_explicit_sampling_receipts",
+                int(sampling_coverage.get("invalid_explicit_sampling_receipt_count", 0)),
+                0,
+                "Returned sources that claimed a planned sample target outside the assignment sample plan.",
+            )
+        )
     blocked_reasons = [
         (
             f"{check['name']} observed {check['observed']}, "
-            f"required {check['required']}"
+            f"required {'<= ' if check.get('comparison') == 'at_most' else ''}{check['required']}"
         )
         for check in checks
         if check["status"] != "pass"
@@ -1336,6 +1436,7 @@ def build_review_gate(
             "min_sampled_targets": int(requirements.get("min_sampled_targets", 0)),
             "min_non_github_lanes": int(requirements.get("min_non_github_lanes", 0)),
             "required_source_lanes": list(requirements.get("required_source_lanes", [])),
+            "require_explicit_sampling_receipts": bool(requirements.get("require_explicit_sampling_receipts")),
         },
         "checks": checks,
         "blocked_reasons": blocked_reasons,
@@ -1451,6 +1552,7 @@ def review_gate_requirements(args: argparse.Namespace, config: dict[str, Any]) -
         "min_sampled_targets": args.min_sampled_targets,
         "min_non_github_lanes": args.min_non_github_lanes,
         "required_source_lanes": required_source_lanes,
+        "require_explicit_sampling_receipts": bool(args.require_explicit_sampling_receipts),
     }
 
 
@@ -1565,6 +1667,14 @@ def write_blogs(output_dir: Path, assignments: list[dict[str, Any]], fixture: di
             f"{source.get('finding_id')}: {source.get('title') or source.get('url')} ({source.get('url')})"
             for source in coverage.get("unplanned_sources", [])
         ]
+        invalid_receipt_lines = [
+            (
+                f"{receipt.get('finding_id')}: claimed "
+                f"{receipt.get('sampled_target_title') or receipt.get('sampled_target_locator') or '<missing>'} "
+                f"from {receipt.get('url') or receipt.get('title')}"
+            )
+            for receipt in coverage.get("invalid_sampling_receipts", [])
+        ]
         validation = [
             f"{finding['id']}: {finding.get('required_next_validation') or finding.get('validation_gate')}"
             for finding in findings
@@ -1586,6 +1696,8 @@ def write_blogs(output_dir: Path, assignments: list[dict[str, Any]], fixture: di
             f"Planned targets: {coverage.get('planned_target_count', 0)}",
             f"Matched targets: {coverage.get('sampled_target_count', 0)}",
             f"Unplanned returned sources: {coverage.get('unplanned_source_count', 0)}",
+            f"Explicit sampling receipts: {coverage.get('valid_explicit_sampling_receipt_count', 0)} valid, {coverage.get('invalid_explicit_sampling_receipt_count', 0)} invalid",
+            f"Matched targets missing explicit receipts: {coverage.get('sampled_target_missing_explicit_receipt_count', 0)}",
             "",
             "### Matched planned targets",
             markdown_list(sampled_target_lines),
@@ -1595,6 +1707,9 @@ def write_blogs(output_dir: Path, assignments: list[dict[str, Any]], fixture: di
             "",
             "### Unplanned returned sources",
             markdown_list(unplanned_source_lines),
+            "",
+            "### Invalid explicit sampling receipts",
+            markdown_list(invalid_receipt_lines),
             "",
             "## Candidate findings",
             markdown_list(finding_lines),
@@ -1654,6 +1769,12 @@ def write_markdown_summary(output_dir: Path, summary: dict[str, Any]) -> None:
         f"Findings: {summary['finding_count']}",
         f"Sampling coverage: {summary['sampling_coverage']['sampled_target_count']}/{summary['sampling_coverage']['planned_target_count']} planned targets",
         f"Unplanned returned sources: {summary['sampling_coverage']['unplanned_source_count']}",
+        (
+            "Explicit sampling receipts: "
+            f"{summary['sampling_coverage'].get('valid_explicit_sampling_receipt_count', 0)} valid, "
+            f"{summary['sampling_coverage'].get('invalid_explicit_sampling_receipt_count', 0)} invalid, "
+            f"{summary['sampling_coverage'].get('sampled_target_missing_explicit_receipt_count', 0)} matched targets missing receipts"
+        ),
         f"Review gate: {review_gate.get('status', 'unknown')}",
         f"Assignment planner: {summary['assignment_planner']['mode']}",
         f"Non-GitHub lanes covered: {', '.join(summary['non_github_lanes_covered']) or 'none'}",
@@ -1828,6 +1949,10 @@ def loop_iteration_record(root: Path, summary: dict[str, Any], output_dir: Path)
             "planned_target_count": summary.get("sampling_coverage", {}).get("planned_target_count", 0),
             "sampled_target_count": summary.get("sampling_coverage", {}).get("sampled_target_count", 0),
             "unplanned_source_count": summary.get("sampling_coverage", {}).get("unplanned_source_count", 0),
+            "explicit_sampling_receipt_count": summary.get("sampling_coverage", {}).get("explicit_sampling_receipt_count", 0),
+            "valid_explicit_sampling_receipt_count": summary.get("sampling_coverage", {}).get("valid_explicit_sampling_receipt_count", 0),
+            "invalid_explicit_sampling_receipt_count": summary.get("sampling_coverage", {}).get("invalid_explicit_sampling_receipt_count", 0),
+            "sampled_target_missing_explicit_receipt_count": summary.get("sampling_coverage", {}).get("sampled_target_missing_explicit_receipt_count", 0),
         },
         "executor_workers": summary.get("executor_workers"),
         "executor_actual_workers": summary.get("executor_actual_workers"),
@@ -1992,6 +2117,11 @@ def write_loop_markdown(output_dir: Path, loop_summary: dict[str, Any]) -> None:
             f"  - sampling coverage: {coverage.get('sampled_target_count', 0)}/"
             f"{coverage.get('planned_target_count', 0)} planned targets; "
             f"{coverage.get('unplanned_source_count', 0)} unplanned sources"
+        )
+        lines.append(
+            f"  - explicit receipts: {coverage.get('valid_explicit_sampling_receipt_count', 0)} valid; "
+            f"{coverage.get('invalid_explicit_sampling_receipt_count', 0)} invalid; "
+            f"{coverage.get('sampled_target_missing_explicit_receipt_count', 0)} matched targets missing receipts"
         )
         iteration_gate = record.get("review_gate", {})
         lines.append(f"  - review gate: {iteration_gate.get('status', 'unknown')}")
