@@ -455,6 +455,24 @@ def rel_output_path(output_dir: Path, path: Path) -> str:
     return safe_relpath(output_dir, path)
 
 
+def agent_output_paths(output_dir: Path, assignment: dict[str, Any]) -> dict[str, Path]:
+    slug = slugify(assignment["persona_id"])
+    agent_dir = output_dir / "agents"
+    return {
+        "assignment": agent_dir / f"{slug}.assignment.json",
+        "prompt": agent_dir / f"{slug}.prompt.md",
+        "result": agent_dir / f"{slug}.result.json",
+        "stdout": agent_dir / f"{slug}.stdout.txt",
+        "stderr": agent_dir / f"{slug}.stderr.txt",
+        "blog": output_dir / "blogs" / f"{slug}.md",
+    }
+
+
+def agent_rel_paths(output_dir: Path, assignment: dict[str, Any]) -> dict[str, str]:
+    paths = agent_output_paths(output_dir, assignment)
+    return {name: rel_output_path(output_dir, path) for name, path in paths.items()}
+
+
 def stringify_process_output(value: str | bytes | None) -> str:
     if value is None:
         return ""
@@ -478,6 +496,130 @@ def render_executor_prompt(assignment: dict[str, Any]) -> str:
         "Do not execute remote model code.",
         "",
     ])
+
+
+def write_subagent_handoffs(
+    output_dir: Path,
+    assignments: list[dict[str, Any]],
+    planner_receipt: dict[str, Any],
+    run_id: str,
+    objective: str,
+    iteration: int,
+    iteration_count: int,
+    execution_mode: str,
+    executor_command: str | None = None,
+) -> dict[str, Any]:
+    agent_dir = output_dir / "agents"
+    agent_dir.mkdir(parents=True, exist_ok=True)
+    agents = []
+    for index, assignment in enumerate(assignments):
+        paths = agent_output_paths(output_dir, assignment)
+        rel_paths = agent_rel_paths(output_dir, assignment)
+        paths["prompt"].write_text(render_executor_prompt(assignment), encoding="utf-8")
+        handoff = {
+            "assignment_index": index,
+            "persona_id": assignment["persona_id"],
+            "title": assignment["title"],
+            "source_lanes": assignment.get("source_lanes", []),
+            "assignment_path": rel_paths["assignment"],
+            "prompt_path": rel_paths["prompt"],
+            "result_path": rel_paths["result"],
+            "blog_path": rel_paths["blog"],
+            "execution_kind": execution_mode,
+            "execution_state": assignment.get("execution", {}).get("state", "scaffolded_not_run"),
+            "review_only": True,
+        }
+        assignment["handoff"] = handoff
+        packet = {
+            "schema_version": 1,
+            "run_id": run_id,
+            "objective": objective,
+            "iteration": iteration,
+            "iteration_count": iteration_count,
+            "review_only": True,
+            "persona_id": assignment["persona_id"],
+            "title": assignment["title"],
+            "mission": assignment.get("mission", ""),
+            "source_lanes": assignment.get("source_lanes", []),
+            "sample_plan": assignment.get("sample_plan", []),
+            "planning": assignment.get("planning", {}),
+            "policy": assignment.get("policy", {}),
+            "prompt": assignment.get("prompt", ""),
+            "paths": {
+                "assignment": rel_paths["assignment"],
+                "prompt": rel_paths["prompt"],
+                "result": rel_paths["result"],
+                "blog": rel_paths["blog"],
+            },
+            "execution": assignment.get("execution", {}),
+            "result_contract": {
+                "path": rel_paths["result"],
+                "format": "json",
+                "required_top_level_fields": ["persona_id", "decision_notes", "findings"],
+                "finding_required_fields": [
+                    "id",
+                    "title",
+                    "summary",
+                    "source_lane",
+                    "sources",
+                    "decision",
+                    "evidence_level",
+                    "validation_gate",
+                    "affects",
+                    "caveats",
+                    "required_next_validation",
+                ],
+            },
+            "blog_contract": {
+                "path": rel_paths["blog"],
+                "sections": [
+                    "Assignment",
+                    "Planned sampling",
+                    "Sources sampled",
+                    "Sampling coverage",
+                    "Candidate findings",
+                    "Decision notes",
+                    "Open validation",
+                ],
+            },
+            "constraints": [
+                "Review-only: do not modify recommendation assets.",
+                "Do not execute remote model code.",
+                "Sample planned targets first and explain substitutions.",
+                "Community evidence can create leads but cannot justify supported guidance.",
+            ],
+            "environment": {
+                "MLX_RESEARCH_PERSONA_ID": assignment["persona_id"],
+                "MLX_RESEARCH_ASSIGNMENT_PATH": rel_paths["assignment"],
+                "MLX_RESEARCH_PROMPT_PATH": rel_paths["prompt"],
+                "MLX_RESEARCH_RESULT_PATH": rel_paths["result"],
+                "MLX_RESEARCH_BLOG_PATH": rel_paths["blog"],
+                "MLX_RESEARCH_REVIEW_ONLY": "1",
+            },
+        }
+        dump_json(packet, paths["assignment"])
+        agents.append(handoff)
+    manifest = {
+        "schema_version": 1,
+        "run_id": run_id,
+        "objective": objective,
+        "generated_at": utc_now(),
+        "iteration": iteration,
+        "iteration_count": iteration_count,
+        "review_only": True,
+        "execution_mode": execution_mode,
+        "executor_command": executor_command,
+        "agent_count": len(agents),
+        "assignment_planner": planner_receipt,
+        "agents": agents,
+        "instructions": [
+            "Dispatch one review-only subagent per listed assignment.",
+            "Each subagent should read its assignment packet and prompt, then write the result JSON path.",
+            "Do not execute remote model code or modify recommendation assets during research.",
+        ],
+    }
+    dump_json(manifest, output_dir / "subagents.json")
+    return manifest
 
 
 def load_executor_result(result_path: Path, persona_id: str) -> dict[str, Any]:
@@ -518,11 +660,13 @@ def execute_assignments(
 
     def execute_one(index: int, assignment: dict[str, Any]) -> tuple[int, dict[str, Any] | None, dict[str, Any], str | None]:
         persona_id = assignment["persona_id"]
-        slug = slugify(persona_id)
-        prompt_path = agent_dir / f"{slug}.prompt.md"
-        result_path = agent_dir / f"{slug}.result.json"
-        stdout_path = agent_dir / f"{slug}.stdout.txt"
-        stderr_path = agent_dir / f"{slug}.stderr.txt"
+        paths = agent_output_paths(output_dir, assignment)
+        assignment_path = paths["assignment"]
+        prompt_path = paths["prompt"]
+        result_path = paths["result"]
+        stdout_path = paths["stdout"]
+        stderr_path = paths["stderr"]
+        blog_path = paths["blog"]
         prompt_path.write_text(render_executor_prompt(assignment), encoding="utf-8")
 
         started_at = utc_now()
@@ -538,8 +682,10 @@ def execute_assignments(
                 env={
                     **os.environ,
                     "MLX_RESEARCH_PERSONA_ID": persona_id,
+                    "MLX_RESEARCH_ASSIGNMENT_PATH": str(assignment_path),
                     "MLX_RESEARCH_PROMPT_PATH": str(prompt_path),
                     "MLX_RESEARCH_RESULT_PATH": str(result_path),
+                    "MLX_RESEARCH_BLOG_PATH": str(blog_path),
                     "MLX_RESEARCH_RUN_ID": run_id,
                     "MLX_RESEARCH_OUTPUT_DIR": str(output_dir),
                     "MLX_RESEARCH_REVIEW_ONLY": "1",
@@ -578,7 +724,9 @@ def execute_assignments(
             "assignment_index": index,
             "executor_workers": workers,
             "executor_actual_workers": actual_workers,
+            "assignment_path": rel_output_path(output_dir, assignment_path),
             "prompt_path": rel_output_path(output_dir, prompt_path),
+            "blog_path": rel_output_path(output_dir, blog_path),
             "log_path": rel_output_path(output_dir, stdout_path),
             "stdout_path": rel_output_path(output_dir, stdout_path),
             "stderr_path": rel_output_path(output_dir, stderr_path),
@@ -608,7 +756,9 @@ def execute_assignments(
                     results.append(future.result())
                 except OSError as exc:
                     index = future_to_index[future]
-                    persona_id = assignments[index]["persona_id"]
+                    assignment = assignments[index]
+                    persona_id = assignment["persona_id"]
+                    rel_paths = agent_rel_paths(output_dir, assignment)
                     results.append((index, None, {
                         "kind": "local-executor",
                         "state": "executor_failed",
@@ -616,6 +766,10 @@ def execute_assignments(
                         "assignment_index": index,
                         "executor_workers": workers,
                         "executor_actual_workers": actual_workers,
+                        "assignment_path": rel_paths["assignment"],
+                        "prompt_path": rel_paths["prompt"],
+                        "blog_path": rel_paths["blog"],
+                        "result_path": rel_paths["result"],
                         "failure_reason": str(exc),
                     }, f"{persona_id}: {exc}"))
 
@@ -1237,6 +1391,23 @@ def run_iteration(
         gap_hints,
         args.assignment_mode,
     )
+    if args.executor_command:
+        execution_mode = "local-executor"
+    elif args.offline_fixture:
+        execution_mode = "offline-fixture"
+    else:
+        execution_mode = "offline-scaffold"
+    write_subagent_handoffs(
+        output_dir,
+        assignments,
+        planner_receipt,
+        run_id,
+        args.objective,
+        iteration,
+        iteration_count,
+        execution_mode,
+        args.executor_command,
+    )
     executions = None
     if args.executor_command:
         fixture, executions = execute_assignments(
@@ -1271,6 +1442,17 @@ def run_iteration(
         summary["executor_command"] = args.executor_command
         summary["executor_workers"] = args.executor_workers
         summary["executor_actual_workers"] = fixture.get("executor_actual_workers", args.executor_workers)
+    summary["subagent_dispatch"] = write_subagent_handoffs(
+        output_dir,
+        assignments,
+        planner_receipt,
+        run_id,
+        args.objective,
+        iteration,
+        iteration_count,
+        execution_mode,
+        args.executor_command,
+    )
     dump_json({
         "schema_version": 1,
         "run_id": run_id,

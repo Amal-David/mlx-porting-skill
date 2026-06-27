@@ -84,6 +84,13 @@ returned findings. This proves both intended breadth and actual sampled
 coverage, even when a run is only scaffolded and no agent has returned findings
 yet.
 
+Every run also writes a root `subagents.json` dispatch manifest plus per-agent
+packets under `agents/*.assignment.json` and `agents/*.prompt.md`. These files
+are the stable handoff surface for a human operator or external orchestrator to
+spawn one researcher per selected persona. Each packet includes the mission,
+sample plan, expected result JSON path, blog path, result contract, and
+review-only constraints so workers do not need to scrape `assignments.json`.
+
 When a loop is intended to feed skill updates, add an explicit review gate:
 `--min-sampled-targets`, `--min-non-github-lanes`, and repeated
 `--require-source-lane` options record the minimum evidence expected before the
@@ -232,8 +239,10 @@ Executor mode is opt-in and mutually exclusive with `--offline-fixture`. The
 command receives these environment variables:
 
 - `MLX_RESEARCH_PERSONA_ID`;
+- `MLX_RESEARCH_ASSIGNMENT_PATH`;
 - `MLX_RESEARCH_PROMPT_PATH`;
 - `MLX_RESEARCH_RESULT_PATH`;
+- `MLX_RESEARCH_BLOG_PATH`;
 - `MLX_RESEARCH_RUN_ID`;
 - `MLX_RESEARCH_OUTPUT_DIR`;
 - `MLX_RESEARCH_REVIEW_ONLY=1`.
