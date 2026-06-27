@@ -30,6 +30,17 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--execution-timeout", type=float, default=120.0)
     parser.add_argument("--skip-ingest", action="store_true", help="Run agents but do not invoke ingest commands")
     parser.add_argument("--dry-run", action="store_true", help="Write a run plan without executing agents or ingest")
+    parser.add_argument(
+        "--follow-next-wave-scaffold",
+        action="store_true",
+        help="After successful ingest, run next_wave_scaffold commands and continue generated waves",
+    )
+    parser.add_argument(
+        "--max-followed-waves",
+        type=int,
+        default=8,
+        help="Maximum generated follow-up waves to run when following next_wave_scaffold",
+    )
     parser.add_argument("--output", help="Receipt path; defaults to <campaign-dir>/campaign-run.json")
     return parser.parse_args()
 
@@ -69,6 +80,15 @@ def parse_command(value: str | None, flag: str) -> list[str]:
     return parts
 
 
+def command_arg_value(command: list[str], flag: str) -> str | None:
+    if flag not in command:
+        return None
+    index = command.index(flag)
+    if index + 1 >= len(command):
+        raise SkillError(f"{flag} requires a value")
+    return command[index + 1]
+
+
 def load_campaign(path: Path) -> dict[str, Any]:
     data = load_structured(path)
     if not isinstance(data, dict):
@@ -79,6 +99,48 @@ def load_campaign(path: Path) -> dict[str, Any]:
     if not isinstance(waves, list) or not waves:
         raise SkillError("campaign receipt must contain at least one wave")
     return data
+
+
+def validate_scaffold_command(command: Any, allowed_root: Path) -> tuple[list[str], Path]:
+    if not isinstance(command, list) or not all(isinstance(part, str) for part in command):
+        raise SkillError("next_wave_scaffold.command_args must be a string list")
+    if len(command) < 2:
+        raise SkillError("next_wave_scaffold.command_args is too short")
+    executable = Path(command[0]).name
+    if executable not in {"python", "python3"} and Path(command[0]).resolve() != Path(sys.executable).resolve():
+        raise SkillError("next_wave_scaffold must use a local Python executable")
+    script = command[1]
+    script_path = Path(script)
+    if script_path.is_absolute():
+        try:
+            script_path.resolve().relative_to(SCRIPT_DIR.resolve())
+        except ValueError as exc:
+            raise SkillError("next_wave_scaffold must run scripts/research_loop.py") from exc
+        if script_path.resolve() != (SCRIPT_DIR / "research_loop.py").resolve():
+            raise SkillError("next_wave_scaffold must run scripts/research_loop.py")
+    elif script.replace("\\", "/") != "scripts/research_loop.py":
+        raise SkillError("next_wave_scaffold must run scripts/research_loop.py")
+    disallowed = {
+        "--executor-command",
+        "--ingest-subagent-results",
+        "--offline-fixture",
+    }
+    present = sorted(flag for flag in disallowed if flag in command)
+    if present:
+        raise SkillError(f"next_wave_scaffold command cannot include {', '.join(present)}")
+    output_value = command_arg_value(command, "--output-dir")
+    if not output_value:
+        raise SkillError("next_wave_scaffold command must include --output-dir")
+    output_dir = Path(output_value)
+    if not output_dir.is_absolute():
+        output_dir = (SKILL_ROOT / output_dir).resolve()
+    else:
+        output_dir = output_dir.resolve()
+    try:
+        output_dir.relative_to(allowed_root.resolve())
+    except ValueError as exc:
+        raise SkillError(f"next_wave_scaffold output escapes allowed campaign run root: {output_dir}") from exc
+    return command, output_dir
 
 
 def run_log_path(log_dir: Path, wave: dict[str, Any], suffix: str, extension: str) -> Path:
@@ -313,6 +375,128 @@ def run_ingest(
     return record, failure_reason
 
 
+def refreshed_wave_after_ingest(root: Path, wave: dict[str, Any]) -> tuple[dict[str, Any] | None, Path | None]:
+    output_root = campaign_path(root, wave.get("output_dir"), "output_dir")
+    refreshed_campaign_path = output_root / "campaign.json"
+    if not refreshed_campaign_path.exists():
+        return None, None
+    refreshed = load_campaign(refreshed_campaign_path)
+    run_id = wave.get("run_id")
+    iteration = wave.get("iteration")
+    for candidate in refreshed["waves"]:
+        if run_id and candidate.get("run_id") == run_id:
+            return candidate, refreshed_campaign_path
+        if iteration and candidate.get("iteration") == iteration:
+            return candidate, refreshed_campaign_path
+    return refreshed["waves"][0], refreshed_campaign_path
+
+
+def run_next_wave_scaffold(
+    receipt_root: Path,
+    allowed_root: Path,
+    current_root: Path,
+    wave: dict[str, Any],
+    timeout: float,
+    dry_run: bool,
+    skip_ingest: bool,
+    cap_reached: bool,
+    log_dir: Path,
+) -> tuple[dict[str, Any] | None, list[dict[str, Any]], str | None]:
+    refreshed_wave, refreshed_campaign_path = refreshed_wave_after_ingest(current_root, wave)
+    scaffold_source = refreshed_wave or wave
+    scaffold = scaffold_source.get("next_wave_scaffold") if isinstance(scaffold_source, dict) else None
+    if not scaffold:
+        return None, [], None
+    command, output_dir = validate_scaffold_command(scaffold.get("command_args"), allowed_root)
+    record: dict[str, Any] = {
+        "state": "not_started",
+        "command_args": command,
+        "source": "refreshed_campaign" if refreshed_wave else "loaded_campaign",
+        "source_campaign_path": (
+            safe_relpath(receipt_root, refreshed_campaign_path)
+            if refreshed_campaign_path
+            else None
+        ),
+        "output_dir": safe_relpath(receipt_root, output_dir),
+    }
+    if cap_reached:
+        record["state"] = "skipped"
+        record["skip_reason"] = "--max-followed-waves reached"
+        return record, [], None
+    if dry_run:
+        record["state"] = "dry_run"
+        return record, [], None
+    if skip_ingest:
+        record["state"] = "skipped"
+        record["skip_reason"] = "ingest was skipped; next-wave scaffolds require completed ingest"
+        return record, [], None
+
+    stdout_path = run_log_path(log_dir, wave, "next-wave-scaffold", "stdout.txt")
+    stderr_path = run_log_path(log_dir, wave, "next-wave-scaffold", "stderr.txt")
+    log_dir.mkdir(parents=True, exist_ok=True)
+    started_at = utc_now()
+    exit_code: int | None = None
+    timed_out = False
+    stdout = ""
+    stderr = ""
+    failure_reason = None
+    try:
+        completed = subprocess.run(
+            command,
+            cwd=SKILL_ROOT,
+            env={**os.environ, "MLX_RESEARCH_REVIEW_ONLY": "1"},
+            capture_output=True,
+            text=True,
+            timeout=timeout,
+        )
+        exit_code = completed.returncode
+        stdout = stringify_process_output(completed.stdout)
+        stderr = stringify_process_output(completed.stderr)
+    except subprocess.TimeoutExpired as exc:
+        timed_out = True
+        stdout = stringify_process_output(exc.stdout)
+        stderr = stringify_process_output(exc.stderr)
+        failure_reason = f"next-wave scaffold command timed out after {timeout:g}s"
+    except OSError as exc:
+        failure_reason = str(exc)
+
+    stdout_path.write_text(stdout, encoding="utf-8")
+    stderr_path.write_text(stderr, encoding="utf-8")
+    if failure_reason is None and exit_code != 0:
+        failure_reason = f"next-wave scaffold command exited with {exit_code}"
+    generated_campaign_path = output_dir / "campaign.json"
+    if failure_reason is None and not generated_campaign_path.exists():
+        failure_reason = f"next-wave scaffold did not write {generated_campaign_path}"
+
+    record.update({
+        "state": "scaffold_completed" if failure_reason is None else "scaffold_failed",
+        "stdout_path": safe_relpath(receipt_root, stdout_path),
+        "stderr_path": safe_relpath(receipt_root, stderr_path),
+        "exit_code": exit_code,
+        "timed_out": timed_out,
+        "started_at": started_at,
+        "finished_at": utc_now(),
+        "generated_campaign_path": safe_relpath(receipt_root, generated_campaign_path),
+        "generated_campaign_exists": generated_campaign_path.exists(),
+    })
+    if failure_reason:
+        record["failure_reason"] = failure_reason
+        return record, [], failure_reason
+    generated_campaign = load_campaign(generated_campaign_path)
+    record["generated_wave_count"] = len(generated_campaign["waves"])
+    generated_items = [
+        {
+            "root": output_dir,
+            "campaign_receipt": generated_campaign_path,
+            "campaign": generated_campaign,
+            "wave": generated_wave,
+            "source": "next_wave_scaffold",
+        }
+        for generated_wave in generated_campaign["waves"]
+    ]
+    return record, generated_items, None
+
+
 def run_wave(
     root: Path,
     campaign_receipt: Path,
@@ -354,27 +538,34 @@ def build_receipt(args: argparse.Namespace) -> tuple[dict[str, Any], list[str]]:
         raise SkillError("--workers must be positive")
     if args.execution_timeout <= 0:
         raise SkillError("--execution-timeout must be positive")
+    if args.max_followed_waves <= 0:
+        raise SkillError("--max-followed-waves must be positive")
     if not args.dry_run and not args.agent_command:
         raise SkillError("--agent-command is required unless --dry-run is set")
     command = parse_command(args.agent_command, "--agent-command")
     campaign_receipt = Path(args.campaign).resolve()
     root = campaign_receipt.parent
+    receipt_root = root.parent if args.follow_next_wave_scaffold else root
+    allowed_scaffold_root = receipt_root
     campaign = load_campaign(campaign_receipt)
-    log_dir = root / "campaign-run-logs"
     receipt: dict[str, Any] = {
         "schema_version": 1,
-        "campaign_path": safe_relpath(root, campaign_receipt),
+        "campaign_path": safe_relpath(receipt_root, campaign_receipt),
         "campaign_run_id": campaign.get("run_id"),
         "objective": campaign.get("objective"),
         "generated_at": utc_now(),
         "review_only": True,
         "dry_run": bool(args.dry_run),
         "skip_ingest": bool(args.skip_ingest),
+        "follow_next_wave_scaffold": bool(args.follow_next_wave_scaffold),
+        "max_followed_waves": args.max_followed_waves,
+        "followed_scaffold_count": 0,
         "agent_command": args.agent_command,
         "workers_requested": args.workers,
         "execution_timeout": args.execution_timeout,
         "state": "running",
         "waves": [],
+        "scaffold_followups": [],
         "instructions": [
             "This receipt records review-only campaign execution.",
             "Promote findings only through explicit source, validation, tests, and manifest updates.",
@@ -382,11 +573,27 @@ def build_receipt(args: argparse.Namespace) -> tuple[dict[str, Any], list[str]]:
         ],
     }
     all_failures: list[str] = []
-    for wave in campaign["waves"]:
+    pending = [
+        {
+            "root": root,
+            "campaign_receipt": campaign_receipt,
+            "campaign": campaign,
+            "wave": wave,
+            "source": "initial_campaign",
+        }
+        for wave in campaign["waves"]
+    ]
+    while pending:
+        item = pending.pop(0)
+        wave_root = item["root"]
+        wave_campaign_receipt = item["campaign_receipt"]
+        wave_campaign = item["campaign"]
+        wave = item["wave"]
+        log_dir = wave_root / "campaign-run-logs"
         wave_record, failures = run_wave(
-            root,
-            campaign_receipt,
-            campaign,
+            wave_root,
+            wave_campaign_receipt,
+            wave_campaign,
             wave,
             command,
             args.agent_command or "",
@@ -396,10 +603,37 @@ def build_receipt(args: argparse.Namespace) -> tuple[dict[str, Any], list[str]]:
             args.dry_run,
             log_dir,
         )
+        wave_record["campaign_path"] = safe_relpath(receipt_root, wave_campaign_receipt)
+        wave_record["campaign_root"] = safe_relpath(receipt_root, wave_root)
+        wave_record["source"] = item["source"]
         receipt["waves"].append(wave_record)
         all_failures.extend(failures)
         if failures:
             break
+        if not args.follow_next_wave_scaffold:
+            continue
+        followup, generated_items, scaffold_failure = run_next_wave_scaffold(
+            receipt_root,
+            allowed_scaffold_root,
+            wave_root,
+            wave,
+            args.execution_timeout,
+            args.dry_run,
+            args.skip_ingest,
+            receipt["followed_scaffold_count"] >= args.max_followed_waves,
+            log_dir,
+        )
+        if followup:
+            followup["wave_iteration"] = wave.get("iteration")
+            followup["wave_run_id"] = wave.get("run_id")
+            wave_record["next_wave_scaffold"] = followup
+            receipt["scaffold_followups"].append(followup)
+        if scaffold_failure:
+            all_failures.append(f"wave {wave.get('iteration', 1)} scaffold: {scaffold_failure}")
+            break
+        if generated_items:
+            receipt["followed_scaffold_count"] += 1
+            pending.extend(generated_items)
     receipt["state"] = "dry_run" if args.dry_run else ("failed" if all_failures else "completed")
     receipt["failure_count"] = len(all_failures)
     receipt["failures"] = all_failures
@@ -415,16 +649,30 @@ def write_markdown(path: Path, receipt: dict[str, Any]) -> None:
         f"Review only: {receipt['review_only']}",
         f"Dry run: {receipt['dry_run']}",
         f"Skip ingest: {receipt['skip_ingest']}",
+        f"Follow next-wave scaffolds: {receipt.get('follow_next_wave_scaffold', False)}",
+        f"Followed scaffolds: {receipt.get('followed_scaffold_count', 0)}",
         f"Failures: {receipt['failure_count']}",
         "",
         "## Waves",
     ]
     for wave in receipt.get("waves", []):
         lines.append(f"- Wave {wave.get('iteration')}: {wave.get('state')} ({wave.get('agent_count')} agents)")
+        lines.append(f"  - campaign: {wave.get('campaign_path')}")
         lines.append(f"  - ingest: {wave.get('ingest', {}).get('state', 'unknown')}")
+        if wave.get("next_wave_scaffold"):
+            followup = wave["next_wave_scaffold"]
+            lines.append(
+                f"  - next-wave scaffold: {followup.get('state')} -> {followup.get('generated_campaign_path') or followup.get('output_dir')}"
+            )
         for agent in wave.get("agents", []):
             lines.append(
                 f"  - {agent.get('persona_id')}: {agent.get('state')} -> {agent.get('result_path')}"
+            )
+    if receipt.get("scaffold_followups"):
+        lines.extend(["", "## Scaffold Followups"])
+        for followup in receipt["scaffold_followups"]:
+            lines.append(
+                f"- {followup.get('wave_run_id') or followup.get('wave_iteration')}: {followup.get('state')} -> {followup.get('generated_campaign_path') or followup.get('output_dir')}"
             )
     if receipt.get("failures"):
         lines.extend(["", "## Failures"])

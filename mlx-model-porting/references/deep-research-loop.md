@@ -127,7 +127,13 @@ When the dispatcher is an explicit local command, use
 The runner starts one process per listed agent up to `--workers`, passes the
 standard `MLX_RESEARCH_*` environment, preserves stdout/stderr/exit-code logs
 under `campaign-run-logs/`, invokes the recorded ingest command by default,
-and writes `campaign-run.json` plus `campaign-run.md`.
+and writes `campaign-run.json` plus `campaign-run.md`. Add
+`--follow-next-wave-scaffold` when a local campaign should turn post-ingest
+`next_wave_scaffold` receipts into generated follow-up waves. The runner
+validates that the scaffold command is a local `scripts/research_loop.py`
+scaffold, rejects executor or ingest commands inside the scaffold, records each
+follow-up in the campaign-run receipt, and stops at `--max-followed-waves` or
+when a wave has no next scaffold.
 
 When a loop is intended to feed skill updates, add an explicit review gate:
 `--min-sampled-targets`, `--min-non-github-lanes`, and repeated
@@ -338,6 +344,18 @@ python3 scripts/run_research_campaign.py \
   --agent-command "python3 local_researcher.py" \
   --workers 6 \
   --execution-timeout 300
+```
+
+Follow adaptive next-wave scaffolds after each successful ingest:
+
+```bash
+python3 scripts/run_research_campaign.py \
+  --campaign research-runs/manual-dispatch/iterations/01/campaign.json \
+  --agent-command "python3 local_researcher.py" \
+  --workers 6 \
+  --execution-timeout 300 \
+  --follow-next-wave-scaffold \
+  --max-followed-waves 4
 ```
 
 The runner does not fetch network resources by itself and does not execute

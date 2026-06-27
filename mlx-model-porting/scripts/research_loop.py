@@ -702,6 +702,15 @@ def ingest_command_args_for_wave(summary: dict[str, Any], output_dir: Path) -> l
     ]
     for hint in summary.get("gap_hints", []):
         command_args.extend(["--gap-hint", str(hint)])
+    iteration = int(summary.get("iteration", 1))
+    iteration_count = int(summary.get("iteration_count", 1))
+    if iteration_count > 1:
+        command_args.extend([
+            "--iteration-index",
+            str(iteration),
+            "--iteration-count-total",
+            str(iteration_count),
+        ])
     append_review_gate_command_args(
         command_args,
         summary.get("review_gate", {}).get("requirements", {}),

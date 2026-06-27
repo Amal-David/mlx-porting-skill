@@ -1189,6 +1189,71 @@ class ToolingTests(unittest.TestCase):
             self.assertEqual(synthesis["execution_counts"]["subagent_result_ingested"], 2)
             self.assertIn("Research Campaign Run runner-campaign-loop", (output_dir / "campaign-run.md").read_text())
 
+    def test_research_campaign_runner_follows_next_wave_scaffold(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            campaign_parent = Path(tmp) / "adaptive-campaign"
+            first_wave_dir = campaign_parent / "01"
+            fake_executor = FIXTURES / "research_loop" / "fake_executor.py"
+            run_script(
+                "research_loop.py",
+                "--run-id", "adaptive-runner-loop-i01",
+                "--objective", "Run adaptive local campaign waves from observed gaps",
+                "--agent-count", 2,
+                "--iteration-index", 1,
+                "--iteration-count-total", 2,
+                "--min-sampled-targets", 1,
+                "--output-dir", first_wave_dir,
+            )
+            initial_campaign = json.loads((first_wave_dir / "campaign.json").read_text())
+            initial_wave = initial_campaign["waves"][0]
+            self.assertIn("next_wave_scaffold", initial_wave)
+            ingest_command = initial_wave["ingest"]["command_args"]
+            self.assertEqual(ingest_command[ingest_command.index("--iteration-index") + 1], "1")
+            self.assertEqual(ingest_command[ingest_command.index("--iteration-count-total") + 1], "2")
+
+            run_script(
+                "run_research_campaign.py",
+                "--campaign", first_wave_dir / "campaign.json",
+                "--agent-command", f"{sys.executable} {fake_executor}",
+                "--workers", 2,
+                "--execution-timeout", 10,
+                "--follow-next-wave-scaffold",
+                "--max-followed-waves", 2,
+            )
+            receipt = json.loads((first_wave_dir / "campaign-run.json").read_text())
+            self.assertEqual(receipt["state"], "completed")
+            self.assertTrue(receipt["follow_next_wave_scaffold"])
+            self.assertEqual(receipt["followed_scaffold_count"], 1)
+            self.assertEqual(receipt["failure_count"], 0)
+            self.assertEqual(len(receipt["waves"]), 2)
+            first_wave, second_wave = receipt["waves"]
+            self.assertEqual(first_wave["campaign_path"], "01/campaign.json")
+            self.assertEqual(first_wave["next_wave_scaffold"]["state"], "scaffold_completed")
+            self.assertEqual(first_wave["next_wave_scaffold"]["generated_campaign_path"], "02/campaign.json")
+            self.assertEqual(first_wave["next_wave_scaffold"]["source"], "refreshed_campaign")
+            self.assertEqual(second_wave["source"], "next_wave_scaffold")
+            self.assertEqual(second_wave["campaign_path"], "02/campaign.json")
+            self.assertEqual(second_wave["campaign_root"], "02")
+            self.assertEqual(second_wave["state"], "wave_completed")
+            self.assertEqual(second_wave["ingest"]["state"], "ingest_completed")
+            second_root = campaign_parent / second_wave["campaign_root"]
+            self.assertTrue((second_root / second_wave["agents"][0]["result_path"]).exists())
+
+            first_synthesis = json.loads((first_wave_dir / "synthesis.json").read_text())
+            second_synthesis = json.loads((campaign_parent / "02" / "synthesis.json").read_text())
+            self.assertEqual(first_synthesis["iteration_count"], 2)
+            self.assertIn("next_wave_scaffold", first_synthesis)
+            self.assertTrue(first_synthesis["ingested_subagent_results"])
+            self.assertEqual(second_synthesis["iteration"], 2)
+            self.assertEqual(second_synthesis["iteration_count"], 2)
+            self.assertTrue(second_synthesis["ingested_subagent_results"])
+            self.assertEqual(second_synthesis["assignment_planner"]["mode"], "dynamic")
+            self.assertNotIn("next_wave_scaffold", second_synthesis)
+            campaign_run_markdown = (first_wave_dir / "campaign-run.md").read_text()
+            self.assertIn("Follow next-wave scaffolds: True", campaign_run_markdown)
+            self.assertIn("Scaffold Followups", campaign_run_markdown)
+            self.assertIn("scaffold_completed", campaign_run_markdown)
+
     def test_research_campaign_runner_fails_loud_and_preserves_worker_logs(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             output_dir = Path(tmp) / "runner-fail-campaign"
