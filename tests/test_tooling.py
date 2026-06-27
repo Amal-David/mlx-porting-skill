@@ -1338,6 +1338,102 @@ class ToolingTests(unittest.TestCase):
             self.assertIn("Candidate findings", blog_text)
             self.assertIn("official-custom-metal-validation", blog_text)
 
+    def test_research_loop_builds_promotion_review_ledger(self) -> None:
+        with tempfile.TemporaryDirectory(dir=ROOT) as tmp:
+            tmp_path = Path(tmp)
+            fixture = tmp_path / "promotion_ledger.json"
+            source = {
+                "title": "MLX documentation index",
+                "url": "https://ml-explore.github.io/mlx/build/html/index.html",
+                "accessed": "2026-06-27",
+                "kind": "official-doc",
+            }
+            fixture.write_text(json.dumps({
+                "agents": [
+                    {
+                        "persona_id": "official-docs-cartographer",
+                        "findings": [
+                            {
+                                "id": "adopted-complete",
+                                "title": "Complete adopted finding",
+                                "summary": "This finding has enough metadata to enter promotion review.",
+                                "source_lane": "official_docs",
+                                "sources": [source],
+                                "decision": "adopted",
+                                "evidence_level": "deterministic-test-fixture",
+                                "validation_gate": "Run a local parity fixture before editing the skill.",
+                                "affects": ["references/deep-research-loop.md"],
+                                "caveats": ["The test fixture proves ledger routing only."],
+                                "required_next_validation": "Run the targeted parity fixture and update manifests.",
+                            },
+                            {
+                                "id": "adopted-thin",
+                                "title": "Thin adopted finding",
+                                "summary": "This adopted finding lacks promotion metadata and must be held.",
+                                "source_lane": "official_docs",
+                                "sources": [source],
+                                "decision": "adopted",
+                                "evidence_level": "deterministic-test-fixture",
+                                "validation_gate": "Run a local parity fixture before editing the skill.",
+                                "affects": ["references/deep-research-loop.md"],
+                            },
+                            {
+                                "id": "needs-validation-backlog",
+                                "title": "Needs validation finding",
+                                "summary": "This finding belongs in the validation backlog.",
+                                "source_lane": "official_docs",
+                                "sources": [source],
+                                "decision": "needs-validation",
+                                "evidence_level": "deterministic-test-fixture",
+                                "validation_gate": "Add a reproducible MLX validation path.",
+                                "affects": ["references/deep-research-loop.md"],
+                                "caveats": ["No local path yet."],
+                                "required_next_validation": "Build the missing fixture.",
+                            },
+                            {
+                                "id": "rejected-finding",
+                                "title": "Rejected finding",
+                                "summary": "This finding must remain out of promotion review.",
+                                "source_lane": "official_docs",
+                                "sources": [source],
+                                "decision": "rejected",
+                                "evidence_level": "deterministic-test-fixture",
+                                "validation_gate": "No validation; rejected for this campaign.",
+                                "affects": ["references/deep-research-loop.md"],
+                                "caveats": ["Rejected fixture row."],
+                                "required_next_validation": "None.",
+                            },
+                        ],
+                    }
+                ],
+            }), encoding="utf-8")
+            output_dir = tmp_path / "promotion-ledger-run"
+            run_script(
+                "research_loop.py",
+                "--run-id", "promotion-ledger-loop",
+                "--agent-count", 1,
+                "--offline-fixture", fixture,
+                "--output-dir", output_dir,
+            )
+            synthesis = json.loads((output_dir / "synthesis.json").read_text())
+            ledger = synthesis["promotion_review"]
+            self.assertEqual(ledger["promotion_ready_count"], 1)
+            self.assertEqual(ledger["promotion_ready"][0]["id"], "adopted-complete")
+            self.assertEqual(ledger["validation_backlog_count"], 2)
+            backlog = {item["id"]: item for item in ledger["validation_backlog"]}
+            self.assertIn("adopted-thin", backlog)
+            self.assertIn("missing required next validation", backlog["adopted-thin"]["promotion_blockers"])
+            self.assertIn("missing rollback or caveat metadata", backlog["adopted-thin"]["promotion_blockers"])
+            self.assertIn("needs-validation-backlog", backlog)
+            self.assertEqual(backlog["needs-validation-backlog"]["promotion_blockers"], ["decision is needs-validation"])
+            self.assertEqual(ledger["rejected_count"], 1)
+            self.assertEqual(ledger["rejected"][0]["id"], "rejected-finding")
+            summary = (output_dir / "synthesis.md").read_text()
+            self.assertIn("## Promotion Review", summary)
+            self.assertIn("adopted-complete", summary)
+            self.assertIn("adopted-thin (adopted)", summary)
+            self.assertIn("rejected-finding", summary)
+
     def test_research_loop_review_gate_fails_loud_after_writing_receipts(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             output_dir = Path(tmp) / "gate-fail-run"

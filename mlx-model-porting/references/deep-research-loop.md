@@ -132,6 +132,14 @@ Add `--require-explicit-sampling-receipts` to fail the review gate when a
 sampled planned target lacks an explicit source receipt or when a returned
 source claims a target outside that assignment's sample plan.
 
+Each `synthesis.json` also includes `promotion_review`, and `synthesis.md`
+renders the same split. This ledger classifies findings as `promotion_ready`,
+`validation_backlog`, or `rejected`. It is review-only: a `promotion_ready`
+entry means the finding has enough provenance and validation metadata to be
+considered for a skill asset or runbook edit, not that the edit has happened.
+An `adopted` finding that lacks required next validation or rollback/caveat
+metadata is held in `validation_backlog` with explicit blockers.
+
 For `--iterations 2` or higher, the harness writes each pass under
 `iterations/NN/` and emits top-level `loop.json` and `loop.md` receipts. Each
 iteration records the gap hints it used and the next hints derived from
@@ -184,6 +192,16 @@ Findings use one of four states:
 An adopted finding must have source provenance, review depth, validation gate,
 rollback or hold condition, and an affected asset/runbook. If any of those are
 missing, keep it `needs-validation` or `held`.
+
+The promotion ledger applies a stricter review surface over returned findings:
+`adopted` findings are promotion-ready only when they include source URL/access
+date, affected asset/runbook, validation gate, required next validation, and a
+rollback or caveat record. `held` and `needs-validation` findings remain
+validation backlog. `rejected` findings stay visible but cannot drive skill
+updates. Broad sweeps such as top-1000 contributor research should use this
+ledger as the handoff from research to implementation, then still update
+assets manually with tests, source validation, manifest checks, and rollback
+conditions.
 
 ## CLI
 

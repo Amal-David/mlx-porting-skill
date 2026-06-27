@@ -1443,6 +1443,114 @@ def build_review_gate(
     }
 
 
+def _has_non_empty(value: Any) -> bool:
+    if isinstance(value, str):
+        return bool(value.strip())
+    if isinstance(value, list):
+        return bool(value)
+    return bool(value)
+
+
+def promotion_blockers(finding: dict[str, Any]) -> list[str]:
+    blockers = []
+    sources = finding.get("sources", [])
+    if not isinstance(sources, list) or not sources:
+        blockers.append("missing source provenance")
+    elif any(not isinstance(source, dict) or not source.get("url") or not source.get("accessed") for source in sources):
+        blockers.append("source provenance lacks url/accessed")
+    if not _has_non_empty(finding.get("affects")):
+        blockers.append("missing affected skill asset or runbook")
+    if not _has_non_empty(finding.get("validation_gate")):
+        blockers.append("missing validation gate")
+    if not _has_non_empty(finding.get("required_next_validation")):
+        blockers.append("missing required next validation")
+    if not (
+        _has_non_empty(finding.get("rollback_condition"))
+        or _has_non_empty(finding.get("rollback_conditions"))
+        or _has_non_empty(finding.get("hold_condition"))
+        or _has_non_empty(finding.get("caveats"))
+    ):
+        blockers.append("missing rollback or caveat metadata")
+    if finding.get("source_lane") == "community_discussions":
+        blockers.append("community-only evidence cannot be promoted")
+    return blockers
+
+
+def promotion_review_entry(
+    finding: dict[str, Any],
+    promotion_status: str,
+    blockers: list[str] | None = None,
+) -> dict[str, Any]:
+    entry = {
+        "id": finding["id"],
+        "title": finding["title"],
+        "summary": finding["summary"],
+        "decision": finding["decision"],
+        "promotion_status": promotion_status,
+        "source_lane": finding["source_lane"],
+        "persona_id": finding.get("persona_id"),
+        "evidence_level": finding.get("evidence_level"),
+        "source_count": len(finding.get("sources", [])),
+        "sources": finding.get("sources", []),
+        "affects": finding.get("affects", []),
+        "validation_gate": finding.get("validation_gate"),
+        "required_next_validation": finding.get("required_next_validation"),
+        "caveats": finding.get("caveats", []),
+        "promotion_blockers": blockers or [],
+    }
+    for optional in ("rollback_condition", "rollback_conditions", "hold_condition"):
+        if optional in finding:
+            entry[optional] = finding[optional]
+    return entry
+
+
+def build_promotion_review(config: dict[str, Any], findings: list[dict[str, Any]]) -> dict[str, Any]:
+    promotion_ready = []
+    validation_backlog = []
+    rejected = []
+    for finding in findings:
+        decision = finding["decision"]
+        if decision == "adopted":
+            blockers = promotion_blockers(finding)
+            if blockers:
+                validation_backlog.append(
+                    promotion_review_entry(finding, "adopted-needs-promotion-metadata", blockers)
+                )
+            else:
+                promotion_ready.append(promotion_review_entry(finding, "promotion-ready"))
+        elif decision in {"held", "needs-validation"}:
+            validation_backlog.append(
+                promotion_review_entry(
+                    finding,
+                    "validation-backlog",
+                    [f"decision is {decision}"],
+                )
+            )
+        elif decision == "rejected":
+            rejected.append(promotion_review_entry(finding, "rejected"))
+    review_policy = config.get("review_policy", {})
+    return {
+        "schema_version": 1,
+        "review_only": True,
+        "auto_modify_recommendations": bool(review_policy.get("auto_modify_recommendations", False)),
+        "auto_promote_sources": bool(review_policy.get("auto_promote_sources", False)),
+        "promotion_ready_count": len(promotion_ready),
+        "validation_backlog_count": len(validation_backlog),
+        "rejected_count": len(rejected),
+        "promotion_ready": promotion_ready,
+        "validation_backlog": validation_backlog,
+        "rejected": rejected,
+        "promotion_ready_requires": [
+            "source URL and access date",
+            "affected skill asset or runbook",
+            "validation gate",
+            "required next validation",
+            "rollback or caveat metadata",
+            "non-community-only evidence",
+        ],
+    }
+
+
 def summarize(
     config: dict[str, Any],
     assignments: list[dict[str, Any]],
@@ -1493,6 +1601,7 @@ def summarize(
         non_github_lanes,
         review_requirements or {},
     )
+    promotion_review = build_promotion_review(config, findings)
     return {
         "schema_version": 1,
         "run_id": run_id,
@@ -1507,6 +1616,7 @@ def summarize(
         "non_github_lanes_covered": non_github_lanes,
         "sampling_coverage": sampling_coverage,
         "review_gate": review_gate,
+        "promotion_review": promotion_review,
         "assignment_planner": planner_receipt,
         **planned_sampling_summary(assignments, config),
         "decision_counts": decision_counts,
@@ -1757,6 +1867,7 @@ def write_blogs(output_dir: Path, assignments: list[dict[str, Any]], fixture: di
 
 def write_markdown_summary(output_dir: Path, summary: dict[str, Any]) -> None:
     review_gate = summary.get("review_gate", {})
+    promotion_review = summary.get("promotion_review", {})
     lines = [
         f"# Research Loop {summary['run_id']}",
         "",
@@ -1800,6 +1911,35 @@ def write_markdown_summary(output_dir: Path, summary: dict[str, Any]) -> None:
     lines.append("- blocked reasons:")
     for reason in review_gate.get("blocked_reasons", []) or ["None"]:
         lines.append(f"  - {reason}")
+    lines.extend([
+        "",
+        "## Promotion Review",
+        "- review-only: true",
+        f"- auto modify recommendations: {str(promotion_review.get('auto_modify_recommendations', False)).lower()}",
+        f"- auto promote sources: {str(promotion_review.get('auto_promote_sources', False)).lower()}",
+        f"- promotion ready: {promotion_review.get('promotion_ready_count', 0)}",
+        f"- validation backlog: {promotion_review.get('validation_backlog_count', 0)}",
+        f"- rejected: {promotion_review.get('rejected_count', 0)}",
+        "",
+        "### Promotion Ready",
+    ])
+    ready_rows = []
+    for finding in promotion_review.get("promotion_ready", []):
+        ready_rows.append(
+            f"{finding['id']}: {finding['title']} - gate: {finding.get('validation_gate') or 'missing'}"
+        )
+    lines.append(markdown_list(ready_rows))
+    lines.extend(["", "### Validation Backlog"])
+    backlog_rows = []
+    for finding in promotion_review.get("validation_backlog", []):
+        blockers = ", ".join(finding.get("promotion_blockers", [])) or "needs review"
+        backlog_rows.append(f"{finding['id']} ({finding['decision']}): {finding['title']} - {blockers}")
+    lines.append(markdown_list(backlog_rows))
+    lines.extend(["", "### Rejected"])
+    rejected_rows = []
+    for finding in promotion_review.get("rejected", []):
+        rejected_rows.append(f"{finding['id']}: {finding['title']} - {finding['summary']}")
+    lines.append(markdown_list(rejected_rows))
     lines.extend(["", "## Blog Receipts"])
     for receipt in summary.get("blog_receipts", []):
         lines.append(
