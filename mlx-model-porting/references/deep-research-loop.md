@@ -32,6 +32,19 @@ status codes, ETags, Last-Modified headers, rate-limit state, the login set,
 matched repositories, inspected snapshots, query errors, and promoted/held
 decisions in `assets/contributor_learnings.json`.
 
+Use the collector when refreshing the contributor source set:
+
+```bash
+python3 scripts/collect_contributors.py \
+  --repo ml-explore/mlx \
+  --requested-count 1000 \
+  --output assets/contributor-refresh.json
+```
+
+The collector is still only a source-selection tool: it follows `Link` headers,
+stores page receipts, and records `anon=true` aggregate counts, but it does not
+screen repositories or promote implementation guidance.
+
 Contributor-owned repositories are source-selection evidence only. Promote a
 learning only when a pinned source path, tests or local validation, affected
 skill surface, validation gate, and rollback condition are recorded. If code or

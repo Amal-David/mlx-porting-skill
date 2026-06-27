@@ -37,12 +37,15 @@
       "id": "top1000-contributor-long-tail-rescreening",
       "priority": "P1",
       "status": "needs-validation",
-      "summary": "The top-1000 contributor sweep requested all ml-explore/mlx contributor pages, refreshed 256 linked contributors and 262 anon=true author buckets, and screened 71 repository matches, but GitHub code-search rate limits interrupted several long-tail queries.",
-      "required_gate": "Refresh contributors by following GitHub Link headers until no rel=\"next\" remains or the explicit cap is reached; record requested count, linked count, anon=true count without raw anonymous identities, status codes, ETags, Last-Modified headers, rate-limit state, repository/code search total_count and incomplete_results, replay missed queries, inspect newly matched repos by architecture/source-format family, and record each result as adopted, held, rejected, or backlog.",
+      "summary": "The top-1000 contributor sweep requested all ml-explore/mlx contributor pages, refreshed 256 linked contributors and 262 anon=true author buckets, and screened 71 repository matches, but GitHub code-search rate limits interrupted several long-tail queries. A paginated collector now has offline receipt tests; live long-tail repository/code-search replay remains open.",
+      "required_gate": "Refresh contributors with `scripts/collect_contributors.py`, following GitHub Link headers until no rel=\"next\" remains or the explicit cap is reached; record requested count, linked count, anon=true count without raw anonymous identities, status codes, ETags, Last-Modified headers, rate-limit state, repository/code search total_count and incomplete_results, replay missed queries, inspect newly matched repos by architecture/source-format family, and record each result as adopted, held, rejected, or backlog.",
       "source": "mlx-model-porting/research-runs/2026-06-27-top1000-contributor-loop/synthesis.json",
       "affected": [
         "assets/contributor_learnings.json",
         "assets/sources.yaml",
+        "references/deep-research-loop.md",
+        "scripts/collect_contributors.py",
+        "tests/test_tooling.py",
         "research-runs/"
       ]
     },

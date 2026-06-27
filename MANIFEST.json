@@ -2,8 +2,8 @@
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
   "version": "0.1.0",
-  "generated_at": "2026-06-27T11:57:32.030704+00:00",
-  "file_count": 181,
+  "generated_at": "2026-06-27T12:06:12.717126+00:00",
+  "file_count": 182,
   "files": [
     {
       "path": ".github/workflows/daily-research.yml",
@@ -62,8 +62,8 @@
     },
     {
       "path": "VALIDATION.md",
-      "size_bytes": 4395,
-      "sha256": "f6f79b38a2b69f0e49d9ad36805c8dd89065c05e31479be41321f0c07741b7ca"
+      "size_bytes": 4607,
+      "sha256": "9299e95bac3dbaaa2833f8422a6881ae706c7eb14cba75ca087770c4651b7ec5"
     },
     {
       "path": "VERSION",
@@ -147,8 +147,8 @@
     },
     {
       "path": "mlx-model-porting/assets/contributor_learnings.json",
-      "size_bytes": 28715,
-      "sha256": "a20b277ddb91aa3977efb50090b8b0f19cd32f4207d28332ca77feae674d4fa5"
+      "size_bytes": 28813,
+      "sha256": "0a6ae2c39810aa1732d6a89a95d3f64e55c9529119cb6ca3bff3a06fd557cd35"
     },
     {
       "path": "mlx-model-porting/assets/optimization_guidance.yaml",
@@ -162,8 +162,8 @@
     },
     {
       "path": "mlx-model-porting/assets/research_backlog.json",
-      "size_bytes": 9218,
-      "sha256": "b2c3ea871514391dc906747c19de4e41d954665cf1cccf157e6f15b30e617983"
+      "size_bytes": 9487,
+      "sha256": "0851b9aa69b2e5db8b0e25b489903b99573ca68196ba7be8facf483e8822157e"
     },
     {
       "path": "mlx-model-porting/assets/research_loop_config.json",
@@ -172,8 +172,8 @@
     },
     {
       "path": "mlx-model-porting/assets/sources.yaml",
-      "size_bytes": 145688,
-      "sha256": "02b8c8fe60b56357862b5e6277d222ffd8da8bf8844cf1f9c1efe6d7603db559"
+      "size_bytes": 145800,
+      "sha256": "56ff4dafd6a73db0240533b571fb861b73be3dd553dd7314d13b02de667ddcf3"
     },
     {
       "path": "mlx-model-porting/assets/techniques.yaml",
@@ -212,8 +212,8 @@
     },
     {
       "path": "mlx-model-porting/references/deep-research-loop.md",
-      "size_bytes": 5928,
-      "sha256": "a5c6f8d31e86633d4416905a5ec6e1d29943019475b1068b2cbdc2476876546c"
+      "size_bytes": 6359,
+      "sha256": "9cf7de312f531c92c7f8e9ee0b0458a05749ba88e66cbed10d5649c35aa6afdd"
     },
     {
       "path": "mlx-model-porting/references/failure-atlas.md",
@@ -494,6 +494,11 @@
       "path": "mlx-model-porting/scripts/benchmark_command.py",
       "size_bytes": 8526,
       "sha256": "82cac8749994f44a2c82993aa38d8ed8d8d4b502e74ec9750ca49ebc26eb5868"
+    },
+    {
+      "path": "mlx-model-porting/scripts/collect_contributors.py",
+      "size_bytes": 12057,
+      "sha256": "dfde904e850c062a1e85509ee8cfa1d20644238593d4067d7604ab08cf146f97"
     },
     {
       "path": "mlx-model-porting/scripts/compare_tensors.py",
@@ -907,8 +912,8 @@
     },
     {
       "path": "tests/test_tooling.py",
-      "size_bytes": 55137,
-      "sha256": "8340e830bd6f5e52820743282d650c5de2f0d71f8821ce3d1ce6e58a73b08322"
+      "size_bytes": 60966,
+      "sha256": "bd30634dd4db657a485ede84b91215bc21ac6e8c83ff6454d5766dbb7f2421f9"
     }
   ]
 }

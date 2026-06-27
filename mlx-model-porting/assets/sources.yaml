@@ -4736,7 +4736,7 @@
       ],
       "review_depth": "screened",
       "snapshot": "2026-06-27",
-      "note": "Used to request the top-1000 contributor source set; GitHub returned 256 contributors across the paginated API."
+      "note": "Used to request the top-1000 contributor source set; GitHub returned 256 contributors across the paginated API. Future refreshes should use scripts/collect_contributors.py so Link headers and receipt metadata are preserved."
     },
     {
       "id": "katlun-grid-sample-source",

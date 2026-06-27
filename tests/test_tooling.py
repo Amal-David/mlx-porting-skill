@@ -826,6 +826,123 @@ class ToolingTests(unittest.TestCase):
             self.assertTrue(any("Do not execute code" in line for line in report["instructions"]))
             self.assertIn("1 repositories, 1 paper candidates", result.stdout)
 
+    def test_contributor_collector_follows_links_caps_and_redacts_anonymous(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_path = Path(tmp)
+            api_base = "https://api.github.test"
+            linked_page_2 = f"{api_base}/repos/ml-explore/mlx/contributors?per_page=2&page=2"
+            anon_page_2 = f"{api_base}/repos/ml-explore/mlx/contributors?per_page=2&page=2&anon=true"
+            fixture = {
+                "linked_pages": [
+                    {
+                        "status_code": 200,
+                        "headers": {
+                            "Link": f"<{linked_page_2}>; rel=\"next\", <{linked_page_2}>; rel=\"last\"",
+                            "ETag": "linked-1",
+                            "Last-Modified": "Sat, 27 Jun 2026 09:02:43 GMT",
+                            "X-RateLimit-Limit": "60",
+                            "X-RateLimit-Remaining": "58",
+                            "X-RateLimit-Used": "2",
+                            "X-RateLimit-Resource": "core",
+                            "X-GitHub-Api-Version-Selected": "2022-11-28",
+                        },
+                        "body": [{"login": "alice"}, {"login": "bob"}],
+                    },
+                    {
+                        "url": linked_page_2,
+                        "status_code": 200,
+                        "headers": {
+                            "ETag": "linked-2",
+                            "Last-Modified": "Sat, 27 Jun 2026 09:02:43 GMT",
+                            "X-RateLimit-Remaining": "57",
+                        },
+                        "body": [{"login": "carol"}, {"login": "dropped-by-cap"}],
+                    },
+                ],
+                "anonymous_pages": [
+                    {
+                        "status_code": 200,
+                        "headers": {
+                            "Link": f"<{anon_page_2}>; rel=\"next\", <{anon_page_2}>; rel=\"last\"",
+                            "ETag": "anon-1",
+                            "Last-Modified": "Sat, 27 Jun 2026 09:02:43 GMT",
+                        },
+                        "body": [{"login": "anon-a"}, {"login": "anon-b"}],
+                    },
+                    {
+                        "url": anon_page_2,
+                        "status_code": 200,
+                        "headers": {"ETag": "anon-2"},
+                        "body": [{"login": "anon-c"}, {"login": "anon-d"}],
+                    },
+                ],
+            }
+            fixture_path = tmp_path / "contributors.json"
+            fixture_path.write_text(json.dumps(fixture), encoding="utf-8")
+            output = tmp_path / "report.json"
+            run_script(
+                "collect_contributors.py",
+                "--requested-count", "3",
+                "--per-page", "2",
+                "--api-base", api_base,
+                "--offline-fixture", fixture_path,
+                "--output", output,
+                "--access-date", "2026-06-27",
+            )
+            report = json.loads(output.read_text())
+            self.assertTrue(report["review_only"])
+            self.assertEqual(report["linked_user_count"], 3)
+            self.assertEqual(report["anonymous_author_count"], 3)
+            self.assertEqual(report["top_logins"], ["alice", "bob", "carol"])
+            self.assertEqual(report["api_receipt"]["linked_stop_reason"], "requested_count_reached")
+            self.assertEqual(report["api_receipt"]["anonymous_stop_reason"], "requested_count_reached")
+            self.assertEqual(report["api_receipt"]["linked_pages"][1]["retained_count"], 1)
+            first_receipt = report["api_receipt"]["linked_pages"][0]
+            self.assertEqual(first_receipt["status_code"], 200)
+            self.assertEqual(first_receipt["etag"], "linked-1")
+            self.assertEqual(first_receipt["rate_limit"]["remaining"], "58")
+            self.assertIn("next", first_receipt["link_rels"])
+            self.assertNotIn("anon-a", output.read_text())
+            self.assertNotIn("anon-d", output.read_text())
+
+    def test_contributor_collector_stops_when_link_header_is_exhausted(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_path = Path(tmp)
+            fixture = {
+                "linked_pages": [
+                    {
+                        "status_code": 200,
+                        "headers": {"ETag": "only-linked-page"},
+                        "body": [{"login": "solo"}],
+                    }
+                ],
+                "anonymous_pages": [
+                    {
+                        "status_code": 200,
+                        "headers": {"ETag": "only-anon-page"},
+                        "body": [{"login": "anon-hidden-1"}, {"login": "anon-hidden-2"}],
+                    }
+                ],
+            }
+            fixture_path = tmp_path / "contributors.json"
+            fixture_path.write_text(json.dumps(fixture), encoding="utf-8")
+            output = tmp_path / "report.json"
+            run_script(
+                "collect_contributors.py",
+                "--requested-count", "10",
+                "--per-page", "2",
+                "--api-base", "https://api.github.test",
+                "--offline-fixture", fixture_path,
+                "--output", output,
+            )
+            report = json.loads(output.read_text())
+            self.assertEqual(report["linked_user_count"], 1)
+            self.assertEqual(report["anonymous_author_count"], 2)
+            self.assertEqual(report["pages_fetched"], 1)
+            self.assertEqual(report["api_receipt"]["linked_stop_reason"], "link_header_exhausted")
+            self.assertEqual(report["api_receipt"]["anonymous_stop_reason"], "link_header_exhausted")
+            self.assertNotIn("anon-hidden", output.read_text())
+
     def test_research_loop_scaffold_includes_multi_source_sampling_plan(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             output_dir = Path(tmp) / "scaffold-run"
