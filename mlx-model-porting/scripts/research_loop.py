@@ -2502,6 +2502,7 @@ def run_iteration(
 
 def loop_iteration_record(root: Path, summary: dict[str, Any], output_dir: Path) -> dict[str, Any]:
     promotion_review = summary.get("promotion_review", {})
+    evidence_matrix = summary.get("evidence_matrix", {})
     return {
         "iteration": summary["iteration"],
         "run_id": summary["run_id"],
@@ -2529,6 +2530,17 @@ def loop_iteration_record(root: Path, summary: dict[str, Any], output_dir: Path)
         "execution_counts": summary.get("execution_counts", {}),
         "review_gate": summary.get("review_gate", {}),
         "blog_contract": summary.get("blog_contract", {}),
+        "evidence_matrix": {
+            "schema_version": evidence_matrix.get("schema_version", 1),
+            "review_only": True,
+            "unique_source_count": int(evidence_matrix.get("unique_source_count", 0)),
+            "source_citation_count": int(evidence_matrix.get("source_citation_count", 0)),
+            "source_lane_counts": evidence_matrix.get("source_lane_counts", {}),
+            "finding_decision_counts": evidence_matrix.get("finding_decision_counts", {}),
+            "thin_source_lanes": evidence_matrix.get("thin_source_lanes", []),
+            "uncited_source_lanes": evidence_matrix.get("uncited_source_lanes", []),
+            "top_sources": evidence_matrix.get("top_sources", []),
+        },
         "promotion_review": {
             "schema_version": promotion_review.get("schema_version", 1),
             "review_only": True,
@@ -2635,6 +2647,19 @@ def build_loop_summary(
         decision_counts.update(record.get("decision_counts", {}))
         execution_counts.update(record.get("execution_counts", {}))
         sampling_counts.update(record.get("sampling_coverage", {}))
+    sampling_coverage = dict(sorted(sampling_counts.items()))
+    review_gate = aggregate_review_gate(records, "final_iteration" if until_review_gate else "all_iterations")
+    blog_contract = aggregate_loop_blog_contract(records)
+    promotion_review = aggregate_loop_promotion_review(records)
+    learning_dossier = aggregate_loop_learning_dossier(
+        records,
+        sampling_coverage,
+        review_gate,
+        blog_contract,
+        promotion_review,
+        final_gap_hints,
+        stop_reason,
+    )
     return {
         "schema_version": 1,
         "run_id": run_id,
@@ -2650,10 +2675,11 @@ def build_loop_summary(
         "total_finding_count": total_findings,
         "decision_counts": dict(sorted(decision_counts.items())),
         "execution_counts": dict(sorted(execution_counts.items())),
-        "sampling_coverage": dict(sorted(sampling_counts.items())),
-        "review_gate": aggregate_review_gate(records, "final_iteration" if until_review_gate else "all_iterations"),
-        "blog_contract": aggregate_loop_blog_contract(records),
-        "promotion_review": aggregate_loop_promotion_review(records),
+        "sampling_coverage": sampling_coverage,
+        "review_gate": review_gate,
+        "blog_contract": blog_contract,
+        "promotion_review": promotion_review,
+        "learning_dossier": learning_dossier,
         "iterations": records,
         "final_gap_hints": final_gap_hints,
         "instructions": [
@@ -2732,6 +2758,192 @@ def aggregate_loop_promotion_review(records: list[dict[str, Any]]) -> dict[str, 
     }
 
 
+def learning_action(action_id: str, kind: str, action: str, reason: str, priority: str = "medium") -> dict[str, Any]:
+    return {
+        "id": action_id,
+        "kind": kind,
+        "priority": priority,
+        "action": action,
+        "reason": reason,
+    }
+
+
+def aggregate_loop_learning_dossier(
+    records: list[dict[str, Any]],
+    sampling_coverage: dict[str, Any],
+    review_gate: dict[str, Any],
+    blog_contract: dict[str, Any],
+    promotion_review: dict[str, Any],
+    final_gap_hints: list[str],
+    stop_reason: str,
+) -> dict[str, Any]:
+    lane_citations: Counter[str] = Counter()
+    decision_counts: Counter[str] = Counter()
+    unique_sources: set[str] = set()
+    unique_source_observation_count = 0
+    source_citation_count = 0
+    top_sources_by_key: dict[str, dict[str, Any]] = {}
+    thin_lanes_by_id: dict[str, dict[str, Any]] = {}
+    uncited_lanes_by_id: dict[str, dict[str, Any]] = {}
+    non_github_lanes = set()
+
+    for record in records:
+        non_github_lanes.update(record.get("non_github_lanes_covered", []))
+        matrix = record.get("evidence_matrix", {})
+        lane_citations.update(matrix.get("source_lane_counts", {}))
+        decision_counts.update(matrix.get("finding_decision_counts", {}))
+        unique_source_observation_count += int(matrix.get("unique_source_count", 0))
+        source_citation_count += int(matrix.get("source_citation_count", 0))
+        for source in matrix.get("top_sources", []):
+            key = source.get("key")
+            if key:
+                unique_sources.add(str(key))
+                existing = top_sources_by_key.setdefault(str(key), {
+                    "key": key,
+                    "title": source.get("title", key),
+                    "url": source.get("url", ""),
+                    "citation_count": 0,
+                    "finding_ids": [],
+                    "source_lanes": [],
+                })
+                existing["citation_count"] += int(source.get("citation_count", 0))
+                existing["finding_ids"] = unique_ordered(existing["finding_ids"] + source.get("finding_ids", []))
+                existing["source_lanes"] = unique_ordered(existing["source_lanes"] + source.get("source_lanes", []))
+        for field, target in (
+            ("thin_source_lanes", thin_lanes_by_id),
+            ("uncited_source_lanes", uncited_lanes_by_id),
+        ):
+            for lane in matrix.get(field, []):
+                lane_id = str(lane.get("source_lane", ""))
+                if not lane_id:
+                    continue
+                current = target.setdefault(lane_id, {
+                    "source_lane": lane_id,
+                    "planned_target_count": 0,
+                    "sampled_target_count": 0,
+                    "source_citation_count": 0,
+                    "iterations": [],
+                    "status": lane.get("status", field.replace("_source_lanes", "")),
+                })
+                current["planned_target_count"] += int(lane.get("planned_target_count", 0))
+                current["sampled_target_count"] += int(lane.get("sampled_target_count", 0))
+                current["source_citation_count"] += int(lane.get("source_citation_count", 0))
+                current["iterations"] = unique_ordered(current["iterations"] + [str(record.get("iteration"))])
+
+    top_sources = sorted(
+        top_sources_by_key.values(),
+        key=lambda row: (-int(row.get("citation_count", 0)), str(row.get("key", ""))),
+    )[:10]
+    validation_backlog = promotion_review.get("validation_backlog", [])
+    actions: list[dict[str, Any]] = []
+    seen_actions: set[str] = set()
+
+    def add_action(row: dict[str, Any]) -> None:
+        if row["id"] in seen_actions:
+            return
+        seen_actions.add(row["id"])
+        actions.append(row)
+
+    for hint in final_gap_hints[:10]:
+        add_action(learning_action(
+            f"gap:{slugify(hint)}",
+            "gap_hint",
+            f"Schedule a dynamic follow-up worker pass for `{hint}`.",
+            "Final loop gap hints identify unresolved research terms.",
+            "high",
+        ))
+    for lane in list(thin_lanes_by_id.values())[:10]:
+        add_action(learning_action(
+            f"thin-lane:{slugify(lane['source_lane'])}",
+            "thin_source_lane",
+            f"Sample more planned targets in `{lane['source_lane']}`.",
+            f"{lane['sampled_target_count']}/{lane['planned_target_count']} planned targets were sampled across iterations.",
+            "high",
+        ))
+    for lane in list(uncited_lanes_by_id.values())[:10]:
+        add_action(learning_action(
+            f"uncited-lane:{slugify(lane['source_lane'])}",
+            "uncited_source_lane",
+            f"Dispatch a researcher to collect evidence for `{lane['source_lane']}`.",
+            "The lane had planned targets but no returned source citations.",
+            "high",
+        ))
+    for entry in validation_backlog[:10]:
+        add_action(learning_action(
+            f"validation:{slugify(str(entry.get('id', 'finding')))}",
+            "validation_backlog",
+            f"Validate `{entry.get('id')}` before editing skill guidance.",
+            ", ".join(entry.get("promotion_blockers", [])) or "Finding remains in validation backlog.",
+            "medium",
+        ))
+    for blog in blog_contract.get("failed_blogs", [])[:10]:
+        add_action(learning_action(
+            f"blog:{slugify(str(blog.get('iteration', 'i')))}:{slugify(str(blog.get('persona_id', 'persona')))}",
+            "blog_contract",
+            f"Repair or rerun the blog for `{blog.get('persona_id')}`.",
+            f"Missing sections: {', '.join(blog.get('missing_sections', [])) or 'required sections'}.",
+            "medium",
+        ))
+    for reason in review_gate.get("blocked_reasons", [])[:10]:
+        add_action(learning_action(
+            f"gate:{slugify(reason)}",
+            "review_gate",
+            "Run another research wave to satisfy the review gate.",
+            reason,
+            "high",
+        ))
+
+    return {
+        "schema_version": 1,
+        "review_only": True,
+        "auto_modify_recommendations": bool(promotion_review.get("auto_modify_recommendations", False)),
+        "auto_promote_sources": bool(promotion_review.get("auto_promote_sources", False)),
+        "stop_reason": stop_reason,
+        "learned_findings": {
+            "total_count": sum(int(record.get("finding_count", 0)) for record in records),
+            "decision_counts": dict(sorted(decision_counts.items())),
+            "promotion_ready_count": int(promotion_review.get("promotion_ready_count", 0)),
+            "validation_backlog_count": int(promotion_review.get("validation_backlog_count", 0)),
+            "rejected_count": int(promotion_review.get("rejected_count", 0)),
+            "promotion_ready": promotion_review.get("promotion_ready", [])[:10],
+        },
+        "coverage_overview": {
+            "iteration_count": len(records),
+            "sampled_target_count": int(sampling_coverage.get("sampled_target_count", 0)),
+            "planned_target_count": int(sampling_coverage.get("planned_target_count", 0)),
+            "unplanned_source_count": int(sampling_coverage.get("unplanned_source_count", 0)),
+            "valid_explicit_sampling_receipt_count": int(sampling_coverage.get("valid_explicit_sampling_receipt_count", 0)),
+            "invalid_explicit_sampling_receipt_count": int(sampling_coverage.get("invalid_explicit_sampling_receipt_count", 0)),
+            "unique_source_observation_count": unique_source_observation_count,
+            "source_citation_count": source_citation_count,
+            "unique_top_source_count": len(unique_sources),
+            "non_github_lanes_covered": sorted(non_github_lanes),
+            "source_lane_citation_counts": dict(sorted(lane_citations.items())),
+            "top_sources": top_sources,
+        },
+        "blog_health": {
+            "blog_count": int(blog_contract.get("blog_count", 0)),
+            "passing_count": int(blog_contract.get("passing_count", 0)),
+            "failed_count": int(blog_contract.get("failed_count", 0)),
+            "worker_authored_failed_count": int(blog_contract.get("worker_authored_failed_count", 0)),
+            "failed_blogs": blog_contract.get("failed_blogs", []),
+        },
+        "evidence_gaps": {
+            "final_gap_hints": final_gap_hints,
+            "thin_source_lanes": sorted(thin_lanes_by_id.values(), key=lambda row: row["source_lane"]),
+            "uncited_source_lanes": sorted(uncited_lanes_by_id.values(), key=lambda row: row["source_lane"]),
+            "review_gate_blocked_reasons": review_gate.get("blocked_reasons", []),
+        },
+        "validation_backlog": validation_backlog[:20],
+        "next_research_actions": actions[:30],
+        "instructions": [
+            "This dossier is a review-only campaign handoff.",
+            "Use next_research_actions to plan more sampling or validation before editing skill assets.",
+            "Repeated citations, passed gates, or promotion-ready status still require explicit tests and rollback evidence before skill changes.",
+        ],
+    }
+
+
 def promotion_review_markdown_rows(entries: list[dict[str, Any]], limit: int = 10) -> list[str]:
     rows = []
     for entry in entries[:limit]:
@@ -2750,6 +2962,7 @@ def write_loop_markdown(output_dir: Path, loop_summary: dict[str, Any]) -> None:
     review_gate = loop_summary.get("review_gate", {})
     promotion_review = loop_summary.get("promotion_review", {})
     blog_contract = loop_summary.get("blog_contract", {})
+    learning_dossier = loop_summary.get("learning_dossier", {})
     lines = [
         f"# Research Loop {loop_summary['run_id']}",
         "",
@@ -2788,6 +3001,71 @@ def write_loop_markdown(output_dir: Path, loop_summary: dict[str, Any]) -> None:
         )
         iteration_gate = record.get("review_gate", {})
         lines.append(f"  - review gate: {iteration_gate.get('status', 'unknown')}")
+    learned = learning_dossier.get("learned_findings", {})
+    coverage_overview = learning_dossier.get("coverage_overview", {})
+    evidence_gaps = learning_dossier.get("evidence_gaps", {})
+    blog_health = learning_dossier.get("blog_health", {})
+    lane_counts = coverage_overview.get("source_lane_citation_counts", {})
+    lane_rows = [f"{lane}: {count}" for lane, count in lane_counts.items()]
+    top_source_rows = [
+        f"{source.get('title') or source.get('key')} - {source.get('citation_count', 0)} citation(s)"
+        for source in coverage_overview.get("top_sources", [])[:5]
+    ]
+    thin_lane_rows = [
+        f"{lane.get('source_lane')}: {lane.get('sampled_target_count', 0)}/"
+        f"{lane.get('planned_target_count', 0)} sampled; "
+        f"{lane.get('source_citation_count', 0)} citation(s)"
+        for lane in evidence_gaps.get("thin_source_lanes", [])[:10]
+    ]
+    uncited_lane_rows = [
+        f"{lane.get('source_lane')}: {lane.get('sampled_target_count', 0)}/"
+        f"{lane.get('planned_target_count', 0)} sampled"
+        for lane in evidence_gaps.get("uncited_source_lanes", [])[:10]
+    ]
+    failed_blog_rows = []
+    for blog in blog_health.get("failed_blogs", [])[:10]:
+        failed_blog_rows.append(
+            f"i{blog.get('iteration')}: {blog.get('persona_id')} missing "
+            f"{', '.join(blog.get('missing_sections', [])) or 'required sections'}"
+        )
+    validation_rows = promotion_review_markdown_rows(learning_dossier.get("validation_backlog", []))
+    action_rows = [
+        f"[{action.get('priority')}] {action.get('kind')}: {action.get('action')} - {action.get('reason')}"
+        for action in learning_dossier.get("next_research_actions", [])[:15]
+    ]
+    lines.extend([
+        "",
+        "## Learning Dossier",
+        f"- review-only: {str(learning_dossier.get('review_only', True)).lower()}",
+        f"- learned findings: {learned.get('total_count', 0)}",
+        f"- promotion ready: {learned.get('promotion_ready_count', 0)}",
+        f"- validation backlog: {learned.get('validation_backlog_count', 0)}",
+        f"- rejected: {learned.get('rejected_count', 0)}",
+        f"- source citations: {coverage_overview.get('source_citation_count', 0)}",
+        f"- unique source observations: {coverage_overview.get('unique_source_observation_count', 0)}",
+        f"- sampled coverage: {coverage_overview.get('sampled_target_count', 0)}/{coverage_overview.get('planned_target_count', 0)} planned targets",
+        "",
+        "### Key Learnings",
+        markdown_list(promotion_review_markdown_rows(learned.get("promotion_ready", []))),
+        "",
+        "### Source Coverage",
+        markdown_list(lane_rows),
+        "",
+        "### Top Sources",
+        markdown_list(top_source_rows),
+        "",
+        "### Evidence Gaps",
+        markdown_list(thin_lane_rows + uncited_lane_rows + evidence_gaps.get("review_gate_blocked_reasons", [])),
+        "",
+        "### Failed Blogs",
+        markdown_list(failed_blog_rows),
+        "",
+        "### Validation Backlog",
+        markdown_list(validation_rows),
+        "",
+        "### Next Research Actions",
+        markdown_list(action_rows),
+    ])
     lines.extend(["", "## Review Gate"])
     lines.append(f"- status: {review_gate.get('status', 'unknown')}")
     lines.append(

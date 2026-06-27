@@ -1316,6 +1316,24 @@ class ToolingTests(unittest.TestCase):
             self.assertEqual(loop["promotion_review"]["promotion_ready_count"], 2)
             self.assertEqual(loop["promotion_review"]["validation_backlog_count"], 4)
             self.assertEqual(loop["promotion_review"]["rejected_count"], 0)
+            dossier = loop["learning_dossier"]
+            self.assertTrue(dossier["review_only"])
+            self.assertFalse(dossier["auto_modify_recommendations"])
+            self.assertFalse(dossier["auto_promote_sources"])
+            self.assertEqual(dossier["learned_findings"]["total_count"], 6)
+            self.assertEqual(dossier["learned_findings"]["promotion_ready_count"], 2)
+            self.assertEqual(dossier["learned_findings"]["validation_backlog_count"], 4)
+            self.assertEqual(dossier["coverage_overview"]["sampled_target_count"], 4)
+            self.assertEqual(dossier["coverage_overview"]["source_citation_count"], 6)
+            self.assertEqual(dossier["coverage_overview"]["unique_source_observation_count"], 6)
+            self.assertEqual(dossier["coverage_overview"]["source_lane_citation_counts"]["official_docs"], 2)
+            self.assertIn("hugging_face", dossier["coverage_overview"]["non_github_lanes_covered"])
+            self.assertTrue(dossier["evidence_gaps"]["thin_source_lanes"])
+            self.assertTrue(dossier["evidence_gaps"]["uncited_source_lanes"])
+            self.assertEqual(dossier["blog_health"]["failed_count"], 0)
+            self.assertTrue(dossier["validation_backlog"])
+            self.assertTrue(any(action["kind"] == "gap_hint" for action in dossier["next_research_actions"]))
+            self.assertTrue(any(action["kind"] == "thin_source_lane" for action in dossier["next_research_actions"]))
             self.assertEqual(loop["iterations"][0]["promotion_review"]["promotion_ready_count"], 1)
             self.assertEqual(loop["iterations"][1]["promotion_review"]["validation_backlog_count"], 2)
             ready_entry = loop["promotion_review"]["promotion_ready"][0]
@@ -1339,6 +1357,11 @@ class ToolingTests(unittest.TestCase):
             self.assertIn("promotion ready: 2", loop_markdown)
             self.assertIn("i1: official-custom-metal-validation", loop_markdown)
             self.assertIn("iterative-loop-i02", loop_markdown)
+            self.assertIn("## Learning Dossier", loop_markdown)
+            self.assertIn("learned findings: 6", loop_markdown)
+            self.assertIn("source citations: 6", loop_markdown)
+            self.assertIn("### Next Research Actions", loop_markdown)
+            self.assertIn("thin_source_lane", loop_markdown)
 
     def test_research_loop_until_review_gate_stops_after_passing_iteration(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

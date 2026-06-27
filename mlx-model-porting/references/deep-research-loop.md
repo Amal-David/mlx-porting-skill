@@ -176,7 +176,13 @@ recommendation assets. Fixed loop receipts aggregate the per-iteration review
 gates and remain failed until every iteration passes its own gate. Loop
 receipts also aggregate each iteration's `promotion_review` entries and tag
 them with iteration, run id, and output directory so a multi-wave campaign has
-one final ready/backlog/rejected handoff.
+one final ready/backlog/rejected handoff. `loop.json` and `loop.md` also include
+a review-only `learning_dossier` as the final campaign handoff. The dossier
+aggregates existing receipts into learned finding counts, promotion-ready and
+validation-backlog state, source-lane coverage, evidence-matrix gaps, blog
+contract health, failed blogs, validation backlog entries, and next research
+actions. It is not a recommendation mutator: use it to plan more sampling,
+validation, or review before editing skill assets.
 
 Use `--until-review-gate` when `--iterations` should be a cap rather than a
 fixed count. In that adaptive mode, the loop stops as soon as an iteration
