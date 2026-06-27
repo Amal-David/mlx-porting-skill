@@ -97,6 +97,13 @@ writes the generated blog to the primary blog path and records `source:
 generated` in `assignments.json`, `synthesis.json`, `subagents.json`, and the
 per-agent packet.
 
+Every run also writes `campaign.json` and `campaign.md` at the run root. The
+campaign receipt is the orchestrator-facing surface: it lists each wave, the
+selected agents, assignment and prompt paths, expected result and blog paths,
+safe launch constraints, and the exact per-wave `command_args` for rerunning
+ingestion with `--ingest-subagent-results`. External dispatchers should consume
+the campaign receipt instead of inferring launch state from internal file names.
+
 When a loop is intended to feed skill updates, add an explicit review gate:
 `--min-sampled-targets`, `--min-non-github-lanes`, and repeated
 `--require-source-lane` options record the minimum evidence expected before the
@@ -123,6 +130,13 @@ passes its review gate; otherwise it records `iteration_cap_exhausted`.
 Adaptive loop readiness is based on the final completed iteration, so earlier
 failed iterations are treated as review-only sampling passes rather than
 permanent failures.
+
+For external multi-wave campaigns, treat each `campaign.json` wave as the unit
+of orchestration. Agents within a wave may run in parallel, but dynamic later
+waves should be scaffolded after prior wave ingestion when returned findings
+need to drive the next gap hints. The top-level campaign receipt marks these
+wave dependencies so the dispatcher can avoid launching stale follow-up
+assignments.
 
 ## Blog Contract
 
@@ -236,6 +250,9 @@ python3 scripts/research_loop.py \
   --agent-count 6 \
   --output-dir research-runs/manual-dispatch
 
+# External orchestrators should read research-runs/manual-dispatch/campaign.json,
+# launch the listed wave agents, and wait for every result_path.
+
 # After workers read subagents.json and write agents/*.result.json:
 python3 scripts/research_loop.py \
   --objective "Broaden MLX porting evidence beyond GitHub" \
@@ -243,6 +260,11 @@ python3 scripts/research_loop.py \
   --ingest-subagent-results \
   --output-dir research-runs/manual-dispatch
 ```
+
+The same command arguments are recorded under
+`campaign.json -> waves[].ingest.command_args`, including run id, objective,
+selected agent count, assignment mode, gap hints, review-gate requirements, and
+the wave output directory.
 
 Require evidence breadth before treating a run as review-ready:
 

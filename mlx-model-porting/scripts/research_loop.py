@@ -634,6 +634,226 @@ def write_subagent_handoffs(
     return manifest
 
 
+def append_review_gate_command_args(command_args: list[str], requirements: dict[str, Any]) -> None:
+    min_sampled = int(requirements.get("min_sampled_targets", 0))
+    min_non_github = int(requirements.get("min_non_github_lanes", 0))
+    if min_sampled:
+        command_args.extend(["--min-sampled-targets", str(min_sampled)])
+    if min_non_github:
+        command_args.extend(["--min-non-github-lanes", str(min_non_github)])
+    for lane_id in requirements.get("required_source_lanes", []):
+        command_args.extend(["--require-source-lane", str(lane_id)])
+
+
+def ingest_command_args_for_wave(summary: dict[str, Any], output_dir: Path) -> list[str]:
+    planner = summary.get("assignment_planner", {})
+    dispatch = summary.get("subagent_dispatch", {})
+    command_args = [
+        "python3",
+        "scripts/research_loop.py",
+        "--run-id",
+        str(summary["run_id"]),
+        "--objective",
+        str(summary["objective"]),
+        "--agent-count",
+        str(dispatch.get("agent_count", summary.get("agent_count", 0))),
+        "--assignment-mode",
+        str(planner.get("mode", "config-order")),
+    ]
+    for hint in summary.get("gap_hints", []):
+        command_args.extend(["--gap-hint", str(hint)])
+    append_review_gate_command_args(
+        command_args,
+        summary.get("review_gate", {}).get("requirements", {}),
+    )
+    command_args.extend([
+        "--ingest-subagent-results",
+        "--output-dir",
+        str(output_dir),
+    ])
+    return command_args
+
+
+def campaign_rel_path(root: Path, wave_output_dir: Path, relative_path: str | None) -> str | None:
+    if not relative_path:
+        return None
+    return safe_relpath(root, wave_output_dir / relative_path)
+
+
+def build_campaign_agent(root: Path, wave_output_dir: Path, agent: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "assignment_index": agent.get("assignment_index"),
+        "persona_id": agent.get("persona_id"),
+        "title": agent.get("title"),
+        "source_lanes": agent.get("source_lanes", []),
+        "assignment_path": campaign_rel_path(root, wave_output_dir, agent.get("assignment_path")),
+        "prompt_path": campaign_rel_path(root, wave_output_dir, agent.get("prompt_path")),
+        "result_path": campaign_rel_path(root, wave_output_dir, agent.get("result_path")),
+        "blog_path": campaign_rel_path(root, wave_output_dir, agent.get("blog_path")),
+        "blog_source": agent.get("blog_source", "pending"),
+        "execution_kind": agent.get("execution_kind"),
+        "execution_state": agent.get("execution_state"),
+        "review_only": True,
+    }
+
+
+def build_campaign_wave(
+    root: Path,
+    summary: dict[str, Any],
+    wave_output_dir: Path,
+    iteration_cap: int,
+    until_review_gate: bool,
+) -> dict[str, Any]:
+    dispatch = summary.get("subagent_dispatch", {})
+    agents = [
+        build_campaign_agent(root, wave_output_dir, agent)
+        for agent in dispatch.get("agents", [])
+    ]
+    output_rel = safe_relpath(root, wave_output_dir)
+    return {
+        "iteration": summary.get("iteration", 1),
+        "run_id": summary["run_id"],
+        "output_dir": output_rel,
+        "subagent_manifest_path": safe_relpath(root, wave_output_dir / "subagents.json"),
+        "assignments_path": safe_relpath(root, wave_output_dir / "assignments.json"),
+        "synthesis_path": safe_relpath(root, wave_output_dir / "synthesis.json"),
+        "execution_mode": dispatch.get("execution_mode"),
+        "assignment_mode": summary.get("assignment_planner", {}).get("mode"),
+        "gap_hints": summary.get("gap_hints", []),
+        "next_gap_hints": summary.get("next_gap_hints", []),
+        "review_gate": summary.get("review_gate", {}),
+        "agent_count": len(agents),
+        "agents": agents,
+        "launch": {
+            "parallel_safe": True,
+            "max_parallel_agents": len(agents),
+            "input_paths": [
+                path
+                for agent in agents
+                for path in (agent.get("assignment_path"), agent.get("prompt_path"))
+                if path
+            ],
+            "expected_result_paths": [
+                agent["result_path"] for agent in agents if agent.get("result_path")
+            ],
+            "expected_blog_paths": [
+                agent["blog_path"] for agent in agents if agent.get("blog_path")
+            ],
+            "constraints": [
+                "Review-only: do not modify recommendation assets.",
+                "Do not execute remote model code.",
+                "Sample planned targets first and explain substitutions.",
+                "Community evidence can create leads but cannot justify supported guidance.",
+            ],
+        },
+        "ingest": {
+            "command_args": ingest_command_args_for_wave(summary, wave_output_dir),
+            "wait_for_result_paths": [
+                agent["result_path"] for agent in agents if agent.get("result_path")
+            ],
+            "completion_condition": "all result files exist and each persona_id matches its assignment packet",
+        },
+        "wave_dependency": {
+            "requires_prior_wave_ingestion": summary.get("iteration", 1) > 1,
+            "requires_ingest_before_next_wave": summary.get("iteration", 1) < iteration_cap,
+            "reason": (
+                "Ingest this wave before scaffolding later dynamic waves when returned findings should drive gap hints."
+                if until_review_gate or summary.get("iteration", 1) < iteration_cap
+                else "Single-wave campaign."
+            ),
+        },
+    }
+
+
+def build_campaign_manifest(
+    run_id: str,
+    objective: str,
+    root: Path,
+    waves: list[tuple[dict[str, Any], Path]],
+    iteration_cap: int,
+    until_review_gate: bool,
+    stop_reason: str,
+) -> dict[str, Any]:
+    wave_records = [
+        build_campaign_wave(root, summary, wave_output_dir, iteration_cap, until_review_gate)
+        for summary, wave_output_dir in waves
+    ]
+    return {
+        "schema_version": 1,
+        "run_id": run_id,
+        "objective": objective,
+        "generated_at": utc_now(),
+        "review_only": True,
+        "campaign_root": ".",
+        "wave_count": len(wave_records),
+        "iteration_cap": iteration_cap,
+        "until_review_gate": until_review_gate,
+        "stop_reason": stop_reason,
+        "waves": wave_records,
+        "orchestration_contract": {
+            "dispatch_model": "one review-only subagent per campaign wave agent",
+            "parallelism": "agents within a wave may run in parallel; dynamic waves should be sequenced through ingestion",
+            "result_contract": "each subagent writes one JSON object to its result_path and may write markdown to its blog_path",
+            "promotion_rule": "campaign receipts are review-only and never promote findings without source, validation, tests, and rollback evidence",
+        },
+        "instructions": [
+            "Spawn one researcher per wave agent using the listed assignment and prompt paths.",
+            "Wait for every result_path in a wave before running that wave's ingest command_args.",
+            "For dynamic multi-wave campaigns, ingest a completed wave before scaffolding the next wave if returned findings should drive gap hints.",
+            "Do not execute remote model code or modify recommendation assets during research.",
+        ],
+    }
+
+
+def write_campaign_markdown(output_dir: Path, campaign: dict[str, Any]) -> None:
+    lines = [
+        f"# Research Campaign {campaign['run_id']}",
+        "",
+        f"Objective: {campaign['objective']}",
+        f"Review only: {campaign['review_only']}",
+        f"Waves: {campaign['wave_count']}",
+        f"Iteration cap: {campaign['iteration_cap']}",
+        f"Stop reason: {campaign['stop_reason']}",
+        "",
+        "## Orchestration",
+        f"- Dispatch: {campaign['orchestration_contract']['dispatch_model']}",
+        f"- Parallelism: {campaign['orchestration_contract']['parallelism']}",
+        f"- Promotion rule: {campaign['orchestration_contract']['promotion_rule']}",
+        "",
+        "## Waves",
+    ]
+    for wave in campaign["waves"]:
+        lines.extend([
+            f"- Wave {wave['iteration']}: {wave['run_id']} ({wave['agent_count']} agents)",
+            f"  - output: {wave['output_dir']}",
+            f"  - subagents: {wave['subagent_manifest_path']}",
+            f"  - assignment mode: {wave['assignment_mode']}",
+            f"  - gap hints: {', '.join(wave.get('gap_hints', [])) or 'none'}",
+            f"  - next gap hints: {', '.join(wave.get('next_gap_hints', [])) or 'none'}",
+            f"  - ingest command args: {shlex.join(wave['ingest']['command_args'])}",
+            f"  - dependency: {wave['wave_dependency']['reason']}",
+        ])
+        for agent in wave["agents"]:
+            lines.append(
+                f"  - {agent['persona_id']}: {agent['assignment_path']} -> {agent['result_path']}"
+            )
+    lines.append("")
+    (output_dir / "campaign.md").write_text("\n".join(lines), encoding="utf-8")
+
+
+def write_campaign_receipts(
+    output_dir: Path,
+    campaign: dict[str, Any],
+) -> dict[str, Any]:
+    dump_json(campaign, output_dir / "campaign.json")
+    write_campaign_markdown(output_dir, campaign)
+    return {
+        "path": "campaign.json",
+        "markdown_path": "campaign.md",
+        "wave_count": campaign["wave_count"],
+    }
+
+
 def load_executor_result(result_path: Path, persona_id: str) -> dict[str, Any]:
     if not result_path.exists():
         raise SkillError("executor did not write result JSON")
@@ -1567,6 +1787,18 @@ def run_iteration(
         execution_mode,
         args.executor_command,
     )
+    summary["campaign_manifest"] = write_campaign_receipts(
+        output_dir,
+        build_campaign_manifest(
+            run_id,
+            args.objective,
+            output_dir,
+            [(summary, output_dir)],
+            iteration_count,
+            args.until_review_gate,
+            "single_iteration" if iteration_count == 1 else "wave_ready",
+        ),
+    )
     dump_json({
         "schema_version": 1,
         "run_id": run_id,
@@ -1833,6 +2065,7 @@ def main() -> int:
 
         gap_hints = unique_ordered(args.gap_hint)
         records = []
+        campaign_waves = []
         stop_reason = "fixed_iterations_complete"
         for iteration in range(1, args.iterations + 1):
             iteration_run_id = f"{run_id}-i{iteration:02d}"
@@ -1848,6 +2081,7 @@ def main() -> int:
                 review_requirements,
             )
             records.append(loop_iteration_record(output_dir, summary, iteration_dir))
+            campaign_waves.append((summary, iteration_dir))
             gap_hints = merge_gap_hints(gap_hints, summary.get("next_gap_hints", []))
             if args.until_review_gate and not review_gate_failed(summary):
                 stop_reason = "review_gate_passed"
@@ -1864,6 +2098,18 @@ def main() -> int:
             args.iterations,
             stop_reason,
             args.until_review_gate,
+        )
+        loop_summary["campaign_manifest"] = write_campaign_receipts(
+            output_dir,
+            build_campaign_manifest(
+                run_id,
+                args.objective,
+                output_dir,
+                campaign_waves,
+                args.iterations,
+                args.until_review_gate,
+                stop_reason,
+            ),
         )
         write_loop_receipts(output_dir, loop_summary)
         print(

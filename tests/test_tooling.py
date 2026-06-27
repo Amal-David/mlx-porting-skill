@@ -1032,6 +1032,97 @@ class ToolingTests(unittest.TestCase):
             self.assertIn("Assignment planner: dynamic", summary)
             self.assertIn("coverage-skeptic", summary)
 
+    def test_research_loop_writes_campaign_manifest_for_subagent_dispatch(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            output_dir = Path(tmp) / "campaign-run"
+            run_script(
+                "research_loop.py",
+                "--run-id", "campaign-loop",
+                "--objective", "Coordinate external MLX research subagents",
+                "--agent-count", 2,
+                "--min-sampled-targets", 1,
+                "--require-source-lane", "official_docs",
+                "--output-dir", output_dir,
+            )
+            campaign = json.loads((output_dir / "campaign.json").read_text())
+            synthesis = json.loads((output_dir / "synthesis.json").read_text())
+            subagents = json.loads((output_dir / "subagents.json").read_text())
+            self.assertEqual(synthesis["campaign_manifest"]["path"], "campaign.json")
+            self.assertEqual(synthesis["campaign_manifest"]["markdown_path"], "campaign.md")
+            self.assertEqual(campaign["wave_count"], 1)
+            self.assertTrue(campaign["review_only"])
+            self.assertEqual(campaign["orchestration_contract"]["dispatch_model"], "one review-only subagent per campaign wave agent")
+            wave = campaign["waves"][0]
+            self.assertEqual(wave["output_dir"], ".")
+            self.assertEqual(wave["subagent_manifest_path"], "subagents.json")
+            self.assertEqual(wave["assignments_path"], "assignments.json")
+            self.assertEqual(wave["synthesis_path"], "synthesis.json")
+            self.assertEqual(wave["agent_count"], 2)
+            self.assertTrue(wave["launch"]["parallel_safe"])
+            self.assertEqual(wave["launch"]["max_parallel_agents"], 2)
+            self.assertEqual(
+                wave["launch"]["expected_result_paths"],
+                [agent["result_path"] for agent in subagents["agents"]],
+            )
+            self.assertEqual(wave["agents"][0]["assignment_path"], subagents["agents"][0]["assignment_path"])
+            self.assertEqual(wave["agents"][0]["prompt_path"], subagents["agents"][0]["prompt_path"])
+            self.assertEqual(wave["agents"][0]["result_path"], subagents["agents"][0]["result_path"])
+            self.assertFalse(wave["wave_dependency"]["requires_prior_wave_ingestion"])
+            command_args = wave["ingest"]["command_args"]
+            self.assertEqual(command_args[command_args.index("--run-id") + 1], "campaign-loop")
+            self.assertEqual(command_args[command_args.index("--objective") + 1], "Coordinate external MLX research subagents")
+            self.assertEqual(command_args[command_args.index("--agent-count") + 1], "2")
+            self.assertEqual(command_args[command_args.index("--assignment-mode") + 1], "config-order")
+            self.assertEqual(command_args[command_args.index("--min-sampled-targets") + 1], "1")
+            self.assertEqual(command_args[command_args.index("--require-source-lane") + 1], "official_docs")
+            self.assertEqual(command_args[command_args.index("--output-dir") + 1], str(output_dir))
+            self.assertIn("--ingest-subagent-results", command_args)
+            campaign_markdown = (output_dir / "campaign.md").read_text()
+            self.assertIn("Research Campaign campaign-loop", campaign_markdown)
+            self.assertIn("ingest command args", campaign_markdown)
+            self.assertIn("official-docs-cartographer", campaign_markdown)
+
+    def test_research_loop_campaign_manifest_records_iteration_waves(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            output_dir = Path(tmp) / "campaign-iterative-run"
+            run_script(
+                "research_loop.py",
+                "--run-id", "campaign-iterative-loop",
+                "--objective", "Coordinate multiple external subagent waves",
+                "--iterations", 2,
+                "--agent-count", 2,
+                "--min-sampled-targets", 1,
+                "--output-dir", output_dir,
+            )
+            campaign = json.loads((output_dir / "campaign.json").read_text())
+            loop = json.loads((output_dir / "loop.json").read_text())
+            first = json.loads((output_dir / "iterations" / "01" / "synthesis.json").read_text())
+            second = json.loads((output_dir / "iterations" / "02" / "synthesis.json").read_text())
+            self.assertEqual(loop["campaign_manifest"]["path"], "campaign.json")
+            self.assertEqual(loop["campaign_manifest"]["wave_count"], 2)
+            self.assertEqual(campaign["wave_count"], 2)
+            self.assertEqual(campaign["iteration_cap"], 2)
+            first_wave, second_wave = campaign["waves"]
+            self.assertEqual(first_wave["run_id"], "campaign-iterative-loop-i01")
+            self.assertEqual(second_wave["run_id"], "campaign-iterative-loop-i02")
+            self.assertEqual(first_wave["output_dir"], "iterations/01")
+            self.assertEqual(second_wave["output_dir"], "iterations/02")
+            self.assertEqual(first_wave["subagent_manifest_path"], "iterations/01/subagents.json")
+            self.assertEqual(second_wave["subagent_manifest_path"], "iterations/02/subagents.json")
+            self.assertTrue(first_wave["wave_dependency"]["requires_ingest_before_next_wave"])
+            self.assertFalse(first_wave["wave_dependency"]["requires_prior_wave_ingestion"])
+            self.assertTrue(second_wave["wave_dependency"]["requires_prior_wave_ingestion"])
+            self.assertEqual(first_wave["assignment_mode"], first["assignment_planner"]["mode"])
+            self.assertEqual(second_wave["assignment_mode"], second["assignment_planner"]["mode"])
+            self.assertEqual(second_wave["assignment_mode"], "dynamic")
+            self.assertEqual(second_wave["gap_hints"], first["next_gap_hints"])
+            second_command = second_wave["ingest"]["command_args"]
+            for hint in second_wave["gap_hints"]:
+                self.assertIn(hint, second_command)
+            self.assertEqual(second_command[second_command.index("--output-dir") + 1], str(output_dir / "iterations" / "02"))
+            self.assertTrue(first_wave["agents"][0]["result_path"].startswith("iterations/01/agents/"))
+            self.assertTrue(second_wave["agents"][0]["result_path"].startswith("iterations/02/agents/"))
+
     def test_research_loop_iterations_feed_next_gap_hints(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             output_dir = Path(tmp) / "iterative-run"
