@@ -172,6 +172,45 @@
       "notes": "Backbone/classifier and feature-extraction only; detection, segmentation, promptable masks, OCR, depth, and pose need separate CV runbooks and fixtures."
     },
     {
+      "id": "graph-message-passing",
+      "runbook": "references/runbook-graph-message-passing.md",
+      "targets": [
+        "standalone-mlx"
+      ],
+      "model_type_aliases": [
+        "gcn",
+        "graphsage",
+        "gat",
+        "gin",
+        "mpnn",
+        "graph_neural_network"
+      ],
+      "class_patterns": [
+        "GCN",
+        "GraphSAGE",
+        "GAT",
+        "GIN",
+        "MessagePassing",
+        "GraphNeuralNetwork"
+      ],
+      "config_signals": [
+        "num_node_features",
+        "num_edge_features",
+        "num_layers",
+        "aggregation",
+        "add_self_loops"
+      ],
+      "weight_signals": [
+        "node_encoder",
+        "edge_encoder",
+        "convs.0",
+        "message_mlp",
+        "classifier.weight"
+      ],
+      "state": "graph topology plus node/edge feature tensors; usually stateless per graph",
+      "notes": "GCN/GAT/GraphSAGE-style message passing only; point-cloud, equivariant, protein, chemistry, and energy/force scientific models need separate fixtures and gates."
+    },
+    {
       "id": "encoder-decoder-transformer",
       "runbook": "references/runbook-encoder-decoder.md",
       "targets": [

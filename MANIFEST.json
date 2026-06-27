@@ -2,8 +2,8 @@
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
   "version": "0.1.0",
-  "generated_at": "2026-06-27T12:11:47.244209+00:00",
-  "file_count": 186,
+  "generated_at": "2026-06-27T12:17:29.382968+00:00",
+  "file_count": 190,
   "files": [
     {
       "path": ".github/workflows/daily-research.yml",
@@ -62,8 +62,8 @@
     },
     {
       "path": "VALIDATION.md",
-      "size_bytes": 4764,
-      "sha256": "1e13674dd651aa71ed76c62802fafc92a2ab66cac73786db92c8fe828675e4ca"
+      "size_bytes": 4938,
+      "sha256": "56c6a66ccc5745af718d9205b97a5362e91d38daf266b79d845e7054bd8f577d"
     },
     {
       "path": "VERSION",
@@ -142,8 +142,8 @@
     },
     {
       "path": "mlx-model-porting/assets/architectures.yaml",
-      "size_bytes": 14479,
-      "sha256": "68ffce02b44f5a0c57c0379d69d9f73b3b4e155d5b2e5b71de188042fd7de5df"
+      "size_bytes": 15541,
+      "sha256": "67d211b5c1aec5aabd735aaed6df730fbf951d2eb6c70a9431e15f81033c0ddc"
     },
     {
       "path": "mlx-model-porting/assets/contributor_learnings.json",
@@ -162,8 +162,8 @@
     },
     {
       "path": "mlx-model-porting/assets/research_backlog.json",
-      "size_bytes": 9759,
-      "sha256": "22b2fdbf76f643007dfd758c4da0c0477ae55cc79194402db342f73640719322"
+      "size_bytes": 10045,
+      "sha256": "098d98a6818a86fd29f1a3a3e7af598beacaa2b6b0a2763b52a1c665cbdfd71f"
     },
     {
       "path": "mlx-model-porting/assets/research_loop_config.json",
@@ -232,8 +232,8 @@
     },
     {
       "path": "mlx-model-porting/references/model-support-map.md",
-      "size_bytes": 4395,
-      "sha256": "e09f3b013f0f24af801fd9422ead96001f81a9187ec728115e427213e2cc14e9"
+      "size_bytes": 4519,
+      "sha256": "650e38a429d0ffe08f9fc951c9ae525b972ffdfe0e48e43939e17738f16887b6"
     },
     {
       "path": "mlx-model-porting/references/packaging-and-publication.md",
@@ -242,8 +242,8 @@
     },
     {
       "path": "mlx-model-porting/references/parity-and-testing.md",
-      "size_bytes": 4757,
-      "sha256": "a5544ea4a844341b675619985560981d1da0685486769ab0a2819f2a7f6c9b62"
+      "size_bytes": 4846,
+      "sha256": "4160d2599055543357c2d694be3565eecb3dd4491c7baec57f83a036cfeec1ef"
     },
     {
       "path": "mlx-model-porting/references/porting-core.md",
@@ -294,6 +294,11 @@
       "path": "mlx-model-porting/references/runbook-flow-tts.md",
       "size_bytes": 3170,
       "sha256": "ad3d096da9dccbd26bb0210a4d4638d3468dd6d8083efd4579f90eff424dbbaf"
+    },
+    {
+      "path": "mlx-model-porting/references/runbook-graph-message-passing.md",
+      "size_bytes": 3909,
+      "sha256": "bb7c2878b826391dce2ade8003e999df2c1380bfabf021ebe6b31bec9df2b321"
     },
     {
       "path": "mlx-model-porting/references/runbook-moe-transformer.md",
@@ -567,8 +572,8 @@
     },
     {
       "path": "tests/fixtures/generate_fixtures.py",
-      "size_bytes": 19060,
-      "sha256": "bba8869b8fdd670a90700b6f2ecc68226000ce2d42c0826eeb4b3d7173bb7fb2"
+      "size_bytes": 19859,
+      "sha256": "155bba2f0ed52f0dcb02584a117f0ff52379cda67def7e225f332c3ebfd8b76f"
     },
     {
       "path": "tests/fixtures/manifests/map.json",
@@ -669,6 +674,16 @@
       "path": "tests/fixtures/models/flow_diffusion_tts/model.safetensors",
       "size_bytes": 2018,
       "sha256": "d8d296236363b9a82fe5a60dfdd4849425cc712e9d1f7e5999fbec614a1b32a2"
+    },
+    {
+      "path": "tests/fixtures/models/graph_message_passing/config.json",
+      "size_bytes": 333,
+      "sha256": "ef8e26d72c09ce4822dde96bec37a811102ca47e2213db905ff55cc333bb2c56"
+    },
+    {
+      "path": "tests/fixtures/models/graph_message_passing/model.safetensors",
+      "size_bytes": 818,
+      "sha256": "4e4eb488c257e5d3ac1bd432d6144ed66271a3d51d38c1cafc627df91eb1e6f6"
     },
     {
       "path": "tests/fixtures/models/moe/config.json",
@@ -806,6 +821,11 @@
       "sha256": "d0741bab852ba0890fac793738d35c036c5d7baa12e013ce95a3f3e8ef7b85b9"
     },
     {
+      "path": "tests/fixtures/scenarios/graph-message-passing.json",
+      "size_bytes": 465,
+      "sha256": "59903ac9c1cac21c5c70d475477a15b08335a6fb0722c0e708b65f6f3168c2f3"
+    },
+    {
       "path": "tests/fixtures/scenarios/moe-decoder.json",
       "size_bytes": 469,
       "sha256": "14314dff9bf50fc167f28a1b11db9419b96606420501e3a79ff2865f2a1484ff"
@@ -933,7 +953,7 @@
     {
       "path": "tests/test_tooling.py",
       "size_bytes": 60966,
-      "sha256": "f035c748fae37697792d763ce159132ca033f18dcd046b1753b3ff47f1ca0fbe"
+      "sha256": "1762af592cd7acab3f9a34016809aec4367e7eef07543202744126a0b85485c3"
     }
   ]
 }

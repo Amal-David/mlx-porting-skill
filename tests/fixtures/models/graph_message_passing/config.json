@@ -1,0 +1,16 @@
+{
+  "model_type": "gcn",
+  "architectures": [
+    "GCNForNodeClassification"
+  ],
+  "num_node_features": 6,
+  "num_edge_features": 2,
+  "hidden_channels": 8,
+  "num_layers": 2,
+  "num_labels": 3,
+  "aggregation": "add",
+  "add_self_loops": true,
+  "normalize_adjacency": true,
+  "torch_dtype": "float16",
+  "license": "apache-2.0"
+}

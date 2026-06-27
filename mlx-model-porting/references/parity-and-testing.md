@@ -57,9 +57,11 @@ Tensor allclose is not enough when approximations are introduced.
 - Ranking and recommender subfamilies: pair-score parity, top-k ordering
   stability, NDCG, AUC/AP, retrieval recall, and candidate-id versus score-based
   retrieval checks.
-- Graph, point-cloud, and scientific ML: scatter/segment/reduce parity,
-  permutation invariance, neighbor-list determinism, rotation/reflection
-  equivariance, unit constraints, and task metrics such as OGB accuracy/ROC-AUC,
+- Graph message passing: scatter/segment/reduce parity, permutation
+  invariance, batched-graph boundary checks, and task metrics such as OGB
+  accuracy/ROC-AUC.
+- Point-cloud, equivariant, and scientific ML: neighbor-list determinism,
+  rotation/reflection equivariance, unit constraints, and task metrics such as
   ModelNet/ShapeNet accuracy or mIoU, molecular MAE/RMSE, and energy/force
   errors.
 - Training/fine-tuning: scalar loss parity, selected gradient parity,

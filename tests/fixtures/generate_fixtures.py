@@ -129,6 +129,29 @@ MODEL_SPECS: dict[str, dict[str, Any]] = {
             "classifier.weight": ("F16", [10, 8]),
         },
     },
+    "graph_message_passing": {
+        "config": {
+            "model_type": "gcn",
+            "architectures": ["GCNForNodeClassification"],
+            "num_node_features": 6,
+            "num_edge_features": 2,
+            "hidden_channels": 8,
+            "num_layers": 2,
+            "num_labels": 3,
+            "aggregation": "add",
+            "add_self_loops": True,
+            "normalize_adjacency": True,
+            "torch_dtype": "float16",
+            "license": "apache-2.0",
+        },
+        "tensors": {
+            "node_encoder.weight": ("F16", [8, 6]),
+            "edge_encoder.weight": ("F16", [8, 2]),
+            "convs.0.lin.weight": ("F16", [8, 8]),
+            "convs.1.lin.weight": ("F16", [8, 8]),
+            "classifier.weight": ("F16", [3, 8]),
+        },
+    },
     "encoder_decoder": {
         "config": {
             "model_type": "t5",
