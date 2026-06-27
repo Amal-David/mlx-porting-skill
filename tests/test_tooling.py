@@ -1219,6 +1219,15 @@ class ToolingTests(unittest.TestCase):
             self.assertEqual(loop["total_finding_count"], 6)
             self.assertEqual(loop["sampling_coverage"]["sampled_target_count"], 4)
             self.assertEqual(loop["sampling_coverage"]["unplanned_source_count"], 2)
+            self.assertEqual(loop["promotion_review"]["promotion_ready_count"], 2)
+            self.assertEqual(loop["promotion_review"]["validation_backlog_count"], 4)
+            self.assertEqual(loop["promotion_review"]["rejected_count"], 0)
+            self.assertEqual(loop["iterations"][0]["promotion_review"]["promotion_ready_count"], 1)
+            self.assertEqual(loop["iterations"][1]["promotion_review"]["validation_backlog_count"], 2)
+            ready_entry = loop["promotion_review"]["promotion_ready"][0]
+            self.assertEqual(ready_entry["iteration"], 1)
+            self.assertEqual(ready_entry["iteration_run_id"], "iterative-loop-i01")
+            self.assertEqual(ready_entry["iteration_output_dir"], "iterations/01")
             self.assertEqual(loop["review_gate"]["status"], "pass")
             self.assertEqual(first["review_gate"]["status"], "pass")
             self.assertEqual(first["assignment_planner"]["mode"], "config-order")
@@ -1232,6 +1241,9 @@ class ToolingTests(unittest.TestCase):
             self.assertIn("Final gap hints", loop_markdown)
             self.assertIn("sampling coverage", loop_markdown)
             self.assertIn("Review gate: pass", loop_markdown)
+            self.assertIn("## Promotion Review", loop_markdown)
+            self.assertIn("promotion ready: 2", loop_markdown)
+            self.assertIn("i1: official-custom-metal-validation", loop_markdown)
             self.assertIn("iterative-loop-i02", loop_markdown)
 
     def test_research_loop_until_review_gate_stops_after_passing_iteration(self) -> None:

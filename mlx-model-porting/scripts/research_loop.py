@@ -2078,6 +2078,7 @@ def run_iteration(
 
 
 def loop_iteration_record(root: Path, summary: dict[str, Any], output_dir: Path) -> dict[str, Any]:
+    promotion_review = summary.get("promotion_review", {})
     return {
         "iteration": summary["iteration"],
         "run_id": summary["run_id"],
@@ -2104,6 +2105,18 @@ def loop_iteration_record(root: Path, summary: dict[str, Any], output_dir: Path)
         "non_github_lanes_covered": summary.get("non_github_lanes_covered", []),
         "execution_counts": summary.get("execution_counts", {}),
         "review_gate": summary.get("review_gate", {}),
+        "promotion_review": {
+            "schema_version": promotion_review.get("schema_version", 1),
+            "review_only": True,
+            "auto_modify_recommendations": bool(promotion_review.get("auto_modify_recommendations", False)),
+            "auto_promote_sources": bool(promotion_review.get("auto_promote_sources", False)),
+            "promotion_ready_count": int(promotion_review.get("promotion_ready_count", 0)),
+            "validation_backlog_count": int(promotion_review.get("validation_backlog_count", 0)),
+            "rejected_count": int(promotion_review.get("rejected_count", 0)),
+            "promotion_ready": promotion_review.get("promotion_ready", []),
+            "validation_backlog": promotion_review.get("validation_backlog", []),
+            "rejected": promotion_review.get("rejected", []),
+        },
     }
 
 
@@ -2215,6 +2228,7 @@ def build_loop_summary(
         "execution_counts": dict(sorted(execution_counts.items())),
         "sampling_coverage": dict(sorted(sampling_counts.items())),
         "review_gate": aggregate_review_gate(records, "final_iteration" if until_review_gate else "all_iterations"),
+        "promotion_review": aggregate_loop_promotion_review(records),
         "iterations": records,
         "final_gap_hints": final_gap_hints,
         "instructions": [
@@ -2225,8 +2239,59 @@ def build_loop_summary(
     }
 
 
+def with_iteration_context(entry: dict[str, Any], record: dict[str, Any]) -> dict[str, Any]:
+    row = dict(entry)
+    row["iteration"] = record.get("iteration")
+    row["iteration_run_id"] = record.get("run_id")
+    row["iteration_output_dir"] = record.get("output_dir")
+    return row
+
+
+def aggregate_loop_promotion_review(records: list[dict[str, Any]]) -> dict[str, Any]:
+    promotion_ready = []
+    validation_backlog = []
+    rejected = []
+    auto_modify = False
+    auto_promote = False
+    for record in records:
+        review = record.get("promotion_review", {})
+        auto_modify = auto_modify or bool(review.get("auto_modify_recommendations", False))
+        auto_promote = auto_promote or bool(review.get("auto_promote_sources", False))
+        promotion_ready.extend(with_iteration_context(entry, record) for entry in review.get("promotion_ready", []))
+        validation_backlog.extend(with_iteration_context(entry, record) for entry in review.get("validation_backlog", []))
+        rejected.extend(with_iteration_context(entry, record) for entry in review.get("rejected", []))
+    return {
+        "schema_version": 1,
+        "review_only": True,
+        "auto_modify_recommendations": auto_modify,
+        "auto_promote_sources": auto_promote,
+        "promotion_ready_count": len(promotion_ready),
+        "validation_backlog_count": len(validation_backlog),
+        "rejected_count": len(rejected),
+        "promotion_ready": promotion_ready,
+        "validation_backlog": validation_backlog,
+        "rejected": rejected,
+        "aggregation_rule": "Entries are copied from per-iteration synthesis promotion_review ledgers and tagged with iteration context.",
+    }
+
+
+def promotion_review_markdown_rows(entries: list[dict[str, Any]], limit: int = 10) -> list[str]:
+    rows = []
+    for entry in entries[:limit]:
+        blockers = ", ".join(entry.get("promotion_blockers", []))
+        suffix = f" - {blockers}" if blockers else ""
+        rows.append(
+            f"i{entry.get('iteration')}: {entry.get('id')}: {entry.get('title')}{suffix}"
+        )
+    remaining = len(entries) - limit
+    if remaining > 0:
+        rows.append(f"... {remaining} more")
+    return rows
+
+
 def write_loop_markdown(output_dir: Path, loop_summary: dict[str, Any]) -> None:
     review_gate = loop_summary.get("review_gate", {})
+    promotion_review = loop_summary.get("promotion_review", {})
     lines = [
         f"# Research Loop {loop_summary['run_id']}",
         "",
@@ -2273,6 +2338,25 @@ def write_loop_markdown(output_dir: Path, loop_summary: dict[str, Any]) -> None:
     lines.append("- blocked reasons:")
     for reason in review_gate.get("blocked_reasons", []) or ["None"]:
         lines.append(f"  - {reason}")
+    lines.extend([
+        "",
+        "## Promotion Review",
+        "- review-only: true",
+        f"- auto modify recommendations: {str(promotion_review.get('auto_modify_recommendations', False)).lower()}",
+        f"- auto promote sources: {str(promotion_review.get('auto_promote_sources', False)).lower()}",
+        f"- promotion ready: {promotion_review.get('promotion_ready_count', 0)}",
+        f"- validation backlog: {promotion_review.get('validation_backlog_count', 0)}",
+        f"- rejected: {promotion_review.get('rejected_count', 0)}",
+        "",
+        "### Promotion Ready",
+        markdown_list(promotion_review_markdown_rows(promotion_review.get("promotion_ready", []))),
+        "",
+        "### Validation Backlog",
+        markdown_list(promotion_review_markdown_rows(promotion_review.get("validation_backlog", []))),
+        "",
+        "### Rejected",
+        markdown_list(promotion_review_markdown_rows(promotion_review.get("rejected", []))),
+    ])
     lines.extend(["", "## Decision Counts"])
     for decision, count in loop_summary.get("decision_counts", {}).items():
         lines.append(f"- {decision}: {count}")

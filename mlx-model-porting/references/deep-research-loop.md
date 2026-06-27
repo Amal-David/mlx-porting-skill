@@ -148,7 +148,10 @@ include failed checks and unmatched planned sampling targets. The next iteration
 receives those hints, which lets the planner switch from deterministic config
 order to dynamic coverage-driven assignment selection without rewriting
 recommendation assets. Fixed loop receipts aggregate the per-iteration review
-gates and remain failed until every iteration passes its own gate.
+gates and remain failed until every iteration passes its own gate. Loop
+receipts also aggregate each iteration's `promotion_review` entries and tag
+them with iteration, run id, and output directory so a multi-wave campaign has
+one final ready/backlog/rejected handoff.
 
 Use `--until-review-gate` when `--iterations` should be a cap rather than a
 fixed count. In that adaptive mode, the loop stops as soon as an iteration
