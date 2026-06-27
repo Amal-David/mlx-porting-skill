@@ -2,8 +2,8 @@
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
   "version": "0.1.0",
-  "generated_at": "2026-06-27T12:06:12.717126+00:00",
-  "file_count": 182,
+  "generated_at": "2026-06-27T12:11:47.244209+00:00",
+  "file_count": 186,
   "files": [
     {
       "path": ".github/workflows/daily-research.yml",
@@ -62,8 +62,8 @@
     },
     {
       "path": "VALIDATION.md",
-      "size_bytes": 4607,
-      "sha256": "9299e95bac3dbaaa2833f8422a6881ae706c7eb14cba75ca087770c4651b7ec5"
+      "size_bytes": 4764,
+      "sha256": "1e13674dd651aa71ed76c62802fafc92a2ab66cac73786db92c8fe828675e4ca"
     },
     {
       "path": "VERSION",
@@ -142,8 +142,8 @@
     },
     {
       "path": "mlx-model-porting/assets/architectures.yaml",
-      "size_bytes": 13520,
-      "sha256": "e5ca2a397d57482f6daab97ff6ff3fffc4d306f6699e6e28ab20f96daff40b51"
+      "size_bytes": 14479,
+      "sha256": "68ffce02b44f5a0c57c0379d69d9f73b3b4e155d5b2e5b71de188042fd7de5df"
     },
     {
       "path": "mlx-model-porting/assets/contributor_learnings.json",
@@ -162,8 +162,8 @@
     },
     {
       "path": "mlx-model-porting/assets/research_backlog.json",
-      "size_bytes": 9487,
-      "sha256": "0851b9aa69b2e5db8b0e25b489903b99573ca68196ba7be8facf483e8822157e"
+      "size_bytes": 9759,
+      "sha256": "22b2fdbf76f643007dfd758c4da0c0477ae55cc79194402db342f73640719322"
     },
     {
       "path": "mlx-model-porting/assets/research_loop_config.json",
@@ -228,12 +228,12 @@
     {
       "path": "mlx-model-porting/references/maintenance-and-provenance.md",
       "size_bytes": 4819,
-      "sha256": "cd93459ab2bf5fa93e0fa9a960e660230365af6c8d807aa29967b0b496e73c32"
+      "sha256": "ddda03dee0e7ca5f783fe7bf6eeeb11f6c7cdfd23c811bdec2db0783cad196cd"
     },
     {
       "path": "mlx-model-porting/references/model-support-map.md",
-      "size_bytes": 4478,
-      "sha256": "ff7177e967976b70e81c16cf81c6329e85e2a49bef9591311f5ae539a02bdae2"
+      "size_bytes": 4395,
+      "sha256": "e09f3b013f0f24af801fd9422ead96001f81a9187ec728115e427213e2cc14e9"
     },
     {
       "path": "mlx-model-porting/references/packaging-and-publication.md",
@@ -304,6 +304,11 @@
       "path": "mlx-model-porting/references/runbook-multimodal-omni.md",
       "size_bytes": 4767,
       "sha256": "0e8bd53f9311eb475be7cf241a7e59ba48922a967d0b59be72ffb9e654c0375d"
+    },
+    {
+      "path": "mlx-model-porting/references/runbook-non-generative-cv.md",
+      "size_bytes": 3397,
+      "sha256": "d069bde6eafd007923dbd957fd1461873f22005f42e324b2c91a1469ab2fef43"
     },
     {
       "path": "mlx-model-porting/references/runbook-separation-enhancement.md",
@@ -562,8 +567,8 @@
     },
     {
       "path": "tests/fixtures/generate_fixtures.py",
-      "size_bytes": 18272,
-      "sha256": "16da3a56acf86a1b9d34737d976d79691b61dd4e0e2a9fc7d294237a6153af9b"
+      "size_bytes": 19060,
+      "sha256": "bba8869b8fdd670a90700b6f2ecc68226000ce2d42c0826eeb4b3d7173bb7fb2"
     },
     {
       "path": "tests/fixtures/manifests/map.json",
@@ -674,6 +679,16 @@
       "path": "tests/fixtures/models/moe/model.safetensors",
       "size_bytes": 760,
       "sha256": "5b229681d2c16b328086b3f804f593186f5d8605bf76cb04b1026a5fd8f08cb3"
+    },
+    {
+      "path": "tests/fixtures/models/non_generative_cv_backbone/config.json",
+      "size_bytes": 626,
+      "sha256": "8c7ffc8760b975b38d83819bb8a3f19291bce6f6bab236cbc90b5b5c1fc211b0"
+    },
+    {
+      "path": "tests/fixtures/models/non_generative_cv_backbone/model.safetensors",
+      "size_bytes": 1295,
+      "sha256": "2c91feaecafd288afa76b33e12e04ad0506184cbc43163adc77a99c418e7aa81"
     },
     {
       "path": "tests/fixtures/models/separation_enhancement/config.json",
@@ -801,6 +816,11 @@
       "sha256": "7bb6fd6a720c97ed744615d0078bf64c15336561c3a02f42fa324db894a46cec"
     },
     {
+      "path": "tests/fixtures/scenarios/non-generative-cv-backbone.json",
+      "size_bytes": 491,
+      "sha256": "4655fc525421da3e9188e41919be916ebfc041ea983fc1441801f433289a821c"
+    },
+    {
       "path": "tests/fixtures/scenarios/separation-enhancement.json",
       "size_bytes": 482,
       "sha256": "7418ab4f23f52e29e6c2591cb48aaeb080712b8282863bca8004a91e00091db0"
@@ -913,7 +933,7 @@
     {
       "path": "tests/test_tooling.py",
       "size_bytes": 60966,
-      "sha256": "bd30634dd4db657a485ede84b91215bc21ac6e8c83ff6454d5766dbb7f2421f9"
+      "sha256": "f035c748fae37697792d763ce159132ca033f18dcd046b1753b3ff47f1ca0fbe"
     }
   ]
 }

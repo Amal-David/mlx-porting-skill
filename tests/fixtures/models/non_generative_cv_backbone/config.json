@@ -1,0 +1,35 @@
+{
+  "model_type": "resnet",
+  "architectures": [
+    "ResNetForImageClassification"
+  ],
+  "image_size": 32,
+  "num_channels": 3,
+  "num_labels": 10,
+  "id2label": {
+    "0": "class_0",
+    "1": "class_1",
+    "2": "class_2",
+    "3": "class_3",
+    "4": "class_4",
+    "5": "class_5",
+    "6": "class_6",
+    "7": "class_7",
+    "8": "class_8",
+    "9": "class_9"
+  },
+  "label2id": {
+    "class_0": 0,
+    "class_1": 1,
+    "class_2": 2,
+    "class_3": 3,
+    "class_4": 4,
+    "class_5": 5,
+    "class_6": 6,
+    "class_7": 7,
+    "class_8": 8,
+    "class_9": 9
+  },
+  "torch_dtype": "float16",
+  "license": "apache-2.0"
+}

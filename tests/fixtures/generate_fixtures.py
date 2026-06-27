@@ -109,6 +109,26 @@ MODEL_SPECS: dict[str, dict[str, Any]] = {
             "pooler.dense.weight": ("F16", [8, 8]),
         },
     },
+    "non_generative_cv_backbone": {
+        "config": {
+            "model_type": "resnet",
+            "architectures": ["ResNetForImageClassification"],
+            "image_size": 32,
+            "num_channels": 3,
+            "num_labels": 10,
+            "id2label": {str(i): f"class_{i}" for i in range(10)},
+            "label2id": {f"class_{i}": i for i in range(10)},
+            "torch_dtype": "float16",
+            "license": "apache-2.0",
+        },
+        "tensors": {
+            "conv1.weight": ("F16", [8, 3, 3, 3]),
+            "stages.0.blocks.0.conv_dw.weight": ("F16", [8, 1, 3, 3]),
+            "stages.0.blocks.0.norm.weight": ("F16", [8]),
+            "features.0.weight": ("F16", [8, 8, 1, 1]),
+            "classifier.weight": ("F16", [10, 8]),
+        },
+    },
     "encoder_decoder": {
         "config": {
             "model_type": "t5",

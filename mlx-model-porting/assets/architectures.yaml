@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "reviewed": "2026-06-23",
+  "reviewed": "2026-06-27",
   "families": [
     {
       "id": "dense-decoder-transformer",
@@ -135,6 +135,41 @@
       ],
       "state": "usually stateless full-sequence encoder",
       "notes": "Modality-specific frontends may require additional runbooks."
+    },
+    {
+      "id": "non-generative-cv-backbone",
+      "runbook": "references/runbook-non-generative-cv.md",
+      "targets": [
+        "standalone-mlx"
+      ],
+      "model_type_aliases": [
+        "resnet",
+        "convnext",
+        "efficientnet",
+        "swin",
+        "beit"
+      ],
+      "class_patterns": [
+        "ForImageClassification",
+        "ImageClassification",
+        "ConvNext",
+        "ResNet",
+        "EfficientNet"
+      ],
+      "config_signals": [
+        "image_size",
+        "num_channels",
+        "num_labels",
+        "id2label"
+      ],
+      "weight_signals": [
+        "conv1.weight",
+        "features.0",
+        "stages.0",
+        "classifier.weight"
+      ],
+      "state": "stateless image backbone plus classifier or embedding head",
+      "notes": "Backbone/classifier and feature-extraction only; detection, segmentation, promptable masks, OCR, depth, and pose need separate CV runbooks and fixtures."
     },
     {
       "id": "encoder-decoder-transformer",

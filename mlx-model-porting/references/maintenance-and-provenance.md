@@ -58,7 +58,7 @@ Use `validate_sources.py --check-urls` only when network access is explicitly al
 
 ## Golden scenario gate
 
-`tests.test_scenarios` must cover every family in `assets/architectures.yaml`. When adding or renaming an architecture family, update `tests/fixtures/generate_fixtures.py`, add a tiny scenario under `tests/fixtures/scenarios/`, and keep the 14/14-style scorecard at full marks for routing, runbook selection, weight-key coverage, seeded parity failure, and optimization inclusion/exclusion. Synthetic scenarios prove skill routing only; they do not prove real-model conversion support.
+`tests.test_scenarios` must cover every family in `assets/architectures.yaml`. When adding or renaming an architecture family, update `tests/fixtures/generate_fixtures.py`, add a tiny scenario under `tests/fixtures/scenarios/`, and keep the full-family scorecard at full marks for routing, runbook selection, weight-key coverage, seeded parity failure, and optimization inclusion/exclusion. Synthetic scenarios prove skill routing only; they do not prove real-model conversion support.
 
 ## Deep research loop
 

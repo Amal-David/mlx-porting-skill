@@ -1,0 +1,14 @@
+{
+  "name": "non-generative-cv-backbone",
+  "fixture": "models/non_generative_cv_backbone",
+  "expected_family": "non-generative-cv-backbone",
+  "expected_runbook": "references/runbook-non-generative-cv.md",
+  "expected_weight_keys": [
+    "conv1.weight",
+    "stages.0.blocks.0.conv_dw.weight",
+    "classifier.weight"
+  ],
+  "optimization_must_include": "compile-stable-region",
+  "optimization_must_exclude": "fast-sdpa",
+  "seeded_parity_bug": {"shape": [1, 3, 32, 32], "delta": 3.25}
+}
