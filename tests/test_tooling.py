@@ -1326,6 +1326,8 @@ class ToolingTests(unittest.TestCase):
             self.assertEqual(synthesis["sampling_coverage"]["sampled_target_count"], 2)
             self.assertEqual(synthesis["sampling_coverage"]["unplanned_source_count"], 1)
             self.assertEqual(synthesis["review_gate"]["status"], "pass")
+            self.assertEqual(synthesis["blog_contract"]["failed_count"], 0)
+            self.assertTrue(all(receipt["contract_status"] == "pass" for receipt in synthesis["blog_receipts"]))
             self.assertIn("official_docs", synthesis["non_github_lanes_covered"])
             self.assertIn("hugging_face", synthesis["non_github_lanes_covered"])
             self.assertIn("technical_blogs", synthesis["non_github_lanes_covered"])
@@ -1760,6 +1762,65 @@ class ToolingTests(unittest.TestCase):
             blog = output_dir / execution["blog_path"]
             self.assertIn("external-subagent-official-docs", blog.read_text())
 
+    def test_research_loop_preserves_external_subagent_authored_blog(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            output_dir = Path(tmp) / "external-blog-run"
+            run_script(
+                "research_loop.py",
+                "--run-id", "external-blog-loop",
+                "--objective", "Preserve external worker authored blogs",
+                "--agent-count", 1,
+                "--output-dir", output_dir,
+            )
+            subagents = json.loads((output_dir / "subagents.json").read_text())
+            agent = subagents["agents"][0]
+            result_path = output_dir / agent["result_path"]
+            blog_path = output_dir / agent["blog_path"]
+            result_path.write_text(json.dumps({
+                "persona_id": agent["persona_id"],
+                "decision_notes": ["External worker also wrote a blog."],
+                "findings": [
+                    {
+                        "id": "external-blog-finding",
+                        "title": "External worker blog receipt",
+                        "summary": "A separately spawned researcher can write a blog to the handoff path.",
+                        "source_lane": "official_docs",
+                        "sources": [
+                            {
+                                "title": "MLX documentation index",
+                                "url": "https://ml-explore.github.io/mlx/build/html/index.html",
+                                "accessed": "2026-06-27",
+                                "kind": "official-doc",
+                            }
+                        ],
+                        "decision": "held",
+                        "evidence_level": "deterministic-test-fixture",
+                        "validation_gate": "External blog receipts must be contract-checked.",
+                        "affects": ["references/deep-research-loop.md"],
+                        "caveats": ["This proves external blog preservation only."],
+                        "required_next_validation": "Run a live external subagent campaign.",
+                    }
+                ],
+            }), encoding="utf-8")
+            blog_path.write_text("# Worker-authored external blog\n\n## Assignment\nExternal blog body.\n", encoding="utf-8")
+            run_script(
+                "research_loop.py",
+                "--run-id", "external-blog-loop",
+                "--objective", "Preserve external worker authored blogs",
+                "--agent-count", 1,
+                "--ingest-subagent-results",
+                "--output-dir", output_dir,
+            )
+            assignments = json.loads((output_dir / "assignments.json").read_text())
+            synthesis = json.loads((output_dir / "synthesis.json").read_text())
+            assignment = assignments["assignments"][0]
+            self.assertEqual(assignment["blog"]["source"], "executor-authored")
+            self.assertEqual(assignment["blog"]["contract_status"], "fail")
+            self.assertIn("Sources sampled", assignment["blog"]["missing_sections"])
+            self.assertIn("Worker-authored external blog", (output_dir / assignment["blog"]["path"]).read_text())
+            self.assertTrue((output_dir / assignment["blog"]["generated_blog_path"]).exists())
+            self.assertEqual(synthesis["blog_contract"]["worker_authored_failed_count"], 1)
+
     def test_research_loop_ingest_subagent_results_fails_on_missing_result(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             output_dir = Path(tmp) / "external-missing-run"
@@ -1862,6 +1923,41 @@ class ToolingTests(unittest.TestCase):
             self.assertEqual(packet["blog"]["source"], "executor-authored")
             self.assertEqual(subagents["agents"][0]["blog_source"], "executor-authored")
             self.assertEqual(synthesis["blog_receipts"][0]["source"], "executor-authored")
+            self.assertEqual(synthesis["blog_receipts"][0]["contract_status"], "fail")
+            self.assertIn("Planned sampling", synthesis["blog_receipts"][0]["missing_sections"])
+            self.assertEqual(synthesis["blog_contract"]["worker_authored_failed_count"], 1)
+
+    def test_research_loop_strict_worker_blog_contract_fails_after_receipts(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            output_dir = Path(tmp) / "strict-blog-run"
+            fake_executor = FIXTURES / "research_loop" / "fake_executor.py"
+            os.environ["MLX_FAKE_EXECUTOR_WRITE_BLOG"] = "1"
+            try:
+                result = run_script(
+                    "research_loop.py",
+                    "--run-id", "strict-blog-loop",
+                    "--objective", "Require worker blogs to include all research sections",
+                    "--agent-count", 1,
+                    "--executor-command", f"{sys.executable} {fake_executor}",
+                    "--require-worker-blog-contract",
+                    "--output-dir", output_dir,
+                    expected=2,
+                )
+            finally:
+                os.environ.pop("MLX_FAKE_EXECUTOR_WRITE_BLOG", None)
+            self.assertIn("worker blog contract failed", result.stderr)
+            self.assertTrue((output_dir / "assignments.json").exists())
+            self.assertTrue((output_dir / "synthesis.json").exists())
+            synthesis = json.loads((output_dir / "synthesis.json").read_text())
+            receipt = synthesis["blog_receipts"][0]
+            self.assertEqual(receipt["source"], "executor-authored")
+            self.assertEqual(receipt["contract_status"], "fail")
+            self.assertIn("Sources sampled", receipt["missing_sections"])
+            self.assertEqual(synthesis["blog_contract"]["worker_authored_failed_count"], 1)
+            generated_path = output_dir / receipt["generated_blog_path"]
+            self.assertTrue(generated_path.exists())
+            summary = (output_dir / "synthesis.md").read_text()
+            self.assertIn("worker-authored failed", summary)
 
     def test_research_loop_executor_workers_run_in_parallel(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

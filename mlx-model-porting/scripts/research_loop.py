@@ -20,6 +20,15 @@ from _common import SkillError, dump_json, load_structured, safe_relpath, slugif
 SCRIPT_DIR = Path(__file__).resolve().parent
 SKILL_ROOT = SCRIPT_DIR.parent
 DEFAULT_CONFIG = SKILL_ROOT / "assets" / "research_loop_config.json"
+BLOG_REQUIRED_SECTIONS = [
+    "Assignment",
+    "Planned sampling",
+    "Sources sampled",
+    "Sampling coverage",
+    "Candidate findings",
+    "Decision notes",
+    "Open validation",
+]
 
 
 def parse_args() -> argparse.Namespace:
@@ -89,6 +98,11 @@ def parse_args() -> argparse.Namespace:
         "--require-explicit-sampling-receipts",
         action="store_true",
         help="Require returned sources to declare the planned sample target they satisfied",
+    )
+    parser.add_argument(
+        "--require-worker-blog-contract",
+        action="store_true",
+        help="Exit non-zero after writing receipts when a worker-authored blog misses required sections",
     )
     parser.add_argument(
         "--ingest-subagent-results",
@@ -594,15 +608,7 @@ def write_subagent_handoffs(
             },
             "blog_contract": {
                 "path": rel_paths["blog"],
-                "sections": [
-                    "Assignment",
-                    "Planned sampling",
-                    "Sources sampled",
-                    "Sampling coverage",
-                    "Candidate findings",
-                    "Decision notes",
-                    "Open validation",
-                ],
+                "sections": BLOG_REQUIRED_SECTIONS,
             },
             "constraints": [
                 "Review-only: do not modify recommendation assets.",
@@ -657,6 +663,11 @@ def append_review_gate_command_args(command_args: list[str], requirements: dict[
         command_args.append("--require-explicit-sampling-receipts")
 
 
+def append_blog_contract_command_args(command_args: list[str], summary: dict[str, Any]) -> None:
+    if summary.get("require_worker_blog_contract"):
+        command_args.append("--require-worker-blog-contract")
+
+
 def ingest_command_args_for_wave(summary: dict[str, Any], output_dir: Path) -> list[str]:
     planner = summary.get("assignment_planner", {})
     dispatch = summary.get("subagent_dispatch", {})
@@ -678,6 +689,7 @@ def ingest_command_args_for_wave(summary: dict[str, Any], output_dir: Path) -> l
         command_args,
         summary.get("review_gate", {}).get("requirements", {}),
     )
+    append_blog_contract_command_args(command_args, summary)
     command_args.extend([
         "--ingest-subagent-results",
         "--output-dir",
@@ -1057,6 +1069,11 @@ def ingest_subagent_results(
         rel_paths = agent_rel_paths(output_dir, assignment)
         result_path = paths["result"]
         blog_path = paths["blog"]
+        generated_title = f"# {assignment['title']} Research Blog"
+        worker_authored_blog = False
+        if blog_path.exists() and blog_path.stat().st_size > 0:
+            first_line = blog_path.read_text(encoding="utf-8").splitlines()[0:1]
+            worker_authored_blog = not first_line or first_line[0].strip() != generated_title
         state = "subagent_result_missing"
         failure_reason = None
         agent = None
@@ -1072,7 +1089,7 @@ def ingest_subagent_results(
             "assignment_path": rel_paths["assignment"],
             "prompt_path": rel_paths["prompt"],
             "blog_path": rel_paths["blog"],
-            "blog_source": "executor-authored" if blog_path.exists() and blog_path.stat().st_size > 0 else "generated",
+            "blog_source": "executor-authored" if worker_authored_blog else "generated",
             "result_path": rel_paths["result"],
             "ingested_at": utc_now(),
         }
@@ -1742,7 +1759,84 @@ def markdown_list(items: list[str]) -> str:
     return "\n".join(f"- {item}" for item in items)
 
 
-def write_blogs(output_dir: Path, assignments: list[dict[str, Any]], fixture: dict[str, Any]) -> list[dict[str, Any]]:
+def blog_required_sections(config: dict[str, Any]) -> list[str]:
+    configured = [
+        str(section)
+        for section in config.get("blog_sections", [])
+        if str(section).strip()
+    ]
+    return unique_ordered(BLOG_REQUIRED_SECTIONS + configured)
+
+
+def markdown_heading_sections(text: str) -> set[str]:
+    sections = set()
+    for line in text.splitlines():
+        match = re.match(r"^\s*#{2,6}\s+(.+?)\s*$", line)
+        if match:
+            sections.add(match.group(1).strip().lower())
+    return sections
+
+
+def blog_contract_receipt(text: str, required_sections: list[str]) -> dict[str, Any]:
+    present_headings = markdown_heading_sections(text)
+    present = [section for section in required_sections if section.lower() in present_headings]
+    missing = [section for section in required_sections if section.lower() not in present_headings]
+    return {
+        "required_sections": required_sections,
+        "present_sections": present,
+        "missing_sections": missing,
+        "contract_status": "pass" if not missing else "fail",
+    }
+
+
+def summarize_blog_contract(receipts: list[dict[str, Any]]) -> dict[str, Any]:
+    failed = [receipt for receipt in receipts if receipt.get("contract_status") != "pass"]
+    worker_failed = [
+        receipt
+        for receipt in failed
+        if receipt.get("source") != "generated"
+    ]
+    return {
+        "schema_version": 1,
+        "required_sections": receipts[0].get("required_sections", []) if receipts else [],
+        "blog_count": len(receipts),
+        "passing_count": len(receipts) - len(failed),
+        "failed_count": len(failed),
+        "worker_authored_failed_count": len(worker_failed),
+        "failed_blogs": [
+            {
+                "persona_id": receipt["persona_id"],
+                "path": receipt["path"],
+                "source": receipt["source"],
+                "missing_sections": receipt.get("missing_sections", []),
+            }
+            for receipt in failed
+        ],
+    }
+
+
+def blog_contract_failed(receipt: dict[str, Any]) -> bool:
+    return any(
+        blog.get("source") != "generated"
+        for blog in receipt.get("blog_contract", {}).get("failed_blogs", [])
+    )
+
+
+def blog_contract_failure_message(receipt: dict[str, Any]) -> str:
+    failures = [
+        f"{blog['persona_id']} missing {', '.join(blog.get('missing_sections', [])) or 'required sections'}"
+        for blog in receipt.get("blog_contract", {}).get("failed_blogs", [])
+        if blog.get("source") != "generated"
+    ]
+    return "worker blog contract failed: " + "; ".join(failures or ["worker-authored blog contract did not pass"])
+
+
+def write_blogs(
+    output_dir: Path,
+    assignments: list[dict[str, Any]],
+    fixture: dict[str, Any],
+    required_sections: list[str],
+) -> list[dict[str, Any]]:
     by_persona = {agent.get("persona_id"): agent for agent in fixture.get("agents", [])}
     blog_dir = output_dir / "blogs"
     blog_dir.mkdir(parents=True, exist_ok=True)
@@ -1836,25 +1930,29 @@ def write_blogs(output_dir: Path, assignments: list[dict[str, Any]], fixture: di
         generated_blog_path = paths["generated_blog"]
         execution = assignment.get("execution", {})
         worker_blog_present = (
-            execution.get("kind") == "local-executor"
+            execution.get("kind") in {"local-executor", "external-subagent"}
             and execution.get("blog_source") == "executor-authored"
             and blog_path.exists()
             and blog_path.stat().st_size > 0
         )
         if worker_blog_present:
             generated_blog_path.write_text(text, encoding="utf-8")
+            receipt_text = blog_path.read_text(encoding="utf-8")
             source = "executor-authored"
             generated_rel = rel_output_path(output_dir, generated_blog_path)
         else:
             blog_path.write_text(text, encoding="utf-8")
+            receipt_text = text
             source = "generated"
             generated_rel = rel_output_path(output_dir, blog_path)
+        contract = blog_contract_receipt(receipt_text, required_sections)
         receipt = {
             "persona_id": assignment["persona_id"],
             "path": rel_output_path(output_dir, blog_path),
             "source": source,
             "generated_blog_path": generated_rel,
             "preserved_executor_blog": worker_blog_present,
+            **contract,
         }
         execution["blog_path"] = receipt["path"]
         execution["blog_source"] = source
@@ -1868,6 +1966,7 @@ def write_blogs(output_dir: Path, assignments: list[dict[str, Any]], fixture: di
 def write_markdown_summary(output_dir: Path, summary: dict[str, Any]) -> None:
     review_gate = summary.get("review_gate", {})
     promotion_review = summary.get("promotion_review", {})
+    blog_contract = summary.get("blog_contract", {})
     lines = [
         f"# Research Loop {summary['run_id']}",
         "",
@@ -1941,10 +2040,18 @@ def write_markdown_summary(output_dir: Path, summary: dict[str, Any]) -> None:
         rejected_rows.append(f"{finding['id']}: {finding['title']} - {finding['summary']}")
     lines.append(markdown_list(rejected_rows))
     lines.extend(["", "## Blog Receipts"])
+    lines.append(
+        f"- contract: {blog_contract.get('passing_count', 0)}/"
+        f"{blog_contract.get('blog_count', 0)} passing; "
+        f"{blog_contract.get('worker_authored_failed_count', 0)} worker-authored failed"
+    )
     for receipt in summary.get("blog_receipts", []):
         lines.append(
-            f"- {receipt['persona_id']}: {receipt['source']} at {receipt['path']}"
+            f"- {receipt['persona_id']}: {receipt['source']} at {receipt['path']} "
+            f"({receipt.get('contract_status', 'unknown')})"
         )
+        if receipt.get("missing_sections"):
+            lines.append(f"  - missing sections: {', '.join(receipt['missing_sections'])}")
     for section, key in [
         ("Adopted", "adopted"),
         ("Held", "held"),
@@ -2036,7 +2143,9 @@ def run_iteration(
         summary["executor_actual_workers"] = fixture.get("executor_actual_workers", args.executor_workers)
     if args.ingest_subagent_results:
         summary["ingested_subagent_results"] = True
-    summary["blog_receipts"] = write_blogs(output_dir, assignments, fixture)
+    summary["require_worker_blog_contract"] = bool(args.require_worker_blog_contract)
+    summary["blog_receipts"] = write_blogs(output_dir, assignments, fixture, blog_required_sections(config))
+    summary["blog_contract"] = summarize_blog_contract(summary["blog_receipts"])
     summary["subagent_dispatch"] = write_subagent_handoffs(
         output_dir,
         assignments,
@@ -2105,6 +2214,7 @@ def loop_iteration_record(root: Path, summary: dict[str, Any], output_dir: Path)
         "non_github_lanes_covered": summary.get("non_github_lanes_covered", []),
         "execution_counts": summary.get("execution_counts", {}),
         "review_gate": summary.get("review_gate", {}),
+        "blog_contract": summary.get("blog_contract", {}),
         "promotion_review": {
             "schema_version": promotion_review.get("schema_version", 1),
             "review_only": True,
@@ -2228,6 +2338,7 @@ def build_loop_summary(
         "execution_counts": dict(sorted(execution_counts.items())),
         "sampling_coverage": dict(sorted(sampling_counts.items())),
         "review_gate": aggregate_review_gate(records, "final_iteration" if until_review_gate else "all_iterations"),
+        "blog_contract": aggregate_loop_blog_contract(records),
         "promotion_review": aggregate_loop_promotion_review(records),
         "iterations": records,
         "final_gap_hints": final_gap_hints,
@@ -2236,6 +2347,38 @@ def build_loop_summary(
             "Promote findings only through explicit source, validation, tests, and manifest updates.",
             "Do not execute remote model code while investigating candidates.",
         ],
+    }
+
+
+def aggregate_loop_blog_contract(records: list[dict[str, Any]]) -> dict[str, Any]:
+    failed_blogs = []
+    blog_count = 0
+    passing_count = 0
+    failed_count = 0
+    worker_authored_failed_count = 0
+    required_sections = []
+    for record in records:
+        contract = record.get("blog_contract", {})
+        blog_count += int(contract.get("blog_count", 0))
+        passing_count += int(contract.get("passing_count", 0))
+        failed_count += int(contract.get("failed_count", 0))
+        worker_authored_failed_count += int(contract.get("worker_authored_failed_count", 0))
+        if not required_sections:
+            required_sections = contract.get("required_sections", [])
+        for blog in contract.get("failed_blogs", []):
+            row = dict(blog)
+            row["iteration"] = record.get("iteration")
+            row["iteration_run_id"] = record.get("run_id")
+            row["iteration_output_dir"] = record.get("output_dir")
+            failed_blogs.append(row)
+    return {
+        "schema_version": 1,
+        "required_sections": required_sections,
+        "blog_count": blog_count,
+        "passing_count": passing_count,
+        "failed_count": failed_count,
+        "worker_authored_failed_count": worker_authored_failed_count,
+        "failed_blogs": failed_blogs,
     }
 
 
@@ -2292,6 +2435,7 @@ def promotion_review_markdown_rows(entries: list[dict[str, Any]], limit: int = 1
 def write_loop_markdown(output_dir: Path, loop_summary: dict[str, Any]) -> None:
     review_gate = loop_summary.get("review_gate", {})
     promotion_review = loop_summary.get("promotion_review", {})
+    blog_contract = loop_summary.get("blog_contract", {})
     lines = [
         f"# Research Loop {loop_summary['run_id']}",
         "",
@@ -2340,6 +2484,21 @@ def write_loop_markdown(output_dir: Path, loop_summary: dict[str, Any]) -> None:
         lines.append(f"  - {reason}")
     lines.extend([
         "",
+        "## Blog Contract",
+        f"- passing: {blog_contract.get('passing_count', 0)}/{blog_contract.get('blog_count', 0)}",
+        f"- worker-authored failed: {blog_contract.get('worker_authored_failed_count', 0)}",
+        "- failed blogs:",
+    ])
+    for blog in blog_contract.get("failed_blogs", []) or ["None"]:
+        if isinstance(blog, str):
+            lines.append(f"  - {blog}")
+        else:
+            lines.append(
+                f"  - i{blog.get('iteration')}: {blog.get('persona_id')} at {blog.get('path')} "
+                f"missing {', '.join(blog.get('missing_sections', [])) or 'required sections'}"
+            )
+    lines.extend([
+        "",
         "## Promotion Review",
         "- review-only: true",
         f"- auto modify recommendations: {str(promotion_review.get('auto_modify_recommendations', False)).lower()}",
@@ -2382,6 +2541,15 @@ def review_gate_failure_message(receipt: dict[str, Any]) -> str:
     return "review gate failed: " + "; ".join(reasons)
 
 
+def failure_messages(args: argparse.Namespace, receipt: dict[str, Any]) -> list[str]:
+    messages = []
+    if args.require_worker_blog_contract and blog_contract_failed(receipt):
+        messages.append(blog_contract_failure_message(receipt))
+    if args.fail_on_review_gate and review_gate_failed(receipt):
+        messages.append(review_gate_failure_message(receipt))
+    return messages
+
+
 def main() -> int:
     args = parse_args()
     try:
@@ -2412,8 +2580,9 @@ def main() -> int:
                 review_requirements,
             )
             print(f"wrote research loop {run_id} to {output_dir}: {summary['finding_count']} findings")
-            if args.fail_on_review_gate and review_gate_failed(summary):
-                print(f"error: {review_gate_failure_message(summary)}", file=sys.stderr)
+            messages = failure_messages(args, summary)
+            if messages:
+                print(f"error: {'; '.join(messages)}", file=sys.stderr)
                 return 2
             return 0
 
@@ -2470,8 +2639,9 @@ def main() -> int:
             f"wrote research loop {run_id} to {output_dir}: "
             f"{loop_summary['total_finding_count']} findings across {loop_summary['iteration_count']} iterations"
         )
-        if args.fail_on_review_gate and review_gate_failed(loop_summary):
-            print(f"error: {review_gate_failure_message(loop_summary)}", file=sys.stderr)
+        messages = failure_messages(args, loop_summary)
+        if messages:
+            print(f"error: {'; '.join(messages)}", file=sys.stderr)
             return 2
         return 0
     except (SkillError, OSError, json.JSONDecodeError) as exc:

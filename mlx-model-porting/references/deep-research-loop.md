@@ -104,7 +104,10 @@ as the primary per-agent blog and the harness stores its generated fallback at
 `agents/*.generated-blog.md`. If no worker-authored blog exists, the harness
 writes the generated blog to the primary blog path and records `source:
 generated` in `assignments.json`, `synthesis.json`, `subagents.json`, and the
-per-agent packet.
+per-agent packet. Blog receipts record required, present, and missing sections
+plus a `contract_status`. Use `--require-worker-blog-contract` for high-stakes
+campaigns where an incomplete worker-authored blog should fail after receipts
+are written.
 
 Every run also writes `campaign.json` and `campaign.md` at the run root. The
 campaign receipt is the orchestrator-facing surface: it lists each wave, the
@@ -181,6 +184,10 @@ Each agent writes a markdown blog with:
 
 The blog is an audit artifact, not marketing copy. It should show what was
 sampled, what was learned, what was held, and what remains uncertain.
+`synthesis.json` includes `blog_contract` counts, and `synthesis.md` annotates
+each blog receipt with pass/fail status. Generated fallback blogs are expected
+to pass the contract; worker-authored blogs are preserved even when they fail
+so reviewers can inspect what the researcher actually wrote.
 
 ## Decision Model
 
