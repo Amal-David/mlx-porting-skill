@@ -49,17 +49,25 @@ agents or network.
 Each assignment must tell the researcher:
 
 - which source lanes to sample;
+- the planned sample targets, lane title, and evidence role for each lane;
 - what adoption bar applies;
 - that remote model code must not be executed;
 - that all findings need URLs, access dates, validation gates, and affected
   skill surfaces;
 - that community evidence can only create leads.
 
+The generated `assignments.json` includes `sample_plan` objects for every
+persona, and `synthesis.json` reports planned source-lane counts, planned
+sample-target counts, and planned non-GitHub sample targets separately from
+returned findings. This proves the intended research breadth even when a run is
+only scaffolded and no agent has returned findings yet.
+
 ## Blog Contract
 
 Each agent writes a markdown blog with:
 
 - assignment summary;
+- planned sampling targets;
 - sources sampled;
 - candidate findings;
 - decision notes;
@@ -94,7 +102,8 @@ python3 scripts/research_loop.py \
 ```
 
 Without `--offline-fixture`, the script writes assignments and an empty
-review-only synthesis that says no findings were ingested.
+review-only synthesis that says no findings were ingested while still recording
+the planned source-lane and sample-target coverage.
 
 Run an explicit local worker command for each assignment:
 

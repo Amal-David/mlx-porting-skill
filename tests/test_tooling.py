@@ -826,6 +826,35 @@ class ToolingTests(unittest.TestCase):
             self.assertTrue(any("Do not execute code" in line for line in report["instructions"]))
             self.assertIn("1 repositories, 1 paper candidates", result.stdout)
 
+    def test_research_loop_scaffold_includes_multi_source_sampling_plan(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            output_dir = Path(tmp) / "scaffold-run"
+            run_script(
+                "research_loop.py",
+                "--run-id", "scaffold-loop",
+                "--objective", "Plan a non-GitHub MLX research pass",
+                "--agent-count", 2,
+                "--output-dir", output_dir,
+            )
+            assignments = json.loads((output_dir / "assignments.json").read_text())
+            synthesis = json.loads((output_dir / "synthesis.json").read_text())
+            self.assertEqual(synthesis["finding_count"], 0)
+            self.assertEqual(synthesis["execution_counts"]["scaffolded_not_run"], 2)
+            self.assertGreater(synthesis["planned_non_github_sample_target_count"], 0)
+            self.assertGreater(synthesis["planned_source_lane_counts"]["official_docs"], 0)
+            self.assertGreater(synthesis["planned_sample_target_counts"]["papers"], 0)
+            first = assignments["assignments"][0]
+            self.assertEqual(first["sample_plan"][0]["source_lane"], "official_docs")
+            self.assertIn("evidence_role", first["sample_plan"][0])
+            self.assertGreater(len(first["sample_plan"][0]["targets"]), 0)
+            self.assertIn("Sampling plan", first["prompt"])
+            self.assertIn("MLX documentation index", first["prompt"])
+            blog = output_dir / "blogs" / "official-docs-cartographer.md"
+            blog_text = blog.read_text()
+            self.assertIn("Planned sampling", blog_text)
+            self.assertIn("MLX documentation index", blog_text)
+            self.assertIn("## Sources sampled\n- None", blog_text)
+
     def test_research_loop_generates_review_blogs_and_synthesis(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             output_dir = Path(tmp) / "research-run"
@@ -846,6 +875,9 @@ class ToolingTests(unittest.TestCase):
             self.assertIn("official_docs", synthesis["non_github_lanes_covered"])
             self.assertIn("hugging_face", synthesis["non_github_lanes_covered"])
             self.assertIn("technical_blogs", synthesis["non_github_lanes_covered"])
+            self.assertGreater(synthesis["planned_non_github_sample_target_count"], 0)
+            self.assertIn("planned_source_lane_counts", synthesis)
+            self.assertIn("planned_sample_target_counts", synthesis)
             self.assertIn("tests/fixtures/research_loop/offline_findings.json", synthesis["offline_fixture"])
             self.assertEqual(len(assignments["assignments"]), 6)
             self.assertEqual(assignments["assignments"][0]["execution"]["state"], "fixture_ingested")
@@ -855,6 +887,7 @@ class ToolingTests(unittest.TestCase):
             blog = output_dir / "blogs" / "official-docs-cartographer.md"
             self.assertTrue(blog.exists())
             blog_text = blog.read_text()
+            self.assertIn("Planned sampling", blog_text)
             self.assertIn("Candidate findings", blog_text)
             self.assertIn("official-custom-metal-validation", blog_text)
 
@@ -912,10 +945,13 @@ class ToolingTests(unittest.TestCase):
                 self.assertEqual(execution["kind"], "local-executor")
                 self.assertEqual(execution["state"], "executor_completed")
                 self.assertEqual(execution["exit_code"], 0)
+                self.assertIn("sample_plan", assignment)
                 for key in ("prompt_path", "stdout_path", "stderr_path", "result_path"):
                     self.assertTrue((output_dir / execution[key]).exists(), key)
                 result = json.loads((output_dir / execution["result_path"]).read_text())
                 self.assertEqual(result["persona_id"], assignment["persona_id"])
+                prompt = (output_dir / execution["prompt_path"]).read_text()
+                self.assertIn("Sampling plan", prompt)
             blog = output_dir / "blogs" / "official-docs-cartographer.md"
             self.assertIn("fake-executor-official-docs-cartographer", blog.read_text())
 

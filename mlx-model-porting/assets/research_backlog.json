@@ -47,6 +47,21 @@
       ]
     },
     {
+      "id": "multi-source-research-sampling",
+      "priority": "P1",
+      "status": "validated",
+      "summary": "The deep research loop now embeds explicit sample targets for official docs, papers, Hugging Face, package registries, technical blogs, community leads, repositories, and repo-local audits in every assignment, and reports planned non-GitHub coverage before findings return.",
+      "required_gate": "Keep scaffold-only, offline-fixture, and local-executor research-loop tests green; planned sample targets must be reported separately from actual findings, stay review-only, and never auto-promote sources or execute remote model code.",
+      "source": "mlx-model-porting/research-runs/2026-06-27-deep-research-loop/synthesis.json",
+      "affected": [
+        "assets/research_loop_config.json",
+        "references/deep-research-loop.md",
+        "scripts/research_loop.py",
+        "tests/test_tooling.py",
+        "VALIDATION.md"
+      ]
+    },
+    {
       "id": "non-generative-cv",
       "priority": "P1",
       "status": "needs-research",

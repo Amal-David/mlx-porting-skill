@@ -59,6 +59,15 @@ def load_config(path: str | Path) -> dict[str, Any]:
     if not isinstance(decisions, list) or not decisions:
         raise SkillError("research loop config must define decision_states")
     lane_ids = {lane.get("id") for lane in lanes if isinstance(lane, dict)}
+    for lane in lanes:
+        if not isinstance(lane, dict) or not lane.get("id"):
+            raise SkillError("each source lane must be an object with an id")
+        targets = lane.get("sample_targets", [])
+        if targets and not isinstance(targets, list):
+            raise SkillError(f"source lane {lane.get('id')} sample_targets must be a list")
+        for target in targets:
+            if not isinstance(target, dict) or not target.get("title") or not target_locator(target):
+                raise SkillError(f"source lane {lane.get('id')} sample target needs title and url/query/path/target")
     for persona in personas:
         for lane in persona.get("source_lanes", []):
             if lane not in lane_ids:
@@ -74,23 +83,89 @@ def select_personas(config: dict[str, Any], count: int | None) -> list[dict[str,
     return personas[: min(requested, len(personas))]
 
 
+def lane_catalog(config: dict[str, Any]) -> dict[str, dict[str, Any]]:
+    return {str(lane["id"]): lane for lane in config["source_lanes"]}
+
+
+def target_locator(target: dict[str, Any]) -> str:
+    return str(target.get("url") or target.get("query") or target.get("path") or target.get("target") or "")
+
+
+def sample_targets_for_lane(lane: dict[str, Any]) -> list[dict[str, Any]]:
+    targets = []
+    for target in lane.get("sample_targets", []):
+        if not isinstance(target, dict):
+            continue
+        targets.append({
+            "title": str(target.get("title", "")),
+            "kind": str(target.get("kind", "source")),
+            "locator": target_locator(target),
+            "sampling_goal": str(target.get("sampling_goal", "")),
+        })
+    if targets:
+        return targets
+    fallback = []
+    for example in lane.get("examples", []):
+        fallback.append({
+            "title": str(example),
+            "kind": "example",
+            "locator": str(example),
+            "sampling_goal": "Use as a lane hint; replace with a concrete source during live research.",
+        })
+    return fallback
+
+
+def sample_plan_for_persona(config: dict[str, Any], persona: dict[str, Any]) -> list[dict[str, Any]]:
+    lanes = lane_catalog(config)
+    plan = []
+    for lane_id in persona.get("source_lanes", []):
+        lane = lanes[lane_id]
+        plan.append({
+            "source_lane": lane_id,
+            "lane_title": lane.get("title", lane_id),
+            "evidence_role": lane.get("evidence_role", ""),
+            "targets": sample_targets_for_lane(lane),
+        })
+    return plan
+
+
+def render_sample_plan(plan: list[dict[str, Any]]) -> str:
+    if not plan:
+        return "- None"
+    lines = []
+    for lane in plan:
+        lines.append(f"- {lane['source_lane']}: {lane.get('lane_title', '')}")
+        if lane.get("evidence_role"):
+            lines.append(f"  Evidence role: {lane['evidence_role']}")
+        for target in lane.get("targets", []):
+            suffix = f" - {target['sampling_goal']}" if target.get("sampling_goal") else ""
+            lines.append(f"  - {target['title']} [{target['kind']}]: {target['locator']}{suffix}")
+    return "\n".join(lines)
+
+
 def build_assignments(config: dict[str, Any], objective: str, run_id: str, count: int | None) -> list[dict[str, Any]]:
     policy = config.get("review_policy", {})
     assignments = []
     for persona in select_personas(config, count):
+        sample_plan = sample_plan_for_persona(config, persona)
         prompt = (
             f"You are the {persona['title']} for MLX model-porting research loop {run_id}. "
             f"Objective: {objective}. Source lanes: {', '.join(persona.get('source_lanes', []))}. "
             "Return source-backed findings only. Do not execute remote model code. "
             "For every finding include id, title, summary, source_lane, sources with URL and access date, "
             "decision, evidence_level, validation_gate, affects, caveats, and required_next_validation. "
-            "Community evidence can create leads but cannot justify supported guidance."
+            "Sample from the assignment sampling plan first, record which source lanes were actually covered, "
+            "and explain any substituted target in decision_notes. "
+            "Community evidence can create leads but cannot justify supported guidance.\n\n"
+            "Sampling plan:\n"
+            f"{render_sample_plan(sample_plan)}"
         )
         assignments.append({
             "persona_id": persona["id"],
             "title": persona["title"],
             "source_lanes": persona.get("source_lanes", []),
             "mission": persona.get("mission", ""),
+            "sample_plan": sample_plan,
             "prompt": prompt,
             "execution": {
                 "kind": "offline-scaffold",
@@ -312,6 +387,38 @@ def flatten_findings(fixture: dict[str, Any]) -> list[dict[str, Any]]:
     return rows
 
 
+def planned_sampling_summary(assignments: list[dict[str, Any]], config: dict[str, Any]) -> dict[str, Any]:
+    planned_lanes = {lane["id"]: 0 for lane in config["source_lanes"]}
+    planned_targets = {lane["id"]: 0 for lane in config["source_lanes"]}
+    non_github_targets = []
+    seen: set[tuple[str, str, str]] = set()
+    for assignment in assignments:
+        for lane in assignment.get("sample_plan", []):
+            lane_id = lane["source_lane"]
+            planned_lanes[lane_id] = planned_lanes.get(lane_id, 0) + 1
+            targets = lane.get("targets", [])
+            planned_targets[lane_id] = planned_targets.get(lane_id, 0) + len(targets)
+            if lane_id == "repositories":
+                continue
+            for target in targets:
+                key = (lane_id, target.get("title", ""), target.get("locator", ""))
+                if key in seen:
+                    continue
+                seen.add(key)
+                non_github_targets.append({
+                    "source_lane": lane_id,
+                    "title": target.get("title", ""),
+                    "kind": target.get("kind", ""),
+                    "locator": target.get("locator", ""),
+                })
+    return {
+        "planned_source_lane_counts": planned_lanes,
+        "planned_sample_target_counts": planned_targets,
+        "planned_non_github_sample_targets": non_github_targets,
+        "planned_non_github_sample_target_count": len(non_github_targets),
+    }
+
+
 def summarize(
     config: dict[str, Any],
     assignments: list[dict[str, Any]],
@@ -357,6 +464,7 @@ def summarize(
         "finding_count": len(findings),
         "source_lane_counts": lanes,
         "non_github_lanes_covered": non_github_lanes,
+        **planned_sampling_summary(assignments, config),
         "decision_counts": decision_counts,
         "adopted": [f for f in findings if f["decision"] == "adopted"],
         "held": [f for f in findings if f["decision"] == "held"],
@@ -392,6 +500,12 @@ def write_blogs(output_dir: Path, assignments: list[dict[str, Any]], fixture: di
             f"{finding['id']}: {finding['title']} [{finding['decision']}] - {finding['summary']}"
             for finding in findings
         ]
+        planned_sampling = []
+        for lane in assignment.get("sample_plan", []):
+            for target in lane.get("targets", []):
+                planned_sampling.append(
+                    f"{lane['source_lane']}: {target['title']} [{target['kind']}] - {target['locator']}"
+                )
         validation = [
             f"{finding['id']}: {finding.get('required_next_validation') or finding.get('validation_gate')}"
             for finding in findings
@@ -402,6 +516,9 @@ def write_blogs(output_dir: Path, assignments: list[dict[str, Any]], fixture: di
             "",
             "## Assignment",
             assignment["mission"],
+            "",
+            "## Planned sampling",
+            markdown_list(planned_sampling),
             "",
             "## Sources sampled",
             markdown_list(sampled),
@@ -428,6 +545,7 @@ def write_markdown_summary(output_dir: Path, summary: dict[str, Any]) -> None:
         f"Review only: {summary['review_only']}",
         f"Findings: {summary['finding_count']}",
         f"Non-GitHub lanes covered: {', '.join(summary['non_github_lanes_covered']) or 'none'}",
+        f"Planned non-GitHub sample targets: {summary['planned_non_github_sample_target_count']}",
         "",
         "## Decision Counts",
     ]
