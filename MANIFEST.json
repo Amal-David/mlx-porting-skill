@@ -2,7 +2,7 @@
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
   "version": "0.1.0",
-  "generated_at": "2026-06-27T11:32:05.552221+00:00",
+  "generated_at": "2026-06-27T11:38:49.906931+00:00",
   "file_count": 171,
   "files": [
     {
@@ -62,8 +62,8 @@
     },
     {
       "path": "VALIDATION.md",
-      "size_bytes": 4012,
-      "sha256": "29129d4658ecb3b1fcd49984925a3fdfc015928274c386612c875d65a9f24d69"
+      "size_bytes": 4345,
+      "sha256": "97c581626da597ed1e6b9b93c87e84b48dbe28827f10c6ec5b36fd9a2da72f14"
     },
     {
       "path": "VERSION",
@@ -162,8 +162,8 @@
     },
     {
       "path": "mlx-model-porting/assets/research_backlog.json",
-      "size_bytes": 6208,
-      "sha256": "d6db5979e34a56e5ebb51398e13c5e498e4ca4d0e8c70acef5235d9d34090971"
+      "size_bytes": 6296,
+      "sha256": "d8a509b9e75c5dbd08ccba52be013de8012646d7599cced5f8de198df152015c"
     },
     {
       "path": "mlx-model-porting/assets/research_loop_config.json",
@@ -222,8 +222,8 @@
     },
     {
       "path": "mlx-model-porting/references/intake-and-routing.md",
-      "size_bytes": 4861,
-      "sha256": "e18e3e5aad3cc5fd19933cb2585b6815df5f2409320599260697c8f3e798173a"
+      "size_bytes": 5131,
+      "sha256": "a615e38285031e9ea4062c5cd093465773ad50ba5325aa676fb19c789010b210"
     },
     {
       "path": "mlx-model-porting/references/maintenance-and-provenance.md",
@@ -247,8 +247,8 @@
     },
     {
       "path": "mlx-model-porting/references/porting-core.md",
-      "size_bytes": 3071,
-      "sha256": "7d87b8392bfe0fdf4209483c608d681cadcda5c29c2f71e977419a7b5d77856e"
+      "size_bytes": 3413,
+      "sha256": "9ee945ab749ee2075c67ef2441ec8f844488e5ccb1359995a6e4c5b1458c7a07"
     },
     {
       "path": "mlx-model-porting/references/quantization.md",
@@ -492,8 +492,8 @@
     },
     {
       "path": "mlx-model-porting/scripts/validate_weight_map.py",
-      "size_bytes": 8238,
-      "sha256": "5d45ab89b3f597bc29812a9217e78e17edb1be637fd8883838c3d1c3ad7e3283"
+      "size_bytes": 10312,
+      "sha256": "0a23933d2aceef7eb195e179b5676dd396e9f04ee777b78654ba6caab929f999"
     },
     {
       "path": "tests/README.md",
@@ -857,8 +857,8 @@
     },
     {
       "path": "tests/test_tooling.py",
-      "size_bytes": 49394,
-      "sha256": "423a378d79b850a2fcc5780b956fbc076a01d382bdfa5aa8be8944f997262afa"
+      "size_bytes": 52921,
+      "sha256": "1a8c450df140d366afb59893b58927680d9042bb8376c8e24f4595acfe3fbefe"
     }
   ]
 }

@@ -61,6 +61,11 @@ Likewise, recognizable safetensors weight keys may produce architecture
 candidates, but a safetensors-only checkpoint must stay blocked until config,
 tokenizer or processor metadata, license/provenance, and a source oracle exist.
 
+When a source-format manifest exposes tensor shapes, such as ONNX initializers
+or GGUF tensor tables, it may feed `validate_weight_map.py` for deterministic
+shape coverage. Formats without static tensor shapes must fail loud instead of
+pretending coverage is complete.
+
 ## Architecture routing signals
 
 Use the machine-readable aliases in `assets/architectures.yaml`. Signals should be combined rather than trusted individually:

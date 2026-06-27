@@ -21,12 +21,13 @@
       "id": "source-formats-beyond-pytorch-hf",
       "priority": "P0",
       "status": "needs-validation",
-      "summary": "Static intake now emits ONNX, GGUF, Flax/Orbax, TensorFlow SavedModel, Keras archive, Core ML package, and safetensors-checkpoint manifests, with conservative operator/layer coverage reports for ONNX, TensorFlow, and Keras. Deterministic source-to-MLX weight-map coverage and broader checkpoint-only repo fixtures remain.",
-      "required_gate": "Static manifest extraction without import or execution: keep ONNX ModelProto/opset/initializer/external-data inspection, GGUF header/metadata/tensor table coverage, Flax/Orbax tree metadata, TensorFlow SavedModel and Keras archive signatures/config, Core ML package metadata, ONNX/TensorFlow/Keras static coverage reports, and safetensors-only checkpoint holds green; add deterministic weight-map coverage, broader checkpoint-only repo fixtures, and no silent fallback to manual routing.",
+      "summary": "Static intake now emits ONNX, GGUF, Flax/Orbax, TensorFlow SavedModel, Keras archive, Core ML package, and safetensors-checkpoint manifests, with conservative operator/layer coverage reports for ONNX, TensorFlow, and Keras plus deterministic weight-map shape coverage for ONNX initializers and GGUF tensor tables. Broader checkpoint-only repo fixtures remain.",
+      "required_gate": "Static manifest extraction without import or execution: keep ONNX ModelProto/opset/initializer/external-data inspection, GGUF header/metadata/tensor table coverage, Flax/Orbax tree metadata, TensorFlow SavedModel and Keras archive signatures/config, Core ML package metadata, ONNX/TensorFlow/Keras static coverage reports, safetensors-only checkpoint holds, ONNX/GGUF source-format weight-map validation, and no silent fallback to manual routing green; add broader checkpoint-only repo fixtures.",
       "source": "mlx-model-porting/research-runs/2026-06-27-deep-research-loop/synthesis.json",
       "affected": [
         "references/intake-and-routing.md",
         "scripts/inspect_model.py",
+        "scripts/validate_weight_map.py",
         "tests/fixtures/source_formats",
         "tests/fixtures/models",
         "tests/test_tooling.py"

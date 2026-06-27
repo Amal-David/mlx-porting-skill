@@ -553,6 +553,72 @@ class ToolingTests(unittest.TestCase):
             self.assertFalse(report["unexplained_source"])
             self.assertFalse(report["unexplained_target"])
 
+    def test_weight_mapping_accepts_onnx_source_format_initializers(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp = Path(tmp)
+            model_dir = tmp / "onnx"
+            model_dir.mkdir()
+            (model_dir / "model.onnx").write_bytes(tiny_onnx_model())
+            source = tmp / "inspection.json"
+            target = tmp / "target.json"
+            mapping = tmp / "map.json"
+            output = tmp / "weight-report.json"
+            run_script("inspect_model.py", model_dir, "--output", source)
+            target.write_text(json.dumps({"tensors": [{"key": "linear.weight", "shape": [2, 3]}]}))
+            mapping.write_text(json.dumps({
+                "entries": [{"source": "weight", "target": "linear.weight", "transforms": []}],
+                "ignored_source": [],
+                "generated_target": [],
+            }))
+            run_script("validate_weight_map.py", "--source", source, "--target", target, "--mapping", mapping, "--output", output)
+            report = json.loads(output.read_text())
+            self.assertTrue(report["ok"], report)
+            self.assertEqual(report["source_tensors"], 1)
+            self.assertEqual(report["checks"][0]["source"], "weight")
+            self.assertEqual(report["checks"][0]["source_shape"], [2, 3])
+
+    def test_weight_mapping_accepts_gguf_source_format_tensors(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp = Path(tmp)
+            model_dir = tmp / "gguf"
+            model_dir.mkdir()
+            (model_dir / "model.gguf").write_bytes(tiny_gguf_model())
+            source = tmp / "inspection.json"
+            target = tmp / "target.json"
+            mapping = tmp / "map.json"
+            output = tmp / "weight-report.json"
+            run_script("inspect_model.py", model_dir, "--output", source)
+            target.write_text(json.dumps({"tensors": [{"key": "q_proj.weight", "shape": [2, 3]}]}))
+            mapping.write_text(json.dumps({
+                "entries": [{"source": "blk.0.attn_q.weight", "target": "q_proj.weight", "transforms": []}],
+                "ignored_source": [],
+                "generated_target": [],
+            }))
+            run_script("validate_weight_map.py", "--source", source, "--target", target, "--mapping", mapping, "--output", output)
+            report = json.loads(output.read_text())
+            self.assertTrue(report["ok"], report)
+            self.assertEqual(report["source_tensors"], 1)
+            self.assertEqual(report["checks"][0]["source"], "blk.0.attn_q.weight")
+            self.assertEqual(report["checks"][0]["source_shape"], [2, 3])
+
+    def test_weight_mapping_rejects_source_format_without_static_tensors(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp = Path(tmp)
+            source = tmp / "inspection.json"
+            target = tmp / "target.json"
+            mapping = tmp / "map.json"
+            run_script("inspect_model.py", FIXTURES / "source_formats" / "keras_archive", "--output", source)
+            target.write_text(json.dumps({"tensors": []}))
+            mapping.write_text(json.dumps({"entries": [], "ignored_source": [], "generated_target": []}))
+            result = run_script(
+                "validate_weight_map.py",
+                "--source", source,
+                "--target", target,
+                "--mapping", mapping,
+                expected=2,
+            )
+            self.assertIn("do not expose static tensor shapes", result.stderr)
+
     def test_weight_mapping_rejects_duplicate_and_unknown_exceptions(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             mapping = Path(tmp) / "bad-map.json"
