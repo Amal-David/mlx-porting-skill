@@ -926,6 +926,29 @@
       "reviewed": "2026-06-23"
     },
     {
+      "id": "grid-sample-metal-kernel",
+      "title": "PyTorch-compatible grid_sample Metal kernel",
+      "category": "kernels",
+      "status": "proven-mlx-port",
+      "support_scope": "local_reproduced",
+      "applies_to": [
+        "diffusion-flow",
+        "vision-language-omni",
+        "video-vlm",
+        "spatial-warp"
+      ],
+      "use_when": "The source model depends on PyTorch grid_sample-style image or volume warping and native/pure-MLX operations cannot meet the target profile.",
+      "avoid_when": "Reflection padding, nearest mode, backward gradients, or unsupported layouts are required, or a readable MLX reference has not passed parity.",
+      "validation_gate": "Coordinate-order, align_corners, padding, dtype, and layout parity against NumPy/Torch; boundary tests; pure-MLX fallback; end-to-end benchmark.",
+      "evidence": [
+        "katlun-grid-sample-source",
+        "katlun-grid-sample-tests",
+        "katlun-grid-sample-benchmark"
+      ],
+      "reviewed": "2026-06-27",
+      "rollback_condition": "Return to the pure-MLX/reference path if unsupported modes are needed, parity drifts, transposes dominate, or end-to-end latency does not improve."
+    },
+    {
       "id": "cache-privacy-review",
       "title": "Cache privacy and tenant isolation review",
       "category": "security-privacy",

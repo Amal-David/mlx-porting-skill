@@ -54,9 +54,11 @@ Required deliverables:
 - fallback path;
 - end-to-end benchmark proving material value.
 
-Common candidates in model ports include unusual fused projections, codec quantizer distance/search, recurrent scan, specialized convolution/upsampling, sparse expert dispatch, and streaming overlap-add. None is automatically worthwhile.
+Common candidates in model ports include unusual fused projections, codec quantizer distance/search, recurrent scan, specialized convolution/upsampling, PyTorch-style spatial or volume sampling, sparse expert dispatch, and streaming overlap-add. None is automatically worthwhile.
 
 For MoE, `gather_mm`/`gather_qmm` are native indexed matmul paths, while `segmented_mm` and block-masked MoE layouts need an oracle and shape legality check before being advertised as supported.
+
+For `grid_sample`-style ports, write down the exact coordinate order, `align_corners`, padding mode, interpolation mode, dtype, and layout contract. Treat a custom kernel as valid only for the modes it tests; do not silently extend a bilinear/trilinear forward kernel to reflection padding, nearest sampling, or training gradients.
 
 ## Anti-patterns
 

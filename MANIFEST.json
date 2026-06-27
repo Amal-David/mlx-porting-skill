@@ -2,7 +2,7 @@
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
   "version": "0.1.0",
-  "generated_at": "2026-06-27T09:03:11.724921+00:00",
+  "generated_at": "2026-06-27T10:21:50.157364+00:00",
   "file_count": 101,
   "files": [
     {
@@ -147,13 +147,13 @@
     },
     {
       "path": "mlx-model-porting/assets/contributor_learnings.json",
-      "size_bytes": 10078,
-      "sha256": "47b25128761bfac2d43826639a7c0d4427f284b9897b78876c90a5340545ff83"
+      "size_bytes": 26667,
+      "sha256": "a97b2cfc311b09d217192330087855777494c1e1d077f95e4b5a8c9c364fe244"
     },
     {
       "path": "mlx-model-porting/assets/optimization_guidance.yaml",
-      "size_bytes": 39076,
-      "sha256": "a01b41e8f838a6a754d8cd1f46e2043932d29d20a567e6438f8961815366c7ec"
+      "size_bytes": 41117,
+      "sha256": "532bc8c6a90b169b04ead0abfe9692a8e4aaa9db71cbab666e2bcfd92b86ae85"
     },
     {
       "path": "mlx-model-porting/assets/recommendation-taxonomy.yaml",
@@ -162,13 +162,13 @@
     },
     {
       "path": "mlx-model-porting/assets/sources.yaml",
-      "size_bytes": 134772,
-      "sha256": "501b399f6dd713138a516a1f22965f2e9071f081d9f6bf4aaca7fbf62d8e55b5"
+      "size_bytes": 140939,
+      "sha256": "dfb9980321476f72aed5a2c4aeca9856b011253f90024e499ee77864b7c0b8f9"
     },
     {
       "path": "mlx-model-porting/assets/techniques.yaml",
-      "size_bytes": 45835,
-      "sha256": "5bf4d70529fe9f8d3e5f6beeda78454a74a9426b7760b3cec202de7fb9f4df80"
+      "size_bytes": 47040,
+      "sha256": "f82339b02212ffde5a0ad12f15d507203ef985ebec3d4fed0dd4f19434f70ca7"
     },
     {
       "path": "mlx-model-porting/assets/update-candidates.json",
@@ -192,8 +192,8 @@
     },
     {
       "path": "mlx-model-porting/references/compile-and-kernels.md",
-      "size_bytes": 4132,
-      "sha256": "e2376843a89b50ba015b0b18fdad1dd9abfa93f454cc630916e0c11527c4825d"
+      "size_bytes": 4507,
+      "sha256": "ebfa47be248af13f569a00430c5c0b18b230c99adad8f54ce3cf0d142f55bea6"
     },
     {
       "path": "mlx-model-porting/references/decoding-and-serving.md",
@@ -507,8 +507,8 @@
     },
     {
       "path": "tests/test_tooling.py",
-      "size_bytes": 28021,
-      "sha256": "5b7250c85e53699e46b875c930b799ef27af3e976b6c5ed8bd214d0860129be2"
+      "size_bytes": 29086,
+      "sha256": "9a277bc3888dce8ae9afddaa526b64b43bfbe3d81ee3a748ecd3df9fcdfa1290"
     }
   ]
 }

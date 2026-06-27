@@ -1147,6 +1147,53 @@
       }
     },
     {
+      "id": "spatial-grid-sample-kernel",
+      "technique_id": "grid-sample-metal-kernel",
+      "category": "kernels",
+      "status": "proven-mlx-port",
+      "objectives": [
+        "latency",
+        "throughput"
+      ],
+      "applies_to": [
+        "diffusion-flow",
+        "vision-language-omni"
+      ],
+      "recommendation": "Use only when the source model actually depends on PyTorch grid_sample-style spatial or volume warping; first lock a readable MLX/NumPy reference, then consider a custom Metal kernel for the profiled warp.",
+      "expected_effect": "Profile-required. Local Apple M4 Pro / MLX 0.30.4 reproduction of the pinned 3D benchmark showed about 10x kernel-level speedup versus the repo's pure-MLX gather baseline, but end-to-end benefit depends on model use.",
+      "tradeoffs": [
+        "Pinned implementation covers forward bilinear/trilinear sampling with zeros or border padding, not reflection, nearest mode, or training gradients.",
+        "Channels-last layout avoids transposes, but PyTorch-style NCHW wrappers may copy.",
+        "Custom Metal code adds maintenance and MLX-version compatibility risk."
+      ],
+      "validation_gates": [
+        "coordinate order and align_corners parity",
+        "zeros/border padding and out-of-range boundary tests",
+        "NumPy or Torch oracle parity for 2D and 3D cases",
+        "pure-MLX fallback path",
+        "shape/dtype/layout coverage",
+        "end-to-end model benchmark"
+      ],
+      "rollback_conditions": [
+        "unsupported source grid_sample mode is required",
+        "oracle parity drifts",
+        "layout transposes dominate",
+        "kernel speedup does not improve the end-to-end model"
+      ],
+      "evidence_refs": {
+        "official_docs": [
+          "mlx-doc-custom-extensions"
+        ],
+        "repositories": [
+          "katlun-grid-sample-source",
+          "katlun-grid-sample-tests",
+          "katlun-grid-sample-benchmark"
+        ],
+        "papers": [],
+        "technical_blogs": []
+      }
+    },
+    {
       "id": "cuda-graphs-decode-capture",
       "technique_id": "cuda-graphs-decode-capture",
       "category": "runtime",
