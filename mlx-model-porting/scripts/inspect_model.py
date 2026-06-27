@@ -9,6 +9,7 @@ import os
 import re
 import struct
 import sys
+import zipfile
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -108,6 +109,7 @@ GGUF_TENSOR_TYPES = {
 
 MAX_FORMAT_FILE_BYTES = 256 * 1024 * 1024
 GGUF_DEFAULT_ALIGNMENT = 32
+STATIC_TEXT_LIMIT = 2 * 1024 * 1024
 
 CONFIG_NAMES = [
     "config.json",
@@ -716,21 +718,253 @@ def inspect_gguf_file(path: Path, root: Path) -> dict[str, Any]:
     return manifest
 
 
-def inspect_source_formats(root: Path) -> tuple[list[dict[str, Any]], list[str]]:
+def rel_display(path: Path, root: Path) -> str:
+    return str(path.relative_to(root) if root.is_dir() else path.name)
+
+
+def read_text_prefix(path: Path, limit: int = STATIC_TEXT_LIMIT) -> str:
+    with path.open("rb") as handle:
+        data = handle.read(limit + 1)
+    return data[:limit].decode("utf-8", errors="replace")
+
+
+def safe_json_file(path: Path) -> dict[str, Any] | None:
+    value = read_json(path)
+    return value if isinstance(value, dict) else None
+
+
+def inspect_flax_orbax_dir(path: Path, root: Path) -> dict[str, Any]:
+    files = sorted(p for p in path.rglob("*") if p.is_file())
+    msgpack_files = [rel_display(p, path) for p in files if p.suffix == ".msgpack"]
+    metadata_files = [p for p in files if p.name in {"_CHECKPOINT_METADATA", "tree_metadata.json", "checkpoint"}]
+    metadata: dict[str, Any] = {}
+    for file in metadata_files:
+        parsed = safe_json_file(file)
+        metadata[rel_display(file, path)] = parsed if parsed is not None else {"parse_error": "not JSON metadata"}
+    manifest = {
+        "format": "flax-orbax",
+        "path": rel_display(path, root),
+        "file_count": len(files),
+        "msgpack_files": msgpack_files,
+        "metadata_files": [rel_display(p, path) for p in metadata_files],
+        "metadata": metadata,
+        "tree_paths": sorted(
+            key
+            for item in metadata.values()
+            if isinstance(item, dict)
+            for key in item.get("tree_paths", [])
+            if isinstance(key, str)
+        ),
+        "limitations": [
+            "Flax/Orbax metadata supports intake triage only; restoring checkpoints requires source runtime review."
+        ],
+        "hold_conditions": [
+            "Record the source apply function, params tree, preprocessing, and RNG/dropout mode before mapping weights.",
+            "Do not restore Orbax or Flax checkpoints during intake; build a source oracle and deterministic tree manifest first.",
+        ],
+    }
+    if not msgpack_files and not metadata_files:
+        manifest["hold_conditions"].append("No Flax/Orbax checkpoint metadata files were recognized.")
+    return manifest
+
+
+def inspect_saved_model_dir(path: Path, root: Path) -> dict[str, Any]:
+    pbtxt = path / "saved_model.pbtxt"
+    pb = path / "saved_model.pb"
+    text = read_text_prefix(pbtxt) if pbtxt.exists() else ""
+    signature_keys = sorted(set(re.findall(r'(?m)^\s*key:\s*"([^"]+)"', text)))
+    method_names = sorted(set(re.findall(r'(?m)^\s*method_name:\s*"([^"]+)"', text)))
+    tensor_names = sorted(set(re.findall(r'(?m)^\s*name:\s*"([^"]+)"', text)))
+    variable_dir = path / "variables"
+    variable_files = sorted(rel_display(p, path) for p in variable_dir.glob("*") if p.is_file()) if variable_dir.exists() else []
+    return {
+        "format": "tensorflow-savedmodel",
+        "path": rel_display(path, root),
+        "saved_model_files": [name for name, exists in {"saved_model.pb": pb.exists(), "saved_model.pbtxt": pbtxt.exists()}.items() if exists],
+        "signature_keys": signature_keys,
+        "method_names": method_names,
+        "tensor_names": tensor_names[:50],
+        "variables": {
+            "present": bool(variable_files),
+            "files": variable_files,
+        },
+        "assets_count": len(list((path / "assets").glob("*"))) if (path / "assets").exists() else 0,
+        "limitations": [
+            "SavedModel metadata supports intake triage only; protobuf graph and TensorFlow op support are not fully decoded."
+        ],
+        "hold_conditions": [
+            "Record concrete signatures, TensorFlow ops, preprocessing, and source-framework outputs before conversion.",
+            "Do not load SavedModel objects during intake; parse signatures statically or in a sandboxed source-oracle step.",
+        ],
+    }
+
+
+def inspect_keras_archive(path: Path, root: Path) -> dict[str, Any]:
+    manifest: dict[str, Any] = {
+        "format": "keras-archive",
+        "path": rel_display(path, root),
+        "size_bytes": path.stat().st_size,
+        "entries": [],
+        "metadata": {},
+        "config": {},
+        "limitations": [
+            "Keras archive metadata supports intake triage only; custom objects and TensorFlow ops require separate review."
+        ],
+        "hold_conditions": [
+            "Review config, custom objects, preprocessing, and TensorFlow/Keras version before mapping weights.",
+            "Do not load the Keras archive during intake; inspect archive members statically.",
+        ],
+    }
+    if path.stat().st_size > MAX_FORMAT_FILE_BYTES:
+        manifest["errors"] = [f"file is larger than static parser limit ({MAX_FORMAT_FILE_BYTES} bytes)"]
+        return manifest
+    try:
+        with zipfile.ZipFile(path) as archive:
+            names = sorted(archive.namelist())
+            manifest["entries"] = names
+            for name, key in (("metadata.json", "metadata"), ("config.json", "config")):
+                if name not in names:
+                    continue
+                raw = archive.read(name)
+                if len(raw) > STATIC_TEXT_LIMIT:
+                    manifest.setdefault("errors", []).append(f"{name} exceeds static JSON read limit")
+                    continue
+                parsed = json.loads(raw.decode("utf-8"))
+                if isinstance(parsed, dict):
+                    manifest[key] = parsed
+    except (zipfile.BadZipFile, OSError, UnicodeDecodeError, json.JSONDecodeError) as exc:
+        manifest.setdefault("errors", []).append(str(exc))
+    config = manifest.get("config", {})
+    model_config = config.get("config", {}) if isinstance(config, dict) else {}
+    layers = model_config.get("layers", []) if isinstance(model_config, dict) else []
+    manifest["class_name"] = config.get("class_name") if isinstance(config, dict) else None
+    manifest["layer_count"] = len(layers) if isinstance(layers, list) else 0
+    manifest["layer_class_names"] = [
+        str(layer.get("class_name"))
+        for layer in layers
+        if isinstance(layer, dict) and layer.get("class_name")
+    ][:50]
+    manifest["weight_files"] = [
+        name for name in manifest.get("entries", [])
+        if name.endswith((".weights.h5", ".h5"))
+    ]
+    return manifest
+
+
+def inspect_coreml_artifact(path: Path, root: Path) -> dict[str, Any]:
+    if path.is_file():
+        return {
+            "format": "coreml-model",
+            "path": rel_display(path, root),
+            "size_bytes": path.stat().st_size,
+            "limitations": [
+                "Core ML protobuf metadata is not decoded by static intake yet."
+            ],
+            "hold_conditions": [
+                "Require source model provenance, operator coverage, preprocessing, and source-oracle parity before porting from Core ML.",
+            ],
+        }
+    manifest_json = safe_json_file(path / "Manifest.json") or {}
+    files = sorted(p for p in path.rglob("*") if p.is_file())
+    model_files = [rel_display(p, path) for p in files if p.suffix in {".mlmodel", ".mlmodelc"} or "model.mlmodel" in p.name]
+    weight_files = [rel_display(p, path) for p in files if p.suffix in {".bin", ".weights"}]
+    item_info = manifest_json.get("itemInfoEntries", {})
+    return {
+        "format": "coreml-package",
+        "path": rel_display(path, root),
+        "file_count": len(files),
+        "manifest": {
+            "fileFormatVersion": manifest_json.get("fileFormatVersion"),
+            "rootModelIdentifier": manifest_json.get("rootModelIdentifier"),
+            "item_count": len(item_info) if isinstance(item_info, dict) else 0,
+        },
+        "model_files": model_files,
+        "weight_files": weight_files,
+        "limitations": [
+            "Core ML package metadata supports intake triage only; compiled/runtime semantics are not source-preserving proof."
+        ],
+        "hold_conditions": [
+            "Require source-model provenance, Core ML op coverage, preprocessing metadata, and source-oracle parity before conversion.",
+            "Do not treat Core ML packages as authoritative source checkpoints unless the pre-CoreML source is unavailable and quality gates are explicit.",
+        ],
+    }
+
+
+def discover_source_format_artifacts(root: Path) -> list[tuple[str, Path]]:
     if root.is_file():
-        files = [root] if root.suffix.lower() in {".onnx", ".gguf"} else []
-    else:
-        files = sorted(p for p in root.rglob("*") if p.is_file() and p.suffix.lower() in {".onnx", ".gguf"})
+        suffix = root.suffix.lower()
+        if suffix == ".onnx":
+            return [("onnx", root)]
+        if suffix == ".gguf":
+            return [("gguf", root)]
+        if suffix == ".keras":
+            return [("keras", root)]
+        if suffix == ".mlmodel":
+            return [("coreml", root)]
+        if suffix == ".msgpack":
+            return [("flax-orbax", root.parent)]
+        return []
+
+    artifacts: list[tuple[str, Path]] = []
+    for file in sorted(root.rglob("*")):
+        if not file.is_file():
+            continue
+        inside_mlpackage = any(parent.suffix == ".mlpackage" for parent in file.parents)
+        suffix = file.suffix.lower()
+        if suffix == ".onnx":
+            artifacts.append(("onnx", file))
+        elif suffix == ".gguf":
+            artifacts.append(("gguf", file))
+        elif suffix == ".keras":
+            artifacts.append(("keras", file))
+        elif suffix == ".mlmodel" and not inside_mlpackage:
+            artifacts.append(("coreml", file))
+
+    dir_artifacts: list[tuple[str, Path]] = []
+    for directory in sorted([root, *[p for p in root.rglob("*") if p.is_dir()]]):
+        if directory.suffix == ".mlpackage":
+            dir_artifacts.append(("coreml", directory))
+        if (directory / "saved_model.pb").exists() or (directory / "saved_model.pbtxt").exists():
+            dir_artifacts.append(("tensorflow-savedmodel", directory))
+
+    flax_dirs: list[Path] = []
+    for file in sorted(root.rglob("*")):
+        if not file.is_file():
+            continue
+        if file.name in {"flax_model.msgpack", "model.msgpack", "_CHECKPOINT_METADATA", "tree_metadata.json"}:
+            flax_dirs.append(file.parent)
+    selected_flax_dirs: list[Path] = []
+    for directory in sorted(set(flax_dirs), key=lambda p: (len(p.parts), str(p))):
+        if not any(parent in directory.parents for parent in selected_flax_dirs):
+            selected_flax_dirs.append(directory)
+    dir_artifacts.extend(("flax-orbax", directory) for directory in selected_flax_dirs)
+
+    all_artifacts = artifacts + dir_artifacts
+    unique: dict[tuple[str, Path], tuple[str, Path]] = {}
+    for kind, path in all_artifacts:
+        unique[(kind, path)] = (kind, path)
+    return [unique[key] for key in sorted(unique, key=lambda item: (str(item[1]), item[0]))]
+
+
+def inspect_source_formats(root: Path) -> tuple[list[dict[str, Any]], list[str]]:
     manifests: list[dict[str, Any]] = []
     errors: list[str] = []
-    for file in files:
+    for kind, artifact in discover_source_format_artifacts(root):
         try:
-            if file.suffix.lower() == ".onnx":
-                manifests.append(inspect_onnx_file(file, root))
-            elif file.suffix.lower() == ".gguf":
-                manifests.append(inspect_gguf_file(file, root))
+            if kind == "onnx":
+                manifests.append(inspect_onnx_file(artifact, root))
+            elif kind == "gguf":
+                manifests.append(inspect_gguf_file(artifact, root))
+            elif kind == "flax-orbax":
+                manifests.append(inspect_flax_orbax_dir(artifact, root))
+            elif kind == "tensorflow-savedmodel":
+                manifests.append(inspect_saved_model_dir(artifact, root))
+            elif kind == "keras":
+                manifests.append(inspect_keras_archive(artifact, root))
+            elif kind == "coreml":
+                manifests.append(inspect_coreml_artifact(artifact, root))
         except (OSError, SkillError) as exc:
-            errors.append(f"{file}: {exc}")
+            errors.append(f"{artifact}: {exc}")
     return manifests, errors
 
 

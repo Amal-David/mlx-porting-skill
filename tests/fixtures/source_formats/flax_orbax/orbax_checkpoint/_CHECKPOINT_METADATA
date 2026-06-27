@@ -1,0 +1,8 @@
+{
+  "checkpoint_type": "orbax",
+  "tree_paths": [
+    "params.encoder.layer_0.kernel",
+    "params.lm_head.kernel"
+  ],
+  "step": 7
+}

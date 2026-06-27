@@ -29,6 +29,12 @@ Do not import the model package during initial inspection. Read:
 - GGUF headers and metadata: version, metadata keys, architecture, tokenizer
   model, source/base-model provenance keys, file type, quantization version, and
   tensor table;
+- Flax/Orbax checkpoint metadata: msgpack artifacts, checkpoint metadata files,
+  tree paths, and params-tree hold conditions;
+- TensorFlow/Keras metadata: SavedModel signature keys, method names, variable
+  file presence, Keras archive config, layer classes, and weight members;
+- Core ML package metadata: package manifest version, root model identifier,
+  model files, and weight files;
 - repository tree and Python filenames;
 - model card frontmatter and license files;
 - `auto_map`, custom architecture names, and nonstandard config keys;
@@ -37,11 +43,12 @@ Do not import the model package during initial inspection. Read:
 
 Run `scripts/inspect_model.py`. Network download is opt-in.
 
-ONNX and GGUF support here is static intake only. It can identify routing
-signals and hold conditions, but it is not conversion support. Before using
-either format for a port, record unsupported operators, source/base-model
-provenance, tokenizer or processor compatibility, and a source-oracle parity
-fixture.
+ONNX, GGUF, Flax/Orbax, TensorFlow SavedModel, Keras archive, and Core ML
+package support here is static intake only. It can identify routing signals and
+hold conditions, but it is not conversion support. Before using any of these
+formats for a port, record unsupported operators, source/base-model provenance,
+tokenizer or processor compatibility, source-framework oracle outputs, and an
+MLX parity fixture.
 
 ## Architecture routing signals
 

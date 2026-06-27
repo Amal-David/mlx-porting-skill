@@ -2,8 +2,8 @@
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
   "version": "0.1.0",
-  "generated_at": "2026-06-27T11:16:57.405739+00:00",
-  "file_count": 160,
+  "generated_at": "2026-06-27T11:23:10.143504+00:00",
+  "file_count": 170,
   "files": [
     {
       "path": ".github/workflows/daily-research.yml",
@@ -62,8 +62,8 @@
     },
     {
       "path": "VALIDATION.md",
-      "size_bytes": 3417,
-      "sha256": "84666b3189c5bdb4834f1ef57f818384100a5e3cc3c6a3cb9c5e3323c9687083"
+      "size_bytes": 3875,
+      "sha256": "4a3c0b363d55547bb76d5392f63ffbf8f39de6f94b91a41ecd7c1e8910ee0852"
     },
     {
       "path": "VERSION",
@@ -162,8 +162,8 @@
     },
     {
       "path": "mlx-model-porting/assets/research_backlog.json",
-      "size_bytes": 5937,
-      "sha256": "b519b0b1aff82ebc73f52213d1f36b20d47ab4c12e8f8704be0a14286e1a29e9"
+      "size_bytes": 6078,
+      "sha256": "f5b7c8b37aa36770e794d427f8d47605b39336ab77e2dc7078e917c3cf736ca6"
     },
     {
       "path": "mlx-model-porting/assets/research_loop_config.json",
@@ -222,8 +222,8 @@
     },
     {
       "path": "mlx-model-porting/references/intake-and-routing.md",
-      "size_bytes": 3592,
-      "sha256": "2bf38b1074ab1371c203192b6ae0f33adb9a15bcf020bf12967f182bb43f99a0"
+      "size_bytes": 4081,
+      "sha256": "8c8c568c564f0cbe5b2bb07ba5a2ddc5154e130fb191c7837632a779f569dbae"
     },
     {
       "path": "mlx-model-porting/references/maintenance-and-provenance.md",
@@ -452,8 +452,8 @@
     },
     {
       "path": "mlx-model-porting/scripts/inspect_model.py",
-      "size_bytes": 41388,
-      "sha256": "f05d88d448526186b163f2001a5f454135f6db9759b3dc3388a915831a58d977"
+      "size_bytes": 52252,
+      "sha256": "4ffc3c78563cbbe7fbeda97ecef0d9699a24905fc3b504210ea1706384e13753"
     },
     {
       "path": "mlx-model-porting/scripts/install_skill.py",
@@ -507,8 +507,8 @@
     },
     {
       "path": "tests/fixtures/generate_fixtures.py",
-      "size_bytes": 13762,
-      "sha256": "c15cfddeb78568f6bb9fbf9140897b3c671e74a43811ada00188d97271837ffb"
+      "size_bytes": 17626,
+      "sha256": "eec905df7122d42f8c41812bc6d40423327a3319ba4c7f1591f58a63823d3aef"
     },
     {
       "path": "tests/fixtures/manifests/map.json",
@@ -771,6 +771,56 @@
       "sha256": "7c6c8edabe1bb5102b3c36dd9eb38953fd5b71f0746e6ef13deaa92954670a9b"
     },
     {
+      "path": "tests/fixtures/source_formats/coreml_package/Tiny.mlpackage/Data/com.apple.CoreML/model.mlmodel",
+      "size_bytes": 26,
+      "sha256": "07d937d27496c55cfe06ad32b1d4c589ad8d38d61647446efc5883e310f782d8"
+    },
+    {
+      "path": "tests/fixtures/source_formats/coreml_package/Tiny.mlpackage/Data/com.apple.CoreML/weights/weight.bin",
+      "size_bytes": 14,
+      "sha256": "4eb4f333967ca147d5e7a4215a9a8aadb7951526447b961ff9c6bfa9f8a991a2"
+    },
+    {
+      "path": "tests/fixtures/source_formats/coreml_package/Tiny.mlpackage/Manifest.json",
+      "size_bytes": 251,
+      "sha256": "fb6ab8d209e8ec1e3b049c0618ff5b171884b29c9ea5bc5b834e5e81abb5bc78"
+    },
+    {
+      "path": "tests/fixtures/source_formats/flax_orbax/flax_model.msgpack",
+      "size_bytes": 16,
+      "sha256": "ff26d28476b513ff7e5a80f3a49af87794dcc09ecaa73bab5676ee73af7128f2"
+    },
+    {
+      "path": "tests/fixtures/source_formats/flax_orbax/orbax_checkpoint/_CHECKPOINT_METADATA",
+      "size_bytes": 134,
+      "sha256": "aca93da235bb745b725d3a77b438ba89a00dd99e197deb517ec255839108c3c2"
+    },
+    {
+      "path": "tests/fixtures/source_formats/flax_orbax/tree_metadata.json",
+      "size_bytes": 251,
+      "sha256": "57ccab6d076a563a53dc52e94331ad7e5c3022f4a7359fa36c3dcbc9c755e7e0"
+    },
+    {
+      "path": "tests/fixtures/source_formats/keras_archive/tiny.keras",
+      "size_bytes": 644,
+      "sha256": "d2ba2ac987c17197621e0ad8cc6a4db9a3df6c1c642ad4df23ea5dc5abf51e8f"
+    },
+    {
+      "path": "tests/fixtures/source_formats/tensorflow_saved_model/saved_model.pbtxt",
+      "size_bytes": 363,
+      "sha256": "1a275b529f51a9e7d039fdbd6e909be208f7b1708899ac1a8bc48e928223e74f"
+    },
+    {
+      "path": "tests/fixtures/source_formats/tensorflow_saved_model/variables/variables.data-00000-of-00001",
+      "size_bytes": 12,
+      "sha256": "5f023bd1cfedf614f7d4af3bdc531cdb060f0a5fb67b52b9ef7ca9b8a5d03eb9"
+    },
+    {
+      "path": "tests/fixtures/source_formats/tensorflow_saved_model/variables/variables.index",
+      "size_bytes": 20,
+      "sha256": "762f693bcafc4ac5df601eb31213c6acd41dbee0b8afbc3377c0750166196f34"
+    },
+    {
       "path": "tests/fixtures/tensors/bad.npz",
       "size_bytes": 566,
       "sha256": "6dc0d284653ac7c7d28a4d27c60398aadf0c9546a7cce800f986eb925ceb5196"
@@ -802,8 +852,8 @@
     },
     {
       "path": "tests/test_tooling.py",
-      "size_bytes": 42144,
-      "sha256": "661c343242e017a4c7c4179bd7705c77a027864c1c0c8d70f1a4ca0c02619669"
+      "size_bytes": 46408,
+      "sha256": "51d839873f42772538a315807720d299bd7152319167ce43246cc6ac8a3531b1"
     }
   ]
 }

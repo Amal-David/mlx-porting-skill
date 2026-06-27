@@ -20,6 +20,7 @@ import argparse
 import hashlib
 import json
 import struct
+import zipfile
 from pathlib import Path
 from typing import Any
 
@@ -28,6 +29,7 @@ import numpy as np
 FIXTURES_ROOT = Path(__file__).resolve().parent
 
 DTYPE_TO_NUMPY = {"F16": np.float16, "F32": np.float32}
+ZIP_DATE = (2026, 1, 1, 0, 0, 0)
 
 # --- Declarative model specs -------------------------------------------------
 # Shapes are deliberately tiny. The codec codebook is a size-reduced stand-in
@@ -337,6 +339,102 @@ def write_npz_fixtures(root: Path) -> None:
         np.savez(out / f"{name}.npz", **data)
 
 
+def write_text(path: Path, value: str) -> Path:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(value, encoding="utf-8")
+    return path
+
+
+def write_bytes(path: Path, value: bytes) -> Path:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_bytes(value)
+    return path
+
+
+def write_keras_archive(path: Path) -> Path:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    metadata = {"keras_version": "3.0.0", "date_saved": "2026-01-01@00:00:00"}
+    config = {
+        "module": "keras",
+        "class_name": "Functional",
+        "config": {
+            "name": "tiny_keras",
+            "layers": [
+                {"class_name": "InputLayer", "config": {"name": "tokens"}},
+                {"class_name": "Dense", "config": {"name": "projection", "units": 4}},
+            ],
+        },
+    }
+    entries = {
+        "metadata.json": json.dumps(metadata, sort_keys=True).encode(),
+        "config.json": json.dumps(config, sort_keys=True).encode(),
+        "model.weights.h5": b"not-a-real-hdf5-weight-file",
+    }
+    with zipfile.ZipFile(path, "w", compression=zipfile.ZIP_STORED) as archive:
+        for name, data in sorted(entries.items()):
+            info = zipfile.ZipInfo(name, ZIP_DATE)
+            info.compress_type = zipfile.ZIP_STORED
+            archive.writestr(info, data)
+    return path
+
+
+def write_source_format_fixtures(root: Path) -> list[Path]:
+    written: list[Path] = []
+
+    flax_root = root / "source_formats" / "flax_orbax"
+    written.append(write_bytes(flax_root / "flax_model.msgpack", b"\x82\xa6params\x80\xa5state\x80"))
+    written.append(write_text(flax_root / "tree_metadata.json", json.dumps({
+        "framework": "flax",
+        "tree_paths": ["params.encoder.layer_0.kernel", "params.lm_head.kernel"],
+        "shapes": {
+            "params.encoder.layer_0.kernel": [8, 8],
+            "params.lm_head.kernel": [8, 32],
+        },
+    }, indent=2) + "\n"))
+    written.append(write_text(flax_root / "orbax_checkpoint" / "_CHECKPOINT_METADATA", json.dumps({
+        "checkpoint_type": "orbax",
+        "tree_paths": ["params.encoder.layer_0.kernel", "params.lm_head.kernel"],
+        "step": 7,
+    }, indent=2) + "\n"))
+
+    saved_model_root = root / "source_formats" / "tensorflow_saved_model"
+    written.append(write_text(saved_model_root / "saved_model.pbtxt", """
+meta_graphs {
+  signature_def {
+    key: "serving_default"
+    value {
+      inputs {
+        key: "input_ids"
+        value { name: "serving_default_input_ids:0" dtype: DT_FLOAT }
+      }
+      outputs {
+        key: "logits"
+        value { name: "StatefulPartitionedCall:0" dtype: DT_FLOAT }
+      }
+      method_name: "tensorflow/serving/predict"
+    }
+  }
+}
+""".lstrip()))
+    written.append(write_text(saved_model_root / "variables" / "variables.index", "not-a-real-tf-index\n"))
+    written.append(write_bytes(saved_model_root / "variables" / "variables.data-00000-of-00001", b"tf-variables"))
+
+    written.append(write_keras_archive(root / "source_formats" / "keras_archive" / "tiny.keras"))
+
+    coreml_root = root / "source_formats" / "coreml_package" / "Tiny.mlpackage"
+    written.append(write_text(coreml_root / "Manifest.json", json.dumps({
+        "fileFormatVersion": "1.0.0",
+        "rootModelIdentifier": "model",
+        "itemInfoEntries": {
+            "model": {"path": "Data/com.apple.CoreML/model.mlmodel"},
+            "weights": {"path": "Data/com.apple.CoreML/weights/weight.bin"},
+        },
+    }, indent=2) + "\n"))
+    written.append(write_bytes(coreml_root / "Data" / "com.apple.CoreML" / "model.mlmodel", b"not-a-real-coreml-protobuf"))
+    written.append(write_bytes(coreml_root / "Data" / "com.apple.CoreML" / "weights" / "weight.bin", b"coreml-weights"))
+    return written
+
+
 def generate(root: Path) -> list[Path]:
     written: list[Path] = []
     for model, spec in MODEL_SPECS.items():
@@ -354,6 +452,7 @@ def generate(root: Path) -> list[Path]:
         written.append(unsafe_dir / name)
     write_npz_fixtures(root)
     written += [root / "tensors" / f"{n}.npz" for n in ("source", "close", "bad")]
+    written += write_source_format_fixtures(root)
     return written
 
 

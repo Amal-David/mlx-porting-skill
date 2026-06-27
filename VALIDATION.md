@@ -25,6 +25,7 @@ manifest gates. Each item below is enforced by a runnable pass/fail test.
 | Weight-map shape transforms (reshape/squeeze/unsqueeze/slice/permute) are correct | `test_weight_map_transform_ops_*` |
 | The CLI pipeline chains (`inspect → plan → recommend → validate_weight_map`) | `test_pipeline_chains_inspect_to_plan_recommend_and_validate` |
 | Fixtures are reproducible and auditable from a generator | `tests/test_fixtures.py` |
+| Static source-format manifests hold recommendations for ONNX, GGUF, Flax/Orbax, TensorFlow SavedModel, Keras archive, and Core ML package artifacts | `test_static_inspection_reports_*_source_format_manifest`, `test_static_inspection_reports_*_manifest` |
 | The deep research loop emits review-only assignments, blogs, synthesis, and rejects malformed findings | `test_research_loop_*` |
 | The distributed artifact has no silent file drift | `scripts/manifest.py check` |
 | Source provenance is well-formed; supported techniques cite implementation evidence | `scripts/validate_sources.py` |
@@ -36,6 +37,9 @@ manifest gates. Each item below is enforced by a runnable pass/fail test.
 - Quantization, KV-cache, and speculative-decoding quality on real weights.
 - End-to-end real-model conversion runs for the 14 architecture families; the
   offline scenarios prove routing and guard behavior, not real checkpoint support.
+- Source-format conversion from ONNX, GGUF, Flax/Orbax, TensorFlow/Keras, or
+  Core ML artifacts into executable MLX graphs; offline tests prove static
+  metadata triage and recommendation holds only.
 
 ## Requires network access (not proven here)
 

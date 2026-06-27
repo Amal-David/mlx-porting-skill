@@ -1,0 +1,17 @@
+{
+  "framework": "flax",
+  "tree_paths": [
+    "params.encoder.layer_0.kernel",
+    "params.lm_head.kernel"
+  ],
+  "shapes": {
+    "params.encoder.layer_0.kernel": [
+      8,
+      8
+    ],
+    "params.lm_head.kernel": [
+      8,
+      32
+    ]
+  }
+}

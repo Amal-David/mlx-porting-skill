@@ -1,0 +1,12 @@
+{
+  "fileFormatVersion": "1.0.0",
+  "rootModelIdentifier": "model",
+  "itemInfoEntries": {
+    "model": {
+      "path": "Data/com.apple.CoreML/model.mlmodel"
+    },
+    "weights": {
+      "path": "Data/com.apple.CoreML/weights/weight.bin"
+    }
+  }
+}

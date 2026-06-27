@@ -250,6 +250,65 @@ class ToolingTests(unittest.TestCase):
             self.assertIn("Missing source/base-model provenance metadata.", manifest["hold_conditions"])
             self.assertIn("GGUF source/base-model provenance is missing or incomplete", report["recommendation_blockers"])
 
+    def test_static_inspection_reports_flax_orbax_source_format_manifest(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            output = Path(tmp) / "inspection.json"
+            run_script("inspect_model.py", FIXTURES / "source_formats" / "flax_orbax", "--output", output)
+            report = json.loads(output.read_text())
+            self.assertEqual(report["source_format_summary"]["formats"], ["flax-orbax"])
+            manifest = report["source_format_summary"]["manifests"][0]
+            self.assertEqual(manifest["format"], "flax-orbax")
+            self.assertIn("flax_model.msgpack", manifest["msgpack_files"])
+            self.assertIn("tree_metadata.json", manifest["metadata_files"])
+            self.assertIn("params.encoder.layer_0.kernel", manifest["tree_paths"])
+            self.assertIn("orbax_checkpoint/_CHECKPOINT_METADATA", manifest["metadata"])
+            self.assertIn("source-format static intake is triage-only", report["recommendation_blockers"][0])
+
+    def test_static_inspection_reports_tensorflow_savedmodel_manifest(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            output = Path(tmp) / "inspection.json"
+            run_script("inspect_model.py", FIXTURES / "source_formats" / "tensorflow_saved_model", "--output", output)
+            report = json.loads(output.read_text())
+            self.assertEqual(report["source_format_summary"]["formats"], ["tensorflow-savedmodel"])
+            manifest = report["source_format_summary"]["manifests"][0]
+            self.assertEqual(manifest["format"], "tensorflow-savedmodel")
+            self.assertEqual(manifest["saved_model_files"], ["saved_model.pbtxt"])
+            self.assertIn("serving_default", manifest["signature_keys"])
+            self.assertIn("tensorflow/serving/predict", manifest["method_names"])
+            self.assertTrue(manifest["variables"]["present"])
+            self.assertIn("variables/variables.index", manifest["variables"]["files"])
+            self.assertIn("source-format static intake is triage-only", report["recommendation_blockers"][0])
+
+    def test_static_inspection_reports_keras_archive_manifest(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            output = Path(tmp) / "inspection.json"
+            run_script("inspect_model.py", FIXTURES / "source_formats" / "keras_archive", "--output", output)
+            report = json.loads(output.read_text())
+            self.assertEqual(report["source_format_summary"]["formats"], ["keras-archive"])
+            manifest = report["source_format_summary"]["manifests"][0]
+            self.assertEqual(manifest["format"], "keras-archive")
+            self.assertEqual(manifest["metadata"]["keras_version"], "3.0.0")
+            self.assertEqual(manifest["class_name"], "Functional")
+            self.assertEqual(manifest["layer_count"], 2)
+            self.assertEqual(manifest["layer_class_names"], ["InputLayer", "Dense"])
+            self.assertEqual(manifest["weight_files"], ["model.weights.h5"])
+            self.assertIn("source-format static intake is triage-only", report["recommendation_blockers"][0])
+
+    def test_static_inspection_reports_coreml_package_manifest(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            output = Path(tmp) / "inspection.json"
+            run_script("inspect_model.py", FIXTURES / "source_formats" / "coreml_package", "--output", output)
+            report = json.loads(output.read_text())
+            self.assertEqual(report["source_format_summary"]["formats"], ["coreml-package"])
+            manifest = report["source_format_summary"]["manifests"][0]
+            self.assertEqual(manifest["format"], "coreml-package")
+            self.assertEqual(manifest["manifest"]["fileFormatVersion"], "1.0.0")
+            self.assertEqual(manifest["manifest"]["rootModelIdentifier"], "model")
+            self.assertEqual(manifest["manifest"]["item_count"], 2)
+            self.assertEqual(manifest["model_files"], ["Data/com.apple.CoreML/model.mlmodel"])
+            self.assertEqual(manifest["weight_files"], ["Data/com.apple.CoreML/weights/weight.bin"])
+            self.assertIn("source-format static intake is triage-only", report["recommendation_blockers"][0])
+
     def test_port_plan_is_architecture_and_evidence_aware(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             inspection = Path(tmp) / "inspection.json"

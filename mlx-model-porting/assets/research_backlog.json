@@ -21,12 +21,13 @@
       "id": "source-formats-beyond-pytorch-hf",
       "priority": "P0",
       "status": "needs-validation",
-      "summary": "Static intake now emits ONNX and GGUF manifests, but source formats such as JAX/Flax, TensorFlow/Keras, Core ML, and checkpoint-only repos still need first-class static extraction and fixtures.",
-      "required_gate": "Static manifest extraction without import or execution: keep ONNX ModelProto/opset/initializer/external-data inspection and GGUF header/metadata/tensor table coverage green; add Flax/Orbax tree metadata, TensorFlow SavedModel and Keras archive signatures/config, Core ML package metadata, safetensors-only hold rules, unsupported-op reports, deterministic weight-map coverage, and no silent fallback to manual routing.",
+      "summary": "Static intake now emits ONNX, GGUF, Flax/Orbax, TensorFlow SavedModel, Keras archive, and Core ML package manifests, but unsupported-op reports, safetensors-only hold rules, checkpoint-only edge cases, and deterministic source-to-MLX weight-map coverage remain.",
+      "required_gate": "Static manifest extraction without import or execution: keep ONNX ModelProto/opset/initializer/external-data inspection, GGUF header/metadata/tensor table coverage, Flax/Orbax tree metadata, TensorFlow SavedModel and Keras archive signatures/config, and Core ML package metadata green; add unsupported-op reports, safetensors-only hold rules, deterministic weight-map coverage, checkpoint-only repo fixtures, and no silent fallback to manual routing.",
       "source": "mlx-model-porting/research-runs/2026-06-27-deep-research-loop/synthesis.json",
       "affected": [
         "references/intake-and-routing.md",
         "scripts/inspect_model.py",
+        "tests/fixtures/source_formats",
         "tests/fixtures/models"
       ]
     },
