@@ -1258,6 +1258,87 @@ class ToolingTests(unittest.TestCase):
             )
             self.assertIn("missing required fields: sources", result.stderr)
 
+    def test_research_loop_ingests_external_subagent_results(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            output_dir = Path(tmp) / "external-subagent-run"
+            run_script(
+                "research_loop.py",
+                "--run-id", "external-subagent-loop",
+                "--objective", "Collect externally spawned subagent results",
+                "--agent-count", 1,
+                "--output-dir", output_dir,
+            )
+            subagents = json.loads((output_dir / "subagents.json").read_text())
+            agent = subagents["agents"][0]
+            result_path = output_dir / agent["result_path"]
+            result_path.write_text(json.dumps({
+                "persona_id": agent["persona_id"],
+                "decision_notes": ["External subagent result was written after dispatch."],
+                "findings": [
+                    {
+                        "id": "external-subagent-official-docs",
+                        "title": "External subagent official docs receipt",
+                        "summary": "A separately spawned researcher can write a validated result JSON to the handoff path.",
+                        "source_lane": "official_docs",
+                        "sources": [
+                            {
+                                "title": "MLX documentation index",
+                                "url": "https://ml-explore.github.io/mlx/build/html/index.html",
+                                "accessed": "2026-06-27",
+                                "kind": "official-doc",
+                            }
+                        ],
+                        "decision": "held",
+                        "evidence_level": "deterministic-test-fixture",
+                        "validation_gate": "External subagent receipts must pass schema validation before synthesis.",
+                        "affects": ["references/deep-research-loop.md"],
+                        "caveats": ["This proves ingestion, not a real recommendation."],
+                        "required_next_validation": "Run a live external subagent campaign before promotion.",
+                    }
+                ],
+            }), encoding="utf-8")
+            run_script(
+                "research_loop.py",
+                "--run-id", "external-subagent-loop",
+                "--objective", "Collect externally spawned subagent results",
+                "--agent-count", 1,
+                "--ingest-subagent-results",
+                "--output-dir", output_dir,
+            )
+            assignments = json.loads((output_dir / "assignments.json").read_text())
+            synthesis = json.loads((output_dir / "synthesis.json").read_text())
+            subagents = json.loads((output_dir / "subagents.json").read_text())
+            assignment = assignments["assignments"][0]
+            execution = assignment["execution"]
+            self.assertEqual(synthesis["finding_count"], 1)
+            self.assertTrue(synthesis["ingested_subagent_results"])
+            self.assertEqual(synthesis["execution_counts"]["subagent_result_ingested"], 1)
+            self.assertEqual(synthesis["subagent_dispatch"]["execution_mode"], "external-subagent")
+            self.assertEqual(subagents["execution_mode"], "external-subagent")
+            self.assertEqual(execution["kind"], "external-subagent")
+            self.assertEqual(execution["state"], "subagent_result_ingested")
+            self.assertEqual(execution["result_path"], agent["result_path"])
+            packet = json.loads((output_dir / execution["assignment_path"]).read_text())
+            self.assertEqual(packet["execution"]["state"], "subagent_result_ingested")
+            self.assertEqual(packet["blog"]["source"], "generated")
+            blog = output_dir / execution["blog_path"]
+            self.assertIn("external-subagent-official-docs", blog.read_text())
+
+    def test_research_loop_ingest_subagent_results_fails_on_missing_result(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            output_dir = Path(tmp) / "external-missing-run"
+            result = run_script(
+                "research_loop.py",
+                "--run-id", "external-missing-loop",
+                "--objective", "Fail loudly when external subagent result is missing",
+                "--agent-count", 1,
+                "--ingest-subagent-results",
+                "--output-dir", output_dir,
+                expected=2,
+            )
+            self.assertIn("subagent result ingestion failed", result.stderr)
+            self.assertIn("agents/official-docs-cartographer.result.json", result.stderr)
+
     def test_research_loop_executor_records_receipts(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             output_dir = Path(tmp) / "executor-run"

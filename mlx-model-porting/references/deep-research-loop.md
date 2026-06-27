@@ -228,6 +228,22 @@ python3 scripts/research_loop.py \
   --output-dir research-runs/manual-adaptive
 ```
 
+Collect results from externally spawned subagents:
+
+```bash
+python3 scripts/research_loop.py \
+  --objective "Broaden MLX porting evidence beyond GitHub" \
+  --agent-count 6 \
+  --output-dir research-runs/manual-dispatch
+
+# After workers read subagents.json and write agents/*.result.json:
+python3 scripts/research_loop.py \
+  --objective "Broaden MLX porting evidence beyond GitHub" \
+  --agent-count 6 \
+  --ingest-subagent-results \
+  --output-dir research-runs/manual-dispatch
+```
+
 Require evidence breadth before treating a run as review-ready:
 
 ```bash
@@ -263,6 +279,12 @@ loop loudly; inspect the saved receipts before retrying.
 The script does not fetch network resources by itself or modify recommendation
 assets. In executor mode, the explicit worker command owns any live delegation
 or browsing and must still obey the review-only policy.
+
+External ingestion mode is also opt-in and mutually exclusive with
+`--offline-fixture` and `--executor-command`. It reads the `agents/*.result.json`
+paths declared in the handoff packets, validates every selected persona result,
+and fails loudly if any file is missing, malformed, or has the wrong
+`persona_id`.
 
 ## Promotion Rule
 

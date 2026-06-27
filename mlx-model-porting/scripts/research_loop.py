@@ -85,6 +85,11 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="Exit non-zero after writing receipts when the review gate does not pass",
     )
+    parser.add_argument(
+        "--ingest-subagent-results",
+        action="store_true",
+        help="Read existing per-agent result JSON files from the generated handoff paths",
+    )
     parser.add_argument("--execution-timeout", type=float, default=120.0)
     parser.add_argument("--output-dir", required=True)
     return parser.parse_args()
@@ -807,6 +812,55 @@ def execute_assignments(
     }, executions
 
 
+def ingest_subagent_results(
+    assignments: list[dict[str, Any]],
+    output_dir: Path,
+) -> tuple[dict[str, Any], dict[str, dict[str, Any]]]:
+    agents = []
+    executions: dict[str, dict[str, Any]] = {}
+    failures = []
+    for index, assignment in enumerate(assignments):
+        persona_id = assignment["persona_id"]
+        paths = agent_output_paths(output_dir, assignment)
+        rel_paths = agent_rel_paths(output_dir, assignment)
+        result_path = paths["result"]
+        blog_path = paths["blog"]
+        state = "subagent_result_missing"
+        failure_reason = None
+        agent = None
+        try:
+            agent = load_executor_result(result_path, persona_id)
+            state = "subagent_result_ingested"
+        except (SkillError, OSError, json.JSONDecodeError) as exc:
+            failure_reason = str(exc)
+        record: dict[str, Any] = {
+            "kind": "external-subagent",
+            "state": state,
+            "assignment_index": index,
+            "assignment_path": rel_paths["assignment"],
+            "prompt_path": rel_paths["prompt"],
+            "blog_path": rel_paths["blog"],
+            "blog_source": "executor-authored" if blog_path.exists() and blog_path.stat().st_size > 0 else "generated",
+            "result_path": rel_paths["result"],
+            "ingested_at": utc_now(),
+        }
+        if failure_reason:
+            record["failure_reason"] = failure_reason
+            failures.append(f"{persona_id}: {failure_reason} at {rel_paths['result']}")
+        else:
+            agents.append(agent)
+        executions[persona_id] = record
+    if failures:
+        raise SkillError("subagent result ingestion failed for " + "; ".join(failures))
+    return {
+        "schema_version": 1,
+        "agents": agents,
+        "limitations": [
+            "Findings came from externally written subagent result files and remain review-only until promoted separately."
+        ],
+    }, executions
+
+
 def validate_findings(config: dict[str, Any], fixture: dict[str, Any]) -> None:
     lane_ids = {lane["id"] for lane in config["source_lanes"]}
     decision_ids = {state["id"] for state in config["decision_states"]}
@@ -1086,7 +1140,14 @@ def summarize(
         lanes[finding["source_lane"]] += 1
     non_github_lanes = sorted(lane for lane, count in lanes.items() if count and lane != "repositories")
     returned_personas = {agent.get("persona_id") for agent in fixture.get("agents", [])}
-    execution_counts = {"scaffolded_not_run": 0, "fixture_ingested": 0, "executor_completed": 0, "executor_failed": 0}
+    execution_counts = {
+        "scaffolded_not_run": 0,
+        "fixture_ingested": 0,
+        "executor_completed": 0,
+        "executor_failed": 0,
+        "subagent_result_ingested": 0,
+        "subagent_result_missing": 0,
+    }
     executions = executions or {}
     for assignment in assignments:
         if assignment["persona_id"] in executions:
@@ -1439,6 +1500,8 @@ def run_iteration(
     )
     if args.executor_command:
         execution_mode = "local-executor"
+    elif args.ingest_subagent_results:
+        execution_mode = "external-subagent"
     elif args.offline_fixture:
         execution_mode = "offline-fixture"
     else:
@@ -1464,6 +1527,8 @@ def run_iteration(
             args.execution_timeout,
             args.executor_workers,
         )
+    elif args.ingest_subagent_results:
+        fixture, executions = ingest_subagent_results(assignments, output_dir)
     else:
         fixture = load_fixture(args.offline_fixture)
     validate_findings(config, fixture)
@@ -1488,6 +1553,8 @@ def run_iteration(
         summary["executor_command"] = args.executor_command
         summary["executor_workers"] = args.executor_workers
         summary["executor_actual_workers"] = fixture.get("executor_actual_workers", args.executor_workers)
+    if args.ingest_subagent_results:
+        summary["ingested_subagent_results"] = True
     summary["blog_receipts"] = write_blogs(output_dir, assignments, fixture)
     summary["subagent_dispatch"] = write_subagent_handoffs(
         output_dir,
@@ -1734,6 +1801,10 @@ def main() -> int:
     try:
         if args.offline_fixture and args.executor_command:
             raise SkillError("--offline-fixture and --executor-command are mutually exclusive")
+        if args.ingest_subagent_results and args.executor_command:
+            raise SkillError("--ingest-subagent-results and --executor-command are mutually exclusive")
+        if args.ingest_subagent_results and args.offline_fixture:
+            raise SkillError("--ingest-subagent-results and --offline-fixture are mutually exclusive")
         if args.iterations <= 0:
             raise SkillError("--iterations must be positive")
         if args.executor_workers <= 0:
