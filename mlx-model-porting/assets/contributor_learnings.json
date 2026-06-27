@@ -2,6 +2,40 @@
   "schema_version": 1,
   "reviewed": "2026-06-27",
   "research_question": "What implementation-level MLX porting lessons can be taken from dgrauet and repositories associated with the top 1000 contributors to ml-explore/mlx?",
+  "advisor_buckets": {
+    "validated": {
+      "description": "Contributor-derived learnings already promoted into supported skill guidance or optimization assets with validation gates and rollback conditions.",
+      "learning_ids": [
+        "block-weight-streaming",
+        "grid-sample-spatial-kernel"
+      ]
+    },
+    "reinforces_existing_guidance": {
+      "description": "Contributor evidence that supports existing skill guidance but does not require a new standalone recommendation.",
+      "learning_ids": [
+        "audio-flow-tts-duration-vocoder-gates",
+        "operation-benchmark-hygiene",
+        "paged-kv-and-gather-qmm-serving"
+      ]
+    },
+    "experimental_approaches": {
+      "description": "Promising but unvalidated contributor/repository learnings. Present these as experimental approaches and require explicit user opt-in before helping execute them.",
+      "requires_user_opt_in": true,
+      "prompt": "This is an experimental approach. Do you want to try it?",
+      "learning_ids": [
+        "layer-eval-watchdog-guard",
+        "layer-range-network-sharding",
+        "synthetic-moe-assembly",
+        "rwkv-ssm-conformer-prototypes"
+      ]
+    },
+    "context_only": {
+      "description": "Adjacent ecosystem context that should inform research backlog only, not model-porting execution guidance.",
+      "learning_ids": [
+        "mlx-onnx-export-adjacent"
+      ]
+    }
+  },
   "contributor_set": {
     "source": "https://api.github.com/repos/ml-explore/mlx/contributors?per_page=100&page=1..10",
     "retrieved": "2026-06-27",

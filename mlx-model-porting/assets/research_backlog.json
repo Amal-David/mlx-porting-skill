@@ -2,6 +2,18 @@
   "schema_version": 1,
   "reviewed": "2026-06-27",
   "objective": "Track deep-research gaps needed before the MLX porting skill can credibly claim comprehensive coverage.",
+  "advisor_status_mapping": {
+    "validated": {
+      "advisor_bucket": "validated-locally",
+      "description": "May be described as validated skill guidance when the referenced gates remain green."
+    },
+    "needs-validation": {
+      "advisor_bucket": "experimental-approach",
+      "description": "May be shown as an experimental approach or validation backlog item, but not as supported guidance until the required gate passes.",
+      "requires_user_opt_in": true,
+      "prompt": "This is an experimental approach. Do you want to try it?"
+    }
+  },
   "items": [
     {
       "id": "golden-scenarios-all-families",

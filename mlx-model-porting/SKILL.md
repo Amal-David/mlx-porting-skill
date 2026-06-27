@@ -27,6 +27,7 @@ Produce a **correct, reproducible, architecture-aware MLX implementation**. Corr
 8. **Never hide quality regressions behind throughput.** For audio, language, vision, and generative models, use task-specific quality checks in addition to tensor tolerances.
 9. **Do not publish converted weights without license and provenance checks.** Preserve the original model card, attribution, generation config, tokenizer/processor files, and conversion recipe.
 10. **Daily research automation is review-only.** It may collect and rank candidates, but must not silently rewrite runbooks or merge recommendations. Use the promotion-review ledger to separate findings ready for skill-update review from validation backlog and rejected leads.
+11. **Experimental approaches require explicit opt-in.** Label unvalidated contributor, blog, paper, or repository learnings as experimental approaches, state the missing validation gate, and ask before helping execute them: “This is an experimental approach. Do you want to try it?” Continue only if the user explicitly says to try it.
 
 ## Workflow
 
@@ -159,6 +160,16 @@ Consult `assets/optimization_guidance.yaml`, `assets/recommendation-taxonomy.yam
 3. [decoding and serving](references/decoding-and-serving.md)
 4. [quantization](references/quantization.md)
 5. [training and fine-tuning](references/training-and-finetuning.md)
+
+Before recommending or trying an optimization for a specific model, classify each option:
+
+- **validated locally**: reproduced by a local test, benchmark, or fixture for this skill or the current port;
+- **validated by source or theory**: backed by official MLX/API docs, a pinned implementation, or primary paper, but still requiring local confirmation for the chosen model;
+- **benchmark-required**: safe to try after parity, but no speedup or memory number may be claimed until measured on the target Mac and workload;
+- **experimental approach**: promising from contributor, blog, repository, or research-loop evidence, but not promotion-ready for supported guidance;
+- **rejected/do not use**: incompatible, unsafe, contradicted, license-blocked, CUDA-only, or superseded.
+
+For an experimental approach, run a short plan session first. Say why it is promising, why it is experimental, the required validation and rollback gate, then ask: “This is an experimental approach. Do you want to try it?” If the user does not explicitly agree to try it, keep the approach in the report/backlog and continue only with validated or benchmark-required guidance.
 
 Default order:
 

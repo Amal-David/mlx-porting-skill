@@ -386,6 +386,33 @@ class ToolingTests(unittest.TestCase):
             self.assertIn("Ready candidates", text)
             self.assertIn("Research experiments", text)
 
+    def test_advisor_taxonomy_preserves_experimental_opt_in(self) -> None:
+        skill_text = (SKILL / "SKILL.md").read_text()
+        taxonomy = json.loads((SKILL / "assets" / "recommendation-taxonomy.yaml").read_text())
+        contributor = json.loads((SKILL / "assets" / "contributor_learnings.json").read_text())
+        backlog = json.loads((SKILL / "assets" / "research_backlog.json").read_text())
+
+        self.assertIn("This is an experimental approach. Do you want to try it?", skill_text)
+        buckets = {bucket["id"]: bucket for bucket in taxonomy["advisor_buckets"]}
+        self.assertTrue(buckets["experimental-approach"]["requires_user_opt_in"])
+        self.assertEqual(
+            taxonomy["status_to_advisor_bucket"]["research-candidate"],
+            "experimental-approach",
+        )
+        self.assertIn(
+            "layer-range-network-sharding",
+            contributor["advisor_buckets"]["experimental_approaches"]["learning_ids"],
+        )
+        self.assertIn(
+            "block-weight-streaming",
+            contributor["advisor_buckets"]["validated"]["learning_ids"],
+        )
+        self.assertEqual(
+            backlog["advisor_status_mapping"]["needs-validation"]["advisor_bucket"],
+            "experimental-approach",
+        )
+        self.assertTrue(backlog["advisor_status_mapping"]["needs-validation"]["requires_user_opt_in"])
+
     def test_block_weight_streaming_is_scoped_to_repeated_block_memory_pressure(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             inspection = Path(tmp) / "inspection.json"

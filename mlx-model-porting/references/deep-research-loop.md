@@ -243,6 +243,14 @@ ledger as the handoff from research to implementation, then still update
 assets manually with tests, source validation, manifest checks, and rollback
 conditions.
 
+Do not discard useful non-promoted findings from top-1000 contributor sweeps,
+blogs, repositories, package metadata, or community leads. If a finding is
+promising but lacks a reproducible MLX validation path, carry it forward as an
+`experimental approach`, not as supported guidance. Any agent or future CLI/UI
+that presents such an approach must name why it is experimental, list the
+required validation and rollback gate, and require explicit user opt-in before
+helping the user try it.
+
 ## CLI
 
 Generate assignments and synthesize fixture-backed findings:
