@@ -1303,10 +1303,48 @@ class ToolingTests(unittest.TestCase):
                 self.assertEqual(packet["execution"]["state"], "executor_completed")
                 self.assertEqual(packet["paths"]["result"], execution["result_path"])
                 self.assertEqual(packet["environment"]["MLX_RESEARCH_ASSIGNMENT_PATH"], execution["assignment_path"])
+                self.assertEqual(packet["blog"]["source"], "generated")
+                self.assertEqual(assignment["blog"]["source"], "generated")
+                self.assertEqual(execution["blog_source"], "generated")
                 prompt = (output_dir / execution["prompt_path"]).read_text()
                 self.assertIn("Sampling plan", prompt)
             blog = output_dir / "blogs" / "official-docs-cartographer.md"
             self.assertIn("fake-executor-official-docs-cartographer", blog.read_text())
+
+    def test_research_loop_preserves_executor_authored_blog(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            output_dir = Path(tmp) / "executor-blog-run"
+            fake_executor = FIXTURES / "research_loop" / "fake_executor.py"
+            os.environ["MLX_FAKE_EXECUTOR_WRITE_BLOG"] = "1"
+            try:
+                run_script(
+                    "research_loop.py",
+                    "--run-id", "executor-blog-loop",
+                    "--objective", "Preserve worker authored research blogs",
+                    "--agent-count", 1,
+                    "--executor-command", f"{sys.executable} {fake_executor}",
+                    "--output-dir", output_dir,
+                )
+            finally:
+                os.environ.pop("MLX_FAKE_EXECUTOR_WRITE_BLOG", None)
+            assignments = json.loads((output_dir / "assignments.json").read_text())
+            synthesis = json.loads((output_dir / "synthesis.json").read_text())
+            subagents = json.loads((output_dir / "subagents.json").read_text())
+            assignment = assignments["assignments"][0]
+            execution = assignment["execution"]
+            blog_text = (output_dir / execution["blog_path"]).read_text()
+            self.assertIn("Worker-authored research blog", blog_text)
+            self.assertNotIn("fake-executor-official-docs-cartographer", blog_text)
+            self.assertEqual(execution["blog_source"], "executor-authored")
+            self.assertEqual(assignment["blog"]["source"], "executor-authored")
+            self.assertTrue(assignment["blog"]["preserved_executor_blog"])
+            generated_path = output_dir / assignment["blog"]["generated_blog_path"]
+            self.assertTrue(generated_path.exists())
+            self.assertIn("fake-executor-official-docs-cartographer", generated_path.read_text())
+            packet = json.loads((output_dir / execution["assignment_path"]).read_text())
+            self.assertEqual(packet["blog"]["source"], "executor-authored")
+            self.assertEqual(subagents["agents"][0]["blog_source"], "executor-authored")
+            self.assertEqual(synthesis["blog_receipts"][0]["source"], "executor-authored")
 
     def test_research_loop_executor_workers_run_in_parallel(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

@@ -15,6 +15,7 @@ def main() -> int:
         return 3
     persona_id = os.environ["MLX_RESEARCH_PERSONA_ID"]
     result_path = Path(os.environ["MLX_RESEARCH_RESULT_PATH"])
+    blog_path = Path(os.environ["MLX_RESEARCH_BLOG_PATH"])
     slug = persona_id.replace("_", "-")
     sleep_seconds = float(os.environ.get("MLX_FAKE_EXECUTOR_SLEEP", "0") or "0")
     marker_dir = os.environ.get("MLX_FAKE_EXECUTOR_CONCURRENCY_DIR")
@@ -65,6 +66,21 @@ def main() -> int:
             }
         ]
     }, indent=2), encoding="utf-8")
+    if os.environ.get("MLX_FAKE_EXECUTOR_WRITE_BLOG"):
+        blog_path.parent.mkdir(parents=True, exist_ok=True)
+        blog_path.write_text(
+            "\n".join([
+                f"# Worker-authored research blog for {persona_id}",
+                "",
+                "## Assignment",
+                "The fake executor wrote this blog through MLX_RESEARCH_BLOG_PATH.",
+                "",
+                "## Open validation",
+                "This proves blog ingestion behavior only.",
+                "",
+            ]),
+            encoding="utf-8",
+        )
     if marker_path:
         marker_path.unlink(missing_ok=True)
     print(f"wrote fake finding for {persona_id}")

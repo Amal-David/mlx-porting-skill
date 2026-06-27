@@ -90,6 +90,12 @@ are the stable handoff surface for a human operator or external orchestrator to
 spawn one researcher per selected persona. Each packet includes the mission,
 sample plan, expected result JSON path, blog path, result contract, and
 review-only constraints so workers do not need to scrape `assignments.json`.
+If a worker writes markdown to `MLX_RESEARCH_BLOG_PATH`, that file is preserved
+as the primary per-agent blog and the harness stores its generated fallback at
+`agents/*.generated-blog.md`. If no worker-authored blog exists, the harness
+writes the generated blog to the primary blog path and records `source:
+generated` in `assignments.json`, `synthesis.json`, `subagents.json`, and the
+per-agent packet.
 
 When a loop is intended to feed skill updates, add an explicit review gate:
 `--min-sampled-targets`, `--min-non-github-lanes`, and repeated
@@ -248,8 +254,9 @@ command receives these environment variables:
 - `MLX_RESEARCH_REVIEW_ONLY=1`.
 
 The worker must write one JSON object to `MLX_RESEARCH_RESULT_PATH` with
-`persona_id`, `decision_notes`, `findings`, and optional `limitations`. The
-harness stores each prompt, result JSON, stdout log, stderr log, exit code, and
+`persona_id`, `decision_notes`, `findings`, and optional `limitations`. It may
+also write a markdown blog to `MLX_RESEARCH_BLOG_PATH`. The harness stores each
+prompt, result JSON, stdout log, stderr log, exit code, blog provenance, and
 execution state under `agents/` in the run directory. A failed worker exits the
 loop loudly; inspect the saved receipts before retrying.
 

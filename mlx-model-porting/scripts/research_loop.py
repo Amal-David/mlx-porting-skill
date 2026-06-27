@@ -464,6 +464,7 @@ def agent_output_paths(output_dir: Path, assignment: dict[str, Any]) -> dict[str
         "result": agent_dir / f"{slug}.result.json",
         "stdout": agent_dir / f"{slug}.stdout.txt",
         "stderr": agent_dir / f"{slug}.stderr.txt",
+        "generated_blog": agent_dir / f"{slug}.generated-blog.md",
         "blog": output_dir / "blogs" / f"{slug}.md",
     }
 
@@ -525,6 +526,7 @@ def write_subagent_handoffs(
             "prompt_path": rel_paths["prompt"],
             "result_path": rel_paths["result"],
             "blog_path": rel_paths["blog"],
+            "blog_source": assignment.get("blog", {}).get("source", "pending"),
             "execution_kind": execution_mode,
             "execution_state": assignment.get("execution", {}).get("state", "scaffolded_not_run"),
             "review_only": True,
@@ -552,6 +554,11 @@ def write_subagent_handoffs(
                 "blog": rel_paths["blog"],
             },
             "execution": assignment.get("execution", {}),
+            "blog": assignment.get("blog", {
+                "path": rel_paths["blog"],
+                "source": "pending",
+                "generated_blog_path": rel_paths["generated_blog"],
+            }),
             "result_contract": {
                 "path": rel_paths["result"],
                 "format": "json",
@@ -727,6 +734,7 @@ def execute_assignments(
             "assignment_path": rel_output_path(output_dir, assignment_path),
             "prompt_path": rel_output_path(output_dir, prompt_path),
             "blog_path": rel_output_path(output_dir, blog_path),
+            "blog_source": "executor-authored" if blog_path.exists() and blog_path.stat().st_size > 0 else "generated",
             "log_path": rel_output_path(output_dir, stdout_path),
             "stdout_path": rel_output_path(output_dir, stdout_path),
             "stderr_path": rel_output_path(output_dir, stderr_path),
@@ -769,6 +777,7 @@ def execute_assignments(
                         "assignment_path": rel_paths["assignment"],
                         "prompt_path": rel_paths["prompt"],
                         "blog_path": rel_paths["blog"],
+                        "blog_source": "generated",
                         "result_path": rel_paths["result"],
                         "failure_reason": str(exc),
                     }, f"{persona_id}: {exc}"))
@@ -1240,10 +1249,11 @@ def markdown_list(items: list[str]) -> str:
     return "\n".join(f"- {item}" for item in items)
 
 
-def write_blogs(output_dir: Path, assignments: list[dict[str, Any]], fixture: dict[str, Any]) -> None:
+def write_blogs(output_dir: Path, assignments: list[dict[str, Any]], fixture: dict[str, Any]) -> list[dict[str, Any]]:
     by_persona = {agent.get("persona_id"): agent for agent in fixture.get("agents", [])}
     blog_dir = output_dir / "blogs"
     blog_dir.mkdir(parents=True, exist_ok=True)
+    receipts = []
     for assignment in assignments:
         agent = by_persona.get(assignment["persona_id"], {})
         findings = agent.get("findings", [])
@@ -1315,7 +1325,38 @@ def write_blogs(output_dir: Path, assignments: list[dict[str, Any]], fixture: di
             markdown_list(validation + agent.get("limitations", [])),
             "",
         ])
-        (blog_dir / f"{slugify(assignment['persona_id'])}.md").write_text(text, encoding="utf-8")
+        paths = agent_output_paths(output_dir, assignment)
+        blog_path = paths["blog"]
+        generated_blog_path = paths["generated_blog"]
+        execution = assignment.get("execution", {})
+        worker_blog_present = (
+            execution.get("kind") == "local-executor"
+            and execution.get("blog_source") == "executor-authored"
+            and blog_path.exists()
+            and blog_path.stat().st_size > 0
+        )
+        if worker_blog_present:
+            generated_blog_path.write_text(text, encoding="utf-8")
+            source = "executor-authored"
+            generated_rel = rel_output_path(output_dir, generated_blog_path)
+        else:
+            blog_path.write_text(text, encoding="utf-8")
+            source = "generated"
+            generated_rel = rel_output_path(output_dir, blog_path)
+        receipt = {
+            "persona_id": assignment["persona_id"],
+            "path": rel_output_path(output_dir, blog_path),
+            "source": source,
+            "generated_blog_path": generated_rel,
+            "preserved_executor_blog": worker_blog_present,
+        }
+        execution["blog_path"] = receipt["path"]
+        execution["blog_source"] = source
+        assignment["blog"] = receipt
+        if "handoff" in assignment:
+            assignment["handoff"]["blog_source"] = source
+        receipts.append(receipt)
+    return receipts
 
 
 def write_markdown_summary(output_dir: Path, summary: dict[str, Any]) -> None:
@@ -1357,6 +1398,11 @@ def write_markdown_summary(output_dir: Path, summary: dict[str, Any]) -> None:
     lines.append("- blocked reasons:")
     for reason in review_gate.get("blocked_reasons", []) or ["None"]:
         lines.append(f"  - {reason}")
+    lines.extend(["", "## Blog Receipts"])
+    for receipt in summary.get("blog_receipts", []):
+        lines.append(
+            f"- {receipt['persona_id']}: {receipt['source']} at {receipt['path']}"
+        )
     for section, key in [
         ("Adopted", "adopted"),
         ("Held", "held"),
@@ -1442,6 +1488,7 @@ def run_iteration(
         summary["executor_command"] = args.executor_command
         summary["executor_workers"] = args.executor_workers
         summary["executor_actual_workers"] = fixture.get("executor_actual_workers", args.executor_workers)
+    summary["blog_receipts"] = write_blogs(output_dir, assignments, fixture)
     summary["subagent_dispatch"] = write_subagent_handoffs(
         output_dir,
         assignments,
@@ -1466,7 +1513,6 @@ def run_iteration(
         "assignments": assignments,
     }, output_dir / "assignments.json")
     dump_json(summary, output_dir / "synthesis.json")
-    write_blogs(output_dir, assignments, fixture)
     write_markdown_summary(output_dir, summary)
     return summary
 
