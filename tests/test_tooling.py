@@ -961,9 +961,12 @@ class ToolingTests(unittest.TestCase):
             self.assertGreater(synthesis["planned_non_github_sample_target_count"], 0)
             self.assertGreater(synthesis["planned_source_lane_counts"]["official_docs"], 0)
             self.assertGreater(synthesis["planned_sample_target_counts"]["papers"], 0)
+            self.assertEqual(synthesis["sampling_coverage"]["sampled_target_count"], 0)
+            self.assertGreater(synthesis["sampling_coverage"]["unsampled_target_count"], 0)
             self.assertIn("assignment_planner", assignments)
             first = assignments["assignments"][0]
             self.assertEqual(first["planning"]["persona_id"], "official-docs-cartographer")
+            self.assertEqual(first["sampling_coverage"]["sampled_target_count"], 0)
             self.assertEqual(first["sample_plan"][0]["source_lane"], "official_docs")
             self.assertIn("evidence_role", first["sample_plan"][0])
             self.assertGreater(len(first["sample_plan"][0]["targets"]), 0)
@@ -974,6 +977,8 @@ class ToolingTests(unittest.TestCase):
             self.assertIn("Planned sampling", blog_text)
             self.assertIn("MLX documentation index", blog_text)
             self.assertIn("## Sources sampled\n- None", blog_text)
+            self.assertIn("Sampling coverage", blog_text)
+            self.assertIn("Unmatched planned targets", blog_text)
 
     def test_research_loop_dynamic_planner_selects_gap_personas(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -1029,6 +1034,8 @@ class ToolingTests(unittest.TestCase):
             second = json.loads((output_dir / "iterations" / "02" / "synthesis.json").read_text())
             self.assertEqual(loop["iteration_count"], 2)
             self.assertEqual(loop["total_finding_count"], 6)
+            self.assertEqual(loop["sampling_coverage"]["sampled_target_count"], 4)
+            self.assertEqual(loop["sampling_coverage"]["unplanned_source_count"], 2)
             self.assertEqual(first["assignment_planner"]["mode"], "config-order")
             self.assertEqual(second["assignment_planner"]["mode"], "dynamic")
             self.assertIn("benchmark", first["next_gap_hints"])
@@ -1038,6 +1045,7 @@ class ToolingTests(unittest.TestCase):
             self.assertIn("loop.md", {path.name for path in output_dir.iterdir()})
             loop_markdown = (output_dir / "loop.md").read_text()
             self.assertIn("Final gap hints", loop_markdown)
+            self.assertIn("sampling coverage", loop_markdown)
             self.assertIn("iterative-loop-i02", loop_markdown)
 
     def test_research_loop_generates_review_blogs_and_synthesis(self) -> None:
@@ -1058,6 +1066,8 @@ class ToolingTests(unittest.TestCase):
             self.assertEqual(synthesis["execution_counts"]["scaffolded_not_run"], 3)
             self.assertEqual(synthesis["decision_counts"]["adopted"], 1)
             self.assertEqual(synthesis["assignment_planner"]["mode"], "config-order")
+            self.assertEqual(synthesis["sampling_coverage"]["sampled_target_count"], 2)
+            self.assertEqual(synthesis["sampling_coverage"]["unplanned_source_count"], 1)
             self.assertIn("official_docs", synthesis["non_github_lanes_covered"])
             self.assertIn("hugging_face", synthesis["non_github_lanes_covered"])
             self.assertIn("technical_blogs", synthesis["non_github_lanes_covered"])
@@ -1068,12 +1078,17 @@ class ToolingTests(unittest.TestCase):
             self.assertEqual(len(assignments["assignments"]), 6)
             self.assertEqual(assignments["assignments"][0]["execution"]["state"], "fixture_ingested")
             self.assertEqual(assignments["assignments"][-1]["execution"]["state"], "scaffolded_not_run")
+            self.assertIn("sampling_coverage", assignments["assignments"][0])
+            self.assertEqual(assignments["assignments"][0]["sampling_coverage"]["unplanned_source_count"], 1)
+            self.assertEqual(assignments["assignments"][2]["sampling_coverage"]["sampled_target_count"], 1)
             prompt = assignments["assignments"][0]["prompt"]
             self.assertIn("Do not execute remote model code", prompt)
             blog = output_dir / "blogs" / "official-docs-cartographer.md"
             self.assertTrue(blog.exists())
             blog_text = blog.read_text()
             self.assertIn("Planned sampling", blog_text)
+            self.assertIn("Sampling coverage", blog_text)
+            self.assertIn("MLX custom extensions documentation", blog_text)
             self.assertIn("Candidate findings", blog_text)
             self.assertIn("official-custom-metal-validation", blog_text)
 

@@ -663,6 +663,126 @@ def flatten_findings(fixture: dict[str, Any]) -> list[dict[str, Any]]:
     return rows
 
 
+def normalize_locator(value: Any) -> str:
+    return str(value or "").strip().rstrip("/").lower()
+
+
+def source_match_keys(source: dict[str, Any]) -> set[str]:
+    return {
+        normalize_locator(source.get("url")),
+        normalize_locator(source.get("title")),
+    } - {""}
+
+
+def target_match_keys(target: dict[str, Any]) -> set[str]:
+    return {
+        normalize_locator(target.get("locator")),
+        normalize_locator(target.get("title")),
+    } - {""}
+
+
+def sources_for_agent(agent: dict[str, Any]) -> list[dict[str, Any]]:
+    rows = []
+    seen = set()
+    for finding in agent.get("findings", []):
+        for source in finding.get("sources", []):
+            key = (
+                normalize_locator(source.get("url")),
+                normalize_locator(source.get("title")),
+                finding.get("id", ""),
+            )
+            if key in seen:
+                continue
+            seen.add(key)
+            rows.append({
+                "finding_id": finding.get("id", ""),
+                "source_lane": finding.get("source_lane", ""),
+                "title": source.get("title", source.get("url", "")),
+                "url": source.get("url", ""),
+                "kind": source.get("kind", ""),
+                "accessed": source.get("accessed", ""),
+            })
+    return rows
+
+
+def planned_targets_for_assignment(assignment: dict[str, Any]) -> list[dict[str, Any]]:
+    rows = []
+    for lane in assignment.get("sample_plan", []):
+        for target in lane.get("targets", []):
+            rows.append({
+                "source_lane": lane.get("source_lane", ""),
+                "lane_title": lane.get("lane_title", ""),
+                "title": target.get("title", ""),
+                "kind": target.get("kind", ""),
+                "locator": target.get("locator", ""),
+            })
+    return rows
+
+
+def assignment_sampling_coverage(assignment: dict[str, Any], agent: dict[str, Any]) -> dict[str, Any]:
+    planned_targets = planned_targets_for_assignment(assignment)
+    returned_sources = sources_for_agent(agent)
+    matched_source_indexes: set[int] = set()
+    sampled_targets = []
+    unsampled_targets = []
+    for target in planned_targets:
+        matches = []
+        keys = target_match_keys(target)
+        for index, source in enumerate(returned_sources):
+            if keys & source_match_keys(source):
+                matches.append(source)
+                matched_source_indexes.add(index)
+        row = dict(target)
+        row["matched_sources"] = matches
+        if matches:
+            sampled_targets.append(row)
+        else:
+            unsampled_targets.append(row)
+    unplanned_sources = [
+        source for index, source in enumerate(returned_sources) if index not in matched_source_indexes
+    ]
+    planned_count = len(planned_targets)
+    sampled_count = len(sampled_targets)
+    return {
+        "persona_id": assignment.get("persona_id", ""),
+        "planned_target_count": planned_count,
+        "sampled_target_count": sampled_count,
+        "unsampled_target_count": len(unsampled_targets),
+        "returned_source_count": len(returned_sources),
+        "unplanned_source_count": len(unplanned_sources),
+        "coverage_ratio": (sampled_count / planned_count) if planned_count else None,
+        "sampled_targets": sampled_targets,
+        "unsampled_targets": unsampled_targets,
+        "unplanned_sources": unplanned_sources,
+    }
+
+
+def sampling_coverage_summary(assignments: list[dict[str, Any]], fixture: dict[str, Any]) -> dict[str, Any]:
+    by_persona = {agent.get("persona_id"): agent for agent in fixture.get("agents", [])}
+    assignments_coverage = []
+    totals = Counter()
+    for assignment in assignments:
+        coverage = assignment_sampling_coverage(assignment, by_persona.get(assignment["persona_id"], {}))
+        assignment["sampling_coverage"] = coverage
+        assignments_coverage.append(coverage)
+        totals["planned_target_count"] += coverage["planned_target_count"]
+        totals["sampled_target_count"] += coverage["sampled_target_count"]
+        totals["unsampled_target_count"] += coverage["unsampled_target_count"]
+        totals["returned_source_count"] += coverage["returned_source_count"]
+        totals["unplanned_source_count"] += coverage["unplanned_source_count"]
+    planned = totals["planned_target_count"]
+    sampled = totals["sampled_target_count"]
+    return {
+        "planned_target_count": planned,
+        "sampled_target_count": sampled,
+        "unsampled_target_count": totals["unsampled_target_count"],
+        "returned_source_count": totals["returned_source_count"],
+        "unplanned_source_count": totals["unplanned_source_count"],
+        "coverage_ratio": (sampled / planned) if planned else None,
+        "assignments": assignments_coverage,
+    }
+
+
 def planned_sampling_summary(assignments: list[dict[str, Any]], config: dict[str, Any]) -> dict[str, Any]:
     planned_lanes = {lane["id"]: 0 for lane in config["source_lanes"]}
     planned_targets = {lane["id"]: 0 for lane in config["source_lanes"]}
@@ -730,6 +850,7 @@ def summarize(
             execution_counts["fixture_ingested"] += 1
         else:
             execution_counts["scaffolded_not_run"] += 1
+    sampling_coverage = sampling_coverage_summary(assignments, fixture)
     return {
         "schema_version": 1,
         "run_id": run_id,
@@ -742,6 +863,7 @@ def summarize(
         "finding_count": len(findings),
         "source_lane_counts": lanes,
         "non_github_lanes_covered": non_github_lanes,
+        "sampling_coverage": sampling_coverage,
         "assignment_planner": planner_receipt,
         **planned_sampling_summary(assignments, config),
         "decision_counts": decision_counts,
@@ -839,6 +961,19 @@ def write_blogs(output_dir: Path, assignments: list[dict[str, Any]], fixture: di
                 planned_sampling.append(
                     f"{lane['source_lane']}: {target['title']} [{target['kind']}] - {target['locator']}"
                 )
+        coverage = assignment.get("sampling_coverage", {})
+        sampled_target_lines = [
+            f"{target['source_lane']}: {target['title']} -> {', '.join(source['url'] for source in target.get('matched_sources', []))}"
+            for target in coverage.get("sampled_targets", [])
+        ]
+        unsampled_target_lines = [
+            f"{target['source_lane']}: {target['title']} [{target['kind']}] - {target['locator']}"
+            for target in coverage.get("unsampled_targets", [])
+        ]
+        unplanned_source_lines = [
+            f"{source.get('finding_id')}: {source.get('title') or source.get('url')} ({source.get('url')})"
+            for source in coverage.get("unplanned_sources", [])
+        ]
         validation = [
             f"{finding['id']}: {finding.get('required_next_validation') or finding.get('validation_gate')}"
             for finding in findings
@@ -855,6 +990,20 @@ def write_blogs(output_dir: Path, assignments: list[dict[str, Any]], fixture: di
             "",
             "## Sources sampled",
             markdown_list(sampled),
+            "",
+            "## Sampling coverage",
+            f"Planned targets: {coverage.get('planned_target_count', 0)}",
+            f"Matched targets: {coverage.get('sampled_target_count', 0)}",
+            f"Unplanned returned sources: {coverage.get('unplanned_source_count', 0)}",
+            "",
+            "### Matched planned targets",
+            markdown_list(sampled_target_lines),
+            "",
+            "### Unmatched planned targets",
+            markdown_list(unsampled_target_lines),
+            "",
+            "### Unplanned returned sources",
+            markdown_list(unplanned_source_lines),
             "",
             "## Candidate findings",
             markdown_list(finding_lines),
@@ -880,6 +1029,8 @@ def write_markdown_summary(output_dir: Path, summary: dict[str, Any]) -> None:
         f"Gap hints used: {', '.join(summary.get('gap_hints', [])) or 'none'}",
         f"Next gap hints: {', '.join(summary.get('next_gap_hints', [])) or 'none'}",
         f"Findings: {summary['finding_count']}",
+        f"Sampling coverage: {summary['sampling_coverage']['sampled_target_count']}/{summary['sampling_coverage']['planned_target_count']} planned targets",
+        f"Unplanned returned sources: {summary['sampling_coverage']['unplanned_source_count']}",
         f"Assignment planner: {summary['assignment_planner']['mode']}",
         f"Non-GitHub lanes covered: {', '.join(summary['non_github_lanes_covered']) or 'none'}",
         f"Planned non-GitHub sample targets: {summary['planned_non_github_sample_target_count']}",
@@ -980,6 +1131,11 @@ def loop_iteration_record(root: Path, summary: dict[str, Any], output_dir: Path)
         "gap_hints": summary.get("gap_hints", []),
         "next_gap_hints": summary.get("next_gap_hints", []),
         "assignment_mode": summary.get("assignment_planner", {}).get("mode"),
+        "sampling_coverage": {
+            "planned_target_count": summary.get("sampling_coverage", {}).get("planned_target_count", 0),
+            "sampled_target_count": summary.get("sampling_coverage", {}).get("sampled_target_count", 0),
+            "unplanned_source_count": summary.get("sampling_coverage", {}).get("unplanned_source_count", 0),
+        },
         "executor_workers": summary.get("executor_workers"),
         "executor_actual_workers": summary.get("executor_actual_workers"),
         "selected_personas": [
@@ -1002,10 +1158,12 @@ def build_loop_summary(
     decision_counts: Counter[str] = Counter()
     execution_counts: Counter[str] = Counter()
     total_findings = 0
+    sampling_counts: Counter[str] = Counter()
     for record in records:
         total_findings += int(record.get("finding_count", 0))
         decision_counts.update(record.get("decision_counts", {}))
         execution_counts.update(record.get("execution_counts", {}))
+        sampling_counts.update(record.get("sampling_coverage", {}))
     return {
         "schema_version": 1,
         "run_id": run_id,
@@ -1016,6 +1174,7 @@ def build_loop_summary(
         "total_finding_count": total_findings,
         "decision_counts": dict(sorted(decision_counts.items())),
         "execution_counts": dict(sorted(execution_counts.items())),
+        "sampling_coverage": dict(sorted(sampling_counts.items())),
         "iterations": records,
         "final_gap_hints": final_gap_hints,
         "instructions": [
@@ -1034,6 +1193,8 @@ def write_loop_markdown(output_dir: Path, loop_summary: dict[str, Any]) -> None:
         f"Review only: {loop_summary['review_only']}",
         f"Iterations: {loop_summary['iteration_count']}",
         f"Total findings: {loop_summary['total_finding_count']}",
+        f"Sampling coverage: {loop_summary.get('sampling_coverage', {}).get('sampled_target_count', 0)}/{loop_summary.get('sampling_coverage', {}).get('planned_target_count', 0)} planned targets",
+        f"Unplanned returned sources: {loop_summary.get('sampling_coverage', {}).get('unplanned_source_count', 0)}",
         f"Final gap hints: {', '.join(loop_summary.get('final_gap_hints', [])) or 'none'}",
         "",
         "## Iterations",
@@ -1046,6 +1207,12 @@ def write_loop_markdown(output_dir: Path, loop_summary: dict[str, Any]) -> None:
         lines.append(f"  - gap hints: {', '.join(record.get('gap_hints', [])) or 'none'}")
         lines.append(f"  - next gap hints: {', '.join(record.get('next_gap_hints', [])) or 'none'}")
         lines.append(f"  - selected personas: {', '.join(record.get('selected_personas', [])) or 'none'}")
+        coverage = record.get("sampling_coverage", {})
+        lines.append(
+            f"  - sampling coverage: {coverage.get('sampled_target_count', 0)}/"
+            f"{coverage.get('planned_target_count', 0)} planned targets; "
+            f"{coverage.get('unplanned_source_count', 0)} unplanned sources"
+        )
     lines.extend(["", "## Decision Counts"])
     for decision, count in loop_summary.get("decision_counts", {}).items():
         lines.append(f"- {decision}: {count}")

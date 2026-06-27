@@ -75,10 +75,13 @@ Each assignment must tell the researcher:
 The generated `assignments.json` includes `sample_plan` objects for every
 persona plus an `assignment_planner` receipt that records selected and held
 personas, source-lane counts, matched objective or gap terms, and selection
-reasons. `synthesis.json` repeats the planner receipt and reports planned
-source-lane counts, planned sample-target counts, and planned non-GitHub sample
-targets separately from returned findings. This proves the intended research
-breadth even when a run is only scaffolded and no agent has returned findings
+reasons. `assignments.json` also includes `sampling_coverage` for every
+assignment: planned targets, matched targets, unmatched planned targets, and
+unplanned returned sources. `synthesis.json` repeats the planner receipt and
+reports planned source-lane counts, planned sample-target counts, planned
+non-GitHub sample targets, and aggregate sampling coverage separately from
+returned findings. This proves both intended breadth and actual sampled
+coverage, even when a run is only scaffolded and no agent has returned findings
 yet.
 
 For `--iterations 2` or higher, the harness writes each pass under
@@ -95,6 +98,7 @@ Each agent writes a markdown blog with:
 - assignment summary;
 - planned sampling targets;
 - sources sampled;
+- sampling coverage, including missed planned targets and substitutions;
 - candidate findings;
 - decision notes;
 - open validation.
