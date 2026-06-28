@@ -106,6 +106,54 @@ const APPLIES_TO_FAMILY_ALIASES: Record<string, string[]> = {
   "speech-to-speech": ["streaming-speech", "separation-enhancement"]
 };
 
+const DERIVATIVE_OWNER_TOKENS = ["mlx-community", "lmstudio-community", "trl-internal-testing", "hf-internal-testing"];
+const DERIVATIVE_REPOSITORY_TOKENS = [
+  "mlx",
+  "coreml",
+  "gguf",
+  "ggml",
+  "onnx",
+  "openvino",
+  "tflite",
+  "ollama",
+  "gptq",
+  "awq",
+  "exl2",
+  "bnb",
+  "bitsandbytes",
+  "quantized",
+  "quant",
+  "4bit",
+  "8bit",
+  "int4",
+  "int8",
+  "q4",
+  "q5",
+  "q8",
+  "lora",
+  "adapter",
+  "peft",
+  "distill"
+];
+
+const BASE_SEARCH_REWRITES: Array<[RegExp, string]> = [
+  [/\bwhisperkit\b/gi, "whisper"],
+  [/\bmlx\b/gi, ""],
+  [/\bcoreml\b/gi, ""],
+  [/\bgguf\b/gi, ""],
+  [/\bggml\b/gi, ""],
+  [/\bonnx\b/gi, ""],
+  [/\b4bit\b|\b8bit\b|\bquantized\b/gi, ""]
+];
+
+const DISCOVERY_CATEGORY_QUERIES: Record<string, { label: string; query: string; pipelineTag?: string; sort?: string; minDownloads?: number }> = {
+  popular: { label: "Popular", query: "", sort: "downloads" },
+  recent: { label: "Recent", query: "qwen", sort: "lastModified", minDownloads: 1000 },
+  text: { label: "Text", query: "instruct", pipelineTag: "text-generation", sort: "downloads" },
+  vision: { label: "Vision", query: "vision language", pipelineTag: "image-text-to-text", sort: "downloads" },
+  audio: { label: "Audio", query: "whisper", pipelineTag: "automatic-speech-recognition", sort: "downloads" }
+};
+
 class HttpError extends Error {
   constructor(readonly status: number, message: string) {
     super(message);
@@ -125,6 +173,9 @@ export default {
       enforceRateLimit(request, url);
       if (url.pathname === "/api/search") {
         return json(await handleSearch(url, env), 200, request);
+      }
+      if (url.pathname === "/api/discover") {
+        return json(await handleDiscover(url, env), 200, request);
       }
       if (url.pathname === "/api/model") {
         return json(await handleModel(url, env), 200, request);
@@ -161,22 +212,68 @@ function json(value: unknown, status = 200, request?: Request): Response {
 }
 
 async function handleSearch(url: URL, env: Env) {
-  const query = normalizedSearchQuery(url.searchParams.get("q"));
+  const requestedQuery = normalizedSearchQuery(url.searchParams.get("q"));
   const limit = clampNumber(Number(url.searchParams.get("limit") ?? 12), 1, 20);
-  if (query.length < 2) {
-    return { query, results: [] };
+  const includeDerivatives = url.searchParams.get("include_derivatives") === "1" || url.searchParams.get("includePorts") === "1";
+  const category = DISCOVERY_CATEGORY_QUERIES[url.searchParams.get("category") ?? ""] ?? null;
+  const exactModelQuery = looksLikeModelId(requestedQuery);
+  const upstreamQuery = exactModelQuery ? requestedQuery : baseModelQuery(requestedQuery || category?.query || "");
+  if (requestedQuery.length > 0 && requestedQuery.length < 2) {
+    return { query: requestedQuery, upstreamQuery, mode: "search", includeDerivatives, hiddenDerivatives: 0, results: [] };
   }
   const hfUrl = new URL("/api/models", hfBase(env));
-  hfUrl.searchParams.set("search", query);
-  hfUrl.searchParams.set("limit", String(limit));
+  if (upstreamQuery) {
+    hfUrl.searchParams.set("search", upstreamQuery);
+  }
+  if (category?.pipelineTag && !requestedQuery) {
+    hfUrl.searchParams.set("pipeline_tag", category.pipelineTag);
+  }
+  hfUrl.searchParams.set("limit", String(includeDerivatives ? limit : Math.min(100, limit * 10)));
   hfUrl.searchParams.set("full", "true");
-  hfUrl.searchParams.set("sort", "downloads");
+  hfUrl.searchParams.set("sort", category?.sort || "downloads");
   hfUrl.searchParams.set("direction", "-1");
   const models = await hfFetch<HuggingFaceModel[]>(hfUrl);
+  if (exactModelQuery && !models.some((model) => modelId(model).toLowerCase() === requestedQuery.toLowerCase())) {
+    try {
+      models.unshift(await fetchModelDetails(requestedQuery, env));
+    } catch {
+      // Search results still render when an exact-model lookup fails.
+    }
+  }
+  const summaries = models.map(sanitizeModelSummary).filter((model) => model.id);
+  const results = summaries.filter((model) => (
+    includeDerivatives
+    || model.repositoryKind !== "derivative"
+    || (exactModelQuery && model.id.toLowerCase() === requestedQuery.toLowerCase())
+  )).filter((model) => !category?.minDownloads || model.downloads >= category.minDownloads);
   return {
-    query,
-    results: models.map(sanitizeModelSummary)
+    query: requestedQuery,
+    upstreamQuery,
+    mode: requestedQuery ? "search" : category?.label.toLowerCase() || "popular",
+    includeDerivatives,
+    hiddenDerivatives: summaries.length - results.length,
+    results: results.slice(0, limit)
   };
+}
+
+async function handleDiscover(url: URL, env: Env) {
+  const limit = clampNumber(Number(url.searchParams.get("limit") ?? 8), 1, 12);
+  const includeDerivatives = url.searchParams.get("include_derivatives") === "1" || url.searchParams.get("includePorts") === "1";
+  const entries = Object.entries(DISCOVERY_CATEGORY_QUERIES);
+  const data = await Promise.all(entries.map(async ([id, category]) => {
+    const searchUrl = new URL(url);
+    searchUrl.searchParams.set("q", "");
+    searchUrl.searchParams.set("category", id);
+    searchUrl.searchParams.set("limit", String(limit));
+    if (includeDerivatives) {
+      searchUrl.searchParams.set("include_derivatives", "1");
+    } else {
+      searchUrl.searchParams.delete("include_derivatives");
+    }
+    const result = await handleSearch(searchUrl, env);
+    return [id, { label: category.label, ...result }] as const;
+  }));
+  return Object.fromEntries(data);
 }
 
 async function handleModel(url: URL, env: Env) {
@@ -240,7 +337,7 @@ async function hfFetch<T>(url: URL): Promise<T> {
 
 function requiredModelId(value: string | null | undefined): string {
   const id = (value ?? "").trim();
-  if (!id || !id.includes("/")) {
+  if (!looksLikeModelId(id)) {
     throw new HttpError(400, "A Hugging Face model id like owner/name is required.");
   }
   if (id.length > MAX_MODEL_ID_LENGTH) {
@@ -258,6 +355,14 @@ function normalizedSearchQuery(value: string | null | undefined): string {
     throw new HttpError(400, `Search query must be ${MAX_SEARCH_QUERY_LENGTH} characters or fewer.`);
   }
   return query;
+}
+
+function baseModelQuery(query: string): string {
+  let rewritten = query;
+  for (const [pattern, replacement] of BASE_SEARCH_REWRITES) {
+    rewritten = rewritten.replace(pattern, replacement);
+  }
+  return rewritten.trim().replace(/\s+/g, " ") || query;
 }
 
 function enforceRateLimit(request: Request, url: URL, bucketOverride?: string) {
@@ -282,6 +387,9 @@ function enforceRateLimit(request: Request, url: URL, bucketOverride?: string) {
 
 function rateLimitBucket(pathname: string): string {
   if (pathname === "/api/search") {
+    return "search";
+  }
+  if (pathname === "/api/discover") {
     return "search";
   }
   if (pathname === "/api/model") {
@@ -315,7 +423,9 @@ function encodeRepoId(id: string): string {
 }
 
 function sanitizeModelSummary(model: HuggingFaceModel) {
-  const id = model.id || model.modelId || "";
+  const id = modelId(model);
+  const repository = classifyRepositoryKind(model);
+  const classification = classifyModel(model);
   return {
     id,
     url: id ? `https://huggingface.co/${id}` : "",
@@ -326,7 +436,11 @@ function sanitizeModelSummary(model: HuggingFaceModel) {
     likes: model.likes ?? 0,
     gated: model.gated ?? false,
     private: Boolean(model.private),
-    lastModified: model.lastModified ?? ""
+    lastModified: model.lastModified ?? "",
+    family: classification.family.id,
+    route: classification.family.targets[0] || "standalone-mlx",
+    repositoryKind: repository.kind,
+    repositoryReasons: repository.reasons
   };
 }
 
@@ -342,6 +456,45 @@ function sanitizeModelDetails(model: HuggingFaceModel) {
     config: pickConfigSignals(model.config),
     transformersInfo: pickConfigSignals(model.transformersInfo)
   };
+}
+
+function modelId(model: HuggingFaceModel): string {
+  return model.id || model.modelId || "";
+}
+
+function looksLikeModelId(value: string): boolean {
+  return /^[A-Za-z0-9][A-Za-z0-9._-]*\/[A-Za-z0-9][A-Za-z0-9._-]*$/.test(value);
+}
+
+function classifyRepositoryKind(model: HuggingFaceModel): { kind: "base-candidate" | "derivative"; reasons: string[] } {
+  const id = modelId(model).toLowerCase();
+  const owner = id.split("/")[0] ?? "";
+  const name = id.split("/")[1] ?? "";
+  const tags = [
+    model.library_name,
+    model.pipeline_tag,
+    ...(model.tags ?? []),
+    ...(Array.isArray(model.cardData?.tags) ? model.cardData.tags as string[] : [])
+  ].filter(Boolean).join(" ").toLowerCase().replace(/_/g, "-");
+  const haystack = `${owner} ${name.replace(/_/g, "-")} ${tags}`;
+  const reasons: string[] = [];
+
+  if (DERIVATIVE_OWNER_TOKENS.includes(owner)) {
+    reasons.push("known porting or conversion publisher");
+  }
+  for (const token of DERIVATIVE_REPOSITORY_TOKENS) {
+    const pattern = token.length <= 3
+      ? new RegExp(`(^|[^a-z0-9])${escapeRegExp(token)}([^a-z0-9]|$)`)
+      : new RegExp(`(^|[^a-z0-9])${escapeRegExp(token)}([^a-z0-9]|$)`);
+    if (pattern.test(haystack)) {
+      reasons.push(`${token} signal`);
+    }
+  }
+
+  if (reasons.length) {
+    return { kind: "derivative", reasons: [...new Set(reasons)].slice(0, 3) };
+  }
+  return { kind: "base-candidate", reasons: ["base candidate"] };
 }
 
 function pickCardData(cardData: Record<string, unknown> | undefined) {
@@ -757,204 +910,459 @@ function renderAppHtml() {
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f0e7">
   <title>MLX Model Advisor</title>
   <style>
     :root {
       color-scheme: light;
-      --page: #f6f3ec;
-      --surface: #fffcf6;
-      --surface-strong: #f0ebe1;
+      --page: #f5f0e7;
+      --surface: #fffaf1;
+      --surface-strong: #ece3d4;
+      --surface-cool: #edf4f2;
       --ink: #202124;
-      --muted: #686059;
-      --line: #d7d0c5;
+      --muted: #635c54;
+      --soft: #8a8177;
+      --line: #d6cdbf;
       --green: #116247;
       --green-soft: #dcebe2;
-      --blue: #315f86;
-      --blue-soft: #e1ebf2;
+      --blue: #2e5f87;
+      --blue-soft: #e0ebf2;
       --amber: #9b6413;
-      --amber-soft: #f3e5c8;
+      --amber-soft: #f4e4c3;
       --red: #8c342d;
       --red-soft: #f0dbd8;
+      --violet: #62518c;
+      --violet-soft: #e8e2f0;
       --focus: #1d69a8;
     }
     * { box-sizing: border-box; }
+    html {
+      overflow-x: hidden;
+      scroll-behavior: smooth;
+    }
     body {
       margin: 0;
       min-height: 100vh;
-      background: var(--page);
+      background:
+        linear-gradient(90deg, rgba(32,33,36,.04) 1px, transparent 1px) 0 0 / 32px 32px,
+        linear-gradient(180deg, #faf6ee 0%, var(--page) 46%, #edf4f2 100%);
       color: var(--ink);
       font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       letter-spacing: 0;
+      -webkit-tap-highlight-color: rgba(17, 98, 71, .16);
     }
     button, input {
       font: inherit;
+      touch-action: manipulation;
     }
-    button:focus-visible, input:focus-visible {
+    button:focus-visible, input:focus-visible, summary:focus-visible, a:focus-visible {
       outline: 3px solid color-mix(in srgb, var(--focus) 45%, transparent);
-      outline-offset: 2px;
-    }
-    .shell {
-      min-height: 100vh;
-      display: grid;
-      grid-template-columns: minmax(300px, 380px) minmax(0, 1fr);
-    }
-    aside {
-      border-right: 1px solid var(--line);
-      background: var(--surface);
-      padding: 22px;
-      display: flex;
-      flex-direction: column;
-      gap: 18px;
-    }
-    main {
-      padding: 24px;
-      display: flex;
-      flex-direction: column;
-      gap: 18px;
+      outline-offset: 3px;
     }
     h1, h2, h3, p { margin: 0; }
-    h1 { font-size: 24px; line-height: 1.1; }
-    h2 { font-size: 18px; }
-    h3 { font-size: 14px; }
-    .muted { color: var(--muted); }
-    .label {
-      display: block;
-      font-size: 12px;
-      font-weight: 700;
+    h1 {
+      font-size: clamp(34px, 7vw, 76px);
+      line-height: .94;
+      max-width: 820px;
+      text-wrap: balance;
+    }
+    h2 {
+      font-size: 22px;
+      line-height: 1.15;
+      text-wrap: balance;
+    }
+    h3 {
+      font-size: 14px;
+      line-height: 1.25;
+    }
+    a { color: var(--blue); }
+    .skip-link {
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      z-index: 20;
+      transform: translateY(-160%);
+      background: var(--ink);
+      color: #fff;
+      padding: 8px 10px;
+      border-radius: 6px;
+    }
+    .skip-link:focus {
+      transform: translateY(0);
+    }
+    .app-shell {
+      width: min(1180px, calc(100vw - 32px));
+      margin: 0 auto;
+      padding: max(24px, env(safe-area-inset-top)) 0 40px;
+    }
+    .hero {
+      min-height: min(760px, calc(100vh - 36px));
+      display: grid;
+      align-content: center;
+      gap: 28px;
+      padding: 38px 0 28px;
+    }
+    .eyebrow {
+      color: var(--green);
+      font-size: 13px;
+      font-weight: 800;
       text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 8px;
     }
-    .search input {
-      width: 100%;
-      height: 44px;
+    .hero-copy {
+      display: grid;
+      gap: 14px;
+    }
+    .hero-copy .muted {
+      max-width: 650px;
+      font-size: 18px;
+      line-height: 1.45;
+    }
+    .composer {
+      position: relative;
       border: 1px solid var(--line);
-      background: #fff;
-      color: var(--ink);
-      padding: 0 12px;
+      background: color-mix(in srgb, var(--surface) 94%, white);
       border-radius: 8px;
+      box-shadow: 0 24px 70px rgba(32, 33, 36, .09);
+      padding: 14px;
     }
-    .results {
+    .prompt-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 10px;
+      align-items: center;
+    }
+    .prompt-row input {
+      width: 100%;
+      min-height: 62px;
+      border: 0;
+      background: transparent;
+      color: var(--ink);
+      font-size: clamp(19px, 3vw, 30px);
+      font-weight: 700;
+      padding: 4px 8px;
+    }
+    .prompt-row input::placeholder {
+      color: color-mix(in srgb, var(--muted) 78%, transparent);
+    }
+    .primary, .secondary {
+      border-radius: 8px;
+      min-height: 42px;
+      padding: 0 14px;
+      cursor: pointer;
+      transition: background-color 140ms ease, border-color 140ms ease, color 140ms ease, transform 140ms ease;
+    }
+    .primary {
+      border: 1px solid var(--ink);
+      background: var(--ink);
+      color: #fff;
+      font-weight: 800;
+    }
+    .secondary {
+      border: 1px solid var(--line);
+      background: #fffdf8;
+      color: var(--ink);
+      font-weight: 700;
+    }
+    .primary:hover, .secondary:hover {
+      transform: translateY(-1px);
+    }
+    .composer-meta {
       display: flex;
-      flex-direction: column;
-      gap: 8px;
-      min-height: 0;
-      overflow: auto;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      border-top: 1px solid var(--line);
+      padding: 12px 4px 0;
+      color: var(--muted);
+      font-size: 13px;
+      font-variant-numeric: tabular-nums;
     }
-    .result {
+    .toggle {
+      display: inline-flex;
+      gap: 8px;
+      align-items: center;
+      min-height: 32px;
+      cursor: pointer;
+      color: var(--ink);
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .toggle input {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--green);
+    }
+    .autocomplete {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 14px;
+    }
+    .suggestion {
       text-align: left;
+      min-height: 142px;
       border: 1px solid var(--line);
       background: #fffdf8;
       border-radius: 8px;
-      padding: 10px;
+      padding: 12px;
+      display: grid;
+      align-content: space-between;
+      gap: 12px;
       cursor: pointer;
-      transition: border-color 120ms ease, background 120ms ease;
+      transition: background-color 140ms ease, border-color 140ms ease, transform 140ms ease;
     }
-    .result:hover, .result.active {
+    .suggestion:hover, .suggestion.active {
       border-color: var(--green);
       background: var(--green-soft);
+      transform: translateY(-1px);
     }
-    .result strong {
+    .suggestion strong {
       display: block;
-      font-size: 13px;
       overflow-wrap: anywhere;
+      font-size: 15px;
+      line-height: 1.18;
     }
-    .chips {
+    .suggestion-meta {
       display: flex;
       flex-wrap: wrap;
       gap: 6px;
-      margin-top: 8px;
     }
-    .chip {
+    .tag, .status {
+      display: inline-flex;
+      align-items: center;
+      min-height: 24px;
       border: 1px solid var(--line);
       border-radius: 999px;
       padding: 3px 8px;
       font-size: 12px;
       color: var(--muted);
-      background: rgba(255,255,255,.6);
+      background: rgba(255,255,255,.72);
+      white-space: nowrap;
     }
-    .workspace {
+    .status {
+      border: 0;
+      font-weight: 800;
+    }
+    .status.base, .status.high, .bucket-validated-locally, .bucket-validated-source-theory {
+      background: var(--green-soft);
+      color: var(--green);
+    }
+    .status.derivative, .bucket-benchmark-required {
+      background: var(--amber-soft);
+      color: var(--amber);
+    }
+    .status.medium, .bucket-experimental-approach {
+      background: var(--blue-soft);
+      color: var(--blue);
+    }
+    .status.low, .bucket-rejected-do-not-use {
+      background: var(--red-soft);
+      color: var(--red);
+    }
+    .report-shell {
+      scroll-margin-top: 24px;
+    }
+    .empty-state {
+      min-height: 220px;
       display: grid;
-      grid-template-columns: minmax(0, 1.25fr) minmax(280px, .75fr);
+      place-items: center;
+      border: 1px dashed var(--line);
+      border-radius: 8px;
+      color: var(--muted);
+      text-align: center;
+      padding: 24px;
+      background: rgba(255,250,241,.58);
+    }
+    .report-body {
+      display: block;
+    }
+    .report-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 340px;
       gap: 18px;
       align-items: start;
     }
-    .panel {
+    .report-main, .report-aside, .section {
+      display: grid;
+      gap: 14px;
+    }
+    .report-header, .visual, .aside-panel, .method-card {
       border: 1px solid var(--line);
-      background: var(--surface);
       border-radius: 8px;
+      background: var(--surface);
       padding: 16px;
     }
-    .section {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
+    .report-header {
+      display: grid;
+      gap: 16px;
     }
     .headline {
       display: flex;
-      align-items: flex-start;
       justify-content: space-between;
+      align-items: flex-start;
       gap: 14px;
     }
-    .status {
-      display: inline-flex;
-      align-items: center;
-      min-height: 24px;
-      border-radius: 999px;
-      padding: 3px 9px;
-      font-size: 12px;
-      font-weight: 700;
-      white-space: nowrap;
+    .headline h2, .headline h1 {
+      overflow-wrap: anywhere;
     }
-    .status.high, .bucket-validated-locally, .bucket-validated-source-theory { background: var(--green-soft); color: var(--green); }
-    .status.medium, .bucket-benchmark-required { background: var(--amber-soft); color: var(--amber); }
-    .status.low, .bucket-experimental-approach { background: var(--blue-soft); color: var(--blue); }
-    .bucket-rejected-do-not-use { background: var(--red-soft); color: var(--red); }
-    .grid {
+    .muted {
+      color: var(--muted);
+      line-height: 1.4;
+    }
+    .metric-grid {
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 10px;
     }
-    .metric {
+    .metric, .decision, .kpi {
       border-top: 1px solid var(--line);
       padding-top: 8px;
+      min-width: 0;
     }
-    .metric span {
+    .metric span, .decision span, .kpi span {
       display: block;
-      font-size: 12px;
       color: var(--muted);
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
     }
-    .metric strong {
+    .metric strong, .decision strong, .kpi strong {
       display: block;
       margin-top: 2px;
       overflow-wrap: anywhere;
     }
-    .decision-strip {
+    .decision-board {
+      display: grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap: 14px;
+    }
+    .visual {
+      display: grid;
+      gap: 12px;
+      min-width: 0;
+    }
+    .route-flow {
+      display: grid;
+      grid-template-columns: 1fr 26px 1fr 26px 1fr;
+      align-items: center;
+      gap: 8px;
+    }
+    .route-node {
+      min-height: 100px;
+      border: 1px solid var(--line);
+      background: #fffdf8;
+      border-radius: 8px;
+      padding: 12px;
+      display: grid;
+      align-content: center;
+      gap: 6px;
+    }
+    .route-node span {
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+    .route-node strong {
+      overflow-wrap: anywhere;
+    }
+    .route-edge {
+      height: 2px;
+      background: var(--line);
+      position: relative;
+    }
+    .route-edge::after {
+      content: "";
+      position: absolute;
+      right: 0;
+      top: -4px;
+      width: 0;
+      height: 0;
+      border-top: 5px solid transparent;
+      border-bottom: 5px solid transparent;
+      border-left: 7px solid var(--line);
+    }
+    .bar-list {
+      display: grid;
+      gap: 9px;
+    }
+    .bar-row {
+      display: grid;
+      gap: 5px;
+    }
+    .bar-label {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      font-size: 12px;
+      color: var(--muted);
+      font-variant-numeric: tabular-nums;
+    }
+    .bar-track {
+      height: 10px;
+      border-radius: 999px;
+      background: var(--surface-strong);
+      overflow: hidden;
+    }
+    .bar-fill {
+      height: 100%;
+      width: var(--w);
+      border-radius: inherit;
+      background: var(--green);
+    }
+    .bar-fill.benchmark { background: var(--amber); }
+    .bar-fill.experimental { background: var(--blue); }
+    .bar-fill.rejected { background: var(--red); }
+    .boundary-grid {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 10px;
     }
-    .decision {
+    .boundary {
       border-top: 1px solid var(--line);
-      padding-top: 8px;
+      padding-top: 9px;
+      min-width: 0;
     }
-    .decision span {
+    .boundary strong {
+      display: block;
+      font-size: 19px;
+      font-variant-numeric: tabular-nums;
+      overflow-wrap: anywhere;
+    }
+    .boundary span {
       display: block;
       color: var(--muted);
       font-size: 12px;
+      margin-top: 3px;
     }
-    .decision strong {
-      display: block;
-      font-size: 18px;
-      margin-top: 2px;
+    .branch-list {
+      display: grid;
+      gap: 18px;
     }
-    .method-card {
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      background: #fffdf8;
-      padding: 12px;
+    .branch {
       display: grid;
       gap: 10px;
+    }
+    .branch-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: flex-start;
+      border-top: 1px solid var(--line);
+      padding-top: 14px;
+    }
+    .method-card {
+      background: #fffdf8;
+      display: grid;
+      gap: 10px;
+    }
+    .derivative-warning {
+      border: 1px solid var(--amber);
+      border-radius: 8px;
+      background: var(--amber-soft);
+      padding: 12px;
+      display: grid;
+      gap: 8px;
     }
     .method-title {
       display: grid;
@@ -983,36 +1391,6 @@ function renderAppHtml() {
       grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 8px;
     }
-    .kpi {
-      border-top: 1px solid var(--line);
-      padding-top: 7px;
-      min-width: 0;
-    }
-    .kpi span {
-      display: block;
-      color: var(--muted);
-      font-size: 11px;
-      text-transform: uppercase;
-      font-weight: 700;
-    }
-    .kpi strong {
-      display: block;
-      margin-top: 2px;
-      overflow-wrap: anywhere;
-      font-size: 13px;
-    }
-    .method-more {
-      border: 0;
-      background: transparent;
-      border-radius: 0;
-    }
-    .method-more summary {
-      padding: 0;
-      justify-content: flex-start;
-      color: var(--blue);
-      font-size: 13px;
-      font-weight: 700;
-    }
     details {
       border: 1px solid var(--line);
       border-radius: 8px;
@@ -1028,6 +1406,18 @@ function renderAppHtml() {
       justify-content: space-between;
     }
     summary::-webkit-details-marker { display: none; }
+    .method-more {
+      border: 0;
+      background: transparent;
+      border-radius: 0;
+    }
+    .method-more summary {
+      padding: 0;
+      justify-content: flex-start;
+      color: var(--blue);
+      font-size: 13px;
+      font-weight: 800;
+    }
     .method-body {
       padding: 0 12px 12px;
       display: grid;
@@ -1056,137 +1446,200 @@ function renderAppHtml() {
       display: grid;
       gap: 8px;
     }
-    .copy-row button, .primary {
-      border: 1px solid var(--ink);
-      background: var(--ink);
-      color: #fff;
-      border-radius: 8px;
-      min-height: 38px;
-      padding: 0 12px;
-      cursor: pointer;
-    }
-    .secondary {
-      border: 1px solid var(--line);
-      background: #fffdf8;
-      color: var(--ink);
-      border-radius: 8px;
-      min-height: 38px;
-      padding: 0 12px;
-      cursor: pointer;
-    }
-    .empty {
-      min-height: 260px;
-      display: grid;
-      place-items: center;
-      border: 1px dashed var(--line);
-      border-radius: 8px;
-      color: var(--muted);
-      text-align: center;
-      padding: 24px;
-    }
-    .citations {
+    .note-list, .citations {
       display: grid;
       gap: 8px;
       font-size: 12px;
     }
-    .citation {
+    .note, .citation {
       border-top: 1px solid var(--line);
       padding-top: 8px;
       overflow-wrap: anywhere;
     }
-    .citation a { color: var(--blue); }
-    .note-list {
-      display: grid;
-      gap: 8px;
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
     }
-    .note {
-      border-left: 3px solid var(--blue);
-      padding: 8px 0 8px 10px;
-      color: var(--muted);
-      font-size: 13px;
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important;
+      }
     }
-    @media (max-width: 920px) {
-      .shell { grid-template-columns: 1fr; }
-      aside { border-right: 0; border-bottom: 1px solid var(--line); }
-      .workspace { grid-template-columns: 1fr; }
-      .decision-strip, .method-kpis { grid-template-columns: 1fr; }
+    @media (max-width: 980px) {
+      .hero { min-height: auto; padding-top: 28px; }
+      .autocomplete, .decision-board, .report-layout { grid-template-columns: 1fr; }
+      .metric-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     }
-    @media (max-width: 560px) {
-      aside, main { padding: 16px; }
-      .grid { grid-template-columns: 1fr; }
-      .headline { flex-direction: column; }
+    @media (max-width: 640px) {
+      .app-shell { width: min(100vw - 24px, 1180px); }
+      .prompt-row { grid-template-columns: 1fr; }
+      .prompt-row input { min-height: 50px; padding: 0; }
+      .composer-meta, .headline, .branch-head {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+      .route-flow {
+        grid-template-columns: 1fr;
+      }
+      .route-edge {
+        width: 2px;
+        height: 18px;
+        justify-self: center;
+      }
+      .route-edge::after {
+        right: -4px;
+        top: auto;
+        bottom: -2px;
+        border-left: 5px solid transparent;
+        border-right: 5px solid transparent;
+        border-top: 7px solid var(--line);
+        border-bottom: 0;
+      }
+      .boundary-grid, .method-kpis, .metric-grid { grid-template-columns: 1fr; }
+      .method-title { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
-  <div class="shell">
-    <aside>
-      <header class="section">
-        <h1>MLX Model Advisor</h1>
-        <p class="muted">Hugging Face model search with skill-backed MLX routes.</p>
-      </header>
-      <div class="search">
-        <label class="label" for="model-search">Model</label>
-        <input id="model-search" autocomplete="off" placeholder="qwen, whisper, flux, demucs">
+  <a class="skip-link" href="#report">Skip to Report</a>
+  <div class="app-shell">
+    <header class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">MLX Model Advisor</p>
+        <h1>Ask for a base model. Get the porting path.</h1>
+        <p class="muted">Pick the intrinsic Hugging Face model first; existing ports and quantized variants stay out of the way unless you ask for them.</p>
       </div>
-      <div id="search-status" class="muted">Type at least 2 characters.</div>
-      <div id="results" class="results"></div>
-    </aside>
-    <main>
-      <section id="workspace" class="empty">Select a model.</section>
+      <section class="composer" aria-label="Model Advisor Prompt">
+        <form id="search-form" class="prompt-row">
+          <label class="sr-only" for="model-search">Model Prompt</label>
+          <input id="model-search" name="model" type="search" autocomplete="off" spellcheck="false" placeholder="Ask about Qwen, Whisper, Flux…">
+          <button class="primary" type="submit">Open Report</button>
+        </form>
+        <div class="composer-meta">
+          <div id="search-status" aria-live="polite">Loading popular base models…</div>
+          <label class="toggle" for="include-ports"><input id="include-ports" type="checkbox">Include Ports</label>
+        </div>
+        <div id="results" class="autocomplete" role="listbox" aria-label="Model Suggestions"></div>
+      </section>
+    </header>
+    <main id="report" class="report-shell" tabindex="-1">
+      <section id="workspace" class="empty-state">Choose a model above to open its MLX decision report.</section>
     </main>
   </div>
   <script>
-    const state = { query: "", selected: "", advice: null, timer: null, searchSeq: 0 };
+    const state = { query: "", selected: "", advice: null, timer: null, searchSeq: 0, results: [], includeDerivatives: false };
+    const searchForm = document.getElementById("search-form");
     const searchInput = document.getElementById("model-search");
+    const includePortsInput = document.getElementById("include-ports");
     const resultsEl = document.getElementById("results");
     const statusEl = document.getElementById("search-status");
     const workspaceEl = document.getElementById("workspace");
 
+    searchForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const query = searchInput.value.trim();
+      if (looksLikeModelId(query)) {
+        selectModel(query);
+        return;
+      }
+      if (state.results.length) {
+        selectModel(state.results[0].id);
+      }
+    });
+
     searchInput.addEventListener("input", () => {
       state.query = searchInput.value.trim();
+      state.selected = "";
       window.clearTimeout(state.timer);
       state.timer = window.setTimeout(() => search(state.query), 220);
     });
 
-    searchInput.value = "mlx qwen";
-    search("mlx qwen");
+    includePortsInput.addEventListener("change", () => {
+      state.includeDerivatives = includePortsInput.checked;
+      search(state.query);
+    });
 
-    async function search(query) {
-      const seq = ++state.searchSeq;
-      if (query.length < 2) {
-        statusEl.textContent = "Type at least 2 characters.";
-        resultsEl.innerHTML = "";
-        return;
+    initFromUrl();
+
+    async function initFromUrl() {
+      const params = new URLSearchParams(window.location.search);
+      state.query = params.get("q") || "";
+      state.selected = params.get("model") || "";
+      state.includeDerivatives = params.get("include_ports") === "1";
+      searchInput.value = state.query;
+      includePortsInput.checked = state.includeDerivatives;
+      await search(state.query, { sync: false });
+      if (state.selected) {
+        await selectModel(state.selected, false, { sync: false });
       }
-      statusEl.textContent = "Searching...";
-      const response = await fetch("/api/search?q=" + encodeURIComponent(query) + "&limit=12");
-      const data = await response.json();
-      if (seq !== state.searchSeq || query !== searchInput.value.trim()) {
-        return;
-      }
-      statusEl.textContent = data.results.length + " models";
-      resultsEl.innerHTML = data.results.map(renderResult).join("");
-      resultsEl.querySelectorAll("[data-model-id]").forEach((button) => {
-        button.addEventListener("click", () => selectModel(button.getAttribute("data-model-id")));
-      });
     }
 
-    async function selectModel(id, ai = false) {
+    async function search(query, options) {
+      const seq = ++state.searchSeq;
+      const normalized = query.trim();
+      if (normalized.length > 0 && normalized.length < 2) {
+        statusEl.textContent = "Type at least 2 characters.";
+        resultsEl.innerHTML = "";
+        state.results = [];
+        syncUrl(options);
+        return;
+      }
+      statusEl.textContent = normalized ? "Finding base candidates…" : "Loading popular base models…";
+      try {
+        const url = "/api/search?q=" + encodeURIComponent(normalized) + "&limit=12" + (state.includeDerivatives ? "&include_derivatives=1" : "");
+        const data = await getJson(url);
+        if (seq !== state.searchSeq || normalized !== searchInput.value.trim()) {
+          return;
+        }
+        state.query = normalized;
+        state.results = data.results || [];
+        const hidden = data.hiddenDerivatives ? " · " + data.hiddenDerivatives + " ports hidden" : "";
+        statusEl.textContent = (data.mode === "popular" ? "Popular base candidates" : "Base candidates") + " · " + state.results.length + " shown" + hidden;
+        resultsEl.innerHTML = state.results.map(renderResult).join("");
+        resultsEl.querySelectorAll("[data-model-id]").forEach((button) => {
+          button.addEventListener("click", () => selectModel(button.getAttribute("data-model-id")));
+        });
+        syncUrl(options);
+      } catch (error) {
+        statusEl.textContent = error instanceof Error ? error.message : "Search failed. Try again.";
+        resultsEl.innerHTML = "";
+        state.results = [];
+      }
+    }
+
+    async function selectModel(id, ai, options) {
+      if (!id) return;
       state.selected = id;
-      workspaceEl.className = "empty";
-      workspaceEl.textContent = "Loading " + id + "...";
-      resultsEl.querySelectorAll(".result").forEach((button) => {
+      syncUrl(options);
+      workspaceEl.className = "empty-state";
+      workspaceEl.textContent = "Loading " + id + "…";
+      resultsEl.querySelectorAll(".suggestion").forEach((button) => {
         button.classList.toggle("active", button.getAttribute("data-model-id") === id);
+        button.setAttribute("aria-selected", button.getAttribute("data-model-id") === id ? "true" : "false");
       });
-      const response = await fetch("/api/advice?id=" + encodeURIComponent(id) + (ai ? "&ai=1" : ""));
-      const data = await response.json();
-      state.advice = data;
-      workspaceEl.className = "workspace";
-      workspaceEl.innerHTML = renderAdvice(data);
-      wireWorkspace();
-      if (window.matchMedia("(max-width: 920px)").matches) {
-        workspaceEl.scrollIntoView({ block: "start", behavior: "smooth" });
+      try {
+        const data = await getJson("/api/advice?id=" + encodeURIComponent(id) + (ai ? "&ai=1" : ""));
+        state.advice = data;
+        workspaceEl.className = "report-body";
+        workspaceEl.innerHTML = renderAdvice(data);
+        wireWorkspace();
+        document.getElementById("report").focus({ preventScroll: true });
+        if (window.matchMedia("(max-width: 980px)").matches) {
+          workspaceEl.scrollIntoView({ block: "start", behavior: "smooth" });
+        }
+      } catch (error) {
+        workspaceEl.className = "empty-state";
+        workspaceEl.textContent = error instanceof Error ? error.message : "Could not load that model.";
       }
     }
 
@@ -1203,100 +1656,168 @@ function renderAppHtml() {
       if (aiButton) {
         aiButton.addEventListener("click", () => selectModel(state.selected, true));
       }
+      workspaceEl.querySelectorAll("[data-query]").forEach((button) => {
+        button.addEventListener("click", () => {
+          searchInput.value = button.getAttribute("data-query") || "";
+          state.selected = "";
+          search(searchInput.value.trim());
+          searchInput.focus();
+        });
+      });
+    }
+
+    async function getJson(path) {
+      const response = await fetch(path);
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        throw new Error(data.error || "Request failed with " + response.status + ".");
+      }
+      return data;
+    }
+
+    function syncUrl(options) {
+      if (options && options.sync === false) return;
+      const params = new URLSearchParams();
+      if (state.query) params.set("q", state.query);
+      if (state.selected) params.set("model", state.selected);
+      if (state.includeDerivatives) params.set("include_ports", "1");
+      const next = window.location.pathname + (params.toString() ? "?" + params.toString() : "");
+      window.history.replaceState(null, "", next);
     }
 
     function renderResult(model) {
-      const tags = (model.tags || []).slice(0, 4).map((tag) => '<span class="chip">' + escapeHtml(tag) + '</span>').join("");
-      return '<button class="result" data-model-id="' + escapeAttr(model.id) + '">' +
-        '<strong>' + escapeHtml(model.id) + '</strong>' +
-        '<span class="muted">' + escapeHtml(model.pipelineTag || model.libraryName || "model") + ' · ' + formatNumber(model.downloads) + ' downloads</span>' +
-        '<div class="chips">' + tags + '</div>' +
+      const kind = model.repositoryKind === "derivative" ? "derivative" : "base";
+      const metadata = compact([model.pipelineTag || model.libraryName || "model", model.family, formatDate(model.lastModified)]).join(" · ");
+      const tags = [
+        '<span class="status ' + kind + '">' + (kind === "base" ? "Base Candidate" : "Port / Variant") + '</span>',
+        '<span class="tag">' + formatNumber(model.downloads) + ' downloads</span>',
+        '<span class="tag">' + escapeHtml(model.route || "standalone-mlx") + '</span>'
+      ].join("");
+      return '<button class="suggestion" role="option" aria-selected="' + (state.selected === model.id ? "true" : "false") + '" data-model-id="' + escapeAttr(model.id) + '">' +
+        '<span><strong>' + escapeHtml(model.id) + '</strong><span class="muted">' + escapeHtml(metadata) + '</span></span>' +
+        '<span class="suggestion-meta">' + tags + '</span>' +
       '</button>';
     }
 
     function renderAdvice(data) {
       if (data.error) {
-        return '<section class="empty">' + escapeHtml(data.error) + '</section>';
+        return '<section class="empty-state">' + escapeHtml(data.error) + '</section>';
       }
       const model = data.model;
       const advisor = data.advisor;
       const ai = data.aiSummary || {};
-      return '<section class="section">' +
-        renderModelPanel(model, advisor, ai) +
-        renderAdvisorSummary(advisor) +
-        advisor.buckets.map(renderBucket).join("") +
-      '</section>' +
-      '<aside class="section">' +
-        renderInstructionPanel(advisor.instructions) +
-        renderNotes(advisor.researchNotes) +
-        renderCitations(advisor.citations) +
-      '</aside>';
+      return '<section class="report-layout">' +
+        '<div class="report-main">' +
+          renderReportHeader(model, advisor, ai) +
+          renderDecisionBoard(model, advisor) +
+          renderBranches(advisor) +
+        '</div>' +
+        '<aside class="report-aside">' +
+          renderInstructionPanel(advisor.instructions) +
+          renderNotes(advisor.researchNotes) +
+          renderCitations(advisor.citations) +
+        '</aside>' +
+      '</section>';
     }
 
-    function renderModelPanel(model, advisor, ai) {
-      const tags = (model.tags || []).slice(0, 8).map((tag) => '<span class="chip">' + escapeHtml(tag) + '</span>').join("");
+    function renderReportHeader(model, advisor, ai) {
+      const baseModel = readableValue(model.cardData && model.cardData.base_model);
+      const tags = compact([
+        model.pipelineTag,
+        model.libraryName,
+        model.repositoryKind === "derivative" ? "Port / Variant" : "Base Candidate",
+        baseModel ? "Base: " + baseModel : ""
+      ]).map((tag) => '<span class="tag">' + escapeHtml(tag) + '</span>').join("");
       const aiBlock = ai.status === "ok"
-        ? '<div class="panel section"><h3>AI summary</h3><p class="muted">' + escapeHtml(ai.text) + '</p></div>'
-        : '<button class="secondary" data-ai-summary>Generate AI summary</button>' + (ai.status === "error" ? '<p class="muted">' + escapeHtml(ai.error || "AI summary failed") + '</p>' : '');
-      return '<div class="panel section">' +
-        '<div class="headline"><div><h2>' + escapeHtml(model.id) + '</h2><p class="muted">' + escapeHtml(model.pipelineTag || model.libraryName || "metadata") + '</p></div><span class="status ' + advisor.confidence + '">' + escapeHtml(advisor.confidence) + ' confidence</span></div>' +
-        '<div class="grid">' +
+        ? '<p class="muted">' + escapeHtml(ai.text) + '</p>'
+        : '<button class="secondary" data-ai-summary>Generate AI Brief</button>' + (ai.status === "error" ? '<p class="muted">' + escapeHtml(ai.error || "AI brief failed.") + '</p>' : '');
+      return '<section class="report-header">' +
+        renderDerivativeWarning(model) +
+        '<div class="headline"><div><h2>' + escapeHtml(model.id) + '</h2><p class="muted">' + escapeHtml(advisor.family.label || advisor.family.id) + '</p></div><span class="status ' + advisor.confidence + '">' + escapeHtml(advisor.confidence) + ' Confidence</span></div>' +
+        '<div class="metric-grid">' +
+          metric("Route", advisor.family.targets[0] || "standalone-mlx") +
           metric("Family", advisor.family.id) +
           metric("Downloads", formatNumber(model.downloads)) +
-          metric("Primary route", advisor.family.targets[0] || "standalone-mlx") +
           metric("Runbook", advisor.family.runbook) +
         '</div>' +
-        '<div class="chips">' + tags + '</div>' +
+        '<div class="suggestion-meta">' + tags + '</div>' +
         '<p class="muted">Signals: ' + advisor.reasons.map(escapeHtml).join("; ") + '</p>' +
         aiBlock +
-      '</div>';
+      '</section>';
     }
 
-    function renderAdvisorSummary(advisor) {
-      const all = advisor.buckets.flatMap((bucket) => (bucket.items || []).map((item) => ({ ...item, bucketLabel: bucket.label })));
-      const usable = all.filter((item) => item.advisorBucket !== "rejected-do-not-use");
-      const numbered = usable.filter((item) => /^\\d|^up to|^about/i.test(item.impact.value));
-      const profile = usable.filter((item) => item.impact.value === "Profile-required");
-      const top = (numbered.length ? numbered : usable).slice(0, 4);
-      const experimental = advisor.buckets.find((bucket) => bucket.id === "experimental-approach");
-      const rejected = advisor.buckets.find((bucket) => bucket.id === "rejected-do-not-use");
-      return '<div class="panel section">' +
-        '<div class="headline"><div><h2>What this changes</h2><p class="muted">Impact numbers are source-reported only. Profile-required means no portable percentage has been validated for this exact model yet.</p></div></div>' +
-        '<div class="decision-strip">' +
-          decision("Source numbers", numbered.length ? numbered.length + " methods" : "none yet") +
-          decision("Need benchmark", profile.length + " methods") +
-          decision("Experimental", (experimental?.items || []).length + " opt-in") +
-        '</div>' +
-        '<div class="section">' + top.map(renderMethod).join("") + '</div>' +
-        (rejected && rejected.items.length ? '<p class="muted">' + rejected.items.length + ' rejected paths are kept visible so users do not chase non-transferable optimizations.</p>' : '') +
-      '</div>';
+    function renderDecisionBoard(model, advisor) {
+      const stats = reportStats(advisor);
+      return '<section class="decision-board">' +
+        '<article class="visual">' +
+          '<div><h2>Porting Route</h2><p class="muted">Start from the model family, then prove parity before chasing speed.</p></div>' +
+          '<div class="route-flow">' +
+            routeNode("Model", model.repositoryKind === "derivative" ? "Find base model" : "Base candidate") +
+            '<span class="route-edge" aria-hidden="true"></span>' +
+            routeNode("MLX Route", advisor.family.targets[0] || "standalone-mlx") +
+            '<span class="route-edge" aria-hidden="true"></span>' +
+            routeNode("Keep Gate", advisor.defaults.keepGates[0] || "parity + benchmark") +
+          '</div>' +
+        '</article>' +
+        '<article class="visual">' +
+          '<div><h2>Evidence Mix</h2><p class="muted">Validated and experimental branches stay visually separate.</p></div>' +
+          '<div class="bar-list">' +
+            evidenceBar("Validated", stats.validated, stats.total, "") +
+            evidenceBar("Benchmark Required", stats.benchmark, stats.total, "benchmark") +
+            evidenceBar("Experimental", stats.experimental, stats.total, "experimental") +
+            evidenceBar("Rejected", stats.rejected, stats.total, "rejected") +
+          '</div>' +
+        '</article>' +
+        '<article class="visual">' +
+          '<div><h2>Eval Boundaries</h2><p class="muted">Numbers only count when the source or a local run names the boundary.</p></div>' +
+          '<div class="boundary-grid">' +
+            boundary("Impact", stats.bestImpact, stats.bestImpactLabel) +
+            boundary("Profile Gates", String(stats.profileRequired), "need local timing") +
+            boundary("Opt-In", String(stats.experimental), "experimental branch") +
+          '</div>' +
+        '</article>' +
+        '<article class="visual">' +
+          '<div><h2>Optimization Mix</h2><p class="muted">The shape of the shortlist before you try anything locally.</p></div>' +
+          '<div class="bar-list">' + renderCategoryBars(stats.categories, stats.total) + '</div>' +
+        '</article>' +
+      '</section>';
+    }
+
+    function renderBranches(advisor) {
+      return '<section class="branch-list">' +
+        '<div><h2>Recommendation Branches</h2><p class="muted">Validated paths, benchmark-required work, and experiments remain separate.</p></div>' +
+        advisor.buckets.map(renderBucket).join("") +
+      '</section>';
     }
 
     function renderBucket(bucket) {
       const items = bucket.items || [];
       const prompt = bucket.requiresUserOptIn ? '<p class="muted"><strong>' + escapeHtml(bucket.prompt) + '</strong></p>' : "";
-      return '<div class="panel section">' +
-        '<div class="headline"><div><h2>' + escapeHtml(bucket.label) + '</h2><p class="muted">' + escapeHtml(bucket.description) + '</p></div><span class="status bucket-' + escapeAttr(bucket.id) + '">' + items.length + '</span></div>' +
+      return '<section class="branch">' +
+        '<div class="branch-head"><div><h3>' + escapeHtml(bucket.label) + '</h3><p class="muted">' + escapeHtml(bucket.description) + '</p></div><span class="status bucket-' + escapeAttr(bucket.id) + '">' + items.length + '</span></div>' +
         prompt +
         (items.length ? items.map(renderMethod).join("") : '<p class="muted">No matching methods for this model family at this evidence level.</p>') +
-      '</div>';
+      '</section>';
     }
 
     function renderMethod(method) {
       const gate = first(method.validationGates);
       const rollback = first(method.rollbackConditions);
-      const impactClass = /^\\d|^up to|^about/i.test(method.impact.value) ? "source" : method.impact.value.includes("No portable") ? "boundary" : "";
+      const impactClass = isNumberedImpact(method.impact.value) ? "source" : method.impact.value.includes("No portable") ? "boundary" : "";
+      const optIn = method.advisorBucket === "experimental-approach" ? '<span class="status bucket-experimental-approach">Experimental Opt-In</span>' : "";
       return '<article class="method-card">' +
-        '<div class="method-title"><strong>' + escapeHtml(method.id) + '</strong><span class="impact-pill ' + impactClass + '">' + escapeHtml(method.impact.value) + '</span></div>' +
+        '<div class="method-title"><strong>' + escapeHtml(methodLabel(method.id)) + '</strong><span class="impact-pill ' + impactClass + '">' + escapeHtml(displayImpact(method.impact.value)) + '</span></div>' +
+        '<div class="suggestion-meta">' + optIn + '<span class="tag">' + escapeHtml(method.category) + '</span><span class="tag">' + escapeHtml(method.status) + '</span></div>' +
         '<p class="muted">' + escapeHtml(method.recommendation) + '</p>' +
         '<div class="method-kpis">' +
-          kpi("Evidence", method.certainty) +
-          kpi("First gate", gate || "define parity gate") +
-          kpi("Rollback", rollback || "write before trying") +
+          kpi("When to Try", method.certainty) +
+          kpi("First Validation", gate || "define parity gate") +
+          kpi("Rollback Trigger", rollback || "write before trying") +
         '</div>' +
         '<p class="muted"><strong>' + escapeHtml(method.impact.label) + ':</strong> ' + escapeHtml(method.impact.caveat) + '</p>' +
-        '<details class="method-more"><summary>Show all gates and caveats</summary><div class="method-body">' +
-          list("Validation gates", method.validationGates) +
+        '<div class="copy-row"><button class="secondary" data-copy="' + escapeAttr("Method: " + method.id + "\\nExpected impact: " + method.impact.value + "\\nFirst validation: " + (gate || "define parity gate") + "\\nRollback trigger: " + (rollback || "write before trying")) + '">Copy Method Brief</button></div>' +
+        '<details class="method-more"><summary>Show All Gates and Caveats</summary><div class="method-body">' +
+          list("Validation Gates", method.validationGates) +
           list("Rollback", method.rollbackConditions) +
           list("Tradeoffs", method.tradeoffs) +
         '</div></details>' +
@@ -1312,31 +1833,107 @@ function renderAppHtml() {
         instructions.validate,
         instructions.experimentalPrompt
       ].join("\\n");
-      return '<div class="panel section">' +
-        '<h2>CLI instructions</h2>' +
+      return '<section class="aside-panel section">' +
+        '<h2>Try It in CLI</h2>' +
         '<pre>' + escapeHtml(text) + '</pre>' +
-        '<div class="copy-row"><button data-copy="' + escapeAttr(text) + '">Copy instructions</button></div>' +
-      '</div>';
+        '<div class="copy-row"><button class="primary" data-copy="' + escapeAttr(text) + '">Copy Instructions</button></div>' +
+      '</section>';
     }
 
     function renderNotes(notes) {
       if (!notes || !notes.length) return "";
-      return '<div class="panel section"><h2>Research notes</h2><div class="note-list">' +
-        notes.map((note) => '<div class="note"><strong>' + escapeHtml(note.id) + '</strong><p>' + escapeHtml(note.summary) + '</p><p>' + escapeHtml(note.validationGate || note.reasonHeld || "") + '</p></div>').join("") +
-      '</div></div>';
+      return '<section class="aside-panel section"><h2>Research Notes</h2><div class="note-list">' +
+        notes.map((note) => '<article class="note"><strong>' + escapeHtml(note.id) + '</strong><p>' + escapeHtml(note.summary) + '</p><p class="muted">' + escapeHtml(note.validationGate || note.reasonHeld || "") + '</p></article>').join("") +
+      '</div></section>';
     }
 
     function renderCitations(citations) {
-      return '<div class="panel section"><h2>Citations</h2><div class="citations">' +
-        citations.map((source) => '<div class="citation"><strong>' + escapeHtml(source.title) + '</strong><br><a href="' + escapeAttr(source.url) + '" target="_blank" rel="noreferrer">' + escapeHtml(source.url) + '</a><br><span class="muted">' + escapeHtml(source.kind) + ' · ' + escapeHtml(source.reviewDepth || "reviewed") + '</span></div>').join("") +
-      '</div></div>';
+      return '<section class="aside-panel section"><h2>Citations</h2><div class="citations">' +
+        citations.map((source) => '<article class="citation"><strong>' + escapeHtml(source.title) + '</strong><br><a href="' + escapeAttr(source.url) + '" target="_blank" rel="noreferrer">' + escapeHtml(source.url) + '</a><br><span class="muted">' + escapeHtml(source.kind) + ' · ' + escapeHtml(source.reviewDepth || "reviewed") + '</span></article>').join("") +
+      '</div></section>';
     }
 
+    function renderDerivativeWarning(model) {
+      if (model.repositoryKind !== "derivative") return "";
+      const base = readableValue(model.cardData && model.cardData.base_model) || baseQueryFromText(model.id);
+      return '<div class="derivative-warning">' +
+        '<strong>This appears to be an existing port, export, adapter, or quantized variant.</strong>' +
+        '<p class="muted">Plan the architecture and optimization path from the upstream base model first.</p>' +
+        (base ? '<button class="secondary" type="button" data-query="' + escapeAttr(base) + '">Find Base Model</button>' : '') +
+      '</div>';
+    }
+
+    function methodLabel(id) {
+      const labels = {
+        "fast-sdpa": "Fast Attention Path",
+        "uniform-kv-quantization": "KV Cache Quantization",
+        "draft-model-speculation": "Speculative Decoding",
+        "compile-stable-region": "Compile Stable Region",
+        "lazy-eval-boundaries": "Lazy Eval Boundaries",
+        "native-low-bit-weight-quantization": "Low-Bit Weight Quantization",
+        "generic-audio-prefix-cache": "Audio Prefix Cache Experiment",
+        "prompt-prefix-cache": "Prompt Prefix Cache",
+        "content-prefix-cache-vlm": "Vision Content Prefix Cache",
+        "multimodal-content-prefix-cache": "Multimodal Content Prefix Cache"
+      };
+      return labels[id] || humanize(id);
+    }
+
+    function displayImpact(value) {
+      return value === "Profile-required" ? "Needs Local Benchmark" : value;
+    }
+
+    function baseQueryFromText(value) {
+      return String(value || "")
+        .replace(/^[^/]+\\//, "")
+        .replace(/whisperkit/ig, "whisper")
+        .replace(/mlx|coreml|gguf|ggml|onnx|openvino|tflite|4bit|8bit|quantized|gptq|awq|lora|adapter|int4|int8/ig, " ")
+        .replace(/[-_]+/g, " ")
+        .replace(/\\s+/g, " ")
+        .trim();
+    }
+
+    function reportStats(advisor) {
+      const all = advisor.buckets.flatMap((bucket) => (bucket.items || []).map((item) => ({ ...item, bucketId: bucket.id })));
+      const total = Math.max(all.length, 1);
+      const categories = new Map();
+      all.forEach((item) => categories.set(item.category, (categories.get(item.category) || 0) + 1));
+      const numbered = all.filter((item) => isNumberedImpact(item.impact.value));
+      const profile = all.filter((item) => item.impact.value === "Profile-required");
+      const firstImpact = numbered[0] || profile[0] || all[0];
+      return {
+        total,
+        validated: bucketCount(advisor, "validated-locally") + bucketCount(advisor, "validated-source-theory"),
+        benchmark: bucketCount(advisor, "benchmark-required") + profile.length,
+        experimental: bucketCount(advisor, "experimental-approach"),
+        rejected: bucketCount(advisor, "rejected-do-not-use"),
+        profileRequired: profile.length,
+        bestImpact: firstImpact ? firstImpact.impact.value : "None",
+        bestImpactLabel: firstImpact ? firstImpact.impact.label : "no matching methods",
+        categories: [...categories.entries()].sort((a, b) => b[1] - a[1]).slice(0, 5)
+      };
+    }
+
+    function bucketCount(advisor, id) {
+      const bucket = advisor.buckets.find((item) => item.id === id);
+      return bucket && bucket.items ? bucket.items.length : 0;
+    }
+    function routeNode(label, value) {
+      return '<div class="route-node"><span>' + escapeHtml(label) + '</span><strong>' + escapeHtml(value) + '</strong></div>';
+    }
+    function evidenceBar(label, count, total, tone) {
+      const width = Math.max(4, Math.round((count / Math.max(total, 1)) * 100));
+      return '<div class="bar-row"><div class="bar-label"><span>' + escapeHtml(label) + '</span><strong>' + count + '</strong></div><div class="bar-track"><div class="bar-fill ' + tone + '" style="--w:' + width + '%"></div></div></div>';
+    }
+    function renderCategoryBars(categories, total) {
+      if (!categories.length) return '<p class="muted">No matching optimization categories.</p>';
+      return categories.map(([label, count]) => evidenceBar(humanize(label), count, total, "")).join("");
+    }
+    function boundary(label, value, detail) {
+      return '<div class="boundary"><strong>' + escapeHtml(value) + '</strong><span>' + escapeHtml(label + " · " + detail) + '</span></div>';
+    }
     function metric(label, value) {
       return '<div class="metric"><span>' + escapeHtml(label) + '</span><strong>' + escapeHtml(String(value || "")) + '</strong></div>';
-    }
-    function decision(label, value) {
-      return '<div class="decision"><span>' + escapeHtml(label) + '</span><strong>' + escapeHtml(value) + '</strong></div>';
     }
     function kpi(label, value) {
       return '<div class="kpi"><span>' + escapeHtml(label) + '</span><strong>' + escapeHtml(value) + '</strong></div>';
@@ -1344,17 +1941,38 @@ function renderAppHtml() {
     function first(values) {
       return values && values.length ? values[0] : "";
     }
-
     function list(label, values) {
       if (!values || !values.length) return "";
       return '<div><strong>' + escapeHtml(label) + '</strong><ul>' + values.map((value) => '<li>' + escapeHtml(value) + '</li>').join("") + '</ul></div>';
     }
-
+    function isNumberedImpact(value) {
+      return /^\\d|^up to|^about/i.test(value || "");
+    }
     function formatNumber(value) {
       return new Intl.NumberFormat().format(value || 0);
     }
+    function formatDate(value) {
+      if (!value) return "";
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return "";
+      return new Intl.DateTimeFormat(undefined, { month: "short", day: "numeric", year: "numeric" }).format(date);
+    }
+    function humanize(value) {
+      return String(value || "").replace(/[-_]/g, " ").replace(/\\b\\w/g, (char) => char.toUpperCase());
+    }
+    function readableValue(value) {
+      if (Array.isArray(value)) return value.filter(Boolean).join(", ");
+      if (typeof value === "string") return value;
+      return "";
+    }
+    function compact(values) {
+      return values.filter((value) => value !== undefined && value !== null && String(value).trim() !== "");
+    }
+    function looksLikeModelId(value) {
+      return /^[A-Za-z0-9][A-Za-z0-9._-]*\\/[A-Za-z0-9][A-Za-z0-9._-]*$/.test(value);
+    }
     function escapeHtml(value) {
-      return String(value).replace(/[&<>"']/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[char]));
+      return String(value).replace(/[&<>"']/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[char] || char));
     }
     function escapeAttr(value) {
       return escapeHtml(value).replace(/\\n/g, "&#10;");

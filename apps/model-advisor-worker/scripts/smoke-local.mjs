@@ -34,9 +34,18 @@ function assert(condition, message) {
 
 const html = await getText("/");
 assert(html.includes("MLX Model Advisor"), "app shell title missing");
+assert(html.includes("Ask for a base model"), "chat-first app shell missing");
 
-const search = await getJson("/api/search?q=mlx%20qwen&limit=2");
+const discover = await getJson("/api/search?limit=4");
+assert(Array.isArray(discover.results) && discover.results.length > 0, "default discovery returned no models");
+assert(discover.results.every((model) => model.repositoryKind !== "derivative"), "default discovery should hide derivative repos");
+
+const search = await getJson("/api/search?q=qwen&limit=4");
 assert(Array.isArray(search.results) && search.results.length > 0, "search returned no models");
+assert(search.results.every((model) => model.repositoryKind !== "derivative"), "search should hide derivative repos by default");
+
+const exactDerivative = await getJson("/api/search?q=mlx-community%2FQwen2.5-14B-Instruct-4bit&limit=3");
+assert(exactDerivative.results.some((model) => model.id === "mlx-community/Qwen2.5-14B-Instruct-4bit"), "exact derivative model id should remain selectable");
 
 const longQuery = await getStatus(`/api/search?q=${"x".repeat(97)}`, { headers: { origin: "https://example.com" } });
 assert(longQuery.status === 400, "long search query should be rejected before proxying");
