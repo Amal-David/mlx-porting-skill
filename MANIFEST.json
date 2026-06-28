@@ -2,8 +2,8 @@
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
   "version": "0.1.0",
-  "generated_at": "2026-06-27T18:10:09.457483+00:00",
-  "file_count": 196,
+  "generated_at": "2026-06-28T00:03:04.141294+00:00",
+  "file_count": 204,
   "files": [
     {
       "path": ".github/workflows/daily-research.yml",
@@ -17,8 +17,8 @@
     },
     {
       "path": ".gitignore",
-      "size_bytes": 194,
-      "sha256": "c3a1e29db5ac54bc3eacb8fa194362dd2e4701f724e5ad1aab3b482ca2df4733"
+      "size_bytes": 255,
+      "sha256": "b7186fb37872cd6992c5224a218dc282fa4b6743a360cb321a3ccbe9e22f9e6f"
     },
     {
       "path": "AGENTS.md",
@@ -109,6 +109,46 @@
       "path": "adapters/windsurf.md",
       "size_bytes": 417,
       "sha256": "ea531009b578384bcc216982463912b68d631044c095de7480f4c5cb28d39268"
+    },
+    {
+      "path": "apps/model-advisor-worker/package-lock.json",
+      "size_bytes": 50130,
+      "sha256": "3b416c13035d6040bcc05e1418d19fac34b18c34c353bfce2bcef33f897d6147"
+    },
+    {
+      "path": "apps/model-advisor-worker/package.json",
+      "size_bytes": 665,
+      "sha256": "589c0b9d8f8a3f03de583910de5695fa3308a9fa33997e46905e67c6c0739363"
+    },
+    {
+      "path": "apps/model-advisor-worker/scripts/build-skill-data.mjs",
+      "size_bytes": 9506,
+      "sha256": "8c791c5009a535083794fc329799e6fb7ae3e023581e9f1d21f466413c267610"
+    },
+    {
+      "path": "apps/model-advisor-worker/scripts/smoke-local.mjs",
+      "size_bytes": 1844,
+      "sha256": "352c6d13f1828da619b62ea5e1573815f714b92865236a208de39ca6eff24f30"
+    },
+    {
+      "path": "apps/model-advisor-worker/src/index.ts",
+      "size_bytes": 38843,
+      "sha256": "dc3b4db47912b31127975bc87f0de6c1d008a3f0fe8b42e56e8cc8214bd7f9fd"
+    },
+    {
+      "path": "apps/model-advisor-worker/src/skill-data.generated.ts",
+      "size_bytes": 114657,
+      "sha256": "13193930aae516b3c0eeda4543d53ec6ed3e4c8c2bae38ad8981d9c9fe3d9d4f"
+    },
+    {
+      "path": "apps/model-advisor-worker/tsconfig.json",
+      "size_bytes": 289,
+      "sha256": "ed3906b28130d28b4709a5e0659db558b43f7041355918c9ced333eeaabe5988"
+    },
+    {
+      "path": "apps/model-advisor-worker/wrangler.toml",
+      "size_bytes": 256,
+      "sha256": "54a7dfe033861cfad44274f3c88aee76e31ae6e574238a060afee3f9fbeb5e67"
     },
     {
       "path": "mlx-model-porting/SKILL.md",
