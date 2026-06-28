@@ -246,13 +246,14 @@ async function handleSearch(url: URL, env: Env) {
     || model.repositoryKind !== "derivative"
     || (exactModelQuery && model.id.toLowerCase() === requestedQuery.toLowerCase())
   )).filter((model) => !category?.minDownloads || model.downloads >= category.minDownloads);
+  const rankedResults = rankSearchResults(results, requestedQuery, upstreamQuery);
   return {
     query: requestedQuery,
     upstreamQuery,
     mode: requestedQuery ? "search" : category?.label.toLowerCase() || "popular",
     includeDerivatives,
     hiddenDerivatives: summaries.length - results.length,
-    results: results.slice(0, limit)
+    results: rankedResults.slice(0, limit)
   };
 }
 
@@ -363,6 +364,56 @@ function baseModelQuery(query: string): string {
     rewritten = rewritten.replace(pattern, replacement);
   }
   return rewritten.trim().replace(/\s+/g, " ") || query;
+}
+
+function rankSearchResults<T extends ReturnType<typeof sanitizeModelSummary>>(models: T[], requestedQuery: string, upstreamQuery: string): T[] {
+  const normalizedQuery = normalizeSearchText(upstreamQuery || requestedQuery);
+  if (!normalizedQuery) {
+    return models;
+  }
+  const tokens = searchTokens(normalizedQuery);
+  return models.slice().sort((a, b) => {
+    const scoreDelta = searchScore(b, requestedQuery, normalizedQuery, tokens) - searchScore(a, requestedQuery, normalizedQuery, tokens);
+    if (scoreDelta !== 0) {
+      return scoreDelta;
+    }
+    return (b.downloads ?? 0) - (a.downloads ?? 0);
+  });
+}
+
+function searchScore(model: ReturnType<typeof sanitizeModelSummary>, requestedQuery: string, normalizedQuery: string, tokens: string[]): number {
+  const id = normalizeSearchText(model.id);
+  const name = normalizeSearchText(model.id.split("/").pop() ?? model.id);
+  const owner = normalizeSearchText(model.id.split("/")[0] ?? "");
+  const fields = normalizeSearchText([
+    model.id,
+    model.pipelineTag,
+    model.libraryName,
+    model.family,
+    model.route,
+    ...(model.tags ?? [])
+  ].join(" "));
+  let score = 0;
+  if (requestedQuery && id === normalizeSearchText(requestedQuery)) score += 1000;
+  if (id === normalizedQuery || name === normalizedQuery) score += 800;
+  if (id.startsWith(normalizedQuery) || name.startsWith(normalizedQuery)) score += 500;
+  if (owner === normalizedQuery) score += 200;
+  for (const token of tokens) {
+    if (name === token) score += 220;
+    if (name.startsWith(token)) score += 160;
+    if (id.includes(token)) score += 120;
+    if (fields.includes(token)) score += 60;
+  }
+  if (model.repositoryKind === "base-candidate") score += 20;
+  return score;
+}
+
+function searchTokens(query: string): string[] {
+  return [...new Set(normalizeSearchText(query).split(" ").filter((token) => token.length > 1))];
+}
+
+function normalizeSearchText(value: string): string {
+  return value.toLowerCase().replace(/[^a-z0-9/._-]+/g, " ").replace(/[-_./]+/g, " ").trim().replace(/\s+/g, " ");
 }
 
 function enforceRateLimit(request: Request, url: URL, bucketOverride?: string) {
@@ -1097,6 +1148,24 @@ function renderAppHtml() {
       gap: 10px;
       margin-top: 14px;
     }
+    .autocomplete.compact {
+      grid-template-columns: 1fr;
+    }
+    .selected-model-row {
+      min-height: 62px;
+      border: 1px solid var(--green);
+      background: var(--green-soft);
+      border-radius: 8px;
+      padding: 10px 12px;
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+    }
+    .selected-model-row strong {
+      display: block;
+      overflow-wrap: anywhere;
+    }
     .suggestion {
       text-align: left;
       min-height: 142px;
@@ -1212,6 +1281,15 @@ function renderAppHtml() {
       display: grid;
       grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 10px;
+    }
+    .decision-summary {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fffdf8;
+      padding: 12px;
     }
     .metric, .decision, .kpi {
       border-top: 1px solid var(--line);
@@ -1450,6 +1528,18 @@ function renderAppHtml() {
       gap: 8px;
       font-size: 12px;
     }
+    .aside-panel.collapsible {
+      display: block;
+    }
+    .aside-panel.collapsible summary {
+      padding: 0;
+      font-size: 18px;
+      font-weight: 800;
+    }
+    .aside-panel.collapsible .note-list,
+    .aside-panel.collapsible .citations {
+      margin-top: 12px;
+    }
     .note, .citation {
       border-top: 1px solid var(--line);
       padding-top: 8px;
@@ -1477,7 +1567,7 @@ function renderAppHtml() {
     @media (max-width: 980px) {
       .hero { min-height: auto; padding-top: 28px; }
       .autocomplete, .decision-board, .report-layout { grid-template-columns: 1fr; }
-      .metric-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .metric-grid, .decision-summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     }
     @media (max-width: 640px) {
       .app-shell { width: min(100vw - 24px, 1180px); }
@@ -1504,8 +1594,12 @@ function renderAppHtml() {
         border-top: 7px solid var(--line);
         border-bottom: 0;
       }
-      .boundary-grid, .method-kpis, .metric-grid { grid-template-columns: 1fr; }
+      .boundary-grid, .method-kpis, .metric-grid, .decision-summary { grid-template-columns: 1fr; }
       .method-title { grid-template-columns: 1fr; }
+      .selected-model-row {
+        align-items: flex-start;
+        flex-direction: column;
+      }
     }
   </style>
 </head>
@@ -1516,17 +1610,17 @@ function renderAppHtml() {
       <div class="hero-copy">
         <p class="eyebrow">MLX Model Advisor</p>
         <h1>Ask for a base model. Get the porting path.</h1>
-        <p class="muted">Pick the intrinsic Hugging Face model first; existing ports and quantized variants stay out of the way unless you ask for them.</p>
+        <p class="muted">Pick the original Hugging Face model; ports and quantized variants stay hidden unless you show them.</p>
       </div>
       <section class="composer" aria-label="Model Advisor Prompt">
         <form id="search-form" class="prompt-row">
           <label class="sr-only" for="model-search">Model Prompt</label>
           <input id="model-search" name="model" type="search" autocomplete="off" spellcheck="false" placeholder='Try "Llama 3.1 8B", "Whisper large-v3", "Qwen3 14B"…'>
-          <button class="primary" type="submit">Open Report</button>
+          <button class="primary" type="submit">Analyze Model</button>
         </form>
         <div class="composer-meta">
           <div id="search-status" aria-live="polite">Loading popular base models…</div>
-          <label class="toggle" for="include-ports"><input id="include-ports" type="checkbox">Include Existing MLX Ports</label>
+          <label class="toggle" for="include-ports"><input id="include-ports" type="checkbox">Show Ports and Variants</label>
         </div>
         <div id="results" class="autocomplete" role="listbox" aria-label="Model Suggestions"></div>
       </section>
@@ -1559,6 +1653,7 @@ function renderAppHtml() {
     searchInput.addEventListener("input", () => {
       state.query = searchInput.value.trim();
       state.selected = "";
+      resultsEl.classList.remove("compact");
       window.clearTimeout(state.timer);
       state.timer = window.setTimeout(() => search(state.query), 220);
     });
@@ -1602,11 +1697,12 @@ function renderAppHtml() {
         }
         state.query = normalized;
         state.results = data.results || [];
-        const hidden = data.hiddenDerivatives ? " · " + data.hiddenDerivatives + " ports hidden" : "";
+        const hidden = data.hiddenDerivatives ? " · " + data.hiddenDerivatives + " variants hidden" : "";
         const label = state.includeDerivatives
           ? (data.mode === "popular" ? "Popular models and ports" : "Matching models and ports")
           : (data.mode === "popular" ? "Popular base candidates" : "Base candidates");
         statusEl.textContent = label + " · " + state.results.length + " shown" + hidden;
+        resultsEl.classList.remove("compact");
         resultsEl.innerHTML = state.results.map(renderResult).join("");
         resultsEl.querySelectorAll("[data-model-id]").forEach((button) => {
           button.addEventListener("click", () => selectModel(button.getAttribute("data-model-id")));
@@ -1625,6 +1721,7 @@ function renderAppHtml() {
       syncUrl(options);
       workspaceEl.className = "empty-state";
       workspaceEl.textContent = "Loading " + id + "…";
+      setSelectedModelRow(id);
       resultsEl.querySelectorAll(".suggestion").forEach((button) => {
         button.classList.toggle("active", button.getAttribute("data-model-id") === id);
         button.setAttribute("aria-selected", button.getAttribute("data-model-id") === id ? "true" : "false");
@@ -1636,9 +1733,7 @@ function renderAppHtml() {
         workspaceEl.innerHTML = renderAdvice(data);
         wireWorkspace();
         document.getElementById("report").focus({ preventScroll: true });
-        if (window.matchMedia("(max-width: 980px)").matches) {
-          workspaceEl.scrollIntoView({ block: "start", behavior: "smooth" });
-        }
+        workspaceEl.scrollIntoView({ block: "start", behavior: "smooth" });
       } catch (error) {
         workspaceEl.className = "empty-state";
         workspaceEl.textContent = error instanceof Error ? error.message : "Could not load that model.";
@@ -1662,6 +1757,7 @@ function renderAppHtml() {
         button.addEventListener("click", () => {
           searchInput.value = button.getAttribute("data-query") || "";
           state.selected = "";
+          resultsEl.classList.remove("compact");
           search(searchInput.value.trim());
           searchInput.focus();
         });
@@ -1699,6 +1795,26 @@ function renderAppHtml() {
         '<span><strong>' + escapeHtml(model.id) + '</strong><span class="muted">' + escapeHtml(metadata) + '</span></span>' +
         '<span class="suggestion-meta">' + tags + '</span>' +
       '</button>';
+    }
+
+    function setSelectedModelRow(id) {
+      const model = state.results.find((item) => item.id === id);
+      const metadata = model ? compact([model.pipelineTag || model.libraryName || "model", model.family, model.route]).join(" · ") : "Selected model";
+      resultsEl.classList.add("compact");
+      resultsEl.innerHTML = '<div class="selected-model-row">' +
+        '<span><strong>' + escapeHtml(id) + '</strong><span class="muted">' + escapeHtml(metadata) + '</span></span>' +
+        '<button class="secondary" type="button" data-change-model>Change Model</button>' +
+      '</div>';
+      const changeButton = resultsEl.querySelector("[data-change-model]");
+      if (changeButton) {
+        changeButton.addEventListener("click", () => {
+          state.selected = "";
+          resultsEl.classList.remove("compact");
+          search(state.query);
+          searchInput.focus();
+        });
+      }
+      statusEl.textContent = "Selected " + id + ". Change model to compare another base candidate.";
     }
 
     function renderAdvice(data) {
@@ -1742,10 +1858,23 @@ function renderAppHtml() {
           metric("Downloads", formatNumber(model.downloads)) +
           metric("Runbook", advisor.family.runbook) +
         '</div>' +
+        renderDecisionSummary(advisor) +
         '<div class="suggestion-meta">' + tags + '</div>' +
         '<p class="muted">Signals: ' + advisor.reasons.map(escapeHtml).join("; ") + '</p>' +
         aiBlock +
       '</section>';
+    }
+
+    function renderDecisionSummary(advisor) {
+      const method = firstActionMethod(advisor);
+      const gate = method ? first(method.validationGates) : first(advisor.defaults.keepGates);
+      const firstCommand = advisor.instructions.inspect;
+      return '<div class="decision-summary">' +
+        kpi("Recommended Route", advisor.family.targets[0] || "standalone-mlx") +
+        kpi("First Validation", gate || "parity and benchmark gate") +
+        kpi("Do Not Claim", "speedup before local benchmark metadata") +
+        '<div class="kpi"><span>Next CLI Step</span><button class="secondary" type="button" data-copy="' + escapeAttr(firstCommand) + '">Copy First Command</button></div>' +
+      '</div>';
     }
 
     function renderDecisionBoard(model, advisor) {
@@ -1844,15 +1973,15 @@ function renderAppHtml() {
 
     function renderNotes(notes) {
       if (!notes || !notes.length) return "";
-      return '<section class="aside-panel section"><h2>Research Notes</h2><div class="note-list">' +
+      return '<details class="aside-panel section collapsible"><summary>Research Notes</summary><div class="note-list">' +
         notes.map((note) => '<article class="note"><strong>' + escapeHtml(note.id) + '</strong><p>' + escapeHtml(note.summary) + '</p><p class="muted">' + escapeHtml(note.validationGate || note.reasonHeld || "") + '</p></article>').join("") +
-      '</div></section>';
+      '</div></details>';
     }
 
     function renderCitations(citations) {
-      return '<section class="aside-panel section"><h2>Citations</h2><div class="citations">' +
+      return '<details class="aside-panel section collapsible"><summary>Citations</summary><div class="citations">' +
         citations.map((source) => '<article class="citation"><strong>' + escapeHtml(source.title) + '</strong><br><a href="' + escapeAttr(source.url) + '" target="_blank" rel="noreferrer">' + escapeHtml(source.url) + '</a><br><span class="muted">' + escapeHtml(source.kind) + ' · ' + escapeHtml(source.reviewDepth || "reviewed") + '</span></article>').join("") +
-      '</div></section>';
+      '</div></details>';
     }
 
     function renderDerivativeWarning(model) {
@@ -1874,6 +2003,17 @@ function renderAppHtml() {
         ? "Use source-reported impact only after a local benchmark."
         : "No portable speedup is confirmed until a local benchmark passes.";
       return "Start with " + route + " for this " + family + ". " + speed;
+    }
+
+    function firstActionMethod(advisor) {
+      const preferred = ["validated-locally", "validated-source-theory", "benchmark-required"];
+      for (const id of preferred) {
+        const bucket = advisor.buckets.find((item) => item.id === id);
+        if (bucket && bucket.items && bucket.items.length) {
+          return bucket.items[0];
+        }
+      }
+      return null;
     }
 
     function methodLabel(id) {
