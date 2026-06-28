@@ -979,16 +979,15 @@ function renderAppHtml() {
     .skip-link {
       position: fixed;
       top: 10px;
-      left: 10px;
+      left: -999px;
       z-index: 20;
-      transform: translateY(-160%);
       background: var(--ink);
       color: #fff;
       padding: 8px 10px;
       border-radius: 6px;
     }
     .skip-link:focus {
-      transform: translateY(0);
+      left: 10px;
     }
     .app-shell {
       width: min(1180px, calc(100vw - 32px));
@@ -1522,12 +1521,12 @@ function renderAppHtml() {
       <section class="composer" aria-label="Model Advisor Prompt">
         <form id="search-form" class="prompt-row">
           <label class="sr-only" for="model-search">Model Prompt</label>
-          <input id="model-search" name="model" type="search" autocomplete="off" spellcheck="false" placeholder="Ask about Qwen, Whisper, Flux…">
+          <input id="model-search" name="model" type="search" autocomplete="off" spellcheck="false" placeholder='Try "Llama 3.1 8B", "Whisper large-v3", "Qwen3 14B"…'>
           <button class="primary" type="submit">Open Report</button>
         </form>
         <div class="composer-meta">
           <div id="search-status" aria-live="polite">Loading popular base models…</div>
-          <label class="toggle" for="include-ports"><input id="include-ports" type="checkbox">Include Ports</label>
+          <label class="toggle" for="include-ports"><input id="include-ports" type="checkbox">Include Existing MLX Ports</label>
         </div>
         <div id="results" class="autocomplete" role="listbox" aria-label="Model Suggestions"></div>
       </section>
@@ -1604,7 +1603,10 @@ function renderAppHtml() {
         state.query = normalized;
         state.results = data.results || [];
         const hidden = data.hiddenDerivatives ? " · " + data.hiddenDerivatives + " ports hidden" : "";
-        statusEl.textContent = (data.mode === "popular" ? "Popular base candidates" : "Base candidates") + " · " + state.results.length + " shown" + hidden;
+        const label = state.includeDerivatives
+          ? (data.mode === "popular" ? "Popular models and ports" : "Matching models and ports")
+          : (data.mode === "popular" ? "Popular base candidates" : "Base candidates");
+        statusEl.textContent = label + " · " + state.results.length + " shown" + hidden;
         resultsEl.innerHTML = state.results.map(renderResult).join("");
         resultsEl.querySelectorAll("[data-model-id]").forEach((button) => {
           button.addEventListener("click", () => selectModel(button.getAttribute("data-model-id")));
@@ -1733,7 +1735,7 @@ function renderAppHtml() {
         : '<button class="secondary" data-ai-summary>Generate AI Brief</button>' + (ai.status === "error" ? '<p class="muted">' + escapeHtml(ai.error || "AI brief failed.") + '</p>' : '');
       return '<section class="report-header">' +
         renderDerivativeWarning(model) +
-        '<div class="headline"><div><h2>' + escapeHtml(model.id) + '</h2><p class="muted">' + escapeHtml(advisor.family.label || advisor.family.id) + '</p></div><span class="status ' + advisor.confidence + '">' + escapeHtml(advisor.confidence) + ' Confidence</span></div>' +
+        '<div class="headline"><div><h2>' + escapeHtml(answerLine(model, advisor)) + '</h2><p class="muted">' + escapeHtml(model.id + " · " + (advisor.family.label || advisor.family.id)) + '</p></div><span class="status ' + advisor.confidence + '">' + escapeHtml(advisor.confidence) + ' Confidence</span></div>' +
         '<div class="metric-grid">' +
           metric("Route", advisor.family.targets[0] || "standalone-mlx") +
           metric("Family", advisor.family.id) +
@@ -1777,8 +1779,8 @@ function renderAppHtml() {
           '</div>' +
         '</article>' +
         '<article class="visual">' +
-          '<div><h2>Optimization Mix</h2><p class="muted">The shape of the shortlist before you try anything locally.</p></div>' +
-          '<div class="bar-list">' + renderCategoryBars(stats.categories, stats.total) + '</div>' +
+          '<div><h2>Risk Matrix</h2><p class="muted">Every suggestion lands in a validation lane before it becomes work.</p></div>' +
+          renderRiskMatrix(stats) +
         '</article>' +
       '</section>';
     }
@@ -1863,6 +1865,17 @@ function renderAppHtml() {
       '</div>';
     }
 
+    function answerLine(model, advisor) {
+      const stats = reportStats(advisor);
+      const route = advisor.family.targets[0] || "standalone-mlx";
+      const family = advisor.family.label || humanize(advisor.family.id);
+      const impact = stats.bestImpact;
+      const speed = impact && impact !== "None" && impact !== "Needs Local Benchmark"
+        ? "Use source-reported impact only after a local benchmark."
+        : "No portable speedup is confirmed until a local benchmark passes.";
+      return "Start with " + route + " for this " + family + ". " + speed;
+    }
+
     function methodLabel(id) {
       const labels = {
         "fast-sdpa": "Fast Attention Path",
@@ -1908,7 +1921,7 @@ function renderAppHtml() {
         experimental: bucketCount(advisor, "experimental-approach"),
         rejected: bucketCount(advisor, "rejected-do-not-use"),
         profileRequired: profile.length,
-        bestImpact: firstImpact ? firstImpact.impact.value : "None",
+        bestImpact: firstImpact ? displayImpact(firstImpact.impact.value) : "None",
         bestImpactLabel: firstImpact ? firstImpact.impact.label : "no matching methods",
         categories: [...categories.entries()].sort((a, b) => b[1] - a[1]).slice(0, 5)
       };
@@ -1928,6 +1941,14 @@ function renderAppHtml() {
     function renderCategoryBars(categories, total) {
       if (!categories.length) return '<p class="muted">No matching optimization categories.</p>';
       return categories.map(([label, count]) => evidenceBar(humanize(label), count, total, "")).join("");
+    }
+    function renderRiskMatrix(stats) {
+      return '<div class="boundary-grid">' +
+        boundary("Low Risk", String(stats.validated), "source-backed") +
+        boundary("Needs Benchmark", String(stats.profileRequired), "measure locally") +
+        boundary("Experimental", String(stats.experimental), "explicit opt-in") +
+        boundary("Rejected", String(stats.rejected), "do not use") +
+      '</div>';
     }
     function boundary(label, value, detail) {
       return '<div class="boundary"><strong>' + escapeHtml(value) + '</strong><span>' + escapeHtml(label + " · " + detail) + '</span></div>';
