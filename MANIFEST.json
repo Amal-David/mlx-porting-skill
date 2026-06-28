@@ -2,8 +2,8 @@
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
   "version": "0.1.0",
-  "generated_at": "2026-06-28T00:03:04.141294+00:00",
-  "file_count": 204,
+  "generated_at": "2026-06-28T14:45:02.811947+00:00",
+  "file_count": 205,
   "files": [
     {
       "path": ".github/workflows/daily-research.yml",
@@ -17,8 +17,8 @@
     },
     {
       "path": ".gitignore",
-      "size_bytes": 255,
-      "sha256": "b7186fb37872cd6992c5224a218dc282fa4b6743a360cb321a3ccbe9e22f9e6f"
+      "size_bytes": 267,
+      "sha256": "43936cfdd5e83541b198a7cf9be8edbb486e71dbfe807d5e45b14cdabf899b81"
     },
     {
       "path": "AGENTS.md",
@@ -112,13 +112,18 @@
     },
     {
       "path": "apps/model-advisor-worker/package-lock.json",
-      "size_bytes": 50130,
-      "sha256": "3b416c13035d6040bcc05e1418d19fac34b18c34c353bfce2bcef33f897d6147"
+      "size_bytes": 65052,
+      "sha256": "ae3a6f07f8de745d81c1c9b94c66e6e3137782cccf2473e4722fb63c5ff38edd"
     },
     {
       "path": "apps/model-advisor-worker/package.json",
-      "size_bytes": 665,
-      "sha256": "589c0b9d8f8a3f03de583910de5695fa3308a9fa33997e46905e67c6c0739363"
+      "size_bytes": 764,
+      "sha256": "be75b7b1b892c47a1166e824a95fe94d0dbb77e48fbc1eb4d408c4a6e838e2a6"
+    },
+    {
+      "path": "apps/model-advisor-worker/scripts/build-pages.mjs",
+      "size_bytes": 805,
+      "sha256": "f20be11267cb5ea5a62dc0173a7519d8eedb27fb0271c60d19953fb2c5e222ea"
     },
     {
       "path": "apps/model-advisor-worker/scripts/build-skill-data.mjs",
@@ -127,13 +132,13 @@
     },
     {
       "path": "apps/model-advisor-worker/scripts/smoke-local.mjs",
-      "size_bytes": 1844,
-      "sha256": "352c6d13f1828da619b62ea5e1573815f714b92865236a208de39ca6eff24f30"
+      "size_bytes": 2751,
+      "sha256": "847b2ecda10093f05c0f0eb94c7061e20c4870340d4f4417b73e697f34a0166c"
     },
     {
       "path": "apps/model-advisor-worker/src/index.ts",
-      "size_bytes": 38843,
-      "sha256": "dc3b4db47912b31127975bc87f0de6c1d008a3f0fe8b42e56e8cc8214bd7f9fd"
+      "size_bytes": 48992,
+      "sha256": "2ce1de0682059816ec56e45f6fd47bed05d7f6262988f18779bb3cc5dd1ccd9c"
     },
     {
       "path": "apps/model-advisor-worker/src/skill-data.generated.ts",

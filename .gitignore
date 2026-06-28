@@ -19,4 +19,5 @@ __pycache__/
 # Worker app local state
 node_modules/
 .wrangler/
+dist-pages/
 .dev.vars

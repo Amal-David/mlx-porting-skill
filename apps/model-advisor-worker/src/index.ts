@@ -48,6 +48,18 @@ const BUCKET_ORDER = [
   "rejected-do-not-use"
 ];
 
+const MAX_SEARCH_QUERY_LENGTH = 96;
+const MAX_MODEL_ID_LENGTH = 220;
+const MAX_JSON_BODY_LENGTH = 4096;
+const RATE_LIMIT_WINDOW_MS = 60_000;
+const RATE_LIMITS: Record<string, number> = {
+  search: 60,
+  model: 40,
+  advice: 40,
+  "ai-summary": 8
+};
+const rateCounters = new Map<string, { count: number; resetAt: number }>();
+
 const TASK_FAMILY_HINTS: Array<{ tasks: string[]; family: string; reason: string }> = [
   { tasks: ["text-generation", "conversational"], family: "dense-decoder-transformer", reason: "text generation task" },
   { tasks: ["text2text-generation", "summarization", "translation"], family: "encoder-decoder-transformer", reason: "sequence-to-sequence task" },
@@ -78,49 +90,78 @@ const FAMILY_OVERRIDES: Array<{ tokens: string[]; family: string; reason: string
   { tokens: ["graphsage", "graph-sage", "gcn", "gat", "mpnn"], family: "graph-message-passing", reason: "graph message-passing alias" }
 ];
 
+const APPLIES_TO_FAMILY_ALIASES: Record<string, string[]> = {
+  "linear-heavy-models": [
+    "dense-decoder-transformer",
+    "moe-decoder-transformer",
+    "encoder-transformer",
+    "encoder-decoder-transformer",
+    "vision-language-omni",
+    "diffusion-flow",
+    "time-series-forecasting"
+  ],
+  "audio-lm": ["autoregressive-audio-lm"],
+  tts: ["autoregressive-audio-lm", "flow-diffusion-tts", "vocoder-waveform-decoder"],
+  stt: ["automatic-speech-recognition", "streaming-speech"],
+  "speech-to-speech": ["streaming-speech", "separation-enhancement"]
+};
+
+class HttpError extends Error {
+  constructor(readonly status: number, message: string) {
+    super(message);
+  }
+}
+
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     try {
       const url = new URL(request.url);
       if (request.method === "OPTIONS") {
-        return new Response(null, { status: 204, headers: corsHeaders() });
+        return new Response(null, { status: 204, headers: corsHeaders(request) });
       }
       if (url.pathname === "/") {
         return new Response(renderAppHtml(), { headers: HTML_HEADERS });
       }
+      enforceRateLimit(request, url);
       if (url.pathname === "/api/search") {
-        return json(await handleSearch(url, env));
+        return json(await handleSearch(url, env), 200, request);
       }
       if (url.pathname === "/api/model") {
-        return json(await handleModel(url, env));
+        return json(await handleModel(url, env), 200, request);
       }
       if (url.pathname === "/api/advice") {
-        return json(await handleAdvice(request, url, env));
+        return json(await handleAdvice(request, url, env), 200, request);
       }
-      return json({ error: "not_found" }, 404);
+      return json({ error: "not_found" }, 404, request);
     } catch (error) {
-      return json({ error: error instanceof Error ? error.message : "unknown_error" }, 500);
+      const status = error instanceof HttpError ? error.status : 500;
+      return json({ error: error instanceof Error ? error.message : "unknown_error" }, status, request);
     }
   }
 };
 
-function corsHeaders() {
-  return {
-    "access-control-allow-origin": "*",
+function corsHeaders(request: Request): Record<string, string> {
+  const origin = request.headers.get("origin");
+  const headers: Record<string, string> = {
     "access-control-allow-methods": "GET, POST, OPTIONS",
-    "access-control-allow-headers": "content-type"
+    "access-control-allow-headers": "content-type",
+    "vary": "origin"
   };
+  if (origin === new URL(request.url).origin) {
+    headers["access-control-allow-origin"] = origin;
+  }
+  return headers;
 }
 
-function json(value: unknown, status = 200): Response {
+function json(value: unknown, status = 200, request?: Request): Response {
   return new Response(JSON.stringify(value, null, 2), {
     status,
-    headers: { ...JSON_HEADERS, ...corsHeaders() }
+    headers: request ? { ...JSON_HEADERS, ...corsHeaders(request) } : JSON_HEADERS
   });
 }
 
 async function handleSearch(url: URL, env: Env) {
-  const query = (url.searchParams.get("q") ?? "").trim();
+  const query = normalizedSearchQuery(url.searchParams.get("q"));
   const limit = clampNumber(Number(url.searchParams.get("limit") ?? 12), 1, 20);
   if (query.length < 2) {
     return { query, results: [] };
@@ -148,6 +189,9 @@ async function handleAdvice(request: Request, url: URL, env: Env) {
   const body = request.method === "POST" ? await readJsonBody(request) : {};
   const id = requiredModelId(url.searchParams.get("id") ?? stringValue(body.id));
   const useAi = url.searchParams.get("ai") === "1" || body.useAi === true;
+  if (useAi) {
+    enforceRateLimit(request, url, "ai-summary");
+  }
   const model = await fetchModelDetails(id, env);
   const advisor = buildAdvisor(model);
   const aiSummary = useAi ? await generateOpenAiSummary(env, model, advisor) : openAiStatus(env);
@@ -160,6 +204,9 @@ async function handleAdvice(request: Request, url: URL, env: Env) {
 
 async function readJsonBody(request: Request): Promise<Record<string, unknown>> {
   const text = await request.text();
+  if (text.length > MAX_JSON_BODY_LENGTH) {
+    throw new HttpError(413, `JSON body must be ${MAX_JSON_BODY_LENGTH} characters or fewer.`);
+  }
   if (!text.trim()) {
     return {};
   }
@@ -194,9 +241,73 @@ async function hfFetch<T>(url: URL): Promise<T> {
 function requiredModelId(value: string | null | undefined): string {
   const id = (value ?? "").trim();
   if (!id || !id.includes("/")) {
-    throw new Error("A Hugging Face model id like owner/name is required.");
+    throw new HttpError(400, "A Hugging Face model id like owner/name is required.");
+  }
+  if (id.length > MAX_MODEL_ID_LENGTH) {
+    throw new HttpError(400, `Model id must be ${MAX_MODEL_ID_LENGTH} characters or fewer.`);
+  }
+  if (!/^[A-Za-z0-9][A-Za-z0-9._-]*\/[A-Za-z0-9][A-Za-z0-9._-]*$/.test(id)) {
+    throw new HttpError(400, "Model id must look like owner/name and use Hugging Face repo characters.");
   }
   return id;
+}
+
+function normalizedSearchQuery(value: string | null | undefined): string {
+  const query = (value ?? "").trim().replace(/\s+/g, " ");
+  if (query.length > MAX_SEARCH_QUERY_LENGTH) {
+    throw new HttpError(400, `Search query must be ${MAX_SEARCH_QUERY_LENGTH} characters or fewer.`);
+  }
+  return query;
+}
+
+function enforceRateLimit(request: Request, url: URL, bucketOverride?: string) {
+  const bucket = bucketOverride ?? rateLimitBucket(url.pathname);
+  if (!bucket) {
+    return;
+  }
+  const limit = RATE_LIMITS[bucket] ?? 30;
+  const now = Date.now();
+  const key = `${clientKey(request)}:${bucket}`;
+  const current = rateCounters.get(key);
+  if (!current || current.resetAt <= now) {
+    rateCounters.set(key, { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS });
+    pruneRateCounters(now);
+    return;
+  }
+  if (current.count >= limit) {
+    throw new HttpError(429, "Rate limit exceeded. Try again shortly.");
+  }
+  current.count += 1;
+}
+
+function rateLimitBucket(pathname: string): string {
+  if (pathname === "/api/search") {
+    return "search";
+  }
+  if (pathname === "/api/model") {
+    return "model";
+  }
+  if (pathname === "/api/advice") {
+    return "advice";
+  }
+  return "";
+}
+
+function clientKey(request: Request): string {
+  return request.headers.get("cf-connecting-ip")
+    || request.headers.get("x-forwarded-for")?.split(",")[0]?.trim()
+    || "anonymous";
+}
+
+function pruneRateCounters(now: number) {
+  if (rateCounters.size < 5000) {
+    return;
+  }
+  for (const [key, value] of rateCounters) {
+    if (value.resetAt <= now) {
+      rateCounters.delete(key);
+    }
+  }
 }
 
 function encodeRepoId(id: string): string {
@@ -384,6 +495,9 @@ function appliesToFamily(appliesTo: readonly string[], family: string): boolean 
   const tokens = new Set(f.replace(/-/g, " ").split(" "));
   for (const raw of appliesTo) {
     const value = raw.toLowerCase();
+    if (APPLIES_TO_FAMILY_ALIASES[value]?.includes(f)) {
+      return true;
+    }
     if (value === "all" || value === f || value.includes(f) || f.includes(value)) {
       return true;
     }
@@ -411,11 +525,64 @@ function serializeMethod(method: Method) {
     objectives: method.objectives,
     recommendation: method.recommendation,
     expectedEffect: method.expectedEffect,
+    impact: summarizeImpact(method),
+    certainty: summarizeCertainty(method),
     tradeoffs: method.tradeoffs,
     validationGates: method.validationGates,
     rollbackConditions: method.rollbackConditions,
     evidenceSourceIds: method.evidenceSourceIds
   };
+}
+
+function summarizeImpact(method: Method) {
+  const text = method.expectedEffect;
+  const numericMatches = text.match(/(?:up to\s+|about\s+)?\d+(?:\.\d+)?x|\d+(?:\.\d+)?%\s*(?:-|to)\s*\d+(?:\.\d+)?%|\d+(?:\.\d+)?%/gi) ?? [];
+  if (numericMatches.length > 0) {
+    return {
+      value: numericMatches.slice(0, 3).join(", "),
+      label: "Source-reported",
+      caveat: text
+    };
+  }
+  if (/profile-required/i.test(text)) {
+    return {
+      value: "Profile-required",
+      label: "Measure locally",
+      caveat: text.replace(/^Profile-required\.\s*/i, "")
+    };
+  }
+  if (/no speedup claim|not a speedup|no generic/i.test(text)) {
+    return {
+      value: "No portable speedup",
+      label: "Boundary",
+      caveat: text
+    };
+  }
+  if (/memory.*bit width|KV memory/i.test(text)) {
+    return {
+      value: "Memory-scaled",
+      label: "Estimate",
+      caveat: text
+    };
+  }
+  return {
+    value: "Workload-dependent",
+    label: "Estimate",
+    caveat: text
+  };
+}
+
+function summarizeCertainty(method: Method) {
+  if (method.status === "native-mlx" || method.status === "official-mlx-project") {
+    return "supported path; still validate locally";
+  }
+  if (method.status === "proven-mlx-port") {
+    return "proven port pattern; benchmark required";
+  }
+  if (method.status === "research-candidate") {
+    return "experimental; explicit opt-in required";
+  }
+  return "do not use for MLX";
 }
 
 function serializeBucket(bucket: Bucket, items: Array<ReturnType<typeof serializeMethod>>) {
@@ -762,6 +929,90 @@ function renderAppHtml() {
       margin-top: 2px;
       overflow-wrap: anywhere;
     }
+    .decision-strip {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+    .decision {
+      border-top: 1px solid var(--line);
+      padding-top: 8px;
+    }
+    .decision span {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .decision strong {
+      display: block;
+      font-size: 18px;
+      margin-top: 2px;
+    }
+    .method-card {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fffdf8;
+      padding: 12px;
+      display: grid;
+      gap: 10px;
+    }
+    .method-title {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 10px;
+      align-items: start;
+    }
+    .method-title strong {
+      overflow-wrap: anywhere;
+      font-size: 17px;
+    }
+    .impact-pill {
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: var(--blue-soft);
+      color: var(--blue);
+      padding: 4px 9px;
+      font-size: 12px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+    .impact-pill.source { background: var(--green-soft); color: var(--green); }
+    .impact-pill.boundary { background: var(--red-soft); color: var(--red); }
+    .method-kpis {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+    }
+    .kpi {
+      border-top: 1px solid var(--line);
+      padding-top: 7px;
+      min-width: 0;
+    }
+    .kpi span {
+      display: block;
+      color: var(--muted);
+      font-size: 11px;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+    .kpi strong {
+      display: block;
+      margin-top: 2px;
+      overflow-wrap: anywhere;
+      font-size: 13px;
+    }
+    .method-more {
+      border: 0;
+      background: transparent;
+      border-radius: 0;
+    }
+    .method-more summary {
+      padding: 0;
+      justify-content: flex-start;
+      color: var(--blue);
+      font-size: 13px;
+      font-weight: 700;
+    }
     details {
       border: 1px solid var(--line);
       border-radius: 8px;
@@ -858,6 +1109,7 @@ function renderAppHtml() {
       .shell { grid-template-columns: 1fr; }
       aside { border-right: 0; border-bottom: 1px solid var(--line); }
       .workspace { grid-template-columns: 1fr; }
+      .decision-strip, .method-kpis { grid-template-columns: 1fr; }
     }
     @media (max-width: 560px) {
       aside, main { padding: 16px; }
@@ -885,7 +1137,7 @@ function renderAppHtml() {
     </main>
   </div>
   <script>
-    const state = { query: "", selected: "", advice: null, timer: null };
+    const state = { query: "", selected: "", advice: null, timer: null, searchSeq: 0 };
     const searchInput = document.getElementById("model-search");
     const resultsEl = document.getElementById("results");
     const statusEl = document.getElementById("search-status");
@@ -901,6 +1153,7 @@ function renderAppHtml() {
     search("mlx qwen");
 
     async function search(query) {
+      const seq = ++state.searchSeq;
       if (query.length < 2) {
         statusEl.textContent = "Type at least 2 characters.";
         resultsEl.innerHTML = "";
@@ -909,6 +1162,9 @@ function renderAppHtml() {
       statusEl.textContent = "Searching...";
       const response = await fetch("/api/search?q=" + encodeURIComponent(query) + "&limit=12");
       const data = await response.json();
+      if (seq !== state.searchSeq || query !== searchInput.value.trim()) {
+        return;
+      }
       statusEl.textContent = data.results.length + " models";
       resultsEl.innerHTML = data.results.map(renderResult).join("");
       resultsEl.querySelectorAll("[data-model-id]").forEach((button) => {
@@ -967,6 +1223,7 @@ function renderAppHtml() {
       const ai = data.aiSummary || {};
       return '<section class="section">' +
         renderModelPanel(model, advisor, ai) +
+        renderAdvisorSummary(advisor) +
         advisor.buckets.map(renderBucket).join("") +
       '</section>' +
       '<aside class="section">' +
@@ -985,13 +1242,33 @@ function renderAppHtml() {
         '<div class="headline"><div><h2>' + escapeHtml(model.id) + '</h2><p class="muted">' + escapeHtml(model.pipelineTag || model.libraryName || "metadata") + '</p></div><span class="status ' + advisor.confidence + '">' + escapeHtml(advisor.confidence) + ' confidence</span></div>' +
         '<div class="grid">' +
           metric("Family", advisor.family.id) +
-          metric("Runbook", advisor.family.runbook) +
           metric("Downloads", formatNumber(model.downloads)) +
-          metric("Library", model.libraryName || "unknown") +
+          metric("Primary route", advisor.family.targets[0] || "standalone-mlx") +
+          metric("Runbook", advisor.family.runbook) +
         '</div>' +
         '<div class="chips">' + tags + '</div>' +
         '<p class="muted">Signals: ' + advisor.reasons.map(escapeHtml).join("; ") + '</p>' +
         aiBlock +
+      '</div>';
+    }
+
+    function renderAdvisorSummary(advisor) {
+      const all = advisor.buckets.flatMap((bucket) => (bucket.items || []).map((item) => ({ ...item, bucketLabel: bucket.label })));
+      const usable = all.filter((item) => item.advisorBucket !== "rejected-do-not-use");
+      const numbered = usable.filter((item) => /^\\d|^up to|^about/i.test(item.impact.value));
+      const profile = usable.filter((item) => item.impact.value === "Profile-required");
+      const top = (numbered.length ? numbered : usable).slice(0, 4);
+      const experimental = advisor.buckets.find((bucket) => bucket.id === "experimental-approach");
+      const rejected = advisor.buckets.find((bucket) => bucket.id === "rejected-do-not-use");
+      return '<div class="panel section">' +
+        '<div class="headline"><div><h2>What this changes</h2><p class="muted">Impact numbers are source-reported only. Profile-required means no portable percentage has been validated for this exact model yet.</p></div></div>' +
+        '<div class="decision-strip">' +
+          decision("Source numbers", numbered.length ? numbered.length + " methods" : "none yet") +
+          decision("Need benchmark", profile.length + " methods") +
+          decision("Experimental", (experimental?.items || []).length + " opt-in") +
+        '</div>' +
+        '<div class="section">' + top.map(renderMethod).join("") + '</div>' +
+        (rejected && rejected.items.length ? '<p class="muted">' + rejected.items.length + ' rejected paths are kept visible so users do not chase non-transferable optimizations.</p>' : '') +
       '</div>';
     }
 
@@ -1001,21 +1278,29 @@ function renderAppHtml() {
       return '<div class="panel section">' +
         '<div class="headline"><div><h2>' + escapeHtml(bucket.label) + '</h2><p class="muted">' + escapeHtml(bucket.description) + '</p></div><span class="status bucket-' + escapeAttr(bucket.id) + '">' + items.length + '</span></div>' +
         prompt +
-        (items.length ? items.map(renderMethod).join("") : '<p class="muted">No matching methods for this model family.</p>') +
+        (items.length ? items.map(renderMethod).join("") : '<p class="muted">No matching methods for this model family at this evidence level.</p>') +
       '</div>';
     }
 
     function renderMethod(method) {
-      return '<details>' +
-        '<summary><strong>' + escapeHtml(method.id) + '</strong><span class="chip">' + escapeHtml(method.status) + '</span></summary>' +
-        '<div class="method-body">' +
-          '<p>' + escapeHtml(method.recommendation) + '</p>' +
-          '<p><strong>Expected effect:</strong> ' + escapeHtml(method.expectedEffect) + '</p>' +
+      const gate = first(method.validationGates);
+      const rollback = first(method.rollbackConditions);
+      const impactClass = /^\\d|^up to|^about/i.test(method.impact.value) ? "source" : method.impact.value.includes("No portable") ? "boundary" : "";
+      return '<article class="method-card">' +
+        '<div class="method-title"><strong>' + escapeHtml(method.id) + '</strong><span class="impact-pill ' + impactClass + '">' + escapeHtml(method.impact.value) + '</span></div>' +
+        '<p class="muted">' + escapeHtml(method.recommendation) + '</p>' +
+        '<div class="method-kpis">' +
+          kpi("Evidence", method.certainty) +
+          kpi("First gate", gate || "define parity gate") +
+          kpi("Rollback", rollback || "write before trying") +
+        '</div>' +
+        '<p class="muted"><strong>' + escapeHtml(method.impact.label) + ':</strong> ' + escapeHtml(method.impact.caveat) + '</p>' +
+        '<details class="method-more"><summary>Show all gates and caveats</summary><div class="method-body">' +
           list("Validation gates", method.validationGates) +
           list("Rollback", method.rollbackConditions) +
           list("Tradeoffs", method.tradeoffs) +
-        '</div>' +
-      '</details>';
+        '</div></details>' +
+      '</article>';
     }
 
     function renderInstructionPanel(instructions) {
@@ -1049,6 +1334,15 @@ function renderAppHtml() {
 
     function metric(label, value) {
       return '<div class="metric"><span>' + escapeHtml(label) + '</span><strong>' + escapeHtml(String(value || "")) + '</strong></div>';
+    }
+    function decision(label, value) {
+      return '<div class="decision"><span>' + escapeHtml(label) + '</span><strong>' + escapeHtml(value) + '</strong></div>';
+    }
+    function kpi(label, value) {
+      return '<div class="kpi"><span>' + escapeHtml(label) + '</span><strong>' + escapeHtml(value) + '</strong></div>';
+    }
+    function first(values) {
+      return values && values.length ? values[0] : "";
     }
 
     function list(label, values) {
