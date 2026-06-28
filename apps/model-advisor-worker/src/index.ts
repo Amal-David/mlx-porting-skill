@@ -1615,7 +1615,7 @@ function renderAppHtml() {
       <section class="composer" aria-label="Model Advisor Prompt">
         <form id="search-form" class="prompt-row">
           <label class="sr-only" for="model-search">Model Prompt</label>
-          <input id="model-search" name="model" type="search" autocomplete="off" spellcheck="false" placeholder='Try "Llama 3.1 8B", "Whisper large-v3", "Qwen3 14B"…'>
+          <input id="model-search" name="model" type="search" autocomplete="off" spellcheck="false" placeholder='Try "Llama 3.1 8B", "Whisper large-v3", "Qwen3 14B"...'>
           <button class="primary" type="submit">Analyze Model</button>
         </form>
         <div class="composer-meta">
