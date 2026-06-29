@@ -891,7 +891,7 @@ async function generateOpenAiSummary(env: Env, model: HuggingFaceModel, advisor:
       "You are summarizing an MLX model-porting advisor report.",
       "Do not invent speedup numbers. Mention profile-required or benchmark-required when applicable.",
       "Keep experimental approaches explicitly labeled experimental.",
-      "Return 4 short bullets for an engineer."
+      "Return 4 short bullets for an engineer. Do not use Markdown bold. Keep each bullet under 14 words."
     ].join(" "),
     input: JSON.stringify({
       model: sanitizeModelSummary(model),
@@ -1441,6 +1441,32 @@ function renderAppHtml() {
       display: grid;
       gap: 8px;
     }
+    .ai-brief {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fffdf8;
+      padding: 12px;
+      display: grid;
+      gap: 8px;
+    }
+    .ai-brief h3 {
+      font-size: 13px;
+      line-height: 1.2;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .ai-brief ul {
+      display: grid;
+      gap: 7px;
+      padding-left: 18px;
+    }
+    .ai-brief li {
+      color: var(--muted);
+      line-height: 1.35;
+    }
+    .ai-brief strong {
+      color: var(--ink);
+    }
     .method-title {
       display: grid;
       grid-template-columns: minmax(0, 1fr) auto;
@@ -1847,7 +1873,7 @@ function renderAppHtml() {
         baseModel ? "Base: " + baseModel : ""
       ]).map((tag) => '<span class="tag">' + escapeHtml(tag) + '</span>').join("");
       const aiBlock = ai.status === "ok"
-        ? '<p class="muted">' + escapeHtml(ai.text) + '</p>'
+        ? renderAiBrief(ai.text)
         : '<button class="secondary" data-ai-summary>Generate brief</button>' + (ai.status === "error" ? '<p class="muted">' + escapeHtml(ai.error || "Brief failed.") + '</p>' : '');
       return '<section class="report-header">' +
         renderDerivativeWarning(model) +
@@ -1874,6 +1900,45 @@ function renderAppHtml() {
         kpi("Claim gate", "benchmark first") +
         '<div class="kpi"><span>CLI</span><button class="secondary" type="button" data-copy="' + escapeAttr(firstCommand) + '">Copy command</button></div>' +
       '</div>';
+    }
+
+    function renderAiBrief(text) {
+      const items = aiBriefItems(text);
+      if (!items.length) {
+        return "";
+      }
+      return '<div class="ai-brief"><h3>Brief</h3><ul>' +
+        items.map((item) => '<li>' + renderInlineMarkdown(item) + '</li>').join("") +
+      '</ul></div>';
+    }
+
+    function aiBriefItems(text) {
+      const normalized = String(text || "")
+        .replace(/\\r/g, "\\n")
+        .replace(/\\n\\s*[-*]\\s+/g, "\\n- ")
+        .trim();
+      if (!normalized) {
+        return [];
+      }
+      let items = normalized.split(/\\n+/).map(cleanAiBullet).filter(Boolean);
+      if (items.length <= 1) {
+        items = normalized.split(/\\s+-\\s+(?=\\*\\*|[A-Z0-9])/).map(cleanAiBullet).filter(Boolean);
+      }
+      return items.slice(0, 5);
+    }
+
+    function cleanAiBullet(value) {
+      return String(value || "")
+        .split(String.fromCharCode(96)).join("")
+        .replace(/^[-*]\\s+/, "")
+        .replace(/^\\d+[.)]\\s+/, "")
+        .replace(/\\s+/g, " ")
+        .trim();
+    }
+
+    function renderInlineMarkdown(value) {
+      return escapeHtml(value)
+        .replace(/\\*\\*([^*]+)\\*\\*/g, "<strong>$1</strong>");
     }
 
     function renderDecisionBoard(model, advisor) {
@@ -2157,6 +2222,7 @@ function renderAppHtml() {
     function escapeAttr(value) {
       return escapeHtml(value).replace(/\\n/g, "&#10;");
     }
+    window.renderAdvice = renderAdvice;
   </script>
 </body>
 </html>`;
