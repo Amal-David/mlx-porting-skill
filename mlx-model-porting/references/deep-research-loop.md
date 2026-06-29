@@ -52,6 +52,34 @@ repository search is rate-limited, incomplete, or capped, add a backlog item
 rather than treating the long tail as complete. Do not persist raw anonymous
 author identities.
 
+## Nightly Knowledge Curator
+
+Use the nightly curator to keep a delta-oriented memory of MLX research instead
+of rereading the whole ecosystem every time. It refreshes contributor and source
+candidates, builds `assets/knowledge_graph.json`, writes a daily
+`knowledge-delta.json`/`knowledge-delta.md`, and scaffolds dynamic subagent
+assignments from the current graph gaps.
+
+```bash
+python3 scripts/nightly_knowledge_curator.py
+```
+
+The graph classifies candidate sources as already read or indexed, new unread,
+seen-unread, or updated. It links papers, repositories, existing sources,
+optimization methods, contributor learnings, backlog items, and model outcomes
+so later runs can ask "what changed?" before proposing any skill, app, or CLI
+edit. The nightly receipt is still review-only: graph and delta updates may be
+committed as evidence, but supported guidance requires a separate promotion PR
+with source provenance, validation gate, rollback condition, tests, source
+validation, and manifest checks.
+
+When a live automation runs this command, review `knowledge-delta.md` first:
+
+- already-read or indexed sources should not create duplicate research work;
+- new unread sources become sampling targets for the generated campaign;
+- updated repositories or papers need a pinned diff before changing guidance;
+- new approach leads stay experimental until a reproducible MLX path is proven.
+
 ## Agent Assignments
 
 The harness generates bounded assignments from

@@ -2,8 +2,8 @@
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
   "version": "0.1.0",
-  "generated_at": "2026-06-29T10:07:26.795013+00:00",
-  "file_count": 209,
+  "generated_at": "2026-06-29T18:51:26.752331+00:00",
+  "file_count": 214,
   "files": [
     {
       "path": ".github/workflows/daily-research.yml",
@@ -157,8 +157,8 @@
     },
     {
       "path": "mlx-model-porting/SKILL.md",
-      "size_bytes": 14847,
-      "sha256": "4c8694557aa9076353b09b05e972d745e41b84e2de9acf0a18fd378a28af49cc"
+      "size_bytes": 15116,
+      "sha256": "83798f1b32389668152a1736848a08fb0790ee5fe7ecdeabdf5812c1cfb0915c"
     },
     {
       "path": "mlx-model-porting/assets/BENCHMARK_REPORT.md",
@@ -194,6 +194,11 @@
       "path": "mlx-model-porting/assets/contributor_learnings.json",
       "size_bytes": 30233,
       "sha256": "8a75f86fada1dc11d8fae933b5c3caf6e0061f1e485bf6ec3a3170d576dccb47"
+    },
+    {
+      "path": "mlx-model-porting/assets/knowledge_graph.json",
+      "size_bytes": 326485,
+      "sha256": "b9a1e735895be1a9d4a17b064958b4adb6ca352fb90d4bfcec604b69e0b4d069"
     },
     {
       "path": "mlx-model-porting/assets/model_outcomes.json",
@@ -267,8 +272,8 @@
     },
     {
       "path": "mlx-model-porting/references/deep-research-loop.md",
-      "size_bytes": 20748,
-      "sha256": "a469f8e5386862d533fdc684ce054ece381935656b7d214c7e66a83a6d30d87d"
+      "size_bytes": 22144,
+      "sha256": "6858938d0d554fae88452f1a56ad20d896934d76c820a318669927f36fa465ac"
     },
     {
       "path": "mlx-model-porting/references/failure-atlas.md",
@@ -556,6 +561,16 @@
       "sha256": "f1f584dee4d4dfe795c6f61315d43bec4843d15dbbe749580b65c8b89c9a166b"
     },
     {
+      "path": "mlx-model-porting/research-runs/2026-06-30-nightly-knowledge-curator/knowledge-delta.json",
+      "size_bytes": 28451,
+      "sha256": "81e3a470664d650562e3f3a03a719dec3fe3543ab36bef36cd45e2c2d70f3d83"
+    },
+    {
+      "path": "mlx-model-porting/research-runs/2026-06-30-nightly-knowledge-curator/knowledge-delta.md",
+      "size_bytes": 9368,
+      "sha256": "57cf34b5705bbb7de8bae982f1084a70f68444614831ef7f1a669ec9bf5ae81b"
+    },
+    {
       "path": "mlx-model-porting/scripts/_common.py",
       "size_bytes": 4857,
       "sha256": "0f035d7953449c83af95760fd6425653cf55cdbcee389a9afa4e3c8eec1b50aa"
@@ -596,6 +611,11 @@
       "sha256": "bb179d144b5b1c83e4f22f4c19bdc71f49026f117c3543ef5e57d9e52e48a004"
     },
     {
+      "path": "mlx-model-porting/scripts/knowledge_curator.py",
+      "size_bytes": 20904,
+      "sha256": "564601fc9f4a32fb13c97a173aba378e8753e8273b87c215cfbfd58209cd4235"
+    },
+    {
       "path": "mlx-model-porting/scripts/make_port_plan.py",
       "size_bytes": 9496,
       "sha256": "e6417f9f971f40d6d278e5ca29e5fe4dfe19def498206dfb1c10cdf6491f7624"
@@ -604,6 +624,11 @@
       "path": "mlx-model-porting/scripts/manifest.py",
       "size_bytes": 4139,
       "sha256": "8d86d9006f09ec07cc502febe55a4ce80d22161757dd145e325a0b9f50c2657a"
+    },
+    {
+      "path": "mlx-model-porting/scripts/nightly_knowledge_curator.py",
+      "size_bytes": 8396,
+      "sha256": "b505207a2948eb54c80d6614fb13a90dff44f37335c2d646b828e653ef3c4e34"
     },
     {
       "path": "mlx-model-porting/scripts/recommend_optimizations.py",
@@ -637,8 +662,8 @@
     },
     {
       "path": "tasks/lessons.md",
-      "size_bytes": 1162,
-      "sha256": "ace945d66405b34616c4f7bb74f237942548bc1d7e14ce768ec22801948d8606"
+      "size_bytes": 1429,
+      "sha256": "aa8f9a148d9da2c02239a598d103c16722bc330de7332fef74e6a405efa17bc7"
     },
     {
       "path": "tests/README.md",
@@ -1047,8 +1072,8 @@
     },
     {
       "path": "tests/test_tooling.py",
-      "size_bytes": 137022,
-      "sha256": "f4f0b3f16b9a262d644f311151497ddab0c74ad89e180267c659b3bdca66fe09"
+      "size_bytes": 143243,
+      "sha256": "d4306c1afbc317fa1b2c7754515010e7f35683f415badf8780c9a55ee3fba61e"
     }
   ]
 }
