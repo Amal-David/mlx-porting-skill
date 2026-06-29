@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-06-24T06:00:31.419602+00:00",
+  "generated_at": "2026-06-29T22:09:00.156091+00:00",
   "policy": {
     "auto_modify_recommendations": false,
     "auto_merge": false,
@@ -15,15 +15,17 @@
         "kernels",
         "quantization"
       ],
-      "default_branch": null,
-      "head_sha": "96296e9c3075a2389bc5c0f078bf01b5aa377cd9",
-      "head_date": null,
-      "head_message": null,
+      "default_branch": "main",
+      "head_sha": "1d20ba3808ebbb71a75cd2be63052111a5c7640c",
+      "head_date": "2026-06-28T23:49:48Z",
+      "head_message": "Fix Upsample align_corners singleton output (#3769)",
       "url": "https://github.com/ml-explore/mlx",
-      "latest_release": null,
-      "metadata_warning": "GitHub API unavailable; release metadata not collected: HTTP Error 403: rate limit exceeded",
-      "metadata_fallback": "git ls-remote HEAD",
-      "known_snapshot": true
+      "latest_release": {
+        "tag": "v0.31.2",
+        "published_at": "2026-04-22T01:40:04Z",
+        "url": "https://github.com/ml-explore/mlx/releases/tag/v0.31.2"
+      },
+      "known_snapshot": false
     },
     {
       "kind": "repository",
@@ -34,15 +36,17 @@
         "decoding",
         "cache"
       ],
-      "default_branch": null,
-      "head_sha": "2c008fd0252b2c569227d12568356ab88ab0560a",
-      "head_date": null,
-      "head_message": null,
+      "default_branch": "main",
+      "head_sha": "2ed22318cd6a2fcc5c2e0caa1e1fb0ddeb7cafd5",
+      "head_date": "2026-06-24T23:12:59Z",
+      "head_message": "Fix deepseek indexer rope argument (#1431)",
       "url": "https://github.com/ml-explore/mlx-lm",
-      "latest_release": null,
-      "metadata_warning": "GitHub API unavailable; release metadata not collected: HTTP Error 403: rate limit exceeded",
-      "metadata_fallback": "git ls-remote HEAD",
-      "known_snapshot": true
+      "latest_release": {
+        "tag": "v0.31.3",
+        "published_at": "2026-04-22T07:43:57Z",
+        "url": "https://github.com/ml-explore/mlx-lm/releases/tag/v0.31.3"
+      },
+      "known_snapshot": false
     },
     {
       "kind": "repository",
@@ -52,14 +56,12 @@
         "audio",
         "vision"
       ],
-      "default_branch": null,
+      "default_branch": "main",
       "head_sha": "796f5b53cab69a3d48a44233ce21aae889e94a08",
-      "head_date": null,
-      "head_message": null,
+      "head_date": "2026-04-06T18:56:05Z",
+      "head_message": "Add wan 2.1 model (#1409)",
       "url": "https://github.com/ml-explore/mlx-examples",
       "latest_release": null,
-      "metadata_warning": "GitHub API unavailable; release metadata not collected: HTTP Error 403: rate limit exceeded",
-      "metadata_fallback": "git ls-remote HEAD",
       "known_snapshot": true
     },
     {
@@ -70,15 +72,17 @@
         "serving",
         "speculative"
       ],
-      "default_branch": null,
-      "head_sha": "6a8cdff6a1f53f46a15d4adb997c3b2d5f621263",
-      "head_date": null,
-      "head_message": null,
+      "default_branch": "main",
+      "head_sha": "3993d65b7561ac52e35ba9aa669d5b0b24b8215b",
+      "head_date": "2026-06-29T17:30:24Z",
+      "head_message": "Merge pull request #1464 from Lazarus-931/fix-1329-weight-index",
       "url": "https://github.com/Blaizzy/mlx-vlm",
-      "latest_release": null,
-      "metadata_warning": "GitHub API unavailable; release metadata not collected: HTTP Error 403: rate limit exceeded",
-      "metadata_fallback": "git ls-remote HEAD",
-      "known_snapshot": true
+      "latest_release": {
+        "tag": "v0.6.3",
+        "published_at": "2026-06-10T18:05:58Z",
+        "url": "https://github.com/Blaizzy/mlx-vlm/releases/tag/v0.6.3"
+      },
+      "known_snapshot": false
     },
     {
       "kind": "repository",
@@ -89,15 +93,17 @@
         "stt",
         "codec"
       ],
-      "default_branch": null,
-      "head_sha": "412cf7cd381c2a3f6a8189af04a95af24cb415b6",
-      "head_date": null,
-      "head_message": null,
+      "default_branch": "main",
+      "head_sha": "cc4ddedaec649d739c9177bd47b9cbd9be674680",
+      "head_date": "2026-06-29T20:44:53Z",
+      "head_message": "Merge pull request #811 from Lazarus-931/higgs-audio-3-stt",
       "url": "https://github.com/Blaizzy/mlx-audio",
-      "latest_release": null,
-      "metadata_warning": "GitHub API unavailable; release metadata not collected: HTTP Error 403: rate limit exceeded",
-      "metadata_fallback": "git ls-remote HEAD",
-      "known_snapshot": true
+      "latest_release": {
+        "tag": "v0.4.4",
+        "published_at": "2026-06-06T15:31:39Z",
+        "url": "https://github.com/Blaizzy/mlx-audio/releases/tag/v0.4.4"
+      },
+      "known_snapshot": false
     },
     {
       "kind": "repository",
@@ -107,15 +113,17 @@
         "cache",
         "batching"
       ],
-      "default_branch": null,
-      "head_sha": "a48c86c1a41900f7d26658471b5f67e5fdd35445",
-      "head_date": null,
-      "head_message": null,
+      "default_branch": "main",
+      "head_sha": "0dd115769ef1196a715b96b181353edacd2a4f69",
+      "head_date": "2026-06-28T20:18:29Z",
+      "head_message": "bump version to 0.4.0",
       "url": "https://github.com/waybarrios/vllm-mlx",
-      "latest_release": null,
-      "metadata_warning": "GitHub API unavailable; release metadata not collected: HTTP Error 403: rate limit exceeded",
-      "metadata_fallback": "git ls-remote HEAD",
-      "known_snapshot": true
+      "latest_release": {
+        "tag": "v0.4.0",
+        "published_at": "2026-06-28T20:20:22Z",
+        "url": "https://github.com/waybarrios/vllm-mlx/releases/tag/v0.4.0"
+      },
+      "known_snapshot": false
     },
     {
       "kind": "repository",
@@ -123,15 +131,13 @@
       "topics": [
         "agent-skills"
       ],
-      "default_branch": null,
-      "head_sha": "57546260929473d4e0d1c1bb75297be2fdfa1949",
-      "head_date": null,
-      "head_message": null,
+      "default_branch": "main",
+      "head_sha": "35414756ca55738e050562e272a6bbc6273aa926",
+      "head_date": "2026-06-27T16:07:56Z",
+      "head_message": "Update claude-api skill: per-SDK doc split, code_execution_20260521, platform-availability, onboarding streamline (#1363)",
       "url": "https://github.com/anthropics/skills",
       "latest_release": null,
-      "metadata_warning": "GitHub API unavailable; release metadata not collected: HTTP Error 403: rate limit exceeded",
-      "metadata_fallback": "git ls-remote HEAD",
-      "known_snapshot": true
+      "known_snapshot": false
     },
     {
       "kind": "repository",
@@ -140,15 +146,17 @@
         "agent-skills",
         "codex"
       ],
-      "default_branch": null,
-      "head_sha": "31e428a1ef3396a0e962687e61f11c224b9f4dbc",
-      "head_date": null,
-      "head_message": null,
+      "default_branch": "main",
+      "head_sha": "4808c162eeb767b389f13b7cb2730f32c8563dba",
+      "head_date": "2026-06-29T18:10:38Z",
+      "head_message": "[codex] auto-label AWS Bedrock issues (#30607)",
       "url": "https://github.com/openai/codex",
-      "latest_release": null,
-      "metadata_warning": "GitHub API unavailable; release metadata not collected: HTTP Error 403: rate limit exceeded",
-      "metadata_fallback": "git ls-remote HEAD",
-      "known_snapshot": true
+      "latest_release": {
+        "tag": "rust-v0.142.4",
+        "published_at": "2026-06-29T05:04:25Z",
+        "url": "https://github.com/openai/codex/releases/tag/rust-v0.142.4"
+      },
+      "known_snapshot": false
     }
   ],
   "papers": [
@@ -164,7 +172,7 @@
       ],
       "summary": "The growing adoption of Apple Silicon for machine learning development has created demand for efficient inference solutions that leverage its unique unified memory architecture. However, existing tools either lack native optimization (PyTorch MPS) or focus solely on text models, leaving multimodal workloads underserved. We present vllm-mlx, a framework for efficient LLM and MLLM inference on Apple Silicon built natively on MLX. For text models, we achieve 21\\% to 87\\% higher throughput than llama-cpp across models ranging from Qwen3-0.6B to Nemotron-30B, while providing continuous batching that scales to 4.3x aggregate throughput at 16 concurrent requests. For multimodal models, we introduce content-based prefix caching that eliminates redundant vision encoding by identifying identical ima",
       "review_status": "candidate-unreviewed",
-      "known_url": false,
+      "known_url": true,
       "candidate_id": "candidate-native-llm-and-mllm-inference-at-scale-on-apple-silicon"
     },
     {
