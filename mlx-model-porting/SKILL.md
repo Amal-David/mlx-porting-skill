@@ -57,7 +57,9 @@ When the user wants model-specific directions, CLI-style advice, or a UI-style
 “what can I do with this model?” answer, read
 [model advisor playbook](references/model-advisor-playbook.md). Use it to
 produce validated, benchmark-required, experimental, and rejected branches from
-the current research assets before execution.
+the current research assets before execution. Check `assets/model_outcomes.json`
+for known working routes, known gaps, and source-reported outcomes before
+turning the answer into optimization advice.
 
 ### 2. Select the closest proven MLX reference
 
@@ -159,7 +161,7 @@ python3 scripts/benchmark_command.py --warmup 2 --runs 8 --output benchmark.json
 
 ### 8. Apply the optimization ladder
 
-Consult `assets/optimization_guidance.yaml`, `assets/recommendation-taxonomy.yaml`, `assets/techniques.yaml`, and load only relevant guides:
+Consult `assets/model_outcomes.json`, `assets/optimization_guidance.yaml`, `assets/recommendation-taxonomy.yaml`, `assets/techniques.yaml`, and load only relevant guides:
 
 1. [MLX runtime, compilation, and kernels](references/compile-and-kernels.md)
 2. [attention and KV cache](references/attention-and-kv.md)

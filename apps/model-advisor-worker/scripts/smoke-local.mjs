@@ -120,6 +120,8 @@ const textAdvice = await getJson("/api/advice?id=mlx-community/Qwen2.5-14B-Instr
 assert(textAdvice.advisor.family.id === "dense-decoder-transformer", "Qwen2.5 text model should route to dense decoder");
 assert(textAdvice.aiSummary.status === "not_configured" || textAdvice.aiSummary.status === "available", "deterministic advice should not require OpenAI");
 assert(textAdvice.advisor.citations.length > 0, "text advice citations missing");
+assert(textAdvice.advisor.modelOutcomes.some((item) => item.id === "decoder-mlx-lm-working-route"), "decoder working-route outcome missing");
+assert(textAdvice.advisor.topCoverage.modelCount >= 250, "top model coverage snapshot missing");
 
 const renderedWithAi = renderAdviceFromShell(html, {
   ...textAdvice,

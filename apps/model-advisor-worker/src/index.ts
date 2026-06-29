@@ -9,6 +9,7 @@ export interface Env {
 type AdvisorData = typeof ADVISOR_DATA;
 type Family = AdvisorData["families"][number];
 type Method = AdvisorData["methods"][number];
+type OutcomeRecord = AdvisorData["modelOutcomes"]["records"][number];
 type Source = AdvisorData["sources"][number];
 type Bucket = AdvisorData["taxonomy"]["advisorBuckets"][number];
 
@@ -593,6 +594,15 @@ function buildAdvisor(model: HuggingFaceModel) {
       addSource(sources, sourceId);
     }
   }
+  const modelOutcomes = relevantModelOutcomes(model, classification.family);
+  for (const outcome of modelOutcomes) {
+    for (const sourceId of outcome.sourceIds) {
+      addSource(sources, sourceId);
+    }
+    addSource(sources, "asset-model-outcomes");
+  }
+  addSource(sources, "asset-top-models-snapshot");
+  addSource(sources, "hf-top-models-api-2026-06-29");
 
   const citations = [...sources.values()].sort((a, b) => a.id.localeCompare(b.id));
   const buckets = ADVISOR_DATA.taxonomy.advisorBuckets
@@ -605,6 +615,8 @@ function buildAdvisor(model: HuggingFaceModel) {
     confidence: classification.confidence,
     reasons: classification.reasons,
     buckets,
+    modelOutcomes,
+    topCoverage: topCoverageForModel(model),
     researchNotes,
     citations,
     instructions: buildInstructions(model, classification.family),
@@ -842,6 +854,103 @@ function relevantResearchNotes(family: Family, methods: readonly Method[]) {
     .map(({ note }) => note);
 }
 
+function relevantModelOutcomes(model: HuggingFaceModel, family: Family) {
+  return ADVISOR_DATA.modelOutcomes.records
+    .map((outcome) => ({ outcome, score: outcomeScore(outcome, model, family) }))
+    .filter(({ score }) => score > 0)
+    .sort((a, b) => b.score - a.score || outcomeStatusRank(a.outcome.status) - outcomeStatusRank(b.outcome.status) || a.outcome.id.localeCompare(b.outcome.id))
+    .slice(0, 4)
+    .map(({ outcome }) => serializeOutcome(outcome));
+}
+
+function outcomeScore(outcome: OutcomeRecord, model: HuggingFaceModel, family: Family): number {
+  const match = outcome.match as Record<string, unknown>;
+  const topModel = topModelFor(model);
+  const topMatchedIds = Array.from(topModel?.matchedOutcomeIds ?? []).map(String);
+  let score = topMatchedIds.includes(outcome.id) ? 20 : 0;
+  if (stringList(match.families).includes(family.id)) {
+    score += 12;
+  }
+  const pipeline = (model.pipeline_tag || stringValue(model.cardData?.pipeline_tag)).toLowerCase();
+  if (pipeline && stringList(match.pipeline_tags).includes(pipeline)) {
+    score += 8;
+  }
+  const library = (model.library_name || stringValue(model.cardData?.library_name)).toLowerCase();
+  if (library && stringList(match.library_names).includes(library)) {
+    score += 5;
+  }
+  const corpus = modelCorpus(model);
+  for (const pattern of stringList(match.id_patterns)) {
+    if (matchesToken(corpus, pattern)) {
+      score += 6;
+    }
+  }
+  return score;
+}
+
+function serializeOutcome(outcome: OutcomeRecord) {
+  return {
+    id: outcome.id,
+    label: outcome.label,
+    status: outcome.status,
+    statusLabel: outcomeStatusLabel(outcome.status),
+    tone: outcomeTone(outcome.status),
+    summary: outcome.summary,
+    worked: outcome.worked,
+    didNotWork: outcome.didNotWork,
+    claimBoundary: outcome.claimBoundary,
+    sourceIds: outcome.sourceIds,
+    nextValidation: outcome.nextValidation
+  };
+}
+
+function outcomeStatusRank(status: string): number {
+  const order = ["local_reproduced", "source_backed_working", "source_reported_benchmark", "known_limit_or_gap", "unknown"];
+  const index = order.indexOf(status);
+  return index === -1 ? order.length : index;
+}
+
+function outcomeStatusLabel(status: string): string {
+  const labels: Record<string, string> = {
+    local_reproduced: "Local proof",
+    source_backed_working: "Known route",
+    source_reported_benchmark: "Reported result",
+    known_limit_or_gap: "Known gap",
+    unknown: "Unknown"
+  };
+  return labels[status] || humanizeId(status);
+}
+
+function outcomeTone(status: string): string {
+  if (status === "local_reproduced" || status === "source_backed_working") return "source";
+  if (status === "source_reported_benchmark") return "benchmark";
+  if (status === "known_limit_or_gap") return "boundary";
+  return "";
+}
+
+function topCoverageForModel(model: HuggingFaceModel) {
+  const topModel = topModelFor(model);
+  return {
+    snapshotGeneratedAt: ADVISOR_DATA.topModelsSnapshot.generatedAt,
+    modelCount: ADVISOR_DATA.topModelsSnapshot.modelCount,
+    coveredCount: ADVISOR_DATA.topModelsSnapshot.coveredCount,
+    unknownCount: ADVISOR_DATA.topModelsSnapshot.unknownCount,
+    rank: topModel?.rank ?? 0,
+    coverageState: topModel?.coverageState ?? "not-in-top-snapshot",
+    licenseClass: topModel?.licenseClass ?? "",
+    matchedOutcomeIds: topModel?.matchedOutcomeIds ?? []
+  };
+}
+
+function topModelFor(model: HuggingFaceModel) {
+  const id = modelId(model).toLowerCase();
+  return ADVISOR_DATA.topModelsSnapshot.models.find((item) => item.id.toLowerCase() === id);
+}
+
+function stringList(value: unknown): string[] {
+  return Array.isArray(value) ? value.map((item) => String(item).toLowerCase()) : [];
+}
+
 function noteScore(note: { id: string; summary: string; evidence: readonly string[] }, terms: Set<string>): number {
   const text = `${note.id} ${note.summary} ${note.evidence.join(" ")}`.toLowerCase().replace(/_/g, "-");
   let score = 0;
@@ -851,6 +960,10 @@ function noteScore(note: { id: string; summary: string; evidence: readonly strin
     }
   }
   return score;
+}
+
+function humanizeId(value: string) {
+  return String(value || "").replace(/[-_]/g, " ").replace(/\b\w/g, (char) => char.toUpperCase());
 }
 
 function buildInstructions(model: HuggingFaceModel, family: Family) {
@@ -897,6 +1010,7 @@ async function generateOpenAiSummary(env: Env, model: HuggingFaceModel, advisor:
       model: sanitizeModelSummary(model),
       family: advisor.family.id,
       confidence: advisor.confidence,
+      outcomes: advisor.modelOutcomes.slice(0, 4).map((outcome) => ({ id: outcome.id, status: outcome.status, label: outcome.label })),
       validated: advisor.buckets.filter((bucket) => bucket.id !== "experimental-approach" && bucket.id !== "rejected-do-not-use").map((bucket) => ({ bucket: bucket.label, methods: bucket.items.slice(0, 4).map((item) => item.id) })),
       experimental: advisor.buckets.find((bucket) => bucket.id === "experimental-approach")?.items.slice(0, 5).map((item) => item.id) ?? [],
       runbook: advisor.family.runbook
@@ -1441,6 +1555,44 @@ function renderAppHtml() {
       display: grid;
       gap: 8px;
     }
+    .outcome-panel {
+      display: grid;
+      gap: 12px;
+    }
+    .outcome-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: flex-start;
+      border-top: 1px solid var(--line);
+      padding-top: 14px;
+    }
+    .outcome-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .outcome-card {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fffdf8;
+      padding: 12px;
+      display: grid;
+      gap: 10px;
+      min-width: 0;
+    }
+    .outcome-card h3 {
+      font-size: 17px;
+      line-height: 1.2;
+    }
+    .outcome-card p {
+      margin: 0;
+    }
+    .outcome-facts {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
     .ai-brief {
       border: 1px solid var(--line);
       border-radius: 8px;
@@ -1621,6 +1773,7 @@ function renderAppHtml() {
         border-bottom: 0;
       }
       .boundary-grid, .method-kpis, .metric-grid, .decision-summary { grid-template-columns: 1fr; }
+      .outcome-grid, .outcome-facts { grid-template-columns: 1fr; }
       .method-title { grid-template-columns: 1fr; }
       .selected-model-row {
         align-items: flex-start;
@@ -1853,6 +2006,7 @@ function renderAppHtml() {
       return '<section class="report-layout">' +
         '<div class="report-main">' +
           renderReportHeader(model, advisor, ai) +
+          renderOutcomePanel(advisor.modelOutcomes || [], advisor.topCoverage || {}) +
           renderDecisionBoard(model, advisor) +
           renderBranches(advisor) +
         '</div>' +
@@ -1897,7 +2051,7 @@ function renderAppHtml() {
       return '<div class="decision-summary">' +
         kpi("Route", advisor.family.targets[0] || "standalone-mlx") +
         kpi("First check", gate || "parity + benchmark") +
-        kpi("Claim gate", "benchmark first") +
+        kpi("Speed claim", "measure first") +
         '<div class="kpi"><span>CLI</span><button class="secondary" type="button" data-copy="' + escapeAttr(firstCommand) + '">Copy command</button></div>' +
       '</div>';
     }
@@ -1939,6 +2093,35 @@ function renderAppHtml() {
     function renderInlineMarkdown(value) {
       return escapeHtml(value)
         .replace(/\\*\\*([^*]+)\\*\\*/g, "<strong>$1</strong>");
+    }
+
+    function renderOutcomePanel(outcomes, coverage) {
+      const items = Array.isArray(outcomes) ? outcomes : [];
+      if (!items.length) {
+        return "";
+      }
+      const snapshot = coverage && coverage.modelCount
+        ? '<span class="tag">' + escapeHtml(String(coverage.coveredCount) + "/" + String(coverage.modelCount) + " top snapshot covered") + '</span>'
+        : "";
+      const rank = coverage && coverage.rank ? '<span class="tag">HF rank #' + escapeHtml(String(coverage.rank)) + '</span>' : "";
+      return '<section class="outcome-panel">' +
+        '<div class="outcome-head"><div><h2>Known outcomes</h2><p class="muted">What worked elsewhere, what did not, and what still needs proof.</p></div><div class="suggestion-meta">' + rank + snapshot + '</div></div>' +
+        '<div class="outcome-grid">' + items.map(renderOutcomeCard).join("") + '</div>' +
+      '</section>';
+    }
+
+    function renderOutcomeCard(outcome) {
+      const worked = first(outcome.worked);
+      const limit = first(outcome.didNotWork);
+      return '<article class="outcome-card">' +
+        '<div class="method-title"><h3>' + escapeHtml(outcome.label) + '</h3><span class="impact-pill ' + escapeAttr(outcome.tone || "") + '">' + escapeHtml(outcome.statusLabel || humanize(outcome.status)) + '</span></div>' +
+        '<p class="muted">' + escapeHtml(outcome.summary) + '</p>' +
+        '<div class="outcome-facts">' +
+          kpi("Worked", worked || "source route") +
+          kpi("Limit", limit || outcome.claimBoundary || "measure claims") +
+        '</div>' +
+        '<p class="muted"><strong>Next:</strong> ' + escapeHtml(outcome.nextValidation || outcome.claimBoundary || "Run parity and benchmark gates.") + '</p>' +
+      '</article>';
     }
 
     function renderDecisionBoard(model, advisor) {
@@ -2023,7 +2206,7 @@ function renderAppHtml() {
       const labels = {
         "validated-locally": "Local",
         "validated-source-theory": "Source-backed",
-        "benchmark-required": "Benchmark",
+        "benchmark-required": "Measure",
         "experimental-approach": "Experimental",
         "rejected-do-not-use": "Rejected"
       };
@@ -2033,8 +2216,8 @@ function renderAppHtml() {
     function bucketBlurb(bucket) {
       const labels = {
         "validated-locally": "Already reproduced.",
-        "validated-source-theory": "Supported by source or docs.",
-        "benchmark-required": "Measure before claiming.",
+        "validated-source-theory": "Known route or source-backed method.",
+        "benchmark-required": "Numbers need your workload.",
         "experimental-approach": "Try only with opt-in.",
         "rejected-do-not-use": "Do not use."
       };
@@ -2085,7 +2268,8 @@ function renderAppHtml() {
       const route = advisor.family.targets[0] || "standalone-mlx";
       const family = advisor.family.label || humanize(advisor.family.id);
       const impact = stats.bestImpact;
-      const speed = isNumberedImpact(impact) ? "verify locally" : "benchmark first";
+      const knownRoute = (advisor.modelOutcomes || []).some((outcome) => outcome.status === "local_reproduced" || outcome.status === "source_backed_working");
+      const speed = knownRoute ? "known route" : isNumberedImpact(impact) ? "reported result" : "measure to claim";
       return route + " · " + family + " · " + speed;
     }
 
@@ -2117,7 +2301,7 @@ function renderAppHtml() {
     }
 
     function displayImpact(value) {
-      return value === "Profile-required" ? "Benchmark needed" : value;
+      return value === "Profile-required" ? "Measure to claim" : value;
     }
 
     function baseQueryFromText(value) {

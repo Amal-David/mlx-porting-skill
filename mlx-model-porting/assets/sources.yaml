@@ -6,7 +6,7 @@
     "screened": "Abstract/readme/code path reviewed for relevance and limits.",
     "indexed": "Catalogued for future review; do not represent as fully reviewed."
   },
-  "count": 348,
+  "count": 349,
   "sources": [
     {
       "id": "agent-skills-spec",
@@ -5044,6 +5044,22 @@
       "review_depth": "screened",
       "snapshot": "2026-06-27",
       "note": "Used for demand and artifact-shape sampling only; downloads and tags are not implementation evidence."
+    },
+    {
+      "id": "hf-top-models-api-2026-06-29",
+      "title": "Hugging Face top downloaded public models API snapshot",
+      "url": "https://huggingface.co/api/models?sort=downloads&direction=-1&limit=250&full=true",
+      "kind": "repository",
+      "owner": "Hugging Face",
+      "topics": [
+        "hugging-face",
+        "model-selection",
+        "downloads",
+        "coverage"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2026-06-29",
+      "note": "Used to choose a top-250 public model coverage target; mutable downloads, tags, and license fields are demand signals, not proof of implementation support."
     }
   ]
 }

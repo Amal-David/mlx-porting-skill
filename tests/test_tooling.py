@@ -159,9 +159,32 @@ class ToolingTests(unittest.TestCase):
         result = run_script("validate_sources.py", SKILL)
         report = json.loads(result.stdout)
         self.assertTrue(report["ok"], report)
-        self.assertEqual(report["sources"], 348)
+        self.assertEqual(report["sources"], 349)
         self.assertEqual(report["optimization_methods"], 27)
         self.assertTrue(report["recommendation_taxonomy"])
+
+    def test_model_outcome_registry_covers_top_snapshot_without_false_decoder_routes(self) -> None:
+        sources = {source["id"] for source in json.loads((SKILL / "assets" / "sources.yaml").read_text())["sources"]}
+        local_sources = {"asset-architectures", "asset-research-backlog"}
+        outcomes = json.loads((SKILL / "assets" / "model_outcomes.json").read_text())
+        snapshot = json.loads((SKILL / "assets" / "top_models_snapshot.json").read_text())
+
+        self.assertGreaterEqual(outcomes["coverage_target"]["minimum_models"], 250)
+        self.assertGreaterEqual(snapshot["model_count"], 250)
+        self.assertGreaterEqual(snapshot["covered_count"], 200)
+
+        for record in outcomes["records"]:
+            with self.subTest(record=record["id"]):
+                self.assertTrue(record["worked"])
+                self.assertTrue(record["did_not_work"])
+                self.assertTrue(record["claim_boundary"])
+                self.assertTrue(record["next_validation"])
+                self.assertTrue(set(record["source_ids"]).issubset(sources | local_sources))
+
+        by_id = {model["id"]: model for model in snapshot["models"]}
+        self.assertIn("decoder-mlx-lm-working-route", by_id["Qwen/Qwen3-0.6B"]["matched_outcome_ids"])
+        self.assertNotIn("decoder-mlx-lm-working-route", by_id["google-bert/bert-base-uncased"]["matched_outcome_ids"])
+        self.assertIn("encoder-embedding-top-model-gap", by_id["google-bert/bert-base-uncased"]["matched_outcome_ids"])
 
     def test_static_inspection_routes_dense_decoder(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

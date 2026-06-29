@@ -69,13 +69,15 @@ function advisorBucketForBacklog(status) {
 }
 
 async function buildData() {
-  const [guidance, taxonomy, architectures, sources, contributorLearnings, researchBacklog] = await Promise.all([
+  const [guidance, taxonomy, architectures, sources, contributorLearnings, researchBacklog, modelOutcomes, topModelsSnapshot] = await Promise.all([
     readJson("assets/optimization_guidance.yaml"),
     readJson("assets/recommendation-taxonomy.yaml"),
     readJson("assets/architectures.yaml"),
     readJson("assets/sources.yaml"),
     readJson("assets/contributor_learnings.json"),
-    readJson("assets/research_backlog.json")
+    readJson("assets/research_backlog.json"),
+    readJson("assets/model_outcomes.json"),
+    readJson("assets/top_models_snapshot.json")
   ]);
 
   const sourceById = new Map((sources.sources ?? []).map((source) => [source.id, sourceSummary(source)]));
@@ -121,6 +123,26 @@ async function buildData() {
       reviewDepth: "synthesized",
       snapshot: architectures.reviewed ?? "",
       note: "Machine-readable family aliases, runbooks, and route targets."
+    },
+    {
+      id: "asset-model-outcomes",
+      title: "Model outcome evidence registry",
+      url: "mlx-model-porting/assets/model_outcomes.json",
+      kind: "local-file",
+      owner: "mlx-porting-skill",
+      reviewDepth: "synthesized",
+      snapshot: modelOutcomes.reviewed ?? "",
+      note: "Source-backed records of what worked, what did not, and which claims remain benchmark-bound."
+    },
+    {
+      id: "asset-top-models-snapshot",
+      title: "Top Hugging Face model coverage snapshot",
+      url: "mlx-model-porting/assets/top_models_snapshot.json",
+      kind: "local-file",
+      owner: "mlx-porting-skill",
+      reviewDepth: "screened",
+      snapshot: topModelsSnapshot.generated_at ?? "",
+      note: "Generated top-model demand snapshot annotated with reviewed outcome ids."
     }
   ];
 
@@ -216,6 +238,47 @@ async function buildData() {
     methodSourceIds.add("asset-architectures");
   }
 
+  const outcomeRecords = (modelOutcomes.records ?? []).map((record) => {
+    const id = required(record.id, "outcome.id");
+    required(record.status, `outcome.${id}.status`);
+    required(record.summary, `outcome.${id}.summary`);
+    required(record.source_ids, `outcome.${id}.source_ids`);
+    for (const sourceId of record.source_ids ?? []) {
+      if (!sourceById.has(sourceId)) {
+        throw new Error(`Unknown source '${sourceId}' referenced by outcome '${id}'`);
+      }
+      methodSourceIds.add(sourceId);
+    }
+    methodSourceIds.add("asset-model-outcomes");
+    return {
+      id,
+      label: record.label ?? id,
+      status: record.status,
+      summary: record.summary,
+      worked: record.worked ?? [],
+      didNotWork: record.did_not_work ?? [],
+      claimBoundary: record.claim_boundary ?? "",
+      match: record.match ?? {},
+      sourceIds: record.source_ids ?? [],
+      nextValidation: record.next_validation ?? ""
+    };
+  });
+  methodSourceIds.add("asset-top-models-snapshot");
+  methodSourceIds.add("hf-top-models-api-2026-06-29");
+
+  const topModels = (topModelsSnapshot.models ?? []).map((model) => ({
+    rank: model.rank ?? 0,
+    id: model.id ?? "",
+    downloads: model.downloads ?? 0,
+    pipelineTag: model.pipeline_tag ?? "",
+    libraryName: model.library_name ?? "",
+    license: model.license ?? "",
+    licenseClass: model.license_class ?? "",
+    gated: Boolean(model.gated),
+    matchedOutcomeIds: model.matched_outcome_ids ?? [],
+    coverageState: model.coverage_state ?? "unknown"
+  }));
+
   const data = {
     schemaVersion: 1,
     generatedFrom: {
@@ -224,7 +287,9 @@ async function buildData() {
       architecturesReviewed: architectures.reviewed ?? "",
       sourcesReviewed: sources.reviewed ?? "",
       contributorLearningsReviewed: contributorLearnings.reviewed ?? "",
-      researchBacklogReviewed: researchBacklog.reviewed ?? ""
+      researchBacklogReviewed: researchBacklog.reviewed ?? "",
+      modelOutcomesReviewed: modelOutcomes.reviewed ?? "",
+      topModelsSnapshotGeneratedAt: topModelsSnapshot.generated_at ?? ""
     },
     taxonomy: {
       advisorBuckets: taxonomy.advisor_buckets ?? [],
@@ -235,6 +300,20 @@ async function buildData() {
     methods,
     learnings,
     backlogItems,
+    modelOutcomes: {
+      statusDefinitions: modelOutcomes.status_definitions ?? {},
+      claimPolicy: modelOutcomes.claim_policy ?? [],
+      coverageTarget: modelOutcomes.coverage_target ?? {},
+      records: outcomeRecords
+    },
+    topModelsSnapshot: {
+      source: topModelsSnapshot.source ?? "",
+      generatedAt: topModelsSnapshot.generated_at ?? "",
+      modelCount: topModelsSnapshot.model_count ?? topModels.length,
+      coveredCount: topModelsSnapshot.covered_count ?? 0,
+      unknownCount: topModelsSnapshot.unknown_count ?? 0,
+      models: topModels
+    },
     sources: [...methodSourceIds].sort().map((sourceId) => sourceById.get(sourceId))
   };
 

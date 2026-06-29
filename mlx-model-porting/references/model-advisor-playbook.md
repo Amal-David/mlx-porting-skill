@@ -23,6 +23,9 @@ For a specific model, answer as an engineering advisor:
   memory budget, latency/throughput/quality objective, and user constraints;
 - identify the detected architecture family and primary runbook;
 - give the validated conversion route first;
+- check whether the model or family has a recorded outcome in
+  `assets/model_outcomes.json`, and separate “known working route” from
+  “numeric speedup proved locally”;
 - show benchmark-required optimizations separately from already validated
   source/theory guidance;
 - preserve every relevant research lead as either validated, experimental,
@@ -52,10 +55,15 @@ and what not to use.
 4. **Sweep research assets.** Read the evidence sources listed in the next
    section before finalizing advice. Do not skip a relevant lead just because
    it is not ready for supported guidance.
-5. **Build the validated path.** Give the source-oracle, minimal eager MLX,
+5. **Check observed outcomes.** Match the model id, task, library, family, and
+   top-model snapshot entry against `assets/model_outcomes.json`. Report:
+   what worked elsewhere, what did not work or remains blocked, the claim
+   boundary, and the next validation gate. Do not turn a source-backed working
+   route into a speed claim.
+6. **Build the validated path.** Give the source-oracle, minimal eager MLX,
    weight-map, parity, quality, profile, and packaging steps before any
    optimization.
-6. **Classify all branches.** Use the advisor buckets:
+7. **Classify all branches.** Use the advisor buckets:
    - `validated-locally`: local test, benchmark, fixture, or skill gate exists;
    - `validated-source-theory`: official docs, primary paper, or pinned source
      backs the path, but local confirmation is still needed;
@@ -64,15 +72,16 @@ and what not to use.
    - `experimental-approach`: promising but not promotion-ready;
    - `rejected-do-not-use`: incompatible, unsafe, contradicted, license-blocked,
      CUDA-only, or superseded.
-7. **Run a short plan session for experiments.** For each experimental branch,
+8. **Run a short plan session for experiments.** For each experimental branch,
    say why it is promising, why it is experimental, the required validation
    gate, and the rollback condition. Ask the opt-in question exactly enough to
    require explicit consent. If the user does not say to try it, keep it in the
    report/backlog and proceed only with validated or benchmark-required steps.
-8. **Try only the selected branch.** When the user opts in, execute it after
+9. **Try only the selected branch.** When the user opts in, execute it after
    eager parity. Change one dimension at a time, record correctness, quality,
    benchmark, memory, and rollback evidence.
-9. **Return the user-facing card.** Include supported path, experimental
+10. **Return the user-facing card.** Include supported path, known outcomes,
+   experimental
    options, rejected paths, evidence basis, commands, and a copyable agent
    instruction.
 
@@ -90,6 +99,11 @@ Always check these assets when producing model-specific advice:
 - `assets/research_backlog.json`: comprehensive-coverage backlog. Map
   `validated` to validated guidance and `needs-validation` to experimental or
   validation-backlog guidance.
+- `assets/model_outcomes.json`: source-backed outcome records that say what
+  worked, what did not, claim boundaries, source ids, and next validation.
+- `assets/top_models_snapshot.json`: current top Hugging Face model coverage
+  snapshot. Use it to understand demand and coverage gaps, not as proof that a
+  model is permissively licensed or supported.
 - `references/deep-research-loop.md`: promotion-review rules and research
   receipt semantics.
 - The selected runbook and relevant optimization references such as
