@@ -68,6 +68,17 @@ function advisorBucketForBacklog(status) {
   return "experimental-approach";
 }
 
+function speedupSlot(value) {
+  const slot = value && typeof value === "object" ? value : {};
+  return {
+    range: slot.range ?? "",
+    confidence: slot.confidence ?? "",
+    basis: slot.basis ?? "",
+    appliesWhen: Array.isArray(slot.applies_when) ? slot.applies_when : [],
+    measure: Array.isArray(slot.measure) ? slot.measure : []
+  };
+}
+
 async function buildData() {
   const [guidance, taxonomy, architectures, sources, contributorLearnings, researchBacklog, modelOutcomes, topModelsSnapshot] = await Promise.all([
     readJson("assets/optimization_guidance.yaml"),
@@ -242,6 +253,7 @@ async function buildData() {
     const id = required(record.id, "outcome.id");
     required(record.status, `outcome.${id}.status`);
     required(record.summary, `outcome.${id}.summary`);
+    required(record.potential_speedup, `outcome.${id}.potential_speedup`);
     required(record.source_ids, `outcome.${id}.source_ids`);
     for (const sourceId of record.source_ids ?? []) {
       if (!sourceById.has(sourceId)) {
@@ -258,6 +270,10 @@ async function buildData() {
       worked: record.worked ?? [],
       didNotWork: record.did_not_work ?? [],
       claimBoundary: record.claim_boundary ?? "",
+      potentialSpeedup: {
+        overall: speedupSlot(record.potential_speedup?.overall),
+        speculativeDecoding: speedupSlot(record.potential_speedup?.speculative_decoding)
+      },
       match: record.match ?? {},
       sourceIds: record.source_ids ?? [],
       nextValidation: record.next_validation ?? ""

@@ -178,8 +178,19 @@ class ToolingTests(unittest.TestCase):
                 self.assertTrue(record["worked"])
                 self.assertTrue(record["did_not_work"])
                 self.assertTrue(record["claim_boundary"])
+                self.assertIn("potential_speedup", record)
+                self.assertIn("overall", record["potential_speedup"])
+                self.assertIn("speculative_decoding", record["potential_speedup"])
+                self.assertRegex(record["potential_speedup"]["overall"]["range"], r"\d+(?:\.\d+)?x-\d+(?:\.\d+)?x")
+                self.assertRegex(record["potential_speedup"]["speculative_decoding"]["range"], r"\d+(?:\.\d+)?x-\d+(?:\.\d+)?x")
+                self.assertTrue(record["potential_speedup"]["overall"]["applies_when"])
+                self.assertTrue(record["potential_speedup"]["overall"]["measure"])
                 self.assertTrue(record["next_validation"])
                 self.assertTrue(set(record["source_ids"]).issubset(sources | local_sources))
+
+        decoder = next(record for record in outcomes["records"] if record["id"] == "decoder-mlx-lm-working-route")
+        self.assertEqual(decoder["potential_speedup"]["overall"]["range"], "1.0x-4.3x")
+        self.assertEqual(decoder["potential_speedup"]["speculative_decoding"]["range"], "1.0x-3.0x")
 
         by_id = {model["id"]: model for model in snapshot["models"]}
         self.assertIn("decoder-mlx-lm-working-route", by_id["Qwen/Qwen3-0.6B"]["matched_outcome_ids"])

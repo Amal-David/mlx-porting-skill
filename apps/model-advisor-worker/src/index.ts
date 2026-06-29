@@ -92,6 +92,8 @@ const FAMILY_OVERRIDES: Array<{ tokens: string[]; family: string; reason: string
 ];
 
 const APPLIES_TO_FAMILY_ALIASES: Record<string, string[]> = {
+  "autoregressive-transformer": ["dense-decoder-transformer", "moe-decoder-transformer", "encoder-decoder-transformer"],
+  "decoder-transformer": ["dense-decoder-transformer", "moe-decoder-transformer"],
   "linear-heavy-models": [
     "dense-decoder-transformer",
     "moe-decoder-transformer",
@@ -603,6 +605,7 @@ function buildAdvisor(model: HuggingFaceModel) {
   }
   addSource(sources, "asset-top-models-snapshot");
   addSource(sources, "hf-top-models-api-2026-06-29");
+  const speedupSummary = summarizePotentialSpeedup(modelOutcomes);
 
   const citations = [...sources.values()].sort((a, b) => a.id.localeCompare(b.id));
   const buckets = ADVISOR_DATA.taxonomy.advisorBuckets
@@ -616,6 +619,7 @@ function buildAdvisor(model: HuggingFaceModel) {
     reasons: classification.reasons,
     buckets,
     modelOutcomes,
+    speedupSummary,
     topCoverage: topCoverageForModel(model),
     researchNotes,
     citations,
@@ -899,9 +903,49 @@ function serializeOutcome(outcome: OutcomeRecord) {
     worked: outcome.worked,
     didNotWork: outcome.didNotWork,
     claimBoundary: outcome.claimBoundary,
+    potentialSpeedup: outcome.potentialSpeedup,
     sourceIds: outcome.sourceIds,
     nextValidation: outcome.nextValidation
   };
+}
+
+function summarizePotentialSpeedup(outcomes: Array<ReturnType<typeof serializeOutcome>>) {
+  const preferred = outcomes.find((outcome) => {
+    const range = outcome.potentialSpeedup?.overall?.range ?? "";
+    return ["local_reproduced", "source_backed_working", "source_reported_benchmark"].includes(String(outcome.status)) && !isFlatSpeedupRange(range);
+  }) ?? outcomes.find((outcome) => outcome.potentialSpeedup) ?? null;
+  const fallback = {
+    range: "1.0x-1.0x",
+    confidence: "unknown",
+    basis: "No matched outcome has a reviewed speedup range yet.",
+    appliesWhen: ["Add a reviewed outcome or run a local benchmark."],
+    measure: ["latency", "throughput", "quality"]
+  };
+  const overall = preferred?.potentialSpeedup?.overall ?? fallback;
+  const speculative = preferred?.potentialSpeedup?.speculativeDecoding ?? fallback;
+  return {
+    outcomeId: preferred?.id ?? "",
+    overallRange: rangeOrFallback(overall.range),
+    overallConfidence: overall.confidence || "unknown",
+    overallBasis: overall.basis || fallback.basis,
+    speculativeRange: rangeOrFallback(speculative.range),
+    speculativeConfidence: speculative.confidence || "unknown",
+    speculativeBasis: speculative.basis || fallback.basis,
+    conditions: uniqueStrings([...(overall.appliesWhen ?? []), ...(speculative.appliesWhen ?? [])]).slice(0, 4),
+    measures: uniqueStrings([...(overall.measure ?? []), ...(speculative.measure ?? [])]).slice(0, 5)
+  };
+}
+
+function rangeOrFallback(value: string): string {
+  return value && value.trim() ? value : "1.0x-1.0x";
+}
+
+function isFlatSpeedupRange(value: string): boolean {
+  return /^1(?:\.0)?x\s*-\s*1(?:\.0)?x/i.test(value || "");
+}
+
+function uniqueStrings(values: readonly string[]): string[] {
+  return [...new Set(values.filter(Boolean).map(String))];
 }
 
 function outcomeStatusRank(status: string): number {
@@ -1002,7 +1046,8 @@ async function generateOpenAiSummary(env: Env, model: HuggingFaceModel, advisor:
     model: openAiModel,
     instructions: [
       "You are summarizing an MLX model-porting advisor report.",
-      "Do not invent speedup numbers. Mention profile-required or benchmark-required when applicable.",
+      "Use only the provided potential speedup ranges. Do not invent speedup numbers.",
+      "Mention profile-required or benchmark-required when applicable.",
       "Keep experimental approaches explicitly labeled experimental.",
       "Return 4 short bullets for an engineer. Do not use Markdown bold. Keep each bullet under 14 words."
     ].join(" "),
@@ -1010,7 +1055,8 @@ async function generateOpenAiSummary(env: Env, model: HuggingFaceModel, advisor:
       model: sanitizeModelSummary(model),
       family: advisor.family.id,
       confidence: advisor.confidence,
-      outcomes: advisor.modelOutcomes.slice(0, 4).map((outcome) => ({ id: outcome.id, status: outcome.status, label: outcome.label })),
+      speedup: advisor.speedupSummary,
+      outcomes: advisor.modelOutcomes.slice(0, 4).map((outcome) => ({ id: outcome.id, status: outcome.status, label: outcome.label, potentialSpeedup: outcome.potentialSpeedup })),
       validated: advisor.buckets.filter((bucket) => bucket.id !== "experimental-approach" && bucket.id !== "rejected-do-not-use").map((bucket) => ({ bucket: bucket.label, methods: bucket.items.slice(0, 4).map((item) => item.id) })),
       experimental: advisor.buckets.find((bucket) => bucket.id === "experimental-approach")?.items.slice(0, 5).map((item) => item.id) ?? [],
       runbook: advisor.family.runbook
@@ -1398,7 +1444,7 @@ function renderAppHtml() {
     }
     .decision-summary {
       display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
       gap: 10px;
       border: 1px solid var(--line);
       border-radius: 8px;
@@ -1592,6 +1638,9 @@ function renderAppHtml() {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 8px;
+    }
+    .outcome-speedups .kpi strong {
+      font-size: 19px;
     }
     .ai-brief {
       border: 1px solid var(--line);
@@ -2048,10 +2097,12 @@ function renderAppHtml() {
       const method = firstActionMethod(advisor);
       const gate = method ? first(method.validationGates) : first(advisor.defaults.keepGates);
       const firstCommand = advisor.instructions.inspect;
+      const speedup = advisor.speedupSummary || {};
       return '<div class="decision-summary">' +
         kpi("Route", advisor.family.targets[0] || "standalone-mlx") +
+        kpi("Potential", speedup.overallRange || "1.0x-1.0x") +
+        kpi("Spec decode", speedup.speculativeRange || "1.0x-1.0x") +
         kpi("First check", gate || "parity + benchmark") +
-        kpi("Speed claim", "measure first") +
         '<div class="kpi"><span>CLI</span><button class="secondary" type="button" data-copy="' + escapeAttr(firstCommand) + '">Copy command</button></div>' +
       '</div>';
     }
@@ -2105,27 +2156,37 @@ function renderAppHtml() {
         : "";
       const rank = coverage && coverage.rank ? '<span class="tag">HF rank #' + escapeHtml(String(coverage.rank)) + '</span>' : "";
       return '<section class="outcome-panel">' +
-        '<div class="outcome-head"><div><h2>Known outcomes</h2><p class="muted">What worked elsewhere, what did not, and what still needs proof.</p></div><div class="suggestion-meta">' + rank + snapshot + '</div></div>' +
+        '<div class="outcome-head"><div><h2>Known outcomes</h2><p class="muted">Potential bands, proof boundaries, and gaps.</p></div><div class="suggestion-meta">' + rank + snapshot + '</div></div>' +
         '<div class="outcome-grid">' + items.map(renderOutcomeCard).join("") + '</div>' +
       '</section>';
     }
 
     function renderOutcomeCard(outcome) {
-      const worked = first(outcome.worked);
-      const limit = first(outcome.didNotWork);
+      const speedup = outcome.potentialSpeedup || {};
+      const overall = speedup.overall || {};
+      const speculative = speedup.speculativeDecoding || {};
+      const needs = first(overall.appliesWhen) || first(speculative.appliesWhen) || outcome.claimBoundary || "run the validation gate";
+      const basis = overall.basis || speculative.basis || outcome.claimBoundary || "No reviewed speedup basis.";
       return '<article class="outcome-card">' +
         '<div class="method-title"><h3>' + escapeHtml(outcome.label) + '</h3><span class="impact-pill ' + escapeAttr(outcome.tone || "") + '">' + escapeHtml(outcome.statusLabel || humanize(outcome.status)) + '</span></div>' +
-        '<p class="muted">' + escapeHtml(outcome.summary) + '</p>' +
-        '<div class="outcome-facts">' +
-          kpi("Worked", worked || "source route") +
-          kpi("Limit", limit || outcome.claimBoundary || "measure claims") +
+        '<div class="outcome-facts outcome-speedups">' +
+          kpi("Potential", overall.range || "1.0x-1.0x") +
+          kpi("Speculative", speculative.range || "1.0x-1.0x") +
         '</div>' +
+        '<p class="muted">' + escapeHtml(outcome.summary) + '</p>' +
+        '<p class="muted"><strong>Needs:</strong> ' + escapeHtml(needs) + '</p>' +
+        '<p class="muted"><strong>Basis:</strong> ' + escapeHtml(basis) + '</p>' +
         '<p class="muted"><strong>Next:</strong> ' + escapeHtml(outcome.nextValidation || outcome.claimBoundary || "Run parity and benchmark gates.") + '</p>' +
+        '<details class="method-more"><summary>Worked and limits</summary><div class="method-body">' +
+          list("Worked", outcome.worked) +
+          list("Limit", outcome.didNotWork) +
+        '</div></details>' +
       '</article>';
     }
 
     function renderDecisionBoard(model, advisor) {
       const stats = reportStats(advisor);
+      const speedup = advisor.speedupSummary || {};
       return '<section class="decision-board">' +
         '<article class="visual">' +
           '<div><h2>Route</h2><p class="muted">Family -> parity -> benchmark.</p></div>' +
@@ -2149,9 +2210,9 @@ function renderAppHtml() {
         '<article class="visual">' +
           '<div><h2>Claims</h2><p class="muted">Only measured numbers count.</p></div>' +
           '<div class="boundary-grid">' +
-            boundary("Impact", stats.bestImpact, stats.bestImpactLabel) +
+            boundary("Potential", speedup.overallRange || stats.bestImpact, speedup.overallConfidence || stats.bestImpactLabel) +
+            boundary("Speculative", speedup.speculativeRange || "1.0x-1.0x", speedup.speculativeConfidence || "potential") +
             boundary("Profiles", String(stats.profileRequired), "local timing") +
-            boundary("Opt-in", String(stats.experimental), "experimental") +
           '</div>' +
         '</article>' +
         '<article class="visual">' +
@@ -2269,7 +2330,8 @@ function renderAppHtml() {
       const family = advisor.family.label || humanize(advisor.family.id);
       const impact = stats.bestImpact;
       const knownRoute = (advisor.modelOutcomes || []).some((outcome) => outcome.status === "local_reproduced" || outcome.status === "source_backed_working");
-      const speed = knownRoute ? "known route" : isNumberedImpact(impact) ? "reported result" : "measure to claim";
+      const potentialRange = advisor.speedupSummary && advisor.speedupSummary.overallRange;
+      const speed = potentialRange && !isFlatSpeedupRange(potentialRange) ? "potential " + potentialRange : knownRoute ? "known route" : isNumberedImpact(impact) ? "reported result" : "measure to claim";
       return route + " · " + family + " · " + speed;
     }
 
@@ -2376,6 +2438,9 @@ function renderAppHtml() {
     }
     function isNumberedImpact(value) {
       return /^\\d|^up to|^about/i.test(value || "");
+    }
+    function isFlatSpeedupRange(value) {
+      return /^1(?:\\.0)?x\\s*-\\s*1(?:\\.0)?x/i.test(value || "");
     }
     function formatNumber(value) {
       return new Intl.NumberFormat().format(value || 0);

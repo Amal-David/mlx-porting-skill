@@ -59,7 +59,9 @@ When the user wants model-specific directions, CLI-style advice, or a UI-style
 produce validated, benchmark-required, experimental, and rejected branches from
 the current research assets before execution. Check `assets/model_outcomes.json`
 for known working routes, known gaps, and source-reported outcomes before
-turning the answer into optimization advice.
+turning the answer into optimization advice. Report the matched overall
+potential speedup range and speculative-decoding potential range as planning
+bands with their required gates; do not present them as measured speedups.
 
 ### 2. Select the closest proven MLX reference
 

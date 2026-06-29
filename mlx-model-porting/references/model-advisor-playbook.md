@@ -26,6 +26,9 @@ For a specific model, answer as an engineering advisor:
 - check whether the model or family has a recorded outcome in
   `assets/model_outcomes.json`, and separate “known working route” from
   “numeric speedup proved locally”;
+- show the overall potential speedup range and speculative-decoding potential
+  range from the matched outcome record, including the conditions needed for
+  the high end of each range;
 - show benchmark-required optimizations separately from already validated
   source/theory guidance;
 - preserve every relevant research lead as either validated, experimental,
@@ -58,8 +61,9 @@ and what not to use.
 5. **Check observed outcomes.** Match the model id, task, library, family, and
    top-model snapshot entry against `assets/model_outcomes.json`. Report:
    what worked elsewhere, what did not work or remains blocked, the claim
-   boundary, and the next validation gate. Do not turn a source-backed working
-   route into a speed claim.
+   boundary, the potential speedup ranges, the conditions behind those ranges,
+   and the next validation gate. Do not turn a source-backed working route into
+   a measured speed claim.
 6. **Build the validated path.** Give the source-oracle, minimal eager MLX,
    weight-map, parity, quality, profile, and packaging steps before any
    optimization.
