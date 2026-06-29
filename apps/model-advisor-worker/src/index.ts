@@ -778,15 +778,15 @@ function summarizeImpact(method: Method) {
 
 function summarizeCertainty(method: Method) {
   if (method.status === "native-mlx" || method.status === "official-mlx-project") {
-    return "supported path; still validate locally";
+    return "supported";
   }
   if (method.status === "proven-mlx-port") {
-    return "proven port pattern; benchmark required";
+    return "proven pattern";
   }
   if (method.status === "research-candidate") {
-    return "experimental; explicit opt-in required";
+    return "opt-in";
   }
-  return "do not use for MLX";
+  return "do not use";
 }
 
 function serializeBucket(bucket: Bucket, items: Array<ReturnType<typeof serializeMethod>>) {
@@ -860,7 +860,7 @@ function buildInstructions(model: HuggingFaceModel, family: Family) {
     inspect: `python3 mlx-model-porting/scripts/inspect_model.py ${id} --output inspection.json`,
     plan: `python3 mlx-model-porting/scripts/make_port_plan.py inspection.json --family ${family.id} --output port-plan.json`,
     optimize: `python3 mlx-model-porting/scripts/recommend_optimizations.py inspection.json --family ${family.id} --markdown optimization-shortlist.md`,
-    validate: "Run parity first, then benchmark with workload metadata. Keep rollback conditions attached to every optimization.",
+    validate: "Parity first. Benchmark with workload metadata. Keep rollback notes.",
     experimentalPrompt: "This is an experimental approach. Do you want to try it?"
   };
 }
@@ -1609,24 +1609,24 @@ function renderAppHtml() {
     <header class="hero">
       <div class="hero-copy">
         <p class="eyebrow">MLX Model Advisor</p>
-        <h1>Ask for a base model. Get the porting path.</h1>
-        <p class="muted">Pick the original Hugging Face model; ports and quantized variants stay hidden unless you show them.</p>
+        <h1>Pick a base model.</h1>
+        <p class="muted">Ports and quantized variants stay hidden by default.</p>
       </div>
       <section class="composer" aria-label="Model Advisor Prompt">
         <form id="search-form" class="prompt-row">
           <label class="sr-only" for="model-search">Model Prompt</label>
           <input id="model-search" name="model" type="search" autocomplete="off" spellcheck="false" placeholder='Try "Llama 3.1 8B", "Whisper large-v3", "Qwen3 14B"...'>
-          <button class="primary" type="submit">Analyze Model</button>
+          <button class="primary" type="submit">Analyze</button>
         </form>
         <div class="composer-meta">
-          <div id="search-status" aria-live="polite">Loading popular base models…</div>
-          <label class="toggle" for="include-ports"><input id="include-ports" type="checkbox">Show Ports and Variants</label>
+          <div id="search-status" aria-live="polite">Loading popular models...</div>
+          <label class="toggle" for="include-ports"><input id="include-ports" type="checkbox">Show variants</label>
         </div>
         <div id="results" class="autocomplete" role="listbox" aria-label="Model Suggestions"></div>
       </section>
     </header>
     <main id="report" class="report-shell" tabindex="-1">
-      <section id="workspace" class="empty-state">Choose a model above to open its MLX decision report.</section>
+      <section id="workspace" class="empty-state">Choose a model to open its MLX plan.</section>
     </main>
   </div>
   <script>
@@ -1682,13 +1682,13 @@ function renderAppHtml() {
       const seq = ++state.searchSeq;
       const normalized = query.trim();
       if (normalized.length > 0 && normalized.length < 2) {
-        statusEl.textContent = "Type at least 2 characters.";
+        statusEl.textContent = "Type 2+ characters.";
         resultsEl.innerHTML = "";
         state.results = [];
         syncUrl(options);
         return;
       }
-      statusEl.textContent = normalized ? "Finding base candidates…" : "Loading popular base models…";
+      statusEl.textContent = normalized ? "Finding models..." : "Loading popular models...";
       try {
         const url = "/api/search?q=" + encodeURIComponent(normalized) + "&limit=12" + (state.includeDerivatives ? "&include_derivatives=1" : "");
         const data = await getJson(url);
@@ -1697,10 +1697,10 @@ function renderAppHtml() {
         }
         state.query = normalized;
         state.results = data.results || [];
-        const hidden = data.hiddenDerivatives ? " · " + data.hiddenDerivatives + " variants hidden" : "";
+        const hidden = data.hiddenDerivatives ? " · " + data.hiddenDerivatives + " hidden" : "";
         const label = state.includeDerivatives
-          ? (data.mode === "popular" ? "Popular models and ports" : "Matching models and ports")
-          : (data.mode === "popular" ? "Popular base candidates" : "Base candidates");
+          ? (data.mode === "popular" ? "Popular models" : "Matches")
+          : (data.mode === "popular" ? "Popular bases" : "Base matches");
         statusEl.textContent = label + " · " + state.results.length + " shown" + hidden;
         resultsEl.classList.remove("compact");
         resultsEl.innerHTML = state.results.map(renderResult).join("");
@@ -1720,7 +1720,7 @@ function renderAppHtml() {
       state.selected = id;
       syncUrl(options);
       workspaceEl.className = "empty-state";
-      workspaceEl.textContent = "Loading " + id + "…";
+      workspaceEl.textContent = "Loading " + id + "...";
       setSelectedModelRow(id);
       resultsEl.querySelectorAll(".suggestion").forEach((button) => {
         button.classList.toggle("active", button.getAttribute("data-model-id") === id);
@@ -1787,7 +1787,7 @@ function renderAppHtml() {
       const kind = model.repositoryKind === "derivative" ? "derivative" : "base";
       const metadata = compact([model.pipelineTag || model.libraryName || "model", model.family, formatDate(model.lastModified)]).join(" · ");
       const tags = [
-        '<span class="status ' + kind + '">' + (kind === "base" ? "Base Candidate" : "Port / Variant") + '</span>',
+        '<span class="status ' + kind + '">' + (kind === "base" ? "Base" : "Variant") + '</span>',
         '<span class="tag">' + formatNumber(model.downloads) + ' downloads</span>',
         '<span class="tag">' + escapeHtml(model.route || "standalone-mlx") + '</span>'
       ].join("");
@@ -1803,7 +1803,7 @@ function renderAppHtml() {
       resultsEl.classList.add("compact");
       resultsEl.innerHTML = '<div class="selected-model-row">' +
         '<span><strong>' + escapeHtml(id) + '</strong><span class="muted">' + escapeHtml(metadata) + '</span></span>' +
-        '<button class="secondary" type="button" data-change-model>Change Model</button>' +
+        '<button class="secondary" type="button" data-change-model>Change</button>' +
       '</div>';
       const changeButton = resultsEl.querySelector("[data-change-model]");
       if (changeButton) {
@@ -1814,7 +1814,7 @@ function renderAppHtml() {
           searchInput.focus();
         });
       }
-      statusEl.textContent = "Selected " + id + ". Change model to compare another base candidate.";
+      statusEl.textContent = "Selected " + id + ".";
     }
 
     function renderAdvice(data) {
@@ -1843,15 +1843,15 @@ function renderAppHtml() {
       const tags = compact([
         model.pipelineTag,
         model.libraryName,
-        model.repositoryKind === "derivative" ? "Port / Variant" : "Base Candidate",
+        model.repositoryKind === "derivative" ? "Variant" : "Base",
         baseModel ? "Base: " + baseModel : ""
       ]).map((tag) => '<span class="tag">' + escapeHtml(tag) + '</span>').join("");
       const aiBlock = ai.status === "ok"
         ? '<p class="muted">' + escapeHtml(ai.text) + '</p>'
-        : '<button class="secondary" data-ai-summary>Generate AI Brief</button>' + (ai.status === "error" ? '<p class="muted">' + escapeHtml(ai.error || "AI brief failed.") + '</p>' : '');
+        : '<button class="secondary" data-ai-summary>Generate brief</button>' + (ai.status === "error" ? '<p class="muted">' + escapeHtml(ai.error || "Brief failed.") + '</p>' : '');
       return '<section class="report-header">' +
         renderDerivativeWarning(model) +
-        '<div class="headline"><div><h2>' + escapeHtml(answerLine(model, advisor)) + '</h2><p class="muted">' + escapeHtml(model.id + " · " + (advisor.family.label || advisor.family.id)) + '</p></div><span class="status ' + advisor.confidence + '">' + escapeHtml(advisor.confidence) + ' Confidence</span></div>' +
+        '<div class="headline"><div><h2>' + escapeHtml(answerLine(model, advisor)) + '</h2><p class="muted">' + escapeHtml(model.id + " · " + (advisor.family.label || advisor.family.id)) + '</p></div><span class="status ' + advisor.confidence + '">' + escapeHtml(humanize(advisor.confidence)) + '</span></div>' +
         '<div class="metric-grid">' +
           metric("Route", advisor.family.targets[0] || "standalone-mlx") +
           metric("Family", advisor.family.id) +
@@ -1860,7 +1860,6 @@ function renderAppHtml() {
         '</div>' +
         renderDecisionSummary(advisor) +
         '<div class="suggestion-meta">' + tags + '</div>' +
-        '<p class="muted">Signals: ' + advisor.reasons.map(escapeHtml).join("; ") + '</p>' +
         aiBlock +
       '</section>';
     }
@@ -1870,10 +1869,10 @@ function renderAppHtml() {
       const gate = method ? first(method.validationGates) : first(advisor.defaults.keepGates);
       const firstCommand = advisor.instructions.inspect;
       return '<div class="decision-summary">' +
-        kpi("Recommended Route", advisor.family.targets[0] || "standalone-mlx") +
-        kpi("First Validation", gate || "parity and benchmark gate") +
-        kpi("Do Not Claim", "speedup before local benchmark metadata") +
-        '<div class="kpi"><span>Next CLI Step</span><button class="secondary" type="button" data-copy="' + escapeAttr(firstCommand) + '">Copy First Command</button></div>' +
+        kpi("Route", advisor.family.targets[0] || "standalone-mlx") +
+        kpi("First check", gate || "parity + benchmark") +
+        kpi("Claim gate", "benchmark first") +
+        '<div class="kpi"><span>CLI</span><button class="secondary" type="button" data-copy="' + escapeAttr(firstCommand) + '">Copy command</button></div>' +
       '</div>';
     }
 
@@ -1881,34 +1880,34 @@ function renderAppHtml() {
       const stats = reportStats(advisor);
       return '<section class="decision-board">' +
         '<article class="visual">' +
-          '<div><h2>Porting Route</h2><p class="muted">Start from the model family, then prove parity before chasing speed.</p></div>' +
+          '<div><h2>Route</h2><p class="muted">Family -> parity -> benchmark.</p></div>' +
           '<div class="route-flow">' +
-            routeNode("Model", model.repositoryKind === "derivative" ? "Find base model" : "Base candidate") +
+            routeNode("Model", model.repositoryKind === "derivative" ? "Find base" : "Base") +
             '<span class="route-edge" aria-hidden="true"></span>' +
-            routeNode("MLX Route", advisor.family.targets[0] || "standalone-mlx") +
+            routeNode("MLX", advisor.family.targets[0] || "standalone-mlx") +
             '<span class="route-edge" aria-hidden="true"></span>' +
-            routeNode("Keep Gate", advisor.defaults.keepGates[0] || "parity + benchmark") +
+            routeNode("Gate", advisor.defaults.keepGates[0] || "parity + benchmark") +
           '</div>' +
         '</article>' +
         '<article class="visual">' +
-          '<div><h2>Evidence Mix</h2><p class="muted">Validated and experimental branches stay visually separate.</p></div>' +
+          '<div><h2>Evidence</h2><p class="muted">Ready vs experimental.</p></div>' +
           '<div class="bar-list">' +
             evidenceBar("Validated", stats.validated, stats.total, "") +
-            evidenceBar("Benchmark Required", stats.benchmark, stats.total, "benchmark") +
+            evidenceBar("Benchmark", stats.benchmark, stats.total, "benchmark") +
             evidenceBar("Experimental", stats.experimental, stats.total, "experimental") +
             evidenceBar("Rejected", stats.rejected, stats.total, "rejected") +
           '</div>' +
         '</article>' +
         '<article class="visual">' +
-          '<div><h2>Eval Boundaries</h2><p class="muted">Numbers only count when the source or a local run names the boundary.</p></div>' +
+          '<div><h2>Claims</h2><p class="muted">Only measured numbers count.</p></div>' +
           '<div class="boundary-grid">' +
             boundary("Impact", stats.bestImpact, stats.bestImpactLabel) +
-            boundary("Profile Gates", String(stats.profileRequired), "need local timing") +
-            boundary("Opt-In", String(stats.experimental), "experimental branch") +
+            boundary("Profiles", String(stats.profileRequired), "local timing") +
+            boundary("Opt-in", String(stats.experimental), "experimental") +
           '</div>' +
         '</article>' +
         '<article class="visual">' +
-          '<div><h2>Risk Matrix</h2><p class="muted">Every suggestion lands in a validation lane before it becomes work.</p></div>' +
+          '<div><h2>Risk</h2><p class="muted">Validate before work.</p></div>' +
           renderRiskMatrix(stats) +
         '</article>' +
       '</section>';
@@ -1916,7 +1915,7 @@ function renderAppHtml() {
 
     function renderBranches(advisor) {
       return '<section class="branch-list">' +
-        '<div><h2>Recommendation Branches</h2><p class="muted">Validated paths, benchmark-required work, and experiments remain separate.</p></div>' +
+        '<div><h2>Methods</h2><p class="muted">Grouped by readiness.</p></div>' +
         advisor.buckets.map(renderBucket).join("") +
       '</section>';
     }
@@ -1925,9 +1924,9 @@ function renderAppHtml() {
       const items = bucket.items || [];
       const prompt = bucket.requiresUserOptIn ? '<p class="muted"><strong>' + escapeHtml(bucket.prompt) + '</strong></p>' : "";
       return '<section class="branch">' +
-        '<div class="branch-head"><div><h3>' + escapeHtml(bucket.label) + '</h3><p class="muted">' + escapeHtml(bucket.description) + '</p></div><span class="status bucket-' + escapeAttr(bucket.id) + '">' + items.length + '</span></div>' +
+        '<div class="branch-head"><div><h3>' + escapeHtml(bucketTitle(bucket)) + '</h3><p class="muted">' + escapeHtml(bucketBlurb(bucket)) + '</p></div><span class="status bucket-' + escapeAttr(bucket.id) + '">' + items.length + '</span></div>' +
         prompt +
-        (items.length ? items.map(renderMethod).join("") : '<p class="muted">No matching methods for this model family at this evidence level.</p>') +
+        (items.length ? items.map(renderMethod).join("") : '<p class="muted">None for this family.</p>') +
       '</section>';
     }
 
@@ -1935,24 +1934,46 @@ function renderAppHtml() {
       const gate = first(method.validationGates);
       const rollback = first(method.rollbackConditions);
       const impactClass = isNumberedImpact(method.impact.value) ? "source" : method.impact.value.includes("No portable") ? "boundary" : "";
-      const optIn = method.advisorBucket === "experimental-approach" ? '<span class="status bucket-experimental-approach">Experimental Opt-In</span>' : "";
+      const optIn = method.advisorBucket === "experimental-approach" ? '<span class="status bucket-experimental-approach">Experimental</span>' : "";
       return '<article class="method-card">' +
         '<div class="method-title"><strong>' + escapeHtml(methodLabel(method.id)) + '</strong><span class="impact-pill ' + impactClass + '">' + escapeHtml(displayImpact(method.impact.value)) + '</span></div>' +
         '<div class="suggestion-meta">' + optIn + '<span class="tag">' + escapeHtml(method.category) + '</span><span class="tag">' + escapeHtml(method.status) + '</span></div>' +
         '<p class="muted">' + escapeHtml(method.recommendation) + '</p>' +
         '<div class="method-kpis">' +
-          kpi("When to Try", method.certainty) +
-          kpi("First Validation", gate || "define parity gate") +
-          kpi("Rollback Trigger", rollback || "write before trying") +
+          kpi("When", method.certainty) +
+          kpi("Check", gate || "define parity gate") +
+          kpi("Rollback", rollback || "write before trying") +
         '</div>' +
         '<p class="muted"><strong>' + escapeHtml(method.impact.label) + ':</strong> ' + escapeHtml(method.impact.caveat) + '</p>' +
-        '<div class="copy-row"><button class="secondary" data-copy="' + escapeAttr("Method: " + method.id + "\\nExpected impact: " + method.impact.value + "\\nFirst validation: " + (gate || "define parity gate") + "\\nRollback trigger: " + (rollback || "write before trying")) + '">Copy Method Brief</button></div>' +
-        '<details class="method-more"><summary>Show All Gates and Caveats</summary><div class="method-body">' +
-          list("Validation Gates", method.validationGates) +
+        '<div class="copy-row"><button class="secondary" data-copy="' + escapeAttr("Method: " + method.id + "\\nExpected impact: " + method.impact.value + "\\nFirst validation: " + (gate || "define parity gate") + "\\nRollback trigger: " + (rollback || "write before trying")) + '">Copy method</button></div>' +
+        '<details class="method-more"><summary>More</summary><div class="method-body">' +
+          list("Checks", method.validationGates) +
           list("Rollback", method.rollbackConditions) +
           list("Tradeoffs", method.tradeoffs) +
         '</div></details>' +
       '</article>';
+    }
+
+    function bucketTitle(bucket) {
+      const labels = {
+        "validated-locally": "Local",
+        "validated-source-theory": "Source-backed",
+        "benchmark-required": "Benchmark",
+        "experimental-approach": "Experimental",
+        "rejected-do-not-use": "Rejected"
+      };
+      return labels[bucket.id] || bucket.label;
+    }
+
+    function bucketBlurb(bucket) {
+      const labels = {
+        "validated-locally": "Already reproduced.",
+        "validated-source-theory": "Supported by source or docs.",
+        "benchmark-required": "Measure before claiming.",
+        "experimental-approach": "Try only with opt-in.",
+        "rejected-do-not-use": "Do not use."
+      };
+      return labels[bucket.id] || bucket.description;
     }
 
     function renderInstructionPanel(instructions) {
@@ -1965,21 +1986,21 @@ function renderAppHtml() {
         instructions.experimentalPrompt
       ].join("\\n");
       return '<section class="aside-panel section">' +
-        '<h2>Try It in CLI</h2>' +
+        '<h2>CLI</h2>' +
         '<pre>' + escapeHtml(text) + '</pre>' +
-        '<div class="copy-row"><button class="primary" data-copy="' + escapeAttr(text) + '">Copy Instructions</button></div>' +
+        '<div class="copy-row"><button class="primary" data-copy="' + escapeAttr(text) + '">Copy steps</button></div>' +
       '</section>';
     }
 
     function renderNotes(notes) {
       if (!notes || !notes.length) return "";
-      return '<details class="aside-panel section collapsible"><summary>Research Notes</summary><div class="note-list">' +
+      return '<details class="aside-panel section collapsible"><summary>Notes</summary><div class="note-list">' +
         notes.map((note) => '<article class="note"><strong>' + escapeHtml(note.id) + '</strong><p>' + escapeHtml(note.summary) + '</p><p class="muted">' + escapeHtml(note.validationGate || note.reasonHeld || "") + '</p></article>').join("") +
       '</div></details>';
     }
 
     function renderCitations(citations) {
-      return '<details class="aside-panel section collapsible"><summary>Citations</summary><div class="citations">' +
+      return '<details class="aside-panel section collapsible"><summary>Sources</summary><div class="citations">' +
         citations.map((source) => '<article class="citation"><strong>' + escapeHtml(source.title) + '</strong><br><a href="' + escapeAttr(source.url) + '" target="_blank" rel="noreferrer">' + escapeHtml(source.url) + '</a><br><span class="muted">' + escapeHtml(source.kind) + ' · ' + escapeHtml(source.reviewDepth || "reviewed") + '</span></article>').join("") +
       '</div></details>';
     }
@@ -1988,9 +2009,9 @@ function renderAppHtml() {
       if (model.repositoryKind !== "derivative") return "";
       const base = readableValue(model.cardData && model.cardData.base_model) || baseQueryFromText(model.id);
       return '<div class="derivative-warning">' +
-        '<strong>This appears to be an existing port, export, adapter, or quantized variant.</strong>' +
-        '<p class="muted">Plan the architecture and optimization path from the upstream base model first.</p>' +
-        (base ? '<button class="secondary" type="button" data-query="' + escapeAttr(base) + '">Find Base Model</button>' : '') +
+        '<strong>Variant detected.</strong>' +
+        '<p class="muted">Start from the base model.</p>' +
+        (base ? '<button class="secondary" type="button" data-query="' + escapeAttr(base) + '">Find base</button>' : '') +
       '</div>';
     }
 
@@ -1999,10 +2020,8 @@ function renderAppHtml() {
       const route = advisor.family.targets[0] || "standalone-mlx";
       const family = advisor.family.label || humanize(advisor.family.id);
       const impact = stats.bestImpact;
-      const speed = impact && impact !== "None" && impact !== "Needs Local Benchmark"
-        ? "Use source-reported impact only after a local benchmark."
-        : "No portable speedup is confirmed until a local benchmark passes.";
-      return "Start with " + route + " for this " + family + ". " + speed;
+      const speed = isNumberedImpact(impact) ? "verify locally" : "benchmark first";
+      return route + " · " + family + " · " + speed;
     }
 
     function firstActionMethod(advisor) {
@@ -2033,7 +2052,7 @@ function renderAppHtml() {
     }
 
     function displayImpact(value) {
-      return value === "Profile-required" ? "Needs Local Benchmark" : value;
+      return value === "Profile-required" ? "Benchmark needed" : value;
     }
 
     function baseQueryFromText(value) {
@@ -2079,13 +2098,13 @@ function renderAppHtml() {
       return '<div class="bar-row"><div class="bar-label"><span>' + escapeHtml(label) + '</span><strong>' + count + '</strong></div><div class="bar-track"><div class="bar-fill ' + tone + '" style="--w:' + width + '%"></div></div></div>';
     }
     function renderCategoryBars(categories, total) {
-      if (!categories.length) return '<p class="muted">No matching optimization categories.</p>';
+      if (!categories.length) return '<p class="muted">No methods.</p>';
       return categories.map(([label, count]) => evidenceBar(humanize(label), count, total, "")).join("");
     }
     function renderRiskMatrix(stats) {
       return '<div class="boundary-grid">' +
-        boundary("Low Risk", String(stats.validated), "source-backed") +
-        boundary("Needs Benchmark", String(stats.profileRequired), "measure locally") +
+        boundary("Low risk", String(stats.validated), "source-backed") +
+        boundary("Benchmark", String(stats.profileRequired), "measure") +
         boundary("Experimental", String(stats.experimental), "explicit opt-in") +
         boundary("Rejected", String(stats.rejected), "do not use") +
       '</div>';

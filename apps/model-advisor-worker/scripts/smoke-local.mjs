@@ -34,7 +34,7 @@ function assert(condition, message) {
 
 const html = await getText("/");
 assert(html.includes("MLX Model Advisor"), "app shell title missing");
-assert(html.includes("Ask for a base model"), "chat-first app shell missing");
+assert(html.includes("Pick a base model"), "chat-first app shell missing");
 
 const discover = await getJson("/api/search?limit=4");
 assert(Array.isArray(discover.results) && discover.results.length > 0, "default discovery returned no models");

@@ -2,7 +2,7 @@
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
   "version": "0.1.0",
-  "generated_at": "2026-06-28T18:28:45.043876+00:00",
+  "generated_at": "2026-06-29T09:02:49.241609+00:00",
   "file_count": 206,
   "files": [
     {
@@ -132,13 +132,13 @@
     },
     {
       "path": "apps/model-advisor-worker/scripts/smoke-local.mjs",
-      "size_bytes": 3520,
-      "sha256": "67ee54326129d10cd58342e96327030e066aabb89dc869c90221da6e0705ef58"
+      "size_bytes": 3517,
+      "sha256": "801f8c31d33444f55d1d3295079993843e9ae53a2a22304f09974d08c1572277"
     },
     {
       "path": "apps/model-advisor-worker/src/index.ts",
-      "size_bytes": 79418,
-      "sha256": "659388c9bc18bd244d7ea2b17c0d3562640972dc46452cb39bb5f03d0b65c83a"
+      "size_bytes": 78820,
+      "sha256": "117f3db2a2cda3faf680c1b17cb22a81c198f0e20e754a9b337eab96e6451ddd"
     },
     {
       "path": "apps/model-advisor-worker/src/skill-data.generated.ts",
@@ -622,8 +622,8 @@
     },
     {
       "path": "tasks/lessons.md",
-      "size_bytes": 286,
-      "sha256": "d427ba661d41d5871acd4a58b44b849a7d009de40d542729d7161df421d8234b"
+      "size_bytes": 515,
+      "sha256": "ac2b6d26cc08a600a89ba60d007a21fe9032f34d63064b70333c0029ebfc9335"
     },
     {
       "path": "tests/README.md",
