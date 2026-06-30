@@ -1,0 +1,296 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-06-30-nightly-knowledge-curator-research-loop",
+  "objective": "Nightly MLX knowledge curator: top contributors, papers, blogs, package releases, model outcomes, speedup ranges, and app/CLI skill deltas",
+  "generated_at": "2026-06-30T22:07:18+00:00",
+  "iteration": 1,
+  "iteration_count": 1,
+  "review_only": true,
+  "execution_mode": "offline-scaffold",
+  "executor_command": null,
+  "agent_count": 6,
+  "assignment_planner": {
+    "schema_version": 1,
+    "mode": "dynamic",
+    "requested_agent_count": 6,
+    "objective_terms": [
+      "app",
+      "blogs",
+      "cli",
+      "contributors",
+      "curator",
+      "deltas",
+      "knowledge",
+      "model",
+      "nightly",
+      "outcomes",
+      "package",
+      "papers",
+      "ranges",
+      "releases",
+      "skill",
+      "speedup",
+      "top"
+    ],
+    "gap_hints": [],
+    "gap_terms": [],
+    "selected_personas": [
+      {
+        "persona_id": "paper-architecture-scout",
+        "title": "Paper Architecture Scout",
+        "rank": 1,
+        "config_order": 2,
+        "score": 6,
+        "source_lanes": [
+          "papers",
+          "technical_blogs"
+        ],
+        "matched_objective_terms": [
+          "blogs",
+          "model",
+          "papers",
+          "skill"
+        ],
+        "matched_gap_terms": [],
+        "reasons": [
+          "Matched objective terms: blogs, model, papers, skill.",
+          "Covers source lanes: papers, technical_blogs."
+        ]
+      },
+      {
+        "persona_id": "coverage-skeptic",
+        "title": "Coverage Skeptic",
+        "rank": 2,
+        "config_order": 6,
+        "score": 5,
+        "source_lanes": [
+          "official_docs",
+          "papers",
+          "hugging_face",
+          "packages",
+          "technical_blogs",
+          "community_discussions",
+          "repositories",
+          "repo_local_audit"
+        ],
+        "matched_objective_terms": [
+          "blogs",
+          "cli",
+          "model",
+          "package",
+          "papers"
+        ],
+        "matched_gap_terms": [],
+        "reasons": [
+          "Matched objective terms: blogs, cli, model, package, papers.",
+          "Covers source lanes: official_docs, papers, hugging_face, packages, technical_blogs, community_discussions, repositories, repo_local_audit."
+        ]
+      },
+      {
+        "persona_id": "package-registry-scout",
+        "title": "Package Registry Scout",
+        "rank": 3,
+        "config_order": 4,
+        "score": 4,
+        "source_lanes": [
+          "packages",
+          "repositories"
+        ],
+        "matched_objective_terms": [
+          "cli",
+          "model",
+          "package"
+        ],
+        "matched_gap_terms": [],
+        "reasons": [
+          "Matched objective terms: cli, model, package.",
+          "Covers source lanes: packages, repositories."
+        ]
+      },
+      {
+        "persona_id": "official-docs-cartographer",
+        "title": "Official Docs Cartographer",
+        "rank": 4,
+        "config_order": 1,
+        "score": 3,
+        "source_lanes": [
+          "official_docs",
+          "packages"
+        ],
+        "matched_objective_terms": [
+          "cli",
+          "model",
+          "package"
+        ],
+        "matched_gap_terms": [],
+        "reasons": [
+          "Matched objective terms: cli, model, package.",
+          "Covers source lanes: official_docs, packages."
+        ]
+      },
+      {
+        "persona_id": "huggingface-ecosystem-sampler",
+        "title": "Hugging Face Ecosystem Sampler",
+        "rank": 5,
+        "config_order": 3,
+        "score": 2,
+        "source_lanes": [
+          "hugging_face"
+        ],
+        "matched_objective_terms": [
+          "model"
+        ],
+        "matched_gap_terms": [],
+        "reasons": [
+          "Matched objective terms: model.",
+          "Covers source lanes: hugging_face."
+        ]
+      },
+      {
+        "persona_id": "practitioner-blog-miner",
+        "title": "Practitioner Blog Miner",
+        "rank": 6,
+        "config_order": 5,
+        "score": 1,
+        "source_lanes": [
+          "technical_blogs",
+          "community_discussions"
+        ],
+        "matched_objective_terms": [
+          "blogs"
+        ],
+        "matched_gap_terms": [],
+        "reasons": [
+          "Matched objective terms: blogs.",
+          "Covers source lanes: technical_blogs, community_discussions."
+        ]
+      }
+    ],
+    "held_personas": [],
+    "selected_source_lane_counts": {
+      "community_discussions": 2,
+      "hugging_face": 2,
+      "official_docs": 2,
+      "packages": 3,
+      "papers": 2,
+      "repo_local_audit": 1,
+      "repositories": 2,
+      "technical_blogs": 3
+    },
+    "selection_policy": "dynamic score = matched objective terms + 3 * matched gap terms, with a small bonus for direct persona matches; ties keep config order"
+  },
+  "agents": [
+    {
+      "assignment_index": 0,
+      "persona_id": "paper-architecture-scout",
+      "title": "Paper Architecture Scout",
+      "source_lanes": [
+        "papers",
+        "technical_blogs"
+      ],
+      "assignment_path": "agents/paper-architecture-scout.assignment.json",
+      "prompt_path": "agents/paper-architecture-scout.prompt.md",
+      "result_path": "agents/paper-architecture-scout.result.json",
+      "blog_path": "blogs/paper-architecture-scout.md",
+      "blog_source": "generated",
+      "execution_kind": "offline-scaffold",
+      "execution_state": "scaffolded_not_run",
+      "review_only": true
+    },
+    {
+      "assignment_index": 1,
+      "persona_id": "coverage-skeptic",
+      "title": "Coverage Skeptic",
+      "source_lanes": [
+        "official_docs",
+        "papers",
+        "hugging_face",
+        "packages",
+        "technical_blogs",
+        "community_discussions",
+        "repositories",
+        "repo_local_audit"
+      ],
+      "assignment_path": "agents/coverage-skeptic.assignment.json",
+      "prompt_path": "agents/coverage-skeptic.prompt.md",
+      "result_path": "agents/coverage-skeptic.result.json",
+      "blog_path": "blogs/coverage-skeptic.md",
+      "blog_source": "generated",
+      "execution_kind": "offline-scaffold",
+      "execution_state": "scaffolded_not_run",
+      "review_only": true
+    },
+    {
+      "assignment_index": 2,
+      "persona_id": "package-registry-scout",
+      "title": "Package Registry Scout",
+      "source_lanes": [
+        "packages",
+        "repositories"
+      ],
+      "assignment_path": "agents/package-registry-scout.assignment.json",
+      "prompt_path": "agents/package-registry-scout.prompt.md",
+      "result_path": "agents/package-registry-scout.result.json",
+      "blog_path": "blogs/package-registry-scout.md",
+      "blog_source": "generated",
+      "execution_kind": "offline-scaffold",
+      "execution_state": "scaffolded_not_run",
+      "review_only": true
+    },
+    {
+      "assignment_index": 3,
+      "persona_id": "official-docs-cartographer",
+      "title": "Official Docs Cartographer",
+      "source_lanes": [
+        "official_docs",
+        "packages"
+      ],
+      "assignment_path": "agents/official-docs-cartographer.assignment.json",
+      "prompt_path": "agents/official-docs-cartographer.prompt.md",
+      "result_path": "agents/official-docs-cartographer.result.json",
+      "blog_path": "blogs/official-docs-cartographer.md",
+      "blog_source": "generated",
+      "execution_kind": "offline-scaffold",
+      "execution_state": "scaffolded_not_run",
+      "review_only": true
+    },
+    {
+      "assignment_index": 4,
+      "persona_id": "huggingface-ecosystem-sampler",
+      "title": "Hugging Face Ecosystem Sampler",
+      "source_lanes": [
+        "hugging_face"
+      ],
+      "assignment_path": "agents/huggingface-ecosystem-sampler.assignment.json",
+      "prompt_path": "agents/huggingface-ecosystem-sampler.prompt.md",
+      "result_path": "agents/huggingface-ecosystem-sampler.result.json",
+      "blog_path": "blogs/huggingface-ecosystem-sampler.md",
+      "blog_source": "generated",
+      "execution_kind": "offline-scaffold",
+      "execution_state": "scaffolded_not_run",
+      "review_only": true
+    },
+    {
+      "assignment_index": 5,
+      "persona_id": "practitioner-blog-miner",
+      "title": "Practitioner Blog Miner",
+      "source_lanes": [
+        "technical_blogs",
+        "community_discussions"
+      ],
+      "assignment_path": "agents/practitioner-blog-miner.assignment.json",
+      "prompt_path": "agents/practitioner-blog-miner.prompt.md",
+      "result_path": "agents/practitioner-blog-miner.result.json",
+      "blog_path": "blogs/practitioner-blog-miner.md",
+      "blog_source": "generated",
+      "execution_kind": "offline-scaffold",
+      "execution_state": "scaffolded_not_run",
+      "review_only": true
+    }
+  ],
+  "instructions": [
+    "Dispatch one review-only subagent per listed assignment.",
+    "Each subagent should read its assignment packet and prompt, then write the result JSON path.",
+    "Do not execute remote model code or modify recommendation assets during research."
+  ]
+}

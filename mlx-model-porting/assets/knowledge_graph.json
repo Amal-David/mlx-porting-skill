@@ -1,14 +1,14 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-06-29T22:09:00+00:00",
-  "run_id": "2026-06-29-nightly-knowledge-curator",
+  "generated_at": "2026-06-30T22:07:18+00:00",
+  "run_id": "2026-06-30-nightly-knowledge-curator",
   "policy": {
     "review_only": true,
     "auto_promote_sources": false,
     "auto_modify_recommendations": false
   },
   "node_count": 431,
-  "edge_count": 230,
+  "edge_count": 232,
   "nodes": [
     {
       "id": "approach:adaptive-kv-quantization",
@@ -885,15 +885,15 @@
       "locator": "https://github.com/Blaizzy/mlx-vlm",
       "read_state": "already_read",
       "known_source_id": "source:mlx-vlm-repo",
-      "head_sha": "3993d65b7561ac52e35ba9aa669d5b0b24b8215b",
-      "head_date": "2026-06-29T17:30:24Z",
-      "head_message": "Merge pull request #1464 from Lazarus-931/fix-1329-weight-index",
+      "head_sha": "b590c747e88bc593d224ddce6a26ce2cfe59b5b2",
+      "head_date": "2026-06-30T21:14:05Z",
+      "head_message": "fix(qwen3_5_moe): support split expert weights (#1472)",
       "topics": [
         "multimodal",
         "serving",
         "speculative"
       ],
-      "summary": "Merge pull request #1464 from Lazarus-931/fix-1329-weight-index"
+      "summary": "fix(qwen3_5_moe): support split expert weights (#1472)"
     },
     {
       "id": "candidate:repository:ml-explore-mlx",
@@ -903,15 +903,15 @@
       "locator": "https://github.com/ml-explore/mlx",
       "read_state": "already_read",
       "known_source_id": "source:mlx-repo",
-      "head_sha": "1d20ba3808ebbb71a75cd2be63052111a5c7640c",
-      "head_date": "2026-06-28T23:49:48Z",
-      "head_message": "Fix Upsample align_corners singleton output (#3769)",
+      "head_sha": "25616a0a6acf78a6e23379a0ffcdc3296775a468",
+      "head_date": "2026-06-29T23:15:01Z",
+      "head_message": "Add CI for Windows CUDA build (#3775)",
       "topics": [
         "runtime",
         "kernels",
         "quantization"
       ],
-      "summary": "Fix Upsample align_corners singleton output (#3769)"
+      "summary": "Add CI for Windows CUDA build (#3775)"
     },
     {
       "id": "candidate:repository:ml-explore-mlx-examples",
@@ -958,14 +958,14 @@
       "locator": "https://github.com/openai/codex",
       "read_state": "updated_candidate",
       "known_source_id": "",
-      "head_sha": "4808c162eeb767b389f13b7cb2730f32c8563dba",
-      "head_date": "2026-06-29T18:10:38Z",
-      "head_message": "[codex] auto-label AWS Bedrock issues (#30607)",
+      "head_sha": "db887d03e1f907467e33271572dffb73bceecd6b",
+      "head_date": "2026-06-30T21:18:22Z",
+      "head_message": "fix(core) Remove full text websocket trace (#30757)",
       "topics": [
         "agent-skills",
         "codex"
       ],
-      "summary": "[codex] auto-label AWS Bedrock issues (#30607)"
+      "summary": "fix(core) Remove full text websocket trace (#30757)"
     },
     {
       "id": "candidate:repository:waybarrios-vllm-mlx",
@@ -7918,23 +7918,42 @@
     },
     {
       "source": "candidate:repository:blaizzy-mlx-vlm",
-      "target": "outcome:vlm-mlx-vlm-working-route",
+      "target": "learning:paged-kv-and-gather-qmm-serving",
       "relation": "candidate_relevant_to",
       "score": 3,
       "matched_terms": [
-        "multimodal",
-        "serving",
-        "vlm"
+        "expert",
+        "moe",
+        "serving"
       ]
     },
     {
       "source": "candidate:repository:ml-explore-mlx",
-      "target": "learning:grid-sample-spatial-kernel",
+      "target": "approach:cuda-graphs-decode-capture",
       "relation": "candidate_relevant_to",
-      "score": 3,
+      "score": 2,
       "matched_terms": [
-        "align",
-        "corners",
+        "cuda",
+        "runtime"
+      ]
+    },
+    {
+      "source": "candidate:repository:ml-explore-mlx",
+      "target": "backlog:graph-geometric-scientific",
+      "relation": "candidate_relevant_to",
+      "score": 2,
+      "matched_terms": [
+        "add",
+        "kernels"
+      ]
+    },
+    {
+      "source": "candidate:repository:ml-explore-mlx",
+      "target": "backlog:non-generative-cv",
+      "relation": "candidate_relevant_to",
+      "score": 2,
+      "matched_terms": [
+        "add",
         "kernels"
       ]
     },
@@ -8729,9 +8748,9 @@
   ],
   "latest_delta": {
     "schema_version": 1,
-    "run_id": "2026-06-29-nightly-knowledge-curator",
-    "generated_at": "2026-06-29T22:09:00+00:00",
-    "previous_graph_generated_at": "2026-06-29T18:50:51+00:00",
+    "run_id": "2026-06-30-nightly-knowledge-curator",
+    "generated_at": "2026-06-30T22:07:18+00:00",
+    "previous_graph_generated_at": "2026-06-29T22:09:00+00:00",
     "already_read_sources": [
       {
         "id": "candidate:paper:native-llm-and-mllm-inference-at-scale-on-apple-silicon",
@@ -8846,7 +8865,7 @@
         "locator": "https://github.com/openai/codex",
         "read_state": "updated_candidate",
         "kind": "repository",
-        "head_sha": "4808c162eeb767b389f13b7cb2730f32c8563dba"
+        "head_sha": "db887d03e1f907467e33271572dffb73bceecd6b"
       }
     ],
     "new_approach_leads": [],

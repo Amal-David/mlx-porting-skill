@@ -1,0 +1,158 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-06-30-nightly-knowledge-curator-research-loop",
+  "objective": "Nightly MLX knowledge curator: top contributors, papers, blogs, package releases, model outcomes, speedup ranges, and app/CLI skill deltas",
+  "iteration": 1,
+  "iteration_count": 1,
+  "review_only": true,
+  "persona_id": "huggingface-ecosystem-sampler",
+  "title": "Hugging Face Ecosystem Sampler",
+  "mission": "Sample model cards, library tags, downloads, tasks, and license metadata to identify porting demand and artifact shapes.",
+  "source_lanes": [
+    "hugging_face"
+  ],
+  "sample_plan": [
+    {
+      "source_lane": "hugging_face",
+      "lane_title": "Hugging Face model and library metadata",
+      "evidence_role": "model popularity, artifact shape, license, config, tokenizer, and task coverage",
+      "targets": [
+        {
+          "title": "Hugging Face MLX model search",
+          "kind": "model-index",
+          "locator": "https://huggingface.co/models?search=mlx",
+          "sampling_goal": "Sample model cards, task tags, licenses, library tags, and artifact shapes."
+        },
+        {
+          "title": "mlx-community organization",
+          "kind": "model-index",
+          "locator": "https://huggingface.co/mlx-community",
+          "sampling_goal": "Track common publication metadata and model families in MLX conversions."
+        },
+        {
+          "title": "Hugging Face Transformers MLX search",
+          "kind": "docs-search",
+          "locator": "https://huggingface.co/docs/transformers/search?query=mlx",
+          "sampling_goal": "Check current library surfaces before relying on ecosystem guidance."
+        }
+      ]
+    }
+  ],
+  "planning": {
+    "persona_id": "huggingface-ecosystem-sampler",
+    "title": "Hugging Face Ecosystem Sampler",
+    "rank": 5,
+    "config_order": 3,
+    "score": 2,
+    "source_lanes": [
+      "hugging_face"
+    ],
+    "matched_objective_terms": [
+      "model"
+    ],
+    "matched_gap_terms": [],
+    "reasons": [
+      "Matched objective terms: model.",
+      "Covers source lanes: hugging_face."
+    ]
+  },
+  "policy": {
+    "auto_modify_recommendations": false,
+    "execute_remote_model_code": false
+  },
+  "prompt": "You are the Hugging Face Ecosystem Sampler for MLX model-porting research loop 2026-06-30-nightly-knowledge-curator-research-loop. Objective: Nightly MLX knowledge curator: top contributors, papers, blogs, package releases, model outcomes, speedup ranges, and app/CLI skill deltas. Source lanes: hugging_face. Return source-backed findings only. Do not execute remote model code. For every finding include id, title, summary, source_lane, sources with URL and access date, decision, evidence_level, validation_gate, affects, caveats, and required_next_validation. Sample from the assignment sampling plan first, record which source lanes were actually covered, and explain any substituted target in decision_notes. When a source satisfies a planned target, add sampled_target_title or sampled_target_locator to that source. Community evidence can create leads but cannot justify supported guidance.\n\nSampling plan:\n- hugging_face: Hugging Face model and library metadata\n  Evidence role: model popularity, artifact shape, license, config, tokenizer, and task coverage\n  - Hugging Face MLX model search [model-index]: https://huggingface.co/models?search=mlx - Sample model cards, task tags, licenses, library tags, and artifact shapes.\n  - mlx-community organization [model-index]: https://huggingface.co/mlx-community - Track common publication metadata and model families in MLX conversions.\n  - Hugging Face Transformers MLX search [docs-search]: https://huggingface.co/docs/transformers/search?query=mlx - Check current library surfaces before relying on ecosystem guidance.",
+  "paths": {
+    "assignment": "agents/huggingface-ecosystem-sampler.assignment.json",
+    "prompt": "agents/huggingface-ecosystem-sampler.prompt.md",
+    "result": "agents/huggingface-ecosystem-sampler.result.json",
+    "blog": "blogs/huggingface-ecosystem-sampler.md"
+  },
+  "execution": {
+    "kind": "offline-scaffold",
+    "state": "scaffolded_not_run",
+    "executor": null,
+    "log_path": null,
+    "result_path": null,
+    "blog_path": "blogs/huggingface-ecosystem-sampler.md",
+    "blog_source": "generated"
+  },
+  "blog": {
+    "persona_id": "huggingface-ecosystem-sampler",
+    "path": "blogs/huggingface-ecosystem-sampler.md",
+    "source": "generated",
+    "generated_blog_path": "blogs/huggingface-ecosystem-sampler.md",
+    "preserved_executor_blog": false,
+    "required_sections": [
+      "Assignment",
+      "Planned sampling",
+      "Sources sampled",
+      "Sampling coverage",
+      "Candidate findings",
+      "Decision notes",
+      "Open validation"
+    ],
+    "present_sections": [
+      "Assignment",
+      "Planned sampling",
+      "Sources sampled",
+      "Sampling coverage",
+      "Candidate findings",
+      "Decision notes",
+      "Open validation"
+    ],
+    "missing_sections": [],
+    "contract_status": "pass"
+  },
+  "result_contract": {
+    "path": "agents/huggingface-ecosystem-sampler.result.json",
+    "format": "json",
+    "required_top_level_fields": [
+      "persona_id",
+      "decision_notes",
+      "findings"
+    ],
+    "finding_required_fields": [
+      "id",
+      "title",
+      "summary",
+      "source_lane",
+      "sources",
+      "decision",
+      "evidence_level",
+      "validation_gate",
+      "affects",
+      "caveats",
+      "required_next_validation"
+    ],
+    "source_optional_fields": [
+      "sampled_target_title",
+      "sampled_target_locator"
+    ]
+  },
+  "blog_contract": {
+    "path": "blogs/huggingface-ecosystem-sampler.md",
+    "sections": [
+      "Assignment",
+      "Planned sampling",
+      "Sources sampled",
+      "Sampling coverage",
+      "Candidate findings",
+      "Decision notes",
+      "Open validation"
+    ]
+  },
+  "constraints": [
+    "Review-only: do not modify recommendation assets.",
+    "Do not execute remote model code.",
+    "Sample planned targets first and explain substitutions.",
+    "Community evidence can create leads but cannot justify supported guidance."
+  ],
+  "environment": {
+    "MLX_RESEARCH_PERSONA_ID": "huggingface-ecosystem-sampler",
+    "MLX_RESEARCH_ASSIGNMENT_PATH": "agents/huggingface-ecosystem-sampler.assignment.json",
+    "MLX_RESEARCH_PROMPT_PATH": "agents/huggingface-ecosystem-sampler.prompt.md",
+    "MLX_RESEARCH_RESULT_PATH": "agents/huggingface-ecosystem-sampler.result.json",
+    "MLX_RESEARCH_BLOG_PATH": "blogs/huggingface-ecosystem-sampler.md",
+    "MLX_RESEARCH_REVIEW_ONLY": "1"
+  }
+}

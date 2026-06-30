@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-06-29T22:09:00.156091+00:00",
+  "generated_at": "2026-06-30T22:07:18.453416+00:00",
   "policy": {
     "auto_modify_recommendations": false,
     "auto_merge": false,
@@ -16,9 +16,9 @@
         "quantization"
       ],
       "default_branch": "main",
-      "head_sha": "1d20ba3808ebbb71a75cd2be63052111a5c7640c",
-      "head_date": "2026-06-28T23:49:48Z",
-      "head_message": "Fix Upsample align_corners singleton output (#3769)",
+      "head_sha": "25616a0a6acf78a6e23379a0ffcdc3296775a468",
+      "head_date": "2026-06-29T23:15:01Z",
+      "head_message": "Add CI for Windows CUDA build (#3775)",
       "url": "https://github.com/ml-explore/mlx",
       "latest_release": {
         "tag": "v0.31.2",
@@ -73,9 +73,9 @@
         "speculative"
       ],
       "default_branch": "main",
-      "head_sha": "3993d65b7561ac52e35ba9aa669d5b0b24b8215b",
-      "head_date": "2026-06-29T17:30:24Z",
-      "head_message": "Merge pull request #1464 from Lazarus-931/fix-1329-weight-index",
+      "head_sha": "b590c747e88bc593d224ddce6a26ce2cfe59b5b2",
+      "head_date": "2026-06-30T21:14:05Z",
+      "head_message": "fix(qwen3_5_moe): support split expert weights (#1472)",
       "url": "https://github.com/Blaizzy/mlx-vlm",
       "latest_release": {
         "tag": "v0.6.3",
@@ -147,9 +147,9 @@
         "codex"
       ],
       "default_branch": "main",
-      "head_sha": "4808c162eeb767b389f13b7cb2730f32c8563dba",
-      "head_date": "2026-06-29T18:10:38Z",
-      "head_message": "[codex] auto-label AWS Bedrock issues (#30607)",
+      "head_sha": "db887d03e1f907467e33271572dffb73bceecd6b",
+      "head_date": "2026-06-30T21:18:22Z",
+      "head_message": "fix(core) Remove full text websocket trace (#30757)",
       "url": "https://github.com/openai/codex",
       "latest_release": {
         "tag": "rust-v0.142.4",

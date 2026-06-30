@@ -1,0 +1,173 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-06-30-nightly-knowledge-curator-research-loop",
+  "objective": "Nightly MLX knowledge curator: top contributors, papers, blogs, package releases, model outcomes, speedup ranges, and app/CLI skill deltas",
+  "iteration": 1,
+  "iteration_count": 1,
+  "review_only": true,
+  "persona_id": "practitioner-blog-miner",
+  "title": "Practitioner Blog Miner",
+  "mission": "Mine implementation writeups and practitioner reports for leads while keeping unsupported claims out of supported guidance.",
+  "source_lanes": [
+    "technical_blogs",
+    "community_discussions"
+  ],
+  "sample_plan": [
+    {
+      "source_lane": "technical_blogs",
+      "lane_title": "Technical blogs and engineering reports",
+      "evidence_role": "implementation details, benchmark caveats, and production constraints",
+      "targets": [
+        {
+          "title": "Apple Machine Learning Research",
+          "kind": "technical-blog-index",
+          "locator": "https://machinelearning.apple.com/",
+          "sampling_goal": "Find Apple-authored implementation constraints or benchmark caveats."
+        },
+        {
+          "title": "MLX examples discussions and notes",
+          "kind": "maintainer-notes",
+          "locator": "https://ml-explore.github.io/mlx-examples/",
+          "sampling_goal": "Find maintained examples that expose operational or benchmark details."
+        }
+      ]
+    },
+    {
+      "source_lane": "community_discussions",
+      "lane_title": "Community discussions",
+      "evidence_role": "pain points and candidate leads only; never sufficient for supported guidance",
+      "targets": [
+        {
+          "title": "Apple Developer Forums MLX search",
+          "kind": "forum-search",
+          "locator": "https://developer.apple.com/forums/search/?q=MLX",
+          "sampling_goal": "Collect pain points and leads without promoting them as supported guidance."
+        },
+        {
+          "title": "LocalLLaMA MLX search",
+          "kind": "community-search",
+          "locator": "https://www.reddit.com/r/LocalLLaMA/search/?q=MLX&restrict_sr=1",
+          "sampling_goal": "Sample user pain points, hardware caveats, and candidate follow-up repos."
+        }
+      ]
+    }
+  ],
+  "planning": {
+    "persona_id": "practitioner-blog-miner",
+    "title": "Practitioner Blog Miner",
+    "rank": 6,
+    "config_order": 5,
+    "score": 1,
+    "source_lanes": [
+      "technical_blogs",
+      "community_discussions"
+    ],
+    "matched_objective_terms": [
+      "blogs"
+    ],
+    "matched_gap_terms": [],
+    "reasons": [
+      "Matched objective terms: blogs.",
+      "Covers source lanes: technical_blogs, community_discussions."
+    ]
+  },
+  "policy": {
+    "auto_modify_recommendations": false,
+    "execute_remote_model_code": false
+  },
+  "prompt": "You are the Practitioner Blog Miner for MLX model-porting research loop 2026-06-30-nightly-knowledge-curator-research-loop. Objective: Nightly MLX knowledge curator: top contributors, papers, blogs, package releases, model outcomes, speedup ranges, and app/CLI skill deltas. Source lanes: technical_blogs, community_discussions. Return source-backed findings only. Do not execute remote model code. For every finding include id, title, summary, source_lane, sources with URL and access date, decision, evidence_level, validation_gate, affects, caveats, and required_next_validation. Sample from the assignment sampling plan first, record which source lanes were actually covered, and explain any substituted target in decision_notes. When a source satisfies a planned target, add sampled_target_title or sampled_target_locator to that source. Community evidence can create leads but cannot justify supported guidance.\n\nSampling plan:\n- technical_blogs: Technical blogs and engineering reports\n  Evidence role: implementation details, benchmark caveats, and production constraints\n  - Apple Machine Learning Research [technical-blog-index]: https://machinelearning.apple.com/ - Find Apple-authored implementation constraints or benchmark caveats.\n  - MLX examples discussions and notes [maintainer-notes]: https://ml-explore.github.io/mlx-examples/ - Find maintained examples that expose operational or benchmark details.\n- community_discussions: Community discussions\n  Evidence role: pain points and candidate leads only; never sufficient for supported guidance\n  - Apple Developer Forums MLX search [forum-search]: https://developer.apple.com/forums/search/?q=MLX - Collect pain points and leads without promoting them as supported guidance.\n  - LocalLLaMA MLX search [community-search]: https://www.reddit.com/r/LocalLLaMA/search/?q=MLX&restrict_sr=1 - Sample user pain points, hardware caveats, and candidate follow-up repos.",
+  "paths": {
+    "assignment": "agents/practitioner-blog-miner.assignment.json",
+    "prompt": "agents/practitioner-blog-miner.prompt.md",
+    "result": "agents/practitioner-blog-miner.result.json",
+    "blog": "blogs/practitioner-blog-miner.md"
+  },
+  "execution": {
+    "kind": "offline-scaffold",
+    "state": "scaffolded_not_run",
+    "executor": null,
+    "log_path": null,
+    "result_path": null,
+    "blog_path": "blogs/practitioner-blog-miner.md",
+    "blog_source": "generated"
+  },
+  "blog": {
+    "persona_id": "practitioner-blog-miner",
+    "path": "blogs/practitioner-blog-miner.md",
+    "source": "generated",
+    "generated_blog_path": "blogs/practitioner-blog-miner.md",
+    "preserved_executor_blog": false,
+    "required_sections": [
+      "Assignment",
+      "Planned sampling",
+      "Sources sampled",
+      "Sampling coverage",
+      "Candidate findings",
+      "Decision notes",
+      "Open validation"
+    ],
+    "present_sections": [
+      "Assignment",
+      "Planned sampling",
+      "Sources sampled",
+      "Sampling coverage",
+      "Candidate findings",
+      "Decision notes",
+      "Open validation"
+    ],
+    "missing_sections": [],
+    "contract_status": "pass"
+  },
+  "result_contract": {
+    "path": "agents/practitioner-blog-miner.result.json",
+    "format": "json",
+    "required_top_level_fields": [
+      "persona_id",
+      "decision_notes",
+      "findings"
+    ],
+    "finding_required_fields": [
+      "id",
+      "title",
+      "summary",
+      "source_lane",
+      "sources",
+      "decision",
+      "evidence_level",
+      "validation_gate",
+      "affects",
+      "caveats",
+      "required_next_validation"
+    ],
+    "source_optional_fields": [
+      "sampled_target_title",
+      "sampled_target_locator"
+    ]
+  },
+  "blog_contract": {
+    "path": "blogs/practitioner-blog-miner.md",
+    "sections": [
+      "Assignment",
+      "Planned sampling",
+      "Sources sampled",
+      "Sampling coverage",
+      "Candidate findings",
+      "Decision notes",
+      "Open validation"
+    ]
+  },
+  "constraints": [
+    "Review-only: do not modify recommendation assets.",
+    "Do not execute remote model code.",
+    "Sample planned targets first and explain substitutions.",
+    "Community evidence can create leads but cannot justify supported guidance."
+  ],
+  "environment": {
+    "MLX_RESEARCH_PERSONA_ID": "practitioner-blog-miner",
+    "MLX_RESEARCH_ASSIGNMENT_PATH": "agents/practitioner-blog-miner.assignment.json",
+    "MLX_RESEARCH_PROMPT_PATH": "agents/practitioner-blog-miner.prompt.md",
+    "MLX_RESEARCH_RESULT_PATH": "agents/practitioner-blog-miner.result.json",
+    "MLX_RESEARCH_BLOG_PATH": "blogs/practitioner-blog-miner.md",
+    "MLX_RESEARCH_REVIEW_ONLY": "1"
+  }
+}
