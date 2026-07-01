@@ -159,9 +159,43 @@ class ToolingTests(unittest.TestCase):
         result = run_script("validate_sources.py", SKILL)
         report = json.loads(result.stdout)
         self.assertTrue(report["ok"], report)
-        self.assertEqual(report["sources"], 348)
+        self.assertEqual(report["sources"], 349)
         self.assertEqual(report["optimization_methods"], 27)
         self.assertTrue(report["recommendation_taxonomy"])
+
+    def test_model_outcome_registry_covers_top_snapshot_without_false_decoder_routes(self) -> None:
+        sources = {source["id"] for source in json.loads((SKILL / "assets" / "sources.yaml").read_text())["sources"]}
+        local_sources = {"asset-architectures", "asset-research-backlog"}
+        outcomes = json.loads((SKILL / "assets" / "model_outcomes.json").read_text())
+        snapshot = json.loads((SKILL / "assets" / "top_models_snapshot.json").read_text())
+
+        self.assertGreaterEqual(outcomes["coverage_target"]["minimum_models"], 250)
+        self.assertGreaterEqual(snapshot["model_count"], 250)
+        self.assertGreaterEqual(snapshot["covered_count"], 200)
+
+        for record in outcomes["records"]:
+            with self.subTest(record=record["id"]):
+                self.assertTrue(record["worked"])
+                self.assertTrue(record["did_not_work"])
+                self.assertTrue(record["claim_boundary"])
+                self.assertIn("potential_speedup", record)
+                self.assertIn("overall", record["potential_speedup"])
+                self.assertIn("speculative_decoding", record["potential_speedup"])
+                self.assertRegex(record["potential_speedup"]["overall"]["range"], r"\d+(?:\.\d+)?x-\d+(?:\.\d+)?x")
+                self.assertRegex(record["potential_speedup"]["speculative_decoding"]["range"], r"\d+(?:\.\d+)?x-\d+(?:\.\d+)?x")
+                self.assertTrue(record["potential_speedup"]["overall"]["applies_when"])
+                self.assertTrue(record["potential_speedup"]["overall"]["measure"])
+                self.assertTrue(record["next_validation"])
+                self.assertTrue(set(record["source_ids"]).issubset(sources | local_sources))
+
+        decoder = next(record for record in outcomes["records"] if record["id"] == "decoder-mlx-lm-working-route")
+        self.assertEqual(decoder["potential_speedup"]["overall"]["range"], "1.0x-4.3x")
+        self.assertEqual(decoder["potential_speedup"]["speculative_decoding"]["range"], "1.0x-3.0x")
+
+        by_id = {model["id"]: model for model in snapshot["models"]}
+        self.assertIn("decoder-mlx-lm-working-route", by_id["Qwen/Qwen3-0.6B"]["matched_outcome_ids"])
+        self.assertNotIn("decoder-mlx-lm-working-route", by_id["google-bert/bert-base-uncased"]["matched_outcome_ids"])
+        self.assertIn("encoder-embedding-top-model-gap", by_id["google-bert/bert-base-uncased"]["matched_outcome_ids"])
 
     def test_static_inspection_routes_dense_decoder(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -877,6 +911,131 @@ class ToolingTests(unittest.TestCase):
             self.assertEqual(report["papers"][0]["review_status"], "candidate-unreviewed")
             self.assertTrue(any("Do not execute code" in line for line in report["instructions"]))
             self.assertIn("1 repositories, 1 paper candidates", result.stdout)
+
+    def test_knowledge_curator_builds_delta_graph_offline(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_path = Path(tmp)
+            candidates = {
+                "repositories": [
+                    {
+                        "kind": "repository",
+                        "repo": "fixture/new-mlx-speedups",
+                        "head_sha": "abc123",
+                        "head_date": "2026-06-30T00:00:00Z",
+                        "head_message": "Add speculative decoding draft cache experiments",
+                        "url": "https://github.com/fixture/new-mlx-speedups",
+                        "topics": ["mlx", "speculative", "decoding"],
+                    }
+                ],
+                "papers": [
+                    {
+                        "kind": "paper",
+                        "query": "speculative decoding",
+                        "id": "https://arxiv.org/abs/2211.17192v1",
+                        "title": "Fast Inference from Transformers via Speculative Decoding",
+                        "updated": "2022-11-29T00:00:00Z",
+                        "published": "2022-11-29T00:00:00Z",
+                        "authors": ["Fixture Author"],
+                        "summary": "Known source fixture for speculative decoding.",
+                    },
+                    {
+                        "kind": "paper",
+                        "query": "MLX speculative decoding",
+                        "id": "https://arxiv.org/abs/2606.99999",
+                        "title": "Fixture Speculative Decoding for MLX",
+                        "updated": "2026-06-30T00:00:00Z",
+                        "published": "2026-06-30T00:00:00Z",
+                        "authors": ["Fixture Author"],
+                        "summary": "Draft model speculative decoding acceptance for MLX.",
+                    },
+                ],
+            }
+            candidates_path = tmp_path / "candidates.json"
+            candidates_path.write_text(json.dumps(candidates), encoding="utf-8")
+            graph_path = tmp_path / "knowledge_graph.json"
+            delta_path = tmp_path / "knowledge-delta.json"
+            markdown_path = tmp_path / "knowledge-delta.md"
+
+            run_script(
+                "knowledge_curator.py",
+                "--run-id", "fixture-curator",
+                "--update-candidates", candidates_path,
+                "--previous-graph", tmp_path / "missing-previous-graph.json",
+                "--graph-output", graph_path,
+                "--delta-output", delta_path,
+                "--markdown-output", markdown_path,
+            )
+            graph = json.loads(graph_path.read_text())
+            delta = json.loads(delta_path.read_text())
+
+            self.assertTrue(graph["policy"]["review_only"])
+            self.assertGreater(graph["node_count"], 0)
+            self.assertGreater(graph["edge_count"], 0)
+            self.assertTrue(delta["policy"]["review_only"])
+            self.assertTrue(delta["gap_hints"])
+            known_locators = {item["locator"] for item in delta["already_read_sources"]}
+            self.assertIn("https://arxiv.org/abs/2211.17192", known_locators)
+            unread_labels = {item["label"] for item in delta["new_unread_sources"]}
+            self.assertIn("Fixture Speculative Decoding for MLX", unread_labels)
+            lead_targets = {
+                match["target"]
+                for lead in delta["new_approach_leads"]
+                for match in lead["matches"]
+            }
+            self.assertIn("approach:draft-model-speculation", lead_targets)
+            self.assertIn("New Approach Leads", markdown_path.read_text())
+
+    def test_nightly_knowledge_curator_scaffolds_graph_and_campaign_offline(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_path = Path(tmp)
+            contributor_fixture = {
+                "linked_pages": [
+                    {
+                        "status_code": 200,
+                        "headers": {"ETag": "linked-fixture"},
+                        "body": [{"login": "alice"}, {"login": "bob"}],
+                    }
+                ],
+                "anonymous_pages": [
+                    {
+                        "status_code": 200,
+                        "headers": {"ETag": "anon-fixture"},
+                        "body": [{"login": "anon-hidden"}],
+                    }
+                ],
+            }
+            contributor_fixture_path = tmp_path / "contributors.json"
+            contributor_fixture_path.write_text(json.dumps(contributor_fixture), encoding="utf-8")
+            output_root = tmp_path / "runs"
+            update_output = tmp_path / "update-candidates.json"
+            contributor_output = tmp_path / "contributor-refresh.json"
+            graph_output = tmp_path / "knowledge_graph.json"
+
+            run_script(
+                "nightly_knowledge_curator.py",
+                "--run-id", "fixture-nightly",
+                "--output-root", output_root,
+                "--offline-update-fixture", FIXTURES / "updates" / "offline.json",
+                "--offline-contributor-fixture", contributor_fixture_path,
+                "--update-output", update_output,
+                "--contributor-output", contributor_output,
+                "--graph-output", graph_output,
+                "--previous-graph", graph_output,
+                "--agent-count", "2",
+            )
+            run_dir = output_root / "fixture-nightly"
+            receipt = json.loads((run_dir / "nightly-run.json").read_text())
+            campaign = json.loads((run_dir / "research-loop" / "campaign.json").read_text())
+
+            self.assertTrue(receipt["review_only"])
+            self.assertEqual(len(receipt["commands"]), 4)
+            self.assertTrue(update_output.exists())
+            self.assertTrue(contributor_output.exists())
+            self.assertTrue(graph_output.exists())
+            self.assertTrue((run_dir / "knowledge-delta.json").exists())
+            self.assertTrue((run_dir / "research-loop" / "subagents.json").exists())
+            self.assertEqual(campaign["wave_count"], 1)
+            self.assertEqual(campaign["waves"][0]["agent_count"], 2)
 
     def test_contributor_collector_follows_links_caps_and_redacts_anonymous(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

@@ -1,0 +1,10 @@
+"$schema" = "./node_modules/wrangler/config-schema.json"
+name = "mlx-model-advisor"
+main = "src/index.ts"
+compatibility_date = "2026-06-27"
+workers_dev = true
+preview_urls = true
+
+[vars]
+HF_API_BASE = "https://huggingface.co"
+OPENAI_MODEL = "gpt-5.4-mini"
