@@ -116,6 +116,26 @@ const longQuery = await getStatus(`/api/search?q=${"x".repeat(97)}`, { headers: 
 assert(longQuery.status === 400, "long search query should be rejected before proxying");
 assert(!longQuery.allowOrigin, "cross-origin API calls should not receive permissive CORS headers");
 
+const malformedJson = await getStatus("/api/advice?id=mlx-community/Qwen2.5-14B-Instruct-4bit", {
+  method: "POST",
+  headers: {
+    "content-type": "application/json",
+    origin: "http://127.0.0.1:8787"
+  },
+  body: "{"
+});
+assert(malformedJson.status === 400, "malformed JSON body should return 400");
+
+const oversizedJson = await getStatus("/api/advice?id=mlx-community/Qwen2.5-14B-Instruct-4bit", {
+  method: "POST",
+  headers: {
+    "content-type": "application/json",
+    origin: "http://127.0.0.1:8787"
+  },
+  body: JSON.stringify({ id: "mlx-community/Qwen2.5-14B-Instruct-4bit", filler: "x".repeat(5000) })
+});
+assert(oversizedJson.status === 413, "oversized JSON body should return 413");
+
 const textAdvice = await getJson("/api/advice?id=mlx-community/Qwen2.5-14B-Instruct-4bit");
 assert(textAdvice.advisor.family.id === "dense-decoder-transformer", "Qwen2.5 text model should route to dense decoder");
 assert(textAdvice.aiSummary.status === "not_configured" || textAdvice.aiSummary.status === "available", "deterministic advice should not require OpenAI");

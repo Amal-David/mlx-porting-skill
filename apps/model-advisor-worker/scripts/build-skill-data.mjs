@@ -79,6 +79,14 @@ function speedupSlot(value) {
   };
 }
 
+function requiredSource(sourceById, sourceId, label) {
+  const source = sourceById.get(sourceId);
+  if (!source) {
+    throw new Error(`Unknown source '${sourceId}' referenced by ${label}`);
+  }
+  return source;
+}
+
 async function buildData() {
   const [guidance, taxonomy, architectures, sources, contributorLearnings, researchBacklog, modelOutcomes, topModelsSnapshot] = await Promise.all([
     readJson("assets/optimization_guidance.yaml"),
@@ -330,7 +338,7 @@ async function buildData() {
       unknownCount: topModelsSnapshot.unknown_count ?? 0,
       models: topModels
     },
-    sources: [...methodSourceIds].sort().map((sourceId) => sourceById.get(sourceId))
+    sources: [...methodSourceIds].sort().map((sourceId) => requiredSource(sourceById, sourceId, "generated advisor data"))
   };
 
   return data;

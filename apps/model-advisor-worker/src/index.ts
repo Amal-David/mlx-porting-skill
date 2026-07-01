@@ -244,18 +244,19 @@ async function handleSearch(url: URL, env: Env) {
     }
   }
   const summaries = models.map(sanitizeModelSummary).filter((model) => model.id);
-  const results = summaries.filter((model) => (
+  const derivativeFiltered = summaries.filter((model) => (
     includeDerivatives
     || model.repositoryKind !== "derivative"
     || (exactModelQuery && model.id.toLowerCase() === requestedQuery.toLowerCase())
-  )).filter((model) => !category?.minDownloads || model.downloads >= category.minDownloads);
+  ));
+  const results = derivativeFiltered.filter((model) => !category?.minDownloads || model.downloads >= category.minDownloads);
   const rankedResults = rankSearchResults(results, requestedQuery, upstreamQuery);
   return {
     query: requestedQuery,
     upstreamQuery,
     mode: requestedQuery ? "search" : category?.label.toLowerCase() || "popular",
     includeDerivatives,
-    hiddenDerivatives: summaries.length - results.length,
+    hiddenDerivatives: summaries.length - derivativeFiltered.length,
     results: rankedResults.slice(0, limit)
   };
 }
@@ -304,15 +305,50 @@ async function handleAdvice(request: Request, url: URL, env: Env) {
 }
 
 async function readJsonBody(request: Request): Promise<Record<string, unknown>> {
-  const text = await request.text();
+  const contentLength = Number(request.headers.get("content-length") ?? "");
+  if (Number.isFinite(contentLength) && contentLength > MAX_JSON_BODY_LENGTH) {
+    throw new HttpError(413, `JSON body must be ${MAX_JSON_BODY_LENGTH} characters or fewer.`);
+  }
+  const text = await readRequestTextWithLimit(request, MAX_JSON_BODY_LENGTH);
   if (text.length > MAX_JSON_BODY_LENGTH) {
     throw new HttpError(413, `JSON body must be ${MAX_JSON_BODY_LENGTH} characters or fewer.`);
   }
   if (!text.trim()) {
     return {};
   }
-  const value = JSON.parse(text);
+  let value: unknown;
+  try {
+    value = JSON.parse(text);
+  } catch {
+    throw new HttpError(400, "Malformed JSON body.");
+  }
   return value && typeof value === "object" && !Array.isArray(value) ? value as Record<string, unknown> : {};
+}
+
+async function readRequestTextWithLimit(request: Request, maxLength: number): Promise<string> {
+  if (!request.body) {
+    return "";
+  }
+  const reader = request.body.getReader();
+  const decoder = new TextDecoder();
+  let text = "";
+  let bytes = 0;
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) {
+      break;
+    }
+    bytes += value.byteLength;
+    if (bytes > maxLength) {
+      throw new HttpError(413, `JSON body must be ${MAX_JSON_BODY_LENGTH} characters or fewer.`);
+    }
+    text += decoder.decode(value, { stream: true });
+    if (text.length > maxLength) {
+      throw new HttpError(413, `JSON body must be ${MAX_JSON_BODY_LENGTH} characters or fewer.`);
+    }
+  }
+  text += decoder.decode();
+  return text;
 }
 
 function hfBase(env: Env): string {
@@ -1023,7 +1059,7 @@ function buildInstructions(model: HuggingFaceModel, family: Family) {
 }
 
 function addSource(sources: Map<string, Source>, sourceId: string) {
-  const source = ADVISOR_DATA.sources.find((item) => item.id === sourceId);
+  const source = ADVISOR_DATA.sources.find((item) => item && item.id === sourceId);
   if (source) {
     sources.set(source.id, source);
   }
@@ -2383,11 +2419,12 @@ function renderAppHtml() {
       all.forEach((item) => categories.set(item.category, (categories.get(item.category) || 0) + 1));
       const numbered = all.filter((item) => isNumberedImpact(item.impact.value));
       const profile = all.filter((item) => item.impact.value === "Profile-required");
+      const profileOutsideBenchmark = profile.filter((item) => item.bucketId !== "benchmark-required");
       const firstImpact = numbered[0] || profile[0] || all[0];
       return {
         total,
         validated: bucketCount(advisor, "validated-locally") + bucketCount(advisor, "validated-source-theory"),
-        benchmark: bucketCount(advisor, "benchmark-required") + profile.length,
+        benchmark: bucketCount(advisor, "benchmark-required") + profileOutsideBenchmark.length,
         experimental: bucketCount(advisor, "experimental-approach"),
         rejected: bucketCount(advisor, "rejected-do-not-use"),
         profileRequired: profile.length,
