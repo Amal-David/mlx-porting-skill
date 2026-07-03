@@ -333,22 +333,31 @@ async function readRequestTextWithLimit(request: Request, maxLength: number): Pr
   const decoder = new TextDecoder();
   let text = "";
   let bytes = 0;
-  while (true) {
-    const { done, value } = await reader.read();
-    if (done) {
-      break;
+  let completed = false;
+  try {
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) {
+        completed = true;
+        break;
+      }
+      bytes += value.byteLength;
+      if (bytes > maxLength) {
+        throw new HttpError(413, `JSON body must be ${MAX_JSON_BODY_LENGTH} characters or fewer.`);
+      }
+      text += decoder.decode(value, { stream: true });
+      if (text.length > maxLength) {
+        throw new HttpError(413, `JSON body must be ${MAX_JSON_BODY_LENGTH} characters or fewer.`);
+      }
     }
-    bytes += value.byteLength;
-    if (bytes > maxLength) {
-      throw new HttpError(413, `JSON body must be ${MAX_JSON_BODY_LENGTH} characters or fewer.`);
+    text += decoder.decode();
+    return text;
+  } finally {
+    if (!completed) {
+      await reader.cancel().catch(() => undefined);
     }
-    text += decoder.decode(value, { stream: true });
-    if (text.length > maxLength) {
-      throw new HttpError(413, `JSON body must be ${MAX_JSON_BODY_LENGTH} characters or fewer.`);
-    }
+    reader.releaseLock();
   }
-  text += decoder.decode();
-  return text;
 }
 
 function hfBase(env: Env): string {
