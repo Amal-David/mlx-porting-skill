@@ -1,0 +1,248 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-07-03-nightly-knowledge-curator",
+  "generated_at": "2026-07-03T22:10:28+00:00",
+  "previous_graph_generated_at": "2026-06-30T22:07:18+00:00",
+  "already_read_sources": [
+    {
+      "id": "candidate:paper:native-llm-and-mllm-inference-at-scale-on-apple-silicon",
+      "label": "Native LLM and MLLM Inference at Scale on Apple Silicon",
+      "locator": "https://arxiv.org/abs/2601.19139",
+      "read_state": "already_read",
+      "kind": "paper",
+      "known_source_id": "source:paper-2601-19139"
+    },
+    {
+      "id": "candidate:paper:rope-aware-bit-allocation-for-kv-cache-quantization",
+      "label": "RoPE-Aware Bit Allocation for KV-Cache Quantization",
+      "locator": "https://arxiv.org/abs/2606.24033",
+      "read_state": "already_read",
+      "kind": "paper",
+      "known_source_id": "source:paper-2606-24033"
+    },
+    {
+      "id": "candidate:paper:agent-assisted-side-channel-attacks-on-non-prefix-kv-cache-in-rag",
+      "label": "Agent-Assisted Side-Channel Attacks on Non-Prefix KV Cache in RAG",
+      "locator": "https://arxiv.org/abs/2606.21842",
+      "read_state": "already_read",
+      "kind": "paper",
+      "known_source_id": "source:paper-2606-21842"
+    },
+    {
+      "id": "candidate:paper:ultraquant-4-bit-kv-caching-for-context-heavy-agents",
+      "label": "UltraQuant: 4-bit KV Caching for Context-Heavy Agents",
+      "locator": "https://arxiv.org/abs/2606.20474",
+      "read_state": "already_read",
+      "kind": "paper",
+      "known_source_id": "source:paper-2606-20474"
+    },
+    {
+      "id": "candidate:paper:pushing-the-limits-of-on-device-streaming-asr-a-compact-high-accuracy-english-model-for-low-latency-inference",
+      "label": "Pushing the Limits of On-Device Streaming ASR: A Compact, High-Accuracy English Model for Low-Latency Inference",
+      "locator": "https://arxiv.org/abs/2604.14493",
+      "read_state": "already_read",
+      "kind": "paper",
+      "known_source_id": "source:paper-2604-14493"
+    },
+    {
+      "id": "candidate:repository:ml-explore-mlx",
+      "label": "ml-explore/mlx",
+      "locator": "https://github.com/ml-explore/mlx",
+      "read_state": "already_read",
+      "kind": "repository",
+      "known_source_id": "source:mlx-repo"
+    },
+    {
+      "id": "candidate:repository:ml-explore-mlx-lm",
+      "label": "ml-explore/mlx-lm",
+      "locator": "https://github.com/ml-explore/mlx-lm",
+      "read_state": "already_read",
+      "kind": "repository",
+      "known_source_id": "source:mlx-lm-repo"
+    },
+    {
+      "id": "candidate:repository:ml-explore-mlx-examples",
+      "label": "ml-explore/mlx-examples",
+      "locator": "https://github.com/ml-explore/mlx-examples",
+      "read_state": "already_read",
+      "kind": "repository",
+      "known_source_id": "source:mlx-examples-repo"
+    },
+    {
+      "id": "candidate:repository:blaizzy-mlx-vlm",
+      "label": "Blaizzy/mlx-vlm",
+      "locator": "https://github.com/Blaizzy/mlx-vlm",
+      "read_state": "already_read",
+      "kind": "repository",
+      "known_source_id": "source:mlx-vlm-repo"
+    },
+    {
+      "id": "candidate:repository:blaizzy-mlx-audio",
+      "label": "Blaizzy/mlx-audio",
+      "locator": "https://github.com/Blaizzy/mlx-audio",
+      "read_state": "already_read",
+      "kind": "repository",
+      "known_source_id": "source:mlx-audio-repo"
+    },
+    {
+      "id": "candidate:repository:waybarrios-vllm-mlx",
+      "label": "waybarrios/vllm-mlx",
+      "locator": "https://github.com/waybarrios/vllm-mlx",
+      "read_state": "already_read",
+      "kind": "repository",
+      "known_source_id": "source:vllm-mlx-repo"
+    },
+    {
+      "id": "candidate:repository:anthropics-skills",
+      "label": "anthropics/skills",
+      "locator": "https://github.com/anthropics/skills",
+      "read_state": "already_read",
+      "kind": "repository",
+      "known_source_id": "source:agent-skills-repo"
+    }
+  ],
+  "new_unread_sources": [
+    {
+      "id": "candidate:paper:lynx-progressive-speculative-quantization-for-accelerating-kv-transfer-in-long-context-inference",
+      "label": "Lynx: Progressive Speculative Quantization for accelerating KV Transfer in Long-Context Inference",
+      "locator": "https://arxiv.org/abs/2607.01831",
+      "read_state": "unread_candidate",
+      "kind": "paper"
+    },
+    {
+      "id": "candidate:paper:rabitqcache-rotated-binary-quantization-for-kvcache-in-long-context-llm-inference",
+      "label": "RaBitQCache: Rotated Binary Quantization for KVCache in Long Context LLM Inference",
+      "locator": "https://arxiv.org/abs/2606.31519",
+      "read_state": "unread_candidate",
+      "kind": "paper"
+    }
+  ],
+  "updated_sources": [
+    {
+      "id": "candidate:repository:openai-codex",
+      "label": "openai/codex",
+      "locator": "https://github.com/openai/codex",
+      "read_state": "updated_candidate",
+      "kind": "repository",
+      "head_sha": "1f17e7512f0e47625f2cad416f14870688a99814"
+    }
+  ],
+  "new_approach_leads": [
+    {
+      "id": "candidate:paper:lynx-progressive-speculative-quantization-for-accelerating-kv-transfer-in-long-context-inference",
+      "label": "Lynx: Progressive Speculative Quantization for accelerating KV Transfer in Long-Context Inference",
+      "locator": "https://arxiv.org/abs/2607.01831",
+      "read_state": "unread_candidate",
+      "kind": "paper",
+      "matches": [
+        {
+          "target": "approach:adaptive-kv-quantization",
+          "score": 8,
+          "matched_terms": [
+            "cache",
+            "context",
+            "key",
+            "long",
+            "precision",
+            "quantization",
+            "until",
+            "value"
+          ]
+        },
+        {
+          "target": "approach:multimodal-content-prefix-cache",
+          "score": 6,
+          "matched_terms": [
+            "cache",
+            "context",
+            "language",
+            "long",
+            "serving",
+            "use"
+          ]
+        },
+        {
+          "target": "outcome:decoder-mlx-lm-working-route",
+          "score": 6,
+          "matched_terms": [
+            "cache",
+            "common",
+            "generation",
+            "llm",
+            "quantization",
+            "speculative"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "candidate:paper:rabitqcache-rotated-binary-quantization-for-kvcache-in-long-context-llm-inference",
+      "label": "RaBitQCache: Rotated Binary Quantization for KVCache in Long Context LLM Inference",
+      "locator": "https://arxiv.org/abs/2606.31519",
+      "read_state": "unread_candidate",
+      "kind": "paper",
+      "matches": [
+        {
+          "target": "approach:adaptive-kv-quantization",
+          "score": 9,
+          "matched_terms": [
+            "adaptive",
+            "aware",
+            "cache",
+            "context",
+            "hardware",
+            "key",
+            "long",
+            "quantization"
+          ]
+        },
+        {
+          "target": "backlog:structured-timeseries-recsys",
+          "score": 8,
+          "matched_terms": [
+            "based",
+            "context",
+            "error",
+            "mask",
+            "retrieval",
+            "score",
+            "top",
+            "value"
+          ]
+        },
+        {
+          "target": "approach:multimodal-content-prefix-cache",
+          "score": 7,
+          "matched_terms": [
+            "aware",
+            "cache",
+            "context",
+            "language",
+            "long",
+            "proven",
+            "throughput"
+          ]
+        }
+      ]
+    }
+  ],
+  "gap_hints": [
+    "quantization",
+    "adaptive",
+    "cache",
+    "content",
+    "context",
+    "inference",
+    "long",
+    "multimodal",
+    "prefix",
+    "accelerating",
+    "binary",
+    "decoder"
+  ],
+  "policy": {
+    "review_only": true,
+    "auto_promote_sources": false,
+    "auto_modify_recommendations": false
+  }
+}

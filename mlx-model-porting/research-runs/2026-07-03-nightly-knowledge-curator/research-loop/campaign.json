@@ -1,0 +1,328 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-07-03-nightly-knowledge-curator-research-loop",
+  "objective": "Nightly MLX knowledge curator: top contributors, papers, blogs, package releases, model outcomes, speedup ranges, and app/CLI skill deltas",
+  "generated_at": "2026-07-03T22:10:29+00:00",
+  "review_only": true,
+  "campaign_root": ".",
+  "wave_count": 1,
+  "iteration_cap": 1,
+  "until_review_gate": false,
+  "stop_reason": "single_iteration",
+  "waves": [
+    {
+      "iteration": 1,
+      "run_id": "2026-07-03-nightly-knowledge-curator-research-loop",
+      "output_dir": ".",
+      "subagent_manifest_path": "subagents.json",
+      "assignments_path": "assignments.json",
+      "synthesis_path": "synthesis.json",
+      "execution_mode": "offline-scaffold",
+      "assignment_mode": "dynamic",
+      "gap_hints": [
+        "quantization",
+        "adaptive",
+        "cache",
+        "content",
+        "context",
+        "inference",
+        "long",
+        "multimodal"
+      ],
+      "next_gap_hints": [
+        "https",
+        "packages",
+        "papers",
+        "repositories",
+        "github",
+        "search",
+        "explore",
+        "ml",
+        "hugging_face",
+        "metadata"
+      ],
+      "review_gate": {
+        "status": "fail",
+        "ready_for_skill_update": false,
+        "requirements": {
+          "min_sampled_targets": 6,
+          "min_non_github_lanes": 4,
+          "required_source_lanes": [
+            "papers",
+            "repositories",
+            "repo_local_audit"
+          ],
+          "require_explicit_sampling_receipts": false
+        },
+        "checks": [
+          {
+            "name": "sampled_planned_targets",
+            "status": "fail",
+            "comparison": "at_least",
+            "observed": 0,
+            "required": 6,
+            "detail": "Matched planned sampling targets returned by agents or fixtures."
+          },
+          {
+            "name": "non_github_lanes_covered",
+            "status": "fail",
+            "comparison": "at_least",
+            "observed": 0,
+            "required": 4,
+            "detail": "Non-GitHub source lanes with at least one returned finding."
+          },
+          {
+            "name": "required_source_lane:papers",
+            "status": "fail",
+            "comparison": "at_least",
+            "observed": 0,
+            "required": 1,
+            "detail": "Returned findings from required source lane `papers`."
+          },
+          {
+            "name": "required_source_lane:repositories",
+            "status": "fail",
+            "comparison": "at_least",
+            "observed": 0,
+            "required": 1,
+            "detail": "Returned findings from required source lane `repositories`."
+          },
+          {
+            "name": "required_source_lane:repo_local_audit",
+            "status": "fail",
+            "comparison": "at_least",
+            "observed": 0,
+            "required": 1,
+            "detail": "Returned findings from required source lane `repo_local_audit`."
+          }
+        ],
+        "blocked_reasons": [
+          "sampled_planned_targets observed 0, required 6",
+          "non_github_lanes_covered observed 0, required 4",
+          "required_source_lane:papers observed 0, required 1",
+          "required_source_lane:repositories observed 0, required 1",
+          "required_source_lane:repo_local_audit observed 0, required 1"
+        ]
+      },
+      "agent_count": 6,
+      "agents": [
+        {
+          "assignment_index": 0,
+          "persona_id": "coverage-skeptic",
+          "title": "Coverage Skeptic",
+          "source_lanes": [
+            "official_docs",
+            "papers",
+            "hugging_face",
+            "packages",
+            "technical_blogs",
+            "community_discussions",
+            "repositories",
+            "repo_local_audit"
+          ],
+          "assignment_path": "agents/coverage-skeptic.assignment.json",
+          "prompt_path": "agents/coverage-skeptic.prompt.md",
+          "result_path": "agents/coverage-skeptic.result.json",
+          "blog_path": "blogs/coverage-skeptic.md",
+          "blog_source": "generated",
+          "execution_kind": "offline-scaffold",
+          "execution_state": "scaffolded_not_run",
+          "review_only": true
+        },
+        {
+          "assignment_index": 1,
+          "persona_id": "package-registry-scout",
+          "title": "Package Registry Scout",
+          "source_lanes": [
+            "packages",
+            "repositories"
+          ],
+          "assignment_path": "agents/package-registry-scout.assignment.json",
+          "prompt_path": "agents/package-registry-scout.prompt.md",
+          "result_path": "agents/package-registry-scout.result.json",
+          "blog_path": "blogs/package-registry-scout.md",
+          "blog_source": "generated",
+          "execution_kind": "offline-scaffold",
+          "execution_state": "scaffolded_not_run",
+          "review_only": true
+        },
+        {
+          "assignment_index": 2,
+          "persona_id": "official-docs-cartographer",
+          "title": "Official Docs Cartographer",
+          "source_lanes": [
+            "official_docs",
+            "packages"
+          ],
+          "assignment_path": "agents/official-docs-cartographer.assignment.json",
+          "prompt_path": "agents/official-docs-cartographer.prompt.md",
+          "result_path": "agents/official-docs-cartographer.result.json",
+          "blog_path": "blogs/official-docs-cartographer.md",
+          "blog_source": "generated",
+          "execution_kind": "offline-scaffold",
+          "execution_state": "scaffolded_not_run",
+          "review_only": true
+        },
+        {
+          "assignment_index": 3,
+          "persona_id": "paper-architecture-scout",
+          "title": "Paper Architecture Scout",
+          "source_lanes": [
+            "papers",
+            "technical_blogs"
+          ],
+          "assignment_path": "agents/paper-architecture-scout.assignment.json",
+          "prompt_path": "agents/paper-architecture-scout.prompt.md",
+          "result_path": "agents/paper-architecture-scout.result.json",
+          "blog_path": "blogs/paper-architecture-scout.md",
+          "blog_source": "generated",
+          "execution_kind": "offline-scaffold",
+          "execution_state": "scaffolded_not_run",
+          "review_only": true
+        },
+        {
+          "assignment_index": 4,
+          "persona_id": "huggingface-ecosystem-sampler",
+          "title": "Hugging Face Ecosystem Sampler",
+          "source_lanes": [
+            "hugging_face"
+          ],
+          "assignment_path": "agents/huggingface-ecosystem-sampler.assignment.json",
+          "prompt_path": "agents/huggingface-ecosystem-sampler.prompt.md",
+          "result_path": "agents/huggingface-ecosystem-sampler.result.json",
+          "blog_path": "blogs/huggingface-ecosystem-sampler.md",
+          "blog_source": "generated",
+          "execution_kind": "offline-scaffold",
+          "execution_state": "scaffolded_not_run",
+          "review_only": true
+        },
+        {
+          "assignment_index": 5,
+          "persona_id": "practitioner-blog-miner",
+          "title": "Practitioner Blog Miner",
+          "source_lanes": [
+            "technical_blogs",
+            "community_discussions"
+          ],
+          "assignment_path": "agents/practitioner-blog-miner.assignment.json",
+          "prompt_path": "agents/practitioner-blog-miner.prompt.md",
+          "result_path": "agents/practitioner-blog-miner.result.json",
+          "blog_path": "blogs/practitioner-blog-miner.md",
+          "blog_source": "generated",
+          "execution_kind": "offline-scaffold",
+          "execution_state": "scaffolded_not_run",
+          "review_only": true
+        }
+      ],
+      "launch": {
+        "parallel_safe": true,
+        "max_parallel_agents": 6,
+        "input_paths": [
+          "agents/coverage-skeptic.assignment.json",
+          "agents/coverage-skeptic.prompt.md",
+          "agents/package-registry-scout.assignment.json",
+          "agents/package-registry-scout.prompt.md",
+          "agents/official-docs-cartographer.assignment.json",
+          "agents/official-docs-cartographer.prompt.md",
+          "agents/paper-architecture-scout.assignment.json",
+          "agents/paper-architecture-scout.prompt.md",
+          "agents/huggingface-ecosystem-sampler.assignment.json",
+          "agents/huggingface-ecosystem-sampler.prompt.md",
+          "agents/practitioner-blog-miner.assignment.json",
+          "agents/practitioner-blog-miner.prompt.md"
+        ],
+        "expected_result_paths": [
+          "agents/coverage-skeptic.result.json",
+          "agents/package-registry-scout.result.json",
+          "agents/official-docs-cartographer.result.json",
+          "agents/paper-architecture-scout.result.json",
+          "agents/huggingface-ecosystem-sampler.result.json",
+          "agents/practitioner-blog-miner.result.json"
+        ],
+        "expected_blog_paths": [
+          "blogs/coverage-skeptic.md",
+          "blogs/package-registry-scout.md",
+          "blogs/official-docs-cartographer.md",
+          "blogs/paper-architecture-scout.md",
+          "blogs/huggingface-ecosystem-sampler.md",
+          "blogs/practitioner-blog-miner.md"
+        ],
+        "constraints": [
+          "Review-only: do not modify recommendation assets.",
+          "Do not execute remote model code.",
+          "Sample planned targets first and explain substitutions.",
+          "Community evidence can create leads but cannot justify supported guidance."
+        ]
+      },
+      "ingest": {
+        "command_args": [
+          "python3",
+          "scripts/research_loop.py",
+          "--run-id",
+          "2026-07-03-nightly-knowledge-curator-research-loop",
+          "--objective",
+          "Nightly MLX knowledge curator: top contributors, papers, blogs, package releases, model outcomes, speedup ranges, and app/CLI skill deltas",
+          "--agent-count",
+          "6",
+          "--assignment-mode",
+          "dynamic",
+          "--gap-hint",
+          "quantization",
+          "--gap-hint",
+          "adaptive",
+          "--gap-hint",
+          "cache",
+          "--gap-hint",
+          "content",
+          "--gap-hint",
+          "context",
+          "--gap-hint",
+          "inference",
+          "--gap-hint",
+          "long",
+          "--gap-hint",
+          "multimodal",
+          "--min-sampled-targets",
+          "6",
+          "--min-non-github-lanes",
+          "4",
+          "--require-source-lane",
+          "papers",
+          "--require-source-lane",
+          "repositories",
+          "--require-source-lane",
+          "repo_local_audit",
+          "--ingest-subagent-results",
+          "--output-dir",
+          "/Users/amal/Downloads/mlx-porting-skill-nightly-2026-07-03/mlx-model-porting/research-runs/2026-07-03-nightly-knowledge-curator/research-loop"
+        ],
+        "wait_for_result_paths": [
+          "agents/coverage-skeptic.result.json",
+          "agents/package-registry-scout.result.json",
+          "agents/official-docs-cartographer.result.json",
+          "agents/paper-architecture-scout.result.json",
+          "agents/huggingface-ecosystem-sampler.result.json",
+          "agents/practitioner-blog-miner.result.json"
+        ],
+        "completion_condition": "all result files exist and each persona_id matches its assignment packet"
+      },
+      "wave_dependency": {
+        "requires_prior_wave_ingestion": false,
+        "requires_ingest_before_next_wave": false,
+        "reason": "Single-wave campaign."
+      }
+    }
+  ],
+  "orchestration_contract": {
+    "dispatch_model": "one review-only subagent per campaign wave agent",
+    "parallelism": "agents within a wave may run in parallel; dynamic waves should be sequenced through ingestion",
+    "result_contract": "each subagent writes one JSON object to its result_path and may write markdown to its blog_path",
+    "promotion_rule": "campaign receipts are review-only and never promote findings without source, validation, tests, and rollback evidence"
+  },
+  "instructions": [
+    "Spawn one researcher per wave agent using the listed assignment and prompt paths.",
+    "Wait for every result_path in a wave before running that wave's ingest command_args.",
+    "For dynamic multi-wave campaigns, ingest a completed wave before scaffolding the next wave if returned findings should drive gap hints.",
+    "Do not execute remote model code or modify recommendation assets during research."
+  ]
+}

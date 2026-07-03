@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-06-30T22:07:18.453416+00:00",
+  "generated_at": "2026-07-03T22:10:28.890379+00:00",
   "policy": {
     "auto_modify_recommendations": false,
     "auto_merge": false,
@@ -16,9 +16,9 @@
         "quantization"
       ],
       "default_branch": "main",
-      "head_sha": "25616a0a6acf78a6e23379a0ffcdc3296775a468",
-      "head_date": "2026-06-29T23:15:01Z",
-      "head_message": "Add CI for Windows CUDA build (#3775)",
+      "head_sha": "de7b4ed986b6d6f55b8ace5e73c24d1ca0bea89b",
+      "head_date": "2026-07-03T05:06:16Z",
+      "head_message": "Fix HardShrink to accept its documented lambd argument (#3786)",
       "url": "https://github.com/ml-explore/mlx",
       "latest_release": {
         "tag": "v0.31.2",
@@ -73,9 +73,9 @@
         "speculative"
       ],
       "default_branch": "main",
-      "head_sha": "b590c747e88bc593d224ddce6a26ce2cfe59b5b2",
-      "head_date": "2026-06-30T21:14:05Z",
-      "head_message": "fix(qwen3_5_moe): support split expert weights (#1472)",
+      "head_sha": "0fa3ae25cffb1a0761f1643dd40e1cd45a310dec",
+      "head_date": "2026-07-03T22:05:53Z",
+      "head_message": "fix #1481: quantized KV cache crashes in mask-length checks (#1483)",
       "url": "https://github.com/Blaizzy/mlx-vlm",
       "latest_release": {
         "tag": "v0.6.3",
@@ -94,9 +94,9 @@
         "codec"
       ],
       "default_branch": "main",
-      "head_sha": "cc4ddedaec649d739c9177bd47b9cbd9be674680",
-      "head_date": "2026-06-29T20:44:53Z",
-      "head_message": "Merge pull request #811 from Lazarus-931/higgs-audio-3-stt",
+      "head_sha": "a375300e1c845b323fda20f3103ef4fd8b4a2c6c",
+      "head_date": "2026-07-03T03:39:01Z",
+      "head_message": "Merge pull request #812 from gcanlin/mtd",
       "url": "https://github.com/Blaizzy/mlx-audio",
       "latest_release": {
         "tag": "v0.4.4",
@@ -132,9 +132,9 @@
         "agent-skills"
       ],
       "default_branch": "main",
-      "head_sha": "35414756ca55738e050562e272a6bbc6273aa926",
-      "head_date": "2026-06-27T16:07:56Z",
-      "head_message": "Update claude-api skill: per-SDK doc split, code_execution_20260521, platform-availability, onboarding streamline (#1363)",
+      "head_sha": "9d2f1ae187231d8199c64b5b762e1bdf2244733d",
+      "head_date": "2026-07-01T18:11:23Z",
+      "head_message": "Update claude-api skill: Claude Sonnet 5 and Managed Agents July updates (#1373)",
       "url": "https://github.com/anthropics/skills",
       "latest_release": null,
       "known_snapshot": false
@@ -147,14 +147,14 @@
         "codex"
       ],
       "default_branch": "main",
-      "head_sha": "db887d03e1f907467e33271572dffb73bceecd6b",
-      "head_date": "2026-06-30T21:18:22Z",
-      "head_message": "fix(core) Remove full text websocket trace (#30757)",
+      "head_sha": "1f17e7512f0e47625f2cad416f14870688a99814",
+      "head_date": "2026-07-03T20:06:07Z",
+      "head_message": "Fix MIME types for path-backed feedback attachments (#30796)",
       "url": "https://github.com/openai/codex",
       "latest_release": {
-        "tag": "rust-v0.142.4",
-        "published_at": "2026-06-29T05:04:25Z",
-        "url": "https://github.com/openai/codex/releases/tag/rust-v0.142.4"
+        "tag": "rust-v0.142.5",
+        "published_at": "2026-07-01T01:15:44Z",
+        "url": "https://github.com/openai/codex/releases/tag/rust-v0.142.5"
       },
       "known_snapshot": false
     }
@@ -190,6 +190,46 @@
       "review_status": "candidate-unreviewed",
       "known_url": false,
       "candidate_id": "candidate-benchmarking-on-device-machine-learning-on-apple-silicon-with-mlx"
+    },
+    {
+      "kind": "paper",
+      "query": "KV cache quantization long context",
+      "id": "http://arxiv.org/abs/2607.01831v1",
+      "title": "Lynx: Progressive Speculative Quantization for accelerating KV Transfer in Long-Context Inference",
+      "updated": "2026-07-02T07:52:43Z",
+      "published": "2026-07-02T07:52:43Z",
+      "authors": [
+        "Wenchen Han",
+        "Gingfung Matthew Yeung",
+        "Marco Barletta",
+        "William Toner",
+        "Amory Hoste",
+        "Adam Barker"
+      ],
+      "summary": "Long-context inference is increasingly common in large language model (LLM) serving, driven by retrieval-augmented generation and agentic systems. In disaggregated inference, these workloads require transferring large Key-Value (KV) caches across the network, where decoding cannot begin until the transfer completes. Recent KV quantization techniques reduce data volume and alleviate this bottleneck, but existing schemes fail to achieve both low network-exposed latency and high inference accuracy. We challenge the assumption that the KV cache is an indivisible unit that must be fully received before use. We leverage the observation that different bits in the KV cache contribute unequally to attention computation and inference precision: the most significant bits capture the coarse structure ",
+      "review_status": "candidate-unreviewed",
+      "known_url": false,
+      "candidate_id": "candidate-lynx-progressive-speculative-quantization-for-accelerating-kv-transfer-in-long-context-inference"
+    },
+    {
+      "kind": "paper",
+      "query": "KV cache quantization long context",
+      "id": "http://arxiv.org/abs/2606.31519v1",
+      "title": "RaBitQCache: Rotated Binary Quantization for KVCache in Long Context LLM Inference",
+      "updated": "2026-06-30T11:32:14Z",
+      "published": "2026-06-30T11:32:14Z",
+      "authors": [
+        "Wenhao Li",
+        "Jinhao Dong",
+        "Hailin Zhang",
+        "Wenhang Shi",
+        "Wei Lu",
+        "Xiaoyong Du"
+      ],
+      "summary": "Long-context Large Language Model inference is severely bottlenecked by the massive Key-Value (KV) cache, yet existing sparse attention methods often suffer from static fixed-budget (Top-k) retrieval or rely on proxy scores that are computationally expensive and biased. To address these limitations, we propose RaBitQCache, a novel sparse attention framework that utilizes randomized rotated binary quantization and high-throughput binary-INT4 arithmetic to efficiently estimate attention weights. Our proxy score serves as an unbiased estimator with a proven error bound, enabling adaptive Top-p retrieval that dynamically adjusts the token budget based on actual attention sparsity. We further implement a hardware-aware system with asynchronous pipelining and lazy updates to mask overhead. Evalu",
+      "review_status": "candidate-unreviewed",
+      "known_url": false,
+      "candidate_id": "candidate-rabitqcache-rotated-binary-quantization-for-kvcache-in-long-context-llm-inference"
     },
     {
       "kind": "paper",
@@ -307,43 +347,6 @@
       "review_status": "candidate-unreviewed",
       "known_url": false,
       "candidate_id": "candidate-stochastic-sparse-attention-for-memory-bound-inference"
-    },
-    {
-      "kind": "paper",
-      "query": "KV cache quantization long context",
-      "id": "http://arxiv.org/abs/2602.07721v3",
-      "title": "ParisKV: Fast and Drift-Robust KV-Cache Retrieval for Long-Context LLMs",
-      "updated": "2026-05-28T23:34:23Z",
-      "published": "2026-02-07T22:26:45Z",
-      "authors": [
-        "Yanlin Qi",
-        "Xinhang Chen",
-        "Huiqiang Jiang",
-        "Qitong Wang",
-        "Botao Peng",
-        "Themis Palpanas"
-      ],
-      "summary": "KV-cache retrieval is essential for long-context LLM inference, yet existing methods struggle with distribution drift and high latency at scale. We introduce ParisKV, a drift-robust, GPU-native KV-cache retrieval framework based on collision-based candidate selection, followed by a quantized inner-product reranking estimator. For million-token contexts, ParisKV supports CPU-offloaded KV caches via Unified Virtual Addressing (UVA), enabling on-demand top-$k$ fetching with minimal overhead. ParisKV matches or outperforms full attention quality on long-input and long-generation benchmarks. It achieves state-of-the-art long-context decoding efficiency: it matches or exceeds full attention speed even at batch size 1 for long contexts, delivers up to 2.8$\\times$ higher throughput within full att",
-      "review_status": "candidate-unreviewed",
-      "known_url": false,
-      "candidate_id": "candidate-pariskv-fast-and-drift-robust-kv-cache-retrieval-for-long-context-llms"
-    },
-    {
-      "kind": "paper",
-      "query": "KV cache quantization long context",
-      "id": "http://arxiv.org/abs/2602.23200v2",
-      "title": "InnerQ: Hardware-Aware Tuning-Free Quantization of KV Cache for Large Language Models",
-      "updated": "2026-05-20T19:15:57Z",
-      "published": "2026-02-26T16:50:36Z",
-      "authors": [
-        "Sayed Mohammadreza Tayaranian Hosseini",
-        "Amir Ardakani",
-        "Warren J. Gross"
-      ],
-      "summary": "When transformer-based language models are deployed for text generation, most of the inference time is spent in the decoding stage, where output tokens are generated sequentially. Reducing the hardware cost of each decoding step is therefore critical for efficient long-context generation. A major bottleneck is the key-value (KV) cache, whose size grows with sequence length and often dominates the model's memory footprint. Prior work has proposed quantization methods to compress the KV cache while minimizing its loss of precision. We present InnerQ, a hardware-aware KV cache quantization scheme that reduces decode latency without compromising evaluation performance. InnerQ performs group-wise quantization by grouping cache matrices along their inner dimension. This grouping strategy aligns ",
-      "review_status": "candidate-unreviewed",
-      "known_url": true,
-      "candidate_id": "candidate-innerq-hardware-aware-tuning-free-quantization-of-kv-cache-for-large-language-models"
     },
     {
       "kind": "paper",

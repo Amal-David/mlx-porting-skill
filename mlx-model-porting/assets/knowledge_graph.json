@@ -1,14 +1,14 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-06-30T22:07:18+00:00",
-  "run_id": "2026-06-30-nightly-knowledge-curator",
+  "generated_at": "2026-07-03T22:10:28+00:00",
+  "run_id": "2026-07-03-nightly-knowledge-curator",
   "policy": {
     "review_only": true,
     "auto_promote_sources": false,
     "auto_modify_recommendations": false
   },
   "node_count": 431,
-  "edge_count": 232,
+  "edge_count": 225,
   "nodes": [
     {
       "id": "approach:adaptive-kv-quantization",
@@ -566,24 +566,6 @@
       "summary": "The popularity of neural audio codecs as speech tokenizers has surged with the advent of Multimodal Large Language Models. New codec architectures with semantic and acoustic disentanglement have emerged. There are two main approaches to introduce semantic information into codec models: one distills semantic information from SSL representations into the first RVQ layer, while the other maintains separate streams for semantic and acoustic features. We propose HybridCodec, a unified architecture that combines both paradigms. It employs separate semantic and acoustic branches while distilling SSL representations into the semantic stream. This design ensures strong disentanglement without requiring an SSL model during inference. HybridCodec shows superior semantic specialization (RVQ-1) on in-d"
     },
     {
-      "id": "candidate:paper:innerq-hardware-aware-tuning-free-quantization-of-kv-cache-for-large-language-models",
-      "kind": "source_candidate",
-      "candidate_kind": "paper",
-      "label": "InnerQ: Hardware-Aware Tuning-Free Quantization of KV Cache for Large Language Models",
-      "locator": "https://arxiv.org/abs/2602.23200",
-      "read_state": "already_read",
-      "known_source_id": "source:paper-2602-23200",
-      "query": "KV cache quantization long context",
-      "updated": "2026-05-20T19:15:57Z",
-      "published": "2026-02-26T16:50:36Z",
-      "authors": [
-        "Sayed Mohammadreza Tayaranian Hosseini",
-        "Amir Ardakani",
-        "Warren J. Gross"
-      ],
-      "summary": "When transformer-based language models are deployed for text generation, most of the inference time is spent in the decoding stage, where output tokens are generated sequentially. Reducing the hardware cost of each decoding step is therefore critical for efficient long-context generation. A major bottleneck is the key-value (KV) cache, whose size grows with sequence length and often dominates the model's memory footprint. Prior work has proposed quantization methods to compress the KV cache while minimizing its loss of precision. We present InnerQ, a hardware-aware KV cache quantization scheme that reduces decode latency without compromising evaluation performance. InnerQ performs group-wise quantization by grouping cache matrices along their inner dimension. This grouping strategy aligns "
-    },
-    {
       "id": "candidate:paper:kernelcraft-benchmarking-for-agentic-close-to-metal-kernel-generation-on-emerging-hardware",
       "kind": "source_candidate",
       "candidate_kind": "paper",
@@ -611,6 +593,27 @@
       "summary": "New AI accelerators with novel instruction set architectures (ISAs) often require developers to manually craft low-level kernels, a time-consuming and error-prone process that does not scale across hardware targets. This delays emerging hardware platforms from reaching the market. While prior LLM-based code generation has shown promise in mature GPU ecosystems, it remains unclear whether agentic LLM systems can quickly produce valid and efficient kernels for emerging hardware with new ISAs. We present KernelCraft: the first benchmark for evaluating an LLM agent's ability to generate and optimize low-level kernels for customized accelerators through a function-calling, feedback-driven workflow. We evaluate agent performance across three emerging accelerators on more than 20 machine-learning"
     },
     {
+      "id": "candidate:paper:lynx-progressive-speculative-quantization-for-accelerating-kv-transfer-in-long-context-inference",
+      "kind": "source_candidate",
+      "candidate_kind": "paper",
+      "label": "Lynx: Progressive Speculative Quantization for accelerating KV Transfer in Long-Context Inference",
+      "locator": "https://arxiv.org/abs/2607.01831",
+      "read_state": "unread_candidate",
+      "known_source_id": "",
+      "query": "KV cache quantization long context",
+      "updated": "2026-07-02T07:52:43Z",
+      "published": "2026-07-02T07:52:43Z",
+      "authors": [
+        "Wenchen Han",
+        "Gingfung Matthew Yeung",
+        "Marco Barletta",
+        "William Toner",
+        "Amory Hoste",
+        "Adam Barker"
+      ],
+      "summary": "Long-context inference is increasingly common in large language model (LLM) serving, driven by retrieval-augmented generation and agentic systems. In disaggregated inference, these workloads require transferring large Key-Value (KV) caches across the network, where decoding cannot begin until the transfer completes. Recent KV quantization techniques reduce data volume and alleviate this bottleneck, but existing schemes fail to achieve both low network-exposed latency and high inference accuracy. We challenge the assumption that the KV cache is an indivisible unit that must be fully received before use. We leverage the observation that different bits in the KV cache contribute unequally to attention computation and inference precision: the most significant bits capture the coarse structure "
+    },
+    {
       "id": "candidate:paper:native-llm-and-mllm-inference-at-scale-on-apple-silicon",
       "kind": "source_candidate",
       "candidate_kind": "paper",
@@ -625,27 +628,6 @@
         "Wayner Barrios"
       ],
       "summary": "The growing adoption of Apple Silicon for machine learning development has created demand for efficient inference solutions that leverage its unique unified memory architecture. However, existing tools either lack native optimization (PyTorch MPS) or focus solely on text models, leaving multimodal workloads underserved. We present vllm-mlx, a framework for efficient LLM and MLLM inference on Apple Silicon built natively on MLX. For text models, we achieve 21\\% to 87\\% higher throughput than llama-cpp across models ranging from Qwen3-0.6B to Nemotron-30B, while providing continuous batching that scales to 4.3x aggregate throughput at 16 concurrent requests. For multimodal models, we introduce content-based prefix caching that eliminates redundant vision encoding by identifying identical ima"
-    },
-    {
-      "id": "candidate:paper:pariskv-fast-and-drift-robust-kv-cache-retrieval-for-long-context-llms",
-      "kind": "source_candidate",
-      "candidate_kind": "paper",
-      "label": "ParisKV: Fast and Drift-Robust KV-Cache Retrieval for Long-Context LLMs",
-      "locator": "https://arxiv.org/abs/2602.07721",
-      "read_state": "seen_unread_candidate",
-      "known_source_id": "",
-      "query": "KV cache quantization long context",
-      "updated": "2026-05-28T23:34:23Z",
-      "published": "2026-02-07T22:26:45Z",
-      "authors": [
-        "Yanlin Qi",
-        "Xinhang Chen",
-        "Huiqiang Jiang",
-        "Qitong Wang",
-        "Botao Peng",
-        "Themis Palpanas"
-      ],
-      "summary": "KV-cache retrieval is essential for long-context LLM inference, yet existing methods struggle with distribution drift and high latency at scale. We introduce ParisKV, a drift-robust, GPU-native KV-cache retrieval framework based on collision-based candidate selection, followed by a quantized inner-product reranking estimator. For million-token contexts, ParisKV supports CPU-offloaded KV caches via Unified Virtual Addressing (UVA), enabling on-demand top-$k$ fetching with minimal overhead. ParisKV matches or outperforms full attention quality on long-input and long-generation benchmarks. It achieves state-of-the-art long-context decoding efficiency: it matches or exceeds full attention speed even at batch size 1 for long contexts, delivers up to 2.8$\\times$ higher throughput within full att"
     },
     {
       "id": "candidate:paper:probing-neural-audio-codecs-for-distinctions-among-english-nuclear-tunes",
@@ -721,6 +703,27 @@
         "Allison Andreyev"
       ],
       "summary": "Automated speech recognition (ASR) models have gained prominence for applications such as captioning, speech translation, and live transcription. This paper studies Whisper and two model variants: one optimized for live speech streaming and another for offline transcription. Notably, these models have been found to generate hallucinated content, reducing transcription reliability. Furthermore, larger model variants exhibit increased latency and pose challenges for deployment on resource-constrained devices. This study analyzes the similarities and differences between three Whisper models, qualitatively examining their distinct capabilities. Next, this study quantifies the impact of model quantization on latency and evaluates its viability for edge deployment. Using the open source LibriSpe"
+    },
+    {
+      "id": "candidate:paper:rabitqcache-rotated-binary-quantization-for-kvcache-in-long-context-llm-inference",
+      "kind": "source_candidate",
+      "candidate_kind": "paper",
+      "label": "RaBitQCache: Rotated Binary Quantization for KVCache in Long Context LLM Inference",
+      "locator": "https://arxiv.org/abs/2606.31519",
+      "read_state": "unread_candidate",
+      "known_source_id": "",
+      "query": "KV cache quantization long context",
+      "updated": "2026-06-30T11:32:14Z",
+      "published": "2026-06-30T11:32:14Z",
+      "authors": [
+        "Wenhao Li",
+        "Jinhao Dong",
+        "Hailin Zhang",
+        "Wenhang Shi",
+        "Wei Lu",
+        "Xiaoyong Du"
+      ],
+      "summary": "Long-context Large Language Model inference is severely bottlenecked by the massive Key-Value (KV) cache, yet existing sparse attention methods often suffer from static fixed-budget (Top-k) retrieval or rely on proxy scores that are computationally expensive and biased. To address these limitations, we propose RaBitQCache, a novel sparse attention framework that utilizes randomized rotated binary quantization and high-throughput binary-INT4 arithmetic to efficiently estimate attention weights. Our proxy score serves as an unbiased estimator with a proven error bound, enabling adaptive Top-p retrieval that dynamically adjusts the token budget based on actual attention sparsity. We further implement a hardware-aware system with asynchronous pipelining and lazy updates to mask overhead. Evalu"
     },
     {
       "id": "candidate:paper:rope-aware-bit-allocation-for-kv-cache-quantization",
@@ -850,13 +853,13 @@
       "locator": "https://github.com/anthropics/skills",
       "read_state": "already_read",
       "known_source_id": "source:agent-skills-repo",
-      "head_sha": "35414756ca55738e050562e272a6bbc6273aa926",
-      "head_date": "2026-06-27T16:07:56Z",
-      "head_message": "Update claude-api skill: per-SDK doc split, code_execution_20260521, platform-availability, onboarding streamline (#1363)",
+      "head_sha": "9d2f1ae187231d8199c64b5b762e1bdf2244733d",
+      "head_date": "2026-07-01T18:11:23Z",
+      "head_message": "Update claude-api skill: Claude Sonnet 5 and Managed Agents July updates (#1373)",
       "topics": [
         "agent-skills"
       ],
-      "summary": "Update claude-api skill: per-SDK doc split, code_execution_20260521, platform-availability, onboarding streamline (#1363)"
+      "summary": "Update claude-api skill: Claude Sonnet 5 and Managed Agents July updates (#1373)"
     },
     {
       "id": "candidate:repository:blaizzy-mlx-audio",
@@ -866,16 +869,16 @@
       "locator": "https://github.com/Blaizzy/mlx-audio",
       "read_state": "already_read",
       "known_source_id": "source:mlx-audio-repo",
-      "head_sha": "cc4ddedaec649d739c9177bd47b9cbd9be674680",
-      "head_date": "2026-06-29T20:44:53Z",
-      "head_message": "Merge pull request #811 from Lazarus-931/higgs-audio-3-stt",
+      "head_sha": "a375300e1c845b323fda20f3103ef4fd8b4a2c6c",
+      "head_date": "2026-07-03T03:39:01Z",
+      "head_message": "Merge pull request #812 from gcanlin/mtd",
       "topics": [
         "audio",
         "tts",
         "stt",
         "codec"
       ],
-      "summary": "Merge pull request #811 from Lazarus-931/higgs-audio-3-stt"
+      "summary": "Merge pull request #812 from gcanlin/mtd"
     },
     {
       "id": "candidate:repository:blaizzy-mlx-vlm",
@@ -885,15 +888,15 @@
       "locator": "https://github.com/Blaizzy/mlx-vlm",
       "read_state": "already_read",
       "known_source_id": "source:mlx-vlm-repo",
-      "head_sha": "b590c747e88bc593d224ddce6a26ce2cfe59b5b2",
-      "head_date": "2026-06-30T21:14:05Z",
-      "head_message": "fix(qwen3_5_moe): support split expert weights (#1472)",
+      "head_sha": "0fa3ae25cffb1a0761f1643dd40e1cd45a310dec",
+      "head_date": "2026-07-03T22:05:53Z",
+      "head_message": "fix #1481: quantized KV cache crashes in mask-length checks (#1483)",
       "topics": [
         "multimodal",
         "serving",
         "speculative"
       ],
-      "summary": "fix(qwen3_5_moe): support split expert weights (#1472)"
+      "summary": "fix #1481: quantized KV cache crashes in mask-length checks (#1483)"
     },
     {
       "id": "candidate:repository:ml-explore-mlx",
@@ -903,15 +906,15 @@
       "locator": "https://github.com/ml-explore/mlx",
       "read_state": "already_read",
       "known_source_id": "source:mlx-repo",
-      "head_sha": "25616a0a6acf78a6e23379a0ffcdc3296775a468",
-      "head_date": "2026-06-29T23:15:01Z",
-      "head_message": "Add CI for Windows CUDA build (#3775)",
+      "head_sha": "de7b4ed986b6d6f55b8ace5e73c24d1ca0bea89b",
+      "head_date": "2026-07-03T05:06:16Z",
+      "head_message": "Fix HardShrink to accept its documented lambd argument (#3786)",
       "topics": [
         "runtime",
         "kernels",
         "quantization"
       ],
-      "summary": "Add CI for Windows CUDA build (#3775)"
+      "summary": "Fix HardShrink to accept its documented lambd argument (#3786)"
     },
     {
       "id": "candidate:repository:ml-explore-mlx-examples",
@@ -958,14 +961,14 @@
       "locator": "https://github.com/openai/codex",
       "read_state": "updated_candidate",
       "known_source_id": "",
-      "head_sha": "db887d03e1f907467e33271572dffb73bceecd6b",
-      "head_date": "2026-06-30T21:18:22Z",
-      "head_message": "fix(core) Remove full text websocket trace (#30757)",
+      "head_sha": "1f17e7512f0e47625f2cad416f14870688a99814",
+      "head_date": "2026-07-03T20:06:07Z",
+      "head_message": "Fix MIME types for path-backed feedback attachments (#30796)",
       "topics": [
         "agent-skills",
         "codex"
       ],
-      "summary": "fix(core) Remove full text websocket trace (#30757)"
+      "summary": "Fix MIME types for path-backed feedback attachments (#30796)"
     },
     {
       "id": "candidate:repository:waybarrios-vllm-mlx",
@@ -7224,56 +7227,6 @@
       ]
     },
     {
-      "source": "candidate:paper:innerq-hardware-aware-tuning-free-quantization-of-kv-cache-for-large-language-models",
-      "target": "approach:adaptive-kv-quantization",
-      "relation": "candidate_relevant_to",
-      "score": 11,
-      "matched_terms": [
-        "aware",
-        "cache",
-        "context",
-        "hardware",
-        "key",
-        "long",
-        "memory",
-        "precision"
-      ]
-    },
-    {
-      "source": "candidate:paper:innerq-hardware-aware-tuning-free-quantization-of-kv-cache-for-large-language-models",
-      "target": "approach:draft-model-speculation",
-      "relation": "candidate_relevant_to",
-      "score": 6,
-      "matched_terms": [
-        "cost",
-        "decode",
-        "decoding",
-        "latency",
-        "transformer",
-        "when"
-      ]
-    },
-    {
-      "source": "candidate:paper:innerq-hardware-aware-tuning-free-quantization-of-kv-cache-for-large-language-models",
-      "target": "backlog:structured-timeseries-recsys",
-      "relation": "candidate_relevant_to",
-      "score": 7,
-      "matched_terms": [
-        "based",
-        "context",
-        "has",
-        "text",
-        "time",
-        "transformer",
-        "value"
-      ]
-    },
-    {
-      "source": "candidate:paper:innerq-hardware-aware-tuning-free-quantization-of-kv-cache-for-large-language-models",
-      "target": "source:paper-2602-23200",
-      "relation": "already_read_as"
-    },
-    {
       "source": "candidate:paper:kernelcraft-benchmarking-for-agentic-close-to-metal-kernel-generation-on-emerging-hardware",
       "target": "backlog:structured-timeseries-recsys",
       "relation": "candidate_relevant_to",
@@ -7315,6 +7268,50 @@
         "llm",
         "not",
         "through"
+      ]
+    },
+    {
+      "source": "candidate:paper:lynx-progressive-speculative-quantization-for-accelerating-kv-transfer-in-long-context-inference",
+      "target": "approach:adaptive-kv-quantization",
+      "relation": "candidate_relevant_to",
+      "score": 8,
+      "matched_terms": [
+        "cache",
+        "context",
+        "key",
+        "long",
+        "precision",
+        "quantization",
+        "until",
+        "value"
+      ]
+    },
+    {
+      "source": "candidate:paper:lynx-progressive-speculative-quantization-for-accelerating-kv-transfer-in-long-context-inference",
+      "target": "approach:multimodal-content-prefix-cache",
+      "relation": "candidate_relevant_to",
+      "score": 6,
+      "matched_terms": [
+        "cache",
+        "context",
+        "language",
+        "long",
+        "serving",
+        "use"
+      ]
+    },
+    {
+      "source": "candidate:paper:lynx-progressive-speculative-quantization-for-accelerating-kv-transfer-in-long-context-inference",
+      "target": "outcome:decoder-mlx-lm-working-route",
+      "relation": "candidate_relevant_to",
+      "score": 6,
+      "matched_terms": [
+        "cache",
+        "common",
+        "generation",
+        "llm",
+        "quantization",
+        "speculative"
       ]
     },
     {
@@ -7364,44 +7361,6 @@
       "source": "candidate:paper:native-llm-and-mllm-inference-at-scale-on-apple-silicon",
       "target": "source:paper-2601-19139",
       "relation": "already_read_as"
-    },
-    {
-      "source": "candidate:paper:pariskv-fast-and-drift-robust-kv-cache-retrieval-for-long-context-llms",
-      "target": "approach:adaptive-kv-quantization",
-      "relation": "candidate_relevant_to",
-      "score": 4,
-      "matched_terms": [
-        "cache",
-        "context",
-        "long",
-        "quantization"
-      ]
-    },
-    {
-      "source": "candidate:paper:pariskv-fast-and-drift-robust-kv-cache-retrieval-for-long-context-llms",
-      "target": "approach:fast-sdpa",
-      "relation": "candidate_relevant_to",
-      "score": 5,
-      "matched_terms": [
-        "attention",
-        "fast",
-        "latency",
-        "scale",
-        "throughput"
-      ]
-    },
-    {
-      "source": "candidate:paper:pariskv-fast-and-drift-robust-kv-cache-retrieval-for-long-context-llms",
-      "target": "approach:qwen3-tts-batch-generation",
-      "relation": "candidate_relevant_to",
-      "score": 5,
-      "matched_terms": [
-        "batch",
-        "generation",
-        "latency",
-        "quality",
-        "throughput"
-      ]
     },
     {
       "source": "candidate:paper:probing-neural-audio-codecs-for-distinctions-among-english-nuclear-tunes",
@@ -7568,6 +7527,53 @@
         "next",
         "offline",
         "open"
+      ]
+    },
+    {
+      "source": "candidate:paper:rabitqcache-rotated-binary-quantization-for-kvcache-in-long-context-llm-inference",
+      "target": "approach:adaptive-kv-quantization",
+      "relation": "candidate_relevant_to",
+      "score": 9,
+      "matched_terms": [
+        "adaptive",
+        "aware",
+        "cache",
+        "context",
+        "hardware",
+        "key",
+        "long",
+        "quantization"
+      ]
+    },
+    {
+      "source": "candidate:paper:rabitqcache-rotated-binary-quantization-for-kvcache-in-long-context-llm-inference",
+      "target": "approach:multimodal-content-prefix-cache",
+      "relation": "candidate_relevant_to",
+      "score": 7,
+      "matched_terms": [
+        "aware",
+        "cache",
+        "context",
+        "language",
+        "long",
+        "proven",
+        "throughput"
+      ]
+    },
+    {
+      "source": "candidate:paper:rabitqcache-rotated-binary-quantization-for-kvcache-in-long-context-llm-inference",
+      "target": "backlog:structured-timeseries-recsys",
+      "relation": "candidate_relevant_to",
+      "score": 8,
+      "matched_terms": [
+        "based",
+        "context",
+        "error",
+        "mask",
+        "retrieval",
+        "score",
+        "top",
+        "value"
       ]
     },
     {
@@ -7832,36 +7838,6 @@
       "relation": "already_read_as"
     },
     {
-      "source": "candidate:repository:anthropics-skills",
-      "target": "backlog:structured-timeseries-recsys",
-      "relation": "candidate_relevant_to",
-      "score": 2,
-      "matched_terms": [
-        "code",
-        "split"
-      ]
-    },
-    {
-      "source": "candidate:repository:anthropics-skills",
-      "target": "learning:layer-eval-watchdog-guard",
-      "relation": "candidate_relevant_to",
-      "score": 2,
-      "matched_terms": [
-        "per",
-        "skill"
-      ]
-    },
-    {
-      "source": "candidate:repository:anthropics-skills",
-      "target": "outcome:encoder-embedding-top-model-gap",
-      "relation": "candidate_relevant_to",
-      "score": 2,
-      "matched_terms": [
-        "code",
-        "skill"
-      ]
-    },
-    {
       "source": "candidate:repository:blaizzy-mlx-audio",
       "target": "approach:audio-reference-conditioning-cache",
       "relation": "candidate_relevant_to",
@@ -7898,8 +7874,9 @@
       "source": "candidate:repository:blaizzy-mlx-vlm",
       "target": "approach:content-prefix-cache-vlm",
       "relation": "candidate_relevant_to",
-      "score": 3,
+      "score": 4,
       "matched_terms": [
+        "cache",
         "multimodal",
         "serving",
         "vlm"
@@ -7909,8 +7886,9 @@
       "source": "candidate:repository:blaizzy-mlx-vlm",
       "target": "approach:multimodal-content-prefix-cache",
       "relation": "candidate_relevant_to",
-      "score": 3,
+      "score": 4,
       "matched_terms": [
+        "cache",
         "multimodal",
         "serving",
         "vlm"
@@ -7918,43 +7896,14 @@
     },
     {
       "source": "candidate:repository:blaizzy-mlx-vlm",
-      "target": "learning:paged-kv-and-gather-qmm-serving",
+      "target": "outcome:vlm-mlx-vlm-working-route",
       "relation": "candidate_relevant_to",
-      "score": 3,
+      "score": 4,
       "matched_terms": [
-        "expert",
-        "moe",
-        "serving"
-      ]
-    },
-    {
-      "source": "candidate:repository:ml-explore-mlx",
-      "target": "approach:cuda-graphs-decode-capture",
-      "relation": "candidate_relevant_to",
-      "score": 2,
-      "matched_terms": [
-        "cuda",
-        "runtime"
-      ]
-    },
-    {
-      "source": "candidate:repository:ml-explore-mlx",
-      "target": "backlog:graph-geometric-scientific",
-      "relation": "candidate_relevant_to",
-      "score": 2,
-      "matched_terms": [
-        "add",
-        "kernels"
-      ]
-    },
-    {
-      "source": "candidate:repository:ml-explore-mlx",
-      "target": "backlog:non-generative-cv",
-      "relation": "candidate_relevant_to",
-      "score": 2,
-      "matched_terms": [
-        "add",
-        "kernels"
+        "cache",
+        "multimodal",
+        "serving",
+        "vlm"
       ]
     },
     {
@@ -8748,9 +8697,9 @@
   ],
   "latest_delta": {
     "schema_version": 1,
-    "run_id": "2026-06-30-nightly-knowledge-curator",
-    "generated_at": "2026-06-30T22:07:18+00:00",
-    "previous_graph_generated_at": "2026-06-29T22:09:00+00:00",
+    "run_id": "2026-07-03-nightly-knowledge-curator",
+    "generated_at": "2026-07-03T22:10:28+00:00",
+    "previous_graph_generated_at": "2026-06-30T22:07:18+00:00",
     "already_read_sources": [
       {
         "id": "candidate:paper:native-llm-and-mllm-inference-at-scale-on-apple-silicon",
@@ -8783,14 +8732,6 @@
         "read_state": "already_read",
         "kind": "paper",
         "known_source_id": "source:paper-2606-20474"
-      },
-      {
-        "id": "candidate:paper:innerq-hardware-aware-tuning-free-quantization-of-kv-cache-for-large-language-models",
-        "label": "InnerQ: Hardware-Aware Tuning-Free Quantization of KV Cache for Large Language Models",
-        "locator": "https://arxiv.org/abs/2602.23200",
-        "read_state": "already_read",
-        "kind": "paper",
-        "known_source_id": "source:paper-2602-23200"
       },
       {
         "id": "candidate:paper:pushing-the-limits-of-on-device-streaming-asr-a-compact-high-accuracy-english-model-for-low-latency-inference",
@@ -8857,7 +8798,22 @@
         "known_source_id": "source:agent-skills-repo"
       }
     ],
-    "new_unread_sources": [],
+    "new_unread_sources": [
+      {
+        "id": "candidate:paper:lynx-progressive-speculative-quantization-for-accelerating-kv-transfer-in-long-context-inference",
+        "label": "Lynx: Progressive Speculative Quantization for accelerating KV Transfer in Long-Context Inference",
+        "locator": "https://arxiv.org/abs/2607.01831",
+        "read_state": "unread_candidate",
+        "kind": "paper"
+      },
+      {
+        "id": "candidate:paper:rabitqcache-rotated-binary-quantization-for-kvcache-in-long-context-llm-inference",
+        "label": "RaBitQCache: Rotated Binary Quantization for KVCache in Long Context LLM Inference",
+        "locator": "https://arxiv.org/abs/2606.31519",
+        "read_state": "unread_candidate",
+        "kind": "paper"
+      }
+    ],
     "updated_sources": [
       {
         "id": "candidate:repository:openai-codex",
@@ -8865,11 +8821,122 @@
         "locator": "https://github.com/openai/codex",
         "read_state": "updated_candidate",
         "kind": "repository",
-        "head_sha": "db887d03e1f907467e33271572dffb73bceecd6b"
+        "head_sha": "1f17e7512f0e47625f2cad416f14870688a99814"
       }
     ],
-    "new_approach_leads": [],
-    "gap_hints": [],
+    "new_approach_leads": [
+      {
+        "id": "candidate:paper:lynx-progressive-speculative-quantization-for-accelerating-kv-transfer-in-long-context-inference",
+        "label": "Lynx: Progressive Speculative Quantization for accelerating KV Transfer in Long-Context Inference",
+        "locator": "https://arxiv.org/abs/2607.01831",
+        "read_state": "unread_candidate",
+        "kind": "paper",
+        "matches": [
+          {
+            "target": "approach:adaptive-kv-quantization",
+            "score": 8,
+            "matched_terms": [
+              "cache",
+              "context",
+              "key",
+              "long",
+              "precision",
+              "quantization",
+              "until",
+              "value"
+            ]
+          },
+          {
+            "target": "approach:multimodal-content-prefix-cache",
+            "score": 6,
+            "matched_terms": [
+              "cache",
+              "context",
+              "language",
+              "long",
+              "serving",
+              "use"
+            ]
+          },
+          {
+            "target": "outcome:decoder-mlx-lm-working-route",
+            "score": 6,
+            "matched_terms": [
+              "cache",
+              "common",
+              "generation",
+              "llm",
+              "quantization",
+              "speculative"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "candidate:paper:rabitqcache-rotated-binary-quantization-for-kvcache-in-long-context-llm-inference",
+        "label": "RaBitQCache: Rotated Binary Quantization for KVCache in Long Context LLM Inference",
+        "locator": "https://arxiv.org/abs/2606.31519",
+        "read_state": "unread_candidate",
+        "kind": "paper",
+        "matches": [
+          {
+            "target": "approach:adaptive-kv-quantization",
+            "score": 9,
+            "matched_terms": [
+              "adaptive",
+              "aware",
+              "cache",
+              "context",
+              "hardware",
+              "key",
+              "long",
+              "quantization"
+            ]
+          },
+          {
+            "target": "backlog:structured-timeseries-recsys",
+            "score": 8,
+            "matched_terms": [
+              "based",
+              "context",
+              "error",
+              "mask",
+              "retrieval",
+              "score",
+              "top",
+              "value"
+            ]
+          },
+          {
+            "target": "approach:multimodal-content-prefix-cache",
+            "score": 7,
+            "matched_terms": [
+              "aware",
+              "cache",
+              "context",
+              "language",
+              "long",
+              "proven",
+              "throughput"
+            ]
+          }
+        ]
+      }
+    ],
+    "gap_hints": [
+      "quantization",
+      "adaptive",
+      "cache",
+      "content",
+      "context",
+      "inference",
+      "long",
+      "multimodal",
+      "prefix",
+      "accelerating",
+      "binary",
+      "decoder"
+    ],
     "policy": {
       "review_only": true,
       "auto_promote_sources": false,

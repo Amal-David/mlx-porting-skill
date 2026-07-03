@@ -1,0 +1,1823 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-07-03-nightly-knowledge-curator-research-loop",
+  "objective": "Nightly MLX knowledge curator: top contributors, papers, blogs, package releases, model outcomes, speedup ranges, and app/CLI skill deltas",
+  "generated_at": "2026-07-03T22:10:29+00:00",
+  "iteration": 1,
+  "iteration_count": 1,
+  "gap_hints": [
+    "quantization",
+    "adaptive",
+    "cache",
+    "content",
+    "context",
+    "inference",
+    "long",
+    "multimodal"
+  ],
+  "next_gap_hints": [
+    "https",
+    "packages",
+    "papers",
+    "repositories",
+    "github",
+    "search",
+    "explore",
+    "ml",
+    "hugging_face",
+    "metadata"
+  ],
+  "assignment_planner": {
+    "schema_version": 1,
+    "mode": "dynamic",
+    "requested_agent_count": 6,
+    "objective_terms": [
+      "app",
+      "blogs",
+      "cli",
+      "contributors",
+      "curator",
+      "deltas",
+      "knowledge",
+      "model",
+      "nightly",
+      "outcomes",
+      "package",
+      "papers",
+      "ranges",
+      "releases",
+      "skill",
+      "speedup",
+      "top"
+    ],
+    "gap_hints": [
+      "quantization",
+      "adaptive",
+      "cache",
+      "content",
+      "context",
+      "inference",
+      "long",
+      "multimodal"
+    ],
+    "gap_terms": [
+      "adaptive",
+      "cache",
+      "content",
+      "context",
+      "inference",
+      "long",
+      "multimodal",
+      "quantization"
+    ],
+    "selected_personas": [
+      {
+        "persona_id": "coverage-skeptic",
+        "title": "Coverage Skeptic",
+        "rank": 1,
+        "config_order": 6,
+        "score": 14,
+        "source_lanes": [
+          "official_docs",
+          "papers",
+          "hugging_face",
+          "packages",
+          "technical_blogs",
+          "community_discussions",
+          "repositories",
+          "repo_local_audit"
+        ],
+        "matched_objective_terms": [
+          "blogs",
+          "cli",
+          "model",
+          "package",
+          "papers"
+        ],
+        "matched_gap_terms": [
+          "inference",
+          "multimodal",
+          "quantization"
+        ],
+        "reasons": [
+          "Matched gap terms: inference, multimodal, quantization.",
+          "Matched objective terms: blogs, cli, model, package, papers.",
+          "Covers source lanes: official_docs, papers, hugging_face, packages, technical_blogs, community_discussions, repositories, repo_local_audit."
+        ]
+      },
+      {
+        "persona_id": "package-registry-scout",
+        "title": "Package Registry Scout",
+        "rank": 2,
+        "config_order": 4,
+        "score": 10,
+        "source_lanes": [
+          "packages",
+          "repositories"
+        ],
+        "matched_objective_terms": [
+          "cli",
+          "model",
+          "package"
+        ],
+        "matched_gap_terms": [
+          "multimodal",
+          "quantization"
+        ],
+        "reasons": [
+          "Matched gap terms: multimodal, quantization.",
+          "Matched objective terms: cli, model, package.",
+          "Covers source lanes: packages, repositories."
+        ]
+      },
+      {
+        "persona_id": "official-docs-cartographer",
+        "title": "Official Docs Cartographer",
+        "rank": 3,
+        "config_order": 1,
+        "score": 9,
+        "source_lanes": [
+          "official_docs",
+          "packages"
+        ],
+        "matched_objective_terms": [
+          "cli",
+          "model",
+          "package"
+        ],
+        "matched_gap_terms": [
+          "multimodal",
+          "quantization"
+        ],
+        "reasons": [
+          "Matched gap terms: multimodal, quantization.",
+          "Matched objective terms: cli, model, package.",
+          "Covers source lanes: official_docs, packages."
+        ]
+      },
+      {
+        "persona_id": "paper-architecture-scout",
+        "title": "Paper Architecture Scout",
+        "rank": 4,
+        "config_order": 2,
+        "score": 9,
+        "source_lanes": [
+          "papers",
+          "technical_blogs"
+        ],
+        "matched_objective_terms": [
+          "blogs",
+          "model",
+          "papers",
+          "skill"
+        ],
+        "matched_gap_terms": [
+          "inference"
+        ],
+        "reasons": [
+          "Matched gap terms: inference.",
+          "Matched objective terms: blogs, model, papers, skill.",
+          "Covers source lanes: papers, technical_blogs."
+        ]
+      },
+      {
+        "persona_id": "huggingface-ecosystem-sampler",
+        "title": "Hugging Face Ecosystem Sampler",
+        "rank": 5,
+        "config_order": 3,
+        "score": 2,
+        "source_lanes": [
+          "hugging_face"
+        ],
+        "matched_objective_terms": [
+          "model"
+        ],
+        "matched_gap_terms": [],
+        "reasons": [
+          "Matched objective terms: model.",
+          "Covers source lanes: hugging_face."
+        ]
+      },
+      {
+        "persona_id": "practitioner-blog-miner",
+        "title": "Practitioner Blog Miner",
+        "rank": 6,
+        "config_order": 5,
+        "score": 1,
+        "source_lanes": [
+          "technical_blogs",
+          "community_discussions"
+        ],
+        "matched_objective_terms": [
+          "blogs"
+        ],
+        "matched_gap_terms": [],
+        "reasons": [
+          "Matched objective terms: blogs.",
+          "Covers source lanes: technical_blogs, community_discussions."
+        ]
+      }
+    ],
+    "held_personas": [],
+    "selected_source_lane_counts": {
+      "community_discussions": 2,
+      "hugging_face": 2,
+      "official_docs": 2,
+      "packages": 3,
+      "papers": 2,
+      "repo_local_audit": 1,
+      "repositories": 2,
+      "technical_blogs": 3
+    },
+    "selection_policy": "dynamic score = matched objective terms + 3 * matched gap terms, with a small bonus for direct persona matches; ties keep config order"
+  },
+  "assignments": [
+    {
+      "persona_id": "coverage-skeptic",
+      "title": "Coverage Skeptic",
+      "source_lanes": [
+        "official_docs",
+        "papers",
+        "hugging_face",
+        "packages",
+        "technical_blogs",
+        "community_discussions",
+        "repositories",
+        "repo_local_audit"
+      ],
+      "mission": "Look for blind spots, unsupported architecture families, missing validation gates, and overclaimed optimizations.",
+      "sample_plan": [
+        {
+          "source_lane": "official_docs",
+          "lane_title": "Official Apple and MLX documentation",
+          "evidence_role": "supported API, runtime behavior, packaging, and validation contract",
+          "targets": [
+            {
+              "title": "MLX documentation index",
+              "kind": "official-doc",
+              "locator": "https://ml-explore.github.io/mlx/build/html/index.html",
+              "sampling_goal": "Confirm supported MLX APIs and current behavior before promoting guidance."
+            },
+            {
+              "title": "MLX custom Metal kernels",
+              "kind": "official-doc",
+              "locator": "https://ml-explore.github.io/mlx/build/html/dev/custom_metal_kernels.html",
+              "sampling_goal": "Check kernel API constraints, fallback expectations, and validation caveats."
+            },
+            {
+              "title": "Apple Metal developer documentation",
+              "kind": "official-doc",
+              "locator": "https://developer.apple.com/metal/",
+              "sampling_goal": "Verify Apple runtime and packaging constraints that affect custom kernels."
+            }
+          ]
+        },
+        {
+          "source_lane": "papers",
+          "lane_title": "Papers and technical reports",
+          "evidence_role": "architecture semantics, quality metrics, and algorithmic constraints",
+          "targets": [
+            {
+              "title": "arXiv MLX framework search",
+              "kind": "paper-search",
+              "locator": "https://arxiv.org/search/?query=MLX+framework&searchtype=all",
+              "sampling_goal": "Find MLX-specific papers and separate claims from reproducible MLX evidence."
+            },
+            {
+              "title": "arXiv on-device transformer search",
+              "kind": "paper-search",
+              "locator": "https://arxiv.org/search/?query=on-device+transformer+inference&searchtype=all",
+              "sampling_goal": "Find architecture and metric gaps relevant to local Apple-silicon ports."
+            },
+            {
+              "title": "Papers with Code MLX search",
+              "kind": "paper-index",
+              "locator": "https://paperswithcode.com/search?q=MLX",
+              "sampling_goal": "Identify paper-linked implementations that need source and license review."
+            }
+          ]
+        },
+        {
+          "source_lane": "hugging_face",
+          "lane_title": "Hugging Face model and library metadata",
+          "evidence_role": "model popularity, artifact shape, license, config, tokenizer, and task coverage",
+          "targets": [
+            {
+              "title": "Hugging Face MLX model search",
+              "kind": "model-index",
+              "locator": "https://huggingface.co/models?search=mlx",
+              "sampling_goal": "Sample model cards, task tags, licenses, library tags, and artifact shapes."
+            },
+            {
+              "title": "mlx-community organization",
+              "kind": "model-index",
+              "locator": "https://huggingface.co/mlx-community",
+              "sampling_goal": "Track common publication metadata and model families in MLX conversions."
+            },
+            {
+              "title": "Hugging Face Transformers MLX search",
+              "kind": "docs-search",
+              "locator": "https://huggingface.co/docs/transformers/search?query=mlx",
+              "sampling_goal": "Check current library surfaces before relying on ecosystem guidance."
+            }
+          ]
+        },
+        {
+          "source_lane": "packages",
+          "lane_title": "Package registries and release metadata",
+          "evidence_role": "install surfaces, version drift, dependency boundaries, and release cadence",
+          "targets": [
+            {
+              "title": "PyPI mlx metadata",
+              "kind": "package-metadata",
+              "locator": "https://pypi.org/pypi/mlx/json",
+              "sampling_goal": "Capture current release metadata before changing base MLX guidance."
+            },
+            {
+              "title": "PyPI mlx-lm metadata",
+              "kind": "package-metadata",
+              "locator": "https://pypi.org/pypi/mlx-lm/json",
+              "sampling_goal": "Check CLI and converter package drift for language-model ports."
+            },
+            {
+              "title": "PyPI mlx-vlm metadata",
+              "kind": "package-metadata",
+              "locator": "https://pypi.org/pypi/mlx-vlm/json",
+              "sampling_goal": "Check multimodal package drift and optional dependency surfaces."
+            },
+            {
+              "title": "PyPI mlx-audio metadata",
+              "kind": "package-metadata",
+              "locator": "https://pypi.org/pypi/mlx-audio/json",
+              "sampling_goal": "Check audio model package drift, quantization modes, and CLI surfaces."
+            }
+          ]
+        },
+        {
+          "source_lane": "technical_blogs",
+          "lane_title": "Technical blogs and engineering reports",
+          "evidence_role": "implementation details, benchmark caveats, and production constraints",
+          "targets": [
+            {
+              "title": "Apple Machine Learning Research",
+              "kind": "technical-blog-index",
+              "locator": "https://machinelearning.apple.com/",
+              "sampling_goal": "Find Apple-authored implementation constraints or benchmark caveats."
+            },
+            {
+              "title": "MLX examples discussions and notes",
+              "kind": "maintainer-notes",
+              "locator": "https://ml-explore.github.io/mlx-examples/",
+              "sampling_goal": "Find maintained examples that expose operational or benchmark details."
+            }
+          ]
+        },
+        {
+          "source_lane": "community_discussions",
+          "lane_title": "Community discussions",
+          "evidence_role": "pain points and candidate leads only; never sufficient for supported guidance",
+          "targets": [
+            {
+              "title": "Apple Developer Forums MLX search",
+              "kind": "forum-search",
+              "locator": "https://developer.apple.com/forums/search/?q=MLX",
+              "sampling_goal": "Collect pain points and leads without promoting them as supported guidance."
+            },
+            {
+              "title": "LocalLLaMA MLX search",
+              "kind": "community-search",
+              "locator": "https://www.reddit.com/r/LocalLLaMA/search/?q=MLX&restrict_sr=1",
+              "sampling_goal": "Sample user pain points, hardware caveats, and candidate follow-up repos."
+            }
+          ]
+        },
+        {
+          "source_lane": "repositories",
+          "lane_title": "Repository source evidence",
+          "evidence_role": "implementation proof, tests, conversion scripts, and benchmark harnesses",
+          "targets": [
+            {
+              "title": "ml-explore/mlx",
+              "kind": "repository",
+              "locator": "https://github.com/ml-explore/mlx",
+              "sampling_goal": "Prefer official implementation and tests for supported MLX behavior."
+            },
+            {
+              "title": "ml-explore/mlx-lm",
+              "kind": "repository",
+              "locator": "https://github.com/ml-explore/mlx-lm",
+              "sampling_goal": "Inspect official language-model conversion and serving patterns."
+            },
+            {
+              "title": "ml-explore/mlx-examples",
+              "kind": "repository",
+              "locator": "https://github.com/ml-explore/mlx-examples",
+              "sampling_goal": "Inspect maintained examples for architecture and validation patterns."
+            }
+          ]
+        },
+        {
+          "source_lane": "repo_local_audit",
+          "lane_title": "Repo-local coverage audit",
+          "evidence_role": "coverage gaps, missing gates, and local validation debt",
+          "targets": [
+            {
+              "title": "Research backlog",
+              "kind": "local-file",
+              "locator": "assets/research_backlog.json",
+              "sampling_goal": "Keep live research tied to current validated and unvalidated gaps."
+            },
+            {
+              "title": "Validation contract",
+              "kind": "local-file",
+              "locator": "../VALIDATION.md",
+              "sampling_goal": "Check whether a finding has an existing pass/fail gate."
+            },
+            {
+              "title": "Tooling tests",
+              "kind": "local-file",
+              "locator": "../tests/test_tooling.py",
+              "sampling_goal": "Find harness behavior that needs targeted regression tests."
+            }
+          ]
+        }
+      ],
+      "prompt": "You are the Coverage Skeptic for MLX model-porting research loop 2026-07-03-nightly-knowledge-curator-research-loop. Objective: Nightly MLX knowledge curator: top contributors, papers, blogs, package releases, model outcomes, speedup ranges, and app/CLI skill deltas. Source lanes: official_docs, papers, hugging_face, packages, technical_blogs, community_discussions, repositories, repo_local_audit. Return source-backed findings only. Do not execute remote model code. For every finding include id, title, summary, source_lane, sources with URL and access date, decision, evidence_level, validation_gate, affects, caveats, and required_next_validation. Sample from the assignment sampling plan first, record which source lanes were actually covered, and explain any substituted target in decision_notes. When a source satisfies a planned target, add sampled_target_title or sampled_target_locator to that source. Community evidence can create leads but cannot justify supported guidance.\n\nSampling plan:\n- official_docs: Official Apple and MLX documentation\n  Evidence role: supported API, runtime behavior, packaging, and validation contract\n  - MLX documentation index [official-doc]: https://ml-explore.github.io/mlx/build/html/index.html - Confirm supported MLX APIs and current behavior before promoting guidance.\n  - MLX custom Metal kernels [official-doc]: https://ml-explore.github.io/mlx/build/html/dev/custom_metal_kernels.html - Check kernel API constraints, fallback expectations, and validation caveats.\n  - Apple Metal developer documentation [official-doc]: https://developer.apple.com/metal/ - Verify Apple runtime and packaging constraints that affect custom kernels.\n- papers: Papers and technical reports\n  Evidence role: architecture semantics, quality metrics, and algorithmic constraints\n  - arXiv MLX framework search [paper-search]: https://arxiv.org/search/?query=MLX+framework&searchtype=all - Find MLX-specific papers and separate claims from reproducible MLX evidence.\n  - arXiv on-device transformer search [paper-search]: https://arxiv.org/search/?query=on-device+transformer+inference&searchtype=all - Find architecture and metric gaps relevant to local Apple-silicon ports.\n  - Papers with Code MLX search [paper-index]: https://paperswithcode.com/search?q=MLX - Identify paper-linked implementations that need source and license review.\n- hugging_face: Hugging Face model and library metadata\n  Evidence role: model popularity, artifact shape, license, config, tokenizer, and task coverage\n  - Hugging Face MLX model search [model-index]: https://huggingface.co/models?search=mlx - Sample model cards, task tags, licenses, library tags, and artifact shapes.\n  - mlx-community organization [model-index]: https://huggingface.co/mlx-community - Track common publication metadata and model families in MLX conversions.\n  - Hugging Face Transformers MLX search [docs-search]: https://huggingface.co/docs/transformers/search?query=mlx - Check current library surfaces before relying on ecosystem guidance.\n- packages: Package registries and release metadata\n  Evidence role: install surfaces, version drift, dependency boundaries, and release cadence\n  - PyPI mlx metadata [package-metadata]: https://pypi.org/pypi/mlx/json - Capture current release metadata before changing base MLX guidance.\n  - PyPI mlx-lm metadata [package-metadata]: https://pypi.org/pypi/mlx-lm/json - Check CLI and converter package drift for language-model ports.\n  - PyPI mlx-vlm metadata [package-metadata]: https://pypi.org/pypi/mlx-vlm/json - Check multimodal package drift and optional dependency surfaces.\n  - PyPI mlx-audio metadata [package-metadata]: https://pypi.org/pypi/mlx-audio/json - Check audio model package drift, quantization modes, and CLI surfaces.\n- technical_blogs: Technical blogs and engineering reports\n  Evidence role: implementation details, benchmark caveats, and production constraints\n  - Apple Machine Learning Research [technical-blog-index]: https://machinelearning.apple.com/ - Find Apple-authored implementation constraints or benchmark caveats.\n  - MLX examples discussions and notes [maintainer-notes]: https://ml-explore.github.io/mlx-examples/ - Find maintained examples that expose operational or benchmark details.\n- community_discussions: Community discussions\n  Evidence role: pain points and candidate leads only; never sufficient for supported guidance\n  - Apple Developer Forums MLX search [forum-search]: https://developer.apple.com/forums/search/?q=MLX - Collect pain points and leads without promoting them as supported guidance.\n  - LocalLLaMA MLX search [community-search]: https://www.reddit.com/r/LocalLLaMA/search/?q=MLX&restrict_sr=1 - Sample user pain points, hardware caveats, and candidate follow-up repos.\n- repositories: Repository source evidence\n  Evidence role: implementation proof, tests, conversion scripts, and benchmark harnesses\n  - ml-explore/mlx [repository]: https://github.com/ml-explore/mlx - Prefer official implementation and tests for supported MLX behavior.\n  - ml-explore/mlx-lm [repository]: https://github.com/ml-explore/mlx-lm - Inspect official language-model conversion and serving patterns.\n  - ml-explore/mlx-examples [repository]: https://github.com/ml-explore/mlx-examples - Inspect maintained examples for architecture and validation patterns.\n- repo_local_audit: Repo-local coverage audit\n  Evidence role: coverage gaps, missing gates, and local validation debt\n  - Research backlog [local-file]: assets/research_backlog.json - Keep live research tied to current validated and unvalidated gaps.\n  - Validation contract [local-file]: ../VALIDATION.md - Check whether a finding has an existing pass/fail gate.\n  - Tooling tests [local-file]: ../tests/test_tooling.py - Find harness behavior that needs targeted regression tests.",
+      "execution": {
+        "kind": "offline-scaffold",
+        "state": "scaffolded_not_run",
+        "executor": null,
+        "log_path": null,
+        "result_path": null,
+        "blog_path": "blogs/coverage-skeptic.md",
+        "blog_source": "generated"
+      },
+      "planning": {
+        "persona_id": "coverage-skeptic",
+        "title": "Coverage Skeptic",
+        "rank": 1,
+        "config_order": 6,
+        "score": 14,
+        "source_lanes": [
+          "official_docs",
+          "papers",
+          "hugging_face",
+          "packages",
+          "technical_blogs",
+          "community_discussions",
+          "repositories",
+          "repo_local_audit"
+        ],
+        "matched_objective_terms": [
+          "blogs",
+          "cli",
+          "model",
+          "package",
+          "papers"
+        ],
+        "matched_gap_terms": [
+          "inference",
+          "multimodal",
+          "quantization"
+        ],
+        "reasons": [
+          "Matched gap terms: inference, multimodal, quantization.",
+          "Matched objective terms: blogs, cli, model, package, papers.",
+          "Covers source lanes: official_docs, papers, hugging_face, packages, technical_blogs, community_discussions, repositories, repo_local_audit."
+        ]
+      },
+      "review_only": true,
+      "policy": {
+        "auto_modify_recommendations": false,
+        "execute_remote_model_code": false
+      },
+      "handoff": {
+        "assignment_index": 0,
+        "persona_id": "coverage-skeptic",
+        "title": "Coverage Skeptic",
+        "source_lanes": [
+          "official_docs",
+          "papers",
+          "hugging_face",
+          "packages",
+          "technical_blogs",
+          "community_discussions",
+          "repositories",
+          "repo_local_audit"
+        ],
+        "assignment_path": "agents/coverage-skeptic.assignment.json",
+        "prompt_path": "agents/coverage-skeptic.prompt.md",
+        "result_path": "agents/coverage-skeptic.result.json",
+        "blog_path": "blogs/coverage-skeptic.md",
+        "blog_source": "generated",
+        "execution_kind": "offline-scaffold",
+        "execution_state": "scaffolded_not_run",
+        "review_only": true
+      },
+      "sampling_coverage": {
+        "persona_id": "coverage-skeptic",
+        "planned_target_count": 23,
+        "sampled_target_count": 0,
+        "unsampled_target_count": 23,
+        "returned_source_count": 0,
+        "unplanned_source_count": 0,
+        "explicit_sampling_receipt_count": 0,
+        "valid_explicit_sampling_receipt_count": 0,
+        "invalid_explicit_sampling_receipt_count": 0,
+        "sampled_target_missing_explicit_receipt_count": 0,
+        "coverage_ratio": 0.0,
+        "sampled_targets": [],
+        "unsampled_targets": [
+          {
+            "source_lane": "official_docs",
+            "lane_title": "Official Apple and MLX documentation",
+            "title": "MLX documentation index",
+            "kind": "official-doc",
+            "locator": "https://ml-explore.github.io/mlx/build/html/index.html",
+            "matched_sources": [],
+            "explicit_receipts": [],
+            "missing_explicit_sampling_receipt": false
+          },
+          {
+            "source_lane": "official_docs",
+            "lane_title": "Official Apple and MLX documentation",
+            "title": "MLX custom Metal kernels",
+            "kind": "official-doc",
+            "locator": "https://ml-explore.github.io/mlx/build/html/dev/custom_metal_kernels.html",
+            "matched_sources": [],
+            "explicit_receipts": [],
+            "missing_explicit_sampling_receipt": false
+          },
+          {
+            "source_lane": "official_docs",
+            "lane_title": "Official Apple and MLX documentation",
+            "title": "Apple Metal developer documentation",
+            "kind": "official-doc",
+            "locator": "https://developer.apple.com/metal/",
+            "matched_sources": [],
+            "explicit_receipts": [],
+            "missing_explicit_sampling_receipt": false
+          },
+          {
+            "source_lane": "papers",
+            "lane_title": "Papers and technical reports",
+            "title": "arXiv MLX framework search",
+            "kind": "paper-search",
+            "locator": "https://arxiv.org/search/?query=MLX+framework&searchtype=all",
+            "matched_sources": [],
+            "explicit_receipts": [],
+            "missing_explicit_sampling_receipt": false
+          },
+          {
+            "source_lane": "papers",
+            "lane_title": "Papers and technical reports",
+            "title": "arXiv on-device transformer search",
+            "kind": "paper-search",
+            "locator": "https://arxiv.org/search/?query=on-device+transformer+inference&searchtype=all",
+            "matched_sources": [],
+            "explicit_receipts": [],
+            "missing_explicit_sampling_receipt": false
+          },
+          {
+            "source_lane": "papers",
+            "lane_title": "Papers and technical reports",
+            "title": "Papers with Code MLX search",
+            "kind": "paper-index",
+            "locator": "https://paperswithcode.com/search?q=MLX",
+            "matched_sources": [],
+            "explicit_receipts": [],
+            "missing_explicit_sampling_receipt": false
+          },
+          {
+            "source_lane": "hugging_face",
+            "lane_title": "Hugging Face model and library metadata",
+            "title": "Hugging Face MLX model search",
+            "kind": "model-index",
+            "locator": "https://huggingface.co/models?search=mlx",
+            "matched_sources": [],
+            "explicit_receipts": [],
+            "missing_explicit_sampling_receipt": false
+          },
+          {
+            "source_lane": "hugging_face",
+            "lane_title": "Hugging Face model and library metadata",
+            "title": "mlx-community organization",
+            "kind": "model-index",
+            "locator": "https://huggingface.co/mlx-community",
+            "matched_sources": [],
+            "explicit_receipts": [],
+            "missing_explicit_sampling_receipt": false
+          },
+          {
+            "source_lane": "hugging_face",
+            "lane_title": "Hugging Face model and library metadata",
+            "title": "Hugging Face Transformers MLX search",
+            "kind": "docs-search",
+            "locator": "https://huggingface.co/docs/transformers/search?query=mlx",
+            "matched_sources": [],
+            "explicit_receipts": [],
+            "missing_explicit_sampling_receipt": false
+          },
+          {
+            "source_lane": "packages",
+            "lane_title": "Package registries and release metadata",
+            "title": "PyPI mlx metadata",
+            "kind": "package-metadata",
+            "locator": "https://pypi.org/pypi/mlx/json",
+            "matched_sources": [],
+            "explicit_receipts": [],
+            "missing_explicit_sampling_receipt": false
+          },
+          {
+            "source_lane": "packages",
+            "lane_title": "Package registries and release metadata",
+            "title": "PyPI mlx-lm metadata",
+            "kind": "package-metadata",
+            "locator": "https://pypi.org/pypi/mlx-lm/json",
+            "matched_sources": [],
+            "explicit_receipts": [],
+            "missing_explicit_sampling_receipt": false
+          },
+          {
+            "source_lane": "packages",
+            "lane_title": "Package registries and release metadata",
+            "title": "PyPI mlx-vlm metadata",
+            "kind": "package-metadata",
+            "locator": "https://pypi.org/pypi/mlx-vlm/json",
+            "matched_sources": [],
+            "explicit_receipts": [],
+            "missing_explicit_sampling_receipt": false
+          },
+          {
+            "source_lane": "packages",
+            "lane_title": "Package registries and release metadata",
+            "title": "PyPI mlx-audio metadata",
+            "kind": "package-metadata",
+            "locator": "https://pypi.org/pypi/mlx-audio/json",
+            "matched_sources": [],
+            "explicit_receipts": [],
+            "missing_explicit_sampling_receipt": false
+          },
+          {
+            "source_lane": "technical_blogs",
+            "lane_title": "Technical blogs and engineering reports",
+            "title": "Apple Machine Learning Research",
+            "kind": "technical-blog-index",
+            "locator": "https://machinelearning.apple.com/",
+            "matched_sources": [],
+            "explicit_receipts": [],
+            "missing_explicit_sampling_receipt": false
+          },
+          {
+            "source_lane": "technical_blogs",
+            "lane_title": "Technical blogs and engineering reports",
+            "title": "MLX examples discussions and notes",
+            "kind": "maintainer-notes",
+            "locator": "https://ml-explore.github.io/mlx-examples/",
+            "matched_sources": [],
+            "explicit_receipts": [],
+            "missing_explicit_sampling_receipt": false
+          },
+          {
+            "source_lane": "community_discussions",
+            "lane_title": "Community discussions",
+            "title": "Apple Developer Forums MLX search",
+            "kind": "forum-search",
+            "locator": "https://developer.apple.com/forums/search/?q=MLX",
+            "matched_sources": [],
+            "explicit_receipts": [],
+            "missing_explicit_sampling_receipt": false
+          },
+          {
+            "source_lane": "community_discussions",
+            "lane_title": "Community discussions",
+            "title": "LocalLLaMA MLX search",
+            "kind": "community-search",
+            "locator": "https://www.reddit.com/r/LocalLLaMA/search/?q=MLX&restrict_sr=1",
+            "matched_sources": [],
+            "explicit_receipts": [],
+            "missing_explicit_sampling_receipt": false
+          },
+          {
+            "source_lane": "repositories",
+            "lane_title": "Repository source evidence",
+            "title": "ml-explore/mlx",
+            "kind": "repository",
+            "locator": "https://github.com/ml-explore/mlx",
+            "matched_sources": [],
+            "explicit_receipts": [],
+            "missing_explicit_sampling_receipt": false
+          },
+          {
+            "source_lane": "repositories",
+            "lane_title": "Repository source evidence",
+            "title": "ml-explore/mlx-lm",
+            "kind": "repository",
+            "locator": "https://github.com/ml-explore/mlx-lm",
+            "matched_sources": [],
+            "explicit_receipts": [],
+            "missing_explicit_sampling_receipt": false
+          },
+          {
+            "source_lane": "repositories",
+            "lane_title": "Repository source evidence",
+            "title": "ml-explore/mlx-examples",
+            "kind": "repository",
+            "locator": "https://github.com/ml-explore/mlx-examples",
+            "matched_sources": [],
+            "explicit_receipts": [],
+            "missing_explicit_sampling_receipt": false
+          },
+          {
+            "source_lane": "repo_local_audit",
+            "lane_title": "Repo-local coverage audit",
+            "title": "Research backlog",
+            "kind": "local-file",
+            "locator": "assets/research_backlog.json",
+            "matched_sources": [],
+            "explicit_receipts": [],
+            "missing_explicit_sampling_receipt": false
+          },
+          {
+            "source_lane": "repo_local_audit",
+            "lane_title": "Repo-local coverage audit",
+            "title": "Validation contract",
+            "kind": "local-file",
+            "locator": "../VALIDATION.md",
+            "matched_sources": [],
+            "explicit_receipts": [],
+            "missing_explicit_sampling_receipt": false
+          },
+          {
+            "source_lane": "repo_local_audit",
+            "lane_title": "Repo-local coverage audit",
+            "title": "Tooling tests",
+            "kind": "local-file",
+            "locator": "../tests/test_tooling.py",
+            "matched_sources": [],
+            "explicit_receipts": [],
+            "missing_explicit_sampling_receipt": false
+          }
+        ],
+        "unplanned_sources": [],
+        "invalid_sampling_receipts": []
+      },
+      "blog": {
+        "persona_id": "coverage-skeptic",
+        "path": "blogs/coverage-skeptic.md",
+        "source": "generated",
+        "generated_blog_path": "blogs/coverage-skeptic.md",
+        "preserved_executor_blog": false,
+        "required_sections": [
+          "Assignment",
+          "Planned sampling",
+          "Sources sampled",
+          "Sampling coverage",
+          "Candidate findings",
+          "Decision notes",
+          "Open validation"
+        ],
+        "present_sections": [
+          "Assignment",
+          "Planned sampling",
+          "Sources sampled",
+          "Sampling coverage",
+          "Candidate findings",
+          "Decision notes",
+          "Open validation"
+        ],
+        "missing_sections": [],
+        "contract_status": "pass"
+      }
+    },
+    {
+      "persona_id": "package-registry-scout",
+      "title": "Package Registry Scout",
+      "source_lanes": [
+        "packages",
+        "repositories"
+      ],
+      "mission": "Track packages and release metadata that change install, conversion, runtime, or optional dependency guidance.",
+      "sample_plan": [
+        {
+          "source_lane": "packages",
+          "lane_title": "Package registries and release metadata",
+          "evidence_role": "install surfaces, version drift, dependency boundaries, and release cadence",
+          "targets": [
+            {
+              "title": "PyPI mlx metadata",
+              "kind": "package-metadata",
+              "locator": "https://pypi.org/pypi/mlx/json",
+              "sampling_goal": "Capture current release metadata before changing base MLX guidance."
+            },
+            {
+              "title": "PyPI mlx-lm metadata",
+              "kind": "package-metadata",
+              "locator": "https://pypi.org/pypi/mlx-lm/json",
+              "sampling_goal": "Check CLI and converter package drift for language-model ports."
+            },
+            {
+              "title": "PyPI mlx-vlm metadata",
+              "kind": "package-metadata",
+              "locator": "https://pypi.org/pypi/mlx-vlm/json",
+              "sampling_goal": "Check multimodal package drift and optional dependency surfaces."
+            },
+            {
+              "title": "PyPI mlx-audio metadata",
+              "kind": "package-metadata",
+              "locator": "https://pypi.org/pypi/mlx-audio/json",
+              "sampling_goal": "Check audio model package drift, quantization modes, and CLI surfaces."
+            }
+          ]
+        },
+        {
+          "source_lane": "repositories",
+          "lane_title": "Repository source evidence",
+          "evidence_role": "implementation proof, tests, conversion scripts, and benchmark harnesses",
+          "targets": [
+            {
+              "title": "ml-explore/mlx",
+              "kind": "repository",
+              "locator": "https://github.com/ml-explore/mlx",
+              "sampling_goal": "Prefer official implementation and tests for supported MLX behavior."
+            },
+            {
+              "title": "ml-explore/mlx-lm",
+              "kind": "repository",
+              "locator": "https://github.com/ml-explore/mlx-lm",
+              "sampling_goal": "Inspect official language-model conversion and serving patterns."
+            },
+            {
+              "title": "ml-explore/mlx-examples",
+              "kind": "repository",
+              "locator": "https://github.com/ml-explore/mlx-examples",
+              "sampling_goal": "Inspect maintained examples for architecture and validation patterns."
+            }
+          ]
+        }
+      ],
+      "prompt": "You are the Package Registry Scout for MLX model-porting research loop 2026-07-03-nightly-knowledge-curator-research-loop. Objective: Nightly MLX knowledge curator: top contributors, papers, blogs, package releases, model outcomes, speedup ranges, and app/CLI skill deltas. Source lanes: packages, repositories. Return source-backed findings only. Do not execute remote model code. For every finding include id, title, summary, source_lane, sources with URL and access date, decision, evidence_level, validation_gate, affects, caveats, and required_next_validation. Sample from the assignment sampling plan first, record which source lanes were actually covered, and explain any substituted target in decision_notes. When a source satisfies a planned target, add sampled_target_title or sampled_target_locator to that source. Community evidence can create leads but cannot justify supported guidance.\n\nSampling plan:\n- packages: Package registries and release metadata\n  Evidence role: install surfaces, version drift, dependency boundaries, and release cadence\n  - PyPI mlx metadata [package-metadata]: https://pypi.org/pypi/mlx/json - Capture current release metadata before changing base MLX guidance.\n  - PyPI mlx-lm metadata [package-metadata]: https://pypi.org/pypi/mlx-lm/json - Check CLI and converter package drift for language-model ports.\n  - PyPI mlx-vlm metadata [package-metadata]: https://pypi.org/pypi/mlx-vlm/json - Check multimodal package drift and optional dependency surfaces.\n  - PyPI mlx-audio metadata [package-metadata]: https://pypi.org/pypi/mlx-audio/json - Check audio model package drift, quantization modes, and CLI surfaces.\n- repositories: Repository source evidence\n  Evidence role: implementation proof, tests, conversion scripts, and benchmark harnesses\n  - ml-explore/mlx [repository]: https://github.com/ml-explore/mlx - Prefer official implementation and tests for supported MLX behavior.\n  - ml-explore/mlx-lm [repository]: https://github.com/ml-explore/mlx-lm - Inspect official language-model conversion and serving patterns.\n  - ml-explore/mlx-examples [repository]: https://github.com/ml-explore/mlx-examples - Inspect maintained examples for architecture and validation patterns.",
+      "execution": {
+        "kind": "offline-scaffold",
+        "state": "scaffolded_not_run",
+        "executor": null,
+        "log_path": null,
+        "result_path": null,
+        "blog_path": "blogs/package-registry-scout.md",
+        "blog_source": "generated"
+      },
+      "planning": {
+        "persona_id": "package-registry-scout",
+        "title": "Package Registry Scout",
+        "rank": 2,
+        "config_order": 4,
+        "score": 10,
+        "source_lanes": [
+          "packages",
+          "repositories"
+        ],
+        "matched_objective_terms": [
+          "cli",
+          "model",
+          "package"
+        ],
+        "matched_gap_terms": [
+          "multimodal",
+          "quantization"
+        ],
+        "reasons": [
+          "Matched gap terms: multimodal, quantization.",
+          "Matched objective terms: cli, model, package.",
+          "Covers source lanes: packages, repositories."
+        ]
+      },
+      "review_only": true,
+      "policy": {
+        "auto_modify_recommendations": false,
+        "execute_remote_model_code": false
+      },
+      "handoff": {
+        "assignment_index": 1,
+        "persona_id": "package-registry-scout",
+        "title": "Package Registry Scout",
+        "source_lanes": [
+          "packages",
+          "repositories"
+        ],
+        "assignment_path": "agents/package-registry-scout.assignment.json",
+        "prompt_path": "agents/package-registry-scout.prompt.md",
+        "result_path": "agents/package-registry-scout.result.json",
+        "blog_path": "blogs/package-registry-scout.md",
+        "blog_source": "generated",
+        "execution_kind": "offline-scaffold",
+        "execution_state": "scaffolded_not_run",
+        "review_only": true
+      },
+      "sampling_coverage": {
+        "persona_id": "package-registry-scout",
+        "planned_target_count": 7,
+        "sampled_target_count": 0,
+        "unsampled_target_count": 7,
+        "returned_source_count": 0,
+        "unplanned_source_count": 0,
+        "explicit_sampling_receipt_count": 0,
+        "valid_explicit_sampling_receipt_count": 0,
+        "invalid_explicit_sampling_receipt_count": 0,
+        "sampled_target_missing_explicit_receipt_count": 0,
+        "coverage_ratio": 0.0,
+        "sampled_targets": [],
+        "unsampled_targets": [
+          {
+            "source_lane": "packages",
+            "lane_title": "Package registries and release metadata",
+            "title": "PyPI mlx metadata",
+            "kind": "package-metadata",
+            "locator": "https://pypi.org/pypi/mlx/json",
+            "matched_sources": [],
+            "explicit_receipts": [],
+            "missing_explicit_sampling_receipt": false
+          },
+          {
+            "source_lane": "packages",
+            "lane_title": "Package registries and release metadata",
+            "title": "PyPI mlx-lm metadata",
+            "kind": "package-metadata",
+            "locator": "https://pypi.org/pypi/mlx-lm/json",
+            "matched_sources": [],
+            "explicit_receipts": [],
+            "missing_explicit_sampling_receipt": false
+          },
+          {
+            "source_lane": "packages",
+            "lane_title": "Package registries and release metadata",
+            "title": "PyPI mlx-vlm metadata",
+            "kind": "package-metadata",
+            "locator": "https://pypi.org/pypi/mlx-vlm/json",
+            "matched_sources": [],
+            "explicit_receipts": [],
+            "missing_explicit_sampling_receipt": false
+          },
+          {
+            "source_lane": "packages",
+            "lane_title": "Package registries and release metadata",
+            "title": "PyPI mlx-audio metadata",
+            "kind": "package-metadata",
+            "locator": "https://pypi.org/pypi/mlx-audio/json",
+            "matched_sources": [],
+            "explicit_receipts": [],
+            "missing_explicit_sampling_receipt": false
+          },
+          {
+            "source_lane": "repositories",
+            "lane_title": "Repository source evidence",
+            "title": "ml-explore/mlx",
+            "kind": "repository",
+            "locator": "https://github.com/ml-explore/mlx",
+            "matched_sources": [],
+            "explicit_receipts": [],
+            "missing_explicit_sampling_receipt": false
+          },
+          {
+            "source_lane": "repositories",
+            "lane_title": "Repository source evidence",
+            "title": "ml-explore/mlx-lm",
+            "kind": "repository",
+            "locator": "https://github.com/ml-explore/mlx-lm",
+            "matched_sources": [],
+            "explicit_receipts": [],
+            "missing_explicit_sampling_receipt": false
+          },
+          {
+            "source_lane": "repositories",
+            "lane_title": "Repository source evidence",
+            "title": "ml-explore/mlx-examples",
+            "kind": "repository",
+            "locator": "https://github.com/ml-explore/mlx-examples",
+            "matched_sources": [],
+            "explicit_receipts": [],
+            "missing_explicit_sampling_receipt": false
+          }
+        ],
+        "unplanned_sources": [],
+        "invalid_sampling_receipts": []
+      },
+      "blog": {
+        "persona_id": "package-registry-scout",
+        "path": "blogs/package-registry-scout.md",
+        "source": "generated",
+        "generated_blog_path": "blogs/package-registry-scout.md",
+        "preserved_executor_blog": false,
+        "required_sections": [
+          "Assignment",
+          "Planned sampling",
+          "Sources sampled",
+          "Sampling coverage",
+          "Candidate findings",
+          "Decision notes",
+          "Open validation"
+        ],
+        "present_sections": [
+          "Assignment",
+          "Planned sampling",
+          "Sources sampled",
+          "Sampling coverage",
+          "Candidate findings",
+          "Decision notes",
+          "Open validation"
+        ],
+        "missing_sections": [],
+        "contract_status": "pass"
+      }
+    },
+    {
+      "persona_id": "official-docs-cartographer",
+      "title": "Official Docs Cartographer",
+      "source_lanes": [
+        "official_docs",
+        "packages"
+      ],
+      "mission": "Find MLX or Apple-supported APIs, runtime constraints, packaging rules, and validation gates that should constrain porting guidance.",
+      "sample_plan": [
+        {
+          "source_lane": "official_docs",
+          "lane_title": "Official Apple and MLX documentation",
+          "evidence_role": "supported API, runtime behavior, packaging, and validation contract",
+          "targets": [
+            {
+              "title": "MLX documentation index",
+              "kind": "official-doc",
+              "locator": "https://ml-explore.github.io/mlx/build/html/index.html",
+              "sampling_goal": "Confirm supported MLX APIs and current behavior before promoting guidance."
+            },
+            {
+              "title": "MLX custom Metal kernels",
+              "kind": "official-doc",
+              "locator": "https://ml-explore.github.io/mlx/build/html/dev/custom_metal_kernels.html",
+              "sampling_goal": "Check kernel API constraints, fallback expectations, and validation caveats."
+            },
+            {
+              "title": "Apple Metal developer documentation",
+              "kind": "official-doc",
+              "locator": "https://developer.apple.com/metal/",
+              "sampling_goal": "Verify Apple runtime and packaging constraints that affect custom kernels."
+            }
+          ]
+        },
+        {
+          "source_lane": "packages",
+          "lane_title": "Package registries and release metadata",
+          "evidence_role": "install surfaces, version drift, dependency boundaries, and release cadence",
+          "targets": [
+            {
+              "title": "PyPI mlx metadata",
+              "kind": "package-metadata",
+              "locator": "https://pypi.org/pypi/mlx/json",
+              "sampling_goal": "Capture current release metadata before changing base MLX guidance."
+            },
+            {
+              "title": "PyPI mlx-lm metadata",
+              "kind": "package-metadata",
+              "locator": "https://pypi.org/pypi/mlx-lm/json",
+              "sampling_goal": "Check CLI and converter package drift for language-model ports."
+            },
+            {
+              "title": "PyPI mlx-vlm metadata",
+              "kind": "package-metadata",
+              "locator": "https://pypi.org/pypi/mlx-vlm/json",
+              "sampling_goal": "Check multimodal package drift and optional dependency surfaces."
+            },
+            {
+              "title": "PyPI mlx-audio metadata",
+              "kind": "package-metadata",
+              "locator": "https://pypi.org/pypi/mlx-audio/json",
+              "sampling_goal": "Check audio model package drift, quantization modes, and CLI surfaces."
+            }
+          ]
+        }
+      ],
+      "prompt": "You are the Official Docs Cartographer for MLX model-porting research loop 2026-07-03-nightly-knowledge-curator-research-loop. Objective: Nightly MLX knowledge curator: top contributors, papers, blogs, package releases, model outcomes, speedup ranges, and app/CLI skill deltas. Source lanes: official_docs, packages. Return source-backed findings only. Do not execute remote model code. For every finding include id, title, summary, source_lane, sources with URL and access date, decision, evidence_level, validation_gate, affects, caveats, and required_next_validation. Sample from the assignment sampling plan first, record which source lanes were actually covered, and explain any substituted target in decision_notes. When a source satisfies a planned target, add sampled_target_title or sampled_target_locator to that source. Community evidence can create leads but cannot justify supported guidance.\n\nSampling plan:\n- official_docs: Official Apple and MLX documentation\n  Evidence role: supported API, runtime behavior, packaging, and validation contract\n  - MLX documentation index [official-doc]: https://ml-explore.github.io/mlx/build/html/index.html - Confirm supported MLX APIs and current behavior before promoting guidance.\n  - MLX custom Metal kernels [official-doc]: https://ml-explore.github.io/mlx/build/html/dev/custom_metal_kernels.html - Check kernel API constraints, fallback expectations, and validation caveats.\n  - Apple Metal developer documentation [official-doc]: https://developer.apple.com/metal/ - Verify Apple runtime and packaging constraints that affect custom kernels.\n- packages: Package registries and release metadata\n  Evidence role: install surfaces, version drift, dependency boundaries, and release cadence\n  - PyPI mlx metadata [package-metadata]: https://pypi.org/pypi/mlx/json - Capture current release metadata before changing base MLX guidance.\n  - PyPI mlx-lm metadata [package-metadata]: https://pypi.org/pypi/mlx-lm/json - Check CLI and converter package drift for language-model ports.\n  - PyPI mlx-vlm metadata [package-metadata]: https://pypi.org/pypi/mlx-vlm/json - Check multimodal package drift and optional dependency surfaces.\n  - PyPI mlx-audio metadata [package-metadata]: https://pypi.org/pypi/mlx-audio/json - Check audio model package drift, quantization modes, and CLI surfaces.",
+      "execution": {
+        "kind": "offline-scaffold",
+        "state": "scaffolded_not_run",
+        "executor": null,
+        "log_path": null,
+        "result_path": null,
+        "blog_path": "blogs/official-docs-cartographer.md",
+        "blog_source": "generated"
+      },
+      "planning": {
+        "persona_id": "official-docs-cartographer",
+        "title": "Official Docs Cartographer",
+        "rank": 3,
+        "config_order": 1,
+        "score": 9,
+        "source_lanes": [
+          "official_docs",
+          "packages"
+        ],
+        "matched_objective_terms": [
+          "cli",
+          "model",
+          "package"
+        ],
+        "matched_gap_terms": [
+          "multimodal",
+          "quantization"
+        ],
+        "reasons": [
+          "Matched gap terms: multimodal, quantization.",
+          "Matched objective terms: cli, model, package.",
+          "Covers source lanes: official_docs, packages."
+        ]
+      },
+      "review_only": true,
+      "policy": {
+        "auto_modify_recommendations": false,
+        "execute_remote_model_code": false
+      },
+      "handoff": {
+        "assignment_index": 2,
+        "persona_id": "official-docs-cartographer",
+        "title": "Official Docs Cartographer",
+        "source_lanes": [
+          "official_docs",
+          "packages"
+        ],
+        "assignment_path": "agents/official-docs-cartographer.assignment.json",
+        "prompt_path": "agents/official-docs-cartographer.prompt.md",
+        "result_path": "agents/official-docs-cartographer.result.json",
+        "blog_path": "blogs/official-docs-cartographer.md",
+        "blog_source": "generated",
+        "execution_kind": "offline-scaffold",
+        "execution_state": "scaffolded_not_run",
+        "review_only": true
+      },
+      "sampling_coverage": {
+        "persona_id": "official-docs-cartographer",
+        "planned_target_count": 7,
+        "sampled_target_count": 0,
+        "unsampled_target_count": 7,
+        "returned_source_count": 0,
+        "unplanned_source_count": 0,
+        "explicit_sampling_receipt_count": 0,
+        "valid_explicit_sampling_receipt_count": 0,
+        "invalid_explicit_sampling_receipt_count": 0,
+        "sampled_target_missing_explicit_receipt_count": 0,
+        "coverage_ratio": 0.0,
+        "sampled_targets": [],
+        "unsampled_targets": [
+          {
+            "source_lane": "official_docs",
+            "lane_title": "Official Apple and MLX documentation",
+            "title": "MLX documentation index",
+            "kind": "official-doc",
+            "locator": "https://ml-explore.github.io/mlx/build/html/index.html",
+            "matched_sources": [],
+            "explicit_receipts": [],
+            "missing_explicit_sampling_receipt": false
+          },
+          {
+            "source_lane": "official_docs",
+            "lane_title": "Official Apple and MLX documentation",
+            "title": "MLX custom Metal kernels",
+            "kind": "official-doc",
+            "locator": "https://ml-explore.github.io/mlx/build/html/dev/custom_metal_kernels.html",
+            "matched_sources": [],
+            "explicit_receipts": [],
+            "missing_explicit_sampling_receipt": false
+          },
+          {
+            "source_lane": "official_docs",
+            "lane_title": "Official Apple and MLX documentation",
+            "title": "Apple Metal developer documentation",
+            "kind": "official-doc",
+            "locator": "https://developer.apple.com/metal/",
+            "matched_sources": [],
+            "explicit_receipts": [],
+            "missing_explicit_sampling_receipt": false
+          },
+          {
+            "source_lane": "packages",
+            "lane_title": "Package registries and release metadata",
+            "title": "PyPI mlx metadata",
+            "kind": "package-metadata",
+            "locator": "https://pypi.org/pypi/mlx/json",
+            "matched_sources": [],
+            "explicit_receipts": [],
+            "missing_explicit_sampling_receipt": false
+          },
+          {
+            "source_lane": "packages",
+            "lane_title": "Package registries and release metadata",
+            "title": "PyPI mlx-lm metadata",
+            "kind": "package-metadata",
+            "locator": "https://pypi.org/pypi/mlx-lm/json",
+            "matched_sources": [],
+            "explicit_receipts": [],
+            "missing_explicit_sampling_receipt": false
+          },
+          {
+            "source_lane": "packages",
+            "lane_title": "Package registries and release metadata",
+            "title": "PyPI mlx-vlm metadata",
+            "kind": "package-metadata",
+            "locator": "https://pypi.org/pypi/mlx-vlm/json",
+            "matched_sources": [],
+            "explicit_receipts": [],
+            "missing_explicit_sampling_receipt": false
+          },
+          {
+            "source_lane": "packages",
+            "lane_title": "Package registries and release metadata",
+            "title": "PyPI mlx-audio metadata",
+            "kind": "package-metadata",
+            "locator": "https://pypi.org/pypi/mlx-audio/json",
+            "matched_sources": [],
+            "explicit_receipts": [],
+            "missing_explicit_sampling_receipt": false
+          }
+        ],
+        "unplanned_sources": [],
+        "invalid_sampling_receipts": []
+      },
+      "blog": {
+        "persona_id": "official-docs-cartographer",
+        "path": "blogs/official-docs-cartographer.md",
+        "source": "generated",
+        "generated_blog_path": "blogs/official-docs-cartographer.md",
+        "preserved_executor_blog": false,
+        "required_sections": [
+          "Assignment",
+          "Planned sampling",
+          "Sources sampled",
+          "Sampling coverage",
+          "Candidate findings",
+          "Decision notes",
+          "Open validation"
+        ],
+        "present_sections": [
+          "Assignment",
+          "Planned sampling",
+          "Sources sampled",
+          "Sampling coverage",
+          "Candidate findings",
+          "Decision notes",
+          "Open validation"
+        ],
+        "missing_sections": [],
+        "contract_status": "pass"
+      }
+    },
+    {
+      "persona_id": "paper-architecture-scout",
+      "title": "Paper Architecture Scout",
+      "source_lanes": [
+        "papers",
+        "technical_blogs"
+      ],
+      "mission": "Find architecture-specific algorithm constraints and evaluation methods for model families the skill supports or should support.",
+      "sample_plan": [
+        {
+          "source_lane": "papers",
+          "lane_title": "Papers and technical reports",
+          "evidence_role": "architecture semantics, quality metrics, and algorithmic constraints",
+          "targets": [
+            {
+              "title": "arXiv MLX framework search",
+              "kind": "paper-search",
+              "locator": "https://arxiv.org/search/?query=MLX+framework&searchtype=all",
+              "sampling_goal": "Find MLX-specific papers and separate claims from reproducible MLX evidence."
+            },
+            {
+              "title": "arXiv on-device transformer search",
+              "kind": "paper-search",
+              "locator": "https://arxiv.org/search/?query=on-device+transformer+inference&searchtype=all",
+              "sampling_goal": "Find architecture and metric gaps relevant to local Apple-silicon ports."
+            },
+            {
+              "title": "Papers with Code MLX search",
+              "kind": "paper-index",
+              "locator": "https://paperswithcode.com/search?q=MLX",
+              "sampling_goal": "Identify paper-linked implementations that need source and license review."
+            }
+          ]
+        },
+        {
+          "source_lane": "technical_blogs",
+          "lane_title": "Technical blogs and engineering reports",
+          "evidence_role": "implementation details, benchmark caveats, and production constraints",
+          "targets": [
+            {
+              "title": "Apple Machine Learning Research",
+              "kind": "technical-blog-index",
+              "locator": "https://machinelearning.apple.com/",
+              "sampling_goal": "Find Apple-authored implementation constraints or benchmark caveats."
+            },
+            {
+              "title": "MLX examples discussions and notes",
+              "kind": "maintainer-notes",
+              "locator": "https://ml-explore.github.io/mlx-examples/",
+              "sampling_goal": "Find maintained examples that expose operational or benchmark details."
+            }
+          ]
+        }
+      ],
+      "prompt": "You are the Paper Architecture Scout for MLX model-porting research loop 2026-07-03-nightly-knowledge-curator-research-loop. Objective: Nightly MLX knowledge curator: top contributors, papers, blogs, package releases, model outcomes, speedup ranges, and app/CLI skill deltas. Source lanes: papers, technical_blogs. Return source-backed findings only. Do not execute remote model code. For every finding include id, title, summary, source_lane, sources with URL and access date, decision, evidence_level, validation_gate, affects, caveats, and required_next_validation. Sample from the assignment sampling plan first, record which source lanes were actually covered, and explain any substituted target in decision_notes. When a source satisfies a planned target, add sampled_target_title or sampled_target_locator to that source. Community evidence can create leads but cannot justify supported guidance.\n\nSampling plan:\n- papers: Papers and technical reports\n  Evidence role: architecture semantics, quality metrics, and algorithmic constraints\n  - arXiv MLX framework search [paper-search]: https://arxiv.org/search/?query=MLX+framework&searchtype=all - Find MLX-specific papers and separate claims from reproducible MLX evidence.\n  - arXiv on-device transformer search [paper-search]: https://arxiv.org/search/?query=on-device+transformer+inference&searchtype=all - Find architecture and metric gaps relevant to local Apple-silicon ports.\n  - Papers with Code MLX search [paper-index]: https://paperswithcode.com/search?q=MLX - Identify paper-linked implementations that need source and license review.\n- technical_blogs: Technical blogs and engineering reports\n  Evidence role: implementation details, benchmark caveats, and production constraints\n  - Apple Machine Learning Research [technical-blog-index]: https://machinelearning.apple.com/ - Find Apple-authored implementation constraints or benchmark caveats.\n  - MLX examples discussions and notes [maintainer-notes]: https://ml-explore.github.io/mlx-examples/ - Find maintained examples that expose operational or benchmark details.",
+      "execution": {
+        "kind": "offline-scaffold",
+        "state": "scaffolded_not_run",
+        "executor": null,
+        "log_path": null,
+        "result_path": null,
+        "blog_path": "blogs/paper-architecture-scout.md",
+        "blog_source": "generated"
+      },
+      "planning": {
+        "persona_id": "paper-architecture-scout",
+        "title": "Paper Architecture Scout",
+        "rank": 4,
+        "config_order": 2,
+        "score": 9,
+        "source_lanes": [
+          "papers",
+          "technical_blogs"
+        ],
+        "matched_objective_terms": [
+          "blogs",
+          "model",
+          "papers",
+          "skill"
+        ],
+        "matched_gap_terms": [
+          "inference"
+        ],
+        "reasons": [
+          "Matched gap terms: inference.",
+          "Matched objective terms: blogs, model, papers, skill.",
+          "Covers source lanes: papers, technical_blogs."
+        ]
+      },
+      "review_only": true,
+      "policy": {
+        "auto_modify_recommendations": false,
+        "execute_remote_model_code": false
+      },
+      "handoff": {
+        "assignment_index": 3,
+        "persona_id": "paper-architecture-scout",
+        "title": "Paper Architecture Scout",
+        "source_lanes": [
+          "papers",
+          "technical_blogs"
+        ],
+        "assignment_path": "agents/paper-architecture-scout.assignment.json",
+        "prompt_path": "agents/paper-architecture-scout.prompt.md",
+        "result_path": "agents/paper-architecture-scout.result.json",
+        "blog_path": "blogs/paper-architecture-scout.md",
+        "blog_source": "generated",
+        "execution_kind": "offline-scaffold",
+        "execution_state": "scaffolded_not_run",
+        "review_only": true
+      },
+      "sampling_coverage": {
+        "persona_id": "paper-architecture-scout",
+        "planned_target_count": 5,
+        "sampled_target_count": 0,
+        "unsampled_target_count": 5,
+        "returned_source_count": 0,
+        "unplanned_source_count": 0,
+        "explicit_sampling_receipt_count": 0,
+        "valid_explicit_sampling_receipt_count": 0,
+        "invalid_explicit_sampling_receipt_count": 0,
+        "sampled_target_missing_explicit_receipt_count": 0,
+        "coverage_ratio": 0.0,
+        "sampled_targets": [],
+        "unsampled_targets": [
+          {
+            "source_lane": "papers",
+            "lane_title": "Papers and technical reports",
+            "title": "arXiv MLX framework search",
+            "kind": "paper-search",
+            "locator": "https://arxiv.org/search/?query=MLX+framework&searchtype=all",
+            "matched_sources": [],
+            "explicit_receipts": [],
+            "missing_explicit_sampling_receipt": false
+          },
+          {
+            "source_lane": "papers",
+            "lane_title": "Papers and technical reports",
+            "title": "arXiv on-device transformer search",
+            "kind": "paper-search",
+            "locator": "https://arxiv.org/search/?query=on-device+transformer+inference&searchtype=all",
+            "matched_sources": [],
+            "explicit_receipts": [],
+            "missing_explicit_sampling_receipt": false
+          },
+          {
+            "source_lane": "papers",
+            "lane_title": "Papers and technical reports",
+            "title": "Papers with Code MLX search",
+            "kind": "paper-index",
+            "locator": "https://paperswithcode.com/search?q=MLX",
+            "matched_sources": [],
+            "explicit_receipts": [],
+            "missing_explicit_sampling_receipt": false
+          },
+          {
+            "source_lane": "technical_blogs",
+            "lane_title": "Technical blogs and engineering reports",
+            "title": "Apple Machine Learning Research",
+            "kind": "technical-blog-index",
+            "locator": "https://machinelearning.apple.com/",
+            "matched_sources": [],
+            "explicit_receipts": [],
+            "missing_explicit_sampling_receipt": false
+          },
+          {
+            "source_lane": "technical_blogs",
+            "lane_title": "Technical blogs and engineering reports",
+            "title": "MLX examples discussions and notes",
+            "kind": "maintainer-notes",
+            "locator": "https://ml-explore.github.io/mlx-examples/",
+            "matched_sources": [],
+            "explicit_receipts": [],
+            "missing_explicit_sampling_receipt": false
+          }
+        ],
+        "unplanned_sources": [],
+        "invalid_sampling_receipts": []
+      },
+      "blog": {
+        "persona_id": "paper-architecture-scout",
+        "path": "blogs/paper-architecture-scout.md",
+        "source": "generated",
+        "generated_blog_path": "blogs/paper-architecture-scout.md",
+        "preserved_executor_blog": false,
+        "required_sections": [
+          "Assignment",
+          "Planned sampling",
+          "Sources sampled",
+          "Sampling coverage",
+          "Candidate findings",
+          "Decision notes",
+          "Open validation"
+        ],
+        "present_sections": [
+          "Assignment",
+          "Planned sampling",
+          "Sources sampled",
+          "Sampling coverage",
+          "Candidate findings",
+          "Decision notes",
+          "Open validation"
+        ],
+        "missing_sections": [],
+        "contract_status": "pass"
+      }
+    },
+    {
+      "persona_id": "huggingface-ecosystem-sampler",
+      "title": "Hugging Face Ecosystem Sampler",
+      "source_lanes": [
+        "hugging_face"
+      ],
+      "mission": "Sample model cards, library tags, downloads, tasks, and license metadata to identify porting demand and artifact shapes.",
+      "sample_plan": [
+        {
+          "source_lane": "hugging_face",
+          "lane_title": "Hugging Face model and library metadata",
+          "evidence_role": "model popularity, artifact shape, license, config, tokenizer, and task coverage",
+          "targets": [
+            {
+              "title": "Hugging Face MLX model search",
+              "kind": "model-index",
+              "locator": "https://huggingface.co/models?search=mlx",
+              "sampling_goal": "Sample model cards, task tags, licenses, library tags, and artifact shapes."
+            },
+            {
+              "title": "mlx-community organization",
+              "kind": "model-index",
+              "locator": "https://huggingface.co/mlx-community",
+              "sampling_goal": "Track common publication metadata and model families in MLX conversions."
+            },
+            {
+              "title": "Hugging Face Transformers MLX search",
+              "kind": "docs-search",
+              "locator": "https://huggingface.co/docs/transformers/search?query=mlx",
+              "sampling_goal": "Check current library surfaces before relying on ecosystem guidance."
+            }
+          ]
+        }
+      ],
+      "prompt": "You are the Hugging Face Ecosystem Sampler for MLX model-porting research loop 2026-07-03-nightly-knowledge-curator-research-loop. Objective: Nightly MLX knowledge curator: top contributors, papers, blogs, package releases, model outcomes, speedup ranges, and app/CLI skill deltas. Source lanes: hugging_face. Return source-backed findings only. Do not execute remote model code. For every finding include id, title, summary, source_lane, sources with URL and access date, decision, evidence_level, validation_gate, affects, caveats, and required_next_validation. Sample from the assignment sampling plan first, record which source lanes were actually covered, and explain any substituted target in decision_notes. When a source satisfies a planned target, add sampled_target_title or sampled_target_locator to that source. Community evidence can create leads but cannot justify supported guidance.\n\nSampling plan:\n- hugging_face: Hugging Face model and library metadata\n  Evidence role: model popularity, artifact shape, license, config, tokenizer, and task coverage\n  - Hugging Face MLX model search [model-index]: https://huggingface.co/models?search=mlx - Sample model cards, task tags, licenses, library tags, and artifact shapes.\n  - mlx-community organization [model-index]: https://huggingface.co/mlx-community - Track common publication metadata and model families in MLX conversions.\n  - Hugging Face Transformers MLX search [docs-search]: https://huggingface.co/docs/transformers/search?query=mlx - Check current library surfaces before relying on ecosystem guidance.",
+      "execution": {
+        "kind": "offline-scaffold",
+        "state": "scaffolded_not_run",
+        "executor": null,
+        "log_path": null,
+        "result_path": null,
+        "blog_path": "blogs/huggingface-ecosystem-sampler.md",
+        "blog_source": "generated"
+      },
+      "planning": {
+        "persona_id": "huggingface-ecosystem-sampler",
+        "title": "Hugging Face Ecosystem Sampler",
+        "rank": 5,
+        "config_order": 3,
+        "score": 2,
+        "source_lanes": [
+          "hugging_face"
+        ],
+        "matched_objective_terms": [
+          "model"
+        ],
+        "matched_gap_terms": [],
+        "reasons": [
+          "Matched objective terms: model.",
+          "Covers source lanes: hugging_face."
+        ]
+      },
+      "review_only": true,
+      "policy": {
+        "auto_modify_recommendations": false,
+        "execute_remote_model_code": false
+      },
+      "handoff": {
+        "assignment_index": 4,
+        "persona_id": "huggingface-ecosystem-sampler",
+        "title": "Hugging Face Ecosystem Sampler",
+        "source_lanes": [
+          "hugging_face"
+        ],
+        "assignment_path": "agents/huggingface-ecosystem-sampler.assignment.json",
+        "prompt_path": "agents/huggingface-ecosystem-sampler.prompt.md",
+        "result_path": "agents/huggingface-ecosystem-sampler.result.json",
+        "blog_path": "blogs/huggingface-ecosystem-sampler.md",
+        "blog_source": "generated",
+        "execution_kind": "offline-scaffold",
+        "execution_state": "scaffolded_not_run",
+        "review_only": true
+      },
+      "sampling_coverage": {
+        "persona_id": "huggingface-ecosystem-sampler",
+        "planned_target_count": 3,
+        "sampled_target_count": 0,
+        "unsampled_target_count": 3,
+        "returned_source_count": 0,
+        "unplanned_source_count": 0,
+        "explicit_sampling_receipt_count": 0,
+        "valid_explicit_sampling_receipt_count": 0,
+        "invalid_explicit_sampling_receipt_count": 0,
+        "sampled_target_missing_explicit_receipt_count": 0,
+        "coverage_ratio": 0.0,
+        "sampled_targets": [],
+        "unsampled_targets": [
+          {
+            "source_lane": "hugging_face",
+            "lane_title": "Hugging Face model and library metadata",
+            "title": "Hugging Face MLX model search",
+            "kind": "model-index",
+            "locator": "https://huggingface.co/models?search=mlx",
+            "matched_sources": [],
+            "explicit_receipts": [],
+            "missing_explicit_sampling_receipt": false
+          },
+          {
+            "source_lane": "hugging_face",
+            "lane_title": "Hugging Face model and library metadata",
+            "title": "mlx-community organization",
+            "kind": "model-index",
+            "locator": "https://huggingface.co/mlx-community",
+            "matched_sources": [],
+            "explicit_receipts": [],
+            "missing_explicit_sampling_receipt": false
+          },
+          {
+            "source_lane": "hugging_face",
+            "lane_title": "Hugging Face model and library metadata",
+            "title": "Hugging Face Transformers MLX search",
+            "kind": "docs-search",
+            "locator": "https://huggingface.co/docs/transformers/search?query=mlx",
+            "matched_sources": [],
+            "explicit_receipts": [],
+            "missing_explicit_sampling_receipt": false
+          }
+        ],
+        "unplanned_sources": [],
+        "invalid_sampling_receipts": []
+      },
+      "blog": {
+        "persona_id": "huggingface-ecosystem-sampler",
+        "path": "blogs/huggingface-ecosystem-sampler.md",
+        "source": "generated",
+        "generated_blog_path": "blogs/huggingface-ecosystem-sampler.md",
+        "preserved_executor_blog": false,
+        "required_sections": [
+          "Assignment",
+          "Planned sampling",
+          "Sources sampled",
+          "Sampling coverage",
+          "Candidate findings",
+          "Decision notes",
+          "Open validation"
+        ],
+        "present_sections": [
+          "Assignment",
+          "Planned sampling",
+          "Sources sampled",
+          "Sampling coverage",
+          "Candidate findings",
+          "Decision notes",
+          "Open validation"
+        ],
+        "missing_sections": [],
+        "contract_status": "pass"
+      }
+    },
+    {
+      "persona_id": "practitioner-blog-miner",
+      "title": "Practitioner Blog Miner",
+      "source_lanes": [
+        "technical_blogs",
+        "community_discussions"
+      ],
+      "mission": "Mine implementation writeups and practitioner reports for leads while keeping unsupported claims out of supported guidance.",
+      "sample_plan": [
+        {
+          "source_lane": "technical_blogs",
+          "lane_title": "Technical blogs and engineering reports",
+          "evidence_role": "implementation details, benchmark caveats, and production constraints",
+          "targets": [
+            {
+              "title": "Apple Machine Learning Research",
+              "kind": "technical-blog-index",
+              "locator": "https://machinelearning.apple.com/",
+              "sampling_goal": "Find Apple-authored implementation constraints or benchmark caveats."
+            },
+            {
+              "title": "MLX examples discussions and notes",
+              "kind": "maintainer-notes",
+              "locator": "https://ml-explore.github.io/mlx-examples/",
+              "sampling_goal": "Find maintained examples that expose operational or benchmark details."
+            }
+          ]
+        },
+        {
+          "source_lane": "community_discussions",
+          "lane_title": "Community discussions",
+          "evidence_role": "pain points and candidate leads only; never sufficient for supported guidance",
+          "targets": [
+            {
+              "title": "Apple Developer Forums MLX search",
+              "kind": "forum-search",
+              "locator": "https://developer.apple.com/forums/search/?q=MLX",
+              "sampling_goal": "Collect pain points and leads without promoting them as supported guidance."
+            },
+            {
+              "title": "LocalLLaMA MLX search",
+              "kind": "community-search",
+              "locator": "https://www.reddit.com/r/LocalLLaMA/search/?q=MLX&restrict_sr=1",
+              "sampling_goal": "Sample user pain points, hardware caveats, and candidate follow-up repos."
+            }
+          ]
+        }
+      ],
+      "prompt": "You are the Practitioner Blog Miner for MLX model-porting research loop 2026-07-03-nightly-knowledge-curator-research-loop. Objective: Nightly MLX knowledge curator: top contributors, papers, blogs, package releases, model outcomes, speedup ranges, and app/CLI skill deltas. Source lanes: technical_blogs, community_discussions. Return source-backed findings only. Do not execute remote model code. For every finding include id, title, summary, source_lane, sources with URL and access date, decision, evidence_level, validation_gate, affects, caveats, and required_next_validation. Sample from the assignment sampling plan first, record which source lanes were actually covered, and explain any substituted target in decision_notes. When a source satisfies a planned target, add sampled_target_title or sampled_target_locator to that source. Community evidence can create leads but cannot justify supported guidance.\n\nSampling plan:\n- technical_blogs: Technical blogs and engineering reports\n  Evidence role: implementation details, benchmark caveats, and production constraints\n  - Apple Machine Learning Research [technical-blog-index]: https://machinelearning.apple.com/ - Find Apple-authored implementation constraints or benchmark caveats.\n  - MLX examples discussions and notes [maintainer-notes]: https://ml-explore.github.io/mlx-examples/ - Find maintained examples that expose operational or benchmark details.\n- community_discussions: Community discussions\n  Evidence role: pain points and candidate leads only; never sufficient for supported guidance\n  - Apple Developer Forums MLX search [forum-search]: https://developer.apple.com/forums/search/?q=MLX - Collect pain points and leads without promoting them as supported guidance.\n  - LocalLLaMA MLX search [community-search]: https://www.reddit.com/r/LocalLLaMA/search/?q=MLX&restrict_sr=1 - Sample user pain points, hardware caveats, and candidate follow-up repos.",
+      "execution": {
+        "kind": "offline-scaffold",
+        "state": "scaffolded_not_run",
+        "executor": null,
+        "log_path": null,
+        "result_path": null,
+        "blog_path": "blogs/practitioner-blog-miner.md",
+        "blog_source": "generated"
+      },
+      "planning": {
+        "persona_id": "practitioner-blog-miner",
+        "title": "Practitioner Blog Miner",
+        "rank": 6,
+        "config_order": 5,
+        "score": 1,
+        "source_lanes": [
+          "technical_blogs",
+          "community_discussions"
+        ],
+        "matched_objective_terms": [
+          "blogs"
+        ],
+        "matched_gap_terms": [],
+        "reasons": [
+          "Matched objective terms: blogs.",
+          "Covers source lanes: technical_blogs, community_discussions."
+        ]
+      },
+      "review_only": true,
+      "policy": {
+        "auto_modify_recommendations": false,
+        "execute_remote_model_code": false
+      },
+      "handoff": {
+        "assignment_index": 5,
+        "persona_id": "practitioner-blog-miner",
+        "title": "Practitioner Blog Miner",
+        "source_lanes": [
+          "technical_blogs",
+          "community_discussions"
+        ],
+        "assignment_path": "agents/practitioner-blog-miner.assignment.json",
+        "prompt_path": "agents/practitioner-blog-miner.prompt.md",
+        "result_path": "agents/practitioner-blog-miner.result.json",
+        "blog_path": "blogs/practitioner-blog-miner.md",
+        "blog_source": "generated",
+        "execution_kind": "offline-scaffold",
+        "execution_state": "scaffolded_not_run",
+        "review_only": true
+      },
+      "sampling_coverage": {
+        "persona_id": "practitioner-blog-miner",
+        "planned_target_count": 4,
+        "sampled_target_count": 0,
+        "unsampled_target_count": 4,
+        "returned_source_count": 0,
+        "unplanned_source_count": 0,
+        "explicit_sampling_receipt_count": 0,
+        "valid_explicit_sampling_receipt_count": 0,
+        "invalid_explicit_sampling_receipt_count": 0,
+        "sampled_target_missing_explicit_receipt_count": 0,
+        "coverage_ratio": 0.0,
+        "sampled_targets": [],
+        "unsampled_targets": [
+          {
+            "source_lane": "technical_blogs",
+            "lane_title": "Technical blogs and engineering reports",
+            "title": "Apple Machine Learning Research",
+            "kind": "technical-blog-index",
+            "locator": "https://machinelearning.apple.com/",
+            "matched_sources": [],
+            "explicit_receipts": [],
+            "missing_explicit_sampling_receipt": false
+          },
+          {
+            "source_lane": "technical_blogs",
+            "lane_title": "Technical blogs and engineering reports",
+            "title": "MLX examples discussions and notes",
+            "kind": "maintainer-notes",
+            "locator": "https://ml-explore.github.io/mlx-examples/",
+            "matched_sources": [],
+            "explicit_receipts": [],
+            "missing_explicit_sampling_receipt": false
+          },
+          {
+            "source_lane": "community_discussions",
+            "lane_title": "Community discussions",
+            "title": "Apple Developer Forums MLX search",
+            "kind": "forum-search",
+            "locator": "https://developer.apple.com/forums/search/?q=MLX",
+            "matched_sources": [],
+            "explicit_receipts": [],
+            "missing_explicit_sampling_receipt": false
+          },
+          {
+            "source_lane": "community_discussions",
+            "lane_title": "Community discussions",
+            "title": "LocalLLaMA MLX search",
+            "kind": "community-search",
+            "locator": "https://www.reddit.com/r/LocalLLaMA/search/?q=MLX&restrict_sr=1",
+            "matched_sources": [],
+            "explicit_receipts": [],
+            "missing_explicit_sampling_receipt": false
+          }
+        ],
+        "unplanned_sources": [],
+        "invalid_sampling_receipts": []
+      },
+      "blog": {
+        "persona_id": "practitioner-blog-miner",
+        "path": "blogs/practitioner-blog-miner.md",
+        "source": "generated",
+        "generated_blog_path": "blogs/practitioner-blog-miner.md",
+        "preserved_executor_blog": false,
+        "required_sections": [
+          "Assignment",
+          "Planned sampling",
+          "Sources sampled",
+          "Sampling coverage",
+          "Candidate findings",
+          "Decision notes",
+          "Open validation"
+        ],
+        "present_sections": [
+          "Assignment",
+          "Planned sampling",
+          "Sources sampled",
+          "Sampling coverage",
+          "Candidate findings",
+          "Decision notes",
+          "Open validation"
+        ],
+        "missing_sections": [],
+        "contract_status": "pass"
+      }
+    }
+  ]
+}
