@@ -1,10 +1,10 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-07-03T22:10:11.743374+00:00",
+  "generated_at": "2026-07-04T22:03:09.524384+00:00",
   "review_only": true,
   "repo": "ml-explore/mlx",
   "source": "https://api.github.com/repos/ml-explore/mlx/contributors?per_page=100&page=1",
-  "retrieved": "2026-07-03",
+  "retrieved": "2026-07-04",
   "requested_count": 1000,
   "per_page": 100,
   "linked_user_count": 258,
@@ -285,13 +285,13 @@
         "count": 100,
         "retained_count": 100,
         "link_header": "<https://api.github.com/repositories/724854743/contributors?per_page=100&page=2>; rel=\"next\", <https://api.github.com/repositories/724854743/contributors?per_page=100&page=3>; rel=\"last\"",
-        "etag": "\"0101ba89728eea7e55d25a24b75970247249c4c861e0c05eab50d4faf0356746\"",
-        "last_modified": "Fri, 03 Jul 2026 20:51:42 GMT",
+        "etag": "W/\"74db47e4af8454525c17c5517f5057816b7fb8278b1cbe3a6b5bed6e752ec1fd\"",
+        "last_modified": "Sat, 04 Jul 2026 21:15:02 GMT",
         "rate_limit": {
-          "limit": "5000",
-          "remaining": "4964",
-          "used": "36",
-          "reset": "1783120002",
+          "limit": "60",
+          "remaining": "48",
+          "used": "12",
+          "reset": "1783205160",
           "resource": "core"
         },
         "link_rels": [
@@ -307,13 +307,13 @@
         "count": 100,
         "retained_count": 100,
         "link_header": "<https://api.github.com/repositories/724854743/contributors?per_page=100&page=1>; rel=\"prev\", <https://api.github.com/repositories/724854743/contributors?per_page=100&page=3>; rel=\"next\", <https://api.github.com/repositories/724854743/contributors?per_page=100&page=3>; rel=\"last\", <https://api.github.com/repositories/724854743/contributors?per_page=100&page=1>; rel=\"first\"",
-        "etag": "\"5092dc41dbea05762fb526abe6bdf9c6bd92e429d3c4fe072f4e1986326c408a\"",
-        "last_modified": "Fri, 03 Jul 2026 20:51:42 GMT",
+        "etag": "W/\"65482d0ba43838755d2438253be662ef074dec09515c1ccf9109a36f16338736\"",
+        "last_modified": "Sat, 04 Jul 2026 21:15:02 GMT",
         "rate_limit": {
-          "limit": "5000",
-          "remaining": "4963",
-          "used": "37",
-          "reset": "1783120002",
+          "limit": "60",
+          "remaining": "47",
+          "used": "13",
+          "reset": "1783205160",
           "resource": "core"
         },
         "link_rels": [
@@ -331,13 +331,13 @@
         "count": 58,
         "retained_count": 58,
         "link_header": "<https://api.github.com/repositories/724854743/contributors?per_page=100&page=2>; rel=\"prev\", <https://api.github.com/repositories/724854743/contributors?per_page=100&page=1>; rel=\"first\"",
-        "etag": "\"f3cfddf2cdd706495c807d98c678c339fd584bcab5fdf886f1a5c2d1cc9e02cc\"",
-        "last_modified": "Fri, 03 Jul 2026 20:51:42 GMT",
+        "etag": "W/\"5d8fba4bbd0a47817208263493d57a11dccf0a6743c536cd55c1b493eacd387b\"",
+        "last_modified": "Sat, 04 Jul 2026 21:15:02 GMT",
         "rate_limit": {
-          "limit": "5000",
-          "remaining": "4962",
-          "used": "38",
-          "reset": "1783120002",
+          "limit": "60",
+          "remaining": "46",
+          "used": "14",
+          "reset": "1783205160",
           "resource": "core"
         },
         "link_rels": [
@@ -355,13 +355,13 @@
         "count": 100,
         "retained_count": 100,
         "link_header": "<https://api.github.com/repositories/724854743/contributors?per_page=100&page=2&anon=true>; rel=\"next\", <https://api.github.com/repositories/724854743/contributors?per_page=100&page=3&anon=true>; rel=\"last\"",
-        "etag": "\"57cdbf484d6806c07cf85184819f4e3bde056a12930750eeb61128362c1e4390\"",
-        "last_modified": "Fri, 03 Jul 2026 20:51:42 GMT",
+        "etag": "W/\"18050dfa9d67744b10acfb0182f46a1e95e96d92dabd321f6e157879a8869e03\"",
+        "last_modified": "Sat, 04 Jul 2026 21:15:02 GMT",
         "rate_limit": {
-          "limit": "5000",
-          "remaining": "4960",
-          "used": "40",
-          "reset": "1783120002",
+          "limit": "60",
+          "remaining": "45",
+          "used": "15",
+          "reset": "1783205160",
           "resource": "core"
         },
         "link_rels": [
@@ -377,13 +377,13 @@
         "count": 100,
         "retained_count": 100,
         "link_header": "<https://api.github.com/repositories/724854743/contributors?per_page=100&page=1&anon=true>; rel=\"prev\", <https://api.github.com/repositories/724854743/contributors?per_page=100&page=3&anon=true>; rel=\"next\", <https://api.github.com/repositories/724854743/contributors?per_page=100&page=3&anon=true>; rel=\"last\", <https://api.github.com/repositories/724854743/contributors?per_page=100&page=1&anon=true>; rel=\"first\"",
-        "etag": "\"551b1a0b538ddc0ec40bb6e29766713e33ef3915891ed1314396d1d849d79805\"",
-        "last_modified": "Fri, 03 Jul 2026 20:51:42 GMT",
+        "etag": "W/\"764d6de63c301bf47ca449e8baf96ec2ba27fcbaf5195e59b3698d95f85c9cfa\"",
+        "last_modified": "Sat, 04 Jul 2026 21:15:02 GMT",
         "rate_limit": {
-          "limit": "5000",
-          "remaining": "4959",
-          "used": "41",
-          "reset": "1783120002",
+          "limit": "60",
+          "remaining": "44",
+          "used": "16",
+          "reset": "1783205160",
           "resource": "core"
         },
         "link_rels": [
@@ -401,13 +401,13 @@
         "count": 64,
         "retained_count": 64,
         "link_header": "<https://api.github.com/repositories/724854743/contributors?per_page=100&page=2&anon=true>; rel=\"prev\", <https://api.github.com/repositories/724854743/contributors?per_page=100&page=1&anon=true>; rel=\"first\"",
-        "etag": "\"4abf2de65a4ad5560eab4e11c78e370bc4179bcdd9cc0835fe8886e53c80daec\"",
-        "last_modified": "Fri, 03 Jul 2026 20:51:42 GMT",
+        "etag": "W/\"725c1c8c8c4f2bd8916a62d1b578cd8edd3979a184a90247c066443b37be4039\"",
+        "last_modified": "Sat, 04 Jul 2026 21:15:02 GMT",
         "rate_limit": {
-          "limit": "5000",
-          "remaining": "4958",
-          "used": "42",
-          "reset": "1783120002",
+          "limit": "60",
+          "remaining": "43",
+          "used": "17",
+          "reset": "1783205160",
           "resource": "core"
         },
         "link_rels": [

@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-07-03T22:10:28.890379+00:00",
+  "generated_at": "2026-07-04T22:03:29.903445+00:00",
   "policy": {
     "auto_modify_recommendations": false,
     "auto_merge": false,
@@ -73,9 +73,9 @@
         "speculative"
       ],
       "default_branch": "main",
-      "head_sha": "0fa3ae25cffb1a0761f1643dd40e1cd45a310dec",
-      "head_date": "2026-07-03T22:05:53Z",
-      "head_message": "fix #1481: quantized KV cache crashes in mask-length checks (#1483)",
+      "head_sha": "4d468e85759a2e4dea55e197f4b55ff0199d28f3",
+      "head_date": "2026-07-04T19:55:56Z",
+      "head_message": "Fix DiffusionGemma processor and video inputs end-to-end (#1492)",
       "url": "https://github.com/Blaizzy/mlx-vlm",
       "latest_release": {
         "tag": "v0.6.3",
@@ -94,9 +94,9 @@
         "codec"
       ],
       "default_branch": "main",
-      "head_sha": "a375300e1c845b323fda20f3103ef4fd8b4a2c6c",
-      "head_date": "2026-07-03T03:39:01Z",
-      "head_message": "Merge pull request #812 from gcanlin/mtd",
+      "head_sha": "4ecd678094d8081cd3616af272f2132877fbdc16",
+      "head_date": "2026-07-04T22:01:02Z",
+      "head_message": "Merge pull request #817 from lucasnewman/nemotron-asr-chunked-stft",
       "url": "https://github.com/Blaizzy/mlx-audio",
       "latest_release": {
         "tag": "v0.4.4",
@@ -147,9 +147,9 @@
         "codex"
       ],
       "default_branch": "main",
-      "head_sha": "1f17e7512f0e47625f2cad416f14870688a99814",
-      "head_date": "2026-07-03T20:06:07Z",
-      "head_message": "Fix MIME types for path-backed feedback attachments (#30796)",
+      "head_sha": "98d28aab54ed86714901b6619400598598876dd0",
+      "head_date": "2026-07-04T00:18:26Z",
+      "head_message": "chore: remove unused git-cliff configuration (#31066)",
       "url": "https://github.com/openai/codex",
       "latest_release": {
         "tag": "rust-v0.142.5",

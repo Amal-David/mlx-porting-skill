@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-07-03T22:10:28+00:00",
-  "run_id": "2026-07-03-nightly-knowledge-curator",
+  "generated_at": "2026-07-04T22:03:29+00:00",
+  "run_id": "2026-07-04-nightly-knowledge-curator",
   "policy": {
     "review_only": true,
     "auto_promote_sources": false,
@@ -598,7 +598,7 @@
       "candidate_kind": "paper",
       "label": "Lynx: Progressive Speculative Quantization for accelerating KV Transfer in Long-Context Inference",
       "locator": "https://arxiv.org/abs/2607.01831",
-      "read_state": "unread_candidate",
+      "read_state": "seen_unread_candidate",
       "known_source_id": "",
       "query": "KV cache quantization long context",
       "updated": "2026-07-02T07:52:43Z",
@@ -710,7 +710,7 @@
       "candidate_kind": "paper",
       "label": "RaBitQCache: Rotated Binary Quantization for KVCache in Long Context LLM Inference",
       "locator": "https://arxiv.org/abs/2606.31519",
-      "read_state": "unread_candidate",
+      "read_state": "seen_unread_candidate",
       "known_source_id": "",
       "query": "KV cache quantization long context",
       "updated": "2026-06-30T11:32:14Z",
@@ -869,16 +869,16 @@
       "locator": "https://github.com/Blaizzy/mlx-audio",
       "read_state": "already_read",
       "known_source_id": "source:mlx-audio-repo",
-      "head_sha": "a375300e1c845b323fda20f3103ef4fd8b4a2c6c",
-      "head_date": "2026-07-03T03:39:01Z",
-      "head_message": "Merge pull request #812 from gcanlin/mtd",
+      "head_sha": "4ecd678094d8081cd3616af272f2132877fbdc16",
+      "head_date": "2026-07-04T22:01:02Z",
+      "head_message": "Merge pull request #817 from lucasnewman/nemotron-asr-chunked-stft",
       "topics": [
         "audio",
         "tts",
         "stt",
         "codec"
       ],
-      "summary": "Merge pull request #812 from gcanlin/mtd"
+      "summary": "Merge pull request #817 from lucasnewman/nemotron-asr-chunked-stft"
     },
     {
       "id": "candidate:repository:blaizzy-mlx-vlm",
@@ -888,15 +888,15 @@
       "locator": "https://github.com/Blaizzy/mlx-vlm",
       "read_state": "already_read",
       "known_source_id": "source:mlx-vlm-repo",
-      "head_sha": "0fa3ae25cffb1a0761f1643dd40e1cd45a310dec",
-      "head_date": "2026-07-03T22:05:53Z",
-      "head_message": "fix #1481: quantized KV cache crashes in mask-length checks (#1483)",
+      "head_sha": "4d468e85759a2e4dea55e197f4b55ff0199d28f3",
+      "head_date": "2026-07-04T19:55:56Z",
+      "head_message": "Fix DiffusionGemma processor and video inputs end-to-end (#1492)",
       "topics": [
         "multimodal",
         "serving",
         "speculative"
       ],
-      "summary": "fix #1481: quantized KV cache crashes in mask-length checks (#1483)"
+      "summary": "Fix DiffusionGemma processor and video inputs end-to-end (#1492)"
     },
     {
       "id": "candidate:repository:ml-explore-mlx",
@@ -961,14 +961,14 @@
       "locator": "https://github.com/openai/codex",
       "read_state": "updated_candidate",
       "known_source_id": "",
-      "head_sha": "1f17e7512f0e47625f2cad416f14870688a99814",
-      "head_date": "2026-07-03T20:06:07Z",
-      "head_message": "Fix MIME types for path-backed feedback attachments (#30796)",
+      "head_sha": "98d28aab54ed86714901b6619400598598876dd0",
+      "head_date": "2026-07-04T00:18:26Z",
+      "head_message": "chore: remove unused git-cliff configuration (#31066)",
       "topics": [
         "agent-skills",
         "codex"
       ],
-      "summary": "Fix MIME types for path-backed feedback attachments (#30796)"
+      "summary": "chore: remove unused git-cliff configuration (#31066)"
     },
     {
       "id": "candidate:repository:waybarrios-vllm-mlx",
@@ -7839,34 +7839,37 @@
     },
     {
       "source": "candidate:repository:blaizzy-mlx-audio",
-      "target": "approach:audio-reference-conditioning-cache",
-      "relation": "candidate_relevant_to",
-      "score": 3,
-      "matched_terms": [
-        "audio",
-        "codec",
-        "tts"
-      ]
-    },
-    {
-      "source": "candidate:repository:blaizzy-mlx-audio",
       "target": "approach:audio-streaming-and-cache",
       "relation": "candidate_relevant_to",
-      "score": 3,
+      "score": 4,
       "matched_terms": [
         "audio",
+        "chunked",
         "codec",
         "tts"
       ]
     },
     {
       "source": "candidate:repository:blaizzy-mlx-audio",
-      "target": "approach:generic-audio-prefix-cache",
+      "target": "learning:audio-flow-tts-duration-vocoder-gates",
       "relation": "candidate_relevant_to",
-      "score": 3,
+      "score": 4,
       "matched_terms": [
         "audio",
-        "stt",
+        "codec",
+        "lucasnewman",
+        "tts"
+      ]
+    },
+    {
+      "source": "candidate:repository:blaizzy-mlx-audio",
+      "target": "outcome:audio-tts-qwen3-and-vocoder-routes",
+      "relation": "candidate_relevant_to",
+      "score": 4,
+      "matched_terms": [
+        "asr",
+        "audio",
+        "codec",
         "tts"
       ]
     },
@@ -7876,22 +7879,23 @@
       "relation": "candidate_relevant_to",
       "score": 4,
       "matched_terms": [
-        "cache",
         "multimodal",
+        "processor",
         "serving",
         "vlm"
       ]
     },
     {
       "source": "candidate:repository:blaizzy-mlx-vlm",
-      "target": "approach:multimodal-content-prefix-cache",
+      "target": "approach:vision-feature-cache",
       "relation": "candidate_relevant_to",
-      "score": 4,
+      "score": 5,
       "matched_terms": [
-        "cache",
+        "inputs",
         "multimodal",
+        "processor",
         "serving",
-        "vlm"
+        "video"
       ]
     },
     {
@@ -7900,8 +7904,8 @@
       "relation": "candidate_relevant_to",
       "score": 4,
       "matched_terms": [
-        "cache",
         "multimodal",
+        "processor",
         "serving",
         "vlm"
       ]
@@ -8697,9 +8701,9 @@
   ],
   "latest_delta": {
     "schema_version": 1,
-    "run_id": "2026-07-03-nightly-knowledge-curator",
-    "generated_at": "2026-07-03T22:10:28+00:00",
-    "previous_graph_generated_at": "2026-06-30T22:07:18+00:00",
+    "run_id": "2026-07-04-nightly-knowledge-curator",
+    "generated_at": "2026-07-04T22:03:29+00:00",
+    "previous_graph_generated_at": "2026-07-03T22:10:28+00:00",
     "already_read_sources": [
       {
         "id": "candidate:paper:native-llm-and-mllm-inference-at-scale-on-apple-silicon",
@@ -8798,22 +8802,7 @@
         "known_source_id": "source:agent-skills-repo"
       }
     ],
-    "new_unread_sources": [
-      {
-        "id": "candidate:paper:lynx-progressive-speculative-quantization-for-accelerating-kv-transfer-in-long-context-inference",
-        "label": "Lynx: Progressive Speculative Quantization for accelerating KV Transfer in Long-Context Inference",
-        "locator": "https://arxiv.org/abs/2607.01831",
-        "read_state": "unread_candidate",
-        "kind": "paper"
-      },
-      {
-        "id": "candidate:paper:rabitqcache-rotated-binary-quantization-for-kvcache-in-long-context-llm-inference",
-        "label": "RaBitQCache: Rotated Binary Quantization for KVCache in Long Context LLM Inference",
-        "locator": "https://arxiv.org/abs/2606.31519",
-        "read_state": "unread_candidate",
-        "kind": "paper"
-      }
-    ],
+    "new_unread_sources": [],
     "updated_sources": [
       {
         "id": "candidate:repository:openai-codex",
@@ -8821,122 +8810,11 @@
         "locator": "https://github.com/openai/codex",
         "read_state": "updated_candidate",
         "kind": "repository",
-        "head_sha": "1f17e7512f0e47625f2cad416f14870688a99814"
+        "head_sha": "98d28aab54ed86714901b6619400598598876dd0"
       }
     ],
-    "new_approach_leads": [
-      {
-        "id": "candidate:paper:lynx-progressive-speculative-quantization-for-accelerating-kv-transfer-in-long-context-inference",
-        "label": "Lynx: Progressive Speculative Quantization for accelerating KV Transfer in Long-Context Inference",
-        "locator": "https://arxiv.org/abs/2607.01831",
-        "read_state": "unread_candidate",
-        "kind": "paper",
-        "matches": [
-          {
-            "target": "approach:adaptive-kv-quantization",
-            "score": 8,
-            "matched_terms": [
-              "cache",
-              "context",
-              "key",
-              "long",
-              "precision",
-              "quantization",
-              "until",
-              "value"
-            ]
-          },
-          {
-            "target": "approach:multimodal-content-prefix-cache",
-            "score": 6,
-            "matched_terms": [
-              "cache",
-              "context",
-              "language",
-              "long",
-              "serving",
-              "use"
-            ]
-          },
-          {
-            "target": "outcome:decoder-mlx-lm-working-route",
-            "score": 6,
-            "matched_terms": [
-              "cache",
-              "common",
-              "generation",
-              "llm",
-              "quantization",
-              "speculative"
-            ]
-          }
-        ]
-      },
-      {
-        "id": "candidate:paper:rabitqcache-rotated-binary-quantization-for-kvcache-in-long-context-llm-inference",
-        "label": "RaBitQCache: Rotated Binary Quantization for KVCache in Long Context LLM Inference",
-        "locator": "https://arxiv.org/abs/2606.31519",
-        "read_state": "unread_candidate",
-        "kind": "paper",
-        "matches": [
-          {
-            "target": "approach:adaptive-kv-quantization",
-            "score": 9,
-            "matched_terms": [
-              "adaptive",
-              "aware",
-              "cache",
-              "context",
-              "hardware",
-              "key",
-              "long",
-              "quantization"
-            ]
-          },
-          {
-            "target": "backlog:structured-timeseries-recsys",
-            "score": 8,
-            "matched_terms": [
-              "based",
-              "context",
-              "error",
-              "mask",
-              "retrieval",
-              "score",
-              "top",
-              "value"
-            ]
-          },
-          {
-            "target": "approach:multimodal-content-prefix-cache",
-            "score": 7,
-            "matched_terms": [
-              "aware",
-              "cache",
-              "context",
-              "language",
-              "long",
-              "proven",
-              "throughput"
-            ]
-          }
-        ]
-      }
-    ],
-    "gap_hints": [
-      "quantization",
-      "adaptive",
-      "cache",
-      "content",
-      "context",
-      "inference",
-      "long",
-      "multimodal",
-      "prefix",
-      "accelerating",
-      "binary",
-      "decoder"
-    ],
+    "new_approach_leads": [],
+    "gap_hints": [],
     "policy": {
       "review_only": true,
       "auto_promote_sources": false,
