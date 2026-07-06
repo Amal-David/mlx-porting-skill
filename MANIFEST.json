@@ -2,8 +2,8 @@
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
   "version": "0.1.0",
-  "generated_at": "2026-07-06T09:30:23.255571+00:00",
-  "file_count": 221,
+  "generated_at": "2026-07-06T09:40:37.016792+00:00",
+  "file_count": 222,
   "files": [
     {
       "path": ".github/workflows/daily-research.yml",
@@ -117,8 +117,8 @@
     },
     {
       "path": "apps/model-advisor-worker/package.json",
-      "size_bytes": 764,
-      "sha256": "be75b7b1b892c47a1166e824a95fe94d0dbb77e48fbc1eb4d408c4a6e838e2a6"
+      "size_bytes": 862,
+      "sha256": "59b6ba8612e8e5b5158de697e71dc9f314f2f5aad1098ba9fad0412f03b9e95c"
     },
     {
       "path": "apps/model-advisor-worker/scripts/build-pages.mjs",
@@ -131,14 +131,19 @@
       "sha256": "2d30dde00cafd4fdb2b7312db98c9988c96ceab89fb1d76fe38c85e17ed6dfa0"
     },
     {
+      "path": "apps/model-advisor-worker/scripts/check-stack-fixture.mjs",
+      "size_bytes": 1373,
+      "sha256": "c20c23e774ab7de0fce29fc3f1f5ff64f6a62118b08a74209015ac84607820f6"
+    },
+    {
       "path": "apps/model-advisor-worker/scripts/smoke-local.mjs",
-      "size_bytes": 6242,
-      "sha256": "bab725f4b7e637a36d8236207d5fea330599c5c188aee7fe02054a643fa9604b"
+      "size_bytes": 8196,
+      "sha256": "a8084ddf9a7f4225b999ac32ca5e614074e5f6550415d0ff9f0b964762908343"
     },
     {
       "path": "apps/model-advisor-worker/src/index.ts",
-      "size_bytes": 91615,
-      "sha256": "7c29c45449fe0fbd654b241a943ba55cafbf479790cf15859482aa6ccc3d41d7"
+      "size_bytes": 103985,
+      "sha256": "cce455b139d1f9e003c7e8e18b405ad996f497c13be718c2cb00cfc2ff5aca54"
     },
     {
       "path": "apps/model-advisor-worker/src/skill-data.generated.ts",

@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "build:data": "node scripts/build-skill-data.mjs",
-    "check:data": "node scripts/build-skill-data.mjs --check",
+    "check:stack-fixture": "node scripts/check-stack-fixture.mjs",
+    "check:data": "node scripts/build-skill-data.mjs --check && npm run check:stack-fixture",
     "build:pages": "npm run build:data && node scripts/build-pages.mjs",
     "typecheck": "tsc --noEmit",
     "build": "npm run build:data && npm run typecheck",

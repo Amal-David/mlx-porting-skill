@@ -12,6 +12,29 @@ type Method = AdvisorData["methods"][number];
 type OutcomeRecord = AdvisorData["modelOutcomes"]["records"][number];
 type Source = AdvisorData["sources"][number];
 type Bucket = AdvisorData["taxonomy"]["advisorBuckets"][number];
+type StackStepBand = {
+  method: string;
+  band: string | null;
+  lossiness: string | null;
+  gate: string | null;
+};
+type StackCompoundBand = {
+  floor: string;
+  ceiling: string;
+  provenance: "local_reproduced" | "multiplicative_hypothesis";
+  unmeasured_upside: string[];
+  excluded_conflicts: string[][];
+  per_step: StackStepBand[];
+  flag?: string;
+};
+type StackCompoundSummary = Omit<StackCompoundBand, "per_step">;
+type RecommendedStack = {
+  id: string;
+  label: string;
+  steps: StackStepBand[];
+  compound: StackCompoundSummary;
+  composition_notes: Array<{ pair: string[]; validity: string; why: string }>;
+};
 
 type HuggingFaceModel = {
   id?: string;
@@ -156,6 +179,8 @@ const DISCOVERY_CATEGORY_QUERIES: Record<string, { label: string; query: string;
   vision: { label: "Vision", query: "vision language", pipelineTag: "image-text-to-text", sort: "downloads" },
   audio: { label: "Audio", query: "whisper", pipelineTag: "automatic-speech-recognition", sort: "downloads" }
 };
+const BAND_RANGE_PATTERN = /^\s*(\d+(?:\.\d+)?)x\s*-\s*(\d+(?:\.\d+)?)x\s*$/;
+const STACK_COMPOUND_HYPOTHESIS_FLAG = "unmeasured composition - multiplicative hypothesis, not a claim";
 
 class HttpError extends Error {
   constructor(readonly status: number, message: string) {
@@ -605,7 +630,11 @@ function buildAdvisor(model: HuggingFaceModel) {
   }
   addSource(sources, "asset-top-models-snapshot");
   addSource(sources, "hf-top-models-api-2026-06-29");
-  const speedupSummary = summarizePotentialSpeedup(modelOutcomes);
+  const recommendedStack = selectRecommendedStack(classification.family.id);
+  if (recommendedStack) {
+    addSource(sources, "asset-optimization-stacks");
+  }
+  const speedupSummary = summarizePotentialSpeedup(modelOutcomes, recommendedStack);
 
   const citations = [...sources.values()].sort((a, b) => a.id.localeCompare(b.id));
   const buckets = ADVISOR_DATA.taxonomy.advisorBuckets
@@ -620,6 +649,7 @@ function buildAdvisor(model: HuggingFaceModel) {
     buckets,
     modelOutcomes,
     speedupSummary,
+    recommendedStack,
     topCoverage: topCoverageForModel(model),
     researchNotes,
     citations,
@@ -628,6 +658,188 @@ function buildAdvisor(model: HuggingFaceModel) {
       keepGates: ADVISOR_DATA.taxonomy.defaultKeepGate
     }
   };
+}
+
+function selectRecommendedStack(familyId: string): RecommendedStack | null {
+  const stack = ADVISOR_DATA.stacks.find((item) => appliesToFamily(item.families, familyId));
+  if (!stack) {
+    return null;
+  }
+  const composed = composeStackBand(stack, ADVISOR_DATA.methods);
+  const compound: StackCompoundSummary = {
+    floor: composed.floor,
+    ceiling: composed.ceiling,
+    provenance: composed.provenance,
+    unmeasured_upside: composed.unmeasured_upside,
+    excluded_conflicts: composed.excluded_conflicts
+  };
+  if (composed.flag) {
+    compound.flag = composed.flag;
+  }
+  return {
+    id: stack.id,
+    label: stack.label,
+    steps: composed.per_step,
+    compound,
+    composition_notes: stack.compositionNotes.map((note) => ({
+      pair: [...note.pair],
+      validity: note.validity,
+      why: note.why
+    }))
+  };
+}
+
+export function composeStackBand(stack: unknown, guidanceMethods: Record<string, unknown> | readonly unknown[]): StackCompoundBand {
+  if (!isRecord(stack)) {
+    throw new Error("stack must be a mapping");
+  }
+  const methodsById = normalizeMethodsById(guidanceMethods);
+  const steps = stack.steps;
+  if (!Array.isArray(steps)) {
+    throw new Error(`stack ${String(stack.id ?? "<unknown>")} steps must be a list`);
+  }
+
+  const excludedConflicts: string[][] = [];
+  const excludedMethods = new Set<string>();
+  const notes = Array.isArray(stack.composition_notes)
+    ? stack.composition_notes
+    : Array.isArray(stack.compositionNotes)
+      ? stack.compositionNotes
+      : [];
+  for (const note of notes) {
+    if (!isRecord(note) || note.validity !== "known-conflicting") {
+      continue;
+    }
+    const pair = note.pair;
+    if (!Array.isArray(pair) || pair.length !== 2) {
+      throw new Error(`stack ${String(stack.id ?? "<unknown>")} has malformed known-conflicting pair ${String(pair)}`);
+    }
+    const conflictPair = [String(pair[0]), String(pair[1])];
+    excludedConflicts.push(conflictPair);
+    excludedMethods.add(conflictPair[0]);
+    excludedMethods.add(conflictPair[1]);
+  }
+
+  const perStep: StackStepBand[] = [];
+  const unmeasuredUpside: string[] = [];
+  const stepFloors = [1.0];
+  let ceiling = 1.0;
+
+  for (const step of steps) {
+    if (!isRecord(step)) {
+      throw new Error(`stack ${String(stack.id ?? "<unknown>")} contains a non-mapping step`);
+    }
+    const methodId = Object.prototype.hasOwnProperty.call(step, "method") ? String(step.method) : "";
+    const method = methodsById.get(methodId);
+    const improvementBand = isRecord(method)
+      ? firstRecord(method.improvement_band, method.improvementBand)
+      : null;
+    const bandRange = improvementBand?.range;
+    const bandProvenance = improvementBand?.provenance;
+
+    perStep.push({
+      method: methodId,
+      band: typeof bandRange === "string" ? bandRange : null,
+      lossiness: valueToNullableString(step.lossiness),
+      gate: valueToNullableString(step.gate)
+    });
+
+    if (excludedMethods.has(methodId)) {
+      continue;
+    }
+    if (!improvementBand || bandProvenance === "profile_required") {
+      unmeasuredUpside.push(methodId);
+      continue;
+    }
+    if (bandProvenance !== "source_reported" && bandProvenance !== "local_reproduced") {
+      unmeasuredUpside.push(methodId);
+      continue;
+    }
+    const [stepFloor, stepCeiling] = parseBand(String(bandRange));
+    stepFloors.push(stepFloor);
+    ceiling *= stepCeiling;
+  }
+
+  const compound = firstRecord(stack.compound) ?? {};
+  const measuredTogether = compound.measured_together === true || compound.measuredTogether === true;
+  let floor = Math.max(...stepFloors);
+  const receipts = Array.isArray(compound.receipts) ? compound.receipts : [];
+  const hasMeasuredFloor = measuredTogether && receipts.some((receipt) => (
+    isRecord(receipt) && ("measured_floor" in receipt || "floor" in receipt)
+  ));
+  if (!hasMeasuredFloor) {
+    floor = Math.min(floor, 1.0);
+  }
+  const provenance = measuredTogether ? "local_reproduced" : "multiplicative_hypothesis";
+  const result: StackCompoundBand = {
+    floor: formatMultiplier(floor),
+    ceiling: formatMultiplier(ceiling),
+    provenance,
+    unmeasured_upside: unmeasuredUpside,
+    excluded_conflicts: excludedConflicts,
+    per_step: perStep
+  };
+  if (provenance === "multiplicative_hypothesis") {
+    result.flag = STACK_COMPOUND_HYPOTHESIS_FLAG;
+  }
+  return result;
+}
+
+function normalizeMethodsById(guidanceMethods: Record<string, unknown> | readonly unknown[]): Map<string, unknown> {
+  if (Array.isArray(guidanceMethods)) {
+    return new Map(guidanceMethods.filter(isRecord).map((method) => [String(method.id), method]));
+  }
+  return new Map(Object.entries(guidanceMethods));
+}
+
+function parseBand(range: string): [number, number] {
+  if (typeof range !== "string") {
+    throw new Error(`improvement band must be a string, got ${typeof range}`);
+  }
+  const match = BAND_RANGE_PATTERN.exec(range);
+  if (!match) {
+    throw new Error(`malformed improvement band ${JSON.stringify(range)}; expected '<floor>x-<ceiling>x'`);
+  }
+  const floor = Number.parseFloat(match[1]);
+  const ceiling = Number.parseFloat(match[2]);
+  if (!Number.isFinite(floor) || !Number.isFinite(ceiling)) {
+    throw new Error(`improvement band ${JSON.stringify(range)} contains a non-finite value`);
+  }
+  if (floor <= 0 || ceiling <= 0) {
+    throw new Error(`improvement band ${JSON.stringify(range)} must contain positive multipliers`);
+  }
+  if (floor > ceiling) {
+    throw new Error(`improvement band ${JSON.stringify(range)} has floor above ceiling`);
+  }
+  return [floor, ceiling];
+}
+
+function formatMultiplier(value: number): string {
+  let text = value.toFixed(6).replace(/0+$/, "").replace(/\.$/, "");
+  if (!text.includes(".")) {
+    text += ".0";
+  }
+  return `${text}x`;
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return Boolean(value) && typeof value === "object" && !Array.isArray(value);
+}
+
+function firstRecord(...values: unknown[]): Record<string, unknown> | null {
+  for (const value of values) {
+    if (isRecord(value)) {
+      return value;
+    }
+  }
+  return null;
+}
+
+function valueToNullableString(value: unknown): string | null {
+  if (value === undefined || value === null) {
+    return null;
+  }
+  return String(value);
 }
 
 function classifyModel(model: HuggingFaceModel): { family: Family; confidence: "high" | "medium" | "low"; reasons: string[] } {
@@ -909,7 +1121,7 @@ function serializeOutcome(outcome: OutcomeRecord) {
   };
 }
 
-function summarizePotentialSpeedup(outcomes: Array<ReturnType<typeof serializeOutcome>>) {
+function summarizePotentialSpeedup(outcomes: Array<ReturnType<typeof serializeOutcome>>, recommendedStack: RecommendedStack | null = null) {
   const preferred = outcomes.find((outcome) => {
     const range = outcome.potentialSpeedup?.overall?.range ?? "";
     return ["local_reproduced", "source_backed_working", "source_reported_benchmark"].includes(String(outcome.status)) && !isFlatSpeedupRange(range);
@@ -931,6 +1143,13 @@ function summarizePotentialSpeedup(outcomes: Array<ReturnType<typeof serializeOu
     speculativeRange: rangeOrFallback(speculative.range),
     speculativeConfidence: speculative.confidence || "unknown",
     speculativeBasis: speculative.basis || fallback.basis,
+    stackCeiling: recommendedStack ? {
+      stackId: recommendedStack.id,
+      floor: recommendedStack.compound.floor,
+      ceiling: recommendedStack.compound.ceiling,
+      provenance: recommendedStack.compound.provenance,
+      flag: recommendedStack.compound.flag || ""
+    } : null,
     conditions: uniqueStrings([...(overall.appliesWhen ?? []), ...(speculative.appliesWhen ?? [])]).slice(0, 4),
     measures: uniqueStrings([...(overall.measure ?? []), ...(speculative.measure ?? [])]).slice(0, 5)
   };
@@ -1047,6 +1266,7 @@ async function generateOpenAiSummary(env: Env, model: HuggingFaceModel, advisor:
     instructions: [
       "You are summarizing an MLX model-porting advisor report.",
       "Use only the provided potential speedup ranges. Do not invent speedup numbers.",
+      "Repeat any provided stackCeiling floor, ceiling, and hypothesis flag verbatim; never present multiplicative_hypothesis ceilings as measured.",
       "Mention profile-required or benchmark-required when applicable.",
       "Keep experimental approaches explicitly labeled experimental.",
       "Return 4 short bullets for an engineer. Do not use Markdown bold. Keep each bullet under 14 words."
@@ -1056,6 +1276,7 @@ async function generateOpenAiSummary(env: Env, model: HuggingFaceModel, advisor:
       family: advisor.family.id,
       confidence: advisor.confidence,
       speedup: advisor.speedupSummary,
+      recommendedStack: advisor.recommendedStack,
       outcomes: advisor.modelOutcomes.slice(0, 4).map((outcome) => ({ id: outcome.id, status: outcome.status, label: outcome.label, potentialSpeedup: outcome.potentialSpeedup })),
       validated: advisor.buckets.filter((bucket) => bucket.id !== "experimental-approach" && bucket.id !== "rejected-do-not-use").map((bucket) => ({ bucket: bucket.label, methods: bucket.items.slice(0, 4).map((item) => item.id) })),
       experimental: advisor.buckets.find((bucket) => bucket.id === "experimental-approach")?.items.slice(0, 5).map((item) => item.id) ?? [],
@@ -1642,6 +1863,83 @@ function renderAppHtml() {
     .outcome-speedups .kpi strong {
       font-size: 19px;
     }
+    .stack-panel {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--surface);
+      padding: 16px;
+      display: grid;
+      gap: 12px;
+    }
+    .stack-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      border-top: 1px solid var(--line);
+      padding-top: 14px;
+    }
+    .stack-ceiling {
+      border: 1px solid var(--amber);
+      border-radius: 8px;
+      background: var(--amber-soft);
+      padding: 10px 12px;
+      display: grid;
+      gap: 4px;
+    }
+    .stack-ceiling strong {
+      font-size: 19px;
+      font-variant-numeric: tabular-nums;
+      overflow-wrap: anywhere;
+    }
+    .stack-steps {
+      list-style: none;
+      display: grid;
+      gap: 8px;
+      padding: 0;
+    }
+    .stack-step {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fffdf8;
+      padding: 10px 12px;
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      gap: 10px;
+    }
+    .stack-step-index {
+      width: 26px;
+      height: 26px;
+      border-radius: 999px;
+      background: var(--green-soft);
+      color: var(--green);
+      display: grid;
+      place-items: center;
+      font-size: 12px;
+      font-weight: 800;
+      font-variant-numeric: tabular-nums;
+    }
+    .stack-step-body {
+      display: grid;
+      gap: 6px;
+      min-width: 0;
+    }
+    .stack-step-body strong {
+      overflow-wrap: anywhere;
+    }
+    .stack-lists {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+    .stack-list {
+      border-top: 1px solid var(--line);
+      padding-top: 8px;
+    }
+    .stack-list strong {
+      display: block;
+      margin-bottom: 4px;
+    }
     .ai-brief {
       border: 1px solid var(--line);
       border-radius: 8px;
@@ -1800,7 +2098,7 @@ function renderAppHtml() {
       .app-shell { width: min(100vw - 24px, 1180px); }
       .prompt-row { grid-template-columns: 1fr; }
       .prompt-row input { min-height: 50px; padding: 0; }
-      .composer-meta, .headline, .branch-head {
+      .composer-meta, .headline, .branch-head, .stack-head {
         align-items: flex-start;
         flex-direction: column;
       }
@@ -1822,6 +2120,7 @@ function renderAppHtml() {
         border-bottom: 0;
       }
       .boundary-grid, .method-kpis, .metric-grid, .decision-summary { grid-template-columns: 1fr; }
+      .stack-head, .stack-lists { grid-template-columns: 1fr; }
       .outcome-grid, .outcome-facts { grid-template-columns: 1fr; }
       .method-title { grid-template-columns: 1fr; }
       .selected-model-row {
@@ -2055,6 +2354,7 @@ function renderAppHtml() {
       return '<section class="report-layout">' +
         '<div class="report-main">' +
           renderReportHeader(model, advisor, ai) +
+          renderStackPanel(advisor.recommendedStack) +
           renderOutcomePanel(advisor.modelOutcomes || [], advisor.topCoverage || {}) +
           renderDecisionBoard(model, advisor) +
           renderBranches(advisor) +
@@ -2104,6 +2404,50 @@ function renderAppHtml() {
         kpi("Spec decode", speedup.speculativeRange || "1.0x-1.0x") +
         kpi("First check", gate || "parity + benchmark") +
         '<div class="kpi"><span>CLI</span><button class="secondary" type="button" data-copy="' + escapeAttr(firstCommand) + '">Copy command</button></div>' +
+      '</div>';
+    }
+
+    function renderStackPanel(stack) {
+      if (!stack || !stack.id) {
+        return "";
+      }
+      const compound = stack.compound || {};
+      const steps = Array.isArray(stack.steps) ? stack.steps : [];
+      const flag = compound.provenance === "multiplicative_hypothesis"
+        ? (compound.flag || "unmeasured composition - multiplicative hypothesis, not a claim")
+        : "";
+      const ceilingText = (compound.floor || "1.0x") + "-" + (compound.ceiling || "1.0x");
+      return '<section class="stack-panel">' +
+        '<div class="stack-head"><div><h2>Recommended stack</h2><p class="muted">' + escapeHtml(stack.label || stack.id) + '</p></div><span class="status bucket-benchmark-required">' + escapeHtml(stack.id) + '</span></div>' +
+        '<div class="stack-ceiling"><span class="muted">Derived ceiling</span><strong>' + escapeHtml(ceilingText) + '</strong>' +
+          (flag ? '<p class="muted">' + escapeHtml(flag) + '</p>' : '<p class="muted">' + escapeHtml(compound.provenance || "local_reproduced") + '</p>') +
+        '</div>' +
+        '<ol class="stack-steps">' + steps.map(renderStackStep).join("") + '</ol>' +
+        '<div class="stack-lists">' +
+          renderStackList("Unmeasured upside", compound.unmeasured_upside) +
+          renderStackList("Excluded conflicts", (Array.isArray(compound.excluded_conflicts) ? compound.excluded_conflicts : []).map((pair) => Array.isArray(pair) ? pair.join(" vs ") : String(pair))) +
+        '</div>' +
+      '</section>';
+    }
+
+    function renderStackStep(step, index) {
+      const band = step.band || "Profile-required";
+      const lossiness = step.lossiness || "lossless";
+      const gate = step.gate || "Profile and benchmark before claiming.";
+      return '<li class="stack-step">' +
+        '<span class="stack-step-index">' + escapeHtml(String(index + 1)) + '</span>' +
+        '<div class="stack-step-body">' +
+          '<div class="method-title"><strong>' + escapeHtml(methodLabel(step.method)) + '</strong><span class="impact-pill ' + (step.band ? "source" : "") + '">' + escapeHtml(band) + '</span></div>' +
+          '<div class="suggestion-meta"><span class="tag">' + escapeHtml(lossiness) + '</span></div>' +
+          '<p class="muted">' + escapeHtml(gate) + '</p>' +
+        '</div>' +
+      '</li>';
+    }
+
+    function renderStackList(label, values) {
+      const items = Array.isArray(values) ? values.filter(Boolean) : [];
+      return '<div class="stack-list"><strong>' + escapeHtml(label) + '</strong>' +
+        (items.length ? '<ul>' + items.map((value) => '<li>' + escapeHtml(value) + '</li>').join("") + '</ul>' : '<p class="muted">None</p>') +
       '</div>';
     }
 
