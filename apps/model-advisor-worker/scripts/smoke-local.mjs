@@ -159,7 +159,7 @@ assert(!briefHtml.includes("**"), "AI brief should not leak raw Markdown emphasi
 assert(!briefHtml.includes("`"), "AI brief should not leak raw backticks");
 assert(!briefHtml.includes("<p"), "AI brief should not render as one paragraph dump");
 assert(renderedWithAi.includes("Recommended stack"), "rendered advice should include stack panel");
-assert(renderedWithAi.includes("1.0x-3.0x"), "rendered advice should include derived dense stack ceiling");
+assert(renderedWithAi.includes("1.0x-171.36x"), "rendered advice should include derived dense stack ceiling");
 assert(renderedWithAi.includes("unmeasured composition - multiplicative hypothesis, not a claim"), "rendered stack ceiling should include hypothesis flag");
 
 const vlmAdvice = await getJson("/api/advice?id=lmstudio-community/Qwen3.6-27B-MLX-4bit");

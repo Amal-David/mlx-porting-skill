@@ -2,8 +2,8 @@
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
   "version": "0.1.0",
-  "generated_at": "2026-07-06T09:40:37.016792+00:00",
-  "file_count": 222,
+  "generated_at": "2026-07-06T10:01:27.209211+00:00",
+  "file_count": 226,
   "files": [
     {
       "path": ".github/workflows/daily-research.yml",
@@ -137,8 +137,8 @@
     },
     {
       "path": "apps/model-advisor-worker/scripts/smoke-local.mjs",
-      "size_bytes": 8196,
-      "sha256": "a8084ddf9a7f4225b999ac32ca5e614074e5f6550415d0ff9f0b964762908343"
+      "size_bytes": 8199,
+      "sha256": "1072ad47dbfbf2b4781488327326404f4b633f5f3e8754240c5214e88b4b75ba"
     },
     {
       "path": "apps/model-advisor-worker/src/index.ts",
@@ -147,8 +147,8 @@
     },
     {
       "path": "apps/model-advisor-worker/src/skill-data.generated.ts",
-      "size_bytes": 262457,
-      "sha256": "a29054889408a70f02bfdc4782521013f86fad6998b94b090dc0e72d7a0fac68"
+      "size_bytes": 264543,
+      "sha256": "27f2a4ac567c510da2893a7a5ca44e0400f23f408a3b6d9ef101a8eaeeb5669d"
     },
     {
       "path": "apps/model-advisor-worker/tsconfig.json",
@@ -196,9 +196,29 @@
       "sha256": "4c12b6dfa79f96165d9f8117be1fa1b9ce99d315145f8965834760d6d1ec1ff5"
     },
     {
+      "path": "mlx-model-porting/assets/benchmarks/pcache-cold.json",
+      "size_bytes": 3423,
+      "sha256": "14fe4d852e8b61f0b3b5505eb403789b6355c64504f60c179c1c76355882c288"
+    },
+    {
+      "path": "mlx-model-porting/assets/benchmarks/pcache-warm.json",
+      "size_bytes": 4051,
+      "sha256": "1896cfa06508b2b8cbfabbc33875295406e748d7895b21856b40cb80c6478fdf"
+    },
+    {
+      "path": "mlx-model-porting/assets/benchmarks/quant-4bit.json",
+      "size_bytes": 3896,
+      "sha256": "395b3e48aa2b1a517fe55f9092233dc6dd01780f833946a95ec32a724351807d"
+    },
+    {
+      "path": "mlx-model-porting/assets/benchmarks/quant-baseline-bf16.json",
+      "size_bytes": 3328,
+      "sha256": "b36687d339a0851f0ece21febd43e19e204ed8778c498f69ff032b5c128c3ef7"
+    },
+    {
       "path": "mlx-model-porting/assets/benchmarks/receipts_index.json",
-      "size_bytes": 21,
-      "sha256": "b3e6cc3734bdfd3488eadd156d8174a399c85983bc0913cf0957e3d781da9cf2"
+      "size_bytes": 3476,
+      "sha256": "47d920430326c6f219998f8e14c491a8379860fa53b229430ceb4833ce409d47"
     },
     {
       "path": "mlx-model-porting/assets/contributor_learnings.json",
@@ -217,8 +237,8 @@
     },
     {
       "path": "mlx-model-porting/assets/optimization_guidance.yaml",
-      "size_bytes": 44436,
-      "sha256": "1e1c3cf3508602005f2e20de04e8a1107bc51ffe31d8875eeabbe0c4aeb9b0ce"
+      "size_bytes": 46590,
+      "sha256": "2a1fc2409c8ae60450e56a75b6a25dea5faa90d5840c5464234cfe0529abff37"
     },
     {
       "path": "mlx-model-porting/assets/optimization_stacks.yaml",

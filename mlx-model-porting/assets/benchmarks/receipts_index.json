@@ -1,3 +1,67 @@
 {
-  "receipts": []
+  "receipts": [
+    {
+      "label": "pcache-cold",
+      "file": "pcache-cold.json",
+      "date": "2026-07-06T09:55:20.771132+00:00",
+      "chip": "Apple M4 Pro",
+      "command_summary": "sh -lc 'cat /tmp/t206-benchmark/pcache_cold_prompt.txt | python3 -m mlx_lm generate --model mlx-community/Qwen3-1.7B-4bit --prompt - --max-tokens 256 --temp 0.0 --seed 206'",
+      "config_notes": {
+        "model": "mlx-community/Qwen3-1.7B-4bit",
+        "model_revision": "3b1b1768f8f8cf8351c712464f906e86c2b8269e",
+        "cache_state": "cold_no_prompt_cache",
+        "workload": "4056_raw_qwen3_tokens_prompt_max_tokens_256_temp_0_seed_206",
+        "prefix_file": "/tmp/t206-benchmark/prefix_4k.txt",
+        "suffix_file": "/tmp/t206-benchmark/pcache_suffix.txt",
+        "cold_prompt_file": "/tmp/t206-benchmark/pcache_cold_prompt.txt"
+      }
+    },
+    {
+      "label": "pcache-warm",
+      "file": "pcache-warm.json",
+      "date": "2026-07-06T09:56:26.308471+00:00",
+      "chip": "Apple M4 Pro",
+      "command_summary": "sh -lc 'cat /tmp/t206-benchmark/pcache_suffix.txt | python3 -m mlx_lm generate --model mlx-community/Qwen3-1.7B-4bit --prompt - --prompt-cache-file /tmp/t206-pc.safetensors --max-tokens 256 --temp 0.0 --seed 206'",
+      "config_notes": {
+        "model": "mlx-community/Qwen3-1.7B-4bit",
+        "model_revision": "3b1b1768f8f8cf8351c712464f906e86c2b8269e",
+        "cache_state": "warm_prompt_cache_file",
+        "prompt_cache_file": "/tmp/t206-pc.safetensors",
+        "cached_prefix_file": "/tmp/t206-benchmark/prefix_4k.txt",
+        "suffix_file": "/tmp/t206-benchmark/pcache_suffix.txt",
+        "workload": "cached_4040_raw_token_prefix_plus_16_raw_token_suffix_max_tokens_256_temp_0_seed_206",
+        "ttft_proxy_caveat": "compares_cold_full_prefix_prefill_to_warm_cached_prefix_suffix_prompt_processing"
+      }
+    },
+    {
+      "label": "quant-4bit",
+      "file": "quant-4bit.json",
+      "date": "2026-07-06T09:53:58.064014+00:00",
+      "chip": "Apple M4 Pro",
+      "command_summary": "sh -lc 'cat /tmp/t206-benchmark/prompt_500.txt | python3 -m mlx_lm generate --model mlx-community/Qwen3-1.7B-4bit --prompt - --max-tokens 256 --temp 0.0 --seed 206'",
+      "config_notes": {
+        "model": "mlx-community/Qwen3-1.7B-4bit",
+        "model_revision": "3b1b1768f8f8cf8351c712464f906e86c2b8269e",
+        "baseline_model": "mlx-community/Qwen3-1.7B-bf16",
+        "baseline_revision": "9cd6692855d3e06772228e9a962b2606359b2d24",
+        "workload": "539_raw_qwen3_tokens_prompt_max_tokens_256_temp_0_seed_206",
+        "prompt_file": "/tmp/t206-benchmark/prompt_500.txt",
+        "quality_note": "greedy_outputs_diverged_3_of_3_short_prompts_no_formal_eval"
+      }
+    },
+    {
+      "label": "quant-baseline-bf16",
+      "file": "quant-baseline-bf16.json",
+      "date": "2026-07-06T09:53:06.779778+00:00",
+      "chip": "Apple M4 Pro",
+      "command_summary": "sh -lc 'cat /tmp/t206-benchmark/prompt_500.txt | python3 -m mlx_lm generate --model mlx-community/Qwen3-1.7B-bf16 --prompt - --max-tokens 256 --temp 0.0 --seed 206'",
+      "config_notes": {
+        "model": "mlx-community/Qwen3-1.7B-bf16",
+        "model_revision": "9cd6692855d3e06772228e9a962b2606359b2d24",
+        "workload": "539_raw_qwen3_tokens_prompt_max_tokens_256_temp_0_seed_206",
+        "prompt_file": "/tmp/t206-benchmark/prompt_500.txt",
+        "quality_note": "greedy_3_prompt_check_vs_4bit_diverged_3_of_3_no_formal_eval"
+      }
+    }
+  ]
 }

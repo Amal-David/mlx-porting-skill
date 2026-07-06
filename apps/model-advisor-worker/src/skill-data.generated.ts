@@ -1026,7 +1026,24 @@ export const ADVISOR_DATA = {
         "nvidia-nvfp4-blog",
         "spheron-nvfp4-mxfp4-guide"
       ],
-      "improvementBand": null
+      "improvementBand": {
+        "provenance": "local_reproduced",
+        "range": "1.0x-2.4x",
+        "metric": "decode-tokens-per-sec",
+        "basis": "Local Qwen3 1.7B bf16 versus mlx-community/Qwen3-1.7B-4bit on a 539-token prompt with 256 greedy generated tokens, runs=5 and warmup=1; ceiling is the aggregate median decode-token/sec ratio 130.179/54.318=2.4x. The 4-bit run was noisy: decode min/max spread exceeded 20% of its median.",
+        "appliesWhen": "Workload, model family, quantization recipe, and MLX-LM runtime are similar enough to reproduce locally, and the product quality budget accepts quantization drift; this receipt's greedy 3-prompt quality note diverged 3/3 versus bf16 and is not a formal eval.",
+        "measuredOn": {
+          "chip": "Apple M4 Pro",
+          "memory_gb": 48,
+          "mlx": "0.30.4",
+          "mlx_lm": "0.31.1",
+          "date": "2026-07-06"
+        },
+        "receipts": [
+          "quant-baseline-bf16.json",
+          "quant-4bit.json"
+        ]
+      }
     },
     {
       "id": "uniform-kv-quantization",
@@ -1200,7 +1217,24 @@ export const ADVISOR_DATA = {
         "paper-2606-21842",
         "sankalp-prompt-cache-blog"
       ],
-      "improvementBand": null
+      "improvementBand": {
+        "provenance": "local_reproduced",
+        "range": "1.0x-23.8x",
+        "metric": "ttft-proxy",
+        "basis": "Local mlx-community/Qwen3-1.7B-4bit cold-vs-warm prompt-cache workload: cold generation processed a 4056-token raw prompt without cache; warm generation reused a cache_prompt file for the 4040-token raw prefix and generated from the 16-token suffix. Ceiling is the aggregate median inverse ttft_proxy ratio 2.8588s/0.1204s=23.8x; ttft_proxy is prompt_tokens / prompt_tps, not instrumented first-token latency.",
+        "appliesWhen": "The immutable prefix repeats exactly under the same model, tokenizer/template, quantization state, cache format, positions, and namespace; benefit is workload-conditional on prefix length and hit rate, with correctness and privacy isolation verified.",
+        "measuredOn": {
+          "chip": "Apple M4 Pro",
+          "memory_gb": 48,
+          "mlx": "0.30.4",
+          "mlx_lm": "0.31.1",
+          "date": "2026-07-06"
+        },
+        "receipts": [
+          "pcache-cold.json",
+          "pcache-warm.json"
+        ]
+      }
     },
     {
       "id": "continuous-batching-serving",

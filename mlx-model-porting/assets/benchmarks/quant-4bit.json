@@ -1,0 +1,132 @@
+{
+  "schema_version": 1,
+  "label": "quant-4bit",
+  "timestamp": "2026-07-06T09:53:58.064014+00:00",
+  "environment": {
+    "platform": "macOS-26.3-arm64-arm-64bit-Mach-O",
+    "machine": "arm64",
+    "processor": "arm",
+    "python": "3.14.4 (main, Apr  7 2026, 13:13:20) [Clang 21.0.0 (clang-2100.0.123.102)]",
+    "cpu_count": 14,
+    "mac_model": "Mac16,8",
+    "cpu_brand": "Apple M4 Pro",
+    "memory_bytes": 51539607552,
+    "macos_version": "26.3",
+    "mlx_version": "0.30.4"
+  },
+  "versions": {
+    "mlx": "0.30.4",
+    "mlx_lm": "0.31.1"
+  },
+  "command": [
+    "sh",
+    "-lc",
+    "cat /tmp/t206-benchmark/prompt_500.txt | python3 -m mlx_lm generate --model mlx-community/Qwen3-1.7B-4bit --prompt - --max-tokens 256 --temp 0.0 --seed 206"
+  ],
+  "command_display": "sh -lc 'cat /tmp/t206-benchmark/prompt_500.txt | python3 -m mlx_lm generate --model mlx-community/Qwen3-1.7B-4bit --prompt - --max-tokens 256 --temp 0.0 --seed 206'",
+  "config_notes": {
+    "model": "mlx-community/Qwen3-1.7B-4bit",
+    "model_revision": "3b1b1768f8f8cf8351c712464f906e86c2b8269e",
+    "baseline_model": "mlx-community/Qwen3-1.7B-bf16",
+    "baseline_revision": "9cd6692855d3e06772228e9a962b2606359b2d24",
+    "workload": "539_raw_qwen3_tokens_prompt_max_tokens_256_temp_0_seed_206",
+    "prompt_file": "/tmp/t206-benchmark/prompt_500.txt",
+    "quality_note": "greedy_outputs_diverged_3_of_3_short_prompts_no_formal_eval"
+  },
+  "warmup_runs": 1,
+  "measured_runs": 5,
+  "runs": [
+    {
+      "run": 1,
+      "prompt_tokens": 548,
+      "prompt_tps": 1528.955,
+      "generation_tokens": 256,
+      "generation_tps": 158.299,
+      "peak_memory_gb": 1.773,
+      "ttft_proxy_s": 0.35841473424659326
+    },
+    {
+      "run": 2,
+      "prompt_tokens": 548,
+      "prompt_tps": 1224.037,
+      "generation_tokens": 256,
+      "generation_tps": 135.556,
+      "peak_memory_gb": 1.773,
+      "ttft_proxy_s": 0.4476988849193284
+    },
+    {
+      "run": 3,
+      "prompt_tokens": 548,
+      "prompt_tps": 1343.799,
+      "generation_tokens": 256,
+      "generation_tps": 130.179,
+      "peak_memory_gb": 1.773,
+      "ttft_proxy_s": 0.40779908304739027
+    },
+    {
+      "run": 4,
+      "prompt_tokens": 548,
+      "prompt_tps": 1235.724,
+      "generation_tokens": 256,
+      "generation_tps": 119.21,
+      "peak_memory_gb": 1.773,
+      "ttft_proxy_s": 0.4434647218958279
+    },
+    {
+      "run": 5,
+      "prompt_tokens": 548,
+      "prompt_tps": 1224.64,
+      "generation_tokens": 256,
+      "generation_tps": 118.679,
+      "peak_memory_gb": 1.773,
+      "ttft_proxy_s": 0.4474784426443689
+    }
+  ],
+  "aggregate": {
+    "prompt_tokens": {
+      "median": 548,
+      "min": 548,
+      "max": 548
+    },
+    "prompt_tps": {
+      "median": 1235.724,
+      "min": 1224.037,
+      "max": 1528.955
+    },
+    "generation_tokens": {
+      "median": 256,
+      "min": 256,
+      "max": 256
+    },
+    "generation_tps": {
+      "median": 130.179,
+      "min": 118.679,
+      "max": 158.299
+    },
+    "peak_memory_gb": {
+      "median": 1.773,
+      "min": 1.773,
+      "max": 1.773
+    },
+    "ttft_proxy_s": {
+      "median": 0.4434647218958279,
+      "min": 0.35841473424659326,
+      "max": 0.4476988849193284
+    }
+  },
+  "ttft_proxy": {
+    "metric": "ttft_proxy_s",
+    "median_s": 0.4434647218958279,
+    "proxy_note": "Computed as prompt_tokens / prompt_tps from the mlx_lm Prompt line; this is not instrumented first-token latency."
+  },
+  "speedup_vs_baseline": {
+    "baseline_label": "quant-baseline-bf16",
+    "baseline_file": "/Users/amal/Downloads/mlx-porting-skill/mlx-model-porting/assets/benchmarks/quant-baseline-bf16.json",
+    "basis": "Ratios of aggregate medians; ttft_proxy uses inverse ratio because lower is better.",
+    "ratios": {
+      "decode_tps": 2.3966088589417875,
+      "prefill_tps": 0.858251332114659,
+      "ttft_proxy_inverse": 0.8582513321146589
+    }
+  }
+}
