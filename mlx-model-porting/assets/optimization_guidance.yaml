@@ -289,7 +289,7 @@
         "long-context"
       ],
       "recommendation": "Start with official/proven uniform KV quantization before adaptive or rotated KV schemes.",
-      "expected_effect": "KV memory can drop roughly with the selected bit width after quantization starts; decode speed may improve or worsen depending on dequant overhead.",
+      "expected_effect": "Local 8k-context receipts on Apple M4 Pro measured 4-bit KV cache at 1.114x median decode throughput, but MLX peak memory increased by 1.117 GB in that run; treat this as a workload-specific latency result, not a demonstrated peak-memory reduction.",
       "tradeoffs": [
         "Long-context quality can degrade.",
         "May not compose with every rotating, prompt-cache, trimming, batching, or save/load path."
@@ -316,6 +316,29 @@
           "paper-2402-02750"
         ],
         "technical_blogs": []
+      },
+      "improvement_band": {
+        "provenance": "local_reproduced",
+        "range": "1.0x-1.1x",
+        "metric": "decode-tokens-per-sec",
+        "basis": "Local receipts kv-baseline-8k and kv-4bit-8k measured the same Qwen2.5-Coder 7B 4-bit target on Apple M4 Pro, MLX 0.30.4, MLX-LM 0.31.1, with an 8058-token long prompt, max_tokens=256, temp=0.0, seed=207. The KV run used --kv-bits 4 --kv-group-size 64 --quantized-kv-start 0 and reached 32.594 median decode tok/s versus 29.248 baseline tok/s (1.114x). Median MLX peak memory was 6.570 GB versus 5.453 GB baseline, a +1.117 GB peak delta for this measured path.",
+        "applies_when": "Use only after long-context quality and cache reset/reuse checks pass. For this Apple M4 Pro receipt, the measured value is decode throughput; peak memory increased, so do not claim a memory saving for this flag set.",
+        "measured_on": {
+          "chip": "Apple M4 Pro",
+          "mac_model": "Mac16,8",
+          "unified_memory": "48GB",
+          "macos": "26.3",
+          "python": "3.14.4",
+          "mlx": "0.30.4",
+          "mlx_lm": "0.31.1",
+          "target_model": "mlx-community/Qwen2.5-Coder-7B-Instruct-4bit@019cc73c45c770444708a6dd8690c66243cc5c80",
+          "workload": "8058-token long prompt, max_tokens=256, temp=0.0, seed=207",
+          "kv_flags": "--kv-bits 4 --kv-group-size 64 --quantized-kv-start 0"
+        },
+        "receipts": [
+          "kv-baseline-8k.json",
+          "kv-4bit-8k.json"
+        ]
       }
     },
     {
@@ -555,13 +578,31 @@
         "moe-decoder-transformer"
       ],
       "recommendation": "Try only when a compatible smaller draft model shares tokenizer/vocabulary and acceptance is high enough to offset draft cost.",
-      "expected_effect": "Source-reported speculative decoding papers report roughly 2x-3x-style gains in compatible settings; MLX-LM exposes a speculative generation path, but the selected draft/target pair still needs local acceptance and latency receipts.",
+      "expected_effect": "Local Qwen2.5-Coder 7B/1.5B speculative decoding receipts on Apple M4 Pro measured a workload-conditional decode-throughput band of 1.0x-1.3x on a fixed code-generation prompt; k=2 improved median decode throughput, while k=3 and k=4 regressed.",
       "improvement_band": {
-        "provenance": "source_reported",
-        "range": "1.0x-3.0x",
-        "metric": "decode-throughput",
-        "basis": "Classic speculative decoding papers report roughly 2x-3x-style gains in compatible settings, and MLX-LM exposes a speculative generation path. The selected draft/target pair still needs local acceptance and latency receipts.",
-        "applies_when": "Draft and target share tokenizer and vocabulary, accepted draft tokens amortize draft-model cost, and draft memory/cache growth plus sampling behavior fit the target Mac and quality gate."
+        "provenance": "local_reproduced",
+        "range": "1.0x-1.3x",
+        "metric": "decode-tokens-per-sec",
+        "basis": "Local receipts spec-baseline, spec-draft-k2, spec-draft-k3, and spec-draft-k4 measured mlx-community/Qwen2.5-Coder-7B-Instruct-4bit with draft mlx-community/Qwen2.5-Coder-1.5B-Instruct-4bit on Apple M4 Pro, MLX 0.30.4, MLX-LM 0.31.1. The fixed code-generation prompt was 552 chat-template tokens with max_tokens=256, temp=0.0, seed=207. Sweep medians were k=2 1.254x, k=3 0.673x, and k=4 0.550x versus the plain 4-bit target baseline, so the floor remains 1.0x and the ceiling rounds to 1.3x.",
+        "applies_when": "Draft and target share tokenizer/vocabulary, the workload resembles the measured code-generation prompt, and local acceptance/latency receipts show the selected draft-token count beats the plain 4-bit target; disable speculation when acceptance makes the median decode ratio fall below 1.0x.",
+        "measured_on": {
+          "chip": "Apple M4 Pro",
+          "mac_model": "Mac16,8",
+          "unified_memory": "48GB",
+          "macos": "26.3",
+          "python": "3.14.4",
+          "mlx": "0.30.4",
+          "mlx_lm": "0.31.1",
+          "target_model": "mlx-community/Qwen2.5-Coder-7B-Instruct-4bit@019cc73c45c770444708a6dd8690c66243cc5c80",
+          "draft_model": "mlx-community/Qwen2.5-Coder-1.5B-Instruct-4bit@b3252a2f97102b1fb1571fec2c9b27219a8536be",
+          "workload": "552-token code-generation prompt, max_tokens=256, temp=0.0, seed=207"
+        },
+        "receipts": [
+          "spec-baseline.json",
+          "spec-draft-k2.json",
+          "spec-draft-k3.json",
+          "spec-draft-k4.json"
+        ]
       },
       "tradeoffs": [
         "Extra model memory",

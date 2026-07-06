@@ -1,0 +1,132 @@
+{
+  "schema_version": 1,
+  "label": "kv-4bit-8k",
+  "timestamp": "2026-07-06T10:26:40.616791+00:00",
+  "environment": {
+    "platform": "macOS-26.3-arm64-arm-64bit-Mach-O",
+    "machine": "arm64",
+    "processor": "arm",
+    "python": "3.14.4 (main, Apr  7 2026, 13:13:20) [Clang 21.0.0 (clang-2100.0.123.102)]",
+    "cpu_count": 14,
+    "mac_model": "Mac16,8",
+    "cpu_brand": "Apple M4 Pro",
+    "memory_bytes": 51539607552,
+    "macos_version": "26.3",
+    "mlx_version": "0.30.4"
+  },
+  "versions": {
+    "mlx": "0.30.4",
+    "mlx_lm": "0.31.1"
+  },
+  "command": [
+    "sh",
+    "-lc",
+    "cat mlx-model-porting/assets/benchmarks/prompts/t207-long-prompt-8k.txt | python3 -m mlx_lm generate --model mlx-community/Qwen2.5-Coder-7B-Instruct-4bit --prompt - --max-tokens 256 --temp 0.0 --seed 207 --kv-bits 4 --kv-group-size 64 --quantized-kv-start 0"
+  ],
+  "command_display": "sh -lc 'cat mlx-model-porting/assets/benchmarks/prompts/t207-long-prompt-8k.txt | python3 -m mlx_lm generate --model mlx-community/Qwen2.5-Coder-7B-Instruct-4bit --prompt - --max-tokens 256 --temp 0.0 --seed 207 --kv-bits 4 --kv-group-size 64 --quantized-kv-start 0'",
+  "config_notes": {
+    "model": "mlx-community/Qwen2.5-Coder-7B-Instruct-4bit",
+    "model_revision": "019cc73c45c770444708a6dd8690c66243cc5c80",
+    "workload": "8058_chat_tokens_long_prompt_max_tokens_256_temp_0_seed_207",
+    "prompt_file": "/Users/amal/Downloads/mlx-porting-skill/mlx-model-porting/assets/benchmarks/prompts/t207-long-prompt-8k.txt",
+    "kv_flags": "--kv-bits_4_--kv-group-size_64_--quantized-kv-start_0",
+    "baseline_basis": "kv-baseline-8k_same_8k_prompt_no_kv_quant",
+    "quality_gate": "greedy_long_context_policy_prompt_no_formal_quality_eval"
+  },
+  "warmup_runs": 1,
+  "measured_runs": 5,
+  "runs": [
+    {
+      "run": 1,
+      "prompt_tokens": 8058,
+      "prompt_tps": 273.431,
+      "generation_tokens": 256,
+      "generation_tps": 36.082,
+      "peak_memory_gb": 6.57,
+      "ttft_proxy_s": 29.469957685851277
+    },
+    {
+      "run": 2,
+      "prompt_tokens": 8058,
+      "prompt_tps": 306.948,
+      "generation_tokens": 256,
+      "generation_tps": 35.635,
+      "peak_memory_gb": 6.57,
+      "ttft_proxy_s": 26.25200359670042
+    },
+    {
+      "run": 3,
+      "prompt_tokens": 8058,
+      "prompt_tps": 289.462,
+      "generation_tokens": 256,
+      "generation_tps": 31.216,
+      "peak_memory_gb": 6.57,
+      "ttft_proxy_s": 27.837850909618535
+    },
+    {
+      "run": 4,
+      "prompt_tokens": 8058,
+      "prompt_tps": 282.858,
+      "generation_tokens": 256,
+      "generation_tps": 32.594,
+      "peak_memory_gb": 6.57,
+      "ttft_proxy_s": 28.487792461234964
+    },
+    {
+      "run": 5,
+      "prompt_tokens": 8058,
+      "prompt_tps": 234.521,
+      "generation_tokens": 256,
+      "generation_tps": 29.035,
+      "peak_memory_gb": 6.57,
+      "ttft_proxy_s": 34.35939638667753
+    }
+  ],
+  "aggregate": {
+    "prompt_tokens": {
+      "median": 8058,
+      "min": 8058,
+      "max": 8058
+    },
+    "prompt_tps": {
+      "median": 282.858,
+      "min": 234.521,
+      "max": 306.948
+    },
+    "generation_tokens": {
+      "median": 256,
+      "min": 256,
+      "max": 256
+    },
+    "generation_tps": {
+      "median": 32.594,
+      "min": 29.035,
+      "max": 36.082
+    },
+    "peak_memory_gb": {
+      "median": 6.57,
+      "min": 6.57,
+      "max": 6.57
+    },
+    "ttft_proxy_s": {
+      "median": 28.487792461234964,
+      "min": 26.25200359670042,
+      "max": 34.35939638667753
+    }
+  },
+  "ttft_proxy": {
+    "metric": "ttft_proxy_s",
+    "median_s": 28.487792461234964,
+    "proxy_note": "Computed as prompt_tokens / prompt_tps from the mlx_lm Prompt line; this is not instrumented first-token latency."
+  },
+  "speedup_vs_baseline": {
+    "baseline_label": "kv-baseline-8k",
+    "baseline_file": "/Users/amal/Downloads/mlx-porting-skill/mlx-model-porting/assets/benchmarks/kv-baseline-8k.json",
+    "basis": "Ratios of aggregate medians; ttft_proxy uses inverse ratio because lower is better.",
+    "ratios": {
+      "decode_tps": 1.1144009846827134,
+      "prefill_tps": 0.9091458417034954,
+      "ttft_proxy_inverse": 0.9091458417034954
+    }
+  }
+}

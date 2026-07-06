@@ -2,8 +2,8 @@
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
   "version": "0.1.0",
-  "generated_at": "2026-07-06T10:01:27.209211+00:00",
-  "file_count": 226,
+  "generated_at": "2026-07-06T10:58:35.444143+00:00",
+  "file_count": 236,
   "files": [
     {
       "path": ".github/workflows/daily-research.yml",
@@ -127,8 +127,8 @@
     },
     {
       "path": "apps/model-advisor-worker/scripts/build-skill-data.mjs",
-      "size_bytes": 21341,
-      "sha256": "2d30dde00cafd4fdb2b7312db98c9988c96ceab89fb1d76fe38c85e17ed6dfa0"
+      "size_bytes": 21561,
+      "sha256": "8682c67f4e8e2d4e3e4a2c90e1e490e48b66c88824ca25cdc5463e4656e67bfa"
     },
     {
       "path": "apps/model-advisor-worker/scripts/check-stack-fixture.mjs",
@@ -137,18 +137,18 @@
     },
     {
       "path": "apps/model-advisor-worker/scripts/smoke-local.mjs",
-      "size_bytes": 8199,
-      "sha256": "1072ad47dbfbf2b4781488327326404f4b633f5f3e8754240c5214e88b4b75ba"
+      "size_bytes": 9365,
+      "sha256": "6fe7e4209006822142550b53f787cb6fefcbcd6503f642117120d81dd3c009d4"
     },
     {
       "path": "apps/model-advisor-worker/src/index.ts",
-      "size_bytes": 103985,
-      "sha256": "cce455b139d1f9e003c7e8e18b405ad996f497c13be718c2cb00cfc2ff5aca54"
+      "size_bytes": 108249,
+      "sha256": "4e9c4bbb3109ab3b22c54795596975a57c0b82d54fe9a36eaaeabeb9f6f4ef70"
     },
     {
       "path": "apps/model-advisor-worker/src/skill-data.generated.ts",
-      "size_bytes": 264543,
-      "sha256": "27f2a4ac567c510da2893a7a5ca44e0400f23f408a3b6d9ef101a8eaeeb5669d"
+      "size_bytes": 269854,
+      "sha256": "02cae63de8eb7888002befa8c73a2c5dc9e7435da7e02b12da3ba9d255b278a2"
     },
     {
       "path": "apps/model-advisor-worker/tsconfig.json",
@@ -196,6 +196,16 @@
       "sha256": "4c12b6dfa79f96165d9f8117be1fa1b9ce99d315145f8965834760d6d1ec1ff5"
     },
     {
+      "path": "mlx-model-porting/assets/benchmarks/kv-4bit-8k.json",
+      "size_bytes": 4172,
+      "sha256": "533705a76e9968573a22d4c2ccba980ab4c18b6a5e9dcd7edeab62c79bc47120"
+    },
+    {
+      "path": "mlx-model-porting/assets/benchmarks/kv-baseline-8k.json",
+      "size_bytes": 3556,
+      "sha256": "0a93b069862e6b939f3f0dc2cf08ebccfd83b4c9ed06833af68a4d43ae992aa6"
+    },
+    {
       "path": "mlx-model-porting/assets/benchmarks/pcache-cold.json",
       "size_bytes": 3423,
       "sha256": "14fe4d852e8b61f0b3b5505eb403789b6355c64504f60c179c1c76355882c288"
@@ -204,6 +214,21 @@
       "path": "mlx-model-porting/assets/benchmarks/pcache-warm.json",
       "size_bytes": 4051,
       "sha256": "1896cfa06508b2b8cbfabbc33875295406e748d7895b21856b40cb80c6478fdf"
+    },
+    {
+      "path": "mlx-model-porting/assets/benchmarks/prompts/t207-code-prompt-500.txt",
+      "size_bytes": 2864,
+      "sha256": "ed9e921b17913e94948f490dbbaf4f0db9051e0ce18775f102034d20f1aa15d8"
+    },
+    {
+      "path": "mlx-model-porting/assets/benchmarks/prompts/t207-long-prompt-8k.txt",
+      "size_bytes": 42830,
+      "sha256": "06c93314a98009c53f02531233a89f078919bd6740a5614d8412129d3e29790c"
+    },
+    {
+      "path": "mlx-model-porting/assets/benchmarks/prompts/t207-stack-suffix.txt",
+      "size_bytes": 180,
+      "sha256": "b84c46cff1153c3034a630bdde7a30f6b54a2a2cb326eba568bc7c5796da3594"
     },
     {
       "path": "mlx-model-porting/assets/benchmarks/quant-4bit.json",
@@ -217,8 +242,33 @@
     },
     {
       "path": "mlx-model-porting/assets/benchmarks/receipts_index.json",
-      "size_bytes": 3476,
-      "sha256": "47d920430326c6f219998f8e14c491a8379860fa53b229430ceb4833ce409d47"
+      "size_bytes": 12084,
+      "sha256": "c01fc4ca177a66af071e0c5c0df3b6f0d5f77d563910e2800ba42e3c7d447a51"
+    },
+    {
+      "path": "mlx-model-porting/assets/benchmarks/spec-baseline.json",
+      "size_bytes": 3543,
+      "sha256": "4e9bb3f06103a36f9131debb6206f7fd0e0728034f30d113e168e1b2b7bec032"
+    },
+    {
+      "path": "mlx-model-porting/assets/benchmarks/spec-draft-k2.json",
+      "size_bytes": 4348,
+      "sha256": "98ab66f7cbdf08579f60819799027932e7def691663643aee4b819a0b76e1304"
+    },
+    {
+      "path": "mlx-model-porting/assets/benchmarks/spec-draft-k3.json",
+      "size_bytes": 4344,
+      "sha256": "c50d315371443edf09a5e4168e36e5821bcd8ec775168f8253ddb535af6b9a9c"
+    },
+    {
+      "path": "mlx-model-porting/assets/benchmarks/spec-draft-k4.json",
+      "size_bytes": 4340,
+      "sha256": "cc534c329bd0a1389b2fe33233789b9b08fbd6dd10dc8bb721bcaed70bd54873"
+    },
+    {
+      "path": "mlx-model-porting/assets/benchmarks/stack-measured-together.json",
+      "size_bytes": 5193,
+      "sha256": "d76e138e1ba106d3d39fd1be9091cba1ad423b8c6464c079c96526f81fe02349"
     },
     {
       "path": "mlx-model-porting/assets/contributor_learnings.json",
@@ -232,18 +282,18 @@
     },
     {
       "path": "mlx-model-porting/assets/model_outcomes.json",
-      "size_bytes": 24918,
-      "sha256": "564d0a6864aaa22f6ccfdd86c281a574d7c02d21dcaf64fd5964e1263b8130e0"
+      "size_bytes": 25274,
+      "sha256": "ae4ba9586ab4856f90ac73bf6266ad417d6e96da210199a282470febdc9d87f2"
     },
     {
       "path": "mlx-model-porting/assets/optimization_guidance.yaml",
-      "size_bytes": 46590,
-      "sha256": "2a1fc2409c8ae60450e56a75b6a25dea5faa90d5840c5464234cfe0529abff37"
+      "size_bytes": 49320,
+      "sha256": "bd5940e617a3924c54a6296aa6564720b71e6f7c4ccbc6c3f1ae3cc5c4f53963"
     },
     {
       "path": "mlx-model-porting/assets/optimization_stacks.yaml",
-      "size_bytes": 10643,
-      "sha256": "867949a64aec2393a400e4d964dce2a187b102dd1f703a82af9de4dd146ec8ba"
+      "size_bytes": 12957,
+      "sha256": "b8d44c44022942353d0521a4f59f08f57b33867dba1f99c5d901f89da88ea4dd"
     },
     {
       "path": "mlx-model-porting/assets/recommendation-taxonomy.yaml",
@@ -302,8 +352,8 @@
     },
     {
       "path": "mlx-model-porting/references/compound-stacks.md",
-      "size_bytes": 8100,
-      "sha256": "2b2875e832b6821ac524f3f5d14b26bce79cc6176a77dfc7c5937b3caf924736"
+      "size_bytes": 8675,
+      "sha256": "e6378e87118de3d5b36bd46825724f3a1f25c20a12219f2d9d1c190b3f31a0a3"
     },
     {
       "path": "mlx-model-porting/references/decoding-and-serving.md",
@@ -617,8 +667,8 @@
     },
     {
       "path": "mlx-model-porting/scripts/_common.py",
-      "size_bytes": 9822,
-      "sha256": "37724a9d3b6b972625010a778095998a7460f112f0de250c9beb6899934b4dcb"
+      "size_bytes": 11295,
+      "sha256": "0645033d2e618ea2d9a290d60ea0e3f825a4cd78076c0e2eb674dce0af5910b0"
     },
     {
       "path": "mlx-model-porting/scripts/audit_skill.py",
@@ -682,8 +732,8 @@
     },
     {
       "path": "mlx-model-porting/scripts/recommend_optimizations.py",
-      "size_bytes": 9418,
-      "sha256": "7239f06b96690410f1accb64216c3aaf5f9dbdfbf1668fd5f87498979e863e19"
+      "size_bytes": 11018,
+      "sha256": "92b2d586b10a91dffec61c7009dd931acb58259b0274baaacd5b3ddbd11b1da7"
     },
     {
       "path": "mlx-model-porting/scripts/research_loop.py",
@@ -702,8 +752,8 @@
     },
     {
       "path": "mlx-model-porting/scripts/validate_sources.py",
-      "size_bytes": 21668,
-      "sha256": "add0eb9a5f5dde7d63e46d38d8884f6daba91fa78e1bd70c441db744b6335db4"
+      "size_bytes": 23619,
+      "sha256": "6abb5e01019104e75203817ea0eb441162f42c4608658ae93b9ba1d53e18d63f"
     },
     {
       "path": "mlx-model-porting/scripts/validate_weight_map.py",
@@ -1092,8 +1142,8 @@
     },
     {
       "path": "tests/fixtures/stack_compose_case.json",
-      "size_bytes": 2608,
-      "sha256": "657146a13c13f71d3a8c8ea274a46b4954e1e96b2a626e7c7efeaca12a0fa76f"
+      "size_bytes": 4554,
+      "sha256": "918735644c4b66c425416f357c70159e69615101f1c82a89290fc4a67db7bf3e"
     },
     {
       "path": "tests/fixtures/tensors/bad.npz",
@@ -1132,8 +1182,8 @@
     },
     {
       "path": "tests/test_tooling.py",
-      "size_bytes": 153379,
-      "sha256": "488bd95b59c8e79f294de15dd117b00e8dd2e2834ea0c919eac48b899e59412e"
+      "size_bytes": 155580,
+      "sha256": "0db99a0358201614d750c2a054d3688a75f00356ffd6583c243eb2fb3a1bf11f"
     }
   ]
 }

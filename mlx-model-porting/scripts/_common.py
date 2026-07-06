@@ -159,16 +159,47 @@ def _format_multiplier(value: float) -> str:
     return f"{text}x"
 
 
+STACK_COMPOUND_HYPOTHESIS_FLAG = "unmeasured composition - multiplicative hypothesis, not a claim"
+
+
+def _measured_compound(receipts: Any) -> dict[str, Any] | None:
+    if not isinstance(receipts, list):
+        return None
+    for receipt in receipts:
+        if not isinstance(receipt, dict) or not isinstance(receipt.get("measured_ratio"), str):
+            continue
+        measured: dict[str, Any] = {
+            "ratio": receipt["measured_ratio"],
+            "provenance": "local_reproduced",
+        }
+        receipt_ref = receipt.get("file") or receipt.get("label")
+        if isinstance(receipt_ref, str):
+            measured["receipt"] = receipt_ref
+        for key in ("label", "file", "metric", "measured_on", "basis", "caveat"):
+            if key in receipt:
+                measured[key] = receipt[key]
+        if "measured_floor" in receipt:
+            measured["floor"] = receipt["measured_floor"]
+        elif "floor" in receipt:
+            measured["floor"] = receipt["floor"]
+        return measured
+    return None
+
+
 def compose_stack_band(stack: dict[str, Any], guidance_methods: dict[str, Any] | list[dict[str, Any]]) -> dict[str, Any]:
     """Derive an advisory compound band for an optimization stack.
 
-    Compound ceilings are a multiplicative hypothesis unless the full stack has
-    been measured together. Unmeasured or conflicting steps contribute 1.0x.
+    Compound ceilings are metric-scoped multiplicative hypotheses. A measured
+    stack receipt is reported separately and never changes product provenance.
     """
     if isinstance(guidance_methods, dict):
         methods_by_id = guidance_methods
     else:
         methods_by_id = {str(method.get("id")): method for method in guidance_methods if isinstance(method, dict)}
+
+    primary_metric = stack.get("primary_metric")
+    if not isinstance(primary_metric, str) or not primary_metric:
+        raise ValueError(f"stack {stack.get('id', '<unknown>')} primary_metric must be a non-empty string")
 
     steps = stack.get("steps", [])
     if not isinstance(steps, list):
@@ -188,7 +219,7 @@ def compose_stack_band(stack: dict[str, Any], guidance_methods: dict[str, Any] |
 
     per_step: list[dict[str, Any]] = []
     unmeasured_upside: list[str] = []
-    step_floors = [1.0]
+    other_metric_upside: list[dict[str, str]] = []
     ceiling = 1.0
 
     for step in steps:
@@ -210,37 +241,45 @@ def compose_stack_band(stack: dict[str, Any], guidance_methods: dict[str, Any] |
             "gate": step.get("gate"),
         })
 
-        if method_id in excluded_methods:
-            continue
         if not isinstance(improvement_band, dict) or band_provenance == "profile_required":
             unmeasured_upside.append(method_id)
             continue
         if band_provenance not in {"source_reported", "local_reproduced"}:
             unmeasured_upside.append(method_id)
             continue
-        step_floor, step_ceiling = parse_band(str(band_range))
-        step_floors.append(step_floor)
+        band_metric = improvement_band.get("metric")
+        if band_metric != primary_metric:
+            if isinstance(band_range, str) and isinstance(band_metric, str):
+                other_metric_upside.append({
+                    "method": method_id,
+                    "metric": band_metric,
+                    "range": band_range,
+                })
+            continue
+        if method_id in excluded_methods:
+            continue
+        _, step_ceiling = parse_band(str(band_range))
         ceiling *= step_ceiling
 
     compound = stack.get("compound", {}) if isinstance(stack.get("compound", {}), dict) else {}
     measured_together = compound.get("measured_together") is True
-    floor = max(step_floors)
     receipts = compound.get("receipts", [])
-    has_measured_floor = measured_together and any(
-        isinstance(receipt, dict) and ("measured_floor" in receipt or "floor" in receipt)
-        for receipt in (receipts if isinstance(receipts, list) else [])
-    )
-    if not has_measured_floor:
-        floor = min(floor, 1.0)
-    provenance = "local_reproduced" if measured_together else "multiplicative_hypothesis"
-    result = {
-        "floor": _format_multiplier(floor),
+    hypothesis_ceiling = {
+        "floor": "1.0x",
         "ceiling": _format_multiplier(ceiling),
-        "provenance": provenance,
+        "metric": primary_metric,
+        "provenance": "multiplicative_hypothesis",
+        "flag": STACK_COMPOUND_HYPOTHESIS_FLAG,
+    }
+    result = {
+        "primary_metric": primary_metric,
+        "hypothesis_ceiling": hypothesis_ceiling,
         "unmeasured_upside": unmeasured_upside,
+        "other_metric_upside": other_metric_upside,
         "excluded_conflicts": excluded_conflicts,
         "per_step": per_step,
     }
-    if provenance == "multiplicative_hypothesis":
-        result["flag"] = "unmeasured composition - multiplicative hypothesis, not a claim"
+    measured = _measured_compound(receipts) if measured_together else None
+    if measured:
+        result["measured"] = measured
     return result

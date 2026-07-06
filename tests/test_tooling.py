@@ -182,9 +182,15 @@ class ToolingTests(unittest.TestCase):
                 self.assertTrue(step_ids)
                 self.assertTrue(step_ids.issubset(method_ids))
                 compound = stack["compound"]
-                self.assertIs(compound["measured_together"], False)
-                self.assertEqual(compound["receipts"], [])
-                self.assertIsNone(numeric_range.search(json.dumps(compound)))
+                if stack["id"] == "dense-decoder-inference":
+                    self.assertIs(compound["measured_together"], True)
+                    self.assertEqual(compound["receipts"][0]["label"], "stack-measured-together")
+                    self.assertIn("plain 4-bit", compound["receipts"][0]["basis"])
+                else:
+                    self.assertIs(compound["measured_together"], False)
+                    self.assertEqual(compound["receipts"], [])
+                compound_shape = {key: value for key, value in compound.items() if key != "receipts"}
+                self.assertIsNone(numeric_range.search(json.dumps(compound_shape)))
                 for note in stack["composition_notes"]:
                     self.assertEqual(len(note["pair"]), 2)
                     self.assertTrue(set(note["pair"]).issubset(step_ids))
@@ -235,7 +241,7 @@ class ToolingTests(unittest.TestCase):
 
         decoder = next(record for record in outcomes["records"] if record["id"] == "decoder-mlx-lm-working-route")
         self.assertEqual(decoder["potential_speedup"]["overall"]["range"], "1.0x-4.3x")
-        self.assertEqual(decoder["potential_speedup"]["speculative_decoding"]["range"], "1.0x-3.0x")
+        self.assertEqual(decoder["potential_speedup"]["speculative_decoding"]["range"], "1.0x-1.3x")
 
         by_id = {model["id"]: model for model in snapshot["models"]}
         self.assertIn("decoder-mlx-lm-working-route", by_id["Qwen/Qwen3-0.6B"]["matched_outcome_ids"])
@@ -459,22 +465,44 @@ class ToolingTests(unittest.TestCase):
             self.assertEqual(report["schema_version"], 1)
             stack = report["recommended_stack"]
             self.assertEqual(stack["id"], "dense-decoder-inference")
-            self.assertEqual(stack["compound"]["floor"], "1.0x")
-            self.assertGreater(float(stack["compound"]["ceiling"].removesuffix("x")), 1.0)
+            compound = stack["compound"]
+            hypothesis = compound["hypothesis_ceiling"]
+            measured = compound["measured"]
+            self.assertEqual(hypothesis["floor"], "1.0x")
+            self.assertEqual(hypothesis["provenance"], "multiplicative_hypothesis")
             self.assertEqual(
-                stack["compound"]["flag"],
+                hypothesis["flag"],
                 "unmeasured composition - multiplicative hypothesis, not a claim",
             )
+            self.assertEqual(measured["ratio"], "0.21x")
+            self.assertEqual(measured["provenance"], "local_reproduced")
+            self.assertEqual(measured["receipt"], "stack-measured-together.json")
+            self.assertIn(
+                {"method": "prompt-prefix-cache", "metric": "ttft-proxy", "range": "1.0x-23.8x"},
+                compound["other_metric_upside"],
+            )
             guidance = {m["id"]: m for m in json.loads((SKILL / "assets" / "optimization_guidance.yaml").read_text())["methods"]}
-            excluded = {method for pair in stack["compound"]["excluded_conflicts"] for method in pair}
-            product = 1.0
-            for step in stack["compound"]["per_step"]:
+            excluded = {method for pair in compound["excluded_conflicts"] for method in pair}
+            same_metric_product = 1.0
+            conflict_excluded_product = 1.0
+            primary_metric = compound["primary_metric"]
+            for step in compound["per_step"]:
                 band = guidance[step["method"]].get("improvement_band")
                 if step["method"] in excluded or not band:
+                    if band and band.get("metric") == primary_metric:
+                        same_metric_product *= parse_band(band["range"])[1]
                     continue
                 self.assertIn(band["provenance"], {"source_reported", "local_reproduced"})
-                product *= parse_band(band["range"])[1]
-            self.assertAlmostEqual(float(stack["compound"]["ceiling"].removesuffix("x")), product)
+                if band.get("metric") != primary_metric:
+                    continue
+                ceiling = parse_band(band["range"])[1]
+                same_metric_product *= ceiling
+                conflict_excluded_product *= ceiling
+            hypothesis_ceiling = float(hypothesis["ceiling"].removesuffix("x"))
+            self.assertAlmostEqual(same_metric_product, 3.432)
+            self.assertAlmostEqual(conflict_excluded_product, 2.64)
+            self.assertLessEqual(hypothesis_ceiling, same_metric_product)
+            self.assertAlmostEqual(hypothesis_ceiling, conflict_excluded_product)
             ready_ids = {item["id"] for item in report["ready_candidates"]}
             research_ids = {item["id"] for item in report["research_candidates"]}
             self.assertIn("fast-sdpa", ready_ids)
@@ -482,14 +510,20 @@ class ToolingTests(unittest.TestCase):
             self.assertIn("prompt-lookup-ngram-speculation", research_ids)
             text = markdown.read_text()
             self.assertIn("Recommended stack", text)
-            self.assertIn("Derived ceiling", text)
+            self.assertIn("Measured together: `0.21x`", text)
+            self.assertIn("Hypothesis ceiling: `2.64x`", text)
             self.assertIn("unmeasured composition - multiplicative hypothesis, not a claim", text)
+            self.assertIn("Workload-conditional upside (different metric): `prompt-prefix-cache` `ttft-proxy` `1.0x-23.8x`", text)
             self.assertIn("Ready candidates", text)
             self.assertIn("Research experiments", text)
 
     def test_compose_stack_band_matches_shared_fixture_and_excludes_conflicts(self) -> None:
         case = load_structured(FIXTURES / "stack_compose_case.json")
-        self.assertEqual(compose_stack_band(case["stack"], case["guidance_methods"]), case["expected"])
+        actual = compose_stack_band(case["stack"], case["guidance_methods"])
+        self.assertEqual(actual, case["expected"])
+        self.assertEqual(actual["hypothesis_ceiling"]["provenance"], "multiplicative_hypothesis")
+        self.assertEqual(actual["measured"]["provenance"], "local_reproduced")
+        self.assertEqual(actual["other_metric_upside"], [{"method": "ttft-method", "metric": "ttft-proxy", "range": "1.0x-9.0x"}])
 
     def test_parse_band_rejects_malformed_input(self) -> None:
         for value in ("1.0-3.0x", "fast", "3.0x-1.0x", "0x-1.0x"):

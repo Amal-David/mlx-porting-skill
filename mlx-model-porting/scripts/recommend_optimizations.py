@@ -104,19 +104,53 @@ def _stack_markdown(title: str, stack: dict[str, Any]) -> list[str]:
             f"{step['lossiness']} | {step['first_gate']} |"
         )
     compound = stack["compound"]
-    flag = compound.get("flag")
+    hypothesis = compound["hypothesis_ceiling"]
+    measured = compound.get("measured") if isinstance(compound.get("measured"), dict) else None
+    lines.append("")
+    if measured:
+        measured_on = measured.get("measured_on") if isinstance(measured.get("measured_on"), dict) else {}
+        measured_where = ", ".join(
+            str(value)
+            for value in (
+                measured_on.get("chip"),
+                f"MLX-LM {measured_on.get('mlx_lm')}" if measured_on.get("mlx_lm") else None,
+            )
+            if value
+        )
+        measured_line = f"Measured together: `{measured['ratio']}`"
+        if measured.get("metric"):
+            measured_line += f" `{measured['metric']}`"
+        if measured_where:
+            measured_line += f" on {measured_where}"
+        measured_line += f" ({measured['provenance']})"
+        lines.append(measured_line)
+        if measured.get("basis"):
+            lines.append(f"Basis: {measured['basis']}")
+        if measured.get("caveat"):
+            lines.append(f"Caveat: {measured['caveat']}")
+        if measured.get("receipt"):
+            lines.append(f"Receipt: `{measured['receipt']}`")
+        lines.append("")
     ceiling_line = (
-        f"Derived ceiling: `{compound['ceiling']}` with floor `{compound['floor']}` "
-        f"({compound['provenance']})"
+        f"Hypothesis ceiling: `{hypothesis['ceiling']}` with floor `{hypothesis['floor']}` "
+        f"`{hypothesis['metric']}` ({hypothesis['provenance']}) - {hypothesis['flag']}"
     )
-    if flag:
-        ceiling_line += f" - {flag}"
-    lines += ["", ceiling_line, ""]
+    lines += [ceiling_line, ""]
     unmeasured = compound.get("unmeasured_upside", [])
     if unmeasured:
         lines.append("Unmeasured upside: " + ", ".join(f"`{method}`" for method in unmeasured))
     else:
         lines.append("Unmeasured upside: none")
+    other_metric = compound.get("other_metric_upside", [])
+    if other_metric:
+        rendered = ", ".join(
+            f"`{item['method']}` `{item['metric']}` `{item['range']}`"
+            for item in other_metric
+            if isinstance(item, dict)
+        )
+        lines.append("Workload-conditional upside (different metric): " + rendered)
+    else:
+        lines.append("Workload-conditional upside (different metric): none")
     conflicts = compound.get("excluded_conflicts", [])
     if conflicts:
         lines.append("Excluded conflicts: " + ", ".join(f"`{pair[0]}` + `{pair[1]}`" for pair in conflicts))

@@ -11,6 +11,7 @@
     {
       "id": "dense-decoder-inference",
       "label": "Dense decoder inference",
+      "primary_metric": "decode-tokens-per-sec",
       "families": [
         "dense-decoder-transformer",
         "moe-decoder-transformer"
@@ -68,17 +69,50 @@
             "draft-model-speculation"
           ],
           "validity": "unknown",
-          "why": "KV dequant overhead and speculative cache updates must be measured together before treating their ceilings as more than a multiplicative hypothesis."
+          "why": "The capstone receipt measured KV quantization and draft speculation only inside the full prompt-cache stack, not in isolation; keep the pair unknown until a KV+draft receipt isolates their interaction."
+        },
+        {
+          "pair": [
+            "prompt-prefix-cache",
+            "draft-model-speculation"
+          ],
+          "validity": "known-conflicting",
+          "why": "stack-measured-together.json recorded a 0.21x decode-throughput negative interaction, and MLX-LM 0.31.1 required a combined target+draft cache because target-only cache_prompt output does not compose with --draft-model."
         }
       ],
       "compound": {
-        "measured_together": false,
-        "receipts": []
+        "measured_together": true,
+        "receipts": [
+          {
+            "label": "stack-measured-together",
+            "file": "stack-measured-together.json",
+            "baseline": "spec-baseline",
+            "metric": "decode-tokens-per-sec",
+            "measured_ratio": "0.21x",
+            "measured_floor": "1.0x",
+            "basis": "Measured together with Qwen2.5-Coder 7B 4-bit target weights, 4-bit KV cache, prompt cache, and Qwen2.5-Coder 1.5B 4-bit draft model k=2. Ratio is versus spec-baseline, the plain 4-bit single-request baseline; this is not an fp16 7B baseline.",
+            "caveat": "The measured-together stack was slower on this cached long-prefix suffix workload: 9.516 median decode tok/s versus 45.122 tok/s baseline (0.211x). Prompt cache used an 8053-token cached prefix plus 34-token suffix; MLX-LM 0.31.1 required a combined target+draft cache because target-only cache_prompt output does not compose with --draft-model.",
+            "measured_on": {
+              "chip": "Apple M4 Pro",
+              "mac_model": "Mac16,8",
+              "unified_memory": "48GB",
+              "macos": "26.3",
+              "python": "3.14.4",
+              "mlx": "0.30.4",
+              "mlx_lm": "0.31.1",
+              "target_model": "mlx-community/Qwen2.5-Coder-7B-Instruct-4bit@019cc73c45c770444708a6dd8690c66243cc5c80",
+              "draft_model": "mlx-community/Qwen2.5-Coder-1.5B-Instruct-4bit@b3252a2f97102b1fb1571fec2c9b27219a8536be",
+              "workload": "cached 8053-token long prompt prefix plus 34-token suffix, max_tokens=256, temp=0.0, seed=207",
+              "kv_flags": "--kv-bits 4 --kv-group-size 64 --quantized-kv-start 0"
+            }
+          }
+        ]
       }
     },
     {
       "id": "moe-serving",
       "label": "MoE serving",
+      "primary_metric": "batch-throughput",
       "families": [
         "moe-decoder-transformer"
       ],
@@ -128,6 +162,7 @@
     {
       "id": "vlm-repeated-media",
       "label": "VLM repeated media",
+      "primary_metric": "repeated-media-ttft",
       "families": [
         "vision-language-omni"
       ],
@@ -197,6 +232,7 @@
     {
       "id": "tts-batch",
       "label": "TTS batch serving",
+      "primary_metric": "batch-throughput",
       "families": [
         "flow-diffusion-tts",
         "autoregressive-audio-lm"

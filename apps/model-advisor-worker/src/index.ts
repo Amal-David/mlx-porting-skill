@@ -18,14 +18,38 @@ type StackStepBand = {
   lossiness: string | null;
   gate: string | null;
 };
-type StackCompoundBand = {
+type StackHypothesisCeiling = {
   floor: string;
   ceiling: string;
-  provenance: "local_reproduced" | "multiplicative_hypothesis";
+  metric: string;
+  provenance: "multiplicative_hypothesis";
+  flag: string;
+};
+type StackMeasuredCompound = {
+  ratio: string;
+  provenance: "local_reproduced";
+  receipt?: string;
+  label?: string;
+  file?: string;
+  metric?: string;
+  measured_on?: Record<string, unknown>;
+  basis?: string;
+  caveat?: string;
+  floor?: string;
+};
+type StackOtherMetricUpside = {
+  method: string;
+  metric: string;
+  range: string;
+};
+type StackCompoundBand = {
+  primary_metric: string;
+  hypothesis_ceiling: StackHypothesisCeiling;
+  measured?: StackMeasuredCompound;
   unmeasured_upside: string[];
+  other_metric_upside: StackOtherMetricUpside[];
   excluded_conflicts: string[][];
   per_step: StackStepBand[];
-  flag?: string;
 };
 type StackCompoundSummary = Omit<StackCompoundBand, "per_step">;
 type RecommendedStack = {
@@ -667,15 +691,13 @@ function selectRecommendedStack(familyId: string): RecommendedStack | null {
   }
   const composed = composeStackBand(stack, ADVISOR_DATA.methods);
   const compound: StackCompoundSummary = {
-    floor: composed.floor,
-    ceiling: composed.ceiling,
-    provenance: composed.provenance,
+    primary_metric: composed.primary_metric,
+    hypothesis_ceiling: composed.hypothesis_ceiling,
+    measured: composed.measured,
     unmeasured_upside: composed.unmeasured_upside,
+    other_metric_upside: composed.other_metric_upside,
     excluded_conflicts: composed.excluded_conflicts
   };
-  if (composed.flag) {
-    compound.flag = composed.flag;
-  }
   return {
     id: stack.id,
     label: stack.label,
@@ -697,6 +719,14 @@ export function composeStackBand(stack: unknown, guidanceMethods: Record<string,
   const steps = stack.steps;
   if (!Array.isArray(steps)) {
     throw new Error(`stack ${String(stack.id ?? "<unknown>")} steps must be a list`);
+  }
+  const primaryMetric = typeof stack.primary_metric === "string"
+    ? stack.primary_metric
+    : typeof stack.primaryMetric === "string"
+      ? stack.primaryMetric
+      : "";
+  if (!primaryMetric) {
+    throw new Error(`stack ${String(stack.id ?? "<unknown>")} primary_metric must be a non-empty string`);
   }
 
   const excludedConflicts: string[][] = [];
@@ -722,7 +752,7 @@ export function composeStackBand(stack: unknown, guidanceMethods: Record<string,
 
   const perStep: StackStepBand[] = [];
   const unmeasuredUpside: string[] = [];
-  const stepFloors = [1.0];
+  const otherMetricUpside: StackOtherMetricUpside[] = [];
   let ceiling = 1.0;
 
   for (const step of steps) {
@@ -744,9 +774,6 @@ export function composeStackBand(stack: unknown, guidanceMethods: Record<string,
       gate: valueToNullableString(step.gate)
     });
 
-    if (excludedMethods.has(methodId)) {
-      continue;
-    }
     if (!improvementBand || bandProvenance === "profile_required") {
       unmeasuredUpside.push(methodId);
       continue;
@@ -755,32 +782,72 @@ export function composeStackBand(stack: unknown, guidanceMethods: Record<string,
       unmeasuredUpside.push(methodId);
       continue;
     }
-    const [stepFloor, stepCeiling] = parseBand(String(bandRange));
-    stepFloors.push(stepFloor);
+    const bandMetric = typeof improvementBand.metric === "string" ? improvementBand.metric : "";
+    if (bandMetric !== primaryMetric) {
+      if (typeof bandRange === "string" && bandMetric) {
+        otherMetricUpside.push({
+          method: methodId,
+          metric: bandMetric,
+          range: bandRange
+        });
+      }
+      continue;
+    }
+    if (excludedMethods.has(methodId)) {
+      continue;
+    }
+    const [, stepCeiling] = parseBand(String(bandRange));
     ceiling *= stepCeiling;
   }
 
   const compound = firstRecord(stack.compound) ?? {};
   const measuredTogether = compound.measured_together === true || compound.measuredTogether === true;
-  let floor = Math.max(...stepFloors);
   const receipts = Array.isArray(compound.receipts) ? compound.receipts : [];
-  const hasMeasuredFloor = measuredTogether && receipts.some((receipt) => (
-    isRecord(receipt) && ("measured_floor" in receipt || "floor" in receipt)
-  ));
-  if (!hasMeasuredFloor) {
-    floor = Math.min(floor, 1.0);
-  }
-  const provenance = measuredTogether ? "local_reproduced" : "multiplicative_hypothesis";
-  const result: StackCompoundBand = {
-    floor: formatMultiplier(floor),
+  const hypothesisCeiling: StackHypothesisCeiling = {
+    floor: "1.0x",
     ceiling: formatMultiplier(ceiling),
-    provenance,
+    metric: primaryMetric,
+    provenance: "multiplicative_hypothesis",
+    flag: STACK_COMPOUND_HYPOTHESIS_FLAG
+  };
+  const result: StackCompoundBand = {
+    primary_metric: primaryMetric,
+    hypothesis_ceiling: hypothesisCeiling,
     unmeasured_upside: unmeasuredUpside,
+    other_metric_upside: otherMetricUpside,
     excluded_conflicts: excludedConflicts,
     per_step: perStep
   };
-  if (provenance === "multiplicative_hypothesis") {
-    result.flag = STACK_COMPOUND_HYPOTHESIS_FLAG;
+  const measuredReceipt = measuredTogether
+    ? receipts.find((receipt) => isRecord(receipt) && typeof receipt.measured_ratio === "string")
+    : null;
+  if (isRecord(measuredReceipt) && typeof measuredReceipt.measured_ratio === "string") {
+    const measured: StackMeasuredCompound = {
+      ratio: measuredReceipt.measured_ratio,
+      provenance: "local_reproduced"
+    };
+    const receiptRef = typeof measuredReceipt.file === "string"
+      ? measuredReceipt.file
+      : typeof measuredReceipt.label === "string"
+        ? measuredReceipt.label
+        : "";
+    if (receiptRef) {
+      measured.receipt = receiptRef;
+    }
+    for (const key of ["label", "file", "metric", "basis", "caveat"] as const) {
+      if (typeof measuredReceipt[key] === "string") {
+        measured[key] = measuredReceipt[key];
+      }
+    }
+    if (isRecord(measuredReceipt.measured_on)) {
+      measured.measured_on = measuredReceipt.measured_on;
+    }
+    if (typeof measuredReceipt.measured_floor === "string") {
+      measured.floor = measuredReceipt.measured_floor;
+    } else if (typeof measuredReceipt.floor === "string") {
+      measured.floor = measuredReceipt.floor;
+    }
+    result.measured = measured;
   }
   return result;
 }
@@ -1145,10 +1212,19 @@ function summarizePotentialSpeedup(outcomes: Array<ReturnType<typeof serializeOu
     speculativeBasis: speculative.basis || fallback.basis,
     stackCeiling: recommendedStack ? {
       stackId: recommendedStack.id,
-      floor: recommendedStack.compound.floor,
-      ceiling: recommendedStack.compound.ceiling,
-      provenance: recommendedStack.compound.provenance,
-      flag: recommendedStack.compound.flag || ""
+      headline: recommendedStack.compound.measured ? "measured" : "hypothesis",
+      floor: recommendedStack.compound.hypothesis_ceiling.floor,
+      ceiling: recommendedStack.compound.hypothesis_ceiling.ceiling,
+      metric: recommendedStack.compound.hypothesis_ceiling.metric,
+      provenance: recommendedStack.compound.hypothesis_ceiling.provenance,
+      flag: recommendedStack.compound.hypothesis_ceiling.flag,
+      measuredRatio: recommendedStack.compound.measured?.ratio || "",
+      measuredMetric: recommendedStack.compound.measured?.metric || "",
+      measuredProvenance: recommendedStack.compound.measured?.provenance || "",
+      measuredReceipt: recommendedStack.compound.measured?.receipt || "",
+      measuredOn: recommendedStack.compound.measured?.measured_on || null,
+      basis: recommendedStack.compound.measured?.basis || "",
+      caveat: recommendedStack.compound.measured?.caveat || ""
     } : null,
     conditions: uniqueStrings([...(overall.appliesWhen ?? []), ...(speculative.appliesWhen ?? [])]).slice(0, 4),
     measures: uniqueStrings([...(overall.measure ?? []), ...(speculative.measure ?? [])]).slice(0, 5)
@@ -1266,6 +1342,7 @@ async function generateOpenAiSummary(env: Env, model: HuggingFaceModel, advisor:
     instructions: [
       "You are summarizing an MLX model-porting advisor report.",
       "Use only the provided potential speedup ranges. Do not invent speedup numbers.",
+      "When stackCeiling has measuredRatio, treat that as the headline and keep floor/ceiling as a flagged hypothesis.",
       "Repeat any provided stackCeiling floor, ceiling, and hypothesis flag verbatim; never present multiplicative_hypothesis ceilings as measured.",
       "Mention profile-required or benchmark-required when applicable.",
       "Keep experimental approaches explicitly labeled experimental.",
@@ -2413,18 +2490,30 @@ function renderAppHtml() {
       }
       const compound = stack.compound || {};
       const steps = Array.isArray(stack.steps) ? stack.steps : [];
-      const flag = compound.provenance === "multiplicative_hypothesis"
-        ? (compound.flag || "unmeasured composition - multiplicative hypothesis, not a claim")
-        : "";
-      const ceilingText = (compound.floor || "1.0x") + "-" + (compound.ceiling || "1.0x");
+      const hypothesis = compound.hypothesis_ceiling || compound.hypothesisCeiling || {};
+      const measured = compound.measured || {};
+      const flag = hypothesis.flag || "unmeasured composition - multiplicative hypothesis, not a claim";
+      const hypothesisText = (hypothesis.floor || "1.0x") + "-" + (hypothesis.ceiling || "1.0x");
+      const measuredOn = measured.measured_on || measured.measuredOn || {};
+      const measuredWhere = compact([measuredOn.chip, measuredOn.mlx_lm ? "MLX-LM " + measuredOn.mlx_lm : ""]).join(", ");
+      const measuredBlock = measured.ratio
+        ? '<div class="stack-ceiling"><span class="muted">Measured together</span><strong>' + escapeHtml(measured.ratio) + '</strong>' +
+            '<p class="muted">' + escapeHtml(compact([measured.metric, measuredWhere, measured.provenance || "local_reproduced"]).join(" · ")) + '</p>' +
+            (measured.basis ? '<p class="muted">' + escapeHtml(measured.basis) + '</p>' : '') +
+            (measured.caveat ? '<p class="muted">' + escapeHtml(measured.caveat) + '</p>' : '') +
+          '</div>'
+        : '';
       return '<section class="stack-panel">' +
         '<div class="stack-head"><div><h2>Recommended stack</h2><p class="muted">' + escapeHtml(stack.label || stack.id) + '</p></div><span class="status bucket-benchmark-required">' + escapeHtml(stack.id) + '</span></div>' +
-        '<div class="stack-ceiling"><span class="muted">Derived ceiling</span><strong>' + escapeHtml(ceilingText) + '</strong>' +
-          (flag ? '<p class="muted">' + escapeHtml(flag) + '</p>' : '<p class="muted">' + escapeHtml(compound.provenance || "local_reproduced") + '</p>') +
+        measuredBlock +
+        '<div class="stack-ceiling"><span class="muted">Hypothesis ceiling</span><strong>' + escapeHtml(hypothesisText) + '</strong>' +
+          '<p class="muted">' + escapeHtml(compact([hypothesis.metric, hypothesis.provenance || "multiplicative_hypothesis"]).join(" · ")) + '</p>' +
+          '<p class="muted">' + escapeHtml(flag) + '</p>' +
         '</div>' +
         '<ol class="stack-steps">' + steps.map(renderStackStep).join("") + '</ol>' +
         '<div class="stack-lists">' +
           renderStackList("Unmeasured upside", compound.unmeasured_upside) +
+          renderStackList("Workload-conditional upside (different metric)", (Array.isArray(compound.other_metric_upside) ? compound.other_metric_upside : []).map((item) => item && typeof item === "object" ? [item.method, item.metric, item.range].filter(Boolean).join(" ") : String(item))) +
           renderStackList("Excluded conflicts", (Array.isArray(compound.excluded_conflicts) ? compound.excluded_conflicts : []).map((pair) => Array.isArray(pair) ? pair.join(" vs ") : String(pair))) +
         '</div>' +
       '</section>';

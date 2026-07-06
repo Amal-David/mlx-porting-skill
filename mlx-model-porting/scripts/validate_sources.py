@@ -268,6 +268,8 @@ def validate(skill: Path, check_urls: bool, timeout: float, workers: int) -> tup
         for stack in (stacks if isinstance(stacks, list) else []):
             sid = stack.get("id") if isinstance(stack, dict) else None
             add_error(errors, not sid, "optimization stack missing id")
+            primary_metric = stack.get("primary_metric") if isinstance(stack, dict) else None
+            add_error(errors, not isinstance(primary_metric, str) or not primary_metric, f"optimization stack {sid} primary_metric must be a non-empty string")
             steps = stack.get("steps", []) if isinstance(stack, dict) else []
             add_error(errors, not isinstance(steps, list) or not steps, f"optimization stack {sid} must have steps")
             step_method_ids: set[str] = set()
@@ -292,9 +294,33 @@ def validate(skill: Path, check_urls: bool, timeout: float, workers: int) -> tup
             compound = stack.get("compound") if isinstance(stack, dict) else None
             add_error(errors, not isinstance(compound, dict), f"optimization stack {sid} compound must be a mapping")
             if isinstance(compound, dict):
-                add_error(errors, compound.get("measured_together") is not False, f"optimization stack {sid} compound measured_together must be false until receipts exist")
-                add_error(errors, not isinstance(compound.get("receipts"), list), f"optimization stack {sid} compound receipts must be a list")
-                add_error(errors, compound_has_numeric_range(compound), f"optimization stack {sid} compound stores a numeric range")
+                measured_together = compound.get("measured_together")
+                receipts = compound.get("receipts")
+                add_error(errors, measured_together not in {True, False}, f"optimization stack {sid} compound measured_together must be a boolean")
+                add_error(errors, not isinstance(receipts, list), f"optimization stack {sid} compound receipts must be a list")
+                if measured_together is True:
+                    add_error(errors, not receipts, f"optimization stack {sid} compound measured_together requires receipts")
+                    for receipt in receipts if isinstance(receipts, list) else []:
+                        if isinstance(receipt, dict):
+                            receipt_ref = receipt.get("file") or (f"{receipt.get('label')}.json" if receipt.get("label") else None)
+                        elif isinstance(receipt, str):
+                            receipt_ref = receipt
+                        else:
+                            receipt_ref = None
+                        add_error(errors, not receipt_ref, f"optimization stack {sid} compound receipt must name a file or label")
+                        if not receipt_ref:
+                            continue
+                        raw_receipt = Path(str(receipt_ref))
+                        receipt_path = raw_receipt if raw_receipt.is_absolute() else benchmark_root / raw_receipt
+                        resolved = receipt_path.resolve()
+                        try:
+                            resolved.relative_to(benchmark_root)
+                        except ValueError:
+                            errors.append(f"optimization stack {sid} compound receipt escapes assets/benchmarks: {receipt_ref}")
+                            continue
+                        add_error(errors, not resolved.is_file(), f"optimization stack {sid} compound receipt not found: {receipt_ref}")
+                compound_shape = {key: value for key, value in compound.items() if key != "receipts"}
+                add_error(errors, compound_has_numeric_range(compound_shape), f"optimization stack {sid} compound stores a numeric range")
 
     if taxonomy:
         taxonomy_objectives = taxonomy.get("objective_tags", [])

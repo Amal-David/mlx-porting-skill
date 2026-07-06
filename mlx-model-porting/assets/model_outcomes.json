@@ -58,20 +58,21 @@
           ]
         },
         "speculative_decoding": {
-          "range": "1.0x-3.0x",
-          "confidence": "medium",
-          "basis": "Classic speculative decoding papers report roughly 2x-3x-style gains in compatible settings, and MLX-LM exposes a speculative generation path. The selected draft/target pair still needs local acceptance and latency receipts.",
+          "range": "1.0x-1.3x",
+          "confidence": "local_reproduced",
+          "basis": "Local receipts spec-baseline, spec-draft-k2, spec-draft-k3, and spec-draft-k4 measured the Qwen2.5-Coder 7B/1.5B 4-bit pair on Apple M4 Pro (Mac16,8, 48GB), MLX 0.30.4, MLX-LM 0.31.1. The workload was a 552-token code-generation prompt with max_tokens=256, temp=0.0, seed=207. The best median decode ratio was k=2 at 1.254x; k=3 and k=4 regressed to 0.673x and 0.550x, so the workload-conditional floor remains 1.0x and the ceiling rounds to 1.3x.",
           "applies_when": [
             "Draft and target share tokenizer and vocabulary.",
-            "Accepted draft tokens per verification step are high enough to amortize draft-model cost.",
-            "Draft memory, cache growth, and sampling behavior fit the target Mac and quality gate."
+            "The workload is close to the measured Qwen2.5-Coder code-generation prompt.",
+            "The selected draft-token count has local median decode throughput above the plain 4-bit target baseline.",
+            "Draft memory and cache growth fit the target Mac and quality gate."
           ],
           "measure": [
-            "acceptance rate",
             "accepted tokens per verification step",
-            "draft tokens/s",
-            "target verification cost",
-            "end-to-end decode tokens/s"
+            "median decode tokens/s versus spec-baseline",
+            "peak memory",
+            "prompt/cache overhead",
+            "task quality or distribution preservation"
           ]
         }
       },

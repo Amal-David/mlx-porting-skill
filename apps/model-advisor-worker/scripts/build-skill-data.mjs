@@ -156,6 +156,10 @@ function compoundHasNumericField(value) {
 
 function normalizeStack(stack, methodIds, familyIds) {
   const id = required(stack.id, "stack.id");
+  const primaryMetric = required(stack.primary_metric, `stack.${id}.primary_metric`);
+  if (typeof primaryMetric !== "string") {
+    throw new Error(`stack.${id}.primary_metric must be a string`);
+  }
   const familyValues = required(stack.families, `stack.${id}.families`);
   if (!Array.isArray(familyValues)) {
     throw new Error(`stack.${id}.families must be an array`);
@@ -242,6 +246,7 @@ function normalizeStack(stack, methodIds, familyIds) {
   return {
     id,
     label: stack.label ?? id,
+    primaryMetric,
     families: familyValues,
     steps,
     compositionNotes,

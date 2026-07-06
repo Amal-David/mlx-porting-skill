@@ -56,15 +56,20 @@ registered steps are:
 `compose_stack_band` derives the advisory compound band. The code is the source
 of truth; this prose must stay synchronized with it.
 
-The floor stays `1.0x` until the stack is measured together and a compound
-receipt includes `measured_floor` or `floor`. Before that receipt, per-step
+Each stack declares `primary_metric`. The hypothesis floor stays `1.0x`; per-step
 floors do not raise the compound floor, even when a source reports a non-1.0
 floor.
 
-The ceiling is the product of the ceilings from steps whose method
-`improvement_band.provenance` is `source_reported` or `local_reproduced`. Steps
-without a band, steps whose provenance is `profile_required`, and steps with any
-other provenance are not multiplied into the ceiling.
+The hypothesis ceiling is the product of the ceilings from steps whose method
+`improvement_band.metric` matches the stack `primary_metric` and whose
+`improvement_band.provenance` is `source_reported` or `local_reproduced`.
+Steps without a band, steps whose provenance is `profile_required`, and steps
+with any other provenance are not multiplied into the ceiling.
+
+Bands for a different metric are never multiplied into the primary metric
+ceiling. They are returned as `other_metric_upside` and rendered as
+workload-conditional upside for that other metric. For example, a TTFT proxy
+prompt-cache ratio cannot raise a decode-throughput ceiling.
 
 Profile-required steps are still important. They are returned as
 `unmeasured_upside`, meaning they need a profile and local benchmark before they
@@ -78,9 +83,12 @@ If `compound.measured_together` is false, the derived provenance is
 `multiplicative_hypothesis` and the advisor must carry this exact flag:
 `unmeasured composition - multiplicative hypothesis, not a claim`.
 
-If `compound.measured_together` is true, the derived provenance becomes
-`local_reproduced`. That only means the stack has a local compound receipt; keep
-the receipt caveats attached and keep the floor rule above.
+The hypothesis ceiling provenance is always `multiplicative_hypothesis`, even
+when `compound.measured_together` is true. If a measured-together receipt has a
+resolvable ratio, the measured value is the headline compound result and carries
+`local_reproduced`; the hypothesis product stays secondary and flagged. Keep the
+receipt basis and caveat attached, especially when the measured value is an
+unfavorable interaction.
 
 ## Composition validity
 
@@ -144,7 +152,8 @@ registered step was skipped.
 
 Do not mark `compound.measured_together: true` from separate per-step receipts.
 Separate receipts justify candidate steps; only an end-to-end stack receipt
-promotes the compound band.
+adds a measured compound headline. It does not promote the hypothesis product to
+`local_reproduced`.
 
 Rollback requirements belong beside the evidence. If quality drifts, parity
 fails, tail latency regresses, memory exceeds budget, cache isolation breaks, or

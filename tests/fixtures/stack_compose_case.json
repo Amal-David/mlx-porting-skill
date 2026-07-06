@@ -2,6 +2,7 @@
   "stack": {
     "id": "synthetic-conflict-stack",
     "label": "Synthetic conflict stack",
+    "primary_metric": "decode-tokens-per-sec",
     "families": [
       "synthetic-family"
     ],
@@ -25,6 +26,12 @@
         "rollback": "Disable conflict B."
       },
       {
+        "method": "ttft-method",
+        "lossiness": "lossless",
+        "gate": "TTFT method gate",
+        "rollback": "Disable TTFT method."
+      },
+      {
         "method": "profile-only",
         "lossiness": "lossless",
         "gate": "Profile-only gate",
@@ -42,8 +49,22 @@
       }
     ],
     "compound": {
-      "measured_together": false,
-      "receipts": []
+      "measured_together": true,
+      "receipts": [
+        {
+          "label": "synthetic-stack-receipt",
+          "file": "synthetic-stack-receipt.json",
+          "metric": "decode-tokens-per-sec",
+          "measured_ratio": "0.9x",
+          "measured_floor": "1.0x",
+          "basis": "Synthetic measured-together receipt versus a plain baseline.",
+          "caveat": "Synthetic caveat for fixture coverage.",
+          "measured_on": {
+            "chip": "Apple M4 Pro",
+            "mlx_lm": "0.31.1"
+          }
+        }
+      ]
     }
   },
   "guidance_methods": [
@@ -51,6 +72,7 @@
       "id": "safe-method",
       "improvement_band": {
         "provenance": "source_reported",
+        "metric": "decode-tokens-per-sec",
         "range": "1.0x-1.5x"
       }
     },
@@ -58,6 +80,7 @@
       "id": "conflict-a",
       "improvement_band": {
         "provenance": "source_reported",
+        "metric": "decode-tokens-per-sec",
         "range": "1.0x-2.0x"
       }
     },
@@ -65,7 +88,16 @@
       "id": "conflict-b",
       "improvement_band": {
         "provenance": "local_reproduced",
+        "metric": "decode-tokens-per-sec",
         "range": "1.0x-5.0x"
+      }
+    },
+    {
+      "id": "ttft-method",
+      "improvement_band": {
+        "provenance": "local_reproduced",
+        "metric": "ttft-proxy",
+        "range": "1.0x-9.0x"
       }
     },
     {
@@ -73,11 +105,23 @@
     }
   ],
   "expected": {
-    "floor": "1.0x",
-    "ceiling": "1.5x",
-    "provenance": "multiplicative_hypothesis",
+    "primary_metric": "decode-tokens-per-sec",
+    "hypothesis_ceiling": {
+      "floor": "1.0x",
+      "ceiling": "1.5x",
+      "metric": "decode-tokens-per-sec",
+      "provenance": "multiplicative_hypothesis",
+      "flag": "unmeasured composition - multiplicative hypothesis, not a claim"
+    },
     "unmeasured_upside": [
       "profile-only"
+    ],
+    "other_metric_upside": [
+      {
+        "method": "ttft-method",
+        "metric": "ttft-proxy",
+        "range": "1.0x-9.0x"
+      }
     ],
     "excluded_conflicts": [
       [
@@ -105,12 +149,32 @@
         "gate": "Conflict B gate"
       },
       {
+        "method": "ttft-method",
+        "band": "1.0x-9.0x",
+        "lossiness": "lossless",
+        "gate": "TTFT method gate"
+      },
+      {
         "method": "profile-only",
         "band": null,
         "lossiness": "lossless",
         "gate": "Profile-only gate"
       }
     ],
-    "flag": "unmeasured composition - multiplicative hypothesis, not a claim"
+    "measured": {
+      "ratio": "0.9x",
+      "provenance": "local_reproduced",
+      "receipt": "synthetic-stack-receipt.json",
+      "label": "synthetic-stack-receipt",
+      "file": "synthetic-stack-receipt.json",
+      "metric": "decode-tokens-per-sec",
+      "measured_on": {
+        "chip": "Apple M4 Pro",
+        "mlx_lm": "0.31.1"
+      },
+      "basis": "Synthetic measured-together receipt versus a plain baseline.",
+      "caveat": "Synthetic caveat for fixture coverage.",
+      "floor": "1.0x"
+    }
   }
 }
