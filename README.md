@@ -27,16 +27,16 @@ This repository is deliberately **not** a single giant prompt. It has four layer
 
 The skill itself is the `mlx-model-porting/` directory. Copy or symlink that directory into the Agent Skills root used by your client. For clients that support the shared Agent Skills format, no rewrite is necessary.
 
-Repo-scoped discovery links are checked in for Claude Code and Codex-style `.agents` roots; see `adapters/README.md` for other client notes.
+Fresh checkouts include repo-scoped discovery links for Claude Code and Codex-style `.agents` roots. Use the installer presets below when you need to refresh those links or install into another client root.
 
 ```bash
-python3 mlx-model-porting/scripts/install_skill.py --dest ~/.agents/skills
+python3 mlx-model-porting/scripts/install_skill.py --client codex
 ```
 
-For a repository-scoped Codex installation:
+For an explicit user-scoped or version-specific installation:
 
 ```bash
-python3 mlx-model-porting/scripts/install_skill.py --dest .agents/skills --mode symlink
+python3 mlx-model-porting/scripts/install_skill.py --dest ~/.agents/skills --mode symlink
 ```
 
 See `adapters/README.md` for client notes. Exact discovery roots can vary by product and version, so the installer accepts an explicit destination rather than guessing silently.
@@ -48,6 +48,10 @@ python3 mlx-model-porting/scripts/inspect_model.py /path/to/model --output inspe
 python3 mlx-model-porting/scripts/make_port_plan.py inspection.json --output PORT_PLAN.md
 python3 mlx-model-porting/scripts/recommend_optimizations.py inspection.json --markdown OPTIMIZATIONS.md
 ```
+
+When a family stack applies, `OPTIMIZATIONS.md` includes a recommended stack with
+per-step bands plus a measured-together receipt or a derived ceiling clearly
+flagged as an unmeasured multiplicative hypothesis.
 
 Then ask the agent:
 
@@ -66,7 +70,7 @@ python3 mlx-model-porting/scripts/recommend_optimizations.py /tmp/inspection.jso
 Expected results for this fixture:
 
 - `inspection.json` → `recommended_family: dense-decoder-transformer`, `recommended_runbook: references/runbook-decoder-transformer.md`;
-- `OPTIMIZATIONS.md` lists `fast-sdpa` and `uniform-kv-quantization` as ready candidates and `cuda-graphs-decode-capture` under **Rejected for MLX (do not port)**.
+- `OPTIMIZATIONS.md` lists a dense-decoder recommended stack, `fast-sdpa` and `uniform-kv-quantization` as ready candidates, and `cuda-graphs-decode-capture` under **Rejected for MLX (do not port)**.
 
 This exact flow — routing, weight-key coverage, seeded-parity-bug detection, and optimization inclusion/exclusion — is guarded end to end by `tests/test_scenarios.py`.
 

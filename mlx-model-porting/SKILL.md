@@ -5,7 +5,7 @@ license: Apache-2.0
 compatibility: Execution and performance validation require an Apple Silicon Mac with a supported MLX installation. Planning and static inspection can run elsewhere. Python 3.10+ and git are recommended; network access is optional and must be explicitly enabled.
 metadata:
   author: mlx-porting-skill
-  version: "0.1.0"
+  version: "0.2.0"
   last-reviewed: "2026-06-27"
 ---
 

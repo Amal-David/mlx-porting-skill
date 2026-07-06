@@ -19,7 +19,7 @@ from _common import SkillError, dump_json, load_structured
 SCRIPT_DIR = Path(__file__).resolve().parent
 SKILL_ROOT = SCRIPT_DIR.parent
 API_VERSION = "2022-11-28"
-USER_AGENT = "mlx-model-porting-skill/0.1"
+USER_AGENT = "mlx-model-porting-skill/0.2.0"
 LINK_RE = re.compile(r'\s*<([^>]+)>;\s*rel="([^"]+)"')
 RATE_LIMIT_HEADERS = {
     "X-RateLimit-Limit": "limit",

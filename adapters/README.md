@@ -34,7 +34,7 @@ After installation, start a fresh agent session and ask:
 
 > List the loaded skill named `mlx-model-porting`, then state its version and the first three non-negotiable rules without running any model code.
 
-Expected version: `0.1.0`. The response should mention static intake, source pinning/oracle, and no optimization before parity.
+Expected version: `0.2.0`. The response should mention static intake, source pinning/oracle, and no optimization before parity.
 
 ## Adapter policy
 

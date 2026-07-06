@@ -37,7 +37,7 @@ def parse_args() -> argparse.Namespace:
 
 
 def request_json(url: str, timeout: float, token: str | None = None) -> Any:
-    headers = {"User-Agent": "mlx-model-porting-skill/0.1", "Accept": "application/vnd.github+json"}
+    headers = {"User-Agent": "mlx-model-porting-skill/0.2.0", "Accept": "application/vnd.github+json"}
     if token:
         headers["Authorization"] = f"Bearer {token}"
     req = urllib.request.Request(url, headers=headers)
@@ -46,7 +46,7 @@ def request_json(url: str, timeout: float, token: str | None = None) -> Any:
 
 
 def request_text(url: str, timeout: float) -> str:
-    req = urllib.request.Request(url, headers={"User-Agent": "mlx-model-porting-skill/0.1"})
+    req = urllib.request.Request(url, headers={"User-Agent": "mlx-model-porting-skill/0.2.0"})
     with urllib.request.urlopen(req, timeout=timeout) as response:
         return response.read().decode("utf-8", errors="replace")
 

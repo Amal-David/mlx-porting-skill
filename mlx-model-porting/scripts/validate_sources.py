@@ -114,7 +114,7 @@ def compound_has_numeric_range(value: Any) -> bool:
 
 def check_url(source: dict[str, Any], timeout: float) -> dict[str, Any]:
     url = str(source.get("url", ""))
-    headers = {"User-Agent": "mlx-model-porting-skill/0.1"}
+    headers = {"User-Agent": "mlx-model-porting-skill/0.2.0"}
     result: dict[str, Any] = {"id": source.get("id"), "url": url, "ok": False}
     try:
         request = urllib.request.Request(url, method="HEAD", headers=headers)
