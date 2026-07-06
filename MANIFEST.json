@@ -2,7 +2,7 @@
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
   "version": "0.1.0",
-  "generated_at": "2026-07-06T08:34:02.777066+00:00",
+  "generated_at": "2026-07-06T08:43:51.042242+00:00",
   "file_count": 215,
   "files": [
     {
@@ -72,43 +72,43 @@
     },
     {
       "path": "adapters/README.md",
-      "size_bytes": 2786,
-      "sha256": "fc2055cc5dcc30156ce64516c52bfb10c3dcf385e86064f28fa6c261ab031d38"
+      "size_bytes": 2962,
+      "sha256": "b938809e8931bfcb15a2e5337ecb10f7041f129adbb856014e6163f320309041"
     },
     {
       "path": "adapters/antigravity.md",
-      "size_bytes": 420,
-      "sha256": "2fe58f0584568c93542121ddea921aa8be2a6c1db2285206271e7154abee40a4"
+      "size_bytes": 468,
+      "sha256": "8e80629109fa7311a59dd00968be2f5dd3f1f5c87b0dd64c881f580aa6df20b4"
     },
     {
       "path": "adapters/claude-code.md",
-      "size_bytes": 420,
-      "sha256": "e3ffc5f5f4949a67ff9dc57969feb10802a0c2fc89e48ba36b4e6bdc43425217"
+      "size_bytes": 559,
+      "sha256": "16908d306cbe5ebd90ecd0e69483840e74b1752eb940d22f2e88119b51d0076c"
     },
     {
       "path": "adapters/codex.md",
-      "size_bytes": 466,
-      "sha256": "ce375f320d973a17e9b8a02c7e7414ec69384606848a90351ec19ceb8c3c8f27"
+      "size_bytes": 572,
+      "sha256": "ed49898bca274dc36f73331946df95fe4243224039b665d63e8b53020d181481"
     },
     {
       "path": "adapters/cursor.md",
-      "size_bytes": 415,
-      "sha256": "324bf84741fdf018604ff0551edcc1ac7e837153eb65208ab0be628c7d0432d0"
+      "size_bytes": 549,
+      "sha256": "814f181ee2cb7ea85290168292d64e63bef5e897bbdee1d9c21efd1e7e975bc3"
     },
     {
       "path": "adapters/gemini-cli.md",
-      "size_bytes": 419,
-      "sha256": "017a2a59ea1184159ed87dd6fdfb13b15d3289bcc946bd3a84066d277a8e6509"
+      "size_bytes": 553,
+      "sha256": "fa1cf4e6b68efce149ade0b03a53660f96eff489abf5ee4ff5e061b6a7082f31"
     },
     {
       "path": "adapters/github-copilot.md",
-      "size_bytes": 423,
-      "sha256": "cbd66115fc4ba2a7992d671eeaea5690c3b6746cf6fe5827b3ea111ef3216f86"
+      "size_bytes": 558,
+      "sha256": "39fcb6268982d818aa3c1a57dba85d895b52858ea25ca2dc33f8524b3d92ead6"
     },
     {
       "path": "adapters/windsurf.md",
-      "size_bytes": 417,
-      "sha256": "ea531009b578384bcc216982463912b68d631044c095de7480f4c5cb28d39268"
+      "size_bytes": 553,
+      "sha256": "d5ba1ce4cc3364f8cc8c4485be0bcdef3af6f931b2b0980b783bb74adbc341af"
     },
     {
       "path": "apps/model-advisor-worker/package-lock.json",
@@ -612,8 +612,8 @@
     },
     {
       "path": "mlx-model-porting/scripts/install_skill.py",
-      "size_bytes": 2466,
-      "sha256": "bb179d144b5b1c83e4f22f4c19bdc71f49026f117c3543ef5e57d9e52e48a004"
+      "size_bytes": 3277,
+      "sha256": "44cb5840a1fbdee97e5f4b19c877a47f3abdc9ab9713b0c980b57bfc4e6a7300"
     },
     {
       "path": "mlx-model-porting/scripts/knowledge_curator.py",

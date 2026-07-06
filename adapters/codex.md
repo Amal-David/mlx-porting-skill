@@ -5,6 +5,12 @@ Codex discovers repository-scoped skills under `.agents/skills` and user-scoped 
 Repository installation:
 
 ```bash
+python3 mlx-model-porting/scripts/install_skill.py --client codex
+```
+
+Explicit repository root:
+
+```bash
 python3 mlx-model-porting/scripts/install_skill.py --dest .agents/skills --mode symlink
 ```
 

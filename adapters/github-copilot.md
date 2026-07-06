@@ -1,6 +1,12 @@
 # github-copilot adapter
 
-Use the unchanged `mlx-model-porting/` directory. Resolve this client's current Agent Skills root, then run:
+Use the unchanged `mlx-model-porting/` directory. For the documented repository root, run:
+
+```bash
+python3 mlx-model-porting/scripts/install_skill.py --client copilot
+```
+
+For explicit control over a version-specific or user-scoped root, run:
 
 ```bash
 python3 mlx-model-porting/scripts/install_skill.py --dest PATH_TO_SKILLS_ROOT
