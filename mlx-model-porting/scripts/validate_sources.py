@@ -234,7 +234,14 @@ def validate(skill: Path, check_urls: bool, timeout: float, workers: int) -> tup
                 provenance = improvement_band.get("provenance")
                 add_error(errors, provenance not in improvement_band_tiers, f"optimization guidance method {mid} has invalid improvement_band provenance {provenance}")
                 add_error(errors, not improvement_band.get("range"), f"optimization guidance method {mid} improvement_band lacks range")
-                add_error(errors, not str(improvement_band.get("range", "")).startswith("1.0x-"), f"optimization guidance method {mid} improvement_band range must start at 1.0x")
+                receipts = improvement_band.get("receipts")
+                has_local_receipts = provenance == "local_reproduced" and isinstance(receipts, list) and bool(receipts)
+                requires_1x_floor = provenance != "local_reproduced" or not has_local_receipts
+                add_error(
+                    errors,
+                    requires_1x_floor and not str(improvement_band.get("range", "")).startswith("1.0x-"),
+                    f"optimization guidance method {mid} improvement_band range must start at 1.0x unless local_reproduced has receipts",
+                )
                 add_error(errors, not improvement_band.get("metric"), f"optimization guidance method {mid} improvement_band lacks metric")
                 add_error(errors, not improvement_band.get("basis"), f"optimization guidance method {mid} improvement_band lacks basis")
                 add_error(errors, not improvement_band.get("applies_when"), f"optimization guidance method {mid} improvement_band lacks applies_when")
@@ -243,7 +250,6 @@ def validate(skill: Path, check_urls: bool, timeout: float, workers: int) -> tup
                 if provenance == "local_reproduced":
                     measured_on = improvement_band.get("measured_on")
                     add_error(errors, not isinstance(measured_on, dict) or not measured_on, f"local_reproduced improvement_band for {mid} lacks measured_on metadata")
-                    receipts = improvement_band.get("receipts")
                     add_error(errors, not isinstance(receipts, list), f"local_reproduced improvement_band for {mid} receipts must be a list")
                     for receipt in (receipts if isinstance(receipts, list) else []):
                         raw_receipt = Path(str(receipt))

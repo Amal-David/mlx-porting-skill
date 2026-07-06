@@ -55,6 +55,20 @@ def method_sort_key(method: dict[str, Any]) -> tuple[int, str, str]:
 
 
 def select_stack(stacks: dict[str, Any], family: str) -> dict[str, Any] | None:
+    exact_stack: dict[str, Any] | None = None
+    exact_family_count: int | None = None
+    target = family.lower()
+    for stack in stacks.get("stacks", []) if isinstance(stacks, dict) else []:
+        families = stack.get("families", []) if isinstance(stack, dict) else []
+        if not isinstance(families, list):
+            continue
+        if any(str(value).lower() == target for value in families) and (
+            exact_family_count is None or len(families) < exact_family_count
+        ):
+            exact_stack = stack
+            exact_family_count = len(families)
+    if exact_stack is not None:
+        return exact_stack
     for stack in stacks.get("stacks", []) if isinstance(stacks, dict) else []:
         if isinstance(stack, dict) and applies_to_family(stack.get("families", []), family):
             return stack

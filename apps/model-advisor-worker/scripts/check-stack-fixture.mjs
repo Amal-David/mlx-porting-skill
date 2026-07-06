@@ -30,6 +30,28 @@ try {
   const fixture = JSON.parse(await readFile(fixturePath, "utf8"));
   const actual = worker.composeStackBand(fixture.stack, fixture.guidance_methods);
   assert.deepEqual(actual, fixture.expected);
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = async () => new Response(JSON.stringify({
+    id: "fixture/moe-decoder",
+    pipeline_tag: "text-generation",
+    tags: ["mixtral", "moe"],
+    config: {
+      model_type: "mixtral",
+      architectures: ["MixtralForCausalLM"],
+      num_local_experts: 4,
+      num_experts_per_tok: 2
+    },
+    siblings: []
+  }), { status: 200, headers: { "content-type": "application/json" } });
+  try {
+    const response = await worker.default.fetch(new Request("http://localhost/api/advice?id=fixture/moe-decoder"), {});
+    assert.equal(response.status, 200);
+    const payload = await response.json();
+    assert.equal(payload.advisor.family.id, "moe-decoder-transformer");
+    assert.equal(payload.advisor.recommendedStack.id, "moe-serving");
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
   console.log("ok stack fixture parity passed");
 } finally {
   await rm(tempDir, { recursive: true, force: true });

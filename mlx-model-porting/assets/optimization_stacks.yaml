@@ -4,6 +4,7 @@
   "stack_policy": {
     "compound_bands": "Compound improvement bands are derived at advisory time, never stored in this registry.",
     "floor_policy": "Derived compound floors stay 1.0x because every method ceiling is workload-conditional.",
+    "selection_policy": "Select stacks by exact family id first; when more than one exact match exists, choose the stack with the fewest families before falling back to the registry-order fuzzy match.",
     "unmeasured_composition": "Unmeasured compositions are multiplicative_hypothesis only and must carry the unmeasured-composition flag.",
     "default_pair_validity": "Composition pairs not listed in a stack's composition_notes default to unknown."
   },

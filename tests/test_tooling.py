@@ -166,6 +166,16 @@ class ToolingTests(unittest.TestCase):
         self.assertEqual(report["optimization_stacks"], 4)
         self.assertTrue(report["recommendation_taxonomy"])
 
+    def test_adapter_verification_versions_match_version_file(self) -> None:
+        version = (ROOT / "VERSION").read_text().strip()
+        version_pattern = re.compile(r"\bversion:? `([^`]+)`", re.IGNORECASE)
+
+        for path in sorted((ROOT / "adapters").glob("*.md")):
+            with self.subTest(adapter=path.name):
+                versions = version_pattern.findall(path.read_text())
+                self.assertTrue(versions, f"{path} has no verification version")
+                self.assertEqual(set(versions), {version})
+
     def test_optimization_stacks_schema_is_machine_readable(self) -> None:
         stacks_path = SKILL / "assets" / "optimization_stacks.yaml"
         stacks = load_structured(stacks_path)
@@ -213,6 +223,33 @@ class ToolingTests(unittest.TestCase):
 
                 result = run_script("validate_sources.py", tmp_skill, expected=1)
                 self.assertIn(expected, result.stdout)
+
+    def test_improvement_band_floor_policy_allows_local_receipted_floor_only(self) -> None:
+        cases = (
+            ("local-reproduced-with-receipts", "local_reproduced", "keep", 0),
+            ("source-reported", "source_reported", "remove", 1),
+            ("local-reproduced-without-receipts", "local_reproduced", "empty", 1),
+        )
+        for name, provenance, receipt_mode, expected in cases:
+            with self.subTest(case=name), tempfile.TemporaryDirectory() as tmp:
+                tmp_skill = Path(tmp) / "skill"
+                shutil.copytree(SKILL / "assets", tmp_skill / "assets")
+                guidance_path = tmp_skill / "assets" / "optimization_guidance.yaml"
+                guidance = json.loads(guidance_path.read_text())
+                method = next(item for item in guidance["methods"] if item["id"] == "native-low-bit-weight-quantization")
+                band = method["improvement_band"]
+                band["provenance"] = provenance
+                band["range"] = "1.2x-2.4x"
+                if receipt_mode == "remove":
+                    band.pop("receipts", None)
+                    band.pop("measured_on", None)
+                elif receipt_mode == "empty":
+                    band["receipts"] = []
+                guidance_path.write_text(json.dumps(guidance, indent=2) + "\n")
+
+                result = run_script("validate_sources.py", tmp_skill, expected=expected)
+                if expected:
+                    self.assertIn("improvement_band range must start at 1.0x unless local_reproduced has receipts", result.stdout)
 
     def test_model_outcome_registry_covers_top_snapshot_without_false_decoder_routes(self) -> None:
         sources = {source["id"] for source in json.loads((SKILL / "assets" / "sources.yaml").read_text())["sources"]}
@@ -516,6 +553,17 @@ class ToolingTests(unittest.TestCase):
             self.assertIn("Workload-conditional upside (different metric): `prompt-prefix-cache` `ttft-proxy` `1.0x-23.8x`", text)
             self.assertIn("Ready candidates", text)
             self.assertIn("Research experiments", text)
+
+    def test_optimization_recommender_selects_specific_exact_stack_for_moe(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_path = Path(tmp)
+            inspection = tmp_path / "inspection.json"
+            output = tmp_path / "recommendations.json"
+            run_script("inspect_model.py", FIXTURES / "models" / "moe", "--output", inspection)
+            run_script("recommend_optimizations.py", inspection, "--output", output, "--limit", 5)
+            report = json.loads(output.read_text())
+            self.assertEqual(report["family"], "moe-decoder-transformer")
+            self.assertEqual(report["recommended_stack"]["id"], "moe-serving")
 
     def test_compose_stack_band_matches_shared_fixture_and_excludes_conflicts(self) -> None:
         case = load_structured(FIXTURES / "stack_compose_case.json")

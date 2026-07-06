@@ -685,7 +685,14 @@ function buildAdvisor(model: HuggingFaceModel) {
 }
 
 function selectRecommendedStack(familyId: string): RecommendedStack | null {
-  const stack = ADVISOR_DATA.stacks.find((item) => appliesToFamily(item.families, familyId));
+  const target = familyId.toLowerCase();
+  let stack = null as (typeof ADVISOR_DATA.stacks)[number] | null;
+  for (const item of ADVISOR_DATA.stacks) {
+    if (item.families.some((family) => family.toLowerCase() === target) && (!stack || item.families.length < stack.families.length)) {
+      stack = item;
+    }
+  }
+  stack ??= ADVISOR_DATA.stacks.find((item) => appliesToFamily(item.families, familyId)) ?? null;
   if (!stack) {
     return null;
   }

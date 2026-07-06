@@ -115,8 +115,9 @@ function normalizeImprovementBand(value, methodId, provenanceValues) {
     throw new Error(`method.${methodId}.improvement_band.provenance has unknown value '${provenance}'`);
   }
   const { range, floorText } = parseBandRange(value.range, `method.${methodId}.improvement_band.range`);
-  if (provenance !== "local_reproduced" && floorText !== "1.0") {
-    throw new Error(`method.${methodId}.improvement_band.range must start at 1.0x for ${provenance}`);
+  const hasLocalReceipts = provenance === "local_reproduced" && Array.isArray(value.receipts) && value.receipts.length > 0;
+  if ((provenance !== "local_reproduced" || !hasLocalReceipts) && floorText !== "1.0") {
+    throw new Error(`method.${methodId}.improvement_band.range must start at 1.0x unless local_reproduced has receipts`);
   }
   required(value.metric, `method.${methodId}.improvement_band.metric`);
   required(value.basis, `method.${methodId}.improvement_band.basis`);
