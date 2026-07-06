@@ -2,8 +2,8 @@
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
   "version": "0.1.0",
-  "generated_at": "2026-06-29T18:51:26.752331+00:00",
-  "file_count": 214,
+  "generated_at": "2026-07-06T08:02:01.661413+00:00",
+  "file_count": 215,
   "files": [
     {
       "path": ".github/workflows/daily-research.yml",
@@ -157,8 +157,8 @@
     },
     {
       "path": "mlx-model-porting/SKILL.md",
-      "size_bytes": 15116,
-      "sha256": "83798f1b32389668152a1736848a08fb0790ee5fe7ecdeabdf5812c1cfb0915c"
+      "size_bytes": 15455,
+      "sha256": "a9c9f499276664104ea38f7f4d7b8f0887748e93b05f6e8b40a8c399451664c3"
     },
     {
       "path": "mlx-model-porting/assets/BENCHMARK_REPORT.md",
@@ -279,6 +279,11 @@
       "path": "mlx-model-porting/references/failure-atlas.md",
       "size_bytes": 2286,
       "sha256": "09c43ee893a9343364cc7383ef0949e459834e1d65c6c5fdeef32a547a05d0d8"
+    },
+    {
+      "path": "mlx-model-porting/references/hypothesis-led-learning.md",
+      "size_bytes": 5614,
+      "sha256": "78efe9acc638254fd52cabab6ef5d1f85b911f2238f446e2dd1dbcffdc8f961c"
     },
     {
       "path": "mlx-model-porting/references/intake-and-routing.md",
@@ -622,8 +627,8 @@
     },
     {
       "path": "mlx-model-porting/scripts/manifest.py",
-      "size_bytes": 4139,
-      "sha256": "8d86d9006f09ec07cc502febe55a4ce80d22161757dd145e325a0b9f50c2657a"
+      "size_bytes": 4199,
+      "sha256": "1d48fea0541616b0d1fe41db56e785f165913ab6127e866978fe766c75efd826"
     },
     {
       "path": "mlx-model-porting/scripts/nightly_knowledge_curator.py",
@@ -662,8 +667,8 @@
     },
     {
       "path": "tasks/lessons.md",
-      "size_bytes": 1429,
-      "sha256": "aa8f9a148d9da2c02239a598d103c16722bc330de7332fef74e6a405efa17bc7"
+      "size_bytes": 2221,
+      "sha256": "d72ef7287822e46df218b9a40e55a746583316dfd1c0936cb7cf73f3fadb8493"
     },
     {
       "path": "tests/README.md",

@@ -23,8 +23,9 @@ ARTIFACT = "mlx-porting-skill"
 EXCLUDE_DIRS = {
     ".git", ".superplan", ".agents", ".amazonq", ".claude", ".codex",
     ".cursor", ".gemini", ".opencode", "__pycache__", ".pytest_cache", ".ruff_cache",
+    "node_modules", ".wrangler", "dist-pages",
 }
-EXCLUDE_NAMES = {".DS_Store", "MANIFEST.json"}
+EXCLUDE_NAMES = {".DS_Store", ".dev.vars", "MANIFEST.json"}
 EXCLUDE_SUFFIXES = {".pyc", ".pyo", ".tmp", ".log"}
 
 
