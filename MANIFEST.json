@@ -2,8 +2,8 @@
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
   "version": "0.2.0",
-  "generated_at": "2026-07-06T13:12:03.736946+00:00",
-  "file_count": 236,
+  "generated_at": "2026-07-06T22:08:02.147363+00:00",
+  "file_count": 266,
   "files": [
     {
       "path": ".github/workflows/daily-research.yml",
@@ -271,14 +271,19 @@
       "sha256": "dc0d5b70c5e33472226de96cfc8120273ee3303405034a592b1b387ddbd6e04a"
     },
     {
+      "path": "mlx-model-porting/assets/contributor-refresh.json",
+      "size_bytes": 11659,
+      "sha256": "5700a7d8320dd8dc427b44d572a25a832e798016aa65855d08e2afb42e01b60f"
+    },
+    {
       "path": "mlx-model-porting/assets/contributor_learnings.json",
       "size_bytes": 30233,
       "sha256": "8a75f86fada1dc11d8fae933b5c3caf6e0061f1e485bf6ec3a3170d576dccb47"
     },
     {
       "path": "mlx-model-porting/assets/knowledge_graph.json",
-      "size_bytes": 326485,
-      "sha256": "b9a1e735895be1a9d4a17b064958b4adb6ca352fb90d4bfcec604b69e0b4d069"
+      "size_bytes": 302835,
+      "sha256": "b17d0c2522c7610b751644cbb85d65198c7a72c0c14ef03620eac442453e3c57"
     },
     {
       "path": "mlx-model-porting/assets/model_outcomes.json",
@@ -327,8 +332,8 @@
     },
     {
       "path": "mlx-model-porting/assets/update-candidates.json",
-      "size_bytes": 37944,
-      "sha256": "494bfa4fc82ac29e7eda4f82c68ce6edfe6b0a60c39a412d7022f816f2fa296e"
+      "size_bytes": 38098,
+      "sha256": "aa5965e9a91cf88218be1dfc0935d3cc7930caa17436849ffe6f97e4529762fc"
     },
     {
       "path": "mlx-model-porting/assets/update-watchlist.json",
@@ -666,6 +671,151 @@
       "sha256": "57cf34b5705bbb7de8bae982f1084a70f68444614831ef7f1a669ec9bf5ae81b"
     },
     {
+      "path": "mlx-model-porting/research-runs/2026-07-06-nightly-knowledge-curator/knowledge-delta.json",
+      "size_bytes": 7928,
+      "sha256": "ef5039faab4ea05360cf344598d826f821d31f07b7244a405725ce967172244a"
+    },
+    {
+      "path": "mlx-model-porting/research-runs/2026-07-06-nightly-knowledge-curator/knowledge-delta.md",
+      "size_bytes": 3306,
+      "sha256": "3e0eb34bbf7cbd688b04ec36fa6138f941d1f3e4a667fa9ed6e0591751f3dfdc"
+    },
+    {
+      "path": "mlx-model-porting/research-runs/2026-07-06-nightly-knowledge-curator/nightly-run.json",
+      "size_bytes": 7049,
+      "sha256": "d3e61b8bf73f89c562202138bdddc8fe91dc95a56eeca5725ca8fd0e5c4e3e1b"
+    },
+    {
+      "path": "mlx-model-porting/research-runs/2026-07-06-nightly-knowledge-curator/nightly-run.md",
+      "size_bytes": 3776,
+      "sha256": "f870d41c79c0b6f64e52ea8db09f0b1e5e7b7b6cd23c2f1dc09d4e3271b1d5b6"
+    },
+    {
+      "path": "mlx-model-porting/research-runs/2026-07-06-nightly-knowledge-curator/research-loop-config.json",
+      "size_bytes": 14745,
+      "sha256": "d26d7b3c90ac5632c07caa8deb06d04a3a4a75eaf91e0bea070aa71a1ba31d50"
+    },
+    {
+      "path": "mlx-model-porting/research-runs/2026-07-06-nightly-knowledge-curator/research-loop/agents/coverage-skeptic.assignment.json",
+      "size_bytes": 19855,
+      "sha256": "da1113f6caba31dc6d797ab24d6e0fa18cc2e1525c84b761df2f8b2210c64d5f"
+    },
+    {
+      "path": "mlx-model-porting/research-runs/2026-07-06-nightly-knowledge-curator/research-loop/agents/coverage-skeptic.prompt.md",
+      "size_bytes": 6799,
+      "sha256": "5524e714665492caebdeb4bfb3655feec5162c25eae806841b17820f23ea0fb9"
+    },
+    {
+      "path": "mlx-model-porting/research-runs/2026-07-06-nightly-knowledge-curator/research-loop/agents/huggingface-ecosystem-sampler.assignment.json",
+      "size_bytes": 6628,
+      "sha256": "53ff687c03998f666ff1211800ed7969e9760dd286ae3bfbc3572871506204ec"
+    },
+    {
+      "path": "mlx-model-porting/research-runs/2026-07-06-nightly-knowledge-curator/research-loop/agents/huggingface-ecosystem-sampler.prompt.md",
+      "size_bytes": 1929,
+      "sha256": "6b20ef63b1e14cfe839903f9335e5a54e66e239f4b25dc7f2fbbf9672db1d665"
+    },
+    {
+      "path": "mlx-model-porting/research-runs/2026-07-06-nightly-knowledge-curator/research-loop/agents/official-docs-cartographer.assignment.json",
+      "size_bytes": 8821,
+      "sha256": "9d213a1f8780ac79b2f9c881bd05e2453848f58c7fe40d198c920d7bf5b15f61"
+    },
+    {
+      "path": "mlx-model-porting/research-runs/2026-07-06-nightly-knowledge-curator/research-loop/agents/official-docs-cartographer.prompt.md",
+      "size_bytes": 2700,
+      "sha256": "3de804405f061c539b95ffff689519c650edd0d2d48915b4978d090effe65da5"
+    },
+    {
+      "path": "mlx-model-porting/research-runs/2026-07-06-nightly-knowledge-curator/research-loop/agents/package-registry-scout.assignment.json",
+      "size_bytes": 8490,
+      "sha256": "ddd8ec5f459193d3fbbe9f80ffa28778ceae6d5d571f5e7a84880487ec09332b"
+    },
+    {
+      "path": "mlx-model-porting/research-runs/2026-07-06-nightly-knowledge-curator/research-loop/agents/package-registry-scout.prompt.md",
+      "size_bytes": 2556,
+      "sha256": "9d5103d2d7d7fbdec588416745d7be369236ecb863f99827fa38796ceaae9bc2"
+    },
+    {
+      "path": "mlx-model-porting/research-runs/2026-07-06-nightly-knowledge-curator/research-loop/agents/paper-architecture-scout.assignment.json",
+      "size_bytes": 9700,
+      "sha256": "fb005f5c36e63668418c40b0900667fedd476e1a2cc8b603d2263358edf6e225"
+    },
+    {
+      "path": "mlx-model-porting/research-runs/2026-07-06-nightly-knowledge-curator/research-loop/agents/paper-architecture-scout.prompt.md",
+      "size_bytes": 3091,
+      "sha256": "2d740c09501488b2b96a06e0d6963f0bd9ab467e020c98713b4831324108a9df"
+    },
+    {
+      "path": "mlx-model-porting/research-runs/2026-07-06-nightly-knowledge-curator/research-loop/agents/practitioner-blog-miner.assignment.json",
+      "size_bytes": 7493,
+      "sha256": "457bf9a806a2066788b8531fbe5a593b9dc121ce06866c98f844f3d68fb9b522"
+    },
+    {
+      "path": "mlx-model-porting/research-runs/2026-07-06-nightly-knowledge-curator/research-loop/agents/practitioner-blog-miner.prompt.md",
+      "size_bytes": 2276,
+      "sha256": "4e9f7a6e4d78a67b980508bbc336d18a4a47b146f28a3ee223ed753daad586dd"
+    },
+    {
+      "path": "mlx-model-porting/research-runs/2026-07-06-nightly-knowledge-curator/research-loop/assignments.json",
+      "size_bytes": 88644,
+      "sha256": "c833f8a8df596425b4484244ebb0cb4265a2a01c52648c6cb0c22652020c9d86"
+    },
+    {
+      "path": "mlx-model-porting/research-runs/2026-07-06-nightly-knowledge-curator/research-loop/blogs/coverage-skeptic.md",
+      "size_bytes": 5951,
+      "sha256": "56f3b28e6e7bd841f5b72766589c898a9ca4e40c070f93336581d94ff8aabe2a"
+    },
+    {
+      "path": "mlx-model-porting/research-runs/2026-07-06-nightly-knowledge-curator/research-loop/blogs/huggingface-ecosystem-sampler.md",
+      "size_bytes": 1301,
+      "sha256": "40430825085e7062837bb70623627bbe6d09c8f871293f18a5d1968c48740d3f"
+    },
+    {
+      "path": "mlx-model-porting/research-runs/2026-07-06-nightly-knowledge-curator/research-loop/blogs/official-docs-cartographer.md",
+      "size_bytes": 2067,
+      "sha256": "ab52538b42b31d9151a16eab064aaa5f87faeee32e751a02914b88250d5d5d7c"
+    },
+    {
+      "path": "mlx-model-porting/research-runs/2026-07-06-nightly-knowledge-curator/research-loop/blogs/package-registry-scout.md",
+      "size_bytes": 1867,
+      "sha256": "c34fdd807a98e5837239d61ac490066dc7ca492780b461a5775d230989f322ed"
+    },
+    {
+      "path": "mlx-model-porting/research-runs/2026-07-06-nightly-knowledge-curator/research-loop/blogs/paper-architecture-scout.md",
+      "size_bytes": 2415,
+      "sha256": "f2208c68be87c7eb923b2462928dde7334c626a68bc970eb4115ec1c94f30f57"
+    },
+    {
+      "path": "mlx-model-porting/research-runs/2026-07-06-nightly-knowledge-curator/research-loop/blogs/practitioner-blog-miner.md",
+      "size_bytes": 1617,
+      "sha256": "1ebb97b40e1c20216ac5990e6061a1ac22cf15f4bb79f848d9029ebc285a3c2e"
+    },
+    {
+      "path": "mlx-model-porting/research-runs/2026-07-06-nightly-knowledge-curator/research-loop/campaign.json",
+      "size_bytes": 12571,
+      "sha256": "bfb3d3172b3c810c60ae4827fe8775b2e1935ff73e5c7c8f4ccddcba237a2413"
+    },
+    {
+      "path": "mlx-model-porting/research-runs/2026-07-06-nightly-knowledge-curator/research-loop/campaign.md",
+      "size_bytes": 2564,
+      "sha256": "36e8f540499ef286701fdd90c6bcb239bbc960439d72cf398ec682c0e42a6da1"
+    },
+    {
+      "path": "mlx-model-porting/research-runs/2026-07-06-nightly-knowledge-curator/research-loop/subagents.json",
+      "size_bytes": 10100,
+      "sha256": "517f80754505c2fac820fbad2c6ecda5b8fd291144f406c09437bd12a081b610"
+    },
+    {
+      "path": "mlx-model-porting/research-runs/2026-07-06-nightly-knowledge-curator/research-loop/synthesis.json",
+      "size_bytes": 61743,
+      "sha256": "8c29058431dfe632980dbedf92fb420633ee8936719519bef91c185cd3cf5ac2"
+    },
+    {
+      "path": "mlx-model-porting/research-runs/2026-07-06-nightly-knowledge-curator/research-loop/synthesis.md",
+      "size_bytes": 4733,
+      "sha256": "9c2bb79073978ce6e43e8c2b6075f2d1a7cbfa62633a21ddb715f3cf3accb109"
+    },
+    {
       "path": "mlx-model-porting/scripts/_common.py",
       "size_bytes": 11295,
       "sha256": "0645033d2e618ea2d9a290d60ea0e3f825a4cd78076c0e2eb674dce0af5910b0"
@@ -727,8 +877,8 @@
     },
     {
       "path": "mlx-model-porting/scripts/nightly_knowledge_curator.py",
-      "size_bytes": 8396,
-      "sha256": "b505207a2948eb54c80d6614fb13a90dff44f37335c2d646b828e653ef3c4e34"
+      "size_bytes": 11501,
+      "sha256": "fea27eade5deb39ed84e0891fb29d89a946bfb51f005f989dd57ceb9cfa3dd67"
     },
     {
       "path": "mlx-model-porting/scripts/recommend_optimizations.py",
@@ -1182,8 +1332,8 @@
     },
     {
       "path": "tests/test_tooling.py",
-      "size_bytes": 158383,
-      "sha256": "9eee18e210b0e79e0578ef1ccd034ef949e10a00cbec3893d1059b0cfe854362"
+      "size_bytes": 159430,
+      "sha256": "874b610838a9945e8178de7c3cdcf050edc3be46ef5021abf702ddd403ecd876"
     }
   ]
 }

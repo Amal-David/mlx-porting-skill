@@ -1297,11 +1297,25 @@ class ToolingTests(unittest.TestCase):
                 "--contributor-output", contributor_output,
                 "--graph-output", graph_output,
                 "--previous-graph", graph_output,
-                "--agent-count", "2",
+                "--agent-count", "6",
             )
             run_dir = output_root / "fixture-nightly"
             receipt = json.loads((run_dir / "nightly-run.json").read_text())
             campaign = json.loads((run_dir / "research-loop" / "campaign.json").read_text())
+            assignments = json.loads((run_dir / "research-loop" / "assignments.json").read_text())
+            loop_config_path = Path(receipt["research_loop_config"])
+            loop_config = json.loads(loop_config_path.read_text())
+            papers_lane = next(lane for lane in loop_config["source_lanes"] if lane["id"] == "papers")
+            paper_titles = {target["title"] for target in papers_lane["sample_targets"]}
+            paper_assignment = next(
+                assignment for assignment in assignments["assignments"] if assignment["persona_id"] == "paper-architecture-scout"
+            )
+            assignment_titles = {
+                target["title"]
+                for lane in paper_assignment["sample_plan"]
+                if lane["source_lane"] == "papers"
+                for target in lane["targets"]
+            }
 
             self.assertTrue(receipt["review_only"])
             self.assertEqual(len(receipt["commands"]), 4)
@@ -1309,9 +1323,12 @@ class ToolingTests(unittest.TestCase):
             self.assertTrue(contributor_output.exists())
             self.assertTrue(graph_output.exists())
             self.assertTrue((run_dir / "knowledge-delta.json").exists())
+            self.assertTrue(loop_config_path.exists())
+            self.assertIn("Fixture MLX Inference Paper", paper_titles)
+            self.assertIn("Fixture MLX Inference Paper", assignment_titles)
             self.assertTrue((run_dir / "research-loop" / "subagents.json").exists())
             self.assertEqual(campaign["wave_count"], 1)
-            self.assertEqual(campaign["waves"][0]["agent_count"], 2)
+            self.assertEqual(campaign["waves"][0]["agent_count"], 6)
 
     def test_contributor_collector_follows_links_caps_and_redacts_anonymous(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

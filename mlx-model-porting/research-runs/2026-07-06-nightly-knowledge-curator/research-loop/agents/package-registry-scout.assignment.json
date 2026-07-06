@@ -1,0 +1,197 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-07-06-nightly-knowledge-curator-research-loop",
+  "objective": "Nightly MLX knowledge curator: top contributors, papers, blogs, package releases, model outcomes, speedup ranges, and app/CLI skill deltas",
+  "iteration": 1,
+  "iteration_count": 1,
+  "review_only": true,
+  "persona_id": "package-registry-scout",
+  "title": "Package Registry Scout",
+  "mission": "Track packages and release metadata that change install, conversion, runtime, or optional dependency guidance.",
+  "source_lanes": [
+    "packages",
+    "repositories"
+  ],
+  "sample_plan": [
+    {
+      "source_lane": "packages",
+      "lane_title": "Package registries and release metadata",
+      "evidence_role": "install surfaces, version drift, dependency boundaries, and release cadence",
+      "targets": [
+        {
+          "title": "PyPI mlx metadata",
+          "kind": "package-metadata",
+          "locator": "https://pypi.org/pypi/mlx/json",
+          "sampling_goal": "Capture current release metadata before changing base MLX guidance."
+        },
+        {
+          "title": "PyPI mlx-lm metadata",
+          "kind": "package-metadata",
+          "locator": "https://pypi.org/pypi/mlx-lm/json",
+          "sampling_goal": "Check CLI and converter package drift for language-model ports."
+        },
+        {
+          "title": "PyPI mlx-vlm metadata",
+          "kind": "package-metadata",
+          "locator": "https://pypi.org/pypi/mlx-vlm/json",
+          "sampling_goal": "Check multimodal package drift and optional dependency surfaces."
+        },
+        {
+          "title": "PyPI mlx-audio metadata",
+          "kind": "package-metadata",
+          "locator": "https://pypi.org/pypi/mlx-audio/json",
+          "sampling_goal": "Check audio model package drift, quantization modes, and CLI surfaces."
+        }
+      ]
+    },
+    {
+      "source_lane": "repositories",
+      "lane_title": "Repository source evidence",
+      "evidence_role": "implementation proof, tests, conversion scripts, and benchmark harnesses",
+      "targets": [
+        {
+          "title": "ml-explore/mlx",
+          "kind": "repository",
+          "locator": "https://github.com/ml-explore/mlx",
+          "sampling_goal": "Prefer official implementation and tests for supported MLX behavior."
+        },
+        {
+          "title": "ml-explore/mlx-lm",
+          "kind": "repository",
+          "locator": "https://github.com/ml-explore/mlx-lm",
+          "sampling_goal": "Inspect official language-model conversion and serving patterns."
+        },
+        {
+          "title": "ml-explore/mlx-examples",
+          "kind": "repository",
+          "locator": "https://github.com/ml-explore/mlx-examples",
+          "sampling_goal": "Inspect maintained examples for architecture and validation patterns."
+        }
+      ]
+    }
+  ],
+  "planning": {
+    "persona_id": "package-registry-scout",
+    "title": "Package Registry Scout",
+    "rank": 3,
+    "config_order": 4,
+    "score": 10,
+    "source_lanes": [
+      "packages",
+      "repositories"
+    ],
+    "matched_objective_terms": [
+      "cli",
+      "model",
+      "package"
+    ],
+    "matched_gap_terms": [
+      "multimodal",
+      "quantization"
+    ],
+    "reasons": [
+      "Matched gap terms: multimodal, quantization.",
+      "Matched objective terms: cli, model, package.",
+      "Covers source lanes: packages, repositories."
+    ]
+  },
+  "policy": {
+    "auto_modify_recommendations": false,
+    "execute_remote_model_code": false
+  },
+  "prompt": "You are the Package Registry Scout for MLX model-porting research loop 2026-07-06-nightly-knowledge-curator-research-loop. Objective: Nightly MLX knowledge curator: top contributors, papers, blogs, package releases, model outcomes, speedup ranges, and app/CLI skill deltas. Source lanes: packages, repositories. Return source-backed findings only. Do not execute remote model code. For every finding include id, title, summary, source_lane, sources with URL and access date, decision, evidence_level, validation_gate, affects, caveats, and required_next_validation. Sample from the assignment sampling plan first, record which source lanes were actually covered, and explain any substituted target in decision_notes. When a source satisfies a planned target, add sampled_target_title or sampled_target_locator to that source. Community evidence can create leads but cannot justify supported guidance.\n\nSampling plan:\n- packages: Package registries and release metadata\n  Evidence role: install surfaces, version drift, dependency boundaries, and release cadence\n  - PyPI mlx metadata [package-metadata]: https://pypi.org/pypi/mlx/json - Capture current release metadata before changing base MLX guidance.\n  - PyPI mlx-lm metadata [package-metadata]: https://pypi.org/pypi/mlx-lm/json - Check CLI and converter package drift for language-model ports.\n  - PyPI mlx-vlm metadata [package-metadata]: https://pypi.org/pypi/mlx-vlm/json - Check multimodal package drift and optional dependency surfaces.\n  - PyPI mlx-audio metadata [package-metadata]: https://pypi.org/pypi/mlx-audio/json - Check audio model package drift, quantization modes, and CLI surfaces.\n- repositories: Repository source evidence\n  Evidence role: implementation proof, tests, conversion scripts, and benchmark harnesses\n  - ml-explore/mlx [repository]: https://github.com/ml-explore/mlx - Prefer official implementation and tests for supported MLX behavior.\n  - ml-explore/mlx-lm [repository]: https://github.com/ml-explore/mlx-lm - Inspect official language-model conversion and serving patterns.\n  - ml-explore/mlx-examples [repository]: https://github.com/ml-explore/mlx-examples - Inspect maintained examples for architecture and validation patterns.",
+  "paths": {
+    "assignment": "agents/package-registry-scout.assignment.json",
+    "prompt": "agents/package-registry-scout.prompt.md",
+    "result": "agents/package-registry-scout.result.json",
+    "blog": "blogs/package-registry-scout.md"
+  },
+  "execution": {
+    "kind": "offline-scaffold",
+    "state": "scaffolded_not_run",
+    "executor": null,
+    "log_path": null,
+    "result_path": null,
+    "blog_path": "blogs/package-registry-scout.md",
+    "blog_source": "generated"
+  },
+  "blog": {
+    "persona_id": "package-registry-scout",
+    "path": "blogs/package-registry-scout.md",
+    "source": "generated",
+    "generated_blog_path": "blogs/package-registry-scout.md",
+    "preserved_executor_blog": false,
+    "required_sections": [
+      "Assignment",
+      "Planned sampling",
+      "Sources sampled",
+      "Sampling coverage",
+      "Candidate findings",
+      "Decision notes",
+      "Open validation"
+    ],
+    "present_sections": [
+      "Assignment",
+      "Planned sampling",
+      "Sources sampled",
+      "Sampling coverage",
+      "Candidate findings",
+      "Decision notes",
+      "Open validation"
+    ],
+    "missing_sections": [],
+    "contract_status": "pass"
+  },
+  "result_contract": {
+    "path": "agents/package-registry-scout.result.json",
+    "format": "json",
+    "required_top_level_fields": [
+      "persona_id",
+      "decision_notes",
+      "findings"
+    ],
+    "finding_required_fields": [
+      "id",
+      "title",
+      "summary",
+      "source_lane",
+      "sources",
+      "decision",
+      "evidence_level",
+      "validation_gate",
+      "affects",
+      "caveats",
+      "required_next_validation"
+    ],
+    "source_optional_fields": [
+      "sampled_target_title",
+      "sampled_target_locator"
+    ]
+  },
+  "blog_contract": {
+    "path": "blogs/package-registry-scout.md",
+    "sections": [
+      "Assignment",
+      "Planned sampling",
+      "Sources sampled",
+      "Sampling coverage",
+      "Candidate findings",
+      "Decision notes",
+      "Open validation"
+    ]
+  },
+  "constraints": [
+    "Review-only: do not modify recommendation assets.",
+    "Do not execute remote model code.",
+    "Sample planned targets first and explain substitutions.",
+    "Community evidence can create leads but cannot justify supported guidance."
+  ],
+  "environment": {
+    "MLX_RESEARCH_PERSONA_ID": "package-registry-scout",
+    "MLX_RESEARCH_ASSIGNMENT_PATH": "agents/package-registry-scout.assignment.json",
+    "MLX_RESEARCH_PROMPT_PATH": "agents/package-registry-scout.prompt.md",
+    "MLX_RESEARCH_RESULT_PATH": "agents/package-registry-scout.result.json",
+    "MLX_RESEARCH_BLOG_PATH": "blogs/package-registry-scout.md",
+    "MLX_RESEARCH_REVIEW_ONLY": "1"
+  }
+}

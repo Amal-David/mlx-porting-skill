@@ -89,7 +89,78 @@ def read_gap_hints(delta_path: Path) -> list[str]:
     return [str(item) for item in hints[:8]] if isinstance(hints, list) else []
 
 
-def research_loop_command(run_id: str, run_dir: Path, gap_hints: list[str], agent_count: int) -> list[str]:
+def unread_source_targets(delta_path: Path) -> dict[str, list[dict[str, str]]]:
+    delta = load_structured(delta_path)
+    kind_to_lane = {
+        "paper": "papers",
+        "repository": "repositories",
+        "package": "packages",
+        "hugging_face": "hugging_face",
+        "model": "hugging_face",
+        "blog": "technical_blogs",
+    }
+    targets_by_lane: dict[str, list[dict[str, str]]] = {}
+    seen: set[tuple[str, str]] = set()
+    for source in delta.get("new_unread_sources", []):
+        if not isinstance(source, dict):
+            continue
+        lane_id = kind_to_lane.get(str(source.get("kind", "")))
+        label = str(source.get("label") or source.get("id") or "").strip()
+        locator = str(source.get("locator") or "").strip()
+        if not lane_id or not label or not locator:
+            continue
+        key = (lane_id, locator)
+        if key in seen:
+            continue
+        seen.add(key)
+        targets_by_lane.setdefault(lane_id, []).append({
+            "title": label,
+            "kind": f"nightly-{source.get('kind', 'source')}",
+            "url": locator,
+            "sampling_goal": (
+                "Review this new unread source from the nightly knowledge delta; "
+                "keep any resulting approach experimental until provenance, validation gate, "
+                "rollback condition, and tests exist."
+            ),
+        })
+    return targets_by_lane
+
+
+def write_research_loop_config(delta_path: Path, run_dir: Path) -> Path | None:
+    targets_by_lane = unread_source_targets(delta_path)
+    if not targets_by_lane:
+        return None
+    config = load_structured(SKILL_ROOT / "assets" / "research_loop_config.json")
+    if not isinstance(config, dict) or not isinstance(config.get("source_lanes"), list):
+        raise SkillError("research loop config must contain source_lanes")
+    config = json.loads(json.dumps(config))
+    for lane in config["source_lanes"]:
+        if not isinstance(lane, dict):
+            continue
+        lane_id = str(lane.get("id", ""))
+        extra_targets = targets_by_lane.get(lane_id, [])
+        if not extra_targets:
+            continue
+        existing_locators = {
+            str(target.get("url") or target.get("query") or target.get("path") or target.get("target") or "")
+            for target in lane.get("sample_targets", [])
+            if isinstance(target, dict)
+        }
+        additions = [target for target in extra_targets if target["url"] not in existing_locators]
+        if additions:
+            lane["sample_targets"] = additions + list(lane.get("sample_targets", []))
+    output = run_dir / "research-loop-config.json"
+    dump_json(config, output)
+    return output
+
+
+def research_loop_command(
+    run_id: str,
+    run_dir: Path,
+    gap_hints: list[str],
+    agent_count: int,
+    config_path: Path | None = None,
+) -> list[str]:
     output_dir = run_dir / "research-loop"
     command = [
         sys.executable,
@@ -105,6 +176,8 @@ def research_loop_command(run_id: str, run_dir: Path, gap_hints: list[str], agen
         "--require-source-lane", "repo_local_audit",
         "--output-dir", str(output_dir),
     ]
+    if config_path is not None:
+        command.extend(["--config", str(config_path)])
     for hint in gap_hints:
         command.extend(["--gap-hint", hint])
     return command
@@ -119,6 +192,7 @@ def build_markdown(receipt: dict[str, Any]) -> str:
         f"- Finished: `{receipt['finished_at']}`",
         f"- Graph: `{receipt['graph_output']}`",
         f"- Delta: `{receipt['delta_output']}`",
+        f"- Research loop config: `{receipt.get('research_loop_config', '')}`",
         f"- Research loop: `{receipt.get('research_loop_output', '')}`",
         "",
         "## Commands",
@@ -171,9 +245,10 @@ def main() -> int:
         ]
         commands.append(run_command(curator_command, REPO_ROOT))
         gap_hints = read_gap_hints(delta_output)
+        research_loop_config = write_research_loop_config(delta_output, run_dir)
         research_loop_output = ""
         if not args.no_research_loop:
-            loop_command = research_loop_command(run_id, run_dir, gap_hints, args.agent_count)
+            loop_command = research_loop_command(run_id, run_dir, gap_hints, args.agent_count, research_loop_config)
             commands.append(run_command(loop_command, REPO_ROOT))
             research_loop_output = str(run_dir / "research-loop")
 
@@ -186,6 +261,7 @@ def main() -> int:
             "graph_output": str(Path(args.graph_output)),
             "delta_output": str(delta_output),
             "delta_markdown": str(markdown_output),
+            "research_loop_config": str(research_loop_config or ""),
             "research_loop_output": research_loop_output,
             "gap_hints": gap_hints,
             "commands": commands,
