@@ -5,6 +5,8 @@
 
 This is a navigable rendering of `mlx-model-porting/assets/sources.yaml`. Review depth is an engineering claim about this corpus, not a claim that every source was reproduced on MLX.
 
+Local Apple Silicon benchmark receipts are catalogued separately in `mlx-model-porting/assets/benchmarks/receipts_index.json`; they are workload receipts, not source-catalogue records.
+
 ## Corpus summary
 
 ### By source kind

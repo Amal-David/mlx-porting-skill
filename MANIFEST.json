@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
-  "version": "0.1.0",
-  "generated_at": "2026-06-29T18:51:26.752331+00:00",
-  "file_count": 214,
+  "version": "0.2.0",
+  "generated_at": "2026-07-06T11:27:41.473752+00:00",
+  "file_count": 236,
   "files": [
     {
       "path": ".github/workflows/daily-research.yml",
@@ -17,23 +17,23 @@
     },
     {
       "path": ".gitignore",
-      "size_bytes": 267,
-      "sha256": "43936cfdd5e83541b198a7cf9be8edbb486e71dbfe807d5e45b14cdabf899b81"
+      "size_bytes": 444,
+      "sha256": "84c09e992d1285849d3aec85fb06cee3174f1befd867a55b824da395c8306d8b"
     },
     {
       "path": "AGENTS.md",
-      "size_bytes": 2763,
-      "sha256": "ae8bc768d0a2f39ce29783454f8adcb77843d8ecdbedd75698b82517c2f5c8f5"
+      "size_bytes": 3253,
+      "sha256": "d987c9dcff1e4ed382ee6053e20954bf7b49a2d313970db8d981d12b921b64fa"
     },
     {
       "path": "CHANGELOG.md",
-      "size_bytes": 1050,
-      "sha256": "66b770035065bc4b263f2843ee56fb3e7daf8cd3895bd3d552a07e75cde25569"
+      "size_bytes": 1627,
+      "sha256": "982135797a774d005383b449d83fba088bea8182a3e955a741659250deef0799"
     },
     {
       "path": "CLAUDE.md",
-      "size_bytes": 1886,
-      "sha256": "86c73f83625f126a8c688b4e9201c4a864a92a4152c9fd48479d114318465a77"
+      "size_bytes": 2376,
+      "sha256": "7dcab9439a5f211f38f89e63894b33c5a70c7071feb7a6604beba95a0fe62bcb"
     },
     {
       "path": "CONTRIBUTING.md",
@@ -42,8 +42,8 @@
     },
     {
       "path": "EVIDENCE_INDEX.md",
-      "size_bytes": 62281,
-      "sha256": "17f55599b3f5c72ae0475579d56c41aaa57eee19db35ecf354a12899a9deb964"
+      "size_bytes": 62467,
+      "sha256": "8bc7834d1e24e3081cb1c4c36b81f0817a0cff0f87a3107e4e9f060ca86338f5"
     },
     {
       "path": "LICENSE",
@@ -52,8 +52,8 @@
     },
     {
       "path": "README.md",
-      "size_bytes": 5950,
-      "sha256": "97f49b5a88f0d184e1c6f823f8eb2d2bf4abbca303e8c96b381870230d03c0f5"
+      "size_bytes": 6417,
+      "sha256": "85bc3bdedcfced204f33ffd940584a5a34059b53cba88e6961c0be5dcae94a72"
     },
     {
       "path": "RESEARCH_REPORT.md",
@@ -62,63 +62,63 @@
     },
     {
       "path": "VALIDATION.md",
-      "size_bytes": 5891,
-      "sha256": "919e4b4547d9fea4bc1f3895b6a3440888ef33e09bc986eb15de886353276c2d"
+      "size_bytes": 10090,
+      "sha256": "d8962f132c65932c20e316b1200972ea88d5bee4a69c56da0ab51ca4afa5f77e"
     },
     {
       "path": "VERSION",
       "size_bytes": 6,
-      "sha256": "e9dd8507f4bf0c6f42458e41aea833ad0bd3f6127272335eee9bf4d58541ed67"
+      "sha256": "1f930dd1f133c1f97a94fe3acb8db34372cf4c01ffdb2b3ff4ca72f9494121e9"
     },
     {
       "path": "adapters/README.md",
-      "size_bytes": 2437,
-      "sha256": "9df863ec89813715ef85481d4f912f3ace3b1e03351c58d661b2b35e8d52c4e6"
+      "size_bytes": 2962,
+      "sha256": "66af071f8c646a7ba837f0eae24731ad226387f4b6e90477ab4acc2712c0bdf0"
     },
     {
       "path": "adapters/antigravity.md",
-      "size_bytes": 420,
-      "sha256": "2fe58f0584568c93542121ddea921aa8be2a6c1db2285206271e7154abee40a4"
+      "size_bytes": 468,
+      "sha256": "7f7688ee975330db9f2af9bbfa65bdb9bf3542320d01b6bb5ea75aab6ace62ce"
     },
     {
       "path": "adapters/claude-code.md",
-      "size_bytes": 420,
-      "sha256": "e3ffc5f5f4949a67ff9dc57969feb10802a0c2fc89e48ba36b4e6bdc43425217"
+      "size_bytes": 559,
+      "sha256": "968f04aae625a42e3f59f0a6b15d36e3b71358a8db610feef24f563ae9e4b169"
     },
     {
       "path": "adapters/codex.md",
-      "size_bytes": 466,
-      "sha256": "ce375f320d973a17e9b8a02c7e7414ec69384606848a90351ec19ceb8c3c8f27"
+      "size_bytes": 572,
+      "sha256": "991bb5c08eb5a70ec9c0b5bf0ab2ea544ab06b4ad15eb9303d32d04e8da3dc04"
     },
     {
       "path": "adapters/cursor.md",
-      "size_bytes": 415,
-      "sha256": "324bf84741fdf018604ff0551edcc1ac7e837153eb65208ab0be628c7d0432d0"
+      "size_bytes": 549,
+      "sha256": "118275cfc0f790ede4f690a23e9a9fe52e0fa67e7eb1f89eed3038222d280b07"
     },
     {
       "path": "adapters/gemini-cli.md",
-      "size_bytes": 419,
-      "sha256": "017a2a59ea1184159ed87dd6fdfb13b15d3289bcc946bd3a84066d277a8e6509"
+      "size_bytes": 553,
+      "sha256": "f0d10926bea2136850a672da01e8b65a84c19abdf15b1e797b491160b21c0231"
     },
     {
       "path": "adapters/github-copilot.md",
-      "size_bytes": 423,
-      "sha256": "cbd66115fc4ba2a7992d671eeaea5690c3b6746cf6fe5827b3ea111ef3216f86"
+      "size_bytes": 558,
+      "sha256": "bc95324b5ea80470f770313929aae3fced8479faf3528410643adb0b9bc1d03b"
     },
     {
       "path": "adapters/windsurf.md",
-      "size_bytes": 417,
-      "sha256": "ea531009b578384bcc216982463912b68d631044c095de7480f4c5cb28d39268"
+      "size_bytes": 553,
+      "sha256": "9ecfb0964a054bd4e9b899710d32aef7209f92557480099b659ddc4d63e4d82b"
     },
     {
       "path": "apps/model-advisor-worker/package-lock.json",
       "size_bytes": 65052,
-      "sha256": "ae3a6f07f8de745d81c1c9b94c66e6e3137782cccf2473e4722fb63c5ff38edd"
+      "sha256": "b1f6b37d59cd4730d3ae6a50a89f4d512b7b57f66bb8a99fa77091abcae977fe"
     },
     {
       "path": "apps/model-advisor-worker/package.json",
-      "size_bytes": 764,
-      "sha256": "be75b7b1b892c47a1166e824a95fe94d0dbb77e48fbc1eb4d408c4a6e838e2a6"
+      "size_bytes": 862,
+      "sha256": "c67c456f0a50b2ffc943f0e558206b4180af8261d6860ff980154eedde19d9c7"
     },
     {
       "path": "apps/model-advisor-worker/scripts/build-pages.mjs",
@@ -127,23 +127,28 @@
     },
     {
       "path": "apps/model-advisor-worker/scripts/build-skill-data.mjs",
-      "size_bytes": 13301,
-      "sha256": "be46ce7277c92cf8f31dd4cb1490628bfaef9b851a5c08b97d0e009336667a94"
+      "size_bytes": 21727,
+      "sha256": "79d7b406a5d5d540eba23a9c88e317389daf7c588aedd4d4fd6a6fa609162428"
+    },
+    {
+      "path": "apps/model-advisor-worker/scripts/check-stack-fixture.mjs",
+      "size_bytes": 2227,
+      "sha256": "cf3b59f72d8043f9f0f56d25ab45d1f45523ae183d09ed75df656c54e8776344"
     },
     {
       "path": "apps/model-advisor-worker/scripts/smoke-local.mjs",
-      "size_bytes": 6242,
-      "sha256": "bab725f4b7e637a36d8236207d5fea330599c5c188aee7fe02054a643fa9604b"
+      "size_bytes": 9365,
+      "sha256": "6fe7e4209006822142550b53f787cb6fefcbcd6503f642117120d81dd3c009d4"
     },
     {
       "path": "apps/model-advisor-worker/src/index.ts",
-      "size_bytes": 91615,
-      "sha256": "7c29c45449fe0fbd654b241a943ba55cafbf479790cf15859482aa6ccc3d41d7"
+      "size_bytes": 108570,
+      "sha256": "f7cf5f98ca65e1103511de7bbfbbafe3e8d75c27a208484870e5194bc3e93cfd"
     },
     {
       "path": "apps/model-advisor-worker/src/skill-data.generated.ts",
-      "size_bytes": 247413,
-      "sha256": "d22735e758f432701b19e6086bafc840e57f673c1e8f3b887dd644c5a79aa15d"
+      "size_bytes": 269854,
+      "sha256": "02cae63de8eb7888002befa8c73a2c5dc9e7435da7e02b12da3ba9d255b278a2"
     },
     {
       "path": "apps/model-advisor-worker/tsconfig.json",
@@ -157,8 +162,8 @@
     },
     {
       "path": "mlx-model-porting/SKILL.md",
-      "size_bytes": 15116,
-      "sha256": "83798f1b32389668152a1736848a08fb0790ee5fe7ecdeabdf5812c1cfb0915c"
+      "size_bytes": 11656,
+      "sha256": "3196257884d48375c9b744da2216f71b67d2a78208e4fa3cd5e87440ac906389"
     },
     {
       "path": "mlx-model-porting/assets/BENCHMARK_REPORT.md",
@@ -191,6 +196,81 @@
       "sha256": "4c12b6dfa79f96165d9f8117be1fa1b9ce99d315145f8965834760d6d1ec1ff5"
     },
     {
+      "path": "mlx-model-porting/assets/benchmarks/kv-4bit-8k.json",
+      "size_bytes": 4172,
+      "sha256": "533705a76e9968573a22d4c2ccba980ab4c18b6a5e9dcd7edeab62c79bc47120"
+    },
+    {
+      "path": "mlx-model-porting/assets/benchmarks/kv-baseline-8k.json",
+      "size_bytes": 3556,
+      "sha256": "0a93b069862e6b939f3f0dc2cf08ebccfd83b4c9ed06833af68a4d43ae992aa6"
+    },
+    {
+      "path": "mlx-model-porting/assets/benchmarks/pcache-cold.json",
+      "size_bytes": 3423,
+      "sha256": "14fe4d852e8b61f0b3b5505eb403789b6355c64504f60c179c1c76355882c288"
+    },
+    {
+      "path": "mlx-model-porting/assets/benchmarks/pcache-warm.json",
+      "size_bytes": 4051,
+      "sha256": "1896cfa06508b2b8cbfabbc33875295406e748d7895b21856b40cb80c6478fdf"
+    },
+    {
+      "path": "mlx-model-porting/assets/benchmarks/prompts/t207-code-prompt-500.txt",
+      "size_bytes": 2864,
+      "sha256": "ed9e921b17913e94948f490dbbaf4f0db9051e0ce18775f102034d20f1aa15d8"
+    },
+    {
+      "path": "mlx-model-porting/assets/benchmarks/prompts/t207-long-prompt-8k.txt",
+      "size_bytes": 42830,
+      "sha256": "06c93314a98009c53f02531233a89f078919bd6740a5614d8412129d3e29790c"
+    },
+    {
+      "path": "mlx-model-porting/assets/benchmarks/prompts/t207-stack-suffix.txt",
+      "size_bytes": 180,
+      "sha256": "b84c46cff1153c3034a630bdde7a30f6b54a2a2cb326eba568bc7c5796da3594"
+    },
+    {
+      "path": "mlx-model-porting/assets/benchmarks/quant-4bit.json",
+      "size_bytes": 3896,
+      "sha256": "395b3e48aa2b1a517fe55f9092233dc6dd01780f833946a95ec32a724351807d"
+    },
+    {
+      "path": "mlx-model-porting/assets/benchmarks/quant-baseline-bf16.json",
+      "size_bytes": 3328,
+      "sha256": "b36687d339a0851f0ece21febd43e19e204ed8778c498f69ff032b5c128c3ef7"
+    },
+    {
+      "path": "mlx-model-porting/assets/benchmarks/receipts_index.json",
+      "size_bytes": 12084,
+      "sha256": "c01fc4ca177a66af071e0c5c0df3b6f0d5f77d563910e2800ba42e3c7d447a51"
+    },
+    {
+      "path": "mlx-model-porting/assets/benchmarks/spec-baseline.json",
+      "size_bytes": 3543,
+      "sha256": "4e9bb3f06103a36f9131debb6206f7fd0e0728034f30d113e168e1b2b7bec032"
+    },
+    {
+      "path": "mlx-model-porting/assets/benchmarks/spec-draft-k2.json",
+      "size_bytes": 4348,
+      "sha256": "98ab66f7cbdf08579f60819799027932e7def691663643aee4b819a0b76e1304"
+    },
+    {
+      "path": "mlx-model-porting/assets/benchmarks/spec-draft-k3.json",
+      "size_bytes": 4344,
+      "sha256": "c50d315371443edf09a5e4168e36e5821bcd8ec775168f8253ddb535af6b9a9c"
+    },
+    {
+      "path": "mlx-model-porting/assets/benchmarks/spec-draft-k4.json",
+      "size_bytes": 4340,
+      "sha256": "cc534c329bd0a1389b2fe33233789b9b08fbd6dd10dc8bb721bcaed70bd54873"
+    },
+    {
+      "path": "mlx-model-porting/assets/benchmarks/stack-measured-together.json",
+      "size_bytes": 5193,
+      "sha256": "d76e138e1ba106d3d39fd1be9091cba1ad423b8c6464c079c96526f81fe02349"
+    },
+    {
       "path": "mlx-model-porting/assets/contributor_learnings.json",
       "size_bytes": 30233,
       "sha256": "8a75f86fada1dc11d8fae933b5c3caf6e0061f1e485bf6ec3a3170d576dccb47"
@@ -202,18 +282,23 @@
     },
     {
       "path": "mlx-model-porting/assets/model_outcomes.json",
-      "size_bytes": 24918,
-      "sha256": "564d0a6864aaa22f6ccfdd86c281a574d7c02d21dcaf64fd5964e1263b8130e0"
+      "size_bytes": 25274,
+      "sha256": "ae4ba9586ab4856f90ac73bf6266ad417d6e96da210199a282470febdc9d87f2"
     },
     {
       "path": "mlx-model-porting/assets/optimization_guidance.yaml",
-      "size_bytes": 41117,
-      "sha256": "532bc8c6a90b169b04ead0abfe9692a8e4aaa9db71cbab666e2bcfd92b86ae85"
+      "size_bytes": 49320,
+      "sha256": "bd5940e617a3924c54a6296aa6564720b71e6f7c4ccbc6c3f1ae3cc5c4f53963"
+    },
+    {
+      "path": "mlx-model-porting/assets/optimization_stacks.yaml",
+      "size_bytes": 13160,
+      "sha256": "d808b814c21d814d0759dc68592605528ec8db45a6e2320c5c81b1cb7c3e7c43"
     },
     {
       "path": "mlx-model-porting/assets/recommendation-taxonomy.yaml",
-      "size_bytes": 5091,
-      "sha256": "5f484ab1e6278f9e34bf94859316ea6d1d06383397c5d6ba08202fa33a1d90ef"
+      "size_bytes": 5239,
+      "sha256": "26f9b774621cf9591bcb58a97e304820550405f9b5695caa071903410972b197"
     },
     {
       "path": "mlx-model-porting/assets/research_backlog.json",
@@ -257,13 +342,18 @@
     },
     {
       "path": "mlx-model-porting/references/benchmarking.md",
-      "size_bytes": 4580,
-      "sha256": "b5588993881213ea7a108131125a65689635dd79ecfa65314ac23be95d515e82"
+      "size_bytes": 5224,
+      "sha256": "0f4f33f27273b7e156a2acfc9abf5f2b4792b91dc848b808d28850230c75cbca"
     },
     {
       "path": "mlx-model-porting/references/compile-and-kernels.md",
       "size_bytes": 5266,
       "sha256": "aadd4e09d5b4e63f2f9eba5734b811f5435c1513b3977b8c9c58de562ddefccb"
+    },
+    {
+      "path": "mlx-model-porting/references/compound-stacks.md",
+      "size_bytes": 8675,
+      "sha256": "e6378e87118de3d5b36bd46825724f3a1f25c20a12219f2d9d1c190b3f31a0a3"
     },
     {
       "path": "mlx-model-porting/references/decoding-and-serving.md",
@@ -279,6 +369,11 @@
       "path": "mlx-model-porting/references/failure-atlas.md",
       "size_bytes": 2286,
       "sha256": "09c43ee893a9343364cc7383ef0949e459834e1d65c6c5fdeef32a547a05d0d8"
+    },
+    {
+      "path": "mlx-model-porting/references/hypothesis-led-learning.md",
+      "size_bytes": 5614,
+      "sha256": "78efe9acc638254fd52cabab6ef5d1f85b911f2238f446e2dd1dbcffdc8f961c"
     },
     {
       "path": "mlx-model-porting/references/intake-and-routing.md",
@@ -572,23 +667,28 @@
     },
     {
       "path": "mlx-model-porting/scripts/_common.py",
-      "size_bytes": 4857,
-      "sha256": "0f035d7953449c83af95760fd6425653cf55cdbcee389a9afa4e3c8eec1b50aa"
+      "size_bytes": 11295,
+      "sha256": "0645033d2e618ea2d9a290d60ea0e3f825a4cd78076c0e2eb674dce0af5910b0"
     },
     {
       "path": "mlx-model-porting/scripts/audit_skill.py",
-      "size_bytes": 7608,
-      "sha256": "4451d9aa0c3ef5ee4b1c9c218f5743e9de04de786daa09e89f391b7cd66b36d7"
+      "size_bytes": 8798,
+      "sha256": "d113397b33dc85bf2e1f9caf237fbb3ad92171bb3a46eb199abf56b4be6d3d7a"
     },
     {
       "path": "mlx-model-porting/scripts/benchmark_command.py",
-      "size_bytes": 8526,
-      "sha256": "82cac8749994f44a2c82993aa38d8ed8d8d4b502e74ec9750ca49ebc26eb5868"
+      "size_bytes": 8542,
+      "sha256": "66d0f6bbcad72250594bdf135554700b33aa60232c8a3ff0f53fb7c8861d81a8"
+    },
+    {
+      "path": "mlx-model-porting/scripts/benchmark_generation.py",
+      "size_bytes": 11938,
+      "sha256": "fbfc6645de70e427e57ce2f1654b9b2578b2c564519ed968326e131b324e12de"
     },
     {
       "path": "mlx-model-porting/scripts/collect_contributors.py",
-      "size_bytes": 12057,
-      "sha256": "dfde904e850c062a1e85509ee8cfa1d20644238593d4067d7604ab08cf146f97"
+      "size_bytes": 12059,
+      "sha256": "137e67e5fc985a97ef93282a69a9189587b461164f2b87b7ec8c257ad2177d41"
     },
     {
       "path": "mlx-model-porting/scripts/collect_top_models.py",
@@ -607,8 +707,8 @@
     },
     {
       "path": "mlx-model-porting/scripts/install_skill.py",
-      "size_bytes": 2466,
-      "sha256": "bb179d144b5b1c83e4f22f4c19bdc71f49026f117c3543ef5e57d9e52e48a004"
+      "size_bytes": 3277,
+      "sha256": "44cb5840a1fbdee97e5f4b19c877a47f3abdc9ab9713b0c980b57bfc4e6a7300"
     },
     {
       "path": "mlx-model-porting/scripts/knowledge_curator.py",
@@ -622,8 +722,8 @@
     },
     {
       "path": "mlx-model-porting/scripts/manifest.py",
-      "size_bytes": 4139,
-      "sha256": "8d86d9006f09ec07cc502febe55a4ce80d22161757dd145e325a0b9f50c2657a"
+      "size_bytes": 4199,
+      "sha256": "1d48fea0541616b0d1fe41db56e785f165913ab6127e866978fe766c75efd826"
     },
     {
       "path": "mlx-model-porting/scripts/nightly_knowledge_curator.py",
@@ -632,8 +732,8 @@
     },
     {
       "path": "mlx-model-porting/scripts/recommend_optimizations.py",
-      "size_bytes": 6318,
-      "sha256": "556c9a65d1ab6bdb29309b79874e8adf73757867ce8195b1a5a2e799049cad95"
+      "size_bytes": 11656,
+      "sha256": "0da7e53bbafadda59e83353e3853d3732dcf636ef68f3292cd99d386b3078588"
     },
     {
       "path": "mlx-model-porting/scripts/research_loop.py",
@@ -647,13 +747,13 @@
     },
     {
       "path": "mlx-model-porting/scripts/update_sources.py",
-      "size_bytes": 9554,
-      "sha256": "9c81149b2e06453112a37794e55e5631bc5e90534348891cb9b0c7b96a0ae520"
+      "size_bytes": 9558,
+      "sha256": "49e95a64d6200147c3515080bd421a4aa109be8e57fdba32b69134e6e3362d9d"
     },
     {
       "path": "mlx-model-porting/scripts/validate_sources.py",
-      "size_bytes": 13600,
-      "sha256": "76ceb5edf5390efc8da5ece8fecd73f6145059c25149dc9a3f3a77a00b46215f"
+      "size_bytes": 23970,
+      "sha256": "467257683844e49540d932ac0a542e90cce4311fef7c66bd8db8825c399d43a8"
     },
     {
       "path": "mlx-model-porting/scripts/validate_weight_map.py",
@@ -662,8 +762,8 @@
     },
     {
       "path": "tasks/lessons.md",
-      "size_bytes": 1429,
-      "sha256": "aa8f9a148d9da2c02239a598d103c16722bc330de7332fef74e6a405efa17bc7"
+      "size_bytes": 3057,
+      "sha256": "f44c91629244084b444e2c9f70cc4744d77b824131185d2d29e1cb524c9310b4"
     },
     {
       "path": "tests/README.md",
@@ -1041,6 +1141,11 @@
       "sha256": "762f693bcafc4ac5df601eb31213c6acd41dbee0b8afbc3377c0750166196f34"
     },
     {
+      "path": "tests/fixtures/stack_compose_case.json",
+      "size_bytes": 4554,
+      "sha256": "918735644c4b66c425416f357c70159e69615101f1c82a89290fc4a67db7bf3e"
+    },
+    {
       "path": "tests/fixtures/tensors/bad.npz",
       "size_bytes": 566,
       "sha256": "6dc0d284653ac7c7d28a4d27c60398aadf0c9546a7cce800f986eb925ceb5196"
@@ -1061,6 +1166,11 @@
       "sha256": "966992c1ee60d17ffc5dcfd1f7fb8186f1ead70c5486cbb1f55bd584d8fb3be6"
     },
     {
+      "path": "tests/test_discovery.py",
+      "size_bytes": 2190,
+      "sha256": "ea622ef2529bfcaa328cb5d800f3ce6cf1492f23561f354863bcd820d6d08576"
+    },
+    {
       "path": "tests/test_fixtures.py",
       "size_bytes": 2019,
       "sha256": "790a34fc18ab720d228d7d3e6f2e31d17e242fe38efd6d6212fc57754606a468"
@@ -1072,8 +1182,8 @@
     },
     {
       "path": "tests/test_tooling.py",
-      "size_bytes": 143243,
-      "sha256": "d4306c1afbc317fa1b2c7754515010e7f35683f415badf8780c9a55ee3fba61e"
+      "size_bytes": 158383,
+      "sha256": "cea1471fce3237bb66f15d6cc6df1fd2101bbe2acec2c760a28dcacb415b8064"
     }
   ]
 }

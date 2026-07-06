@@ -1,7 +1,9 @@
 #!/usr/bin/env node
+import { readFile } from "node:fs/promises";
 import vm from "node:vm";
 
 const base = process.env.SMOKE_BASE_URL || "http://127.0.0.1:8787";
+const generatedDataSource = await readFile(new URL("../src/skill-data.generated.ts", import.meta.url), "utf8");
 
 async function getJson(path) {
   const response = await fetch(new URL(path, base));
@@ -32,6 +34,17 @@ function assert(condition, message) {
   if (!condition) {
     throw new Error(message);
   }
+}
+
+function escapeRegExp(value) {
+  return String(value).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function registryStackStepCount(id) {
+  const pattern = new RegExp(`"id": "${escapeRegExp(id)}"[\\s\\S]*?"steps": \\[([\\s\\S]*?)\\]\\s*,\\s*"compositionNotes"`);
+  const match = generatedDataSource.match(pattern);
+  assert(match, `${id} stack missing from generated registry`);
+  return (match[1].match(/"method":/g) || []).length;
 }
 
 function elementMock() {
@@ -122,6 +135,22 @@ assert(textAdvice.aiSummary.status === "not_configured" || textAdvice.aiSummary.
 assert(textAdvice.advisor.citations.length > 0, "text advice citations missing");
 assert(textAdvice.advisor.modelOutcomes.some((item) => item.id === "decoder-mlx-lm-working-route"), "decoder working-route outcome missing");
 assert(textAdvice.advisor.topCoverage.modelCount >= 250, "top model coverage snapshot missing");
+const denseStack = textAdvice.advisor.recommendedStack;
+const denseStepCount = registryStackStepCount("dense-decoder-inference");
+assert(denseStack?.id === "dense-decoder-inference", "dense decoder advice should include dense-decoder-inference stack");
+assert(denseStack.steps.length === denseStepCount, "dense decoder stack step count should match generated registry");
+assert(denseStack.compound.hypothesis_ceiling.floor === "1.0x", "dense decoder stack hypothesis floor should remain 1.0x");
+assert(denseStack.compound.hypothesis_ceiling.ceiling === "2.64x", "dense decoder stack hypothesis should exclude cross-metric and conflicting bands");
+assert(denseStack.compound.hypothesis_ceiling.provenance === "multiplicative_hypothesis", "dense decoder stack product should remain hypothesis provenance");
+assert(denseStack.compound.measured?.ratio === "0.21x", "dense decoder stack should surface measured-together ratio");
+assert(denseStack.compound.measured?.provenance === "local_reproduced", "dense decoder measured ratio should surface local provenance");
+assert(String(denseStack.compound.measured?.caveat || "").includes("plain 4-bit") || String(denseStack.compound.measured?.basis || "").includes("plain 4-bit"), "dense decoder stack should surface plain 4-bit baseline caveat");
+const stackCeiling = textAdvice.advisor.speedupSummary.stackCeiling;
+assert(stackCeiling?.floor === "1.0x", "speedup summary stack ceiling should expose 1.0x floor");
+assert(stackCeiling?.ceiling === "2.64x", "speedup summary stack ceiling should expose corrected hypothesis ceiling");
+assert(stackCeiling?.provenance === "multiplicative_hypothesis", "speedup summary stack ceiling should expose hypothesis provenance");
+assert(stackCeiling?.measuredRatio === "0.21x", "speedup summary stack ceiling should carry measured stack ratio");
+assert(stackCeiling?.measuredProvenance === "local_reproduced", "speedup summary stack ceiling should carry measured provenance separately");
 
 const renderedWithAi = renderAdviceFromShell(html, {
   ...textAdvice,
@@ -136,6 +165,11 @@ assert((briefHtml.match(/<li>/g) || []).length >= 4, "AI brief should render sep
 assert(!briefHtml.includes("**"), "AI brief should not leak raw Markdown emphasis");
 assert(!briefHtml.includes("`"), "AI brief should not leak raw backticks");
 assert(!briefHtml.includes("<p"), "AI brief should not render as one paragraph dump");
+assert(renderedWithAi.includes("Recommended stack"), "rendered advice should include stack panel");
+assert(renderedWithAi.includes("0.21x"), "rendered advice should include measured dense stack headline");
+assert(renderedWithAi.includes("1.0x-2.64x"), "rendered advice should include corrected hypothesis dense stack ceiling");
+assert(renderedWithAi.includes("Measured together"), "rendered stack ceiling should label the measured-together ratio");
+assert(renderedWithAi.includes("plain 4-bit"), "rendered stack ceiling should include plain 4-bit baseline caveat");
 
 const vlmAdvice = await getJson("/api/advice?id=lmstudio-community/Qwen3.6-27B-MLX-4bit");
 assert(vlmAdvice.advisor.family.id === "vision-language-omni", "image-text-to-text model should route to vision-language");

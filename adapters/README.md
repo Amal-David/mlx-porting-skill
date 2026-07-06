@@ -2,23 +2,31 @@
 
 `mlx-model-porting/` follows the shared Agent Skills format: one `SKILL.md` plus optional `scripts/`, `references/`, and `assets/`. Use the same folder across clients; do not fork the technical corpus per agent.
 
-The safest installer contract is explicit:
+Fresh repository checkouts are pre-installed for Claude Code and `.agents`-root clients through checked-in relative symlinks at `.claude/skills/mlx-model-porting` and `.agents/skills/mlx-model-porting`. On Windows, Git may materialize symlinks as text files depending on local configuration; use the installer with an explicit `--dest` path there.
+
+Use the documented client preset first:
+
+```bash
+python3 mlx-model-porting/scripts/install_skill.py --client codex
+```
+
+Use `--dest` when you need explicit control over a version-specific or user-scoped root:
 
 ```bash
 python3 mlx-model-porting/scripts/install_skill.py --dest PATH_TO_CLIENT_SKILLS_ROOT
 ```
 
-This avoids silently installing into the wrong profile when products rename or move their discovery roots.
+`install_skill.py --client` uses the repo-scoped defaults below and prints the resolved destination and mode before acting. `--mode` can override a preset mode when a client installation requires it.
 
-| Client | Recommended approach |
-|---|---|
-| OpenAI Codex | Repository: `.agents/skills`; user: `~/.agents/skills`. These roots are implemented by Codex’s skill loader. |
-| Claude Code | Install the canonical folder into the Skills root shown by the installed Claude Code version or plugin manager. Common builds use repository/user `.claude/skills` roots; verify with the product’s skill listing command. |
-| Gemini CLI | Use the Agent Skills root exposed by the installed version. Common builds use `.gemini/skills`; verify discovery before relying on it. |
-| Cursor | Install through Cursor’s Skills UI/installer or its current project skills root. Keep the canonical folder unchanged. |
-| Google Antigravity | Install through Antigravity’s current Skills/plugin manager. Pass its resolved root to `install_skill.py`; do not assume a legacy Gemini path. |
-| Windsurf | Install through Windsurf’s Skills UI or current workspace/user skills root. Common builds use `.windsurf/skills`; verify discovery. |
-| GitHub Copilot | Install through the Copilot/VS Code Agent Skills interface or current repository skills root. Keep scripts subject to workspace trust and review. |
+| Client | Preset | Repository root | Recommended mode | Notes |
+|---|---|---|---|---|
+| Claude Code | `claude-code` | `.claude/skills` | `symlink` | Common builds use repository/user `.claude/skills` roots; verify with the product’s skill listing command for user-scoped installs. |
+| OpenAI Codex | `codex` | `.agents/skills` | `symlink` | User-scoped installs use `~/.agents/skills`; pass that with `--dest`. |
+| Cursor | `cursor` | `.cursor/skills` | `copy` | Version-dependent discovery; verify through Cursor’s Skills UI/installer. |
+| Gemini CLI | `gemini` | `.gemini/skills` | `copy` | Common builds use `.gemini/skills`; verify discovery before relying on it. |
+| Windsurf | `windsurf` | `.windsurf/skills` | `copy` | Version-dependent discovery; verify through Windsurf’s Skills UI. |
+| GitHub Copilot | `copilot` | `.github/skills` | `copy` | Keep scripts subject to workspace trust and review in VS Code/Copilot. |
+| Google Antigravity | none | use resolved product root | `copy` | Install through Antigravity’s current Skills/plugin manager; do not assume a legacy Gemini path. |
 
 ## Verification prompt
 
@@ -26,7 +34,7 @@ After installation, start a fresh agent session and ask:
 
 > List the loaded skill named `mlx-model-porting`, then state its version and the first three non-negotiable rules without running any model code.
 
-Expected version: `0.1.0`. The response should mention static intake, source pinning/oracle, and no optimization before parity.
+Expected version: `0.2.0`. The response should mention static intake, source pinning/oracle, and no optimization before parity.
 
 ## Adapter policy
 

@@ -1,0 +1,1 @@
+Using the cached policy context above, write the final checklist as Python-style numbered comments and include the rollback condition for speculative decoding plus KV quantization.

@@ -6,6 +6,7 @@ export const ADVISOR_DATA = {
     "taxonomyReviewed": "2026-06-27",
     "architecturesReviewed": "2026-06-27",
     "sourcesReviewed": "2026-06-27",
+    "optimizationStacksReviewed": "2026-07-06",
     "contributorLearningsReviewed": "2026-06-27",
     "researchBacklogReviewed": "2026-06-27",
     "modelOutcomesReviewed": "2026-06-29",
@@ -807,7 +808,8 @@ export const ADVISOR_DATA = {
         "paper-2205-14135",
         "paper-2307-08691",
         "paper-2407-08608"
-      ]
+      ],
+      "improvementBand": null
     },
     {
       "id": "compile-stable-region",
@@ -854,7 +856,8 @@ export const ADVISOR_DATA = {
         "mlx-doc-compile",
         "mlx-repo",
         "apple-wwdc25-mlx"
-      ]
+      ],
+      "improvementBand": null
     },
     {
       "id": "lazy-eval-boundaries",
@@ -904,7 +907,8 @@ export const ADVISOR_DATA = {
         "mlx-repo",
         "apple-mlx-m5-blog",
         "apple-wwdc25-mlx"
-      ]
+      ],
+      "improvementBand": null
     },
     {
       "id": "block-weight-streaming",
@@ -956,7 +960,8 @@ export const ADVISOR_DATA = {
         "dgrauet-ltx2-block-streaming-source",
         "dgrauet-ltx2-block-streaming-tests",
         "dgrauet-ltx2-regression-report"
-      ]
+      ],
+      "improvementBand": null
     },
     {
       "id": "native-low-bit-weight-quantization",
@@ -1020,7 +1025,25 @@ export const ADVISOR_DATA = {
         "paper-2310-16836",
         "nvidia-nvfp4-blog",
         "spheron-nvfp4-mxfp4-guide"
-      ]
+      ],
+      "improvementBand": {
+        "provenance": "local_reproduced",
+        "range": "1.0x-2.4x",
+        "metric": "decode-tokens-per-sec",
+        "basis": "Local Qwen3 1.7B bf16 versus mlx-community/Qwen3-1.7B-4bit on a 539-token prompt with 256 greedy generated tokens, runs=5 and warmup=1; ceiling is the aggregate median decode-token/sec ratio 130.179/54.318=2.4x. The 4-bit run was noisy: decode min/max spread exceeded 20% of its median.",
+        "appliesWhen": "Workload, model family, quantization recipe, and MLX-LM runtime are similar enough to reproduce locally, and the product quality budget accepts quantization drift; this receipt's greedy 3-prompt quality note diverged 3/3 versus bf16 and is not a formal eval.",
+        "measuredOn": {
+          "chip": "Apple M4 Pro",
+          "memory_gb": 48,
+          "mlx": "0.30.4",
+          "mlx_lm": "0.31.1",
+          "date": "2026-07-06"
+        },
+        "receipts": [
+          "quant-baseline-bf16.json",
+          "quant-4bit.json"
+        ]
+      }
     },
     {
       "id": "uniform-kv-quantization",
@@ -1040,7 +1063,7 @@ export const ADVISOR_DATA = {
         "long-context"
       ],
       "recommendation": "Start with official/proven uniform KV quantization before adaptive or rotated KV schemes.",
-      "expectedEffect": "KV memory can drop roughly with the selected bit width after quantization starts; decode speed may improve or worsen depending on dequant overhead.",
+      "expectedEffect": "Local 8k-context receipts on Apple M4 Pro measured 4-bit KV cache at 1.114x median decode throughput, but MLX peak memory increased by 1.117 GB in that run; treat this as a workload-specific latency result, not a demonstrated peak-memory reduction.",
       "tradeoffs": [
         "Long-context quality can degrade.",
         "May not compose with every rotating, prompt-cache, trimming, batching, or save/load path."
@@ -1072,7 +1095,30 @@ export const ADVISOR_DATA = {
         "mlx-lm-cache",
         "mlx-vlm-readme",
         "paper-2402-02750"
-      ]
+      ],
+      "improvementBand": {
+        "provenance": "local_reproduced",
+        "range": "1.0x-1.1x",
+        "metric": "decode-tokens-per-sec",
+        "basis": "Local receipts kv-baseline-8k and kv-4bit-8k measured the same Qwen2.5-Coder 7B 4-bit target on Apple M4 Pro, MLX 0.30.4, MLX-LM 0.31.1, with an 8058-token long prompt, max_tokens=256, temp=0.0, seed=207. The KV run used --kv-bits 4 --kv-group-size 64 --quantized-kv-start 0 and reached 32.594 median decode tok/s versus 29.248 baseline tok/s (1.114x). Median MLX peak memory was 6.570 GB versus 5.453 GB baseline, a +1.117 GB peak delta for this measured path.",
+        "appliesWhen": "Use only after long-context quality and cache reset/reuse checks pass. For this Apple M4 Pro receipt, the measured value is decode throughput; peak memory increased, so do not claim a memory saving for this flag set.",
+        "measuredOn": {
+          "chip": "Apple M4 Pro",
+          "mac_model": "Mac16,8",
+          "unified_memory": "48GB",
+          "macos": "26.3",
+          "python": "3.14.4",
+          "mlx": "0.30.4",
+          "mlx_lm": "0.31.1",
+          "target_model": "mlx-community/Qwen2.5-Coder-7B-Instruct-4bit@019cc73c45c770444708a6dd8690c66243cc5c80",
+          "workload": "8058-token long prompt, max_tokens=256, temp=0.0, seed=207",
+          "kv_flags": "--kv-bits 4 --kv-group-size 64 --quantized-kv-start 0"
+        },
+        "receipts": [
+          "kv-baseline-8k.json",
+          "kv-4bit-8k.json"
+        ]
+      }
     },
     {
       "id": "adaptive-kv-quantization",
@@ -1128,7 +1174,8 @@ export const ADVISOR_DATA = {
         "paper-2604-04722",
         "paper-2606-20474",
         "paper-2606-24033"
-      ]
+      ],
+      "improvementBand": null
     },
     {
       "id": "prompt-prefix-cache",
@@ -1191,7 +1238,25 @@ export const ADVISOR_DATA = {
         "paper-2412-03594",
         "paper-2606-21842",
         "sankalp-prompt-cache-blog"
-      ]
+      ],
+      "improvementBand": {
+        "provenance": "local_reproduced",
+        "range": "1.0x-23.8x",
+        "metric": "ttft-proxy",
+        "basis": "Local mlx-community/Qwen3-1.7B-4bit cold-vs-warm prompt-cache workload: cold generation processed a 4056-token raw prompt without cache; warm generation reused a cache_prompt file for the 4040-token raw prefix and generated from the 16-token suffix. Ceiling is the aggregate median inverse ttft_proxy ratio 2.8588s/0.1204s=23.8x; ttft_proxy is prompt_tokens / prompt_tps, not instrumented first-token latency.",
+        "appliesWhen": "The immutable prefix repeats exactly under the same model, tokenizer/template, quantization state, cache format, positions, and namespace; benefit is workload-conditional on prefix length and hit rate, with correctness and privacy isolation verified.",
+        "measuredOn": {
+          "chip": "Apple M4 Pro",
+          "memory_gb": 48,
+          "mlx": "0.30.4",
+          "mlx_lm": "0.31.1",
+          "date": "2026-07-06"
+        },
+        "receipts": [
+          "pcache-cold.json",
+          "pcache-warm.json"
+        ]
+      }
     },
     {
       "id": "continuous-batching-serving",
@@ -1249,7 +1314,16 @@ export const ADVISOR_DATA = {
         "orca-osdi22",
         "paper-2309-06180",
         "vllm-blog-anatomy"
-      ]
+      ],
+      "improvementBand": {
+        "provenance": "source_reported",
+        "range": "1.0x-4.3x",
+        "metric": "batch-throughput",
+        "basis": "vllm-mlx reports up to 4.3x aggregate throughput at 16 concurrent requests; keep the existing 21%-87% text-throughput note attached to its tested-model setup.",
+        "appliesWhen": "Concurrent serving workloads match the vllm-mlx benchmark shape closely enough to reproduce throughput against a local baseline.",
+        "measuredOn": null,
+        "receipts": []
+      }
     },
     {
       "id": "content-prefix-cache-vlm",
@@ -1297,7 +1371,16 @@ export const ADVISOR_DATA = {
         "vllm-mlx-repo",
         "mlx-vlm-readme",
         "paper-2601-19139"
-      ]
+      ],
+      "improvementBand": {
+        "provenance": "source_reported",
+        "range": "1.0x-28.0x",
+        "metric": "repeated-media-ttft",
+        "basis": "vllm-mlx reports 28x repeated image-query speedup and 24.7x video cache speedup on its M4 Max evaluation; the floor remains no gain for non-repeated media.",
+        "appliesWhen": "The workload repeats identical media and the processor, model revision, cache key, and warm-output parity gates match the source-reported setup.",
+        "measuredOn": null,
+        "receipts": []
+      }
     },
     {
       "id": "draft-model-speculation",
@@ -1315,7 +1398,7 @@ export const ADVISOR_DATA = {
         "moe-decoder-transformer"
       ],
       "recommendation": "Try only when a compatible smaller draft model shares tokenizer/vocabulary and acceptance is high enough to offset draft cost.",
-      "expectedEffect": "Profile-required. The speedup depends on accepted tokens per verification step, target verification cost, and draft overhead.",
+      "expectedEffect": "Local Qwen2.5-Coder 7B/1.5B speculative decoding receipts on Apple M4 Pro measured a workload-conditional decode-throughput band of 1.0x-1.3x on a fixed code-generation prompt; k=2 improved median decode throughput, while k=3 and k=4 regressed.",
       "tradeoffs": [
         "Extra model memory",
         "low acceptance can slow generation",
@@ -1347,7 +1430,32 @@ export const ADVISOR_DATA = {
         "mlx-lm-speculative",
         "paper-2211-17192",
         "paper-2302-01318"
-      ]
+      ],
+      "improvementBand": {
+        "provenance": "local_reproduced",
+        "range": "1.0x-1.3x",
+        "metric": "decode-tokens-per-sec",
+        "basis": "Local receipts spec-baseline, spec-draft-k2, spec-draft-k3, and spec-draft-k4 measured mlx-community/Qwen2.5-Coder-7B-Instruct-4bit with draft mlx-community/Qwen2.5-Coder-1.5B-Instruct-4bit on Apple M4 Pro, MLX 0.30.4, MLX-LM 0.31.1. The fixed code-generation prompt was 552 chat-template tokens with max_tokens=256, temp=0.0, seed=207. Sweep medians were k=2 1.254x, k=3 0.673x, and k=4 0.550x versus the plain 4-bit target baseline, so the floor remains 1.0x and the ceiling rounds to 1.3x.",
+        "appliesWhen": "Draft and target share tokenizer/vocabulary, the workload resembles the measured code-generation prompt, and local acceptance/latency receipts show the selected draft-token count beats the plain 4-bit target; disable speculation when acceptance makes the median decode ratio fall below 1.0x.",
+        "measuredOn": {
+          "chip": "Apple M4 Pro",
+          "mac_model": "Mac16,8",
+          "unified_memory": "48GB",
+          "macos": "26.3",
+          "python": "3.14.4",
+          "mlx": "0.30.4",
+          "mlx_lm": "0.31.1",
+          "target_model": "mlx-community/Qwen2.5-Coder-7B-Instruct-4bit@019cc73c45c770444708a6dd8690c66243cc5c80",
+          "draft_model": "mlx-community/Qwen2.5-Coder-1.5B-Instruct-4bit@b3252a2f97102b1fb1571fec2c9b27219a8536be",
+          "workload": "552-token code-generation prompt, max_tokens=256, temp=0.0, seed=207"
+        },
+        "receipts": [
+          "spec-baseline.json",
+          "spec-draft-k2.json",
+          "spec-draft-k3.json",
+          "spec-draft-k4.json"
+        ]
+      }
     },
     {
       "id": "prompt-lookup-ngram-speculation",
@@ -1393,7 +1501,8 @@ export const ADVISOR_DATA = {
       "evidenceSourceIds": [
         "prompt-lookup-decoding-repo",
         "paper-2311-08252"
-      ]
+      ],
+      "improvementBand": null
     },
     {
       "id": "eagle-medusa-mtp-drafters",
@@ -1448,7 +1557,8 @@ export const ADVISOR_DATA = {
         "paper-2401-15077",
         "paper-2406-16858",
         "paper-2412-19437"
-      ]
+      ],
+      "improvementBand": null
     },
     {
       "id": "moe-gather-and-expert-batching",
@@ -1496,7 +1606,8 @@ export const ADVISOR_DATA = {
         "mlx-doc-gather-qmm",
         "mlx-repo",
         "paper-2401-04088"
-      ]
+      ],
+      "improvementBand": null
     },
     {
       "id": "audio-streaming-and-cache",
@@ -1551,7 +1662,8 @@ export const ADVISOR_DATA = {
         "mlx-audio-codecs",
         "mlx-audio-models",
         "paper-2505-15380"
-      ]
+      ],
+      "improvementBand": null
     },
     {
       "id": "cache-privacy-and-isolation",
@@ -1604,7 +1716,8 @@ export const ADVISOR_DATA = {
         "paper-2606-21842",
         "vllm-blog-anatomy",
         "sankalp-prompt-cache-blog"
-      ]
+      ],
+      "improvementBand": null
     },
     {
       "id": "vision-feature-cache",
@@ -1653,7 +1766,8 @@ export const ADVISOR_DATA = {
         "mlx-vlm-vision-cache-source",
         "vllm-mlx-vision-cache-source",
         "paper-2601-19139"
-      ]
+      ],
+      "improvementBand": null
     },
     {
       "id": "multimodal-content-prefix-cache",
@@ -1709,7 +1823,16 @@ export const ADVISOR_DATA = {
         "vllm-mlx-mllm-batch-source",
         "paper-2601-19139",
         "vllm-doc-prefix-caching"
-      ]
+      ],
+      "improvementBand": {
+        "provenance": "source_reported",
+        "range": "1.0x-28.0x",
+        "metric": "repeated-media-ttft",
+        "basis": "vllm-mlx reports up to 28x repeated-image and 24.7x video cache speedups in its benchmark setup; keep the high end limited to repeated media cache hits.",
+        "appliesWhen": "Media-aware block prefix cache hits dominate TTFT and cold/warm parity, placeholder safety, tenant namespace, and memory gates pass.",
+        "measuredOn": null,
+        "receipts": []
+      }
     },
     {
       "id": "video-input-budgeting",
@@ -1757,7 +1880,8 @@ export const ADVISOR_DATA = {
         "vllm-mlx-multimodal-guide",
         "paper-2409-12191",
         "paper-2502-13923"
-      ]
+      ],
+      "improvementBand": null
     },
     {
       "id": "visual-token-pruning-or-merge",
@@ -1805,7 +1929,8 @@ export const ADVISOR_DATA = {
         "paper-2412-04467",
         "paper-2403-15388",
         "llava-onevision-blog"
-      ]
+      ],
+      "improvementBand": null
     },
     {
       "id": "qwen3-tts-batch-generation",
@@ -1856,7 +1981,16 @@ export const ADVISOR_DATA = {
         "mlx-audio-qwen3-tts-docs",
         "mlx-audio-release-044",
         "paper-2601-15621"
-      ]
+      ],
+      "improvementBand": {
+        "provenance": "source_reported",
+        "range": "1.0x-5.45x",
+        "metric": "batch-throughput",
+        "basis": "MLX-Audio docs report 1.67x to 5.45x batch throughput on 6-bit short prompts at batch sizes 1-8; keep the floor at no gain for single-request or mismatched workloads.",
+        "appliesWhen": "Compatible Qwen3-TTS batch_generate jobs use comparable short prompts, quantization, voice/reference isolation, and audio quality gates.",
+        "measuredOn": null,
+        "receipts": []
+      }
     },
     {
       "id": "audio-reference-conditioning-cache",
@@ -1904,7 +2038,8 @@ export const ADVISOR_DATA = {
       "evidenceSourceIds": [
         "mlx-audio-release-044",
         "mlx-audio-qwen3-tts-docs"
-      ]
+      ],
+      "improvementBand": null
     },
     {
       "id": "generic-audio-prefix-cache",
@@ -1953,7 +2088,8 @@ export const ADVISOR_DATA = {
       "evidenceSourceIds": [
         "mlx-audio-streaming-guide",
         "paper-2601-15621"
-      ]
+      ],
+      "improvementBand": null
     },
     {
       "id": "moe-expert-dispatch-and-quantization",
@@ -2005,7 +2141,8 @@ export const ADVISOR_DATA = {
         "mlx-lm-switch-layers",
         "paper-2401-04088",
         "paper-2405-04434"
-      ]
+      ],
+      "improvementBand": null
     },
     {
       "id": "moe-gate-up-fusion",
@@ -2050,7 +2187,8 @@ export const ADVISOR_DATA = {
       "evidenceSourceIds": [
         "mlx-lm-issue-956",
         "mlx-lm-switch-layers"
-      ]
+      ],
+      "improvementBand": null
     },
     {
       "id": "spatial-grid-sample-kernel",
@@ -2104,7 +2242,19 @@ export const ADVISOR_DATA = {
         "katlun-grid-sample-source",
         "katlun-grid-sample-tests",
         "katlun-grid-sample-benchmark"
-      ]
+      ],
+      "improvementBand": {
+        "provenance": "local_reproduced",
+        "range": "1.0x-10.0x",
+        "metric": "kernel-latency",
+        "basis": "Local Apple M4 Pro / MLX 0.30.4 reproduction of the pinned 3D benchmark showed about 10x kernel-level speedup versus the repo's pure-MLX gather baseline; end-to-end model benefit remains workload-dependent.",
+        "appliesWhen": "The source model uses the same supported grid_sample mode, layout, dtype, padding, and benchmark shape after oracle parity passes.",
+        "measuredOn": {
+          "chip": "Apple M4 Pro",
+          "mlx": "0.30.4"
+        },
+        "receipts": []
+      }
     },
     {
       "id": "cuda-graphs-decode-capture",
@@ -2132,7 +2282,294 @@ export const ADVISOR_DATA = {
         "Always: this method is rejected for MLX and must not be adopted."
       ],
       "evidenceRefs": {},
-      "evidenceSourceIds": []
+      "evidenceSourceIds": [],
+      "improvementBand": null
+    }
+  ],
+  "stacks": [
+    {
+      "id": "dense-decoder-inference",
+      "label": "Dense decoder inference",
+      "primaryMetric": "decode-tokens-per-sec",
+      "families": [
+        "dense-decoder-transformer",
+        "moe-decoder-transformer"
+      ],
+      "steps": [
+        {
+          "method": "native-low-bit-weight-quantization",
+          "lossiness": "conditionally-lossy",
+          "gate": "Quantized load, task quality, peak memory, and decode throughput pass against the unquantized baseline.",
+          "rollback": "Return to the unquantized weights if quality drifts or latency worsens."
+        },
+        {
+          "method": "fast-sdpa",
+          "lossiness": "lossless",
+          "gate": "Prefill and single-token decode parity pass across target masks, GQA/MQA layout, and lengths.",
+          "rollback": "Use the original attention path if any mask, position, or tensor parity check fails."
+        },
+        {
+          "method": "compile-stable-region",
+          "lossiness": "lossless",
+          "gate": "Cold/warm timing, compile count, parity, and legal-shape coverage show stable-region benefit.",
+          "rollback": "Disable compile if retracing, cold cost, or unsupported shapes erase the end-to-end win."
+        },
+        {
+          "method": "prompt-prefix-cache",
+          "lossiness": "lossless",
+          "gate": "Exact-hit, miss, save/load, namespace, and TTFT tests pass for the target tokenizer/template.",
+          "rollback": "Disable prefix reuse if cache keys, privacy isolation, or warm logits diverge."
+        },
+        {
+          "method": "uniform-kv-quantization",
+          "lossiness": "conditionally-lossy",
+          "gate": "Long-context quality, bytes per token per layer, decode latency, and cache reset/reuse tests pass.",
+          "rollback": "Return KV cache precision to the baseline if quality, latency, or cache composition regresses."
+        },
+        {
+          "method": "draft-model-speculation",
+          "lossiness": "lossless",
+          "gate": "Draft/target tokenizer compatibility, acceptance length, distribution or task quality, and decode throughput pass.",
+          "rollback": "Disable the draft model if acceptance is too low, memory exceeds budget, or quality changes."
+        }
+      ],
+      "compositionNotes": [
+        {
+          "pair": [
+            "prompt-prefix-cache",
+            "uniform-kv-quantization"
+          ],
+          "validity": "unknown",
+          "why": "attention-and-kv.md says KV quantization must validate prompt-cache save/load, trimming, batching, and cache reset/reuse before advertising a combined mode."
+        },
+        {
+          "pair": [
+            "uniform-kv-quantization",
+            "draft-model-speculation"
+          ],
+          "validity": "unknown",
+          "why": "The capstone receipt measured KV quantization and draft speculation only inside the full prompt-cache stack, not in isolation; keep the pair unknown until a KV+draft receipt isolates their interaction."
+        },
+        {
+          "pair": [
+            "prompt-prefix-cache",
+            "draft-model-speculation"
+          ],
+          "validity": "known-conflicting",
+          "why": "stack-measured-together.json recorded a 0.21x decode-throughput negative interaction, and MLX-LM 0.31.1 required a combined target+draft cache because target-only cache_prompt output does not compose with --draft-model."
+        }
+      ],
+      "compound": {
+        "measured_together": true,
+        "receipts": [
+          {
+            "label": "stack-measured-together",
+            "file": "stack-measured-together.json",
+            "baseline": "spec-baseline",
+            "metric": "decode-tokens-per-sec",
+            "measured_ratio": "0.21x",
+            "measured_floor": "1.0x",
+            "basis": "Measured together with Qwen2.5-Coder 7B 4-bit target weights, 4-bit KV cache, prompt cache, and Qwen2.5-Coder 1.5B 4-bit draft model k=2. Ratio is versus spec-baseline, the plain 4-bit single-request baseline; this is not an fp16 7B baseline.",
+            "caveat": "The measured-together stack was slower on this cached long-prefix suffix workload: 9.516 median decode tok/s versus 45.122 tok/s baseline (0.211x). Prompt cache used an 8053-token cached prefix plus 34-token suffix; MLX-LM 0.31.1 required a combined target+draft cache because target-only cache_prompt output does not compose with --draft-model.",
+            "measured_on": {
+              "chip": "Apple M4 Pro",
+              "mac_model": "Mac16,8",
+              "unified_memory": "48GB",
+              "macos": "26.3",
+              "python": "3.14.4",
+              "mlx": "0.30.4",
+              "mlx_lm": "0.31.1",
+              "target_model": "mlx-community/Qwen2.5-Coder-7B-Instruct-4bit@019cc73c45c770444708a6dd8690c66243cc5c80",
+              "draft_model": "mlx-community/Qwen2.5-Coder-1.5B-Instruct-4bit@b3252a2f97102b1fb1571fec2c9b27219a8536be",
+              "workload": "cached 8053-token long prompt prefix plus 34-token suffix, max_tokens=256, temp=0.0, seed=207",
+              "kv_flags": "--kv-bits 4 --kv-group-size 64 --quantized-kv-start 0"
+            }
+          }
+        ]
+      },
+      "evidenceSourceIds": [
+        "asset-optimization-stacks"
+      ]
+    },
+    {
+      "id": "moe-serving",
+      "label": "MoE serving",
+      "primaryMetric": "batch-throughput",
+      "families": [
+        "moe-decoder-transformer"
+      ],
+      "steps": [
+        {
+          "method": "moe-expert-dispatch-and-quantization",
+          "lossiness": "conditionally-lossy",
+          "gate": "Loop-oracle parity, tokens-per-expert histogram, quality, peak memory, and throughput pass.",
+          "rollback": "Return to the baseline MoE dispatch or precision if rare-expert quality or small-group latency regresses."
+        },
+        {
+          "method": "continuous-batching-serving",
+          "lossiness": "lossless",
+          "gate": "Concurrency 1 and many, mixed lengths, cancellation, P50/P95/P99 latency, throughput, and memory pass.",
+          "rollback": "Disable continuous batching if tail latency, state ownership, or scheduler overhead fails."
+        },
+        {
+          "method": "prompt-prefix-cache",
+          "lossiness": "lossless",
+          "gate": "Exact-prefix cache hit/miss, tenant namespace, save/load, and TTFT distribution pass under serving load.",
+          "rollback": "Disable prompt cache if reuse is incorrect, privacy risk appears, or hit rate cannot offset overhead."
+        }
+      ],
+      "compositionNotes": [
+        {
+          "pair": [
+            "moe-expert-dispatch-and-quantization",
+            "continuous-batching-serving"
+          ],
+          "validity": "unknown",
+          "why": "MoE expert-group skew and serving batch mix can change the hot path; measure tokens-per-expert and throughput together."
+        },
+        {
+          "pair": [
+            "continuous-batching-serving",
+            "prompt-prefix-cache"
+          ],
+          "validity": "unknown",
+          "why": "attention-and-kv.md requires mixed-batch, cancellation, cache ownership, and isolation tests for shared-prefix serving."
+        }
+      ],
+      "compound": {
+        "measured_together": false,
+        "receipts": []
+      },
+      "evidenceSourceIds": [
+        "asset-optimization-stacks"
+      ]
+    },
+    {
+      "id": "vlm-repeated-media",
+      "label": "VLM repeated media",
+      "primaryMetric": "repeated-media-ttft",
+      "families": [
+        "vision-language-omni"
+      ],
+      "steps": [
+        {
+          "method": "vision-feature-cache",
+          "lossiness": "lossless",
+          "gate": "Cold/warm logits parity, content-hash mutation, eviction/reset, mixed-batch, TTFT, and memory pass.",
+          "rollback": "Disable the feature cache if warm outputs drift, key coverage is incomplete, or reuse is too rare."
+        },
+        {
+          "method": "content-prefix-cache-vlm",
+          "lossiness": "lossless",
+          "gate": "Same-media hit, near-duplicate miss, processor revision key, TTFT, and memory distribution pass.",
+          "rollback": "Disable content-prefix reuse if false hits, poor hit rate, or storage/privacy risk appears."
+        },
+        {
+          "method": "multimodal-content-prefix-cache",
+          "lossiness": "lossless",
+          "gate": "Media hash coverage, tenant namespace, cold/warm parity, mixed suffix rejection, and eviction tests pass.",
+          "rollback": "Disable media-aware block prefix cache if tenant isolation, placeholder safety, or repeated-prefix coverage fails."
+        },
+        {
+          "method": "continuous-batching-serving",
+          "lossiness": "lossless",
+          "gate": "Concurrent VLM requests pass mixed media/text length, cancellation, latency, throughput, and memory tests.",
+          "rollback": "Disable batching if it breaks cache ownership, batch invariance, or tail-latency budgets."
+        },
+        {
+          "method": "cache-privacy-and-isolation",
+          "lossiness": "lossless",
+          "gate": "not_a_speedup: namespace isolation, opt-out, persistence policy, timing review, and malformed request tests pass.",
+          "rollback": "Do not ship shared or persisted cache reuse until the privacy gate passes."
+        }
+      ],
+      "compositionNotes": [
+        {
+          "pair": [
+            "vision-feature-cache",
+            "multimodal-content-prefix-cache"
+          ],
+          "validity": "unknown",
+          "why": "Both reuse media-derived state; cold/warm parity and key coverage must prove feature and prefix cache boundaries together."
+        },
+        {
+          "pair": [
+            "multimodal-content-prefix-cache",
+            "continuous-batching-serving"
+          ],
+          "validity": "unknown",
+          "why": "The guidance warns multimodal prefix caches can be batch-noninvariant; validate mixed media suffixes and tenant namespace before combining with batching."
+        },
+        {
+          "pair": [
+            "cache-privacy-and-isolation",
+            "multimodal-content-prefix-cache"
+          ],
+          "validity": "validated-composable",
+          "why": "The cache privacy review is a required safety gate for shared or persisted cache reuse, not a speedup multiplier."
+        }
+      ],
+      "compound": {
+        "measured_together": false,
+        "receipts": []
+      },
+      "evidenceSourceIds": [
+        "asset-optimization-stacks"
+      ]
+    },
+    {
+      "id": "tts-batch",
+      "label": "TTS batch serving",
+      "primaryMetric": "batch-throughput",
+      "families": [
+        "flow-diffusion-tts",
+        "autoregressive-audio-lm"
+      ],
+      "steps": [
+        {
+          "method": "qwen3-tts-batch-generation",
+          "lossiness": "lossless",
+          "gate": "Single-vs-batched parity, mixed voices and lengths, cancellation, fairness, TTFB, RTF, memory, and audio quality pass.",
+          "rollback": "Disable batch_generate if TTFB or tail latency violates budget or batched audio diverges."
+        },
+        {
+          "method": "audio-reference-conditioning-cache",
+          "lossiness": "lossless",
+          "gate": "Cold/warm parity, speaker similarity, prosody, cache accounting, tenant isolation, and memory pressure pass.",
+          "rollback": "Disable reference cache if speaker identity drifts, namespace isolation is missing, or eviction breaks quality."
+        },
+        {
+          "method": "audio-streaming-and-cache",
+          "lossiness": "conditionally-lossy",
+          "gate": "First-audio latency, RTF, chunk continuity, speaker similarity, intelligibility, and peak memory pass.",
+          "rollback": "Disable streaming cache if chunk seams, quality metrics, or RTF regress."
+        }
+      ],
+      "compositionNotes": [
+        {
+          "pair": [
+            "qwen3-tts-batch-generation",
+            "audio-reference-conditioning-cache"
+          ],
+          "validity": "unknown",
+          "why": "Batching and reference cache both touch voice/reference isolation; compare single, batched, cold, and warm audio quality together."
+        },
+        {
+          "pair": [
+            "audio-reference-conditioning-cache",
+            "audio-streaming-and-cache"
+          ],
+          "validity": "unknown",
+          "why": "Audio state includes codec, speaker, chunk, and flush semantics; cache and streaming composition needs continuity and quality gates."
+        }
+      ],
+      "compound": {
+        "measured_together": false,
+        "receipts": []
+      },
+      "evidenceSourceIds": [
+        "asset-optimization-stacks"
+      ]
     }
   ],
   "learnings": [
@@ -2511,20 +2948,21 @@ export const ADVISOR_DATA = {
             ]
           },
           "speculativeDecoding": {
-            "range": "1.0x-3.0x",
-            "confidence": "medium",
-            "basis": "Classic speculative decoding papers report roughly 2x-3x-style gains in compatible settings, and MLX-LM exposes a speculative generation path. The selected draft/target pair still needs local acceptance and latency receipts.",
+            "range": "1.0x-1.3x",
+            "confidence": "local_reproduced",
+            "basis": "Local receipts spec-baseline, spec-draft-k2, spec-draft-k3, and spec-draft-k4 measured the Qwen2.5-Coder 7B/1.5B 4-bit pair on Apple M4 Pro (Mac16,8, 48GB), MLX 0.30.4, MLX-LM 0.31.1. The workload was a 552-token code-generation prompt with max_tokens=256, temp=0.0, seed=207. The best median decode ratio was k=2 at 1.254x; k=3 and k=4 regressed to 0.673x and 0.550x, so the workload-conditional floor remains 1.0x and the ceiling rounds to 1.3x.",
             "appliesWhen": [
               "Draft and target share tokenizer and vocabulary.",
-              "Accepted draft tokens per verification step are high enough to amortize draft-model cost.",
-              "Draft memory, cache growth, and sampling behavior fit the target Mac and quality gate."
+              "The workload is close to the measured Qwen2.5-Coder code-generation prompt.",
+              "The selected draft-token count has local median decode throughput above the plain 4-bit target baseline.",
+              "Draft memory and cache growth fit the target Mac and quality gate."
             ],
             "measure": [
-              "acceptance rate",
               "accepted tokens per verification step",
-              "draft tokens/s",
-              "target verification cost",
-              "end-to-end decode tokens/s"
+              "median decode tokens/s versus spec-baseline",
+              "peak memory",
+              "prompt/cache overhead",
+              "task quality or distribution preservation"
             ]
           }
         },
@@ -6639,6 +7077,16 @@ export const ADVISOR_DATA = {
       "reviewDepth": "synthesized",
       "snapshot": "2026-06-27",
       "note": "Structured method, status, validation, rollback, and evidence references."
+    },
+    {
+      "id": "asset-optimization-stacks",
+      "title": "MLX optimization stack registry",
+      "url": "mlx-model-porting/assets/optimization_stacks.yaml",
+      "kind": "local-file",
+      "owner": "mlx-porting-skill",
+      "reviewDepth": "synthesized",
+      "snapshot": "2026-07-06",
+      "note": "Structured stack recipes, composition notes, and compound-measurement receipts."
     },
     {
       "id": "asset-research-backlog",

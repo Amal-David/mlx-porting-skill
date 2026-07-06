@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import math
 import re
 from pathlib import Path
 from typing import Any
@@ -129,3 +130,156 @@ def applies_to_family(applies_to: list, family: str) -> bool:
         if "-" not in value and value in tokens:
             return True
     return False
+
+
+_BAND_RE = re.compile(r"^\s*(\d+(?:\.\d+)?)x\s*-\s*(\d+(?:\.\d+)?)x\s*$")
+
+
+def parse_band(range_str: str) -> tuple[float, float]:
+    """Parse a multiplier band like ``1.0x-4.3x`` into numeric bounds."""
+    if not isinstance(range_str, str):
+        raise ValueError(f"improvement band must be a string, got {type(range_str).__name__}")
+    match = _BAND_RE.fullmatch(range_str)
+    if not match:
+        raise ValueError(f"malformed improvement band {range_str!r}; expected '<floor>x-<ceiling>x'")
+    floor, ceiling = (float(match.group(1)), float(match.group(2)))
+    if not (math.isfinite(floor) and math.isfinite(ceiling)):
+        raise ValueError(f"improvement band {range_str!r} contains a non-finite value")
+    if floor <= 0 or ceiling <= 0:
+        raise ValueError(f"improvement band {range_str!r} must contain positive multipliers")
+    if floor > ceiling:
+        raise ValueError(f"improvement band {range_str!r} has floor above ceiling")
+    return floor, ceiling
+
+
+def _format_multiplier(value: float) -> str:
+    text = f"{value:.6f}".rstrip("0").rstrip(".")
+    if "." not in text:
+        text += ".0"
+    return f"{text}x"
+
+
+STACK_COMPOUND_HYPOTHESIS_FLAG = "unmeasured composition - multiplicative hypothesis, not a claim"
+
+
+def _measured_compound(receipts: Any) -> dict[str, Any] | None:
+    if not isinstance(receipts, list):
+        return None
+    for receipt in receipts:
+        if not isinstance(receipt, dict) or not isinstance(receipt.get("measured_ratio"), str):
+            continue
+        measured: dict[str, Any] = {
+            "ratio": receipt["measured_ratio"],
+            "provenance": "local_reproduced",
+        }
+        receipt_ref = receipt.get("file") or receipt.get("label")
+        if isinstance(receipt_ref, str):
+            measured["receipt"] = receipt_ref
+        for key in ("label", "file", "metric", "measured_on", "basis", "caveat"):
+            if key in receipt:
+                measured[key] = receipt[key]
+        if "measured_floor" in receipt:
+            measured["floor"] = receipt["measured_floor"]
+        elif "floor" in receipt:
+            measured["floor"] = receipt["floor"]
+        return measured
+    return None
+
+
+def compose_stack_band(stack: dict[str, Any], guidance_methods: dict[str, Any] | list[dict[str, Any]]) -> dict[str, Any]:
+    """Derive an advisory compound band for an optimization stack.
+
+    Compound ceilings are metric-scoped multiplicative hypotheses. A measured
+    stack receipt is reported separately and never changes product provenance.
+    """
+    if isinstance(guidance_methods, dict):
+        methods_by_id = guidance_methods
+    else:
+        methods_by_id = {str(method.get("id")): method for method in guidance_methods if isinstance(method, dict)}
+
+    primary_metric = stack.get("primary_metric")
+    if not isinstance(primary_metric, str) or not primary_metric:
+        raise ValueError(f"stack {stack.get('id', '<unknown>')} primary_metric must be a non-empty string")
+
+    steps = stack.get("steps", [])
+    if not isinstance(steps, list):
+        raise ValueError(f"stack {stack.get('id', '<unknown>')} steps must be a list")
+
+    excluded_conflicts: list[list[str]] = []
+    excluded_methods: set[str] = set()
+    for note in stack.get("composition_notes", []) or []:
+        if not isinstance(note, dict) or note.get("validity") != "known-conflicting":
+            continue
+        pair = note.get("pair")
+        if not isinstance(pair, list) or len(pair) != 2:
+            raise ValueError(f"stack {stack.get('id', '<unknown>')} has malformed known-conflicting pair {pair!r}")
+        conflict_pair = [str(pair[0]), str(pair[1])]
+        excluded_conflicts.append(conflict_pair)
+        excluded_methods.update(conflict_pair)
+
+    per_step: list[dict[str, Any]] = []
+    unmeasured_upside: list[str] = []
+    other_metric_upside: list[dict[str, str]] = []
+    ceiling = 1.0
+
+    for step in steps:
+        if not isinstance(step, dict):
+            raise ValueError(f"stack {stack.get('id', '<unknown>')} contains a non-mapping step")
+        method_id = str(step.get("method", ""))
+        method = methods_by_id.get(method_id, {})
+        improvement_band = method.get("improvement_band") if isinstance(method, dict) else None
+        band_range = None
+        band_provenance = None
+        if isinstance(improvement_band, dict):
+            band_range = improvement_band.get("range")
+            band_provenance = improvement_band.get("provenance")
+
+        per_step.append({
+            "method": method_id,
+            "band": band_range if isinstance(band_range, str) else None,
+            "lossiness": step.get("lossiness"),
+            "gate": step.get("gate"),
+        })
+
+        if not isinstance(improvement_band, dict) or band_provenance == "profile_required":
+            unmeasured_upside.append(method_id)
+            continue
+        if band_provenance not in {"source_reported", "local_reproduced"}:
+            unmeasured_upside.append(method_id)
+            continue
+        band_metric = improvement_band.get("metric")
+        if band_metric != primary_metric:
+            if isinstance(band_range, str) and isinstance(band_metric, str):
+                other_metric_upside.append({
+                    "method": method_id,
+                    "metric": band_metric,
+                    "range": band_range,
+                })
+            continue
+        if method_id in excluded_methods:
+            continue
+        _, step_ceiling = parse_band(str(band_range))
+        ceiling *= step_ceiling
+
+    compound = stack.get("compound", {}) if isinstance(stack.get("compound", {}), dict) else {}
+    measured_together = compound.get("measured_together") is True
+    receipts = compound.get("receipts", [])
+    hypothesis_ceiling = {
+        "floor": "1.0x",
+        "ceiling": _format_multiplier(ceiling),
+        "metric": primary_metric,
+        "provenance": "multiplicative_hypothesis",
+        "flag": STACK_COMPOUND_HYPOTHESIS_FLAG,
+    }
+    result = {
+        "primary_metric": primary_metric,
+        "hypothesis_ceiling": hypothesis_ceiling,
+        "unmeasured_upside": unmeasured_upside,
+        "other_metric_upside": other_metric_upside,
+        "excluded_conflicts": excluded_conflicts,
+        "per_step": per_step,
+    }
+    measured = _measured_compound(receipts) if measured_together else None
+    if measured:
+        result["measured"] = measured
+    return result

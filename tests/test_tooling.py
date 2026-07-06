@@ -4,7 +4,9 @@ import contextlib
 import io
 import json
 import os
+import re
 import runpy
+import shutil
 import sys
 import tempfile
 import time
@@ -21,7 +23,7 @@ FIXTURES = ROOT / "tests" / "fixtures"
 if str(SCRIPTS) not in sys.path:
     sys.path.insert(0, str(SCRIPTS))
 
-from _common import applies_to_family  # noqa: E402 - requires SCRIPTS on sys.path above
+from _common import applies_to_family, compose_stack_band, load_structured, parse_band  # noqa: E402 - requires SCRIPTS on sys.path above
 
 
 def run_script(name: str, *args: object, expected: int = 0) -> SimpleNamespace:
@@ -161,7 +163,93 @@ class ToolingTests(unittest.TestCase):
         self.assertTrue(report["ok"], report)
         self.assertEqual(report["sources"], 349)
         self.assertEqual(report["optimization_methods"], 27)
+        self.assertEqual(report["optimization_stacks"], 4)
         self.assertTrue(report["recommendation_taxonomy"])
+
+    def test_adapter_verification_versions_match_version_file(self) -> None:
+        version = (ROOT / "VERSION").read_text().strip()
+        version_pattern = re.compile(r"\bversion:? `([^`]+)`", re.IGNORECASE)
+
+        for path in sorted((ROOT / "adapters").glob("*.md")):
+            with self.subTest(adapter=path.name):
+                versions = version_pattern.findall(path.read_text())
+                self.assertTrue(versions, f"{path} has no verification version")
+                self.assertEqual(set(versions), {version})
+
+    def test_optimization_stacks_schema_is_machine_readable(self) -> None:
+        stacks_path = SKILL / "assets" / "optimization_stacks.yaml"
+        stacks = load_structured(stacks_path)
+        guidance = load_structured(SKILL / "assets" / "optimization_guidance.yaml")
+        method_ids = {method["id"] for method in guidance["methods"]}
+        numeric_range = re.compile(r"\b~?\d+(?:\.\d+)?x(?:\s*-\s*\d+(?:\.\d+)?x)?\b")
+
+        raw = stacks_path.read_text()
+        self.assertNotIn('"compound_range"', raw)
+        self.assertEqual(len(stacks["stacks"]), 4)
+        for stack in stacks["stacks"]:
+            with self.subTest(stack=stack["id"]):
+                step_ids = {step["method"] for step in stack["steps"]}
+                self.assertTrue(step_ids)
+                self.assertTrue(step_ids.issubset(method_ids))
+                compound = stack["compound"]
+                if stack["id"] == "dense-decoder-inference":
+                    self.assertIs(compound["measured_together"], True)
+                    self.assertEqual(compound["receipts"][0]["label"], "stack-measured-together")
+                    self.assertIn("plain 4-bit", compound["receipts"][0]["basis"])
+                else:
+                    self.assertIs(compound["measured_together"], False)
+                    self.assertEqual(compound["receipts"], [])
+                compound_shape = {key: value for key, value in compound.items() if key != "receipts"}
+                self.assertIsNone(numeric_range.search(json.dumps(compound_shape)))
+                for note in stack["composition_notes"]:
+                    self.assertEqual(len(note["pair"]), 2)
+                    self.assertTrue(set(note["pair"]).issubset(step_ids))
+
+    def test_source_validation_fails_loudly_on_invalid_optimization_stack(self) -> None:
+        for mutation, expected in (
+            ("unknown-step", "optimization stack dense-decoder-inference step references missing method missing-method"),
+            ("compound-range", "optimization stack dense-decoder-inference compound stores a numeric range"),
+        ):
+            with self.subTest(mutation=mutation), tempfile.TemporaryDirectory() as tmp:
+                tmp_skill = Path(tmp) / "skill"
+                shutil.copytree(SKILL / "assets", tmp_skill / "assets")
+                stacks_path = tmp_skill / "assets" / "optimization_stacks.yaml"
+                stacks = json.loads(stacks_path.read_text())
+                if mutation == "unknown-step":
+                    stacks["stacks"][0]["steps"][0]["method"] = "missing-method"
+                else:
+                    stacks["stacks"][0]["compound"]["range"] = "1.0x-2.0x"
+                stacks_path.write_text(json.dumps(stacks, indent=2) + "\n")
+
+                result = run_script("validate_sources.py", tmp_skill, expected=1)
+                self.assertIn(expected, result.stdout)
+
+    def test_improvement_band_floor_policy_allows_local_receipted_floor_only(self) -> None:
+        cases = (
+            ("local-reproduced-with-receipts", "local_reproduced", "keep", 0),
+            ("source-reported", "source_reported", "remove", 1),
+            ("local-reproduced-without-receipts", "local_reproduced", "empty", 1),
+        )
+        for name, provenance, receipt_mode, expected in cases:
+            with self.subTest(case=name), tempfile.TemporaryDirectory() as tmp:
+                tmp_skill = Path(tmp) / "skill"
+                shutil.copytree(SKILL / "assets", tmp_skill / "assets")
+                guidance_path = tmp_skill / "assets" / "optimization_guidance.yaml"
+                guidance = json.loads(guidance_path.read_text())
+                method = next(item for item in guidance["methods"] if item["id"] == "native-low-bit-weight-quantization")
+                band = method["improvement_band"]
+                band["provenance"] = provenance
+                band["range"] = "1.2x-2.4x"
+                if receipt_mode == "remove":
+                    band.pop("receipts", None)
+                    band.pop("measured_on", None)
+                elif receipt_mode == "empty":
+                    band["receipts"] = []
+                guidance_path.write_text(json.dumps(guidance, indent=2) + "\n")
+
+                result = run_script("validate_sources.py", tmp_skill, expected=expected)
+                if expected:
+                    self.assertIn("improvement_band range must start at 1.0x unless local_reproduced has receipts", result.stdout)
 
     def test_model_outcome_registry_covers_top_snapshot_without_false_decoder_routes(self) -> None:
         sources = {source["id"] for source in json.loads((SKILL / "assets" / "sources.yaml").read_text())["sources"]}
@@ -190,7 +278,7 @@ class ToolingTests(unittest.TestCase):
 
         decoder = next(record for record in outcomes["records"] if record["id"] == "decoder-mlx-lm-working-route")
         self.assertEqual(decoder["potential_speedup"]["overall"]["range"], "1.0x-4.3x")
-        self.assertEqual(decoder["potential_speedup"]["speculative_decoding"]["range"], "1.0x-3.0x")
+        self.assertEqual(decoder["potential_speedup"]["speculative_decoding"]["range"], "1.0x-1.3x")
 
         by_id = {model["id"]: model for model in snapshot["models"]}
         self.assertIn("decoder-mlx-lm-working-route", by_id["Qwen/Qwen3-0.6B"]["matched_outcome_ids"])
@@ -411,14 +499,85 @@ class ToolingTests(unittest.TestCase):
                 "--limit", 5,
             )
             report = json.loads(output.read_text())
+            self.assertEqual(report["schema_version"], 1)
+            stack = report["recommended_stack"]
+            self.assertEqual(stack["id"], "dense-decoder-inference")
+            compound = stack["compound"]
+            hypothesis = compound["hypothesis_ceiling"]
+            measured = compound["measured"]
+            self.assertEqual(hypothesis["floor"], "1.0x")
+            self.assertEqual(hypothesis["provenance"], "multiplicative_hypothesis")
+            self.assertEqual(
+                hypothesis["flag"],
+                "unmeasured composition - multiplicative hypothesis, not a claim",
+            )
+            self.assertEqual(measured["ratio"], "0.21x")
+            self.assertEqual(measured["provenance"], "local_reproduced")
+            self.assertEqual(measured["receipt"], "stack-measured-together.json")
+            self.assertIn(
+                {"method": "prompt-prefix-cache", "metric": "ttft-proxy", "range": "1.0x-23.8x"},
+                compound["other_metric_upside"],
+            )
+            guidance = {m["id"]: m for m in json.loads((SKILL / "assets" / "optimization_guidance.yaml").read_text())["methods"]}
+            excluded = {method for pair in compound["excluded_conflicts"] for method in pair}
+            same_metric_product = 1.0
+            conflict_excluded_product = 1.0
+            primary_metric = compound["primary_metric"]
+            for step in compound["per_step"]:
+                band = guidance[step["method"]].get("improvement_band")
+                if step["method"] in excluded or not band:
+                    if band and band.get("metric") == primary_metric:
+                        same_metric_product *= parse_band(band["range"])[1]
+                    continue
+                self.assertIn(band["provenance"], {"source_reported", "local_reproduced"})
+                if band.get("metric") != primary_metric:
+                    continue
+                ceiling = parse_band(band["range"])[1]
+                same_metric_product *= ceiling
+                conflict_excluded_product *= ceiling
+            hypothesis_ceiling = float(hypothesis["ceiling"].removesuffix("x"))
+            self.assertAlmostEqual(same_metric_product, 3.432)
+            self.assertAlmostEqual(conflict_excluded_product, 2.64)
+            self.assertLessEqual(hypothesis_ceiling, same_metric_product)
+            self.assertAlmostEqual(hypothesis_ceiling, conflict_excluded_product)
             ready_ids = {item["id"] for item in report["ready_candidates"]}
             research_ids = {item["id"] for item in report["research_candidates"]}
             self.assertIn("fast-sdpa", ready_ids)
             self.assertNotIn("moe-expert-dispatch-and-quantization", ready_ids)
             self.assertIn("prompt-lookup-ngram-speculation", research_ids)
             text = markdown.read_text()
+            self.assertIn("Recommended stack", text)
+            self.assertIn("Measured together: `0.21x`", text)
+            self.assertIn("Hypothesis ceiling: `2.64x`", text)
+            self.assertIn("unmeasured composition - multiplicative hypothesis, not a claim", text)
+            self.assertIn("Workload-conditional upside (different metric): `prompt-prefix-cache` `ttft-proxy` `1.0x-23.8x`", text)
             self.assertIn("Ready candidates", text)
             self.assertIn("Research experiments", text)
+
+    def test_optimization_recommender_selects_specific_exact_stack_for_moe(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_path = Path(tmp)
+            inspection = tmp_path / "inspection.json"
+            output = tmp_path / "recommendations.json"
+            run_script("inspect_model.py", FIXTURES / "models" / "moe", "--output", inspection)
+            run_script("recommend_optimizations.py", inspection, "--output", output, "--limit", 5)
+            report = json.loads(output.read_text())
+            self.assertEqual(report["family"], "moe-decoder-transformer")
+            self.assertEqual(report["recommended_stack"]["id"], "moe-serving")
+
+    def test_compose_stack_band_matches_shared_fixture_and_excludes_conflicts(self) -> None:
+        case = load_structured(FIXTURES / "stack_compose_case.json")
+        actual = compose_stack_band(case["stack"], case["guidance_methods"])
+        self.assertEqual(actual, case["expected"])
+        self.assertEqual(actual["hypothesis_ceiling"]["provenance"], "multiplicative_hypothesis")
+        self.assertEqual(actual["measured"]["provenance"], "local_reproduced")
+        self.assertEqual(actual["other_metric_upside"], [{"method": "ttft-method", "metric": "ttft-proxy", "range": "1.0x-9.0x"}])
+
+    def test_parse_band_rejects_malformed_input(self) -> None:
+        for value in ("1.0-3.0x", "fast", "3.0x-1.0x", "0x-1.0x"):
+            with self.subTest(value=value):
+                with self.assertRaises(ValueError):
+                    parse_band(value)
 
     def test_advisor_taxonomy_preserves_experimental_opt_in(self) -> None:
         skill_text = (SKILL / "SKILL.md").read_text()
@@ -548,10 +707,13 @@ class ToolingTests(unittest.TestCase):
             self.assertTrue(blocked["blocked"])
             self.assertEqual(blocked["ready_candidates"], [])
             self.assertEqual(blocked["research_candidates"], [])
+            self.assertNotIn("recommended_stack", blocked)
+            self.assertEqual(blocked["held_recommended_stack"]["id"], "dense-decoder-inference")
             self.assertTrue(blocked["held_candidates"])
             allowed = json.loads(run_script("recommend_optimizations.py", inspection, "--allow-blocked").stdout)
             self.assertFalse(allowed["blocked"])
             self.assertTrue(allowed["ready_candidates"])
+            self.assertEqual(allowed["recommended_stack"]["id"], "dense-decoder-inference")
 
     def test_recommender_requires_family_and_respects_overrides(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -876,6 +1038,120 @@ class ToolingTests(unittest.TestCase):
             report = json.loads(out.read_text())
             self.assertFalse(report["ok"])
             self.assertEqual(report["summary"]["successful_runs"], 0)
+
+    def test_generation_benchmark_receipt_and_index(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            output = Path(tmp) / "benchmarks" / "fixture.json"
+            stub = (
+                "print('Prompt: 512 tokens, 800.0 tokens-per-sec'); "
+                "print('Generation: 128 tokens, 50.0 tokens-per-sec'); "
+                "print('Peak memory: 1.5 GB')"
+            )
+            run_script(
+                "benchmark_generation.py",
+                "--label", "fixture",
+                "--warmup", "0",
+                "--runs", "1",
+                "--output", output,
+                "--config-note", "quant=4bit",
+                "--",
+                sys.executable, "-c", stub,
+            )
+
+            receipt = json.loads(output.read_text())
+            self.assertEqual(receipt["label"], "fixture")
+            self.assertIn("platform", receipt["environment"])
+            self.assertEqual(receipt["versions"].keys(), {"mlx", "mlx_lm"})
+            self.assertEqual(receipt["config_notes"], {"quant": "4bit"})
+            self.assertEqual(receipt["runs"][0]["prompt_tokens"], 512)
+            self.assertEqual(receipt["runs"][0]["prompt_tps"], 800.0)
+            self.assertEqual(receipt["runs"][0]["generation_tokens"], 128)
+            self.assertEqual(receipt["runs"][0]["generation_tps"], 50.0)
+            self.assertEqual(receipt["runs"][0]["peak_memory_gb"], 1.5)
+            self.assertEqual(receipt["aggregate"]["generation_tps"]["median"], 50.0)
+            self.assertEqual(receipt["ttft_proxy"]["metric"], "ttft_proxy_s")
+            self.assertAlmostEqual(receipt["ttft_proxy"]["median_s"], 0.64)
+            self.assertIn("proxy_note", receipt["ttft_proxy"])
+            self.assertNotIn("speedup_vs_baseline", receipt)
+
+            index = json.loads((output.parent / "receipts_index.json").read_text())
+            self.assertEqual(index["receipts"][0]["label"], "fixture")
+            self.assertEqual(index["receipts"][0]["file"], "fixture.json")
+            self.assertEqual(index["receipts"][0]["config_notes"], {"quant": "4bit"})
+            self.assertIn("-c", index["receipts"][0]["command_summary"])
+
+    def test_generation_benchmark_reports_subprocess_failure_loudly(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            output = Path(tmp) / "fixture.json"
+            stub = "import sys; print('before fail'); print('bad stderr', file=sys.stderr); sys.exit(1)"
+            result = run_script(
+                "benchmark_generation.py",
+                "--label", "fixture",
+                "--warmup", "0",
+                "--runs", "1",
+                "--output", output,
+                "--",
+                sys.executable, "-c", stub,
+                expected=1,
+            )
+            self.assertIn("measured run 1 failed", result.stderr)
+            self.assertIn("before fail", result.stderr)
+            self.assertIn("bad stderr", result.stderr)
+            self.assertFalse(output.exists())
+
+    def test_generation_benchmark_speedup_requires_baseline(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_path = Path(tmp)
+            baseline = tmp_path / "baseline.json"
+            baseline.write_text(json.dumps({
+                "label": "baseline",
+                "aggregate": {
+                    "generation_tps": {"median": 25.0},
+                    "prompt_tps": {"median": 400.0},
+                    "ttft_proxy_s": {"median": 2.0},
+                },
+            }))
+            output = tmp_path / "candidate.json"
+            stub = (
+                "print('Prompt: 512 tokens, 800.0 tokens-per-sec'); "
+                "print('Generation: 128 tokens, 50.0 tokens-per-sec'); "
+                "print('Peak memory: 1.5 GB')"
+            )
+            run_script(
+                "benchmark_generation.py",
+                "--label", "candidate",
+                "--warmup", "0",
+                "--runs", "1",
+                "--baseline-receipt", baseline,
+                "--output", output,
+                "--",
+                sys.executable, "-c", stub,
+            )
+            receipt = json.loads(output.read_text())
+            ratios = receipt["speedup_vs_baseline"]["ratios"]
+            self.assertEqual(receipt["speedup_vs_baseline"]["baseline_label"], "baseline")
+            self.assertAlmostEqual(ratios["decode_tps"], 2.0)
+            self.assertAlmostEqual(ratios["prefill_tps"], 2.0)
+            self.assertAlmostEqual(ratios["ttft_proxy_inverse"], 3.125)
+
+    def test_generation_benchmark_fails_on_missing_patterns(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            output = Path(tmp) / "fixture.json"
+            stub = "print('Prompt: 512 tokens, 800.0 tokens-per-sec')"
+            result = run_script(
+                "benchmark_generation.py",
+                "--label", "fixture",
+                "--warmup", "0",
+                "--runs", "1",
+                "--output", output,
+                "--",
+                sys.executable, "-c", stub,
+                expected=2,
+            )
+            self.assertIn("missing benchmark output pattern", result.stderr)
+            self.assertIn("Generation: <tokens> tokens", result.stderr)
+            self.assertIn("Peak memory: <GB> GB", result.stderr)
+            self.assertFalse(output.exists())
 
     def test_manifest_generate_and_check_detects_drift(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

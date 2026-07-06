@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import importlib.metadata
 import os
 import platform
 import signal
@@ -71,9 +72,8 @@ def environment_metadata() -> dict[str, Any]:
         data["memory_bytes"] = int(memory) if memory and memory.isdigit() else None
         data["macos_version"] = system_command(["sw_vers", "-productVersion"])
     try:
-        import mlx  # type: ignore
-        data["mlx_version"] = getattr(mlx, "__version__", "unknown")
-    except Exception:
+        data["mlx_version"] = importlib.metadata.version("mlx")
+    except importlib.metadata.PackageNotFoundError:
         data["mlx_version"] = None
     return data
 

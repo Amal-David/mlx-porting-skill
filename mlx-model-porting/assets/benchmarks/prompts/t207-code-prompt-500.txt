@@ -1,0 +1,22 @@
+You are writing production Python for an MLX model-porting benchmark harness. Implement the requested function and include concise tests. Requirements:
+- Preserve source provenance for every receipt.
+- Compute median decode tokens per second and speedup versus a named baseline.
+- Reject missing prompt throughput, generation throughput, or peak memory fields.
+- Keep the 1.0x floor unless all measured sweep medians exceed it.
+- Return structured JSON with labels, ratios, memory, caveats, and rollback conditions.
+
+Implement this API:
+```python
+from __future__ import annotations
+from statistics import median
+
+def summarize_generation_receipts(receipts: list[dict], baseline_label: str) -> dict:
+    """Summarize benchmark receipts for a local MLX optimization campaign."""
+```
+
+The implementation should handle duplicate labels, missing aggregate fields, zero or negative throughput, and receipts whose baseline label does not match. Use only the standard library. Include a small unittest class that covers a fast candidate, a slower candidate, and a malformed receipt. Keep the code readable and avoid hidden global state.
+The implementation should handle duplicate labels, missing aggregate fields, zero or negative throughput, and receipts whose baseline label does not match. Use only the standard library. Include a small unittest class that covers a fast candidate, a slower candidate, and a malformed receipt. Keep the code readable and avoid hidden global state.
+The implementation should handle duplicate labels, missing aggregate fields, zero or negative throughput, and receipts whose baseline label does not match. Use only the standard library. Include a small unittest class that covers a fast candidate, a slower candidate, and a malformed receipt. Keep the code readable and avoid hidden global state.
+The implementation should handle duplicate labels, missing aggregate fields, zero or negative throughput, and receipts whose baseline label does not match. Use only the standard library. Include a small unittest class that covers a fast candidate, a slower candidate, and a malformed receipt. Keep the code readable and avoid hidden global state.
+The implementation should handle duplicate labels, missing aggregate fields, zero or negative throughput, and receipts whose baseline label does not match. Use only the standard library. Include a small unittest class that covers a fast candidate, a slower candidate, and a malformed receipt. Keep the code readable and avoid hidden global state.
+The implementation should handle duplicate labels, missing aggregate fields, zero or negative throughput, and receipts whose baseline label does not match. Use only the standard library. Include a small unittest class that covers a fast candidate, a slower candidate, and a malformed receipt. Keep the code readable and avoid hidden global state.

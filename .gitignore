@@ -12,6 +12,17 @@ __pycache__/
 .opencode/
 .superplan/
 
+!.claude/
+.claude/*
+!.claude/skills/
+.claude/skills/*
+!.claude/skills/mlx-model-porting
+!.agents/
+.agents/*
+!.agents/skills/
+.agents/skills/*
+!.agents/skills/mlx-model-porting
+
 # Local validation scratch output
 *.tmp
 *.log
