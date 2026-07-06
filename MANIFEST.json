@@ -2,8 +2,8 @@
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
   "version": "0.1.0",
-  "generated_at": "2026-07-06T09:10:10.944660+00:00",
-  "file_count": 218,
+  "generated_at": "2026-07-06T09:15:33.182025+00:00",
+  "file_count": 219,
   "files": [
     {
       "path": ".github/workflows/daily-research.yml",
@@ -27,8 +27,8 @@
     },
     {
       "path": "CHANGELOG.md",
-      "size_bytes": 1050,
-      "sha256": "66b770035065bc4b263f2843ee56fb3e7daf8cd3895bd3d552a07e75cde25569"
+      "size_bytes": 1141,
+      "sha256": "877fee02dc184639ff000c2c5aa916724cbdfa2cb4800b85ec23d4e646da196c"
     },
     {
       "path": "CLAUDE.md",
@@ -157,8 +157,8 @@
     },
     {
       "path": "mlx-model-porting/SKILL.md",
-      "size_bytes": 11499,
-      "sha256": "e0fe8b10b2602896082e1865de43675b5b1d451b39a4af904e520e8ecb30856b"
+      "size_bytes": 11656,
+      "sha256": "dae8284849bd837feee21b38e20824eef68bcb7ff6f9d39b3be8619e44a557fc"
     },
     {
       "path": "mlx-model-porting/assets/BENCHMARK_REPORT.md",
@@ -269,6 +269,11 @@
       "path": "mlx-model-porting/references/compile-and-kernels.md",
       "size_bytes": 5266,
       "sha256": "aadd4e09d5b4e63f2f9eba5734b811f5435c1513b3977b8c9c58de562ddefccb"
+    },
+    {
+      "path": "mlx-model-porting/references/compound-stacks.md",
+      "size_bytes": 8100,
+      "sha256": "2b2875e832b6821ac524f3f5d14b26bce79cc6176a77dfc7c5937b3caf924736"
     },
     {
       "path": "mlx-model-porting/references/decoding-and-serving.md",

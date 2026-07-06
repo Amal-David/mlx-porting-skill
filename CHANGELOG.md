@@ -6,6 +6,7 @@
 - Replaced the broken broad MLX core API citation with concrete MLX operator docs.
 - Added provenance validation for source IDs, snapshots, URL checks, and supported-technique evidence.
 - Scoped third-party MLX optimization claims and indexed June 2026 KV-cache research as research candidates.
+- Added derived compound bands, optimization stacks, and advisor recommended-stack output.
 - Hardened model inspection, tensor comparison, weight-map validation, template warnings, and benchmark timeout handling.
 
 ## 0.1.0 — 2026-06-23

@@ -36,6 +36,7 @@ Produce a **correct, reproducible, architecture-aware MLX implementation**. Corr
 | NaN, Inf, cosine-similarity drift, parity failure, or garbage output appears versus the source. | [failure atlas](references/failure-atlas.md) |
 | Weight conversion, key mapping, tensor rename, transpose, reshape, split, merge, or shape transform is in scope. | [core porting method](references/porting-core.md) |
 | The user says "make it faster" but no profile, workload, or baseline exists yet. | [benchmarking](references/benchmarking.md) |
+| Speedup plan, how techniques combine, or expected compound gains. | [compound stacks](references/compound-stacks.md) |
 | KV cache, long context, recurrent state, attention memory, or prefill/decode memory is the bottleneck. | [attention and KV cache](references/attention-and-kv.md) |
 | Quantization, "fit in 16GB", "4-bit", mixed precision, or memory reduction is requested. | [quantization](references/quantization.md) |
 | Decoding, serving, speculative decoding, batching, streaming, or API runtime behavior is requested. | [decoding and serving](references/decoding-and-serving.md) |
@@ -104,7 +105,7 @@ Read [benchmarking](references/benchmarking.md). Separate prefill, decode, postp
 
 ### 8. Apply the optimization ladder
 
-Use guides: [C](references/compile-and-kernels.md),[KV](references/attention-and-kv.md),[S](references/decoding-and-serving.md),[Q](references/quantization.md),[T](references/training-and-finetuning.md).
+Use guides: [C](references/compile-and-kernels.md),[KV](references/attention-and-kv.md),[S](references/decoding-and-serving.md),[Q](references/quantization.md),[T](references/training-and-finetuning.md),[CS](references/compound-stacks.md).
 
 Tiers: `assets/recommendation-taxonomy.yaml`; experimental approach: state gate and ask: “This is an experimental approach. Do you want to try it?” Continue after opt-in.
 
