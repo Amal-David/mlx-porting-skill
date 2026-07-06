@@ -2,8 +2,8 @@
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
   "version": "0.1.0",
-  "generated_at": "2026-07-06T08:49:33.007698+00:00",
-  "file_count": 216,
+  "generated_at": "2026-07-06T09:00:24.138947+00:00",
+  "file_count": 217,
   "files": [
     {
       "path": ".github/workflows/daily-research.yml",
@@ -207,13 +207,18 @@
     },
     {
       "path": "mlx-model-porting/assets/optimization_guidance.yaml",
-      "size_bytes": 41117,
-      "sha256": "532bc8c6a90b169b04ead0abfe9692a8e4aaa9db71cbab666e2bcfd92b86ae85"
+      "size_bytes": 43723,
+      "sha256": "7e1de4c456eae454f1508211bdaedfb23ea80d1d832be0dd1ee093b4e7897ef1"
+    },
+    {
+      "path": "mlx-model-porting/assets/optimization_stacks.yaml",
+      "size_bytes": 10643,
+      "sha256": "867949a64aec2393a400e4d964dce2a187b102dd1f703a82af9de4dd146ec8ba"
     },
     {
       "path": "mlx-model-porting/assets/recommendation-taxonomy.yaml",
-      "size_bytes": 5091,
-      "sha256": "5f484ab1e6278f9e34bf94859316ea6d1d06383397c5d6ba08202fa33a1d90ef"
+      "size_bytes": 5239,
+      "sha256": "26f9b774621cf9591bcb58a97e304820550405f9b5695caa071903410972b197"
     },
     {
       "path": "mlx-model-porting/assets/research_backlog.json",
@@ -657,8 +662,8 @@
     },
     {
       "path": "mlx-model-porting/scripts/validate_sources.py",
-      "size_bytes": 13600,
-      "sha256": "76ceb5edf5390efc8da5ece8fecd73f6145059c25149dc9a3f3a77a00b46215f"
+      "size_bytes": 21668,
+      "sha256": "add0eb9a5f5dde7d63e46d38d8884f6daba91fa78e1bd70c441db744b6335db4"
     },
     {
       "path": "mlx-model-porting/scripts/validate_weight_map.py",
@@ -1082,8 +1087,8 @@
     },
     {
       "path": "tests/test_tooling.py",
-      "size_bytes": 143243,
-      "sha256": "d4306c1afbc317fa1b2c7754515010e7f35683f415badf8780c9a55ee3fba61e"
+      "size_bytes": 145774,
+      "sha256": "cdce579fe40071b6f8f04ef61ad5bcb85cb71b6d1e97575498fceffca737c3b8"
     }
   ]
 }

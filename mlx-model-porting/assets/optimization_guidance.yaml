@@ -416,6 +416,13 @@
       ],
       "recommendation": "Use only for concurrent serving where scheduler complexity is justified.",
       "expected_effect": "vllm-mlx reports up to 4.3x aggregate throughput at 16 concurrent requests and 21%-87% higher text throughput than llama.cpp across tested models; do not generalize outside that setup.",
+      "improvement_band": {
+        "provenance": "source_reported",
+        "range": "1.0x-4.3x",
+        "metric": "batch-throughput",
+        "basis": "vllm-mlx reports up to 4.3x aggregate throughput at 16 concurrent requests; keep the existing 21%-87% text-throughput note attached to its tested-model setup.",
+        "applies_when": "Concurrent serving workloads match the vllm-mlx benchmark shape closely enough to reproduce throughput against a local baseline."
+      },
       "tradeoffs": [
         "Can hurt isolated single-user latency.",
         "Requires robust cancellation, compaction, cache ownership, and per-request sampling."
@@ -463,6 +470,13 @@
       ],
       "recommendation": "Use content-based prefix/image cache only when processor output is deterministic and cache keying includes model and processor revisions.",
       "expected_effect": "vllm-mlx reports 28x repeated image-query speedup and 24.7x video cache speedup on its M4 Max evaluation; treat as repeated-input serving evidence, not a universal VLM speedup.",
+      "improvement_band": {
+        "provenance": "source_reported",
+        "range": "1.0x-28.0x",
+        "metric": "repeated-media-ttft",
+        "basis": "vllm-mlx reports 28x repeated image-query speedup and 24.7x video cache speedup on its M4 Max evaluation; the floor remains no gain for non-repeated media.",
+        "applies_when": "The workload repeats identical media and the processor, model revision, cache key, and warm-output parity gates match the source-reported setup."
+      },
       "tradeoffs": [
         "Hashing/normalization must not collapse distinct inputs.",
         "Cache memory grows with repeated media and privacy policy matters."
@@ -815,6 +829,13 @@
       ],
       "recommendation": "Use a media-aware block prefix cache only when restored cache coverage and media placeholder safety are proven.",
       "expected_effect": "vllm-mlx reports up to 28x repeated-image and 24.7x video cache speedups in its benchmark setup; treat those as source-reported, not portable guarantees.",
+      "improvement_band": {
+        "provenance": "source_reported",
+        "range": "1.0x-28.0x",
+        "metric": "repeated-media-ttft",
+        "basis": "vllm-mlx reports up to 28x repeated-image and 24.7x video cache speedups in its benchmark setup; keep the high end limited to repeated media cache hits.",
+        "applies_when": "Media-aware block prefix cache hits dominate TTFT and cold/warm parity, placeholder safety, tenant namespace, and memory gates pass."
+      },
       "tradeoffs": [
         "Raises privacy, memory, eviction, and batch-noninvariance risks.",
         "May not compose with KV quantization, rotating caches, or media suffixes."
@@ -947,6 +968,13 @@
       ],
       "recommendation": "Use Qwen3-TTS batch_generate for compatible concurrent TTS jobs after single-request quality is locked.",
       "expected_effect": "MLX-Audio docs report 1.67x to 5.45x batch throughput on 6-bit short prompts at batch sizes 1-8; reproduce on the target text/voice mix.",
+      "improvement_band": {
+        "provenance": "source_reported",
+        "range": "1.0x-5.45x",
+        "metric": "batch-throughput",
+        "basis": "MLX-Audio docs report 1.67x to 5.45x batch throughput on 6-bit short prompts at batch sizes 1-8; keep the floor at no gain for single-request or mismatched workloads.",
+        "applies_when": "Compatible Qwen3-TTS batch_generate jobs use comparable short prompts, quantization, voice/reference isolation, and audio quality gates."
+      },
       "tradeoffs": [
         "Batching can increase TTFB and tail latency.",
         "Voice/reference/sampling isolation must be per request."
@@ -1161,6 +1189,18 @@
       ],
       "recommendation": "Use only when the source model actually depends on PyTorch grid_sample-style spatial or volume warping; first lock a readable MLX/NumPy reference, then consider a custom Metal kernel for the profiled warp.",
       "expected_effect": "Profile-required. Local Apple M4 Pro / MLX 0.30.4 reproduction of the pinned 3D benchmark showed about 10x kernel-level speedup versus the repo's pure-MLX gather baseline, but end-to-end benefit depends on model use.",
+      "improvement_band": {
+        "provenance": "local_reproduced",
+        "range": "1.0x-10.0x",
+        "metric": "kernel-latency",
+        "basis": "Local Apple M4 Pro / MLX 0.30.4 reproduction of the pinned 3D benchmark showed about 10x kernel-level speedup versus the repo's pure-MLX gather baseline; end-to-end model benefit remains workload-dependent.",
+        "applies_when": "The source model uses the same supported grid_sample mode, layout, dtype, padding, and benchmark shape after oracle parity passes.",
+        "measured_on": {
+          "chip": "Apple M4 Pro",
+          "mlx": "0.30.4"
+        },
+        "receipts": []
+      },
       "tradeoffs": [
         "Pinned implementation covers forward bilinear/trilinear sampling with zeros or border padding, not reflection, nearest mode, or training gradients.",
         "Channels-last layout avoids transposes, but PyTorch-style NCHW wrappers may copy.",

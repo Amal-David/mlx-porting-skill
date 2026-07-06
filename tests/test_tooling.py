@@ -4,7 +4,9 @@ import contextlib
 import io
 import json
 import os
+import re
 import runpy
+import shutil
 import sys
 import tempfile
 import time
@@ -21,7 +23,7 @@ FIXTURES = ROOT / "tests" / "fixtures"
 if str(SCRIPTS) not in sys.path:
     sys.path.insert(0, str(SCRIPTS))
 
-from _common import applies_to_family  # noqa: E402 - requires SCRIPTS on sys.path above
+from _common import applies_to_family, load_structured  # noqa: E402 - requires SCRIPTS on sys.path above
 
 
 def run_script(name: str, *args: object, expected: int = 0) -> SimpleNamespace:
@@ -161,7 +163,50 @@ class ToolingTests(unittest.TestCase):
         self.assertTrue(report["ok"], report)
         self.assertEqual(report["sources"], 349)
         self.assertEqual(report["optimization_methods"], 27)
+        self.assertEqual(report["optimization_stacks"], 4)
         self.assertTrue(report["recommendation_taxonomy"])
+
+    def test_optimization_stacks_schema_is_machine_readable(self) -> None:
+        stacks_path = SKILL / "assets" / "optimization_stacks.yaml"
+        stacks = load_structured(stacks_path)
+        guidance = load_structured(SKILL / "assets" / "optimization_guidance.yaml")
+        method_ids = {method["id"] for method in guidance["methods"]}
+        numeric_range = re.compile(r"\b~?\d+(?:\.\d+)?x(?:\s*-\s*\d+(?:\.\d+)?x)?\b")
+
+        raw = stacks_path.read_text()
+        self.assertNotIn('"compound_range"', raw)
+        self.assertEqual(len(stacks["stacks"]), 4)
+        for stack in stacks["stacks"]:
+            with self.subTest(stack=stack["id"]):
+                step_ids = {step["method"] for step in stack["steps"]}
+                self.assertTrue(step_ids)
+                self.assertTrue(step_ids.issubset(method_ids))
+                compound = stack["compound"]
+                self.assertIs(compound["measured_together"], False)
+                self.assertEqual(compound["receipts"], [])
+                self.assertIsNone(numeric_range.search(json.dumps(compound)))
+                for note in stack["composition_notes"]:
+                    self.assertEqual(len(note["pair"]), 2)
+                    self.assertTrue(set(note["pair"]).issubset(step_ids))
+
+    def test_source_validation_fails_loudly_on_invalid_optimization_stack(self) -> None:
+        for mutation, expected in (
+            ("unknown-step", "optimization stack dense-decoder-inference step references missing method missing-method"),
+            ("compound-range", "optimization stack dense-decoder-inference compound stores a numeric range"),
+        ):
+            with self.subTest(mutation=mutation), tempfile.TemporaryDirectory() as tmp:
+                tmp_skill = Path(tmp) / "skill"
+                shutil.copytree(SKILL / "assets", tmp_skill / "assets")
+                stacks_path = tmp_skill / "assets" / "optimization_stacks.yaml"
+                stacks = json.loads(stacks_path.read_text())
+                if mutation == "unknown-step":
+                    stacks["stacks"][0]["steps"][0]["method"] = "missing-method"
+                else:
+                    stacks["stacks"][0]["compound"]["range"] = "1.0x-2.0x"
+                stacks_path.write_text(json.dumps(stacks, indent=2) + "\n")
+
+                result = run_script("validate_sources.py", tmp_skill, expected=1)
+                self.assertIn(expected, result.stdout)
 
     def test_model_outcome_registry_covers_top_snapshot_without_false_decoder_routes(self) -> None:
         sources = {source["id"] for source in json.loads((SKILL / "assets" / "sources.yaml").read_text())["sources"]}

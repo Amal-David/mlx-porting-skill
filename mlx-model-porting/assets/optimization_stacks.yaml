@@ -1,0 +1,248 @@
+{
+  "schema_version": 1,
+  "reviewed": "2026-07-06",
+  "stack_policy": {
+    "compound_bands": "Compound improvement bands are derived at advisory time, never stored in this registry.",
+    "floor_policy": "Derived compound floors stay 1.0x because every method ceiling is workload-conditional.",
+    "unmeasured_composition": "Unmeasured compositions are multiplicative_hypothesis only and must carry the unmeasured-composition flag.",
+    "default_pair_validity": "Composition pairs not listed in a stack's composition_notes default to unknown."
+  },
+  "stacks": [
+    {
+      "id": "dense-decoder-inference",
+      "label": "Dense decoder inference",
+      "families": [
+        "dense-decoder-transformer",
+        "moe-decoder-transformer"
+      ],
+      "steps": [
+        {
+          "method": "native-low-bit-weight-quantization",
+          "lossiness": "conditionally-lossy",
+          "gate": "Quantized load, task quality, peak memory, and decode throughput pass against the unquantized baseline.",
+          "rollback": "Return to the unquantized weights if quality drifts or latency worsens."
+        },
+        {
+          "method": "fast-sdpa",
+          "lossiness": "lossless",
+          "gate": "Prefill and single-token decode parity pass across target masks, GQA/MQA layout, and lengths.",
+          "rollback": "Use the original attention path if any mask, position, or tensor parity check fails."
+        },
+        {
+          "method": "compile-stable-region",
+          "lossiness": "lossless",
+          "gate": "Cold/warm timing, compile count, parity, and legal-shape coverage show stable-region benefit.",
+          "rollback": "Disable compile if retracing, cold cost, or unsupported shapes erase the end-to-end win."
+        },
+        {
+          "method": "prompt-prefix-cache",
+          "lossiness": "lossless",
+          "gate": "Exact-hit, miss, save/load, namespace, and TTFT tests pass for the target tokenizer/template.",
+          "rollback": "Disable prefix reuse if cache keys, privacy isolation, or warm logits diverge."
+        },
+        {
+          "method": "uniform-kv-quantization",
+          "lossiness": "conditionally-lossy",
+          "gate": "Long-context quality, bytes per token per layer, decode latency, and cache reset/reuse tests pass.",
+          "rollback": "Return KV cache precision to the baseline if quality, latency, or cache composition regresses."
+        },
+        {
+          "method": "draft-model-speculation",
+          "lossiness": "lossless",
+          "gate": "Draft/target tokenizer compatibility, acceptance length, distribution or task quality, and decode throughput pass.",
+          "rollback": "Disable the draft model if acceptance is too low, memory exceeds budget, or quality changes."
+        }
+      ],
+      "composition_notes": [
+        {
+          "pair": [
+            "prompt-prefix-cache",
+            "uniform-kv-quantization"
+          ],
+          "validity": "unknown",
+          "why": "attention-and-kv.md says KV quantization must validate prompt-cache save/load, trimming, batching, and cache reset/reuse before advertising a combined mode."
+        },
+        {
+          "pair": [
+            "uniform-kv-quantization",
+            "draft-model-speculation"
+          ],
+          "validity": "unknown",
+          "why": "KV dequant overhead and speculative cache updates must be measured together before treating their ceilings as more than a multiplicative hypothesis."
+        }
+      ],
+      "compound": {
+        "measured_together": false,
+        "receipts": []
+      }
+    },
+    {
+      "id": "moe-serving",
+      "label": "MoE serving",
+      "families": [
+        "moe-decoder-transformer"
+      ],
+      "steps": [
+        {
+          "method": "moe-expert-dispatch-and-quantization",
+          "lossiness": "conditionally-lossy",
+          "gate": "Loop-oracle parity, tokens-per-expert histogram, quality, peak memory, and throughput pass.",
+          "rollback": "Return to the baseline MoE dispatch or precision if rare-expert quality or small-group latency regresses."
+        },
+        {
+          "method": "continuous-batching-serving",
+          "lossiness": "lossless",
+          "gate": "Concurrency 1 and many, mixed lengths, cancellation, P50/P95/P99 latency, throughput, and memory pass.",
+          "rollback": "Disable continuous batching if tail latency, state ownership, or scheduler overhead fails."
+        },
+        {
+          "method": "prompt-prefix-cache",
+          "lossiness": "lossless",
+          "gate": "Exact-prefix cache hit/miss, tenant namespace, save/load, and TTFT distribution pass under serving load.",
+          "rollback": "Disable prompt cache if reuse is incorrect, privacy risk appears, or hit rate cannot offset overhead."
+        }
+      ],
+      "composition_notes": [
+        {
+          "pair": [
+            "moe-expert-dispatch-and-quantization",
+            "continuous-batching-serving"
+          ],
+          "validity": "unknown",
+          "why": "MoE expert-group skew and serving batch mix can change the hot path; measure tokens-per-expert and throughput together."
+        },
+        {
+          "pair": [
+            "continuous-batching-serving",
+            "prompt-prefix-cache"
+          ],
+          "validity": "unknown",
+          "why": "attention-and-kv.md requires mixed-batch, cancellation, cache ownership, and isolation tests for shared-prefix serving."
+        }
+      ],
+      "compound": {
+        "measured_together": false,
+        "receipts": []
+      }
+    },
+    {
+      "id": "vlm-repeated-media",
+      "label": "VLM repeated media",
+      "families": [
+        "vision-language-omni"
+      ],
+      "steps": [
+        {
+          "method": "vision-feature-cache",
+          "lossiness": "lossless",
+          "gate": "Cold/warm logits parity, content-hash mutation, eviction/reset, mixed-batch, TTFT, and memory pass.",
+          "rollback": "Disable the feature cache if warm outputs drift, key coverage is incomplete, or reuse is too rare."
+        },
+        {
+          "method": "content-prefix-cache-vlm",
+          "lossiness": "lossless",
+          "gate": "Same-media hit, near-duplicate miss, processor revision key, TTFT, and memory distribution pass.",
+          "rollback": "Disable content-prefix reuse if false hits, poor hit rate, or storage/privacy risk appears."
+        },
+        {
+          "method": "multimodal-content-prefix-cache",
+          "lossiness": "lossless",
+          "gate": "Media hash coverage, tenant namespace, cold/warm parity, mixed suffix rejection, and eviction tests pass.",
+          "rollback": "Disable media-aware block prefix cache if tenant isolation, placeholder safety, or repeated-prefix coverage fails."
+        },
+        {
+          "method": "continuous-batching-serving",
+          "lossiness": "lossless",
+          "gate": "Concurrent VLM requests pass mixed media/text length, cancellation, latency, throughput, and memory tests.",
+          "rollback": "Disable batching if it breaks cache ownership, batch invariance, or tail-latency budgets."
+        },
+        {
+          "method": "cache-privacy-and-isolation",
+          "lossiness": "lossless",
+          "gate": "not_a_speedup: namespace isolation, opt-out, persistence policy, timing review, and malformed request tests pass.",
+          "rollback": "Do not ship shared or persisted cache reuse until the privacy gate passes."
+        }
+      ],
+      "composition_notes": [
+        {
+          "pair": [
+            "vision-feature-cache",
+            "multimodal-content-prefix-cache"
+          ],
+          "validity": "unknown",
+          "why": "Both reuse media-derived state; cold/warm parity and key coverage must prove feature and prefix cache boundaries together."
+        },
+        {
+          "pair": [
+            "multimodal-content-prefix-cache",
+            "continuous-batching-serving"
+          ],
+          "validity": "unknown",
+          "why": "The guidance warns multimodal prefix caches can be batch-noninvariant; validate mixed media suffixes and tenant namespace before combining with batching."
+        },
+        {
+          "pair": [
+            "cache-privacy-and-isolation",
+            "multimodal-content-prefix-cache"
+          ],
+          "validity": "validated-composable",
+          "why": "The cache privacy review is a required safety gate for shared or persisted cache reuse, not a speedup multiplier."
+        }
+      ],
+      "compound": {
+        "measured_together": false,
+        "receipts": []
+      }
+    },
+    {
+      "id": "tts-batch",
+      "label": "TTS batch serving",
+      "families": [
+        "flow-diffusion-tts",
+        "autoregressive-audio-lm"
+      ],
+      "steps": [
+        {
+          "method": "qwen3-tts-batch-generation",
+          "lossiness": "lossless",
+          "gate": "Single-vs-batched parity, mixed voices and lengths, cancellation, fairness, TTFB, RTF, memory, and audio quality pass.",
+          "rollback": "Disable batch_generate if TTFB or tail latency violates budget or batched audio diverges."
+        },
+        {
+          "method": "audio-reference-conditioning-cache",
+          "lossiness": "lossless",
+          "gate": "Cold/warm parity, speaker similarity, prosody, cache accounting, tenant isolation, and memory pressure pass.",
+          "rollback": "Disable reference cache if speaker identity drifts, namespace isolation is missing, or eviction breaks quality."
+        },
+        {
+          "method": "audio-streaming-and-cache",
+          "lossiness": "conditionally-lossy",
+          "gate": "First-audio latency, RTF, chunk continuity, speaker similarity, intelligibility, and peak memory pass.",
+          "rollback": "Disable streaming cache if chunk seams, quality metrics, or RTF regress."
+        }
+      ],
+      "composition_notes": [
+        {
+          "pair": [
+            "qwen3-tts-batch-generation",
+            "audio-reference-conditioning-cache"
+          ],
+          "validity": "unknown",
+          "why": "Batching and reference cache both touch voice/reference isolation; compare single, batched, cold, and warm audio quality together."
+        },
+        {
+          "pair": [
+            "audio-reference-conditioning-cache",
+            "audio-streaming-and-cache"
+          ],
+          "validity": "unknown",
+          "why": "Audio state includes codec, speaker, chunk, and flush semantics; cache and streaming composition needs continuity and quality gates."
+        }
+      ],
+      "compound": {
+        "measured_together": false,
+        "receipts": []
+      }
+    }
+  ]
+}

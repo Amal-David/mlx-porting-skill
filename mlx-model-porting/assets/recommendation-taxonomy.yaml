@@ -110,6 +110,7 @@
     "profile_required": "No numeric band may be claimed until measured on the target workload.",
     "source_reported": "A cited source reports the range; keep its hardware/workload caveat attached.",
     "local_reproduced": "A local benchmark artifact reproduces the result with metadata and quality gate.",
+    "multiplicative_hypothesis": "Derived product of source-reported ceilings only; never a claim and must carry the unmeasured-composition flag.",
     "not_a_speedup": "The item is a correctness, risk, or product-mode decision rather than an optimization claim."
   },
   "claim_types": [

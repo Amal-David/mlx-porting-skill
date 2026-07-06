@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import concurrent.futures
 import json
+import re
 import sys
 import urllib.error
 import urllib.request
@@ -46,6 +47,9 @@ CLAIM_TYPES = {
     "audio_quality",
     "risk_or_negative",
 }
+STACK_LOSSINESS = {"lossless", "conditionally-lossy"}
+STACK_PAIR_VALIDITY = {"validated-composable", "unknown", "known-conflicting"}
+NUMERIC_RANGE_RE = re.compile(r"\b~?\d+(?:\.\d+)?x(?:\s*-\s*\d+(?:\.\d+)?x)?\b")
 KIND_TO_EVIDENCE_CLASS = {
     "official-doc": {"official_api_doc"},
     "source-code": {"primary_source_code"},
@@ -78,6 +82,36 @@ def add_error(errors: list[str], condition: bool, message: str) -> None:
         errors.append(message)
 
 
+def has_any_evidence_ref(evidence_refs: Any) -> bool:
+    if not isinstance(evidence_refs, dict):
+        return False
+    return any(isinstance(refs, list) and bool(refs) for refs in evidence_refs.values())
+
+
+def contains_key(value: Any, key: str) -> bool:
+    if isinstance(value, dict):
+        return key in value or any(contains_key(item, key) for item in value.values())
+    if isinstance(value, list):
+        return any(contains_key(item, key) for item in value)
+    return False
+
+
+def compound_has_numeric_range(value: Any) -> bool:
+    if isinstance(value, dict):
+        for key, item in value.items():
+            if key in {"range", "compound_range"}:
+                return True
+            if compound_has_numeric_range(item):
+                return True
+    elif isinstance(value, list):
+        return any(compound_has_numeric_range(item) for item in value)
+    elif isinstance(value, str):
+        return bool(NUMERIC_RANGE_RE.search(value))
+    elif isinstance(value, (int, float)) and not isinstance(value, bool):
+        return True
+    return False
+
+
 def check_url(source: dict[str, Any], timeout: float) -> dict[str, Any]:
     url = str(source.get("url", ""))
     headers = {"User-Agent": "mlx-model-porting-skill/0.1"}
@@ -108,6 +142,8 @@ def validate(skill: Path, check_urls: bool, timeout: float, workers: int) -> tup
     techniques = load_structured(assets / "techniques.yaml")
     optimization_guidance_path = assets / "optimization_guidance.yaml"
     optimization_guidance = load_structured(optimization_guidance_path) if optimization_guidance_path.exists() else {}
+    optimization_stacks_path = assets / "optimization_stacks.yaml"
+    optimization_stacks = load_structured(optimization_stacks_path) if optimization_stacks_path.exists() else {}
     taxonomy_path = assets / "recommendation-taxonomy.yaml"
     taxonomy = load_structured(taxonomy_path) if taxonomy_path.exists() else {}
     errors: list[str] = []
@@ -175,7 +211,10 @@ def validate(skill: Path, check_urls: bool, timeout: float, workers: int) -> tup
         if "rollback_condition" in technique:
             add_error(errors, not technique.get("rollback_condition"), f"technique {tid} has empty rollback_condition")
 
+    improvement_band_tiers = set(taxonomy.get("improvement_band_policy", {})) if isinstance(taxonomy, dict) else set()
+    benchmark_root = (assets / "benchmarks").resolve()
     technique_ids = {t.get("id") for t in techniques.get("techniques", []) if isinstance(t, dict)}
+    method_ids = {m.get("id") for m in optimization_guidance.get("methods", []) if isinstance(m, dict)}
     for method in optimization_guidance.get("methods", []):
         mid = method.get("id")
         technique_id = method.get("technique_id")
@@ -188,11 +227,74 @@ def validate(skill: Path, check_urls: bool, timeout: float, workers: int) -> tup
         add_error(errors, not method.get("rollback_conditions"), f"optimization guidance method {mid} lacks rollback_conditions")
         evidence_refs = method.get("evidence_refs", {})
         add_error(errors, not isinstance(evidence_refs, dict), f"optimization guidance method {mid} evidence_refs must be a mapping")
+        improvement_band = method.get("improvement_band")
+        if improvement_band is not None:
+            add_error(errors, not isinstance(improvement_band, dict), f"optimization guidance method {mid} improvement_band must be a mapping")
+            if isinstance(improvement_band, dict):
+                provenance = improvement_band.get("provenance")
+                add_error(errors, provenance not in improvement_band_tiers, f"optimization guidance method {mid} has invalid improvement_band provenance {provenance}")
+                add_error(errors, not improvement_band.get("range"), f"optimization guidance method {mid} improvement_band lacks range")
+                add_error(errors, not str(improvement_band.get("range", "")).startswith("1.0x-"), f"optimization guidance method {mid} improvement_band range must start at 1.0x")
+                add_error(errors, not improvement_band.get("metric"), f"optimization guidance method {mid} improvement_band lacks metric")
+                add_error(errors, not improvement_band.get("basis"), f"optimization guidance method {mid} improvement_band lacks basis")
+                add_error(errors, not improvement_band.get("applies_when"), f"optimization guidance method {mid} improvement_band lacks applies_when")
+                if provenance == "source_reported":
+                    add_error(errors, not has_any_evidence_ref(evidence_refs), f"source_reported improvement_band for {mid} lacks evidence_refs")
+                if provenance == "local_reproduced":
+                    measured_on = improvement_band.get("measured_on")
+                    add_error(errors, not isinstance(measured_on, dict) or not measured_on, f"local_reproduced improvement_band for {mid} lacks measured_on metadata")
+                    receipts = improvement_band.get("receipts")
+                    add_error(errors, not isinstance(receipts, list), f"local_reproduced improvement_band for {mid} receipts must be a list")
+                    for receipt in (receipts if isinstance(receipts, list) else []):
+                        raw_receipt = Path(str(receipt))
+                        receipt_path = raw_receipt if raw_receipt.is_absolute() else benchmark_root / raw_receipt
+                        resolved = receipt_path.resolve()
+                        try:
+                            resolved.relative_to(benchmark_root)
+                        except ValueError:
+                            errors.append(f"local_reproduced improvement_band for {mid} receipt escapes assets/benchmarks: {receipt}")
+                            continue
+                        add_error(errors, not resolved.is_file(), f"local_reproduced improvement_band for {mid} receipt not found: {receipt}")
         for role, refs in (evidence_refs or {}).items():
             add_error(errors, role not in {"official_docs", "repositories", "papers", "technical_blogs", "issues", "benchmark_artifacts"}, f"optimization guidance method {mid} has invalid evidence role {role}")
             add_error(errors, not isinstance(refs, list), f"optimization guidance method {mid} evidence role {role} must be a list")
             for source_id in refs or []:
                 add_error(errors, source_id not in source_by_id, f"optimization guidance method {mid} references missing evidence {source_id}")
+
+    if optimization_stacks:
+        add_error(errors, contains_key(optimization_stacks, "compound_range"), "optimization_stacks contains forbidden compound_range key")
+        stacks = optimization_stacks.get("stacks", [])
+        add_error(errors, not isinstance(stacks, list), "optimization_stacks stacks must be a list")
+        for stack in (stacks if isinstance(stacks, list) else []):
+            sid = stack.get("id") if isinstance(stack, dict) else None
+            add_error(errors, not sid, "optimization stack missing id")
+            steps = stack.get("steps", []) if isinstance(stack, dict) else []
+            add_error(errors, not isinstance(steps, list) or not steps, f"optimization stack {sid} must have steps")
+            step_method_ids: set[str] = set()
+            for step in (steps if isinstance(steps, list) else []):
+                method_id = step.get("method") if isinstance(step, dict) else None
+                add_error(errors, method_id not in method_ids, f"optimization stack {sid} step references missing method {method_id}")
+                if method_id:
+                    step_method_ids.add(str(method_id))
+                add_error(errors, not isinstance(step, dict) or step.get("lossiness") not in STACK_LOSSINESS, f"optimization stack {sid} step {method_id} has invalid lossiness")
+                add_error(errors, not isinstance(step, dict) or not step.get("gate"), f"optimization stack {sid} step {method_id} lacks gate")
+                add_error(errors, not isinstance(step, dict) or not step.get("rollback"), f"optimization stack {sid} step {method_id} lacks rollback")
+            notes = stack.get("composition_notes", []) if isinstance(stack, dict) else []
+            add_error(errors, not isinstance(notes, list), f"optimization stack {sid} composition_notes must be a list")
+            for note in (notes if isinstance(notes, list) else []):
+                pair = note.get("pair") if isinstance(note, dict) else None
+                add_error(errors, not isinstance(pair, list) or len(pair) != 2, f"optimization stack {sid} composition_note pair must list two step methods")
+                for method_id in (pair if isinstance(pair, list) else []):
+                    add_error(errors, str(method_id) not in step_method_ids, f"optimization stack {sid} composition pair references method outside stack: {method_id}")
+                validity = note.get("validity") if isinstance(note, dict) else None
+                add_error(errors, validity not in STACK_PAIR_VALIDITY, f"optimization stack {sid} composition pair has invalid validity {validity}")
+                add_error(errors, not isinstance(note, dict) or not note.get("why"), f"optimization stack {sid} composition pair lacks why")
+            compound = stack.get("compound") if isinstance(stack, dict) else None
+            add_error(errors, not isinstance(compound, dict), f"optimization stack {sid} compound must be a mapping")
+            if isinstance(compound, dict):
+                add_error(errors, compound.get("measured_together") is not False, f"optimization stack {sid} compound measured_together must be false until receipts exist")
+                add_error(errors, not isinstance(compound.get("receipts"), list), f"optimization stack {sid} compound receipts must be a list")
+                add_error(errors, compound_has_numeric_range(compound), f"optimization stack {sid} compound stores a numeric range")
 
     if taxonomy:
         taxonomy_objectives = taxonomy.get("objective_tags", [])
@@ -225,6 +327,7 @@ def validate(skill: Path, check_urls: bool, timeout: float, workers: int) -> tup
         "sources": len(source_items),
         "techniques": len(techniques.get("techniques", [])),
         "optimization_methods": len(optimization_guidance.get("methods", [])),
+        "optimization_stacks": len(optimization_stacks.get("stacks", [])) if isinstance(optimization_stacks.get("stacks", []), list) else 0,
         "recommendation_taxonomy": bool(taxonomy),
         "warnings": warnings,
         "errors": errors,
