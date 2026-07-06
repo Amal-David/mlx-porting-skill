@@ -10,6 +10,9 @@ const skillRoot = path.join(repoRoot, "mlx-model-porting");
 const assetsRoot = path.join(skillRoot, "assets");
 const outputPath = path.join(appRoot, "src", "skill-data.generated.ts");
 const args = new Set(process.argv.slice(2));
+const bandRangePattern = /^(\d+(?:\.\d+)?)x-(\d+(?:\.\d+)?)x$/;
+const stackLossiness = new Set(["lossless", "conditionally-lossy"]);
+const stackPairValidity = new Set(["validated-composable", "unknown", "known-conflicting"]);
 
 async function readJson(relativePath) {
   const absolutePath = path.join(skillRoot, relativePath);
@@ -26,6 +29,10 @@ function required(value, label) {
     throw new Error(`Missing required field: ${label}`);
   }
   return value;
+}
+
+function isRecord(value) {
+  return Boolean(value) && typeof value === "object" && !Array.isArray(value);
 }
 
 function flattenEvidenceRefs(refs) {
@@ -79,9 +86,177 @@ function speedupSlot(value) {
   };
 }
 
+function parseBandRange(value, label) {
+  const range = required(value, label);
+  if (typeof range !== "string") {
+    throw new Error(`${label} must be a string`);
+  }
+  const match = bandRangePattern.exec(range);
+  if (!match) {
+    throw new Error(`${label} must look like '1.0x-4.3x'`);
+  }
+  const floor = Number.parseFloat(match[1]);
+  const ceiling = Number.parseFloat(match[2]);
+  if (!Number.isFinite(floor) || !Number.isFinite(ceiling) || floor <= 0 || ceiling <= 0 || floor > ceiling) {
+    throw new Error(`${label} has invalid multiplier bounds`);
+  }
+  return { range, floorText: match[1] };
+}
+
+function normalizeImprovementBand(value, methodId, provenanceValues) {
+  if (value === undefined || value === null) {
+    return null;
+  }
+  if (!isRecord(value)) {
+    throw new Error(`method.${methodId}.improvement_band must be an object`);
+  }
+  const provenance = required(value.provenance, `method.${methodId}.improvement_band.provenance`);
+  if (!provenanceValues.has(provenance)) {
+    throw new Error(`method.${methodId}.improvement_band.provenance has unknown value '${provenance}'`);
+  }
+  const { range, floorText } = parseBandRange(value.range, `method.${methodId}.improvement_band.range`);
+  if (provenance !== "local_reproduced" && floorText !== "1.0") {
+    throw new Error(`method.${methodId}.improvement_band.range must start at 1.0x for ${provenance}`);
+  }
+  required(value.metric, `method.${methodId}.improvement_band.metric`);
+  required(value.basis, `method.${methodId}.improvement_band.basis`);
+  required(value.applies_when, `method.${methodId}.improvement_band.applies_when`);
+  if (value.measured_on !== undefined && !isRecord(value.measured_on)) {
+    throw new Error(`method.${methodId}.improvement_band.measured_on must be an object when present`);
+  }
+  if (provenance === "local_reproduced" && (!isRecord(value.measured_on) || Object.keys(value.measured_on).length === 0)) {
+    throw new Error(`method.${methodId}.improvement_band.measured_on is required for local_reproduced bands`);
+  }
+  if (value.receipts !== undefined && !Array.isArray(value.receipts)) {
+    throw new Error(`method.${methodId}.improvement_band.receipts must be an array when present`);
+  }
+  if (provenance === "local_reproduced" && !Array.isArray(value.receipts)) {
+    throw new Error(`method.${methodId}.improvement_band.receipts is required for local_reproduced bands`);
+  }
+  return {
+    provenance,
+    range,
+    metric: value.metric,
+    basis: value.basis,
+    appliesWhen: value.applies_when,
+    measuredOn: value.measured_on ?? null,
+    receipts: value.receipts ?? []
+  };
+}
+
+function compoundHasNumericField(value) {
+  if (Array.isArray(value)) {
+    return value.some((item) => compoundHasNumericField(item));
+  }
+  if (isRecord(value)) {
+    return Object.entries(value).some(([key, item]) => key.includes("range") || compoundHasNumericField(item));
+  }
+  return typeof value === "number" && Number.isFinite(value);
+}
+
+function normalizeStack(stack, methodIds, familyIds) {
+  const id = required(stack.id, "stack.id");
+  const familyValues = required(stack.families, `stack.${id}.families`);
+  if (!Array.isArray(familyValues)) {
+    throw new Error(`stack.${id}.families must be an array`);
+  }
+  for (const familyId of familyValues) {
+    if (!familyIds.has(familyId)) {
+      throw new Error(`stack.${id}.families references unknown family '${familyId}'`);
+    }
+  }
+
+  const rawSteps = required(stack.steps, `stack.${id}.steps`);
+  if (!Array.isArray(rawSteps)) {
+    throw new Error(`stack.${id}.steps must be an array`);
+  }
+  const stepMethodIds = new Set();
+  const steps = rawSteps.map((step, index) => {
+    if (!isRecord(step)) {
+      throw new Error(`stack.${id}.steps[${index}] must be an object`);
+    }
+    const methodId = required(step.method, `stack.${id}.steps[${index}].method`);
+    if (!methodIds.has(methodId)) {
+      throw new Error(`stack.${id}.steps[${index}].method references unknown method '${methodId}'`);
+    }
+    if (!stackLossiness.has(step.lossiness)) {
+      throw new Error(`stack.${id}.steps[${index}].lossiness has invalid value '${step.lossiness}'`);
+    }
+    required(step.gate, `stack.${id}.steps[${index}].gate`);
+    required(step.rollback, `stack.${id}.steps[${index}].rollback`);
+    stepMethodIds.add(methodId);
+    return {
+      method: methodId,
+      lossiness: step.lossiness,
+      gate: step.gate,
+      rollback: step.rollback
+    };
+  });
+
+  const rawNotes = stack.composition_notes ?? [];
+  if (!Array.isArray(rawNotes)) {
+    throw new Error(`stack.${id}.composition_notes must be an array`);
+  }
+  const compositionNotes = rawNotes.map((note, index) => {
+    if (!isRecord(note)) {
+      throw new Error(`stack.${id}.composition_notes[${index}] must be an object`);
+    }
+    const pair = required(note.pair, `stack.${id}.composition_notes[${index}].pair`);
+    if (!Array.isArray(pair) || pair.length !== 2) {
+      throw new Error(`stack.${id}.composition_notes[${index}].pair must contain two method ids`);
+    }
+    for (const methodId of pair) {
+      if (!stepMethodIds.has(methodId)) {
+        throw new Error(`stack.${id}.composition_notes[${index}].pair references method outside stack: '${methodId}'`);
+      }
+    }
+    if (!stackPairValidity.has(note.validity)) {
+      throw new Error(`stack.${id}.composition_notes[${index}].validity has invalid value '${note.validity}'`);
+    }
+    required(note.why, `stack.${id}.composition_notes[${index}].why`);
+    return {
+      pair,
+      validity: note.validity,
+      why: note.why
+    };
+  });
+
+  const compound = required(stack.compound, `stack.${id}.compound`);
+  if (!isRecord(compound)) {
+    throw new Error(`stack.${id}.compound must be an object`);
+  }
+  const compoundKeys = Object.keys(compound).sort();
+  if (compoundKeys.join(",") !== "measured_together,receipts") {
+    throw new Error(`stack.${id}.compound may only contain measured_together and receipts`);
+  }
+  if (typeof compound.measured_together !== "boolean") {
+    throw new Error(`stack.${id}.compound.measured_together must be a boolean`);
+  }
+  if (!Array.isArray(compound.receipts)) {
+    throw new Error(`stack.${id}.compound.receipts must be an array`);
+  }
+  if (compoundHasNumericField(compound)) {
+    throw new Error(`stack.${id}.compound must not store numeric ranges`);
+  }
+
+  return {
+    id,
+    label: stack.label ?? id,
+    families: familyValues,
+    steps,
+    compositionNotes,
+    compound: {
+      measured_together: compound.measured_together,
+      receipts: compound.receipts
+    },
+    evidenceSourceIds: ["asset-optimization-stacks"]
+  };
+}
+
 async function buildData() {
-  const [guidance, taxonomy, architectures, sources, contributorLearnings, researchBacklog, modelOutcomes, topModelsSnapshot] = await Promise.all([
+  const [guidance, optimizationStacks, taxonomy, architectures, sources, contributorLearnings, researchBacklog, modelOutcomes, topModelsSnapshot] = await Promise.all([
     readJson("assets/optimization_guidance.yaml"),
+    readJson("assets/optimization_stacks.yaml"),
     readJson("assets/recommendation-taxonomy.yaml"),
     readJson("assets/architectures.yaml"),
     readJson("assets/sources.yaml"),
@@ -104,6 +279,16 @@ async function buildData() {
       reviewDepth: "synthesized",
       snapshot: guidance.reviewed ?? "",
       note: "Structured method, status, validation, rollback, and evidence references."
+    },
+    {
+      id: "asset-optimization-stacks",
+      title: "MLX optimization stack registry",
+      url: "mlx-model-porting/assets/optimization_stacks.yaml",
+      kind: "local-file",
+      owner: "mlx-porting-skill",
+      reviewDepth: "synthesized",
+      snapshot: optimizationStacks.reviewed ?? "",
+      note: "Structured stack recipes, composition notes, and compound-measurement receipts."
     },
     {
       id: "asset-contributor-learnings",
@@ -162,6 +347,7 @@ async function buildData() {
   }
 
   const methodSourceIds = new Set();
+  const improvementBandProvenance = new Set(Object.keys(taxonomy.improvement_band_policy ?? {}));
   const methods = (guidance.methods ?? []).map((method) => {
     const id = required(method.id, "method.id");
     const status = required(method.status, `method.${id}.status`);
@@ -179,6 +365,7 @@ async function buildData() {
       methodSourceIds.add(sourceId);
     }
     methodSourceIds.add("asset-optimization-guidance");
+    const improvementBand = normalizeImprovementBand(method.improvement_band, id, improvementBandProvenance);
     return {
       id,
       techniqueId: method.technique_id ?? id,
@@ -193,9 +380,11 @@ async function buildData() {
       validationGates: method.validation_gates ?? [],
       rollbackConditions: method.rollback_conditions ?? [],
       evidenceRefs: method.evidence_refs,
-      evidenceSourceIds
+      evidenceSourceIds,
+      improvementBand
     };
   });
+  const methodIds = new Set(methods.map((method) => method.id));
 
   const families = (architectures.families ?? []).map((family) => {
     required(family.id, "family.id");
@@ -212,6 +401,10 @@ async function buildData() {
       notes: family.notes ?? ""
     };
   });
+  const familyIds = new Set(families.map((family) => family.id));
+
+  const stacks = required(optimizationStacks.stacks, "optimization_stacks.stacks").map((stack) => normalizeStack(stack, methodIds, familyIds));
+  methodSourceIds.add("asset-optimization-stacks");
 
   const learnings = (contributorLearnings.learnings ?? []).map((learning) => {
     required(learning.id, "learning.id");
@@ -302,6 +495,7 @@ async function buildData() {
       taxonomyReviewed: taxonomy.reviewed ?? "",
       architecturesReviewed: architectures.reviewed ?? "",
       sourcesReviewed: sources.reviewed ?? "",
+      optimizationStacksReviewed: optimizationStacks.reviewed ?? "",
       contributorLearningsReviewed: contributorLearnings.reviewed ?? "",
       researchBacklogReviewed: researchBacklog.reviewed ?? "",
       modelOutcomesReviewed: modelOutcomes.reviewed ?? "",
@@ -314,6 +508,7 @@ async function buildData() {
     },
     families,
     methods,
+    stacks,
     learnings,
     backlogItems,
     modelOutcomes: {

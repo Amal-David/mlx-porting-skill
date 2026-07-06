@@ -2,7 +2,7 @@
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
   "version": "0.1.0",
-  "generated_at": "2026-07-06T09:23:09.132343+00:00",
+  "generated_at": "2026-07-06T09:30:23.255571+00:00",
   "file_count": 221,
   "files": [
     {
@@ -127,8 +127,8 @@
     },
     {
       "path": "apps/model-advisor-worker/scripts/build-skill-data.mjs",
-      "size_bytes": 13301,
-      "sha256": "be46ce7277c92cf8f31dd4cb1490628bfaef9b851a5c08b97d0e009336667a94"
+      "size_bytes": 21341,
+      "sha256": "2d30dde00cafd4fdb2b7312db98c9988c96ceab89fb1d76fe38c85e17ed6dfa0"
     },
     {
       "path": "apps/model-advisor-worker/scripts/smoke-local.mjs",
@@ -142,8 +142,8 @@
     },
     {
       "path": "apps/model-advisor-worker/src/skill-data.generated.ts",
-      "size_bytes": 247413,
-      "sha256": "d22735e758f432701b19e6086bafc840e57f673c1e8f3b887dd644c5a79aa15d"
+      "size_bytes": 262457,
+      "sha256": "a29054889408a70f02bfdc4782521013f86fad6998b94b090dc0e72d7a0fac68"
     },
     {
       "path": "apps/model-advisor-worker/tsconfig.json",
