@@ -15,6 +15,8 @@ from _common import SkillError, load_structured, parse_frontmatter
 NAME_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 LINK_RE = re.compile(r"\[[^\]]*\]\(([^)]+)\)")
 CODE_PATH_RE = re.compile(r"`((?:references|scripts|assets)/[^`\s]+)`")
+DESCRIPTION_USE_RE = re.compile(r"Use when|Use this skill when")
+DESCRIPTION_NEGATIVE_RE = re.compile(r"Do not use|Not for")
 DANGEROUS_PATTERNS = {
     "eval(": "dynamic eval",
     "exec(": "dynamic exec",
@@ -55,12 +57,21 @@ def main() -> int:
         if isinstance(name, str):
             add_error(errors, len(name) > 64 or not NAME_RE.fullmatch(name), f"invalid skill name: {name!r}")
             add_error(errors, name != skill.name, f"skill name {name!r} must match directory {skill.name!r}")
-        add_error(errors, not isinstance(description, str) or not (1 <= len(description) <= 1024), "description must be 1-1024 characters")
+        add_error(errors, not isinstance(description, str), "frontmatter.description is required")
+        if isinstance(description, str):
+            add_error(errors, not (200 <= len(description) <= 1024), "description must be 200-1024 characters")
+            add_error(errors, DESCRIPTION_USE_RE.search(description) is None, 'description must contain a "Use when" clause')
+            add_error(errors, DESCRIPTION_NEGATIVE_RE.search(description) is None, 'description must contain a "Do not use" or "Not for" clause')
+            add_error(errors, not ("MLX" in description and "Apple Silicon" in description), "description must mention MLX and Apple Silicon")
         compatibility = frontmatter.get("compatibility")
         add_error(errors, compatibility is not None and (not isinstance(compatibility, str) or len(compatibility) > 500), "compatibility must be <=500 characters")
         lines = text.count("\n") + 1
         if lines > 500:
             errors.append(f"SKILL.md has {lines} lines; keep it at or below 500")
+        if len(body) > 12000:
+            errors.append(f"SKILL.md body has {len(body)} characters; keep it at or below 12000")
+        if re.search(r"^## Trigger map\s*$", body, re.MULTILINE) is None:
+            errors.append("SKILL.md must contain a ## Trigger map heading")
 
         referenced: set[str] = set()
         for match in LINK_RE.findall(body):
@@ -129,12 +140,18 @@ def main() -> int:
                     if pattern in source_text:
                         warnings.append(f"{script.name}: contains {label} pattern {pattern!r}; review manually")
 
-        # Detect unreferenced reference files; useful but not fatal because registries can route them.
+        # Detect unreferenced reference files. Runbooks may be registry-routed;
+        # every other reference must be linked directly from SKILL.md.
         direct_ref_names = {Path(x).name for x in referenced if x.startswith("references/")}
         registry_ref_names = {Path(f.get("runbook", "")).name for f in architectures.get("families", [])}
         for ref in (skill / "references").glob("*.md"):
-            if ref.name not in direct_ref_names and ref.name not in registry_ref_names:
-                warnings.append(f"reference is not directly routed from SKILL.md or architecture registry: {ref.name}")
+            if ref.name in direct_ref_names:
+                continue
+            if ref.name.startswith("runbook-"):
+                if ref.name not in registry_ref_names:
+                    warnings.append(f"runbook reference is not directly routed from SKILL.md or architecture registry: {ref.name}")
+                continue
+            errors.append(f"reference must be directly linked from SKILL.md: {ref.name}")
 
         if args.strict and warnings:
             errors.extend(f"strict warning: {x}" for x in warnings)

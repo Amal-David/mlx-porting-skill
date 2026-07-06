@@ -2,8 +2,8 @@
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
   "version": "0.1.0",
-  "generated_at": "2026-07-06T08:43:51.042242+00:00",
-  "file_count": 215,
+  "generated_at": "2026-07-06T08:49:33.007698+00:00",
+  "file_count": 216,
   "files": [
     {
       "path": ".github/workflows/daily-research.yml",
@@ -582,8 +582,8 @@
     },
     {
       "path": "mlx-model-porting/scripts/audit_skill.py",
-      "size_bytes": 7608,
-      "sha256": "4451d9aa0c3ef5ee4b1c9c218f5743e9de04de786daa09e89f391b7cd66b36d7"
+      "size_bytes": 8798,
+      "sha256": "d113397b33dc85bf2e1f9caf237fbb3ad92171bb3a46eb199abf56b4be6d3d7a"
     },
     {
       "path": "mlx-model-porting/scripts/benchmark_command.py",
@@ -1064,6 +1064,11 @@
       "path": "tests/fixtures/updates/offline.json",
       "size_bytes": 695,
       "sha256": "966992c1ee60d17ffc5dcfd1f7fb8186f1ead70c5486cbb1f55bd584d8fb3be6"
+    },
+    {
+      "path": "tests/test_discovery.py",
+      "size_bytes": 2190,
+      "sha256": "ea622ef2529bfcaa328cb5d800f3ce6cf1492f23561f354863bcd820d6d08576"
     },
     {
       "path": "tests/test_fixtures.py",
