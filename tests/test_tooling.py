@@ -957,6 +957,120 @@ class ToolingTests(unittest.TestCase):
             self.assertFalse(report["ok"])
             self.assertEqual(report["summary"]["successful_runs"], 0)
 
+    def test_generation_benchmark_receipt_and_index(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            output = Path(tmp) / "benchmarks" / "fixture.json"
+            stub = (
+                "print('Prompt: 512 tokens, 800.0 tokens-per-sec'); "
+                "print('Generation: 128 tokens, 50.0 tokens-per-sec'); "
+                "print('Peak memory: 1.5 GB')"
+            )
+            run_script(
+                "benchmark_generation.py",
+                "--label", "fixture",
+                "--warmup", "0",
+                "--runs", "1",
+                "--output", output,
+                "--config-note", "quant=4bit",
+                "--",
+                sys.executable, "-c", stub,
+            )
+
+            receipt = json.loads(output.read_text())
+            self.assertEqual(receipt["label"], "fixture")
+            self.assertIn("platform", receipt["environment"])
+            self.assertEqual(receipt["versions"].keys(), {"mlx", "mlx_lm"})
+            self.assertEqual(receipt["config_notes"], {"quant": "4bit"})
+            self.assertEqual(receipt["runs"][0]["prompt_tokens"], 512)
+            self.assertEqual(receipt["runs"][0]["prompt_tps"], 800.0)
+            self.assertEqual(receipt["runs"][0]["generation_tokens"], 128)
+            self.assertEqual(receipt["runs"][0]["generation_tps"], 50.0)
+            self.assertEqual(receipt["runs"][0]["peak_memory_gb"], 1.5)
+            self.assertEqual(receipt["aggregate"]["generation_tps"]["median"], 50.0)
+            self.assertEqual(receipt["ttft_proxy"]["metric"], "ttft_proxy_s")
+            self.assertAlmostEqual(receipt["ttft_proxy"]["median_s"], 0.64)
+            self.assertIn("proxy_note", receipt["ttft_proxy"])
+            self.assertNotIn("speedup_vs_baseline", receipt)
+
+            index = json.loads((output.parent / "receipts_index.json").read_text())
+            self.assertEqual(index["receipts"][0]["label"], "fixture")
+            self.assertEqual(index["receipts"][0]["file"], "fixture.json")
+            self.assertEqual(index["receipts"][0]["config_notes"], {"quant": "4bit"})
+            self.assertIn("-c", index["receipts"][0]["command_summary"])
+
+    def test_generation_benchmark_reports_subprocess_failure_loudly(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            output = Path(tmp) / "fixture.json"
+            stub = "import sys; print('before fail'); print('bad stderr', file=sys.stderr); sys.exit(1)"
+            result = run_script(
+                "benchmark_generation.py",
+                "--label", "fixture",
+                "--warmup", "0",
+                "--runs", "1",
+                "--output", output,
+                "--",
+                sys.executable, "-c", stub,
+                expected=1,
+            )
+            self.assertIn("measured run 1 failed", result.stderr)
+            self.assertIn("before fail", result.stderr)
+            self.assertIn("bad stderr", result.stderr)
+            self.assertFalse(output.exists())
+
+    def test_generation_benchmark_speedup_requires_baseline(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_path = Path(tmp)
+            baseline = tmp_path / "baseline.json"
+            baseline.write_text(json.dumps({
+                "label": "baseline",
+                "aggregate": {
+                    "generation_tps": {"median": 25.0},
+                    "prompt_tps": {"median": 400.0},
+                    "ttft_proxy_s": {"median": 2.0},
+                },
+            }))
+            output = tmp_path / "candidate.json"
+            stub = (
+                "print('Prompt: 512 tokens, 800.0 tokens-per-sec'); "
+                "print('Generation: 128 tokens, 50.0 tokens-per-sec'); "
+                "print('Peak memory: 1.5 GB')"
+            )
+            run_script(
+                "benchmark_generation.py",
+                "--label", "candidate",
+                "--warmup", "0",
+                "--runs", "1",
+                "--baseline-receipt", baseline,
+                "--output", output,
+                "--",
+                sys.executable, "-c", stub,
+            )
+            receipt = json.loads(output.read_text())
+            ratios = receipt["speedup_vs_baseline"]["ratios"]
+            self.assertEqual(receipt["speedup_vs_baseline"]["baseline_label"], "baseline")
+            self.assertAlmostEqual(ratios["decode_tps"], 2.0)
+            self.assertAlmostEqual(ratios["prefill_tps"], 2.0)
+            self.assertAlmostEqual(ratios["ttft_proxy_inverse"], 3.125)
+
+    def test_generation_benchmark_fails_on_missing_patterns(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            output = Path(tmp) / "fixture.json"
+            stub = "print('Prompt: 512 tokens, 800.0 tokens-per-sec')"
+            result = run_script(
+                "benchmark_generation.py",
+                "--label", "fixture",
+                "--warmup", "0",
+                "--runs", "1",
+                "--output", output,
+                "--",
+                sys.executable, "-c", stub,
+                expected=2,
+            )
+            self.assertIn("missing benchmark output pattern", result.stderr)
+            self.assertIn("Generation: <tokens> tokens", result.stderr)
+            self.assertIn("Peak memory: <GB> GB", result.stderr)
+            self.assertFalse(output.exists())
+
     def test_manifest_generate_and_check_detects_drift(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             tmp = Path(tmp)

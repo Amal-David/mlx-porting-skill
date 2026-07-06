@@ -101,3 +101,7 @@ Revert when the win exists only in a microbenchmark, only after excluding first-
 ## Using the command harness
 
 `benchmark_command.py` measures command wall time, return status, optional process RSS when `psutil` is present, stdout/stderr summaries, and environment metadata. Model-specific scripts should additionally emit TTFT, tokens/s, RTF, and quality metrics to files referenced in the report.
+
+## Receipt harness
+
+`scripts/benchmark_generation.py` wraps `mlx_lm generate`-style commands and writes receipt JSON under `assets/benchmarks/` by default. Each measured run must print prompt tokens/s, generation tokens/s, and peak memory lines; missing metrics or nonzero exits fail loudly. Receipts include environment metadata, exact command arguments, config notes, per-run metrics, aggregate median/min/max values, and a labeled `ttft_proxy` computed as prompt tokens divided by prompt throughput. The harness records `speedup_vs_baseline` only when `--baseline-receipt` is provided, so standalone receipts never contain speedup numbers.

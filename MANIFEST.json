@@ -2,8 +2,8 @@
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
   "version": "0.1.0",
-  "generated_at": "2026-07-06T09:15:33.182025+00:00",
-  "file_count": 219,
+  "generated_at": "2026-07-06T09:23:09.132343+00:00",
+  "file_count": 221,
   "files": [
     {
       "path": ".github/workflows/daily-research.yml",
@@ -191,6 +191,11 @@
       "sha256": "4c12b6dfa79f96165d9f8117be1fa1b9ce99d315145f8965834760d6d1ec1ff5"
     },
     {
+      "path": "mlx-model-porting/assets/benchmarks/receipts_index.json",
+      "size_bytes": 21,
+      "sha256": "b3e6cc3734bdfd3488eadd156d8174a399c85983bc0913cf0957e3d781da9cf2"
+    },
+    {
       "path": "mlx-model-porting/assets/contributor_learnings.json",
       "size_bytes": 30233,
       "sha256": "8a75f86fada1dc11d8fae933b5c3caf6e0061f1e485bf6ec3a3170d576dccb47"
@@ -262,8 +267,8 @@
     },
     {
       "path": "mlx-model-porting/references/benchmarking.md",
-      "size_bytes": 4580,
-      "sha256": "b5588993881213ea7a108131125a65689635dd79ecfa65314ac23be95d515e82"
+      "size_bytes": 5224,
+      "sha256": "0f4f33f27273b7e156a2acfc9abf5f2b4792b91dc848b808d28850230c75cbca"
     },
     {
       "path": "mlx-model-porting/references/compile-and-kernels.md",
@@ -597,8 +602,13 @@
     },
     {
       "path": "mlx-model-porting/scripts/benchmark_command.py",
-      "size_bytes": 8526,
-      "sha256": "82cac8749994f44a2c82993aa38d8ed8d8d4b502e74ec9750ca49ebc26eb5868"
+      "size_bytes": 8542,
+      "sha256": "66d0f6bbcad72250594bdf135554700b33aa60232c8a3ff0f53fb7c8861d81a8"
+    },
+    {
+      "path": "mlx-model-porting/scripts/benchmark_generation.py",
+      "size_bytes": 11938,
+      "sha256": "fbfc6645de70e427e57ce2f1654b9b2578b2c564519ed968326e131b324e12de"
     },
     {
       "path": "mlx-model-porting/scripts/collect_contributors.py",
@@ -1097,8 +1107,8 @@
     },
     {
       "path": "tests/test_tooling.py",
-      "size_bytes": 148010,
-      "sha256": "be2458e45e19d06decc522e5be37c5026dcb2ba20500abfac9543a290b7635b3"
+      "size_bytes": 153379,
+      "sha256": "488bd95b59c8e79f294de15dd117b00e8dd2e2834ea0c919eac48b899e59412e"
     }
   ]
 }
