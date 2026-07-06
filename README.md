@@ -27,6 +27,8 @@ This repository is deliberately **not** a single giant prompt. It has four layer
 
 The skill itself is the `mlx-model-porting/` directory. Copy or symlink that directory into the Agent Skills root used by your client. For clients that support the shared Agent Skills format, no rewrite is necessary.
 
+Repo-scoped discovery links are checked in for Claude Code and Codex-style `.agents` roots; see `adapters/README.md` for other client notes.
+
 ```bash
 python3 mlx-model-porting/scripts/install_skill.py --dest ~/.agents/skills
 ```

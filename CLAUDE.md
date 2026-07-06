@@ -27,3 +27,8 @@ Decision guardrails:
 - If work is already shaped, resume the owning execution or review phase instead of routing from scratch.
 - If the request is large, ambiguous, or multi-workstream, route before implementing.
 <!-- superplan-entry-instructions:end -->
+
+## MLX model porting requests
+
+- For any request about porting, converting, running, quantizing, benchmarking, or optimizing a model for MLX or Apple Silicon (e.g. "port this HF model to my Mac", "run Qwen on Apple Silicon", "make this faster on my M3", "fix NaN in my MLX port"), the domain source of truth is `mlx-model-porting/SKILL.md` - load it and its Trigger map before improvising.
+- Superplan governs workflow sequencing; the skill governs technical content. Both apply together.

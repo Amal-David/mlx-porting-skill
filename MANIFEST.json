@@ -2,7 +2,7 @@
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
   "version": "0.1.0",
-  "generated_at": "2026-07-06T08:22:05.548049+00:00",
+  "generated_at": "2026-07-06T08:27:30.583824+00:00",
   "file_count": 215,
   "files": [
     {
@@ -22,8 +22,8 @@
     },
     {
       "path": "AGENTS.md",
-      "size_bytes": 2763,
-      "sha256": "ae8bc768d0a2f39ce29783454f8adcb77843d8ecdbedd75698b82517c2f5c8f5"
+      "size_bytes": 3253,
+      "sha256": "d987c9dcff1e4ed382ee6053e20954bf7b49a2d313970db8d981d12b921b64fa"
     },
     {
       "path": "CHANGELOG.md",
@@ -32,8 +32,8 @@
     },
     {
       "path": "CLAUDE.md",
-      "size_bytes": 1886,
-      "sha256": "86c73f83625f126a8c688b4e9201c4a864a92a4152c9fd48479d114318465a77"
+      "size_bytes": 2376,
+      "sha256": "7dcab9439a5f211f38f89e63894b33c5a70c7071feb7a6604beba95a0fe62bcb"
     },
     {
       "path": "CONTRIBUTING.md",
@@ -52,8 +52,8 @@
     },
     {
       "path": "README.md",
-      "size_bytes": 5950,
-      "sha256": "97f49b5a88f0d184e1c6f823f8eb2d2bf4abbca303e8c96b381870230d03c0f5"
+      "size_bytes": 6092,
+      "sha256": "ea74cebc6bbd55f61d25ca004c1668d953f28d315c01a35d4c6c832d2a305456"
     },
     {
       "path": "RESEARCH_REPORT.md",
