@@ -2,6 +2,8 @@
 
 `mlx-model-porting/` follows the shared Agent Skills format: one `SKILL.md` plus optional `scripts/`, `references/`, and `assets/`. Use the same folder across clients; do not fork the technical corpus per agent.
 
+Fresh repository checkouts are pre-installed for Claude Code and `.agents`-root clients through checked-in relative symlinks at `.claude/skills/mlx-model-porting` and `.agents/skills/mlx-model-porting`. On Windows, Git may materialize symlinks as text files depending on local configuration; use the installer with an explicit `--dest` path there.
+
 The safest installer contract is explicit:
 
 ```bash

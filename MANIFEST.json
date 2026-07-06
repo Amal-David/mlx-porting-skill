@@ -2,7 +2,7 @@
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
   "version": "0.1.0",
-  "generated_at": "2026-07-06T08:27:30.583824+00:00",
+  "generated_at": "2026-07-06T08:34:02.777066+00:00",
   "file_count": 215,
   "files": [
     {
@@ -17,8 +17,8 @@
     },
     {
       "path": ".gitignore",
-      "size_bytes": 267,
-      "sha256": "43936cfdd5e83541b198a7cf9be8edbb486e71dbfe807d5e45b14cdabf899b81"
+      "size_bytes": 444,
+      "sha256": "84c09e992d1285849d3aec85fb06cee3174f1befd867a55b824da395c8306d8b"
     },
     {
       "path": "AGENTS.md",
@@ -72,8 +72,8 @@
     },
     {
       "path": "adapters/README.md",
-      "size_bytes": 2437,
-      "sha256": "9df863ec89813715ef85481d4f912f3ace3b1e03351c58d661b2b35e8d52c4e6"
+      "size_bytes": 2786,
+      "sha256": "fc2055cc5dcc30156ce64516c52bfb10c3dcf385e86064f28fa6c261ab031d38"
     },
     {
       "path": "adapters/antigravity.md",
