@@ -78,7 +78,7 @@
             "draft-model-speculation"
           ],
           "validity": "known-conflicting",
-          "why": "stack-measured-together.json recorded a 0.21x decode-throughput negative interaction, and MLX-LM 0.31.1 required a combined target+draft cache because target-only cache_prompt output does not compose with --draft-model."
+          "why": "stack-measured-together.json recorded a 0.33x matched-context decode regression versus kv-baseline-8k at ~8k context, driven by draft-model overhead and low acceptance on this long-context workload; MLX-LM 0.31.1 also required a combined target+draft cache because target-only cache_prompt output does not compose with --draft-model."
         }
       ],
       "compound": {
@@ -87,12 +87,12 @@
           {
             "label": "stack-measured-together",
             "file": "stack-measured-together.json",
-            "baseline": "spec-baseline",
+            "baseline": "kv-baseline-8k",
             "metric": "decode-tokens-per-sec",
-            "measured_ratio": "0.21x",
+            "measured_ratio": "0.33x",
             "measured_floor": "1.0x",
-            "basis": "Measured together with Qwen2.5-Coder 7B 4-bit target weights, 4-bit KV cache, prompt cache, and Qwen2.5-Coder 1.5B 4-bit draft model k=2. Ratio is versus spec-baseline, the plain 4-bit single-request baseline; this is not an fp16 7B baseline.",
-            "caveat": "The measured-together stack was slower on this cached long-prefix suffix workload: 9.516 median decode tok/s versus 45.122 tok/s baseline (0.211x). Prompt cache used an 8053-token cached prefix plus 34-token suffix; MLX-LM 0.31.1 required a combined target+draft cache because target-only cache_prompt output does not compose with --draft-model.",
+            "basis": "Measured together (Qwen2.5-Coder 7B 4-bit target + 4-bit KV + prompt cache + 1.5B 4-bit draft k=2) versus kv-baseline-8k, plain 4-bit at the SAME ~8k context (29.248 -> 9.516 tok/s = 0.33x). This is a matched-context comparison, not vs fp16.",
+            "caveat": "The measured-together stack regressed because the draft model at long context added overhead with low acceptance on this workload; kv-4bit-8k alone was +11% at 8k (29.248 -> 32.594 tok/s), so KV quantization, prompt cache, and the other stack steps are not the cause. MLX-LM 0.31.1 required a combined target+draft cache because target-only cache_prompt output does not compose with --draft-model.",
             "measured_on": {
               "chip": "Apple M4 Pro",
               "mac_model": "Mac16,8",

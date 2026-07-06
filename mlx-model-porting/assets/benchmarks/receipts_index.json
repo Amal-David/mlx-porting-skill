@@ -183,8 +183,8 @@
         "suffix_file": "/Users/amal/Downloads/mlx-porting-skill/mlx-model-porting/assets/benchmarks/prompts/t207-stack-suffix.txt",
         "prompt_cache_build": "cache_prompt_target_first_then_combined_target_plus_draft_cache_for_mlx_lm_generate_draft_cache_requirement",
         "workload": "cached_8053_token_long_prompt_prefix_plus_34_token_suffix_max_tokens_256_temp_0_seed_207",
-        "baseline_basis": "vs_plain_4bit_single_request_baseline_spec-baseline_not_fp16",
-        "compound_claim": "measured_together_vs_plain_4bit_single_request_baseline",
+        "baseline_basis": "vs_plain_4bit_8k_baseline_kv-baseline-8k_matched_context_not_fp16",
+        "compound_claim": "measured_together_vs_plain_4bit_8k_matched_context_baseline",
         "quality_gate": "greedy_cached_long_context_suffix_no_formal_quality_eval"
       }
     }

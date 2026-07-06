@@ -37,8 +37,8 @@
     "suffix_file": "/Users/amal/Downloads/mlx-porting-skill/mlx-model-porting/assets/benchmarks/prompts/t207-stack-suffix.txt",
     "prompt_cache_build": "cache_prompt_target_first_then_combined_target_plus_draft_cache_for_mlx_lm_generate_draft_cache_requirement",
     "workload": "cached_8053_token_long_prompt_prefix_plus_34_token_suffix_max_tokens_256_temp_0_seed_207",
-    "baseline_basis": "vs_plain_4bit_single_request_baseline_spec-baseline_not_fp16",
-    "compound_claim": "measured_together_vs_plain_4bit_single_request_baseline",
+    "baseline_basis": "vs_plain_4bit_8k_baseline_kv-baseline-8k_matched_context_not_fp16",
+    "compound_claim": "measured_together_vs_plain_4bit_8k_matched_context_baseline",
     "quality_gate": "greedy_cached_long_context_suffix_no_formal_quality_eval"
   },
   "warmup_runs": 1,
@@ -128,13 +128,15 @@
     "proxy_note": "Computed as prompt_tokens / prompt_tps from the mlx_lm Prompt line; this is not instrumented first-token latency."
   },
   "speedup_vs_baseline": {
-    "baseline_label": "spec-baseline",
-    "baseline_file": "/Users/amal/Downloads/mlx-porting-skill/mlx-model-porting/assets/benchmarks/spec-baseline.json",
-    "basis": "Ratios of aggregate medians; ttft_proxy uses inverse ratio because lower is better.",
+    "baseline_label": "kv-baseline-8k",
+    "baseline_file": "/Users/amal/Downloads/mlx-porting-skill/mlx-model-porting/assets/benchmarks/kv-baseline-8k.json",
+    "basis": "Ratios of aggregate medians; only decode_tps is comparable for this matched ~8k decode-context comparison.",
+    "baseline_rationale": "matched ~8k decode context; the earlier spec-baseline comparison mixed a 552-token context with an 8k-context run and is not apples-to-apples.",
+    "note": "TTFT and prefill are not comparable between these two runs: stack-measured-together used a prompt cache and processed only a 34-token suffix, while kv-baseline-8k processed the full 8058-token prompt.",
     "ratios": {
-      "decode_tps": 0.21089490714064094,
-      "prefill_tps": 0.16663647023890407,
-      "ttft_proxy_inverse": 2.7053921050551484
+      "decode_tps": 0.3254,
+      "prefill_tps": null,
+      "ttft_proxy_inverse": null
     }
   }
 }

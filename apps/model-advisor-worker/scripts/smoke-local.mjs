@@ -142,14 +142,14 @@ assert(denseStack.steps.length === denseStepCount, "dense decoder stack step cou
 assert(denseStack.compound.hypothesis_ceiling.floor === "1.0x", "dense decoder stack hypothesis floor should remain 1.0x");
 assert(denseStack.compound.hypothesis_ceiling.ceiling === "2.64x", "dense decoder stack hypothesis should exclude cross-metric and conflicting bands");
 assert(denseStack.compound.hypothesis_ceiling.provenance === "multiplicative_hypothesis", "dense decoder stack product should remain hypothesis provenance");
-assert(denseStack.compound.measured?.ratio === "0.21x", "dense decoder stack should surface measured-together ratio");
+assert(denseStack.compound.measured?.ratio === "0.33x", "dense decoder stack should surface measured-together ratio");
 assert(denseStack.compound.measured?.provenance === "local_reproduced", "dense decoder measured ratio should surface local provenance");
 assert(String(denseStack.compound.measured?.caveat || "").includes("plain 4-bit") || String(denseStack.compound.measured?.basis || "").includes("plain 4-bit"), "dense decoder stack should surface plain 4-bit baseline caveat");
 const stackCeiling = textAdvice.advisor.speedupSummary.stackCeiling;
 assert(stackCeiling?.floor === "1.0x", "speedup summary stack ceiling should expose 1.0x floor");
 assert(stackCeiling?.ceiling === "2.64x", "speedup summary stack ceiling should expose corrected hypothesis ceiling");
 assert(stackCeiling?.provenance === "multiplicative_hypothesis", "speedup summary stack ceiling should expose hypothesis provenance");
-assert(stackCeiling?.measuredRatio === "0.21x", "speedup summary stack ceiling should carry measured stack ratio");
+assert(stackCeiling?.measuredRatio === "0.33x", "speedup summary stack ceiling should carry measured stack ratio");
 assert(stackCeiling?.measuredProvenance === "local_reproduced", "speedup summary stack ceiling should carry measured provenance separately");
 
 const renderedWithAi = renderAdviceFromShell(html, {
@@ -166,7 +166,7 @@ assert(!briefHtml.includes("**"), "AI brief should not leak raw Markdown emphasi
 assert(!briefHtml.includes("`"), "AI brief should not leak raw backticks");
 assert(!briefHtml.includes("<p"), "AI brief should not render as one paragraph dump");
 assert(renderedWithAi.includes("Recommended stack"), "rendered advice should include stack panel");
-assert(renderedWithAi.includes("0.21x"), "rendered advice should include measured dense stack headline");
+assert(renderedWithAi.includes("0.33x"), "rendered advice should include measured dense stack headline");
 assert(renderedWithAi.includes("1.0x-2.64x"), "rendered advice should include corrected hypothesis dense stack ceiling");
 assert(renderedWithAi.includes("Measured together"), "rendered stack ceiling should label the measured-together ratio");
 assert(renderedWithAi.includes("plain 4-bit"), "rendered stack ceiling should include plain 4-bit baseline caveat");

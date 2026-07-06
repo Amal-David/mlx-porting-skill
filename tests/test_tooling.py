@@ -511,7 +511,7 @@ class ToolingTests(unittest.TestCase):
                 hypothesis["flag"],
                 "unmeasured composition - multiplicative hypothesis, not a claim",
             )
-            self.assertEqual(measured["ratio"], "0.21x")
+            self.assertEqual(measured["ratio"], "0.33x")
             self.assertEqual(measured["provenance"], "local_reproduced")
             self.assertEqual(measured["receipt"], "stack-measured-together.json")
             self.assertIn(
@@ -547,7 +547,7 @@ class ToolingTests(unittest.TestCase):
             self.assertIn("prompt-lookup-ngram-speculation", research_ids)
             text = markdown.read_text()
             self.assertIn("Recommended stack", text)
-            self.assertIn("Measured together: `0.21x`", text)
+            self.assertIn("Measured together: `0.33x`", text)
             self.assertIn("Hypothesis ceiling: `2.64x`", text)
             self.assertIn("unmeasured composition - multiplicative hypothesis, not a claim", text)
             self.assertIn("Workload-conditional upside (different metric): `prompt-prefix-cache` `ttft-proxy` `1.0x-23.8x`", text)

@@ -74,6 +74,20 @@ Expected results for this fixture:
 
 This exact flow — routing, weight-key coverage, seeded-parity-bug detection, and optimization inclusion/exclusion — is guarded end to end by `tests/test_scenarios.py`.
 
+## Measured on Apple Silicon (representative receipts)
+
+These are single-workload receipts on ONE machine (Apple M4 Pro, Mac16,8, 48 GB, macOS 26.3, MLX 0.30.4, MLX-LM 0.31.1), reproducible via `mlx-model-porting/scripts/benchmark_generation.py`, and are planning bands, not portable guarantees.
+
+| Technique | Model / workload | Measured result | Notes |
+|---|---|---|---|
+| 4-bit weight quantization | Qwen3-1.7B, 548-tok prompt | **2.40x** decode (54.3 → 130.2 tok/s); peak mem 3.83 → 1.77 GB | Quality caveat: greedy outputs diverged on 3/3 short prompts, no formal eval |
+| Prompt cache (cold → warm) | Qwen3-1.7B, ~4k-tok prompt | **23.75x** TTFT-proxy (2.859 → 0.120 s) | Prefill/TTFT win; decode unchanged |
+| Speculative decoding | Qwen2.5-Coder-7B-4bit + 1.5B draft, 552-tok code prompt | k=2 **1.25x** (45.1 → 56.6 tok/s); k=3 0.67x; k=4 0.55x | Best at k=2; k≥3 regresses |
+| 4-bit KV quantization @ 8k ctx | Qwen2.5-Coder-7B-4bit, 8058-tok prompt | **1.11x** decode (29.2 → 32.6 tok/s); peak mem 5.45 → 6.57 GB | This flag set cost memory, not saved it |
+| Full stack @ 8k ctx (vs plain 4-bit @ 8k) | 4-bit + KV-4bit + prompt cache + k=2 draft | **0.33x** decode (29.2 → 9.5 tok/s) — regression | Driven by the draft model at long context; mlx-lm 0.31.1 also needs a combined target+draft cache |
+
+The honest headline is that 4-bit quant and prompt caching are the reliable Apple-Silicon wins; speculative decoding pays off only at small draft depth on short context; and naively stacking a draft model onto a long-context run regresses throughput — which is exactly why the skill measures stacks instead of multiplying per-technique bands.
+
 ## Validation
 
 ```bash
