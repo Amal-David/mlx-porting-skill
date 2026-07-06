@@ -1,6 +1,6 @@
 ---
 name: mlx-model-porting
-description: Port, validate, quantize, benchmark, and optimize PyTorch or Hugging Face language, vision, audio, speech, codec, diffusion, and hybrid models for Apple MLX. Use when adding a new architecture to MLX, MLX-LM, MLX-VLM, or MLX-Audio; converting weights; fixing an MLX port; improving Apple Silicon latency, throughput, memory, streaming, attention, KV cache, speculative decoding, or quantization; or publishing a reproducible MLX checkpoint.
+description: Ports PyTorch/Hugging Face models to Apple MLX and makes them fast on Apple Silicon. Use when the user asks to run, port, convert, quantize, benchmark, or fix a model (LLM, VLM, audio/TTS/ASR, diffusion, SSM, MoE) for MLX, MLX-LM, MLX-VLM, MLX-Audio, or a Mac - e.g. "port this HF model to my Mac", "run Qwen on Apple Silicon", "convert these safetensors to MLX", "make this faster on my M3", "quantize to fit 16GB", "fix NaN in my MLX port", "speed up prefill / KV cache / speculative decoding", "publish an MLX checkpoint". Also use mid-task when a config.json, safetensors index, weight-shape or tokenizer mismatch, or Metal kernel question appears. Do not use for CUDA-only optimization, non-Apple hardware targets, or general PyTorch/ML questions with no MLX or Apple Silicon connection.
 license: Apache-2.0
 compatibility: Execution and performance validation require an Apple Silicon Mac with a supported MLX installation. Planning and static inspection can run elsewhere. Python 3.10+ and git are recommended; network access is optional and must be explicitly enabled.
 metadata:
@@ -14,6 +14,39 @@ metadata:
 ## Mission
 
 Produce a **correct, reproducible, architecture-aware MLX implementation**. Correctness comes before speed. Every speed or memory claim must name the hardware, software versions, workload, baseline, and quality gate.
+
+## When to use this skill
+
+- Use when porting, converting, or running a PyTorch or Hugging Face model on MLX, MLX-LM, MLX-VLM, MLX-Audio, or Apple Silicon.
+- Use when making an MLX model faster, smaller, more memory-efficient, or more suitable for a specific Mac.
+- Use when debugging parity, NaN/Inf, shape, tokenizer, preprocessing, or garbage-output issues in an MLX port.
+- Use when quantizing, packaging, publishing, or validating provenance for MLX checkpoints.
+- Use when choosing optimization paths for a model family, architecture runbook, cache design, serving mode, or benchmark plan.
+- Do not use when the target is CUDA-only, non-Apple hardware, or a deployment path with no MLX/Apple Silicon connection.
+- Do not use when the question is general PyTorch, machine learning, or model theory without a concrete MLX or Apple Silicon target.
+- Do not use when the task is training from scratch and is unrelated to porting, conversion, inference, checkpoint packaging, or MLX validation.
+
+## Trigger map
+
+| Signal | Load |
+| --- | --- |
+| User pasted a `config.json`, safetensors index, model directory, or Hugging Face repo id. | [intake and routing](references/intake-and-routing.md) plus [inspect_model.py](scripts/inspect_model.py) |
+| User asks "what can I do with this model?", asks for capability fit, or wants model-specific advice. | [model advisor playbook](references/model-advisor-playbook.md) |
+| A known architecture family needs the right runbook. | [model support map](references/model-support-map.md), then the architecture table in Workflow step 4 below |
+| NaN, Inf, cosine-similarity drift, parity failure, or garbage output appears versus the source. | [failure atlas](references/failure-atlas.md) |
+| Weight conversion, key mapping, tensor rename, transpose, reshape, split, merge, or shape transform is in scope. | [core porting method](references/porting-core.md) |
+| The user says "make it faster" but no profile, workload, or baseline exists yet. | [benchmarking](references/benchmarking.md) |
+| KV cache, long context, recurrent state, attention memory, or prefill/decode memory is the bottleneck. | [attention and KV cache](references/attention-and-kv.md) |
+| Quantization, "fit in 16GB", "4-bit", mixed precision, or memory reduction is requested. | [quantization](references/quantization.md) |
+| Decoding, serving, speculative decoding, batching, streaming, or API runtime behavior is requested. | [decoding and serving](references/decoding-and-serving.md) |
+| Compile behavior, `mx.compile`, custom kernel, graph capture, Metal, or operation fusion comes up. | [compile and kernels](references/compile-and-kernels.md) |
+| Publish, release, checkpoint conversion, model card, provenance, or license packaging is requested. | [packaging and publication](references/packaging-and-publication.md) |
+| The user asks for "50-100 optimization ideas", a deep model-specific hunt, or research-backed candidates. | [hypothesis-led learning](references/hypothesis-led-learning.md) |
+| Graph, GNN, message passing, node/edge features, or sparse graph workload appears. | [graph message passing runbook](references/runbook-graph-message-passing.md) |
+| Classic CV detection, segmentation, keypoints, depth, OCR, or non-generative vision appears. | [non-generative CV runbook](references/runbook-non-generative-cv.md) |
+| Time-series, forecasting, tabular sequence, anomaly detection, or temporal model appears. | [time-series forecasting runbook](references/runbook-time-series-forecasting.md) |
+
+Re-consult this map whenever a new signal appears mid-session: a pasted config, a failed parity stage, a performance complaint, a publish request.
 
 ## Non-negotiable rules
 
