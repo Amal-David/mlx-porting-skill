@@ -1,0 +1,116 @@
+{
+  "stack": {
+    "id": "synthetic-conflict-stack",
+    "label": "Synthetic conflict stack",
+    "families": [
+      "synthetic-family"
+    ],
+    "steps": [
+      {
+        "method": "safe-method",
+        "lossiness": "lossless",
+        "gate": "Safe method gate",
+        "rollback": "Disable safe method."
+      },
+      {
+        "method": "conflict-a",
+        "lossiness": "lossless",
+        "gate": "Conflict A gate",
+        "rollback": "Disable conflict A."
+      },
+      {
+        "method": "conflict-b",
+        "lossiness": "conditionally-lossy",
+        "gate": "Conflict B gate",
+        "rollback": "Disable conflict B."
+      },
+      {
+        "method": "profile-only",
+        "lossiness": "lossless",
+        "gate": "Profile-only gate",
+        "rollback": "Disable profile-only method."
+      }
+    ],
+    "composition_notes": [
+      {
+        "pair": [
+          "conflict-a",
+          "conflict-b"
+        ],
+        "validity": "known-conflicting",
+        "why": "Synthetic methods share the same exclusive hot path."
+      }
+    ],
+    "compound": {
+      "measured_together": false,
+      "receipts": []
+    }
+  },
+  "guidance_methods": [
+    {
+      "id": "safe-method",
+      "improvement_band": {
+        "provenance": "source_reported",
+        "range": "1.0x-1.5x"
+      }
+    },
+    {
+      "id": "conflict-a",
+      "improvement_band": {
+        "provenance": "source_reported",
+        "range": "1.0x-2.0x"
+      }
+    },
+    {
+      "id": "conflict-b",
+      "improvement_band": {
+        "provenance": "local_reproduced",
+        "range": "1.0x-5.0x"
+      }
+    },
+    {
+      "id": "profile-only"
+    }
+  ],
+  "expected": {
+    "floor": "1.0x",
+    "ceiling": "1.5x",
+    "provenance": "multiplicative_hypothesis",
+    "unmeasured_upside": [
+      "profile-only"
+    ],
+    "excluded_conflicts": [
+      [
+        "conflict-a",
+        "conflict-b"
+      ]
+    ],
+    "per_step": [
+      {
+        "method": "safe-method",
+        "band": "1.0x-1.5x",
+        "lossiness": "lossless",
+        "gate": "Safe method gate"
+      },
+      {
+        "method": "conflict-a",
+        "band": "1.0x-2.0x",
+        "lossiness": "lossless",
+        "gate": "Conflict A gate"
+      },
+      {
+        "method": "conflict-b",
+        "band": "1.0x-5.0x",
+        "lossiness": "conditionally-lossy",
+        "gate": "Conflict B gate"
+      },
+      {
+        "method": "profile-only",
+        "band": null,
+        "lossiness": "lossless",
+        "gate": "Profile-only gate"
+      }
+    ],
+    "flag": "unmeasured composition - multiplicative hypothesis, not a claim"
+  }
+}

@@ -23,7 +23,7 @@ FIXTURES = ROOT / "tests" / "fixtures"
 if str(SCRIPTS) not in sys.path:
     sys.path.insert(0, str(SCRIPTS))
 
-from _common import applies_to_family, load_structured  # noqa: E402 - requires SCRIPTS on sys.path above
+from _common import applies_to_family, compose_stack_band, load_structured, parse_band  # noqa: E402 - requires SCRIPTS on sys.path above
 
 
 def run_script(name: str, *args: object, expected: int = 0) -> SimpleNamespace:
@@ -456,14 +456,46 @@ class ToolingTests(unittest.TestCase):
                 "--limit", 5,
             )
             report = json.loads(output.read_text())
+            self.assertEqual(report["schema_version"], 1)
+            stack = report["recommended_stack"]
+            self.assertEqual(stack["id"], "dense-decoder-inference")
+            self.assertEqual(stack["compound"]["floor"], "1.0x")
+            self.assertGreater(float(stack["compound"]["ceiling"].removesuffix("x")), 1.0)
+            self.assertEqual(
+                stack["compound"]["flag"],
+                "unmeasured composition - multiplicative hypothesis, not a claim",
+            )
+            guidance = {m["id"]: m for m in json.loads((SKILL / "assets" / "optimization_guidance.yaml").read_text())["methods"]}
+            excluded = {method for pair in stack["compound"]["excluded_conflicts"] for method in pair}
+            product = 1.0
+            for step in stack["compound"]["per_step"]:
+                band = guidance[step["method"]].get("improvement_band")
+                if step["method"] in excluded or not band:
+                    continue
+                self.assertIn(band["provenance"], {"source_reported", "local_reproduced"})
+                product *= parse_band(band["range"])[1]
+            self.assertAlmostEqual(float(stack["compound"]["ceiling"].removesuffix("x")), product)
             ready_ids = {item["id"] for item in report["ready_candidates"]}
             research_ids = {item["id"] for item in report["research_candidates"]}
             self.assertIn("fast-sdpa", ready_ids)
             self.assertNotIn("moe-expert-dispatch-and-quantization", ready_ids)
             self.assertIn("prompt-lookup-ngram-speculation", research_ids)
             text = markdown.read_text()
+            self.assertIn("Recommended stack", text)
+            self.assertIn("Derived ceiling", text)
+            self.assertIn("unmeasured composition - multiplicative hypothesis, not a claim", text)
             self.assertIn("Ready candidates", text)
             self.assertIn("Research experiments", text)
+
+    def test_compose_stack_band_matches_shared_fixture_and_excludes_conflicts(self) -> None:
+        case = load_structured(FIXTURES / "stack_compose_case.json")
+        self.assertEqual(compose_stack_band(case["stack"], case["guidance_methods"]), case["expected"])
+
+    def test_parse_band_rejects_malformed_input(self) -> None:
+        for value in ("1.0-3.0x", "fast", "3.0x-1.0x", "0x-1.0x"):
+            with self.subTest(value=value):
+                with self.assertRaises(ValueError):
+                    parse_band(value)
 
     def test_advisor_taxonomy_preserves_experimental_opt_in(self) -> None:
         skill_text = (SKILL / "SKILL.md").read_text()
@@ -593,10 +625,13 @@ class ToolingTests(unittest.TestCase):
             self.assertTrue(blocked["blocked"])
             self.assertEqual(blocked["ready_candidates"], [])
             self.assertEqual(blocked["research_candidates"], [])
+            self.assertNotIn("recommended_stack", blocked)
+            self.assertEqual(blocked["held_recommended_stack"]["id"], "dense-decoder-inference")
             self.assertTrue(blocked["held_candidates"])
             allowed = json.loads(run_script("recommend_optimizations.py", inspection, "--allow-blocked").stdout)
             self.assertFalse(allowed["blocked"])
             self.assertTrue(allowed["ready_candidates"])
+            self.assertEqual(allowed["recommended_stack"]["id"], "dense-decoder-inference")
 
     def test_recommender_requires_family_and_respects_overrides(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

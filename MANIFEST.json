@@ -2,8 +2,8 @@
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
   "version": "0.1.0",
-  "generated_at": "2026-07-06T09:00:24.138947+00:00",
-  "file_count": 217,
+  "generated_at": "2026-07-06T09:10:10.944660+00:00",
+  "file_count": 218,
   "files": [
     {
       "path": ".github/workflows/daily-research.yml",
@@ -207,8 +207,8 @@
     },
     {
       "path": "mlx-model-porting/assets/optimization_guidance.yaml",
-      "size_bytes": 43723,
-      "sha256": "7e1de4c456eae454f1508211bdaedfb23ea80d1d832be0dd1ee093b4e7897ef1"
+      "size_bytes": 44436,
+      "sha256": "1e1c3cf3508602005f2e20de04e8a1107bc51ffe31d8875eeabbe0c4aeb9b0ce"
     },
     {
       "path": "mlx-model-porting/assets/optimization_stacks.yaml",
@@ -582,8 +582,8 @@
     },
     {
       "path": "mlx-model-porting/scripts/_common.py",
-      "size_bytes": 4857,
-      "sha256": "0f035d7953449c83af95760fd6425653cf55cdbcee389a9afa4e3c8eec1b50aa"
+      "size_bytes": 9822,
+      "sha256": "37724a9d3b6b972625010a778095998a7460f112f0de250c9beb6899934b4dcb"
     },
     {
       "path": "mlx-model-porting/scripts/audit_skill.py",
@@ -642,8 +642,8 @@
     },
     {
       "path": "mlx-model-porting/scripts/recommend_optimizations.py",
-      "size_bytes": 6318,
-      "sha256": "556c9a65d1ab6bdb29309b79874e8adf73757867ce8195b1a5a2e799049cad95"
+      "size_bytes": 9418,
+      "sha256": "7239f06b96690410f1accb64216c3aaf5f9dbdfbf1668fd5f87498979e863e19"
     },
     {
       "path": "mlx-model-porting/scripts/research_loop.py",
@@ -1051,6 +1051,11 @@
       "sha256": "762f693bcafc4ac5df601eb31213c6acd41dbee0b8afbc3377c0750166196f34"
     },
     {
+      "path": "tests/fixtures/stack_compose_case.json",
+      "size_bytes": 2608,
+      "sha256": "657146a13c13f71d3a8c8ea274a46b4954e1e96b2a626e7c7efeaca12a0fa76f"
+    },
+    {
       "path": "tests/fixtures/tensors/bad.npz",
       "size_bytes": 566,
       "sha256": "6dc0d284653ac7c7d28a4d27c60398aadf0c9546a7cce800f986eb925ceb5196"
@@ -1087,8 +1092,8 @@
     },
     {
       "path": "tests/test_tooling.py",
-      "size_bytes": 145774,
-      "sha256": "cdce579fe40071b6f8f04ef61ad5bcb85cb71b6d1e97575498fceffca737c3b8"
+      "size_bytes": 148010,
+      "sha256": "be2458e45e19d06decc522e5be37c5026dcb2ba20500abfac9543a290b7635b3"
     }
   ]
 }

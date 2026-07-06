@@ -8,7 +8,7 @@ import sys
 from pathlib import Path
 from typing import Any
 
-from _common import SkillError, applies_to_family, dump_json, load_structured
+from _common import SkillError, applies_to_family, compose_stack_band, dump_json, load_structured
 
 SCRIPT_DIR = Path(__file__).resolve().parent
 SKILL_ROOT = SCRIPT_DIR.parent
@@ -25,6 +25,7 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Recommend MLX optimization candidates")
     parser.add_argument("inspection")
     parser.add_argument("--guidance", default=str(SKILL_ROOT / "assets" / "optimization_guidance.yaml"))
+    parser.add_argument("--stacks", default=str(SKILL_ROOT / "assets" / "optimization_stacks.yaml"))
     parser.add_argument("--family", help="Override detected architecture family")
     parser.add_argument("--objective", action="append", default=[], help="Filter by objective tag; repeatable")
     parser.add_argument("--limit", type=int, default=12)
@@ -53,12 +54,75 @@ def method_sort_key(method: dict[str, Any]) -> tuple[int, str, str]:
     return (STATUS_RANK.get(str(method.get("status")), 99), str(method.get("category", "")), str(method.get("id", "")))
 
 
+def select_stack(stacks: dict[str, Any], family: str) -> dict[str, Any] | None:
+    for stack in stacks.get("stacks", []) if isinstance(stacks, dict) else []:
+        if isinstance(stack, dict) and applies_to_family(stack.get("families", []), family):
+            return stack
+    return None
+
+
+def build_recommended_stack(stack: dict[str, Any], guidance_methods: list[dict[str, Any]]) -> dict[str, Any]:
+    compound = compose_stack_band(stack, guidance_methods)
+    steps = []
+    for index, step in enumerate(compound["per_step"], start=1):
+        steps.append({
+            "step": index,
+            "method": step["method"],
+            "band": step["band"] or "profile-required",
+            "lossiness": step["lossiness"],
+            "first_gate": step["gate"],
+        })
+    return {
+        "id": stack.get("id"),
+        "label": stack.get("label"),
+        "steps": steps,
+        "compound": compound,
+        "composition_notes": stack.get("composition_notes", []),
+    }
+
+
 def _candidate_rows(items: list[dict[str, Any]]) -> list[str]:
     rows: list[str] = []
     for item in items:
         gate = (item.get("validation_gates") or [""])[0]
         rows.append(f"| `{item['id']}` | `{item['status']}` | {item['expected_effect']} | {gate} |")
     return rows or ["| None | | | |"]
+
+
+def _stack_markdown(title: str, stack: dict[str, Any]) -> list[str]:
+    lines = [
+        f"## {title}",
+        "",
+        f"- Stack: `{stack['id']}`",
+        "",
+        "| Step | Method | Band | Lossiness | First gate |",
+        "|---|---|---|---|---|",
+    ]
+    for step in stack["steps"]:
+        lines.append(
+            f"| {step['step']} | `{step['method']}` | `{step['band']}` | "
+            f"{step['lossiness']} | {step['first_gate']} |"
+        )
+    compound = stack["compound"]
+    flag = compound.get("flag")
+    ceiling_line = (
+        f"Derived ceiling: `{compound['ceiling']}` with floor `{compound['floor']}` "
+        f"({compound['provenance']})"
+    )
+    if flag:
+        ceiling_line += f" - {flag}"
+    lines += ["", ceiling_line, ""]
+    unmeasured = compound.get("unmeasured_upside", [])
+    if unmeasured:
+        lines.append("Unmeasured upside: " + ", ".join(f"`{method}`" for method in unmeasured))
+    else:
+        lines.append("Unmeasured upside: none")
+    conflicts = compound.get("excluded_conflicts", [])
+    if conflicts:
+        lines.append("Excluded conflicts: " + ", ".join(f"`{pair[0]}` + `{pair[1]}`" for pair in conflicts))
+    else:
+        lines.append("Excluded conflicts: none")
+    return lines
 
 
 def write_markdown(report: dict[str, Any], path: str | Path) -> None:
@@ -78,9 +142,14 @@ def write_markdown(report: dict[str, Any], path: str | Path) -> None:
         lines.append("")
         for blocker in report.get("blockers", []):
             lines.append(f"> - {blocker}")
+        if report.get("held_recommended_stack"):
+            lines += ["", *_stack_markdown("Held recommended stack (intake blocked)", report["held_recommended_stack"])]
         lines += ["", "## Held candidates (intake blocked)", "", "| Method | Status | Expected effect | First gate |", "|---|---|---|---|"]
         lines += _candidate_rows(report.get("held_candidates", []))
     else:
+        if report.get("recommended_stack"):
+            lines += _stack_markdown("Recommended stack", report["recommended_stack"])
+            lines.append("")
         lines += ["## Ready candidates", "", "| Method | Status | Expected effect | First gate |", "|---|---|---|---|"]
         lines += _candidate_rows(report["ready_candidates"])
         lines += ["", "## Research experiments", "", "| Method | Expected effect | Why cautious |", "|---|---|---|"]
@@ -103,6 +172,7 @@ def main() -> int:
     try:
         inspection = load_structured(args.inspection)
         guidance = load_structured(args.guidance)
+        stacks = load_structured(args.stacks)
         family = args.family or inspection.get("recommended_family")
         if not family:
             raise SkillError("No detected family; pass --family after manual architecture review")
@@ -118,6 +188,8 @@ def main() -> int:
         research = [m for m in methods if m.get("status") == "research-candidate"][:limit]
         exclusions = [m for m in methods if m.get("status") == "rejected-or-superseded"][:limit]
         blocked = bool(inspection.get("recommendation_blockers")) and not args.allow_blocked
+        stack = select_stack(stacks, str(family))
+        recommended_stack = build_recommended_stack(stack, guidance.get("methods", [])) if stack else None
         report = {
             "schema_version": 1,
             "ok": True,
@@ -131,6 +203,10 @@ def main() -> int:
             "notable_exclusions": exclusions,
             "guidance_reviewed": guidance.get("reviewed"),
         }
+        if recommended_stack and blocked:
+            report["held_recommended_stack"] = recommended_stack
+        elif recommended_stack:
+            report["recommended_stack"] = recommended_stack
         if args.output:
             dump_json(report, args.output)
         if args.markdown:

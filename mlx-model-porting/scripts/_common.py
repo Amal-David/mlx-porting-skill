@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import math
 import re
 from pathlib import Path
 from typing import Any
@@ -129,3 +130,117 @@ def applies_to_family(applies_to: list, family: str) -> bool:
         if "-" not in value and value in tokens:
             return True
     return False
+
+
+_BAND_RE = re.compile(r"^\s*(\d+(?:\.\d+)?)x\s*-\s*(\d+(?:\.\d+)?)x\s*$")
+
+
+def parse_band(range_str: str) -> tuple[float, float]:
+    """Parse a multiplier band like ``1.0x-4.3x`` into numeric bounds."""
+    if not isinstance(range_str, str):
+        raise ValueError(f"improvement band must be a string, got {type(range_str).__name__}")
+    match = _BAND_RE.fullmatch(range_str)
+    if not match:
+        raise ValueError(f"malformed improvement band {range_str!r}; expected '<floor>x-<ceiling>x'")
+    floor, ceiling = (float(match.group(1)), float(match.group(2)))
+    if not (math.isfinite(floor) and math.isfinite(ceiling)):
+        raise ValueError(f"improvement band {range_str!r} contains a non-finite value")
+    if floor <= 0 or ceiling <= 0:
+        raise ValueError(f"improvement band {range_str!r} must contain positive multipliers")
+    if floor > ceiling:
+        raise ValueError(f"improvement band {range_str!r} has floor above ceiling")
+    return floor, ceiling
+
+
+def _format_multiplier(value: float) -> str:
+    text = f"{value:.6f}".rstrip("0").rstrip(".")
+    if "." not in text:
+        text += ".0"
+    return f"{text}x"
+
+
+def compose_stack_band(stack: dict[str, Any], guidance_methods: dict[str, Any] | list[dict[str, Any]]) -> dict[str, Any]:
+    """Derive an advisory compound band for an optimization stack.
+
+    Compound ceilings are a multiplicative hypothesis unless the full stack has
+    been measured together. Unmeasured or conflicting steps contribute 1.0x.
+    """
+    if isinstance(guidance_methods, dict):
+        methods_by_id = guidance_methods
+    else:
+        methods_by_id = {str(method.get("id")): method for method in guidance_methods if isinstance(method, dict)}
+
+    steps = stack.get("steps", [])
+    if not isinstance(steps, list):
+        raise ValueError(f"stack {stack.get('id', '<unknown>')} steps must be a list")
+
+    excluded_conflicts: list[list[str]] = []
+    excluded_methods: set[str] = set()
+    for note in stack.get("composition_notes", []) or []:
+        if not isinstance(note, dict) or note.get("validity") != "known-conflicting":
+            continue
+        pair = note.get("pair")
+        if not isinstance(pair, list) or len(pair) != 2:
+            raise ValueError(f"stack {stack.get('id', '<unknown>')} has malformed known-conflicting pair {pair!r}")
+        conflict_pair = [str(pair[0]), str(pair[1])]
+        excluded_conflicts.append(conflict_pair)
+        excluded_methods.update(conflict_pair)
+
+    per_step: list[dict[str, Any]] = []
+    unmeasured_upside: list[str] = []
+    step_floors = [1.0]
+    ceiling = 1.0
+
+    for step in steps:
+        if not isinstance(step, dict):
+            raise ValueError(f"stack {stack.get('id', '<unknown>')} contains a non-mapping step")
+        method_id = str(step.get("method", ""))
+        method = methods_by_id.get(method_id, {})
+        improvement_band = method.get("improvement_band") if isinstance(method, dict) else None
+        band_range = None
+        band_provenance = None
+        if isinstance(improvement_band, dict):
+            band_range = improvement_band.get("range")
+            band_provenance = improvement_band.get("provenance")
+
+        per_step.append({
+            "method": method_id,
+            "band": band_range if isinstance(band_range, str) else None,
+            "lossiness": step.get("lossiness"),
+            "gate": step.get("gate"),
+        })
+
+        if method_id in excluded_methods:
+            continue
+        if not isinstance(improvement_band, dict) or band_provenance == "profile_required":
+            unmeasured_upside.append(method_id)
+            continue
+        if band_provenance not in {"source_reported", "local_reproduced"}:
+            unmeasured_upside.append(method_id)
+            continue
+        step_floor, step_ceiling = parse_band(str(band_range))
+        step_floors.append(step_floor)
+        ceiling *= step_ceiling
+
+    compound = stack.get("compound", {}) if isinstance(stack.get("compound", {}), dict) else {}
+    measured_together = compound.get("measured_together") is True
+    floor = max(step_floors)
+    receipts = compound.get("receipts", [])
+    has_measured_floor = measured_together and any(
+        isinstance(receipt, dict) and ("measured_floor" in receipt or "floor" in receipt)
+        for receipt in (receipts if isinstance(receipts, list) else [])
+    )
+    if not has_measured_floor:
+        floor = min(floor, 1.0)
+    provenance = "local_reproduced" if measured_together else "multiplicative_hypothesis"
+    result = {
+        "floor": _format_multiplier(floor),
+        "ceiling": _format_multiplier(ceiling),
+        "provenance": provenance,
+        "unmeasured_upside": unmeasured_upside,
+        "excluded_conflicts": excluded_conflicts,
+        "per_step": per_step,
+    }
+    if provenance == "multiplicative_hypothesis":
+        result["flag"] = "unmeasured composition - multiplicative hypothesis, not a claim"
+    return result

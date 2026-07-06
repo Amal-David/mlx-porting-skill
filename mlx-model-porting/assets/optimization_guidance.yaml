@@ -519,7 +519,14 @@
         "moe-decoder-transformer"
       ],
       "recommendation": "Try only when a compatible smaller draft model shares tokenizer/vocabulary and acceptance is high enough to offset draft cost.",
-      "expected_effect": "Profile-required. The speedup depends on accepted tokens per verification step, target verification cost, and draft overhead.",
+      "expected_effect": "Source-reported speculative decoding papers report roughly 2x-3x-style gains in compatible settings; MLX-LM exposes a speculative generation path, but the selected draft/target pair still needs local acceptance and latency receipts.",
+      "improvement_band": {
+        "provenance": "source_reported",
+        "range": "1.0x-3.0x",
+        "metric": "decode-throughput",
+        "basis": "Classic speculative decoding papers report roughly 2x-3x-style gains in compatible settings, and MLX-LM exposes a speculative generation path. The selected draft/target pair still needs local acceptance and latency receipts.",
+        "applies_when": "Draft and target share tokenizer and vocabulary, accepted draft tokens amortize draft-model cost, and draft memory/cache growth plus sampling behavior fit the target Mac and quality gate."
+      },
       "tradeoffs": [
         "Extra model memory",
         "low acceptance can slow generation",
