@@ -1305,6 +1305,14 @@ class ToolingTests(unittest.TestCase):
 
             self.assertTrue(receipt["review_only"])
             self.assertEqual(len(receipt["commands"]), 4)
+            self.assertFalse(os.path.isabs(receipt["graph_output"]))
+            self.assertFalse(os.path.isabs(receipt["delta_output"]))
+            self.assertFalse(os.path.isabs(receipt["delta_markdown"]))
+            self.assertFalse(os.path.isabs(receipt["research_loop_output"]))
+            for command in receipt["commands"]:
+                self.assertFalse(os.path.isabs(command["cwd"]))
+                for item in command["command"]:
+                    self.assertFalse(os.path.isabs(item))
             self.assertTrue(update_output.exists())
             self.assertTrue(contributor_output.exists())
             self.assertTrue(graph_output.exists())

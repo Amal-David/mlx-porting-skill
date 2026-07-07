@@ -2,7 +2,7 @@
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
   "version": "0.2.0",
-  "generated_at": "2026-07-07T22:03:59.515352+00:00",
+  "generated_at": "2026-07-07T22:18:03.507570+00:00",
   "file_count": 265,
   "files": [
     {
@@ -682,13 +682,13 @@
     },
     {
       "path": "mlx-model-porting/research-runs/2026-07-07-nightly-knowledge-curator/nightly-run.json",
-      "size_bytes": 6513,
-      "sha256": "8420ef7f24926e07eda1fb4573deb0df3edaafa30912b1c9c24047bf3bedf032"
+      "size_bytes": 4851,
+      "sha256": "6cad1d2369824ba6af7192b72bae294a2829950e8de7fdd59452322ed0eb67ac"
     },
     {
       "path": "mlx-model-porting/research-runs/2026-07-07-nightly-knowledge-curator/nightly-run.md",
-      "size_bytes": 3331,
-      "sha256": "ac7c014e57eb93575a7b213b7daeeba8320e4d9f715f6770ec1429c20415ab75"
+      "size_bytes": 2298,
+      "sha256": "14e0abba4cd19ef91abea4f9d760f33f573840b2039be4d1dc45773b3a3f1c7a"
     },
     {
       "path": "mlx-model-porting/research-runs/2026-07-07-nightly-knowledge-curator/research-loop/agents/coverage-skeptic.assignment.json",
@@ -872,8 +872,8 @@
     },
     {
       "path": "mlx-model-porting/scripts/nightly_knowledge_curator.py",
-      "size_bytes": 8396,
-      "sha256": "b505207a2948eb54c80d6614fb13a90dff44f37335c2d646b828e653ef3c4e34"
+      "size_bytes": 8967,
+      "sha256": "e3fba75db0a02494f251f82bead79a3752c6567adbe606b41089139a8d8fa76c"
     },
     {
       "path": "mlx-model-porting/scripts/recommend_optimizations.py",
@@ -1327,8 +1327,8 @@
     },
     {
       "path": "tests/test_tooling.py",
-      "size_bytes": 158383,
-      "sha256": "9eee18e210b0e79e0578ef1ccd034ef949e10a00cbec3893d1059b0cfe854362"
+      "size_bytes": 158887,
+      "sha256": "d908987ea8f668722567caf886864a54a3676c77b67ec6e61668f285524f3350"
     }
   ]
 }

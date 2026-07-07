@@ -41,17 +41,35 @@ def default_run_id() -> str:
     return datetime.now(timezone.utc).strftime("%Y-%m-%d-nightly-knowledge-curator")
 
 
+def receipt_path(value: str | Path) -> str:
+    path = Path(value)
+    if not path.is_absolute():
+        return str(path)
+    try:
+        return str(path.resolve().relative_to(REPO_ROOT))
+    except ValueError:
+        return f"<external>/{path.name}"
+
+
+def receipt_command(command: list[str]) -> list[str]:
+    return ["python3" if arg == sys.executable else receipt_path(arg) for arg in command]
+
+
+def receipt_text(value: str) -> str:
+    return value.replace(str(REPO_ROOT), ".")
+
+
 def run_command(command: list[str], cwd: Path) -> dict[str, Any]:
     started_at = utc_now()
     completed = subprocess.run(command, cwd=cwd, capture_output=True, text=True)
     record = {
-        "command": command,
-        "cwd": str(cwd),
+        "command": receipt_command(command),
+        "cwd": receipt_path(cwd),
         "started_at": started_at,
         "finished_at": utc_now(),
         "returncode": completed.returncode,
-        "stdout": completed.stdout[-4000:],
-        "stderr": completed.stderr[-4000:],
+        "stdout": receipt_text(completed.stdout[-4000:]),
+        "stderr": receipt_text(completed.stderr[-4000:]),
     }
     if completed.returncode != 0:
         raise SkillError(f"command failed ({completed.returncode}): {' '.join(command)}\n{completed.stderr[-1200:]}")
@@ -175,7 +193,7 @@ def main() -> int:
         if not args.no_research_loop:
             loop_command = research_loop_command(run_id, run_dir, gap_hints, args.agent_count)
             commands.append(run_command(loop_command, REPO_ROOT))
-            research_loop_output = str(run_dir / "research-loop")
+            research_loop_output = receipt_path(run_dir / "research-loop")
 
         receipt = {
             "schema_version": 1,
@@ -183,9 +201,9 @@ def main() -> int:
             "started_at": started_at,
             "finished_at": utc_now(),
             "review_only": True,
-            "graph_output": str(Path(args.graph_output)),
-            "delta_output": str(delta_output),
-            "delta_markdown": str(markdown_output),
+            "graph_output": receipt_path(args.graph_output),
+            "delta_output": receipt_path(delta_output),
+            "delta_markdown": receipt_path(markdown_output),
             "research_loop_output": research_loop_output,
             "gap_hints": gap_hints,
             "commands": commands,
