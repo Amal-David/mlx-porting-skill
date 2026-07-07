@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-06-24T06:00:31.419602+00:00",
+  "generated_at": "2026-07-07T22:03:01.818520+00:00",
   "policy": {
     "auto_modify_recommendations": false,
     "auto_merge": false,
@@ -15,15 +15,17 @@
         "kernels",
         "quantization"
       ],
-      "default_branch": null,
-      "head_sha": "96296e9c3075a2389bc5c0f078bf01b5aa377cd9",
-      "head_date": null,
-      "head_message": null,
+      "default_branch": "main",
+      "head_sha": "7a1d4f5c12ac82f4b4d0a6e71538d89ca0605247",
+      "head_date": "2026-07-07T16:10:33Z",
+      "head_message": "Fix conv2 gradients in grouped strided case on Metal (#3800)",
       "url": "https://github.com/ml-explore/mlx",
-      "latest_release": null,
-      "metadata_warning": "GitHub API unavailable; release metadata not collected: HTTP Error 403: rate limit exceeded",
-      "metadata_fallback": "git ls-remote HEAD",
-      "known_snapshot": true
+      "latest_release": {
+        "tag": "v0.31.2",
+        "published_at": "2026-04-22T01:40:04Z",
+        "url": "https://github.com/ml-explore/mlx/releases/tag/v0.31.2"
+      },
+      "known_snapshot": false
     },
     {
       "kind": "repository",
@@ -34,15 +36,17 @@
         "decoding",
         "cache"
       ],
-      "default_branch": null,
-      "head_sha": "2c008fd0252b2c569227d12568356ab88ab0560a",
-      "head_date": null,
-      "head_message": null,
+      "default_branch": "main",
+      "head_sha": "2ed22318cd6a2fcc5c2e0caa1e1fb0ddeb7cafd5",
+      "head_date": "2026-06-24T23:12:59Z",
+      "head_message": "Fix deepseek indexer rope argument (#1431)",
       "url": "https://github.com/ml-explore/mlx-lm",
-      "latest_release": null,
-      "metadata_warning": "GitHub API unavailable; release metadata not collected: HTTP Error 403: rate limit exceeded",
-      "metadata_fallback": "git ls-remote HEAD",
-      "known_snapshot": true
+      "latest_release": {
+        "tag": "v0.31.3",
+        "published_at": "2026-04-22T07:43:57Z",
+        "url": "https://github.com/ml-explore/mlx-lm/releases/tag/v0.31.3"
+      },
+      "known_snapshot": false
     },
     {
       "kind": "repository",
@@ -52,14 +56,12 @@
         "audio",
         "vision"
       ],
-      "default_branch": null,
+      "default_branch": "main",
       "head_sha": "796f5b53cab69a3d48a44233ce21aae889e94a08",
-      "head_date": null,
-      "head_message": null,
+      "head_date": "2026-04-06T18:56:05Z",
+      "head_message": "Add wan 2.1 model (#1409)",
       "url": "https://github.com/ml-explore/mlx-examples",
       "latest_release": null,
-      "metadata_warning": "GitHub API unavailable; release metadata not collected: HTTP Error 403: rate limit exceeded",
-      "metadata_fallback": "git ls-remote HEAD",
       "known_snapshot": true
     },
     {
@@ -70,15 +72,17 @@
         "serving",
         "speculative"
       ],
-      "default_branch": null,
-      "head_sha": "6a8cdff6a1f53f46a15d4adb997c3b2d5f621263",
-      "head_date": null,
-      "head_message": null,
+      "default_branch": "main",
+      "head_sha": "e9c5bd75e7d641f9ebc36c4ed18849513b25c5fd",
+      "head_date": "2026-07-07T19:52:39Z",
+      "head_message": "Merge pull request #1519 from weklund/apc-exact-mode-integration-tests",
       "url": "https://github.com/Blaizzy/mlx-vlm",
-      "latest_release": null,
-      "metadata_warning": "GitHub API unavailable; release metadata not collected: HTTP Error 403: rate limit exceeded",
-      "metadata_fallback": "git ls-remote HEAD",
-      "known_snapshot": true
+      "latest_release": {
+        "tag": "v0.6.4",
+        "published_at": "2026-07-06T21:10:34Z",
+        "url": "https://github.com/Blaizzy/mlx-vlm/releases/tag/v0.6.4"
+      },
+      "known_snapshot": false
     },
     {
       "kind": "repository",
@@ -89,15 +93,17 @@
         "stt",
         "codec"
       ],
-      "default_branch": null,
-      "head_sha": "412cf7cd381c2a3f6a8189af04a95af24cb415b6",
-      "head_date": null,
-      "head_message": null,
+      "default_branch": "main",
+      "head_sha": "c46d15312ad52b0928c0f20dc2d6a880461f32c5",
+      "head_date": "2026-07-06T17:56:47Z",
+      "head_message": "Merge pull request #783 from hhh2210/feat/qwen3-asr-segment-batching",
       "url": "https://github.com/Blaizzy/mlx-audio",
-      "latest_release": null,
-      "metadata_warning": "GitHub API unavailable; release metadata not collected: HTTP Error 403: rate limit exceeded",
-      "metadata_fallback": "git ls-remote HEAD",
-      "known_snapshot": true
+      "latest_release": {
+        "tag": "v0.4.4",
+        "published_at": "2026-06-06T15:31:39Z",
+        "url": "https://github.com/Blaizzy/mlx-audio/releases/tag/v0.4.4"
+      },
+      "known_snapshot": false
     },
     {
       "kind": "repository",
@@ -107,15 +113,17 @@
         "cache",
         "batching"
       ],
-      "default_branch": null,
-      "head_sha": "a48c86c1a41900f7d26658471b5f67e5fdd35445",
-      "head_date": null,
-      "head_message": null,
+      "default_branch": "main",
+      "head_sha": "0dd115769ef1196a715b96b181353edacd2a4f69",
+      "head_date": "2026-06-28T20:18:29Z",
+      "head_message": "bump version to 0.4.0",
       "url": "https://github.com/waybarrios/vllm-mlx",
-      "latest_release": null,
-      "metadata_warning": "GitHub API unavailable; release metadata not collected: HTTP Error 403: rate limit exceeded",
-      "metadata_fallback": "git ls-remote HEAD",
-      "known_snapshot": true
+      "latest_release": {
+        "tag": "v0.4.0",
+        "published_at": "2026-06-28T20:20:22Z",
+        "url": "https://github.com/waybarrios/vllm-mlx/releases/tag/v0.4.0"
+      },
+      "known_snapshot": false
     },
     {
       "kind": "repository",
@@ -123,15 +131,13 @@
       "topics": [
         "agent-skills"
       ],
-      "default_branch": null,
-      "head_sha": "57546260929473d4e0d1c1bb75297be2fdfa1949",
-      "head_date": null,
-      "head_message": null,
+      "default_branch": "main",
+      "head_sha": "9d2f1ae187231d8199c64b5b762e1bdf2244733d",
+      "head_date": "2026-07-01T18:11:23Z",
+      "head_message": "Update claude-api skill: Claude Sonnet 5 and Managed Agents July updates (#1373)",
       "url": "https://github.com/anthropics/skills",
       "latest_release": null,
-      "metadata_warning": "GitHub API unavailable; release metadata not collected: HTTP Error 403: rate limit exceeded",
-      "metadata_fallback": "git ls-remote HEAD",
-      "known_snapshot": true
+      "known_snapshot": false
     },
     {
       "kind": "repository",
@@ -140,15 +146,17 @@
         "agent-skills",
         "codex"
       ],
-      "default_branch": null,
-      "head_sha": "31e428a1ef3396a0e962687e61f11c224b9f4dbc",
-      "head_date": null,
-      "head_message": null,
+      "default_branch": "main",
+      "head_sha": "2589f7a52df8f65905d47e603f65ec458464d45e",
+      "head_date": "2026-07-07T22:02:08Z",
+      "head_message": "Handle completion separators and popup dismissal (#31191)",
       "url": "https://github.com/openai/codex",
-      "latest_release": null,
-      "metadata_warning": "GitHub API unavailable; release metadata not collected: HTTP Error 403: rate limit exceeded",
-      "metadata_fallback": "git ls-remote HEAD",
-      "known_snapshot": true
+      "latest_release": {
+        "tag": "rust-v0.142.5",
+        "published_at": "2026-07-01T01:15:44Z",
+        "url": "https://github.com/openai/codex/releases/tag/rust-v0.142.5"
+      },
+      "known_snapshot": false
     }
   ],
   "papers": [
@@ -164,7 +172,7 @@
       ],
       "summary": "The growing adoption of Apple Silicon for machine learning development has created demand for efficient inference solutions that leverage its unique unified memory architecture. However, existing tools either lack native optimization (PyTorch MPS) or focus solely on text models, leaving multimodal workloads underserved. We present vllm-mlx, a framework for efficient LLM and MLLM inference on Apple Silicon built natively on MLX. For text models, we achieve 21\\% to 87\\% higher throughput than llama-cpp across models ranging from Qwen3-0.6B to Nemotron-30B, while providing continuous batching that scales to 4.3x aggregate throughput at 16 concurrent requests. For multimodal models, we introduce content-based prefix caching that eliminates redundant vision encoding by identifying identical ima",
       "review_status": "candidate-unreviewed",
-      "known_url": false,
+      "known_url": true,
       "candidate_id": "candidate-native-llm-and-mllm-inference-at-scale-on-apple-silicon"
     },
     {
@@ -182,6 +190,63 @@
       "review_status": "candidate-unreviewed",
       "known_url": false,
       "candidate_id": "candidate-benchmarking-on-device-machine-learning-on-apple-silicon-with-mlx"
+    },
+    {
+      "kind": "paper",
+      "query": "KV cache quantization long context",
+      "id": "http://arxiv.org/abs/2607.03652v1",
+      "title": "ELiTeFormer: An Efficient Transformer for FPGAs",
+      "updated": "2026-07-04T00:52:06Z",
+      "published": "2026-07-04T00:52:06Z",
+      "authors": [
+        "Victor Agostinelli",
+        "Nicolas Bohm Agostini",
+        "Antonino Tumeo"
+      ],
+      "summary": "Transformer blocks are prevalent in large language model (LLM) but present deployment challenges due to their challenging computational and memory demands. While prior work has typically optimized attention mechanisms or feed-forward networks (FFNs) separately, few hardware (HW) architecture have jointly addressed both components with co-designed hardware acceleration. We present ELiTeFormer (Efficient Linear Ternary Transformer), the first Transformer model architecture that unifies hybrid linear attention with ultra-low-precision (ternary) linear projections, specifically co-designed for field-programmable gate array (FPGA) deployment. ELiTeFormer achieves 10x model weight compression and 12.8x key-value (KV) cache compression compared to LLaMA 3, while maintaining competitive accuracy (",
+      "review_status": "candidate-unreviewed",
+      "known_url": false,
+      "candidate_id": "candidate-eliteformer-an-efficient-transformer-for-fpgas"
+    },
+    {
+      "kind": "paper",
+      "query": "KV cache quantization long context",
+      "id": "http://arxiv.org/abs/2607.01831v1",
+      "title": "Lynx: Progressive Speculative Quantization for accelerating KV Transfer in Long-Context Inference",
+      "updated": "2026-07-02T07:52:43Z",
+      "published": "2026-07-02T07:52:43Z",
+      "authors": [
+        "Wenchen Han",
+        "Gingfung Matthew Yeung",
+        "Marco Barletta",
+        "William Toner",
+        "Amory Hoste",
+        "Adam Barker"
+      ],
+      "summary": "Long-context inference is increasingly common in large language model (LLM) serving, driven by retrieval-augmented generation and agentic systems. In disaggregated inference, these workloads require transferring large Key-Value (KV) caches across the network, where decoding cannot begin until the transfer completes. Recent KV quantization techniques reduce data volume and alleviate this bottleneck, but existing schemes fail to achieve both low network-exposed latency and high inference accuracy. We challenge the assumption that the KV cache is an indivisible unit that must be fully received before use. We leverage the observation that different bits in the KV cache contribute unequally to attention computation and inference precision: the most significant bits capture the coarse structure ",
+      "review_status": "candidate-unreviewed",
+      "known_url": false,
+      "candidate_id": "candidate-lynx-progressive-speculative-quantization-for-accelerating-kv-transfer-in-long-context-inference"
+    },
+    {
+      "kind": "paper",
+      "query": "KV cache quantization long context",
+      "id": "http://arxiv.org/abs/2606.31519v1",
+      "title": "RaBitQCache: Rotated Binary Quantization for KVCache in Long Context LLM Inference",
+      "updated": "2026-06-30T11:32:14Z",
+      "published": "2026-06-30T11:32:14Z",
+      "authors": [
+        "Wenhao Li",
+        "Jinhao Dong",
+        "Hailin Zhang",
+        "Wenhang Shi",
+        "Wei Lu",
+        "Xiaoyong Du"
+      ],
+      "summary": "Long-context Large Language Model inference is severely bottlenecked by the massive Key-Value (KV) cache, yet existing sparse attention methods often suffer from static fixed-budget (Top-k) retrieval or rely on proxy scores that are computationally expensive and biased. To address these limitations, we propose RaBitQCache, a novel sparse attention framework that utilizes randomized rotated binary quantization and high-throughput binary-INT4 arithmetic to efficiently estimate attention weights. Our proxy score serves as an unbiased estimator with a proven error bound, enabling adaptive Top-p retrieval that dynamically adjusts the token budget based on actual attention sparsity. We further implement a hardware-aware system with asynchronous pipelining and lazy updates to mask overhead. Evalu",
+      "review_status": "candidate-unreviewed",
+      "known_url": false,
+      "candidate_id": "candidate-rabitqcache-rotated-binary-quantization-for-kvcache-in-long-context-llm-inference"
     },
     {
       "kind": "paper",
@@ -277,65 +342,6 @@
       "review_status": "candidate-unreviewed",
       "known_url": false,
       "candidate_id": "candidate-spherical-kv-angle-domain-attention-and-rate-distortion-retention-for-efficient-long-context-inference"
-    },
-    {
-      "kind": "paper",
-      "query": "KV cache quantization long context",
-      "id": "http://arxiv.org/abs/2605.01910v2",
-      "title": "Stochastic Sparse Attention for Memory-Bound Inference",
-      "updated": "2026-06-03T14:38:34Z",
-      "published": "2026-05-03T14:44:14Z",
-      "authors": [
-        "Kyle Lee",
-        "Corentin Delacour",
-        "Kevin Callahan-Coray",
-        "Kyle Jiang",
-        "Can Yaras",
-        "Samet Oymak",
-        "Tathagata Srimani",
-        "Kerem Y. Camsari"
-      ],
-      "summary": "Autoregressive decoding becomes bandwidth-limited at long contexts, as generating each token requires reading all $n_k$ key and value vectors from KV cache. We present Stochastic Additive No-mulT Attention (SANTA), a method that sparsifies value-cache access by sampling $S \\ll n_k$ indices from the post-softmax distribution and aggregates only those value rows. This yields an unbiased estimator of the post-softmax value aggregation while replacing value-stage multiply-accumulates with gather-and-add. We introduce stratified and systematic sampling to design variance-reduced, GPU-friendly variants. Evaluated on Llama-3.1-8B-Instruct at 32k-token contexts, S$^2$ANTA matches baseline accuracy while achieving up to $1.5\\times$ decode-step attention-kernel speedup over FlashInfer and FlashDecod",
-      "review_status": "candidate-unreviewed",
-      "known_url": false,
-      "candidate_id": "candidate-stochastic-sparse-attention-for-memory-bound-inference"
-    },
-    {
-      "kind": "paper",
-      "query": "KV cache quantization long context",
-      "id": "http://arxiv.org/abs/2602.07721v3",
-      "title": "ParisKV: Fast and Drift-Robust KV-Cache Retrieval for Long-Context LLMs",
-      "updated": "2026-05-28T23:34:23Z",
-      "published": "2026-02-07T22:26:45Z",
-      "authors": [
-        "Yanlin Qi",
-        "Xinhang Chen",
-        "Huiqiang Jiang",
-        "Qitong Wang",
-        "Botao Peng",
-        "Themis Palpanas"
-      ],
-      "summary": "KV-cache retrieval is essential for long-context LLM inference, yet existing methods struggle with distribution drift and high latency at scale. We introduce ParisKV, a drift-robust, GPU-native KV-cache retrieval framework based on collision-based candidate selection, followed by a quantized inner-product reranking estimator. For million-token contexts, ParisKV supports CPU-offloaded KV caches via Unified Virtual Addressing (UVA), enabling on-demand top-$k$ fetching with minimal overhead. ParisKV matches or outperforms full attention quality on long-input and long-generation benchmarks. It achieves state-of-the-art long-context decoding efficiency: it matches or exceeds full attention speed even at batch size 1 for long contexts, delivers up to 2.8$\\times$ higher throughput within full att",
-      "review_status": "candidate-unreviewed",
-      "known_url": false,
-      "candidate_id": "candidate-pariskv-fast-and-drift-robust-kv-cache-retrieval-for-long-context-llms"
-    },
-    {
-      "kind": "paper",
-      "query": "KV cache quantization long context",
-      "id": "http://arxiv.org/abs/2602.23200v2",
-      "title": "InnerQ: Hardware-Aware Tuning-Free Quantization of KV Cache for Large Language Models",
-      "updated": "2026-05-20T19:15:57Z",
-      "published": "2026-02-26T16:50:36Z",
-      "authors": [
-        "Sayed Mohammadreza Tayaranian Hosseini",
-        "Amir Ardakani",
-        "Warren J. Gross"
-      ],
-      "summary": "When transformer-based language models are deployed for text generation, most of the inference time is spent in the decoding stage, where output tokens are generated sequentially. Reducing the hardware cost of each decoding step is therefore critical for efficient long-context generation. A major bottleneck is the key-value (KV) cache, whose size grows with sequence length and often dominates the model's memory footprint. Prior work has proposed quantization methods to compress the KV cache while minimizing its loss of precision. We present InnerQ, a hardware-aware KV cache quantization scheme that reduces decode latency without compromising evaluation performance. InnerQ performs group-wise quantization by grouping cache matrices along their inner dimension. This grouping strategy aligns ",
-      "review_status": "candidate-unreviewed",
-      "known_url": true,
-      "candidate_id": "candidate-innerq-hardware-aware-tuning-free-quantization-of-kv-cache-for-large-language-models"
     },
     {
       "kind": "paper",
