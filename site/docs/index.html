@@ -384,6 +384,149 @@
       margin-bottom: 0;
     }
 
+    .diagram-stack {
+      display: grid;
+      gap: 16px;
+      margin: 26px 0 12px;
+    }
+
+    .diagram-panel {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 18px;
+      background:
+        linear-gradient(135deg, rgba(155, 226, 45, 0.09), transparent 34%),
+        linear-gradient(315deg, rgba(0, 169, 154, 0.08), transparent 40%),
+        var(--surface);
+    }
+
+    .diagram-panel h3 {
+      margin-bottom: 6px;
+    }
+
+    .diagram-panel > p {
+      margin-bottom: 14px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .flow-chain {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .flow-node,
+    .loop-node,
+    .ladder-step {
+      position: relative;
+      border: 1px solid rgba(17, 23, 19, 0.12);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.76);
+    }
+
+    .flow-node {
+      min-height: 132px;
+      padding: 14px 12px;
+    }
+
+    .flow-node:not(:last-child)::after {
+      content: "->";
+      position: absolute;
+      top: 50%;
+      right: -17px;
+      z-index: 2;
+      transform: translateY(-50%);
+      color: var(--kernel-cyan);
+      font: 800 0.9rem/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+
+    .diagram-kicker {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--kernel-cyan);
+      font: 780 0.72rem/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      text-transform: uppercase;
+      letter-spacing: 0;
+    }
+
+    .flow-node b,
+    .loop-node b,
+    .ladder-step b {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--ink);
+      font-size: 14px;
+      line-height: 1.2;
+    }
+
+    .flow-node span,
+    .loop-node span,
+    .ladder-step span {
+      display: block;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .ladder {
+      display: grid;
+      gap: 8px;
+    }
+
+    .ladder-step {
+      display: grid;
+      grid-template-columns: 88px minmax(0, 1fr);
+      align-items: center;
+      min-height: 68px;
+      overflow: hidden;
+    }
+
+    .ladder-step::before {
+      content: attr(data-level);
+      align-self: stretch;
+      display: grid;
+      place-items: center;
+      color: #0b312d;
+      background: color-mix(in srgb, var(--level-color), white 42%);
+      font: 780 0.78rem/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+
+    .ladder-copy {
+      padding: 12px 14px;
+    }
+
+    .loop-diagram {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      align-items: stretch;
+    }
+
+    .loop-node {
+      min-height: 128px;
+      padding: 14px;
+    }
+
+    .loop-node::after {
+      content: attr(data-next);
+      position: absolute;
+      right: 12px;
+      bottom: 10px;
+      color: var(--kernel-cyan);
+      font: 800 0.76rem/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+
+    .loop-node.ship {
+      border-color: rgba(155, 226, 45, 0.58);
+      background: rgba(155, 226, 45, 0.13);
+    }
+
+    .loop-node.rollback {
+      border-color: rgba(228, 98, 80, 0.42);
+      background: rgba(228, 98, 80, 0.08);
+    }
+
     .rule-list {
       display: grid;
       gap: 10px;
@@ -562,6 +705,22 @@
       .card-grid {
         grid-template-columns: 1fr;
       }
+
+      .flow-chain,
+      .loop-diagram {
+        grid-template-columns: 1fr;
+      }
+
+      .flow-node {
+        min-height: auto;
+      }
+
+      .flow-node:not(:last-child)::after {
+        top: auto;
+        right: 14px;
+        bottom: -15px;
+        transform: rotate(90deg);
+      }
     }
 
     @media (max-width: 560px) {
@@ -584,6 +743,18 @@
       .route-table {
         display: block;
         overflow-x: auto;
+      }
+
+      .diagram-panel {
+        padding: 14px;
+      }
+
+      .ladder-step {
+        grid-template-columns: 1fr;
+      }
+
+      .ladder-step::before {
+        min-height: 34px;
       }
     }
   </style>
@@ -608,6 +779,7 @@
           <ul class="nav-list">
             <li><a class="active" href="#introduction">Introduction</a></li>
             <li><a href="#looks-like">What it looks like</a></li>
+            <li><a href="#diagrams">Diagrams</a></li>
             <li><a href="#fits">How it fits together</a></li>
             <li><a href="#rules">Rules</a></li>
           </ul>
@@ -665,6 +837,111 @@
           <p>MLX Porter exists to make that harder to do. It gives humans and agents one route through source provenance, architecture classification, oracle capture, eager MLX implementation, parity checks, and only then Apple Silicon optimization.</p>
 
           <div class="quote">No parity, no optimization. No benchmark metadata, no speed claim.</div>
+
+          <h2 id="diagrams">Explainer diagrams</h2>
+          <p>The runbook is easiest to follow when the agent can see which proof belongs to which phase. These diagrams show the expected path and the places where work must stop instead of drifting into guesswork.</p>
+
+          <div class="diagram-stack" aria-label="MLX Porter explainer diagrams">
+            <section class="diagram-panel" aria-labelledby="pipeline-diagram-title">
+              <h3 id="pipeline-diagram-title">Porting pipeline</h3>
+              <p>Move left to right. Do not jump to the next phase until the current proof exists.</p>
+              <div class="flow-chain">
+                <div class="flow-node">
+                  <span class="diagram-kicker">01</span>
+                  <b>Inspect source</b>
+                  <span>Config, license, checkpoint format, remote-code risk.</span>
+                </div>
+                <div class="flow-node">
+                  <span class="diagram-kicker">02</span>
+                  <b>Classify family</b>
+                  <span>Dense decoder, ASR, diffusion, audio, MoE, SSM, CV.</span>
+                </div>
+                <div class="flow-node">
+                  <span class="diagram-kicker">03</span>
+                  <b>Capture oracle</b>
+                  <span>Deterministic source tensors and expected outputs.</span>
+                </div>
+                <div class="flow-node">
+                  <span class="diagram-kicker">04</span>
+                  <b>Port eager MLX</b>
+                  <span>Readable graph first, no compile, no kernel shortcuts.</span>
+                </div>
+                <div class="flow-node">
+                  <span class="diagram-kicker">05</span>
+                  <b>Validate and optimize</b>
+                  <span>Parity, quality, benchmark metadata, rollback condition.</span>
+                </div>
+              </div>
+            </section>
+
+            <section class="diagram-panel" aria-labelledby="parity-diagram-title">
+              <h3 id="parity-diagram-title">Parity ladder</h3>
+              <p>Each rung narrows the bug surface before a model-level claim is allowed.</p>
+              <div class="ladder">
+                <div class="ladder-step" data-level="Rung 1" style="--level-color: var(--checkpoint-gold)">
+                  <div class="ladder-copy">
+                    <b>Weights accounted for</b>
+                    <span>Every source tensor is loaded, transformed, ignored, or rejected explicitly.</span>
+                  </div>
+                </div>
+                <div class="ladder-step" data-level="Rung 2" style="--level-color: var(--kernel-cyan)">
+                  <div class="ladder-copy">
+                    <b>Intermediate tensors match</b>
+                    <span>Attention masks, RoPE, norms, scheduler steps, or feature extraction are checked directly.</span>
+                  </div>
+                </div>
+                <div class="ladder-step" data-level="Rung 3" style="--level-color: var(--memory-blue)">
+                  <div class="ladder-copy">
+                    <b>End output matches</b>
+                    <span>Logits, decoded text, waveform metrics, latent trajectory, or class output matches the oracle.</span>
+                  </div>
+                </div>
+                <div class="ladder-step" data-level="Rung 4" style="--level-color: var(--tensor-lime)">
+                  <div class="ladder-copy">
+                    <b>Quality gate passes</b>
+                    <span>The port passes the model-family metric before performance claims enter the conversation.</span>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <section class="diagram-panel" aria-labelledby="loop-diagram-title">
+              <h3 id="loop-diagram-title">Optimization decision loop</h3>
+              <p>Optimization is a measured loop, not a pile of tricks. One change enters, one gate decides.</p>
+              <div class="loop-diagram">
+                <div class="loop-node" data-next="then">
+                  <span class="diagram-kicker">Profile</span>
+                  <b>Find the real bottleneck</b>
+                  <span>Decode, prefill, memory pressure, preprocessing, or scheduler overhead.</span>
+                </div>
+                <div class="loop-node" data-next="then">
+                  <span class="diagram-kicker">Change one thing</span>
+                  <b>Apply one scoped method</b>
+                  <span>Compile, quantize, cache, batch, fuse, stream, or write a kernel only when supported.</span>
+                </div>
+                <div class="loop-node" data-next="gate">
+                  <span class="diagram-kicker">Re-prove</span>
+                  <b>Run parity and benchmark</b>
+                  <span>Same baseline, hardware, precision, shape, and metric window.</span>
+                </div>
+                <div class="loop-node ship" data-next="ship">
+                  <span class="diagram-kicker">Pass</span>
+                  <b>Record the receipt</b>
+                  <span>Promote the change with speed, quality, metadata, and rollback notes.</span>
+                </div>
+                <div class="loop-node rollback" data-next="rollback">
+                  <span class="diagram-kicker">Fail</span>
+                  <b>Rollback or hold</b>
+                  <span>Keep it out of the supported path until a reproducible MLX route exists.</span>
+                </div>
+                <div class="loop-node" data-next="next">
+                  <span class="diagram-kicker">Repeat</span>
+                  <b>Choose the next bottleneck</b>
+                  <span>Do not stack speculative changes until the measured one is understood.</span>
+                </div>
+              </div>
+            </section>
+          </div>
 
           <h2 id="looks-like">What that looks like</h2>
           <p>For a small Transformer block, do not start by asking for the fastest MLX version. Start by freezing the source behavior and making the first MLX implementation boring enough to debug:</p>
@@ -786,6 +1063,7 @@ python3 -m unittest discover -s tests -v</pre>
             On this page
           </p>
           <ul>
+            <li><a href="#diagrams">Explainer diagrams</a></li>
             <li><a href="#looks-like">What that looks like</a></li>
             <li><a href="#fits">How it fits together</a></li>
             <li><a href="#rules">Rules</a></li>

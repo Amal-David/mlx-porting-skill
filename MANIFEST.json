@@ -2,7 +2,7 @@
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
   "version": "0.2.0",
-  "generated_at": "2026-07-08T11:56:31.886416+00:00",
+  "generated_at": "2026-07-08T12:04:33.128877+00:00",
   "file_count": 268,
   "files": [
     {
@@ -912,8 +912,8 @@
     },
     {
       "path": "site/docs/index.html",
-      "size_bytes": 25093,
-      "sha256": "d1f6da6db66e845c901d9c2475714463e6089eb198a6d00b752e4501320a06a9"
+      "size_bytes": 34720,
+      "sha256": "016c5bfa747a1eefacf9fa9a572b3ee573193ce0cb8dfc41343c779fdf081b2a"
     },
     {
       "path": "site/index.html",
