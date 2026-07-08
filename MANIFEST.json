@@ -2,8 +2,8 @@
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
   "version": "0.2.0",
-  "generated_at": "2026-07-07T22:18:03.507570+00:00",
-  "file_count": 265,
+  "generated_at": "2026-07-08T09:47:39.615999+00:00",
+  "file_count": 266,
   "files": [
     {
       "path": ".github/workflows/daily-research.yml",
@@ -52,8 +52,8 @@
     },
     {
       "path": "README.md",
-      "size_bytes": 8094,
-      "sha256": "2c1a36aea6e813bb068dd1a9c0e7957ad1f70dde8b41df1860cf602e34f27a73"
+      "size_bytes": 9663,
+      "sha256": "366c34f0e190eba53d842e1ed0da75310d8e451733a5803d6f9a5e0f24313d41"
     },
     {
       "path": "RESEARCH_REPORT.md",
@@ -339,6 +339,11 @@
       "path": "mlx-model-porting/assets/update-watchlist.json",
       "size_bytes": 1626,
       "sha256": "7567e86c6dc2c16c3466233c2303f88d103ecd902400c2e6ddd28c651b05de16"
+    },
+    {
+      "path": "mlx-model-porting/examples/porting-patterns.md",
+      "size_bytes": 8556,
+      "sha256": "ed8d1c628611f08f913ee26350a51f2d996cff00522b2cd6ca4f7115a7afb530"
     },
     {
       "path": "mlx-model-porting/references/attention-and-kv.md",

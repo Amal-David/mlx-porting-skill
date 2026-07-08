@@ -1,8 +1,12 @@
-# mlx-porting-skill
+# Port PyTorch and Hugging Face models to MLX faster
 
-An MLX model porting and optimization Agent Skill.
+An MLX model porting and optimization Agent Skill (`mlx-porting-skill`).
 
-A portable Agent Skill for taking an unfamiliar PyTorch or Hugging Face model—language, vision, audio, speech, codec, diffusion, or hybrid—and producing a correct, measured MLX implementation.
+A portable Agent Skill for taking an unfamiliar PyTorch or Hugging Face model -- language, vision, audio, speech, codec, diffusion, or hybrid -- and producing a correct, measured MLX implementation.
+
+Paste a PyTorch module, point at a model directory, or bring a checkpoint and the skill gives you the porting route: architecture classification, weight-conversion guidance, parity tests, common fix patterns, and only then benchmarked MLX optimizations.
+
+The primary goal is to distill the relevant MLX knowledge into a step-by-step runbook that frontier cloud agents, open-source models, and smaller local models can all follow instead of rediscovering the same optimization path at runtime.
 
 This repository is deliberately **not** a single giant prompt. It has four layers:
 
@@ -22,6 +26,21 @@ This repository is deliberately **not** a single giant prompt. It has four layer
 - weight/KV/mixed-bit quantization, prompt caching, continuous batching, speculative decoding, and serving;
 - benchmark gates that prevent unsupported speedup claims;
 - review-only daily and deep-research loops that never auto-merge research changes.
+
+## Porting examples people can start from
+
+For the recognizable "before/after" paths, see
+[`mlx-model-porting/examples/porting-patterns.md`](mlx-model-porting/examples/porting-patterns.md).
+
+The examples are deliberately compact pattern cards, not claims that every named
+model family is fully ported. They show how to turn common PyTorch surfaces into
+an MLX port plan with the validation gates this repo already enforces:
+
+- LoRA fine-tuning to MLX;
+- Whisper-style audio model port;
+- small diffusion block port;
+- Transformer attention block port;
+- PyTorch checkpoint loading into MLX.
 
 ## Install
 
@@ -56,6 +75,12 @@ flagged as an unmeasured multiplicative hypothesis.
 Then ask the agent:
 
 > Use the MLX model porting skill. Port this model to MLX, establish source parity first, and optimize only through benchmarked changes.
+
+If you are starting from a pasted module instead of a full model directory, pick
+the closest pattern in
+[`mlx-model-porting/examples/porting-patterns.md`](mlx-model-porting/examples/porting-patterns.md)
+and ask for a `PORT_PLAN.md`, source-oracle checkpoints, weight-map rules, and
+the smallest eager MLX block before any optimization work.
 
 ## Try it offline (no model download, no Apple Silicon, no network)
 
@@ -111,7 +136,7 @@ skills-ref validate ./mlx-model-porting
 
 For broad ecosystem research, use `mlx-model-porting/scripts/research_loop.py`. It generates bounded researcher assignments, can dynamically choose agents from objective terms and `--gap-hint` inputs, writes subagent handoff packets and campaign receipts, can run bounded local executor workers or ingest externally written subagent results, ingests returned findings and worker-authored blogs, validates blog-section contracts while preserving generated fallbacks, validates optional explicit sampling-target receipts, and emits review-only `synthesis`, sampling coverage, cross-agent evidence matrix, promotion-review ledger, plus fixed or review-gate-adaptive multi-iteration `loop` receipts with aggregate promotion-review rollups, loop-level learning dossiers, and post-ingest `next_wave_scaffold` commands for adaptive external dispatch under `mlx-model-porting/research-runs/` without modifying recommendation assets automatically. Use `mlx-model-porting/scripts/run_research_campaign.py` when an explicit local researcher command should execute the campaign receipt wave by wave, preserve `campaign-run` receipts, and optionally follow next-wave scaffold receipts for bounded adaptive local loops.
 
-Current corpus review date: **2026-06-27**.
+Current README positioning review date: **2026-07-08**. See `VALIDATION.md` for the deeper corpus and receipt validation dates.
 
 ## Versioning
 
