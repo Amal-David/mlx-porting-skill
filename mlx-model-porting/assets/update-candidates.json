@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-07-07T22:03:01.818520+00:00",
+  "generated_at": "2026-07-08T22:09:31.820884+00:00",
   "policy": {
     "auto_modify_recommendations": false,
     "auto_merge": false,
@@ -16,14 +16,14 @@
         "quantization"
       ],
       "default_branch": "main",
-      "head_sha": "7a1d4f5c12ac82f4b4d0a6e71538d89ca0605247",
-      "head_date": "2026-07-07T16:10:33Z",
-      "head_message": "Fix conv2 gradients in grouped strided case on Metal (#3800)",
+      "head_sha": "57c66cac7cb3e5b1eb350488a61f1506b40d39f8",
+      "head_date": "2026-07-08T00:18:53Z",
+      "head_message": "Patch bump to 0.32.1 (#3816)",
       "url": "https://github.com/ml-explore/mlx",
       "latest_release": {
-        "tag": "v0.31.2",
-        "published_at": "2026-04-22T01:40:04Z",
-        "url": "https://github.com/ml-explore/mlx/releases/tag/v0.31.2"
+        "tag": "v0.32.0",
+        "published_at": "2026-07-07T22:29:13Z",
+        "url": "https://github.com/ml-explore/mlx/releases/tag/v0.32.0"
       },
       "known_snapshot": false
     },
@@ -37,9 +37,9 @@
         "cache"
       ],
       "default_branch": "main",
-      "head_sha": "2ed22318cd6a2fcc5c2e0caa1e1fb0ddeb7cafd5",
-      "head_date": "2026-06-24T23:12:59Z",
-      "head_message": "Fix deepseek indexer rope argument (#1431)",
+      "head_sha": "ab1806e8f5d6aa035973af194a1b9198ab4754dc",
+      "head_date": "2026-07-07T23:17:19Z",
+      "head_message": "Fix syntax error by removing quotes from NewLineTokenizer (#1465)",
       "url": "https://github.com/ml-explore/mlx-lm",
       "latest_release": {
         "tag": "v0.31.3",
@@ -73,9 +73,9 @@
         "speculative"
       ],
       "default_branch": "main",
-      "head_sha": "e9c5bd75e7d641f9ebc36c4ed18849513b25c5fd",
-      "head_date": "2026-07-07T19:52:39Z",
-      "head_message": "Merge pull request #1519 from weklund/apc-exact-mode-integration-tests",
+      "head_sha": "2b7f1a00319fccd2b3b3a6d5fac787234a1cfdef",
+      "head_date": "2026-07-08T20:47:45Z",
+      "head_message": "Merge pull request #1541 from lucasnewman/fix-qwen3-omni-sanitize",
       "url": "https://github.com/Blaizzy/mlx-vlm",
       "latest_release": {
         "tag": "v0.6.4",
@@ -147,14 +147,14 @@
         "codex"
       ],
       "default_branch": "main",
-      "head_sha": "2589f7a52df8f65905d47e603f65ec458464d45e",
-      "head_date": "2026-07-07T22:02:08Z",
-      "head_message": "Handle completion separators and popup dismissal (#31191)",
+      "head_sha": "5c7624a69e5620d749e0afa99a40e60e02f7ddc9",
+      "head_date": "2026-07-08T21:13:59Z",
+      "head_message": "test: migrate app-server v2 starts to auto env (#31614)",
       "url": "https://github.com/openai/codex",
       "latest_release": {
-        "tag": "rust-v0.142.5",
-        "published_at": "2026-07-01T01:15:44Z",
-        "url": "https://github.com/openai/codex/releases/tag/rust-v0.142.5"
+        "tag": "rust-v0.143.0",
+        "published_at": "2026-07-08T01:31:10Z",
+        "url": "https://github.com/openai/codex/releases/tag/rust-v0.143.0"
       },
       "known_snapshot": false
     }

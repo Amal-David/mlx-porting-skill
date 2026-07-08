@@ -1,0 +1,146 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-07-08-nightly-knowledge-curator",
+  "generated_at": "2026-07-08T22:09:31+00:00",
+  "previous_graph_generated_at": "2026-07-07T22:03:01+00:00",
+  "already_read_sources": [
+    {
+      "id": "candidate:paper:native-llm-and-mllm-inference-at-scale-on-apple-silicon",
+      "label": "Native LLM and MLLM Inference at Scale on Apple Silicon",
+      "locator": "https://arxiv.org/abs/2601.19139",
+      "read_state": "already_read",
+      "kind": "paper",
+      "known_source_id": "source:paper-2601-19139"
+    },
+    {
+      "id": "candidate:paper:rope-aware-bit-allocation-for-kv-cache-quantization",
+      "label": "RoPE-Aware Bit Allocation for KV-Cache Quantization",
+      "locator": "https://arxiv.org/abs/2606.24033",
+      "read_state": "already_read",
+      "kind": "paper",
+      "known_source_id": "source:paper-2606-24033"
+    },
+    {
+      "id": "candidate:paper:agent-assisted-side-channel-attacks-on-non-prefix-kv-cache-in-rag",
+      "label": "Agent-Assisted Side-Channel Attacks on Non-Prefix KV Cache in RAG",
+      "locator": "https://arxiv.org/abs/2606.21842",
+      "read_state": "already_read",
+      "kind": "paper",
+      "known_source_id": "source:paper-2606-21842"
+    },
+    {
+      "id": "candidate:paper:ultraquant-4-bit-kv-caching-for-context-heavy-agents",
+      "label": "UltraQuant: 4-bit KV Caching for Context-Heavy Agents",
+      "locator": "https://arxiv.org/abs/2606.20474",
+      "read_state": "already_read",
+      "kind": "paper",
+      "known_source_id": "source:paper-2606-20474"
+    },
+    {
+      "id": "candidate:paper:pushing-the-limits-of-on-device-streaming-asr-a-compact-high-accuracy-english-model-for-low-latency-inference",
+      "label": "Pushing the Limits of On-Device Streaming ASR: A Compact, High-Accuracy English Model for Low-Latency Inference",
+      "locator": "https://arxiv.org/abs/2604.14493",
+      "read_state": "already_read",
+      "kind": "paper",
+      "known_source_id": "source:paper-2604-14493"
+    },
+    {
+      "id": "candidate:repository:ml-explore-mlx",
+      "label": "ml-explore/mlx",
+      "locator": "https://github.com/ml-explore/mlx",
+      "read_state": "already_read",
+      "kind": "repository",
+      "known_source_id": "source:mlx-repo"
+    },
+    {
+      "id": "candidate:repository:ml-explore-mlx-lm",
+      "label": "ml-explore/mlx-lm",
+      "locator": "https://github.com/ml-explore/mlx-lm",
+      "read_state": "already_read",
+      "kind": "repository",
+      "known_source_id": "source:mlx-lm-repo"
+    },
+    {
+      "id": "candidate:repository:ml-explore-mlx-examples",
+      "label": "ml-explore/mlx-examples",
+      "locator": "https://github.com/ml-explore/mlx-examples",
+      "read_state": "already_read",
+      "kind": "repository",
+      "known_source_id": "source:mlx-examples-repo"
+    },
+    {
+      "id": "candidate:repository:blaizzy-mlx-vlm",
+      "label": "Blaizzy/mlx-vlm",
+      "locator": "https://github.com/Blaizzy/mlx-vlm",
+      "read_state": "already_read",
+      "kind": "repository",
+      "known_source_id": "source:mlx-vlm-repo"
+    },
+    {
+      "id": "candidate:repository:blaizzy-mlx-audio",
+      "label": "Blaizzy/mlx-audio",
+      "locator": "https://github.com/Blaizzy/mlx-audio",
+      "read_state": "already_read",
+      "kind": "repository",
+      "known_source_id": "source:mlx-audio-repo"
+    },
+    {
+      "id": "candidate:repository:waybarrios-vllm-mlx",
+      "label": "waybarrios/vllm-mlx",
+      "locator": "https://github.com/waybarrios/vllm-mlx",
+      "read_state": "already_read",
+      "kind": "repository",
+      "known_source_id": "source:vllm-mlx-repo"
+    },
+    {
+      "id": "candidate:repository:anthropics-skills",
+      "label": "anthropics/skills",
+      "locator": "https://github.com/anthropics/skills",
+      "read_state": "already_read",
+      "kind": "repository",
+      "known_source_id": "source:agent-skills-repo"
+    }
+  ],
+  "new_unread_sources": [],
+  "updated_sources": [
+    {
+      "id": "candidate:repository:openai-codex",
+      "label": "openai/codex",
+      "locator": "https://github.com/openai/codex",
+      "read_state": "updated_candidate",
+      "kind": "repository",
+      "head_sha": "5c7624a69e5620d749e0afa99a40e60e02f7ddc9"
+    }
+  ],
+  "new_approach_leads": [
+    {
+      "id": "candidate:repository:openai-codex",
+      "label": "openai/codex",
+      "locator": "https://github.com/openai/codex",
+      "read_state": "updated_candidate",
+      "kind": "repository",
+      "matches": [
+        {
+          "target": "backlog:multi-source-research-sampling",
+          "score": 2,
+          "matched_terms": [
+            "auto",
+            "test"
+          ]
+        }
+      ]
+    }
+  ],
+  "gap_hints": [
+    "multi",
+    "research",
+    "sampling",
+    "codex",
+    "openai"
+  ],
+  "policy": {
+    "review_only": true,
+    "auto_promote_sources": false,
+    "auto_modify_recommendations": false
+  }
+}

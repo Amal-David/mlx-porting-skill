@@ -1655,6 +1655,40 @@ class ToolingTests(unittest.TestCase):
             self.assertIn("ingest command args", campaign_markdown)
             self.assertIn("official-docs-cartographer", campaign_markdown)
 
+    def test_research_loop_campaign_command_paths_are_portable_inside_skill_root(self) -> None:
+        output_dir = Path(tempfile.mkdtemp(prefix="campaign-portable-", dir=SKILL))
+        try:
+            run_script(
+                "research_loop.py",
+                "--run-id", "portable-campaign-loop",
+                "--objective", "Keep campaign rerun commands portable",
+                "--iterations", 2,
+                "--agent-count", 1,
+                "--output-dir", output_dir,
+            )
+            campaign_path = output_dir / "campaign.json"
+            campaign_text = campaign_path.read_text()
+            campaign_markdown = (output_dir / "campaign.md").read_text()
+            self.assertNotIn(str(output_dir), campaign_text)
+            self.assertNotIn(str(SKILL), campaign_text)
+            self.assertNotIn(str(output_dir), campaign_markdown)
+            self.assertNotIn(str(SKILL), campaign_markdown)
+
+            campaign = json.loads(campaign_text)
+            first_wave, second_wave = campaign["waves"]
+            first_output = f"{output_dir.name}/iterations/01"
+            second_output = f"{output_dir.name}/iterations/02"
+            first_command = first_wave["ingest"]["command_args"]
+            second_command = second_wave["ingest"]["command_args"]
+            scaffold = first_wave["next_wave_scaffold"]
+            self.assertEqual(first_command[first_command.index("--output-dir") + 1], first_output)
+            self.assertEqual(second_command[second_command.index("--output-dir") + 1], second_output)
+            self.assertEqual(scaffold["output_dir"], second_output)
+            scaffold_command = scaffold["command_args"]
+            self.assertEqual(scaffold_command[scaffold_command.index("--output-dir") + 1], second_output)
+        finally:
+            shutil.rmtree(output_dir, ignore_errors=True)
+
     def test_research_loop_campaign_manifest_records_iteration_waves(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             output_dir = Path(tmp) / "campaign-iterative-run"

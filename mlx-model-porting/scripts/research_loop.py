@@ -685,6 +685,14 @@ def append_blog_contract_command_args(command_args: list[str], summary: dict[str
         command_args.append("--require-worker-blog-contract")
 
 
+def skill_root_command_path(path: Path) -> str:
+    resolved = path.resolve()
+    try:
+        return safe_relpath(SKILL_ROOT, resolved)
+    except SkillError:
+        return str(path)
+
+
 def ingest_command_args_for_wave(summary: dict[str, Any], output_dir: Path) -> list[str]:
     planner = summary.get("assignment_planner", {})
     dispatch = summary.get("subagent_dispatch", {})
@@ -720,7 +728,7 @@ def ingest_command_args_for_wave(summary: dict[str, Any], output_dir: Path) -> l
     command_args.extend([
         "--ingest-subagent-results",
         "--output-dir",
-        str(output_dir),
+        skill_root_command_path(output_dir),
     ])
     return command_args
 
@@ -778,7 +786,8 @@ def build_next_wave_scaffold(
     append_review_gate_command_args(command_args, summary.get("review_gate", {}).get("requirements", {}))
     append_failure_command_args(command_args, summary)
     append_blog_contract_command_args(command_args, summary)
-    command_args.extend(["--output-dir", str(next_output_dir)])
+    command_output_dir = skill_root_command_path(next_output_dir)
+    command_args.extend(["--output-dir", command_output_dir])
     return {
         "schema_version": 1,
         "review_only": True,
@@ -787,7 +796,7 @@ def build_next_wave_scaffold(
         "next_iteration": next_iteration,
         "iteration_count": iteration_count,
         "run_id": next_run_id,
-        "output_dir": str(next_output_dir),
+        "output_dir": command_output_dir,
         "assignment_mode": "dynamic",
         "gap_hints": gap_hints,
         "command_args": command_args,
