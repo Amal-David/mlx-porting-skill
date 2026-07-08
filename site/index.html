@@ -346,8 +346,7 @@
 
     .tile,
     .doc-panel,
-    .step,
-    .color-swatch {
+    .step {
       border: 1px solid var(--mlx-line);
       border-radius: 8px;
       background: rgba(255, 255, 255, 0.035);
@@ -381,41 +380,6 @@
     .doc-panel p,
     .step p {
       margin-bottom: 0;
-    }
-
-    .palette {
-      display: grid;
-      grid-template-columns: repeat(6, minmax(0, 1fr));
-      gap: 10px;
-    }
-
-    .color-swatch {
-      min-height: 130px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      overflow: hidden;
-    }
-
-    .swatch-fill {
-      min-height: 52px;
-    }
-
-    .swatch-copy {
-      padding: 12px;
-    }
-
-    .swatch-copy b {
-      display: block;
-      font-size: 14px;
-      line-height: 1.15;
-    }
-
-    .swatch-copy small {
-      display: block;
-      margin-top: 5px;
-      color: var(--mlx-muted);
-      font: 0.76rem/1.2 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
     }
 
     .steps {
@@ -457,6 +421,8 @@
       border-radius: 8px;
       overflow: hidden;
       background: #0a0d10;
+      max-width: 100%;
+      min-width: 0;
     }
 
     .terminal-head {
@@ -489,6 +455,8 @@
       color: #dce7e1;
       font: 0.92rem/1.58 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
       white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      word-break: break-word;
     }
 
     .doc-links {
@@ -583,8 +551,7 @@
 
       .grid-3,
       .grid-4,
-      .steps,
-      .palette {
+      .steps {
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
     }
@@ -638,8 +605,7 @@
 
       .grid-3,
       .grid-4,
-      .steps,
-      .palette {
+      .steps {
         grid-template-columns: 1fr;
       }
     }
@@ -658,7 +624,7 @@
           <a href="#inspector">Inspector</a>
           <a href="#agents">Agents</a>
           <a href="/docs/">Docs</a>
-          <a href="#palette">Colors</a>
+          <a href="#cli">CLI</a>
         </div>
         <a class="github-link" href="https://github.com/Amal-David/mlx-porting-skill" aria-label="Open MLX Porter on GitHub">
           <svg class="icon" aria-hidden="true" viewBox="0 0 16 16">
@@ -794,36 +760,47 @@
       </div>
     </section>
 
-    <section class="band" id="palette" aria-labelledby="palette-title">
-      <div class="wrap">
+    <section class="band" id="cli" aria-labelledby="cli-title">
+      <div class="wrap docs-grid">
+        <div>
         <div class="section-head">
-          <h2 id="palette-title">Visual signals for real porting work.</h2>
-          <p class="section-copy">The palette tracks what matters during an MLX port: tensors, kernels, unified memory, parity, checkpoints, and Metal surfaces.</p>
+          <h2 id="cli-title">CLI first. The site is just the doorway.</h2>
+          <p class="section-copy">MLX Porter lives in the repo: a skill contract, reference runbooks, structured assets, and scripts that generate inspection reports, port plans, parity checks, and benchmark receipts.</p>
         </div>
-        <div class="palette" aria-label="MLX Porter color palette">
-          <div class="color-swatch">
-            <div class="swatch-fill" style="background: var(--mlx-tensor-lime)"></div>
-            <div class="swatch-copy"><b>Tensor Lime</b><small>#B7F34F</small></div>
-          </div>
-          <div class="color-swatch">
-            <div class="swatch-fill" style="background: var(--mlx-kernel-cyan)"></div>
-            <div class="swatch-copy"><b>Kernel Cyan</b><small>#21D6C7</small></div>
-          </div>
-          <div class="color-swatch">
-            <div class="swatch-fill" style="background: var(--mlx-memory-blue)"></div>
-            <div class="swatch-copy"><b>Memory Blue</b><small>#5B8CFF</small></div>
-          </div>
-          <div class="color-swatch">
-            <div class="swatch-fill" style="background: var(--mlx-parity-coral)"></div>
-            <div class="swatch-copy"><b>Parity Coral</b><small>#FF7A66</small></div>
-          </div>
-          <div class="color-swatch">
-            <div class="swatch-fill" style="background: var(--mlx-metal-violet)"></div>
-            <div class="swatch-copy"><b>Metal Violet</b><small>#A78BFA</small></div>
-          </div>
-          <div class="color-swatch">
-            <div class="swatch-fill" style="background: var(--mlx-checkpoint-gold)"></div>
-            <div class="swatch-copy"><b>Checkpoint Gold</b><small>#F1B84B</small></div>
+        <div class="grid-3" style="grid-template-columns:1fr; gap:10px">
+          <article class="tile">
+            <h3>Inspect</h3>
+            <p>Point at a model folder or local MLX project and get JSON/Markdown evidence instead of vibes.</p>
+          </article>
+          <article class="tile">
+            <h3>Plan</h3>
+            <p>Turn model metadata into a family route, runbook, weight-map requirements, and parity ladder.</p>
+          </article>
+          <article class="tile">
+            <h3>Verify</h3>
+            <p>Run source validation, tensor comparison, and benchmark commands before claiming an optimization.</p>
+          </article>
+        </div>
+        </div>
+        <div class="doc-panel">
+          <h3>Typical command path</h3>
+          <p>Use the generated artifacts as handoff packets for an agent or as a checklist for a human port.</p>
+          <div class="terminal" aria-label="MLX Porter CLI workflow">
+            <div class="terminal-head"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+            <pre>S=mlx-model-porting/scripts
+
+python3 $S/inspect_model.py \
+  /path/to/model \
+  --output inspection.json
+python3 $S/make_port_plan.py \
+  inspection.json \
+  --output PORT_PLAN.md
+python3 $S/recommend_optimizations.py \
+  inspection.json \
+  --markdown OPTIMIZATIONS.md
+python3 $S/inspect_mlx_project.py \
+  /path/to/mlx-project \
+  --markdown MLX_INSPECTION.md</pre>
           </div>
         </div>
       </div>
@@ -897,7 +874,7 @@ python3 -m unittest discover -s tests -v</pre>
     const canvas = document.getElementById("mesh");
     const ctx = canvas.getContext("2d");
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const palette = ["#21d6c7", "#b7f34f", "#5b8cff", "#ff7a66", "#a78bfa", "#f1b84b"];
+    const nodeTones = ["#21d6c7", "#b7f34f", "#5b8cff", "#ff7a66", "#a78bfa", "#f1b84b"];
     let nodes = [];
     let width = 0;
     let height = 0;
@@ -917,7 +894,7 @@ python3 -m unittest discover -s tests -v</pre>
         vx: (Math.random() - 0.5) * 0.32,
         vy: (Math.random() - 0.5) * 0.32,
         r: 1.4 + Math.random() * 2.8,
-        color: palette[index % palette.length]
+        color: nodeTones[index % nodeTones.length]
       }));
     }
 
