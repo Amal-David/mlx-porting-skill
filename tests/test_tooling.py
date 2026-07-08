@@ -785,6 +785,77 @@ class ToolingTests(unittest.TestCase):
             self.assertFalse(report["unexplained_source"])
             self.assertFalse(report["unexplained_target"])
 
+    def test_mlx_project_inspector_reports_existing_runtime_and_contribution_candidates(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_path = Path(tmp)
+            project = tmp_path / "served_port"
+            project.mkdir()
+            (project / "serve.py").write_text(
+                "\n".join([
+                    "import time",
+                    "import mlx.core as mx",
+                    "import mlx.nn as nn",
+                    "from mlx_lm import load, generate",
+                    "",
+                    "class TinyPort(nn.Module):",
+                    "    def __call__(self, x):",
+                    "        return mx.fast.scaled_dot_product_attention(x, x, x)",
+                    "",
+                    "@mx.compile",
+                    "def step(x):",
+                    "    return mx.eval(x)",
+                    "",
+                    "def benchmark_and_check():",
+                    "    started = time.perf_counter()",
+                    "    assert mx.allclose(mx.array([1.0]), mx.array([1.0]))",
+                    "    model, tokenizer = load('local-model')",
+                    "    generate(model, tokenizer, prompt='hello')",
+                    "    return {'tok/s': 1.0 / (time.perf_counter() - started)}",
+                    "",
+                    "kernel = mx.metal_kernel(name='tiny', input_names=['x'], output_names=['y'], source='')",
+                ]) + "\n",
+                encoding="utf-8",
+            )
+            output = tmp_path / "inspection.json"
+            markdown = tmp_path / "MLX_INSPECTION.md"
+            result = run_script("inspect_mlx_project.py", project, "--output", output, "--markdown", markdown)
+            self.assertEqual(result.stdout.strip(), "")
+            report = json.loads(output.read_text())
+            self.assertEqual(report["inspection_mode"], "local-mlx-project-inspector")
+            self.assertEqual(report["health"]["status"], "looks-good")
+            self.assertIn("mlx", report["code_surface"]["packages"])
+            self.assertIn("mlx_lm", report["code_surface"]["packages"])
+            features = report["code_surface"]["features"]
+            self.assertTrue(features["compiled_regions"])
+            self.assertTrue(features["explicit_eval"])
+            self.assertTrue(features["fast_attention"])
+            self.assertTrue(features["benchmark_evidence"])
+            self.assertTrue(features["parity_evidence"])
+            self.assertTrue(features["custom_metal_kernel"])
+            candidate_ids = {item["id"] for item in report["contribution_candidates"]}
+            self.assertIn("custom-metal-kernel-pattern", candidate_ids)
+            self.assertIn("compiled-region-receipt", candidate_ids)
+            self.assertIn("Contribution candidates", markdown.read_text())
+
+    def test_mlx_project_inspector_flags_missing_parity_and_benchmark(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_path = Path(tmp)
+            project = tmp_path / "rough_port"
+            project.mkdir()
+            (project / "app.py").write_text(
+                "import mlx.core as mx\n\n"
+                "def run(x):\n"
+                "    return mx.matmul(x, x)\n",
+                encoding="utf-8",
+            )
+            report = json.loads(run_script("inspect_mlx_project.py", project).stdout)
+            self.assertEqual(report["health"]["status"], "proof-gaps")
+            opportunity_ids = {item["id"] for item in report["improvement_opportunities"]}
+            self.assertIn("add-source-oracle", opportunity_ids)
+            self.assertIn("add-benchmark-receipt", opportunity_ids)
+            self.assertIn("review-eval-boundaries", opportunity_ids)
+            self.assertEqual(report["contribution_candidates"][0]["id"], "no-new-learning-yet")
+
     def test_weight_mapping_transforms_and_coverage(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             output = Path(tmp) / "weight-report.json"

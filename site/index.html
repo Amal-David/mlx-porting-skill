@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>MLX Porter Runbook</title>
-  <meta name="description" content="A doc-friendly landing page for the MLX Porter runbook: port PyTorch and Hugging Face projects to Apple MLX with source parity, deterministic weight maps, and measured optimization gates.">
+  <meta name="description" content="A doc-friendly landing page for the MLX Porter runbook: port PyTorch and Hugging Face projects to Apple MLX, inspect existing MLX ports, and optimize only after parity and benchmark receipts.">
   <style>
     :root {
       color-scheme: dark;
@@ -655,6 +655,7 @@
       <div class="nav-actions">
         <div class="nav-links">
           <a href="#runbook">Runbook</a>
+          <a href="#inspector">Inspector</a>
           <a href="#agents">Agents</a>
           <a href="/docs/">Docs</a>
           <a href="#palette">Colors</a>
@@ -674,8 +675,8 @@
       <canvas id="mesh" aria-hidden="true"></canvas>
       <div class="hero-center reveal">
         <p class="eyebrow">Apple MLX runbook for agents</p>
-        <h1 id="title">Port PyTorch projects to MLX without runtime guesswork.</h1>
-        <p class="lead">A doc-friendly landing page for the MLX Porter skill: inspect the source, prove parity, then apply Apple Silicon optimizations with receipts.</p>
+        <h1 id="title">Port PyTorch projects and inspect MLX ports without runtime guesswork.</h1>
+        <p class="lead">A doc-friendly landing page for the MLX Porter skill: inspect source or existing local MLX code, prove parity, then apply Apple Silicon optimizations with receipts.</p>
         <div class="center-cta" aria-label="Primary actions">
           <a class="button primary" href="https://github.com/Amal-David/mlx-porting-skill">
             <svg class="icon" aria-hidden="true" viewBox="0 0 16 16">
@@ -688,8 +689,8 @@
         </div>
         <div class="command-strip" aria-label="Agent command">
           <span class="prompt">agent:</span>
-          <code>SKILL.md -> oracle -> eager MLX -> parity -> optimize</code>
-          <span class="status-chip">no silent speed claims</span>
+          <code>inspect -> proof gaps -> improvements -> contributions</code>
+          <span class="status-chip">proof before speed</span>
         </div>
       </div>
     </section>
@@ -703,7 +704,7 @@
         <div class="steps">
           <article class="step" style="--accent: var(--mlx-kernel-cyan)">
             <h3>Inspect statically</h3>
-            <p>Read configs, safetensors headers, source files, licenses, and remote-code risks before executing model code.</p>
+            <p>Read configs, safetensors headers, project files, licenses, and remote-code risks before executing model code.</p>
           </article>
           <article class="step" style="--accent: var(--mlx-memory-blue)">
             <h3>Pick the family</h3>
@@ -725,16 +726,52 @@
       </div>
     </section>
 
+    <section class="band" id="inspector" aria-labelledby="inspector-title">
+      <div class="wrap docs-grid">
+        <div>
+          <div class="section-head" style="display:block; margin-bottom:22px">
+            <h2 id="inspector-title">Already running MLX? Inspect it first.</h2>
+            <p class="section-copy" style="margin-top:16px">Inspector mode is for local MLX projects that already exist: your own port, a served app, a notebook, or a converted checkpoint. It tells the agent what is present before suggesting any optimization.</p>
+          </div>
+          <div class="grid-3" style="grid-template-columns:1fr; gap:10px">
+            <article class="tile">
+              <h3>What is running</h3>
+              <p>Detects MLX packages, module surfaces, eval boundaries, compile regions, fast attention, caches, quantization, custom kernels, and risk flags.</p>
+            </article>
+            <article class="tile">
+              <h3>What can improve</h3>
+              <p>Names proof gaps first: source oracle, parity evidence, benchmark metadata, cache policy, quantization path, or model-intake blockers.</p>
+            </article>
+            <article class="tile">
+              <h3>What can be contributed</h3>
+              <p>Turns novel local patterns into review leads only when they can be backed by fixtures, parity, benchmarks, rollback notes, and an affected runbook.</p>
+            </article>
+          </div>
+        </div>
+        <div class="doc-panel">
+          <h3>Inspector command</h3>
+          <p>Run this against a local project. Add <code>--model</code> when a local checkpoint or model directory should be folded into the same report.</p>
+          <div class="terminal" aria-label="Inspector command sequence">
+            <div class="terminal-head"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+            <pre>python3 mlx-model-porting/scripts/inspect_mlx_project.py /path/to/mlx-project \
+  --model /path/to/local-model \
+  --markdown MLX_INSPECTION.md \
+  --output inspection.json</pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <section class="band" id="agents" aria-labelledby="agents-title">
       <div class="wrap">
         <div class="section-head">
           <h2 id="agents-title">Built for frontier agents and tiny local models.</h2>
-          <p class="section-copy">A GPT-5.6-class system can discover many of these paths dynamically. The point here is to distill that work so a smaller open model can follow the same checklist with fewer wrong turns.</p>
+          <p class="section-copy">A GPT-5.6-class system can discover many of these paths dynamically. The point here is to distill that work so a smaller open model can inspect, port, and optimize with fewer wrong turns.</p>
         </div>
         <div class="grid-3">
           <article class="tile">
             <h3>Load one compact contract</h3>
-            <p>`mlx-model-porting/SKILL.md` stays small and routes the agent to the exact reference files and scripts needed for the current model.</p>
+            <p><code>mlx-model-porting/SKILL.md</code> stays small and routes the agent to the exact reference files and scripts needed for the current model.</p>
           </article>
           <article class="tile">
             <h3>Use structured assets</h3>
@@ -805,6 +842,7 @@
           <p class="section-copy">The repo is designed so a human can skim it and an agent can execute it. Start with the skill contract, then follow the exact family runbook and validation scripts.</p>
           <div class="doc-links">
             <a href="https://github.com/Amal-David/mlx-porting-skill/blob/main/mlx-model-porting/SKILL.md">Skill contract <span>entry point</span></a>
+            <a href="https://github.com/Amal-David/mlx-porting-skill/blob/main/mlx-model-porting/references/inspector-mode.md">Inspector mode <span>existing MLX ports</span></a>
             <a href="https://github.com/Amal-David/mlx-porting-skill/tree/main/mlx-model-porting/references">Architecture runbooks <span>family routes</span></a>
             <a href="https://github.com/Amal-David/mlx-porting-skill/blob/main/mlx-model-porting/examples/porting-patterns.md">Porting patterns <span>common starts</span></a>
             <a href="https://github.com/Amal-David/mlx-porting-skill/blob/main/VALIDATION.md">Validation status <span>what is proven</span></a>
@@ -827,8 +865,8 @@ python3 -m unittest discover -s tests -v</pre>
 
     <section class="final-cta" aria-labelledby="final-title">
       <div class="wrap">
-        <h2 id="final-title">Give an agent a PyTorch module. Make it prove the MLX port.</h2>
-        <p class="section-copy">The runbook keeps the promise sharp: source provenance, eager MLX, parity, profiling, then measured Apple Silicon optimization.</p>
+        <h2 id="final-title">Give an agent a PyTorch module or an MLX project. Make it prove the next move.</h2>
+        <p class="section-copy">The runbook keeps the promise sharp: source provenance, project inspection, eager MLX, parity, profiling, then measured Apple Silicon optimization.</p>
         <div class="center-cta">
           <a class="button primary" href="https://github.com/Amal-David/mlx-porting-skill">
             <svg class="icon" aria-hidden="true" viewBox="0 0 16 16">
@@ -843,7 +881,7 @@ python3 -m unittest discover -s tests -v</pre>
   </main>
 
   <footer class="footer">
-    <div class="wrap">MLX Porter is a runbook and validation spine for Apple MLX model ports. It does not claim a real model is ported until source provenance, parity, quality, benchmark metadata, and rollback conditions exist.</div>
+    <div class="wrap">MLX Porter is a runbook and validation spine for Apple MLX model ports and inspections. It does not claim a real model is ported or improved until source provenance, parity, quality, benchmark metadata, and rollback conditions exist.</div>
   </footer>
 
   <script>

@@ -1,10 +1,10 @@
-# Port PyTorch and Hugging Face models to MLX faster
+# Port and inspect PyTorch, Hugging Face, and MLX projects faster
 
-An MLX model porting and optimization Agent Skill (`mlx-porting-skill`).
+An MLX model porting, inspection, and optimization Agent Skill (`mlx-porting-skill`).
 
-A portable Agent Skill for taking an unfamiliar PyTorch or Hugging Face model -- language, vision, audio, speech, codec, diffusion, or hybrid -- and producing a correct, measured MLX implementation.
+A portable Agent Skill for taking an unfamiliar PyTorch or Hugging Face model -- language, vision, audio, speech, codec, diffusion, or hybrid -- and producing a correct, measured MLX implementation. It can also inspect an existing local MLX project or already-running port and turn it into a proof-gap, improvement, and contribution report.
 
-Paste a PyTorch module, point at a model directory, or bring a checkpoint and the skill gives you the porting route: architecture classification, weight-conversion guidance, parity tests, common fix patterns, and only then benchmarked MLX optimizations.
+Paste a PyTorch module, point at a model directory, bring a checkpoint, or point at a local MLX codebase. The skill gives you the route: architecture classification, weight-conversion guidance, parity tests, common fix patterns, project inspection, contribution candidates, and only then benchmarked MLX optimizations.
 
 The primary goal is to distill the relevant MLX knowledge into a step-by-step runbook that frontier cloud agents, open-source models, and smaller local models can all follow instead of rediscovering the same optimization path at runtime.
 
@@ -18,19 +18,19 @@ This repository is deliberately **not** a single giant prompt. It has four layer
 ## For agents
 
 Agents should treat this repo as an executable runbook, not background reading.
-Load `mlx-model-porting/SKILL.md`, classify the model, choose the closest
-runbook, build a source oracle, port the smallest eager MLX path, validate the
-weight map, pass parity, profile, then apply one optimization dimension at a
-time. This lets frontier cloud agents and smaller open-source/local models
-follow the same disciplined path without doing fresh runtime discovery for every
-CUDA/PyTorch-to-MLX request.
+Load `mlx-model-porting/SKILL.md`; then either inspect an existing MLX project
+or classify the source model, choose the closest runbook, build a source oracle,
+port the smallest eager MLX path, validate the weight map, pass parity, profile,
+and apply one optimization dimension at a time. This lets frontier cloud agents
+and smaller open-source/local models follow the same disciplined path without
+doing fresh runtime discovery for every CUDA/PyTorch-to-MLX request.
 
 A web version of the runbook lives in [`site/index.html`](site/index.html) and
 is published at [mlx-porter.pages.dev](https://mlx-porter.pages.dev/).
 
 ## What it covers
 
-- model intake, architecture fingerprinting, licensing and remote-code risk review;
+- model intake, local MLX project inspection, architecture fingerprinting, licensing and remote-code risk review;
 - source-oracle construction and layer-by-layer numerical parity;
 - deterministic weight conversion and shape-transform manifests;
 - MLX lazy evaluation, compilation, streams, memory, fused operations, and custom Metal kernels;
@@ -94,6 +94,25 @@ the closest pattern in
 [`mlx-model-porting/examples/porting-patterns.md`](mlx-model-porting/examples/porting-patterns.md)
 and ask for a `PORT_PLAN.md`, source-oracle checkpoints, weight-map rules, and
 the smallest eager MLX block before any optimization work.
+
+## Inspector mode for existing MLX projects
+
+If you already have local MLX code, a served MLX app, or an already-converted
+checkpoint, start with the project inspector instead of pretending the work is
+greenfield:
+
+```bash
+python3 mlx-model-porting/scripts/inspect_mlx_project.py /path/to/mlx-project \
+  --model /path/to/local-model \
+  --markdown MLX_INSPECTION.md \
+  --output inspection.json
+```
+
+The report says what is running, what proof is visible, what likely improvement
+paths exist, and whether any local pattern is a contribution candidate for this
+repo. Contribution candidates still need a small fixture, parity evidence,
+benchmark metadata, rollback condition, and the exact runbook or asset that
+would change.
 
 ## Try it offline (no model download, no Apple Silicon, no network)
 

@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.3.0 — 2026-07-08
+
+- Added inspector mode for existing local MLX projects and already-running MLX ports.
+- Added a static project inspector that reports MLX runtime surface, proof gaps, improvement opportunities, and contribution candidates without executing target code.
+- Added docs and site diagrams that explain the porting pipeline, inspector loop, parity ladder, proof packet, and optimization decision path.
+
 ## 0.2.0 — 2026-07-06
 
 - Corrected misidentified Orca, HQQ, and Prompt Lookup evidence sources.

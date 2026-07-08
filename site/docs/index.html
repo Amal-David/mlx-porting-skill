@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Docs - MLX Porter</title>
-  <meta name="description" content="MLX Porter documentation: a source-first runbook for porting PyTorch and Hugging Face projects to Apple MLX with parity, validation, and measured optimization gates.">
+  <meta name="description" content="MLX Porter documentation: a source-first runbook for porting PyTorch and Hugging Face projects to Apple MLX, inspecting existing MLX ports, and optimizing only with parity and benchmark receipts.">
   <style>
     :root {
       color-scheme: light;
@@ -527,6 +527,45 @@
       background: rgba(228, 98, 80, 0.08);
     }
 
+    .proof-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .proof-box {
+      position: relative;
+      min-height: 150px;
+      border: 1px solid rgba(17, 23, 19, 0.12);
+      border-radius: 8px;
+      padding: 14px;
+      background: rgba(255, 255, 255, 0.76);
+    }
+
+    .proof-box::before {
+      content: "";
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: 4px;
+      border-radius: 8px 0 0 8px;
+      background: var(--proof-color, var(--kernel-cyan));
+    }
+
+    .proof-box b {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--ink);
+      font-size: 14px;
+      line-height: 1.2;
+    }
+
+    .proof-box span {
+      display: block;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
     .rule-list {
       display: grid;
       gap: 10px;
@@ -707,7 +746,8 @@
       }
 
       .flow-chain,
-      .loop-diagram {
+      .loop-diagram,
+      .proof-grid {
         grid-template-columns: 1fr;
       }
 
@@ -780,6 +820,7 @@
             <li><a class="active" href="#introduction">Introduction</a></li>
             <li><a href="#looks-like">What it looks like</a></li>
             <li><a href="#diagrams">Diagrams</a></li>
+            <li><a href="#inspector">Inspector mode</a></li>
             <li><a href="#fits">How it fits together</a></li>
             <li><a href="#rules">Rules</a></li>
           </ul>
@@ -874,6 +915,65 @@
               </div>
             </section>
 
+            <section class="diagram-panel" aria-labelledby="inspector-diagram-title">
+              <h3 id="inspector-diagram-title">Inspector flow</h3>
+              <p>Use this when the MLX project already exists or already runs locally. The inspector names the evidence before recommending changes.</p>
+              <div class="flow-chain">
+                <div class="flow-node">
+                  <span class="diagram-kicker">Input</span>
+                  <b>Existing MLX code</b>
+                  <span>Local repo, served app, notebook, package, or converted checkpoint.</span>
+                </div>
+                <div class="flow-node">
+                  <span class="diagram-kicker">Scan</span>
+                  <b>Static project surface</b>
+                  <span>MLX imports, eval boundaries, compile regions, caches, kernels, risks.</span>
+                </div>
+                <div class="flow-node">
+                  <span class="diagram-kicker">Fold in</span>
+                  <b>Model inspection</b>
+                  <span>Optional config, checkpoint, tensor inventory, and architecture route.</span>
+                </div>
+                <div class="flow-node">
+                  <span class="diagram-kicker">Report</span>
+                  <b>Health and gaps</b>
+                  <span>Looks good, proof gaps, review needed, or no MLX surface detected.</span>
+                </div>
+                <div class="flow-node">
+                  <span class="diagram-kicker">Act</span>
+                  <b>Improve or contribute</b>
+                  <span>Add proof, tune one path, or package a new learning for review.</span>
+                </div>
+              </div>
+            </section>
+
+            <section class="diagram-panel" aria-labelledby="proof-diagram-title">
+              <h3 id="proof-diagram-title">Proof packet</h3>
+              <p>A port, optimization, or contributed learning is complete only when the packet has all four pieces.</p>
+              <div class="proof-grid">
+                <div class="proof-box" style="--proof-color: var(--checkpoint-gold)">
+                  <span class="diagram-kicker">Source</span>
+                  <b>Provenance and fixture</b>
+                  <span>Pinned source, license, safe artifact manifest, deterministic prompt/input, and expected source behavior.</span>
+                </div>
+                <div class="proof-box" style="--proof-color: var(--kernel-cyan)">
+                  <span class="diagram-kicker">Parity</span>
+                  <b>Numerical or task match</b>
+                  <span>Intermediate tensors, logits/latents/waveform metrics, cache state, and quality gate.</span>
+                </div>
+                <div class="proof-box" style="--proof-color: var(--memory-blue)">
+                  <span class="diagram-kicker">Benchmark</span>
+                  <b>Local measured receipt</b>
+                  <span>Hardware, OS, MLX versions, workload, dtype, baseline, metric window, and memory notes.</span>
+                </div>
+                <div class="proof-box" style="--proof-color: var(--parity-coral)">
+                  <span class="diagram-kicker">Rollback</span>
+                  <b>Decision boundary</b>
+                  <span>What changes, what regresses, when to hold, and which runbook or asset is affected.</span>
+                </div>
+              </div>
+            </section>
+
             <section class="diagram-panel" aria-labelledby="parity-diagram-title">
               <h3 id="parity-diagram-title">Parity ladder</h3>
               <p>Each rung narrows the bug surface before a model-level claim is allowed.</p>
@@ -943,6 +1043,20 @@
             </section>
           </div>
 
+          <h2 id="inspector">Inspector mode</h2>
+          <p>When the user already has MLX code, start from the local project rather than a blank port plan. The inspector is static-first: it inventories files, detects MLX runtime patterns, folds in optional model inspections, and emits a report the agent can use as a runbook.</p>
+          <div class="code-panel" aria-label="Inspector command">
+            <div class="code-head">
+              <span class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></span>
+              <span>inspect-existing-mlx.sh</span>
+            </div>
+            <pre>python3 mlx-model-porting/scripts/inspect_mlx_project.py /path/to/mlx-project \
+  --model /path/to/local-model \
+  --markdown MLX_INSPECTION.md \
+  --output inspection.json</pre>
+          </div>
+          <p>The report can say "looks good" only when static evidence shows MLX code plus parity and benchmark signals. Otherwise it names proof gaps before suggesting optimization or contribution work.</p>
+
           <h2 id="looks-like">What that looks like</h2>
           <p>For a small Transformer block, do not start by asking for the fastest MLX version. Start by freezing the source behavior and making the first MLX implementation boring enough to debug:</p>
 
@@ -991,6 +1105,10 @@ apply one optimization and re-run parity</pre>
               <h3>Skill contract</h3>
               <p>Load this first. It routes the agent to the relevant runbook, scripts, and stop conditions.</p>
             </a>
+            <a class="doc-card" href="https://github.com/Amal-David/mlx-porting-skill/blob/main/mlx-model-porting/references/inspector-mode.md">
+              <h3>Inspector mode</h3>
+              <p>Use this for existing local MLX projects, served apps, and already-running ports.</p>
+            </a>
             <a class="doc-card" href="https://github.com/Amal-David/mlx-porting-skill/tree/main/mlx-model-porting/references">
               <h3>Architecture runbooks</h3>
               <p>Pick the family: dense decoder, ASR, diffusion, audio, MoE, SSM, graph, CV, VLM, and more.</p>
@@ -1016,6 +1134,11 @@ apply one optimization and re-run parity</pre>
               </tr>
             </thead>
             <tbody>
+              <tr>
+                <td>Existing MLX project</td>
+                <td>Static MLX surface, model inspection, parity signals, benchmark receipts, and contribution candidates</td>
+                <td>Optimizing because the app runs once, without proving source parity or quality</td>
+              </tr>
               <tr>
                 <td>Transformer attention</td>
                 <td>QKV projections, masks, RoPE, KV cache, and selected logits</td>
@@ -1064,6 +1187,7 @@ python3 -m unittest discover -s tests -v</pre>
           </p>
           <ul>
             <li><a href="#diagrams">Explainer diagrams</a></li>
+            <li><a href="#inspector">Inspector mode</a></li>
             <li><a href="#looks-like">What that looks like</a></li>
             <li><a href="#fits">How it fits together</a></li>
             <li><a href="#rules">Rules</a></li>

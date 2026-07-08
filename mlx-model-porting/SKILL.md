@@ -1,25 +1,26 @@
 ---
 name: mlx-model-porting
-description: Ports PyTorch/Hugging Face models to Apple MLX and makes them fast on Apple Silicon. Use when the user asks to run, port, convert, quantize, benchmark, or fix a model (LLM, VLM, audio/TTS/ASR, diffusion, SSM, MoE) for MLX, MLX-LM, MLX-VLM, MLX-Audio, or a Mac - e.g. "port this HF model to my Mac", "run Qwen on Apple Silicon", "convert these safetensors to MLX", "make this faster on my M3", "quantize to fit 16GB", "fix NaN in my MLX port", "speed up prefill / KV cache / speculative decoding", "publish an MLX checkpoint". Also use mid-task when a config.json, safetensors index, weight-shape or tokenizer mismatch, or Metal kernel question appears. Do not use for CUDA-only optimization, non-Apple hardware targets, or general PyTorch/ML questions with no MLX or Apple Silicon connection.
+description: Ports PyTorch/Hugging Face models to Apple MLX, inspects existing local MLX projects, and makes them faster on Apple Silicon. Use when the user asks to run, port, convert, inspect, quantize, benchmark, or fix a model (LLM, VLM, audio/TTS/ASR, diffusion, SSM, MoE) for MLX, MLX-LM, MLX-VLM, MLX-Audio, or a Mac - e.g. "port this HF model to my Mac", "inspect this MLX app", "run Qwen on Apple Silicon", "convert these safetensors to MLX", "make this faster on my M3", "fix NaN in my MLX port", "speed up prefill / KV cache / speculative decoding", "publish an MLX checkpoint". Also use mid-task when a config.json, safetensors index, weight-shape or tokenizer mismatch, or Metal kernel question appears. Do not use for CUDA-only optimization, non-Apple hardware targets, or general PyTorch/ML questions with no MLX or Apple Silicon connection.
 license: Apache-2.0
 compatibility: Execution and performance validation require an Apple Silicon Mac with a supported MLX installation. Planning and static inspection can run elsewhere. Python 3.10+ and git are recommended; network access is optional and must be explicitly enabled.
 metadata:
   author: mlx-porting-skill
-  version: "0.2.0"
-  last-reviewed: "2026-06-27"
+  version: "0.3.0"
+  last-reviewed: "2026-07-08"
 ---
 
 # MLX model porting and optimization
 
 ## Mission
 
-Produce a **correct, reproducible, architecture-aware MLX implementation**. Correctness comes before speed. Every speed or memory claim must name the hardware, software versions, workload, baseline, and quality gate.
+Produce or inspect a **correct, reproducible, architecture-aware MLX implementation**. Correctness comes before speed. Every speed or memory claim must name the hardware, software versions, workload, baseline, and quality gate.
 
 ## When to use this skill
 
 - Use when porting, converting, or running a PyTorch or Hugging Face model on MLX, MLX-LM, MLX-VLM, MLX-Audio, or Apple Silicon.
 - Use when making an MLX model faster, smaller, more memory-efficient, or more suitable for a specific Mac.
 - Use when debugging parity, NaN/Inf, shape, tokenizer, preprocessing, or garbage-output issues in an MLX port.
+- Use when inspecting an existing local MLX project, served MLX app, or already-converted checkpoint to find proof gaps, improvement paths, or contribution candidates.
 - Use when quantizing, packaging, publishing, or validating provenance for MLX checkpoints.
 - Use when choosing optimization paths for a model family, architecture runbook, cache design, serving mode, or benchmark plan.
 - Do not use when the target is CUDA-only, non-Apple hardware, or a deployment path with no MLX/Apple Silicon connection.
@@ -31,6 +32,7 @@ Produce a **correct, reproducible, architecture-aware MLX implementation**. Corr
 | Signal | Load |
 | --- | --- |
 | User pasted a `config.json`, safetensors index, model directory, or Hugging Face repo id. | [intake and routing](references/intake-and-routing.md) plus [inspect_model.py](scripts/inspect_model.py) |
+| User points at an existing local MLX project, running MLX app, or completed MLX port. | [inspector mode](references/inspector-mode.md) plus [inspect_mlx_project.py](scripts/inspect_mlx_project.py) |
 | User asks "what can I do with this model?", asks for capability fit, or wants model-specific advice. | [model advisor playbook](references/model-advisor-playbook.md) |
 | A known architecture family needs the right runbook. | [model support map](references/model-support-map.md), then the architecture table in Workflow step 4 below |
 | NaN, Inf, cosine-similarity drift, parity failure, or garbage output appears versus the source. | [failure atlas](references/failure-atlas.md) |
@@ -67,7 +69,7 @@ Re-consult this map whenever a new signal appears mid-session: a pasted config, 
 
 ### 1. Inspect and classify
 
-Run `scripts/inspect_model.py`, `scripts/make_port_plan.py`, `scripts/recommend_optimizations.py`.
+For source models, run `scripts/inspect_model.py`, `scripts/make_port_plan.py`, `scripts/recommend_optimizations.py`. For existing MLX projects or already-running ports, run `scripts/inspect_mlx_project.py` and read [inspector mode](references/inspector-mode.md) before changing code.
 
 Read [intake and routing](references/intake-and-routing.md). Confirm source, risk, Mac, memory, performance, quality; record ambiguity in `PORT_PLAN.md`. For advice, read [model advisor playbook](references/model-advisor-playbook.md); split assets into four branches; speedups are planning bands.
 
