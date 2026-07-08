@@ -4,513 +4,950 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>MLX Porter Runbook</title>
-  <meta name="description" content="A practical runbook for porting CUDA/PyTorch and Hugging Face models to Apple MLX with source parity, deterministic weight maps, and measured optimization gates.">
+  <meta name="description" content="A doc-friendly landing page for the MLX Porter runbook: port PyTorch and Hugging Face projects to Apple MLX with source parity, deterministic weight maps, and measured optimization gates.">
   <style>
     :root {
-      color-scheme: light;
-      --ink: #17201d;
-      --muted: #5d6661;
-      --line: #cfd8d2;
-      --paper: #f8faf8;
-      --panel: #ffffff;
-      --green: #0f6b54;
-      --teal: #0c7b83;
-      --blue: #315f9f;
-      --violet: #684f9c;
-      --amber: #9a6424;
-      --red: #a14242;
+      color-scheme: dark;
+      --mlx-graphite: #101317;
+      --mlx-surface: #171d21;
+      --mlx-surface-2: #20282e;
+      --mlx-aluminum: #d8e1dc;
+      --mlx-muted: #92a09a;
+      --mlx-line: rgba(216, 225, 220, 0.18);
+      --mlx-tensor-lime: #b7f34f;
+      --mlx-kernel-cyan: #21d6c7;
+      --mlx-memory-blue: #5b8cff;
+      --mlx-parity-coral: #ff7a66;
+      --mlx-metal-violet: #a78bfa;
+      --mlx-checkpoint-gold: #f1b84b;
+      --mlx-ink: #f4f8f5;
+      --radius: 8px;
     }
 
     * {
       box-sizing: border-box;
     }
 
+    html {
+      scroll-behavior: smooth;
+    }
+
     body {
       margin: 0;
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      color: var(--ink);
-      background:
-        linear-gradient(180deg, rgba(247, 250, 248, 0.96), rgba(243, 247, 246, 0.98)),
-        repeating-linear-gradient(90deg, rgba(15, 107, 84, 0.06) 0 1px, transparent 1px 84px),
-        repeating-linear-gradient(0deg, rgba(49, 95, 159, 0.05) 0 1px, transparent 1px 84px);
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--mlx-ink);
+      background: var(--mlx-graphite);
       line-height: 1.5;
     }
 
     a {
-      color: var(--green);
-      text-decoration-thickness: 0.08em;
-      text-underline-offset: 0.18em;
+      color: inherit;
     }
 
-    main {
-      width: min(1120px, calc(100% - 32px));
+    a:focus-visible,
+    button:focus-visible {
+      outline: 2px solid var(--mlx-tensor-lime);
+      outline-offset: 4px;
+    }
+
+    .topbar {
+      position: fixed;
+      z-index: 20;
+      top: 0;
+      left: 0;
+      right: 0;
+      border-bottom: 1px solid rgba(216, 225, 220, 0.14);
+      background: rgba(16, 19, 23, 0.82);
+      backdrop-filter: blur(18px);
+    }
+
+    .nav {
+      width: min(1180px, calc(100% - 32px));
+      min-height: 64px;
       margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      font-weight: 820;
+    }
+
+    .brand-mark {
+      width: 34px;
+      height: 34px;
+      border: 1px solid rgba(183, 243, 79, 0.72);
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      color: var(--mlx-tensor-lime);
+      background: #12191a;
+      box-shadow: inset 0 0 20px rgba(33, 214, 199, 0.16);
+      font: 800 0.82rem/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .nav-links a,
+    .github-link {
+      min-height: 38px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border-radius: 8px;
+      padding: 8px 11px;
+      color: var(--mlx-muted);
+      text-decoration: none;
+      font-size: 0.94rem;
+      font-weight: 680;
+      transition: color 160ms ease, background 160ms ease, transform 160ms ease;
+    }
+
+    .nav-links a:hover,
+    .github-link:hover {
+      color: var(--mlx-ink);
+      background: rgba(216, 225, 220, 0.08);
+      transform: translateY(-1px);
+    }
+
+    .github-link {
+      color: var(--mlx-ink) !important;
+      border: 1px solid rgba(216, 225, 220, 0.2);
+      background: rgba(216, 225, 220, 0.08);
+    }
+
+    .icon {
+      width: 18px;
+      height: 18px;
+      flex: 0 0 auto;
+      fill: currentColor;
     }
 
     .hero {
-      min-height: 92vh;
+      position: relative;
+      min-height: 100vh;
+      overflow: hidden;
       display: grid;
-      grid-template-columns: minmax(0, 1.05fr) minmax(320px, 0.95fr);
-      gap: 42px;
-      align-items: center;
-      padding: 56px 0 36px;
+      place-items: center;
+      padding: 112px 16px 54px;
+      isolation: isolate;
+    }
+
+    #mesh {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -3;
+      background: #0e1115;
+    }
+
+    .scanlines,
+    .hero::before,
+    .hero::after {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      content: "";
+    }
+
+    .scanlines {
+      z-index: -2;
+      background-image:
+        repeating-linear-gradient(0deg, rgba(216, 225, 220, 0.04) 0 1px, transparent 1px 42px),
+        repeating-linear-gradient(90deg, rgba(216, 225, 220, 0.035) 0 1px, transparent 1px 42px);
+      mask-image: radial-gradient(circle at center, black 0, black 58%, transparent 86%);
+    }
+
+    .hero::before {
+      z-index: -1;
+      background:
+        radial-gradient(circle at 50% 48%, rgba(16, 19, 23, 0.12) 0 20%, rgba(16, 19, 23, 0.64) 48%, rgba(16, 19, 23, 0.92) 100%);
+    }
+
+    .hero::after {
+      z-index: -1;
+      background:
+        linear-gradient(180deg, rgba(16, 19, 23, 0) 0%, rgba(16, 19, 23, 0) 76%, var(--mlx-graphite) 100%);
+    }
+
+    .hero-center {
+      width: min(950px, 100%);
+      display: grid;
+      justify-items: center;
+      text-align: center;
+      padding-top: 32px;
     }
 
     .eyebrow {
-      margin: 0 0 16px;
-      color: var(--green);
-      font-size: 0.82rem;
-      font-weight: 760;
-      letter-spacing: 0;
+      margin: 0 0 18px;
+      color: var(--mlx-kernel-cyan);
+      font: 780 0.83rem/1.2 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
       text-transform: uppercase;
+      letter-spacing: 0;
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin-top: 0;
     }
 
     h1 {
-      margin: 0;
-      max-width: 850px;
-      font-size: clamp(3.4rem, 8vw, 6.8rem);
-      line-height: 0.94;
+      margin-bottom: 24px;
+      max-width: 910px;
+      font-size: 72px;
+      line-height: 0.96;
       letter-spacing: 0;
     }
 
     .lead {
-      max-width: 740px;
-      margin: 24px 0 0;
-      color: #33423c;
-      font-size: clamp(1.05rem, 2vw, 1.38rem);
+      max-width: 780px;
+      margin-bottom: 32px;
+      color: #c8d2cd;
+      font-size: 20px;
     }
 
-    .actions {
+    .center-cta {
       display: flex;
       flex-wrap: wrap;
+      justify-content: center;
       gap: 12px;
-      margin-top: 30px;
+      margin-bottom: 34px;
     }
 
     .button {
+      min-height: 46px;
       display: inline-flex;
       align-items: center;
-      min-height: 44px;
-      padding: 10px 16px;
-      border: 1px solid var(--ink);
-      border-radius: 7px;
-      color: var(--ink);
-      background: var(--panel);
-      font-weight: 720;
+      justify-content: center;
+      gap: 10px;
+      border: 1px solid rgba(216, 225, 220, 0.22);
+      border-radius: 8px;
+      padding: 11px 16px;
+      color: var(--mlx-ink);
+      background: rgba(216, 225, 220, 0.08);
       text-decoration: none;
-      box-shadow: 4px 4px 0 rgba(23, 32, 29, 0.16);
+      font-weight: 760;
+      transition: transform 180ms ease, border-color 180ms ease, background 180ms ease;
+    }
+
+    .button:hover {
+      transform: translateY(-2px);
+      border-color: rgba(183, 243, 79, 0.6);
+      background: rgba(216, 225, 220, 0.12);
     }
 
     .button.primary {
-      color: #ffffff;
-      background: var(--green);
-      border-color: var(--green);
+      color: #111713;
+      border-color: var(--mlx-tensor-lime);
+      background: var(--mlx-tensor-lime);
+    }
+
+    .command-strip {
+      width: min(860px, 100%);
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 12px;
+      border: 1px solid rgba(216, 225, 220, 0.2);
+      border-radius: 8px;
+      padding: 12px 14px;
+      background: rgba(15, 18, 22, 0.84);
+      box-shadow: 0 24px 80px rgba(0, 0, 0, 0.34);
+      text-align: left;
+    }
+
+    .prompt {
+      color: var(--mlx-kernel-cyan);
+      font: 700 0.92rem/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+
+    .command-strip code {
+      overflow: hidden;
+      color: var(--mlx-aluminum);
+      font: 0.92rem/1.45 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    .status-chip {
+      border: 1px solid rgba(183, 243, 79, 0.38);
+      border-radius: 999px;
+      padding: 6px 9px;
+      color: var(--mlx-tensor-lime);
+      font: 700 0.72rem/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      white-space: nowrap;
+    }
+
+    .wrap {
+      width: min(1160px, calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    section {
+      scroll-margin-top: 86px;
+    }
+
+    .band {
+      padding: 86px 0;
+      border-top: 1px solid var(--mlx-line);
+    }
+
+    .section-head {
+      display: grid;
+      grid-template-columns: minmax(0, 0.9fr) minmax(280px, 0.7fr);
+      gap: 38px;
+      align-items: end;
+      margin-bottom: 30px;
+    }
+
+    h2 {
+      margin-bottom: 0;
+      font-size: 42px;
+      line-height: 1.05;
+      letter-spacing: 0;
+    }
+
+    .section-copy {
+      margin-bottom: 0;
+      color: var(--mlx-muted);
+      font-size: 17px;
+    }
+
+    .grid-3,
+    .grid-4,
+    .docs-grid {
+      display: grid;
+      gap: 14px;
+    }
+
+    .grid-3 {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .grid-4 {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .docs-grid {
+      grid-template-columns: 0.95fr 1.05fr;
+      align-items: start;
+    }
+
+    .tile,
+    .doc-panel,
+    .step,
+    .color-swatch {
+      border: 1px solid var(--mlx-line);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.035);
+    }
+
+    .tile,
+    .doc-panel,
+    .step {
+      padding: 18px;
+    }
+
+    .tile h3,
+    .doc-panel h3,
+    .step h3 {
+      margin-bottom: 10px;
+      font-size: 18px;
+      line-height: 1.2;
+      letter-spacing: 0;
+    }
+
+    .tile p,
+    .doc-panel p,
+    .step p,
+    .tile li,
+    .doc-panel li {
+      color: var(--mlx-muted);
+      font-size: 15px;
+    }
+
+    .tile p,
+    .doc-panel p,
+    .step p {
+      margin-bottom: 0;
+    }
+
+    .palette {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .color-swatch {
+      min-height: 130px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      overflow: hidden;
+    }
+
+    .swatch-fill {
+      min-height: 52px;
+    }
+
+    .swatch-copy {
+      padding: 12px;
+    }
+
+    .swatch-copy b {
+      display: block;
+      font-size: 14px;
+      line-height: 1.15;
+    }
+
+    .swatch-copy small {
+      display: block;
+      margin-top: 5px;
+      color: var(--mlx-muted);
+      font: 0.76rem/1.2 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 10px;
+      counter-reset: step;
+    }
+
+    .step {
+      position: relative;
+      min-height: 220px;
+      padding-top: 54px;
+    }
+
+    .step::before {
+      counter-increment: step;
+      content: "0" counter(step);
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      color: var(--mlx-tensor-lime);
+      font: 760 0.8rem/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+
+    .step::after {
+      content: "";
+      position: absolute;
+      top: 18px;
+      right: 16px;
+      width: 34px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--accent, var(--mlx-kernel-cyan));
     }
 
     .terminal {
-      border: 1px solid var(--ink);
-      background: #0f1715;
-      color: #d9efe6;
-      box-shadow: 12px 12px 0 rgba(15, 107, 84, 0.18);
+      border: 1px solid rgba(216, 225, 220, 0.18);
+      border-radius: 8px;
+      overflow: hidden;
+      background: #0a0d10;
     }
 
-    .terminal header {
+    .terminal-head {
       display: flex;
       gap: 8px;
       align-items: center;
       padding: 12px 14px;
-      border-bottom: 1px solid rgba(217, 239, 230, 0.18);
+      border-bottom: 1px solid rgba(216, 225, 220, 0.12);
     }
 
     .dot {
       width: 10px;
       height: 10px;
       border-radius: 50%;
-      background: #f36f56;
+      background: var(--mlx-parity-coral);
     }
 
     .dot:nth-child(2) {
-      background: #e8b64f;
+      background: var(--mlx-checkpoint-gold);
     }
 
     .dot:nth-child(3) {
-      background: #57bf7d;
+      background: var(--mlx-tensor-lime);
     }
 
     pre {
       margin: 0;
       padding: 18px;
       overflow: auto;
-      font: 0.92rem/1.55 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      color: #dce7e1;
+      font: 0.92rem/1.58 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
       white-space: pre-wrap;
     }
 
-    .screen {
+    .doc-links {
       display: grid;
-      gap: 18px;
-      padding: 0 0 56px;
-    }
-
-    .band {
-      border-top: 1px solid var(--line);
-      padding: 52px 0;
-    }
-
-    h2 {
-      margin: 0 0 16px;
-      font-size: clamp(1.8rem, 4vw, 3rem);
-      line-height: 1.03;
-      letter-spacing: 0;
-    }
-
-    .section-lead {
-      max-width: 780px;
-      margin: 0 0 28px;
-      color: var(--muted);
-      font-size: 1.05rem;
-    }
-
-    .pipeline {
-      display: grid;
-      grid-template-columns: repeat(5, minmax(0, 1fr));
       gap: 10px;
+      margin-top: 18px;
     }
 
-    .step {
-      min-height: 164px;
-      border: 1px solid var(--ink);
-      border-radius: 7px;
-      background: var(--panel);
-      padding: 14px;
+    .doc-links a {
       display: flex;
-      flex-direction: column;
+      align-items: center;
       justify-content: space-between;
-    }
-
-    .step strong {
-      display: block;
-      font-size: 1rem;
-      line-height: 1.2;
-    }
-
-    .step span {
-      color: var(--muted);
-      font-size: 0.92rem;
-    }
-
-    .step .num {
-      width: 30px;
-      height: 30px;
-      display: inline-grid;
-      place-items: center;
-      border-radius: 50%;
-      color: #ffffff;
-      background: var(--green);
-      font-weight: 800;
-      font-size: 0.84rem;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 14px;
+      min-height: 48px;
+      border: 1px solid rgba(216, 225, 220, 0.16);
+      border-radius: 8px;
+      padding: 12px 14px;
+      color: var(--mlx-ink);
+      text-decoration: none;
+      background: rgba(255, 255, 255, 0.03);
+      transition: transform 160ms ease, border-color 160ms ease;
     }
 
-    .panel {
-      border: 1px solid var(--line);
-      border-radius: 7px;
-      background: rgba(255, 255, 255, 0.82);
-      padding: 18px;
+    .doc-links a:hover {
+      transform: translateX(3px);
+      border-color: rgba(33, 214, 199, 0.52);
     }
 
-    .panel h3 {
-      margin: 0 0 10px;
-      font-size: 1.08rem;
-      line-height: 1.22;
+    .doc-links span {
+      color: var(--mlx-muted);
+      font-size: 14px;
     }
 
-    .panel p,
-    .panel li {
-      color: var(--muted);
-      font-size: 0.96rem;
-    }
-
-    .panel p {
-      margin: 0;
-    }
-
-    ul {
-      margin: 10px 0 0;
-      padding-left: 18px;
-    }
-
-    .matrix {
+    .final-cta {
       display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 1px;
-      overflow: hidden;
-      border: 1px solid var(--line);
-      border-radius: 7px;
-      background: var(--line);
-    }
-
-    .cell {
-      min-height: 132px;
-      padding: 16px;
-      background: var(--panel);
-    }
-
-    .cell b {
-      display: block;
-      margin-bottom: 8px;
-    }
-
-    .cell small {
-      display: block;
-      color: var(--muted);
-      font-size: 0.9rem;
-    }
-
-    .rule {
-      display: grid;
-      grid-template-columns: 140px 1fr;
+      justify-items: center;
+      text-align: center;
       gap: 18px;
-      padding: 18px 0;
-      border-top: 1px solid var(--line);
+      padding: 82px 0 96px;
+      border-top: 1px solid var(--mlx-line);
     }
 
-    .rule b {
-      color: var(--green);
-    }
-
-    .rule p {
-      margin: 0;
-      color: var(--muted);
+    .final-cta h2 {
+      max-width: 780px;
     }
 
     .footer {
-      padding: 46px 0 64px;
-      color: var(--muted);
-      font-size: 0.95rem;
+      border-top: 1px solid var(--mlx-line);
+      padding: 26px 0 36px;
+      color: var(--mlx-muted);
+      font-size: 14px;
     }
 
-    .accent-green {
-      border-top: 5px solid var(--green);
+    .reveal {
+      animation: rise 580ms ease both;
     }
 
-    .accent-teal {
-      border-top: 5px solid var(--teal);
+    @keyframes rise {
+      from {
+        opacity: 0;
+        transform: translateY(18px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
-    .accent-blue {
-      border-top: 5px solid var(--blue);
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation: none !important;
+        transition: none !important;
+        scroll-behavior: auto !important;
+      }
     }
 
-    .accent-violet {
-      border-top: 5px solid var(--violet);
-    }
-
-    .accent-amber {
-      border-top: 5px solid var(--amber);
-    }
-
-    .accent-red {
-      border-top: 5px solid var(--red);
-    }
-
-    @media (max-width: 900px) {
-      .hero {
-        min-height: auto;
-        grid-template-columns: 1fr;
-        padding-top: 42px;
+    @media (max-width: 980px) {
+      h1 {
+        font-size: 52px;
       }
 
-      .pipeline,
-      .grid,
-      .matrix {
-        grid-template-columns: 1fr 1fr;
+      .lead {
+        font-size: 18px;
+      }
+
+      .section-head,
+      .docs-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .grid-3,
+      .grid-4,
+      .steps,
+      .palette {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
       }
     }
 
     @media (max-width: 620px) {
-      main {
-        width: min(100% - 22px, 1120px);
+      .nav {
+        width: min(100% - 24px, 1180px);
+        min-height: 58px;
+        gap: 12px;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      .github-link {
+        padding: 8px 10px;
+      }
+
+      .hero {
+        min-height: 100svh;
+        place-items: start center;
+        padding-top: 100px;
       }
 
       h1 {
-        font-size: clamp(2.7rem, 16vw, 4.6rem);
+        font-size: 36px;
       }
 
-      .pipeline,
-      .grid,
-      .matrix {
-        grid-template-columns: 1fr;
+      h2 {
+        font-size: 30px;
       }
 
-      .rule {
+      .center-cta {
+        display: grid;
         grid-template-columns: 1fr;
-        gap: 6px;
       }
 
       .button {
         width: 100%;
-        justify-content: center;
+      }
+
+      .command-strip {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+
+      .command-strip code {
+        overflow: visible;
+        white-space: normal;
+      }
+
+      .grid-3,
+      .grid-4,
+      .steps,
+      .palette {
+        grid-template-columns: 1fr;
       }
     }
   </style>
 </head>
 <body>
-  <main>
+  <header class="topbar">
+    <nav class="nav" aria-label="Primary navigation">
+      <a class="brand" href="#top" aria-label="MLX Porter home">
+        <span class="brand-mark">MLX</span>
+        <span>MLX Porter</span>
+      </a>
+      <div class="nav-actions">
+        <div class="nav-links">
+          <a href="#runbook">Runbook</a>
+          <a href="#agents">Agents</a>
+          <a href="#docs">Docs</a>
+          <a href="#palette">Colors</a>
+        </div>
+        <a class="github-link" href="https://github.com/Amal-David/mlx-porting-skill" aria-label="Open MLX Porter on GitHub">
+          <svg class="icon" aria-hidden="true" viewBox="0 0 16 16">
+            <path d="M8 0C3.58 0 0 3.67 0 8.2c0 3.62 2.29 6.69 5.47 7.78.4.08.55-.18.55-.39 0-.19-.01-.83-.01-1.5-2.01.38-2.53-.5-2.69-.97-.09-.24-.48-.97-.82-1.17-.28-.16-.68-.55-.01-.56.63-.01 1.08.59 1.23.84.72 1.24 1.87.89 2.33.68.07-.53.28-.89.51-1.09-1.78-.21-3.64-.91-3.64-4.04 0-.89.31-1.62.82-2.19-.08-.21-.36-1.04.08-2.16 0 0 .67-.22 2.2.84A7.42 7.42 0 0 1 8 3.99c.68 0 1.36.09 2 .28 1.53-1.06 2.2-.84 2.2-.84.44 1.12.16 1.95.08 2.16.51.57.82 1.3.82 2.19 0 3.14-1.87 3.83-3.65 4.04.29.26.54.76.54 1.53 0 1.1-.01 1.99-.01 2.26 0 .21.15.47.55.39A8.08 8.08 0 0 0 16 8.2C16 3.67 12.42 0 8 0Z"/>
+          </svg>
+          GitHub
+        </a>
+      </div>
+    </nav>
+  </header>
+
+  <main id="top">
     <section class="hero" aria-labelledby="title">
-      <div>
-        <p class="eyebrow">MLX Porter Runbook</p>
-        <h1 id="title">Port PyTorch projects to MLX without guessing.</h1>
-        <p class="lead">A practical runbook for agents converting CUDA/PyTorch and Hugging Face models to Apple MLX: inspect first, prove parity, then optimize with receipts.</p>
-        <div class="actions" aria-label="Primary links">
-          <a class="button primary" href="https://github.com/Amal-David/mlx-porting-skill">GitHub repo</a>
-          <a class="button" href="https://github.com/Amal-David/mlx-porting-skill/tree/main/mlx-model-porting">Agent skill</a>
-          <a class="button" href="https://github.com/Amal-David/mlx-porting-skill/blob/main/mlx-model-porting/examples/porting-patterns.md">Porting patterns</a>
+      <canvas id="mesh" aria-hidden="true"></canvas>
+      <div class="scanlines" aria-hidden="true"></div>
+      <div class="hero-center reveal">
+        <p class="eyebrow">Apple MLX runbook for agents</p>
+        <h1 id="title">Port PyTorch projects to MLX without runtime guesswork.</h1>
+        <p class="lead">A doc-friendly landing page for the MLX Porter skill: inspect the source, prove parity, then apply Apple Silicon optimizations with receipts.</p>
+        <div class="center-cta" aria-label="Primary actions">
+          <a class="button primary" href="https://github.com/Amal-David/mlx-porting-skill">
+            <svg class="icon" aria-hidden="true" viewBox="0 0 16 16">
+              <path d="M8 0C3.58 0 0 3.67 0 8.2c0 3.62 2.29 6.69 5.47 7.78.4.08.55-.18.55-.39 0-.19-.01-.83-.01-1.5-2.01.38-2.53-.5-2.69-.97-.09-.24-.48-.97-.82-1.17-.28-.16-.68-.55-.01-.56.63-.01 1.08.59 1.23.84.72 1.24 1.87.89 2.33.68.07-.53.28-.89.51-1.09-1.78-.21-3.64-.91-3.64-4.04 0-.89.31-1.62.82-2.19-.08-.21-.36-1.04.08-2.16 0 0 .67-.22 2.2.84A7.42 7.42 0 0 1 8 3.99c.68 0 1.36.09 2 .28 1.53-1.06 2.2-.84 2.2-.84.44 1.12.16 1.95.08 2.16.51.57.82 1.3.82 2.19 0 3.14-1.87 3.83-3.65 4.04.29.26.54.76.54 1.53 0 1.1-.01 1.99-.01 2.26 0 .21.15.47.55.39A8.08 8.08 0 0 0 16 8.2C16 3.67 12.42 0 8 0Z"/>
+            </svg>
+            Start on GitHub
+          </a>
+          <a class="button" href="#docs">Read docs path</a>
+          <a class="button" href="#runbook">See runbook</a>
         </div>
-      </div>
-      <div class="terminal" aria-label="Example agent instruction">
-        <header><span class="dot"></span><span class="dot"></span><span class="dot"></span></header>
-        <pre>Use the MLX model porting skill.
-
-1. Inspect this model statically.
-2. Choose the closest runbook.
-3. Build a source oracle.
-4. Port the smallest eager MLX path.
-5. Validate weights and parity.
-6. Only then optimize.</pre>
-      </div>
-    </section>
-
-    <section class="screen band" aria-labelledby="why">
-      <h2 id="why">Why this exists</h2>
-      <p class="section-lead">Large frontier models can often discover useful conversion and optimization steps at runtime. This repo distills that work into a repeatable path, so smaller open-source and local models can follow the same discipline one step at a time.</p>
-      <div class="grid">
-        <article class="panel accent-green">
-          <h3>It is not a prompt dump</h3>
-          <p>The compact skill delegates detail into architecture runbooks, structured assets, and scripts an agent can inspect and execute.</p>
-        </article>
-        <article class="panel accent-blue">
-          <h3>It resists folklore</h3>
-          <p>CUDA techniques are research candidates until there is a demonstrated MLX path, validation gate, and rollback condition.</p>
-        </article>
-        <article class="panel accent-amber">
-          <h3>It keeps claims honest</h3>
-          <p>Performance claims need hardware, versions, workload, baseline, and a quality gate. A pretty speedup without parity is not a result.</p>
-        </article>
-      </div>
-    </section>
-
-    <section class="band" aria-labelledby="runbook">
-      <h2 id="runbook">The runbook agents follow</h2>
-      <p class="section-lead">The path is intentionally boring. That is the point. Every step narrows uncertainty before the next step spends complexity.</p>
-      <div class="pipeline" aria-label="MLX porting pipeline">
-        <div class="step accent-green">
-          <span class="num">1</span>
-          <strong>Inspect and classify</strong>
-          <span>Read config, headers, source files, license, remote-code risk, and architecture signals without executing untrusted model code.</span>
-        </div>
-        <div class="step accent-teal">
-          <span class="num">2</span>
-          <strong>Select a runbook</strong>
-          <span>Route to dense decoder, ASR, diffusion, audio codec, VLM, SSM, MoE, CV, graph, or another proven family path.</span>
-        </div>
-        <div class="step accent-blue">
-          <span class="num">3</span>
-          <strong>Build the source oracle</strong>
-          <span>Freeze deterministic fixtures and capture intermediate tensors at meaningful semantic boundaries.</span>
-        </div>
-        <div class="step accent-violet">
-          <span class="num">4</span>
-          <strong>Port the minimal graph</strong>
-          <span>Implement the smallest eager MLX path first. No quantization, compile, batching, or custom kernels yet.</span>
-        </div>
-        <div class="step accent-red">
-          <span class="num">5</span>
-          <strong>Validate, profile, optimize</strong>
-          <span>Account for weights, pass parity, profile bottlenecks, and change one optimization dimension at a time.</span>
+        <div class="command-strip" aria-label="Agent command">
+          <span class="prompt">agent:</span>
+          <code>SKILL.md -> oracle -> eager MLX -> parity -> optimize</code>
+          <span class="status-chip">no silent speed claims</span>
         </div>
       </div>
     </section>
 
-    <section class="band" aria-labelledby="patterns">
-      <h2 id="patterns">Common entry points</h2>
-      <p class="section-lead">People rarely arrive with a clean model-porting brief. These patterns turn familiar PyTorch surfaces into an MLX plan.</p>
-      <div class="matrix">
-        <div class="cell">
-          <b>Transformer attention</b>
-          <small>QKV maps, RoPE, masks, KV cache, fast SDPA after parity.</small>
+    <section class="band" id="runbook" aria-labelledby="runbook-title">
+      <div class="wrap">
+        <div class="section-head">
+          <h2 id="runbook-title">The runbook is the product.</h2>
+          <p class="section-copy">MLX Porter turns scattered MLX, Metal, checkpoint, parity, and benchmark knowledge into a sequence an agent can execute without improvising a new conversion strategy every time.</p>
         </div>
-        <div class="cell">
-          <b>Checkpoint loading</b>
-          <small>Safetensors/static intake, deterministic key transforms, no silent missing keys.</small>
-        </div>
-        <div class="cell">
-          <b>Whisper-style ASR</b>
-          <small>Waveform, log-mel, encoder states, token IDs, WER/CER, timestamps.</small>
-        </div>
-        <div class="cell">
-          <b>Diffusion blocks</b>
-          <small>One denoiser timestep, scheduler update, fixed-seed latent trajectory.</small>
-        </div>
-        <div class="cell">
-          <b>LoRA fine-tuning</b>
-          <small>Target modules, trainable membership, scalar loss, gradients, adapter resume.</small>
-        </div>
-        <div class="cell">
-          <b>Quantization</b>
-          <small>Quality gates first, then weight/KV/mixed-bit recipes with rollback.</small>
-        </div>
-        <div class="cell">
-          <b>Serving</b>
-          <small>Prompt cache, batching, speculative decoding, streaming, and API behavior.</small>
-        </div>
-        <div class="cell">
-          <b>Packaging</b>
-          <small>Provenance, license, tokenizer, recipe, smoke test, benchmark metadata.</small>
+        <div class="steps">
+          <article class="step" style="--accent: var(--mlx-kernel-cyan)">
+            <h3>Inspect statically</h3>
+            <p>Read configs, safetensors headers, source files, licenses, and remote-code risks before executing model code.</p>
+          </article>
+          <article class="step" style="--accent: var(--mlx-memory-blue)">
+            <h3>Pick the family</h3>
+            <p>Route to dense decoder, ASR, diffusion, audio codec, VLM, SSM, MoE, graph, CV, or another runbook.</p>
+          </article>
+          <article class="step" style="--accent: var(--mlx-tensor-lime)">
+            <h3>Build the oracle</h3>
+            <p>Freeze deterministic source fixtures and capture the right intermediate tensors before porting.</p>
+          </article>
+          <article class="step" style="--accent: var(--mlx-metal-violet)">
+            <h3>Port eager MLX</h3>
+            <p>Implement the smallest readable MLX graph first. Keep compile, kernels, quantization, and batching out.</p>
+          </article>
+          <article class="step" style="--accent: var(--mlx-parity-coral)">
+            <h3>Validate and optimize</h3>
+            <p>Account for weights, pass parity, profile real bottlenecks, then change one optimization dimension at a time.</p>
+          </article>
         </div>
       </div>
     </section>
 
-    <section class="band" aria-labelledby="rules">
-      <h2 id="rules">Rules that keep the port real</h2>
-      <div class="rule">
-        <b>Source first</b>
-        <p>Pin repository, revision, artifacts, tokenizer or processor, license, and checksums before writing conversion code.</p>
-      </div>
-      <div class="rule">
-        <b>Parity before speed</b>
-        <p>Tensor checks, intermediates, end-to-end outputs, task quality, cache/state, and boundary cases come before optimization.</p>
-      </div>
-      <div class="rule">
-        <b>Explicit weights</b>
-        <p>Every rename, transpose, reshape, split, concat, cast, quantization state, and tied weight belongs in a testable map.</p>
-      </div>
-      <div class="rule">
-        <b>Measured optimization</b>
-        <p>Use MLX-native operations, cache design, layout changes, and compile before custom kernels. Keep rollback conditions close.</p>
+    <section class="band" id="agents" aria-labelledby="agents-title">
+      <div class="wrap">
+        <div class="section-head">
+          <h2 id="agents-title">Built for frontier agents and tiny local models.</h2>
+          <p class="section-copy">A GPT-5.6-class system can discover many of these paths dynamically. The point here is to distill that work so a smaller open model can follow the same checklist with fewer wrong turns.</p>
+        </div>
+        <div class="grid-3">
+          <article class="tile">
+            <h3>Load one compact contract</h3>
+            <p>`mlx-model-porting/SKILL.md` stays small and routes the agent to the exact reference files and scripts needed for the current model.</p>
+          </article>
+          <article class="tile">
+            <h3>Use structured assets</h3>
+            <p>Architecture families, technique states, evidence depth, and benchmark receipts live in machine-readable files.</p>
+          </article>
+          <article class="tile">
+            <h3>Fail loud, not clever</h3>
+            <p>Unsupported source formats, missing keys, unreviewed remote code, and parity drift are blockers, not prompts to hand-wave.</p>
+          </article>
+        </div>
       </div>
     </section>
 
-    <section class="band" aria-labelledby="commands">
-      <h2 id="commands">Start from the offline pipeline</h2>
-      <p class="section-lead">The repo ships tiny synthetic fixtures so an agent can exercise routing, planning, recommendation, and validation without network or Apple Silicon.</p>
-      <div class="terminal">
-        <header><span class="dot"></span><span class="dot"></span><span class="dot"></span></header>
-        <pre>python3 mlx-model-porting/scripts/inspect_model.py tests/fixtures/models/decoder --output /tmp/inspection.json
+    <section class="band" id="palette" aria-labelledby="palette-title">
+      <div class="wrap">
+        <div class="section-head">
+          <h2 id="palette-title">MLX-specific color system.</h2>
+          <p class="section-copy">The palette is named after the things the runbook actually cares about: tensors, kernels, unified memory, parity, checkpoints, and metal surfaces.</p>
+        </div>
+        <div class="palette" aria-label="MLX Porter color palette">
+          <div class="color-swatch">
+            <div class="swatch-fill" style="background: var(--mlx-tensor-lime)"></div>
+            <div class="swatch-copy"><b>Tensor Lime</b><small>#B7F34F</small></div>
+          </div>
+          <div class="color-swatch">
+            <div class="swatch-fill" style="background: var(--mlx-kernel-cyan)"></div>
+            <div class="swatch-copy"><b>Kernel Cyan</b><small>#21D6C7</small></div>
+          </div>
+          <div class="color-swatch">
+            <div class="swatch-fill" style="background: var(--mlx-memory-blue)"></div>
+            <div class="swatch-copy"><b>Memory Blue</b><small>#5B8CFF</small></div>
+          </div>
+          <div class="color-swatch">
+            <div class="swatch-fill" style="background: var(--mlx-parity-coral)"></div>
+            <div class="swatch-copy"><b>Parity Coral</b><small>#FF7A66</small></div>
+          </div>
+          <div class="color-swatch">
+            <div class="swatch-fill" style="background: var(--mlx-metal-violet)"></div>
+            <div class="swatch-copy"><b>Metal Violet</b><small>#A78BFA</small></div>
+          </div>
+          <div class="color-swatch">
+            <div class="swatch-fill" style="background: var(--mlx-checkpoint-gold)"></div>
+            <div class="swatch-copy"><b>Checkpoint Gold</b><small>#F1B84B</small></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="band" aria-labelledby="entry-title">
+      <div class="wrap">
+        <div class="section-head">
+          <h2 id="entry-title">Common starts become exact routes.</h2>
+          <p class="section-copy">Instead of a generic "convert this" answer, each entry point maps to a concrete oracle, weight map, parity ladder, and optimization gate.</p>
+        </div>
+        <div class="grid-4">
+          <article class="tile"><h3>Transformer attention</h3><p>QKV maps, RoPE, masks, KV cache, and fast SDPA only after parity.</p></article>
+          <article class="tile"><h3>Checkpoint loading</h3><p>Safetensors/static intake, deterministic transforms, and no silent missing keys.</p></article>
+          <article class="tile"><h3>Whisper-style ASR</h3><p>Waveform, log-mel, encoder states, token IDs, WER/CER, and timestamps.</p></article>
+          <article class="tile"><h3>Diffusion blocks</h3><p>One denoiser timestep, scheduler math, and fixed-seed latent trajectory.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="band" id="docs" aria-labelledby="docs-title">
+      <div class="wrap docs-grid">
+        <div>
+          <h2 id="docs-title">Docs path for humans and agents.</h2>
+          <p class="section-copy">The repo is designed so a human can skim it and an agent can execute it. Start with the skill contract, then follow the exact family runbook and validation scripts.</p>
+          <div class="doc-links">
+            <a href="https://github.com/Amal-David/mlx-porting-skill/blob/main/mlx-model-porting/SKILL.md">Skill contract <span>entry point</span></a>
+            <a href="https://github.com/Amal-David/mlx-porting-skill/tree/main/mlx-model-porting/references">Architecture runbooks <span>family routes</span></a>
+            <a href="https://github.com/Amal-David/mlx-porting-skill/blob/main/mlx-model-porting/examples/porting-patterns.md">Porting patterns <span>common starts</span></a>
+            <a href="https://github.com/Amal-David/mlx-porting-skill/blob/main/VALIDATION.md">Validation status <span>what is proven</span></a>
+          </div>
+        </div>
+        <div class="doc-panel">
+          <h3>Offline smoke path</h3>
+          <p>Exercise routing, planning, recommendation, source validation, and the golden scenario suite without downloading a real model.</p>
+          <div class="terminal" aria-label="Offline command sequence">
+            <div class="terminal-head"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+            <pre>python3 mlx-model-porting/scripts/inspect_model.py tests/fixtures/models/decoder --output /tmp/inspection.json
 python3 mlx-model-porting/scripts/make_port_plan.py /tmp/inspection.json --output /tmp/PORT_PLAN.md
 python3 mlx-model-porting/scripts/recommend_optimizations.py /tmp/inspection.json --markdown /tmp/OPTIMIZATIONS.md
 python3 mlx-model-porting/scripts/audit_skill.py --strict mlx-model-porting
 python3 -m unittest discover -s tests -v</pre>
+          </div>
+        </div>
       </div>
     </section>
 
-    <footer class="footer">
-      <p>MLX Porter is a runbook and validation spine for Apple MLX model ports. It does not claim a real model is ported until source provenance, parity, quality, benchmark metadata, and rollback conditions exist.</p>
-    </footer>
+    <section class="final-cta" aria-labelledby="final-title">
+      <div class="wrap">
+        <h2 id="final-title">Give an agent a PyTorch module. Make it prove the MLX port.</h2>
+        <p class="section-copy">The runbook keeps the promise sharp: source provenance, eager MLX, parity, profiling, then measured Apple Silicon optimization.</p>
+        <div class="center-cta">
+          <a class="button primary" href="https://github.com/Amal-David/mlx-porting-skill">
+            <svg class="icon" aria-hidden="true" viewBox="0 0 16 16">
+              <path d="M8 0C3.58 0 0 3.67 0 8.2c0 3.62 2.29 6.69 5.47 7.78.4.08.55-.18.55-.39 0-.19-.01-.83-.01-1.5-2.01.38-2.53-.5-2.69-.97-.09-.24-.48-.97-.82-1.17-.28-.16-.68-.55-.01-.56.63-.01 1.08.59 1.23.84.72 1.24 1.87.89 2.33.68.07-.53.28-.89.51-1.09-1.78-.21-3.64-.91-3.64-4.04 0-.89.31-1.62.82-2.19-.08-.21-.36-1.04.08-2.16 0 0 .67-.22 2.2.84A7.42 7.42 0 0 1 8 3.99c.68 0 1.36.09 2 .28 1.53-1.06 2.2-.84 2.2-.84.44 1.12.16 1.95.08 2.16.51.57.82 1.3.82 2.19 0 3.14-1.87 3.83-3.65 4.04.29.26.54.76.54 1.53 0 1.1-.01 1.99-.01 2.26 0 .21.15.47.55.39A8.08 8.08 0 0 0 16 8.2C16 3.67 12.42 0 8 0Z"/>
+            </svg>
+            Open repo
+          </a>
+          <a class="button" href="#docs">Use the docs</a>
+        </div>
+      </div>
+    </section>
   </main>
+
+  <footer class="footer">
+    <div class="wrap">MLX Porter is a runbook and validation spine for Apple MLX model ports. It does not claim a real model is ported until source provenance, parity, quality, benchmark metadata, and rollback conditions exist.</div>
+  </footer>
+
+  <script>
+    const canvas = document.getElementById("mesh");
+    const ctx = canvas.getContext("2d");
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const palette = ["#21d6c7", "#b7f34f", "#5b8cff", "#ff7a66", "#a78bfa", "#f1b84b"];
+    let nodes = [];
+    let width = 0;
+    let height = 0;
+    let ratio = 1;
+
+    function resize() {
+      ratio = Math.min(window.devicePixelRatio || 1, 2);
+      width = canvas.clientWidth;
+      height = canvas.clientHeight;
+      canvas.width = Math.floor(width * ratio);
+      canvas.height = Math.floor(height * ratio);
+      ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+      const count = width < 700 ? 34 : 58;
+      nodes = Array.from({ length: count }, (_, index) => ({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        vx: (Math.random() - 0.5) * 0.32,
+        vy: (Math.random() - 0.5) * 0.32,
+        r: 1.4 + Math.random() * 2.8,
+        color: palette[index % palette.length]
+      }));
+    }
+
+    function draw(time) {
+      ctx.clearRect(0, 0, width, height);
+      ctx.fillStyle = "#0e1115";
+      ctx.fillRect(0, 0, width, height);
+
+      const centerX = width / 2;
+      const centerY = height / 2;
+      const ringCount = width < 700 ? 5 : 7;
+      for (let i = ringCount; i > 0; i -= 1) {
+        const radiusX = 96 + i * 74;
+        const radiusY = 44 + i * 34;
+        ctx.beginPath();
+        ctx.ellipse(centerX, centerY + 18, radiusX, radiusY, 0, 0, Math.PI * 2);
+        ctx.strokeStyle = `rgba(216, 225, 220, ${0.035 + i * 0.012})`;
+        ctx.lineWidth = 1;
+        ctx.stroke();
+      }
+
+      nodes.forEach((node, index) => {
+        if (!reduceMotion) {
+          node.x += node.vx;
+          node.y += node.vy;
+          if (node.x < -20) node.x = width + 20;
+          if (node.x > width + 20) node.x = -20;
+          if (node.y < -20) node.y = height + 20;
+          if (node.y > height + 20) node.y = -20;
+        }
+        for (let j = index + 1; j < nodes.length; j += 1) {
+          const other = nodes[j];
+          const dx = node.x - other.x;
+          const dy = node.y - other.y;
+          const distance = Math.sqrt(dx * dx + dy * dy);
+          if (distance < 170) {
+            ctx.beginPath();
+            ctx.moveTo(node.x, node.y);
+            ctx.lineTo(other.x, other.y);
+            ctx.strokeStyle = `rgba(33, 214, 199, ${(1 - distance / 170) * 0.2})`;
+            ctx.lineWidth = 1;
+            ctx.stroke();
+          }
+        }
+        ctx.beginPath();
+        ctx.arc(node.x, node.y, node.r, 0, Math.PI * 2);
+        ctx.fillStyle = node.color;
+        ctx.globalAlpha = 0.7;
+        ctx.fill();
+        ctx.globalAlpha = 1;
+      });
+
+      const pulse = reduceMotion ? 0.38 : 0.38 + Math.sin(time / 900) * 0.08;
+      ctx.strokeStyle = `rgba(183, 243, 79, ${pulse})`;
+      ctx.lineWidth = 1.5;
+      ctx.strokeRect(centerX - 238, centerY - 118, 476, 236);
+      ctx.strokeStyle = "rgba(255, 122, 102, 0.34)";
+      ctx.strokeRect(centerX - 206, centerY - 86, 412, 172);
+
+      if (!reduceMotion) {
+        requestAnimationFrame(draw);
+      }
+    }
+
+    resize();
+    window.addEventListener("resize", resize);
+    requestAnimationFrame(draw);
+  </script>
 </body>
 </html>
