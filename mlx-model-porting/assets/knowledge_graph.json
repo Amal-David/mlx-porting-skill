@@ -1,14 +1,14 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-06-29T18:50:51+00:00",
-  "run_id": "2026-06-30-nightly-knowledge-curator",
+  "generated_at": "2026-07-07T22:03:01+00:00",
+  "run_id": "2026-07-07-nightly-knowledge-curator",
   "policy": {
     "review_only": true,
     "auto_promote_sources": false,
     "auto_modify_recommendations": false
   },
   "node_count": 431,
-  "edge_count": 233,
+  "edge_count": 227,
   "nodes": [
     {
       "id": "approach:adaptive-kv-quantization",
@@ -393,7 +393,7 @@
       "candidate_kind": "paper",
       "label": "AffectCodec: Emotion-Preserving Neural Speech Codec with Block-Diagonal Residual FSQ",
       "locator": "https://arxiv.org/abs/2605.23373",
-      "read_state": "unread_candidate",
+      "read_state": "seen_unread_candidate",
       "known_source_id": "",
       "query": "neural audio codec speech tokenizer streaming",
       "updated": "2026-05-22T08:37:38Z",
@@ -434,7 +434,7 @@
       "candidate_kind": "paper",
       "label": "Attention based on-device streaming speech recognition with large speech corpus",
       "locator": "https://arxiv.org/abs/2001.00577",
-      "read_state": "unread_candidate",
+      "read_state": "seen_unread_candidate",
       "known_source_id": "",
       "query": "streaming ASR on-device quantization",
       "updated": "2020-01-02T04:24:44Z",
@@ -462,7 +462,7 @@
       "candidate_kind": "paper",
       "label": "AugCodec: A Low-Bitrate Disentangled Neural Speech Codec via Data Augmentation",
       "locator": "https://arxiv.org/abs/2606.21893",
-      "read_state": "unread_candidate",
+      "read_state": "seen_unread_candidate",
       "known_source_id": "",
       "query": "neural audio codec speech tokenizer streaming",
       "updated": "2026-06-20T05:58:50Z",
@@ -490,7 +490,7 @@
       "candidate_kind": "paper",
       "label": "Benchmarking On-Device Machine Learning on Apple Silicon with MLX",
       "locator": "https://arxiv.org/abs/2510.18921",
-      "read_state": "unread_candidate",
+      "read_state": "seen_unread_candidate",
       "known_source_id": "",
       "query": "MLX Apple Silicon inference optimization",
       "updated": "2025-10-21T08:19:27Z",
@@ -502,12 +502,30 @@
       "summary": "The recent widespread adoption of Large Language Models (LLMs) and machine learning in general has sparked research interest in exploring the possibilities of deploying these models on smaller devices such as laptops and mobile phones. This creates a need for frameworks and approaches that are capable of taking advantage of on-device hardware. The MLX framework was created to address this need. It is a framework optimized for machine learning (ML) computations on Apple silicon devices, facilitating easier research, experimentation, and prototyping. This paper presents a performance evaluation of MLX, focusing on inference latency of transformer models. We compare the performance of different transformer architecture implementations in MLX with their Pytorch counterparts. For this research "
     },
     {
+      "id": "candidate:paper:eliteformer-an-efficient-transformer-for-fpgas",
+      "kind": "source_candidate",
+      "candidate_kind": "paper",
+      "label": "ELiTeFormer: An Efficient Transformer for FPGAs",
+      "locator": "https://arxiv.org/abs/2607.03652",
+      "read_state": "unread_candidate",
+      "known_source_id": "",
+      "query": "KV cache quantization long context",
+      "updated": "2026-07-04T00:52:06Z",
+      "published": "2026-07-04T00:52:06Z",
+      "authors": [
+        "Victor Agostinelli",
+        "Nicolas Bohm Agostini",
+        "Antonino Tumeo"
+      ],
+      "summary": "Transformer blocks are prevalent in large language model (LLM) but present deployment challenges due to their challenging computational and memory demands. While prior work has typically optimized attention mechanisms or feed-forward networks (FFNs) separately, few hardware (HW) architecture have jointly addressed both components with co-designed hardware acceleration. We present ELiTeFormer (Efficient Linear Ternary Transformer), the first Transformer model architecture that unifies hybrid linear attention with ultra-low-precision (ternary) linear projections, specifically co-designed for field-programmable gate array (FPGA) deployment. ELiTeFormer achieves 10x model weight compression and 12.8x key-value (KV) cache compression compared to LLaMA 3, while maintaining competitive accuracy ("
+    },
+    {
       "id": "candidate:paper:flashlabs-chroma-1-0-a-real-time-end-to-end-spoken-dialogue-model-with-personalized-voice-cloning",
       "kind": "source_candidate",
       "candidate_kind": "paper",
       "label": "FlashLabs Chroma 1.0: A Real-Time End-to-End Spoken Dialogue Model with Personalized Voice Cloning",
       "locator": "https://arxiv.org/abs/2601.11141",
-      "read_state": "unread_candidate",
+      "read_state": "seen_unread_candidate",
       "known_source_id": "",
       "query": "neural audio codec speech tokenizer streaming",
       "updated": "2026-01-16T10:00:03Z",
@@ -529,7 +547,7 @@
       "candidate_kind": "paper",
       "label": "FlexiCodec: A Dynamic Neural Audio Codec for Low Frame Rates",
       "locator": "https://arxiv.org/abs/2510.00981",
-      "read_state": "unread_candidate",
+      "read_state": "seen_unread_candidate",
       "known_source_id": "",
       "query": "neural audio codec speech tokenizer streaming",
       "updated": "2026-02-25T08:24:00Z",
@@ -554,7 +572,7 @@
       "candidate_kind": "paper",
       "label": "HybridCodec: Fast Dual-Stream, Semantically Enhanced Neural Audio Codec",
       "locator": "https://arxiv.org/abs/2606.06743",
-      "read_state": "unread_candidate",
+      "read_state": "seen_unread_candidate",
       "known_source_id": "",
       "query": "neural audio codec speech tokenizer streaming",
       "updated": "2026-06-04T21:57:18Z",
@@ -566,30 +584,12 @@
       "summary": "The popularity of neural audio codecs as speech tokenizers has surged with the advent of Multimodal Large Language Models. New codec architectures with semantic and acoustic disentanglement have emerged. There are two main approaches to introduce semantic information into codec models: one distills semantic information from SSL representations into the first RVQ layer, while the other maintains separate streams for semantic and acoustic features. We propose HybridCodec, a unified architecture that combines both paradigms. It employs separate semantic and acoustic branches while distilling SSL representations into the semantic stream. This design ensures strong disentanglement without requiring an SSL model during inference. HybridCodec shows superior semantic specialization (RVQ-1) on in-d"
     },
     {
-      "id": "candidate:paper:innerq-hardware-aware-tuning-free-quantization-of-kv-cache-for-large-language-models",
-      "kind": "source_candidate",
-      "candidate_kind": "paper",
-      "label": "InnerQ: Hardware-Aware Tuning-Free Quantization of KV Cache for Large Language Models",
-      "locator": "https://arxiv.org/abs/2602.23200",
-      "read_state": "already_read",
-      "known_source_id": "source:paper-2602-23200",
-      "query": "KV cache quantization long context",
-      "updated": "2026-05-20T19:15:57Z",
-      "published": "2026-02-26T16:50:36Z",
-      "authors": [
-        "Sayed Mohammadreza Tayaranian Hosseini",
-        "Amir Ardakani",
-        "Warren J. Gross"
-      ],
-      "summary": "When transformer-based language models are deployed for text generation, most of the inference time is spent in the decoding stage, where output tokens are generated sequentially. Reducing the hardware cost of each decoding step is therefore critical for efficient long-context generation. A major bottleneck is the key-value (KV) cache, whose size grows with sequence length and often dominates the model's memory footprint. Prior work has proposed quantization methods to compress the KV cache while minimizing its loss of precision. We present InnerQ, a hardware-aware KV cache quantization scheme that reduces decode latency without compromising evaluation performance. InnerQ performs group-wise quantization by grouping cache matrices along their inner dimension. This grouping strategy aligns "
-    },
-    {
       "id": "candidate:paper:kernelcraft-benchmarking-for-agentic-close-to-metal-kernel-generation-on-emerging-hardware",
       "kind": "source_candidate",
       "candidate_kind": "paper",
       "label": "KernelCraft: Benchmarking for Agentic Close-to-Metal Kernel Generation on Emerging Hardware",
       "locator": "https://arxiv.org/abs/2603.08721",
-      "read_state": "unread_candidate",
+      "read_state": "seen_unread_candidate",
       "known_source_id": "",
       "query": "Metal GPU custom kernel machine learning",
       "updated": "2026-05-29T10:02:49Z",
@@ -611,6 +611,27 @@
       "summary": "New AI accelerators with novel instruction set architectures (ISAs) often require developers to manually craft low-level kernels, a time-consuming and error-prone process that does not scale across hardware targets. This delays emerging hardware platforms from reaching the market. While prior LLM-based code generation has shown promise in mature GPU ecosystems, it remains unclear whether agentic LLM systems can quickly produce valid and efficient kernels for emerging hardware with new ISAs. We present KernelCraft: the first benchmark for evaluating an LLM agent's ability to generate and optimize low-level kernels for customized accelerators through a function-calling, feedback-driven workflow. We evaluate agent performance across three emerging accelerators on more than 20 machine-learning"
     },
     {
+      "id": "candidate:paper:lynx-progressive-speculative-quantization-for-accelerating-kv-transfer-in-long-context-inference",
+      "kind": "source_candidate",
+      "candidate_kind": "paper",
+      "label": "Lynx: Progressive Speculative Quantization for accelerating KV Transfer in Long-Context Inference",
+      "locator": "https://arxiv.org/abs/2607.01831",
+      "read_state": "unread_candidate",
+      "known_source_id": "",
+      "query": "KV cache quantization long context",
+      "updated": "2026-07-02T07:52:43Z",
+      "published": "2026-07-02T07:52:43Z",
+      "authors": [
+        "Wenchen Han",
+        "Gingfung Matthew Yeung",
+        "Marco Barletta",
+        "William Toner",
+        "Amory Hoste",
+        "Adam Barker"
+      ],
+      "summary": "Long-context inference is increasingly common in large language model (LLM) serving, driven by retrieval-augmented generation and agentic systems. In disaggregated inference, these workloads require transferring large Key-Value (KV) caches across the network, where decoding cannot begin until the transfer completes. Recent KV quantization techniques reduce data volume and alleviate this bottleneck, but existing schemes fail to achieve both low network-exposed latency and high inference accuracy. We challenge the assumption that the KV cache is an indivisible unit that must be fully received before use. We leverage the observation that different bits in the KV cache contribute unequally to attention computation and inference precision: the most significant bits capture the coarse structure "
+    },
+    {
       "id": "candidate:paper:native-llm-and-mllm-inference-at-scale-on-apple-silicon",
       "kind": "source_candidate",
       "candidate_kind": "paper",
@@ -627,33 +648,12 @@
       "summary": "The growing adoption of Apple Silicon for machine learning development has created demand for efficient inference solutions that leverage its unique unified memory architecture. However, existing tools either lack native optimization (PyTorch MPS) or focus solely on text models, leaving multimodal workloads underserved. We present vllm-mlx, a framework for efficient LLM and MLLM inference on Apple Silicon built natively on MLX. For text models, we achieve 21\\% to 87\\% higher throughput than llama-cpp across models ranging from Qwen3-0.6B to Nemotron-30B, while providing continuous batching that scales to 4.3x aggregate throughput at 16 concurrent requests. For multimodal models, we introduce content-based prefix caching that eliminates redundant vision encoding by identifying identical ima"
     },
     {
-      "id": "candidate:paper:pariskv-fast-and-drift-robust-kv-cache-retrieval-for-long-context-llms",
-      "kind": "source_candidate",
-      "candidate_kind": "paper",
-      "label": "ParisKV: Fast and Drift-Robust KV-Cache Retrieval for Long-Context LLMs",
-      "locator": "https://arxiv.org/abs/2602.07721",
-      "read_state": "unread_candidate",
-      "known_source_id": "",
-      "query": "KV cache quantization long context",
-      "updated": "2026-05-28T23:34:23Z",
-      "published": "2026-02-07T22:26:45Z",
-      "authors": [
-        "Yanlin Qi",
-        "Xinhang Chen",
-        "Huiqiang Jiang",
-        "Qitong Wang",
-        "Botao Peng",
-        "Themis Palpanas"
-      ],
-      "summary": "KV-cache retrieval is essential for long-context LLM inference, yet existing methods struggle with distribution drift and high latency at scale. We introduce ParisKV, a drift-robust, GPU-native KV-cache retrieval framework based on collision-based candidate selection, followed by a quantized inner-product reranking estimator. For million-token contexts, ParisKV supports CPU-offloaded KV caches via Unified Virtual Addressing (UVA), enabling on-demand top-$k$ fetching with minimal overhead. ParisKV matches or outperforms full attention quality on long-input and long-generation benchmarks. It achieves state-of-the-art long-context decoding efficiency: it matches or exceeds full attention speed even at batch size 1 for long contexts, delivers up to 2.8$\\times$ higher throughput within full att"
-    },
-    {
       "id": "candidate:paper:probing-neural-audio-codecs-for-distinctions-among-english-nuclear-tunes",
       "kind": "source_candidate",
       "candidate_kind": "paper",
       "label": "Probing neural audio codecs for distinctions among English nuclear tunes",
       "locator": "https://arxiv.org/abs/2603.14035",
-      "read_state": "unread_candidate",
+      "read_state": "seen_unread_candidate",
       "known_source_id": "",
       "query": "neural audio codec speech tokenizer streaming",
       "updated": "2026-03-14T17:17:35Z",
@@ -670,7 +670,7 @@
       "candidate_kind": "paper",
       "label": "ProsoCodec: Prosody-Oriented Speech Codec for Voice Conversion",
       "locator": "https://arxiv.org/abs/2606.21888",
-      "read_state": "unread_candidate",
+      "read_state": "seen_unread_candidate",
       "known_source_id": "",
       "query": "neural audio codec speech tokenizer streaming",
       "updated": "2026-06-20T05:19:07Z",
@@ -712,7 +712,7 @@
       "candidate_kind": "paper",
       "label": "Quantization for OpenAI's Whisper Models: A Comparative Analysis",
       "locator": "https://arxiv.org/abs/2503.09905",
-      "read_state": "unread_candidate",
+      "read_state": "seen_unread_candidate",
       "known_source_id": "",
       "query": "streaming ASR on-device quantization",
       "updated": "2025-03-12T23:50:35Z",
@@ -721,6 +721,27 @@
         "Allison Andreyev"
       ],
       "summary": "Automated speech recognition (ASR) models have gained prominence for applications such as captioning, speech translation, and live transcription. This paper studies Whisper and two model variants: one optimized for live speech streaming and another for offline transcription. Notably, these models have been found to generate hallucinated content, reducing transcription reliability. Furthermore, larger model variants exhibit increased latency and pose challenges for deployment on resource-constrained devices. This study analyzes the similarities and differences between three Whisper models, qualitatively examining their distinct capabilities. Next, this study quantifies the impact of model quantization on latency and evaluates its viability for edge deployment. Using the open source LibriSpe"
+    },
+    {
+      "id": "candidate:paper:rabitqcache-rotated-binary-quantization-for-kvcache-in-long-context-llm-inference",
+      "kind": "source_candidate",
+      "candidate_kind": "paper",
+      "label": "RaBitQCache: Rotated Binary Quantization for KVCache in Long Context LLM Inference",
+      "locator": "https://arxiv.org/abs/2606.31519",
+      "read_state": "unread_candidate",
+      "known_source_id": "",
+      "query": "KV cache quantization long context",
+      "updated": "2026-06-30T11:32:14Z",
+      "published": "2026-06-30T11:32:14Z",
+      "authors": [
+        "Wenhao Li",
+        "Jinhao Dong",
+        "Hailin Zhang",
+        "Wenhang Shi",
+        "Wei Lu",
+        "Xiaoyong Du"
+      ],
+      "summary": "Long-context Large Language Model inference is severely bottlenecked by the massive Key-Value (KV) cache, yet existing sparse attention methods often suffer from static fixed-budget (Top-k) retrieval or rely on proxy scores that are computationally expensive and biased. To address these limitations, we propose RaBitQCache, a novel sparse attention framework that utilizes randomized rotated binary quantization and high-throughput binary-INT4 arithmetic to efficiently estimate attention weights. Our proxy score serves as an unbiased estimator with a proven error bound, enabling adaptive Top-p retrieval that dynamically adjusts the token budget based on actual attention sparsity. We further implement a hardware-aware system with asynchronous pipelining and lazy updates to mask overhead. Evalu"
     },
     {
       "id": "candidate:paper:rope-aware-bit-allocation-for-kv-cache-quantization",
@@ -746,7 +767,7 @@
       "candidate_kind": "paper",
       "label": "SPHERICAL KV: Angle-Domain Attention and Rate-Distortion Retention for Efficient Long-Context Inference",
       "locator": "https://arxiv.org/abs/2605.18856",
-      "read_state": "unread_candidate",
+      "read_state": "seen_unread_candidate",
       "known_source_id": "",
       "query": "KV cache quantization long context",
       "updated": "2026-06-07T06:58:25Z",
@@ -763,35 +784,12 @@
       "summary": "Long-context inference is increasingly constrained by the KV cache: resident memory grows with context length, and decoding becomes limited by repeated High Bandwidth Memory (HBM) streaming rather than arithmetic. Existing methods such as eviction, windowing, quantization, and offloading reduce footprint, but often leave the critical-path bottleneck only partially addressed, especially when compressed states must still be reconstructed into dense vectors during decoding. We present Spherical KV, a long-context inference method that treats KV allocation as a rate-distortion problem grounded in attention geometry for efficient decoding. The method is built on two ideas: (i) represent directional information cheaply in the decode hot loop, and (ii) allocate retention and precision according t"
     },
     {
-      "id": "candidate:paper:stochastic-sparse-attention-for-memory-bound-inference",
-      "kind": "source_candidate",
-      "candidate_kind": "paper",
-      "label": "Stochastic Sparse Attention for Memory-Bound Inference",
-      "locator": "https://arxiv.org/abs/2605.01910",
-      "read_state": "unread_candidate",
-      "known_source_id": "",
-      "query": "KV cache quantization long context",
-      "updated": "2026-06-03T14:38:34Z",
-      "published": "2026-05-03T14:44:14Z",
-      "authors": [
-        "Kyle Lee",
-        "Corentin Delacour",
-        "Kevin Callahan-Coray",
-        "Kyle Jiang",
-        "Can Yaras",
-        "Samet Oymak",
-        "Tathagata Srimani",
-        "Kerem Y. Camsari"
-      ],
-      "summary": "Autoregressive decoding becomes bandwidth-limited at long contexts, as generating each token requires reading all $n_k$ key and value vectors from KV cache. We present Stochastic Additive No-mulT Attention (SANTA), a method that sparsifies value-cache access by sampling $S \\ll n_k$ indices from the post-softmax distribution and aggregates only those value rows. This yields an unbiased estimator of the post-softmax value aggregation while replacing value-stage multiply-accumulates with gather-and-add. We introduce stratified and systematic sampling to design variance-reduced, GPU-friendly variants. Evaluated on Llama-3.1-8B-Instruct at 32k-token contexts, S$^2$ANTA matches baseline accuracy while achieving up to $1.5\\times$ decode-step attention-kernel speedup over FlashInfer and FlashDecod"
-    },
-    {
       "id": "candidate:paper:streamvoiceanon-emotion-preserving-streaming-speaker-anonymization-via-frame-level-acoustic-distillation",
       "kind": "source_candidate",
       "candidate_kind": "paper",
       "label": "StreamVoiceAnon+: Emotion-Preserving Streaming Speaker Anonymization via Frame-Level Acoustic Distillation",
       "locator": "https://arxiv.org/abs/2603.06079",
-      "read_state": "unread_candidate",
+      "read_state": "seen_unread_candidate",
       "known_source_id": "",
       "query": "neural audio codec speech tokenizer streaming",
       "updated": "2026-03-06T09:30:20Z",
@@ -809,7 +807,7 @@
       "candidate_kind": "paper",
       "label": "Sub-Token Routing for KV Cache Compression",
       "locator": "https://arxiv.org/abs/2604.21335",
-      "read_state": "unread_candidate",
+      "read_state": "seen_unread_candidate",
       "known_source_id": "",
       "query": "KV cache quantization long context",
       "updated": "2026-06-12T16:58:45Z",
@@ -850,13 +848,13 @@
       "locator": "https://github.com/anthropics/skills",
       "read_state": "already_read",
       "known_source_id": "source:agent-skills-repo",
-      "head_sha": "57546260929473d4e0d1c1bb75297be2fdfa1949",
-      "head_date": "",
-      "head_message": "",
+      "head_sha": "9d2f1ae187231d8199c64b5b762e1bdf2244733d",
+      "head_date": "2026-07-01T18:11:23Z",
+      "head_message": "Update claude-api skill: Claude Sonnet 5 and Managed Agents July updates (#1373)",
       "topics": [
         "agent-skills"
       ],
-      "summary": "GitHub API unavailable; release metadata not collected: HTTP Error 403: rate limit exceeded"
+      "summary": "Update claude-api skill: Claude Sonnet 5 and Managed Agents July updates (#1373)"
     },
     {
       "id": "candidate:repository:blaizzy-mlx-audio",
@@ -866,16 +864,16 @@
       "locator": "https://github.com/Blaizzy/mlx-audio",
       "read_state": "already_read",
       "known_source_id": "source:mlx-audio-repo",
-      "head_sha": "412cf7cd381c2a3f6a8189af04a95af24cb415b6",
-      "head_date": "",
-      "head_message": "",
+      "head_sha": "c46d15312ad52b0928c0f20dc2d6a880461f32c5",
+      "head_date": "2026-07-06T17:56:47Z",
+      "head_message": "Merge pull request #783 from hhh2210/feat/qwen3-asr-segment-batching",
       "topics": [
         "audio",
         "tts",
         "stt",
         "codec"
       ],
-      "summary": "GitHub API unavailable; release metadata not collected: HTTP Error 403: rate limit exceeded"
+      "summary": "Merge pull request #783 from hhh2210/feat/qwen3-asr-segment-batching"
     },
     {
       "id": "candidate:repository:blaizzy-mlx-vlm",
@@ -885,15 +883,15 @@
       "locator": "https://github.com/Blaizzy/mlx-vlm",
       "read_state": "already_read",
       "known_source_id": "source:mlx-vlm-repo",
-      "head_sha": "6a8cdff6a1f53f46a15d4adb997c3b2d5f621263",
-      "head_date": "",
-      "head_message": "",
+      "head_sha": "e9c5bd75e7d641f9ebc36c4ed18849513b25c5fd",
+      "head_date": "2026-07-07T19:52:39Z",
+      "head_message": "Merge pull request #1519 from weklund/apc-exact-mode-integration-tests",
       "topics": [
         "multimodal",
         "serving",
         "speculative"
       ],
-      "summary": "GitHub API unavailable; release metadata not collected: HTTP Error 403: rate limit exceeded"
+      "summary": "Merge pull request #1519 from weklund/apc-exact-mode-integration-tests"
     },
     {
       "id": "candidate:repository:ml-explore-mlx",
@@ -903,15 +901,15 @@
       "locator": "https://github.com/ml-explore/mlx",
       "read_state": "already_read",
       "known_source_id": "source:mlx-repo",
-      "head_sha": "96296e9c3075a2389bc5c0f078bf01b5aa377cd9",
-      "head_date": "",
-      "head_message": "",
+      "head_sha": "7a1d4f5c12ac82f4b4d0a6e71538d89ca0605247",
+      "head_date": "2026-07-07T16:10:33Z",
+      "head_message": "Fix conv2 gradients in grouped strided case on Metal (#3800)",
       "topics": [
         "runtime",
         "kernels",
         "quantization"
       ],
-      "summary": "GitHub API unavailable; release metadata not collected: HTTP Error 403: rate limit exceeded"
+      "summary": "Fix conv2 gradients in grouped strided case on Metal (#3800)"
     },
     {
       "id": "candidate:repository:ml-explore-mlx-examples",
@@ -922,14 +920,14 @@
       "read_state": "already_read",
       "known_source_id": "source:mlx-examples-repo",
       "head_sha": "796f5b53cab69a3d48a44233ce21aae889e94a08",
-      "head_date": "",
-      "head_message": "",
+      "head_date": "2026-04-06T18:56:05Z",
+      "head_message": "Add wan 2.1 model (#1409)",
       "topics": [
         "architectures",
         "audio",
         "vision"
       ],
-      "summary": "GitHub API unavailable; release metadata not collected: HTTP Error 403: rate limit exceeded"
+      "summary": "Add wan 2.1 model (#1409)"
     },
     {
       "id": "candidate:repository:ml-explore-mlx-lm",
@@ -939,16 +937,16 @@
       "locator": "https://github.com/ml-explore/mlx-lm",
       "read_state": "already_read",
       "known_source_id": "source:mlx-lm-repo",
-      "head_sha": "2c008fd0252b2c569227d12568356ab88ab0560a",
-      "head_date": "",
-      "head_message": "",
+      "head_sha": "2ed22318cd6a2fcc5c2e0caa1e1fb0ddeb7cafd5",
+      "head_date": "2026-06-24T23:12:59Z",
+      "head_message": "Fix deepseek indexer rope argument (#1431)",
       "topics": [
         "language",
         "conversion",
         "decoding",
         "cache"
       ],
-      "summary": "GitHub API unavailable; release metadata not collected: HTTP Error 403: rate limit exceeded"
+      "summary": "Fix deepseek indexer rope argument (#1431)"
     },
     {
       "id": "candidate:repository:openai-codex",
@@ -956,16 +954,16 @@
       "candidate_kind": "repository",
       "label": "openai/codex",
       "locator": "https://github.com/openai/codex",
-      "read_state": "already_read",
+      "read_state": "updated_candidate",
       "known_source_id": "",
-      "head_sha": "31e428a1ef3396a0e962687e61f11c224b9f4dbc",
-      "head_date": "",
-      "head_message": "",
+      "head_sha": "2589f7a52df8f65905d47e603f65ec458464d45e",
+      "head_date": "2026-07-07T22:02:08Z",
+      "head_message": "Handle completion separators and popup dismissal (#31191)",
       "topics": [
         "agent-skills",
         "codex"
       ],
-      "summary": "GitHub API unavailable; release metadata not collected: HTTP Error 403: rate limit exceeded"
+      "summary": "Handle completion separators and popup dismissal (#31191)"
     },
     {
       "id": "candidate:repository:waybarrios-vllm-mlx",
@@ -975,15 +973,15 @@
       "locator": "https://github.com/waybarrios/vllm-mlx",
       "read_state": "already_read",
       "known_source_id": "source:vllm-mlx-repo",
-      "head_sha": "a48c86c1a41900f7d26658471b5f67e5fdd35445",
-      "head_date": "",
-      "head_message": "",
+      "head_sha": "0dd115769ef1196a715b96b181353edacd2a4f69",
+      "head_date": "2026-06-28T20:18:29Z",
+      "head_message": "bump version to 0.4.0",
       "topics": [
         "serving",
         "cache",
         "batching"
       ],
-      "summary": "GitHub API unavailable; release metadata not collected: HTTP Error 403: rate limit exceeded"
+      "summary": "bump version to 0.4.0"
     },
     {
       "id": "learning:audio-flow-tts-duration-vocoder-gates",
@@ -7101,6 +7099,51 @@
       ]
     },
     {
+      "source": "candidate:paper:eliteformer-an-efficient-transformer-for-fpgas",
+      "target": "approach:adaptive-kv-quantization",
+      "relation": "candidate_relevant_to",
+      "score": 10,
+      "matched_terms": [
+        "cache",
+        "context",
+        "hardware",
+        "key",
+        "long",
+        "memory",
+        "precision",
+        "quantization"
+      ]
+    },
+    {
+      "source": "candidate:paper:eliteformer-an-efficient-transformer-for-fpgas",
+      "target": "approach:native-low-bit-weight-quantization",
+      "relation": "candidate_relevant_to",
+      "score": 7,
+      "matched_terms": [
+        "language",
+        "linear",
+        "low",
+        "memory",
+        "quantization",
+        "transformer",
+        "weight"
+      ]
+    },
+    {
+      "source": "candidate:paper:eliteformer-an-efficient-transformer-for-fpgas",
+      "target": "approach:uniform-kv-quantization",
+      "relation": "candidate_relevant_to",
+      "score": 6,
+      "matched_terms": [
+        "cache",
+        "context",
+        "long",
+        "memory",
+        "quantization",
+        "transformer"
+      ]
+    },
+    {
       "source": "candidate:paper:flashlabs-chroma-1-0-a-real-time-end-to-end-spoken-dialogue-model-with-personalized-voice-cloning",
       "target": "approach:audio-reference-conditioning-cache",
       "relation": "candidate_relevant_to",
@@ -7224,56 +7267,6 @@
       ]
     },
     {
-      "source": "candidate:paper:innerq-hardware-aware-tuning-free-quantization-of-kv-cache-for-large-language-models",
-      "target": "approach:adaptive-kv-quantization",
-      "relation": "candidate_relevant_to",
-      "score": 11,
-      "matched_terms": [
-        "aware",
-        "cache",
-        "context",
-        "hardware",
-        "key",
-        "long",
-        "memory",
-        "precision"
-      ]
-    },
-    {
-      "source": "candidate:paper:innerq-hardware-aware-tuning-free-quantization-of-kv-cache-for-large-language-models",
-      "target": "approach:draft-model-speculation",
-      "relation": "candidate_relevant_to",
-      "score": 6,
-      "matched_terms": [
-        "cost",
-        "decode",
-        "decoding",
-        "latency",
-        "transformer",
-        "when"
-      ]
-    },
-    {
-      "source": "candidate:paper:innerq-hardware-aware-tuning-free-quantization-of-kv-cache-for-large-language-models",
-      "target": "backlog:structured-timeseries-recsys",
-      "relation": "candidate_relevant_to",
-      "score": 7,
-      "matched_terms": [
-        "based",
-        "context",
-        "has",
-        "text",
-        "time",
-        "transformer",
-        "value"
-      ]
-    },
-    {
-      "source": "candidate:paper:innerq-hardware-aware-tuning-free-quantization-of-kv-cache-for-large-language-models",
-      "target": "source:paper-2602-23200",
-      "relation": "already_read_as"
-    },
-    {
       "source": "candidate:paper:kernelcraft-benchmarking-for-agentic-close-to-metal-kernel-generation-on-emerging-hardware",
       "target": "backlog:structured-timeseries-recsys",
       "relation": "candidate_relevant_to",
@@ -7315,6 +7308,50 @@
         "llm",
         "not",
         "through"
+      ]
+    },
+    {
+      "source": "candidate:paper:lynx-progressive-speculative-quantization-for-accelerating-kv-transfer-in-long-context-inference",
+      "target": "approach:adaptive-kv-quantization",
+      "relation": "candidate_relevant_to",
+      "score": 8,
+      "matched_terms": [
+        "cache",
+        "context",
+        "key",
+        "long",
+        "precision",
+        "quantization",
+        "until",
+        "value"
+      ]
+    },
+    {
+      "source": "candidate:paper:lynx-progressive-speculative-quantization-for-accelerating-kv-transfer-in-long-context-inference",
+      "target": "approach:multimodal-content-prefix-cache",
+      "relation": "candidate_relevant_to",
+      "score": 6,
+      "matched_terms": [
+        "cache",
+        "context",
+        "language",
+        "long",
+        "serving",
+        "use"
+      ]
+    },
+    {
+      "source": "candidate:paper:lynx-progressive-speculative-quantization-for-accelerating-kv-transfer-in-long-context-inference",
+      "target": "outcome:decoder-mlx-lm-working-route",
+      "relation": "candidate_relevant_to",
+      "score": 6,
+      "matched_terms": [
+        "cache",
+        "common",
+        "generation",
+        "llm",
+        "quantization",
+        "speculative"
       ]
     },
     {
@@ -7364,44 +7401,6 @@
       "source": "candidate:paper:native-llm-and-mllm-inference-at-scale-on-apple-silicon",
       "target": "source:paper-2601-19139",
       "relation": "already_read_as"
-    },
-    {
-      "source": "candidate:paper:pariskv-fast-and-drift-robust-kv-cache-retrieval-for-long-context-llms",
-      "target": "approach:adaptive-kv-quantization",
-      "relation": "candidate_relevant_to",
-      "score": 4,
-      "matched_terms": [
-        "cache",
-        "context",
-        "long",
-        "quantization"
-      ]
-    },
-    {
-      "source": "candidate:paper:pariskv-fast-and-drift-robust-kv-cache-retrieval-for-long-context-llms",
-      "target": "approach:fast-sdpa",
-      "relation": "candidate_relevant_to",
-      "score": 5,
-      "matched_terms": [
-        "attention",
-        "fast",
-        "latency",
-        "scale",
-        "throughput"
-      ]
-    },
-    {
-      "source": "candidate:paper:pariskv-fast-and-drift-robust-kv-cache-retrieval-for-long-context-llms",
-      "target": "approach:qwen3-tts-batch-generation",
-      "relation": "candidate_relevant_to",
-      "score": 5,
-      "matched_terms": [
-        "batch",
-        "generation",
-        "latency",
-        "quality",
-        "throughput"
-      ]
     },
     {
       "source": "candidate:paper:probing-neural-audio-codecs-for-distinctions-among-english-nuclear-tunes",
@@ -7571,6 +7570,53 @@
       ]
     },
     {
+      "source": "candidate:paper:rabitqcache-rotated-binary-quantization-for-kvcache-in-long-context-llm-inference",
+      "target": "approach:adaptive-kv-quantization",
+      "relation": "candidate_relevant_to",
+      "score": 9,
+      "matched_terms": [
+        "adaptive",
+        "aware",
+        "cache",
+        "context",
+        "hardware",
+        "key",
+        "long",
+        "quantization"
+      ]
+    },
+    {
+      "source": "candidate:paper:rabitqcache-rotated-binary-quantization-for-kvcache-in-long-context-llm-inference",
+      "target": "approach:multimodal-content-prefix-cache",
+      "relation": "candidate_relevant_to",
+      "score": 7,
+      "matched_terms": [
+        "aware",
+        "cache",
+        "context",
+        "language",
+        "long",
+        "proven",
+        "throughput"
+      ]
+    },
+    {
+      "source": "candidate:paper:rabitqcache-rotated-binary-quantization-for-kvcache-in-long-context-llm-inference",
+      "target": "backlog:structured-timeseries-recsys",
+      "relation": "candidate_relevant_to",
+      "score": 8,
+      "matched_terms": [
+        "based",
+        "context",
+        "error",
+        "mask",
+        "retrieval",
+        "score",
+        "top",
+        "value"
+      ]
+    },
+    {
       "source": "candidate:paper:rope-aware-bit-allocation-for-kv-cache-quantization",
       "target": "approach:adaptive-kv-quantization",
       "relation": "candidate_relevant_to",
@@ -7658,48 +7704,6 @@
         "path",
         "repeated",
         "streaming"
-      ]
-    },
-    {
-      "source": "candidate:paper:stochastic-sparse-attention-for-memory-bound-inference",
-      "target": "approach:adaptive-kv-quantization",
-      "relation": "candidate_relevant_to",
-      "score": 7,
-      "matched_terms": [
-        "cache",
-        "context",
-        "key",
-        "long",
-        "memory",
-        "quantization",
-        "value"
-      ]
-    },
-    {
-      "source": "candidate:paper:stochastic-sparse-attention-for-memory-bound-inference",
-      "target": "approach:uniform-kv-quantization",
-      "relation": "candidate_relevant_to",
-      "score": 6,
-      "matched_terms": [
-        "autoregressive",
-        "cache",
-        "context",
-        "long",
-        "memory",
-        "quantization"
-      ]
-    },
-    {
-      "source": "candidate:paper:stochastic-sparse-attention-for-memory-bound-inference",
-      "target": "backlog:graph-geometric-scientific",
-      "relation": "candidate_relevant_to",
-      "score": 5,
-      "matched_terms": [
-        "accuracy",
-        "add",
-        "aggregation",
-        "sampling",
-        "sparse"
       ]
     },
     {
@@ -7832,27 +7836,6 @@
       "relation": "already_read_as"
     },
     {
-      "source": "candidate:repository:anthropics-skills",
-      "target": "backlog:top1000-contributor-long-tail-rescreening",
-      "relation": "candidate_relevant_to",
-      "score": 3,
-      "matched_terms": [
-        "github",
-        "limit",
-        "rate"
-      ]
-    },
-    {
-      "source": "candidate:repository:anthropics-skills",
-      "target": "outcome:audio-tts-qwen3-and-vocoder-routes",
-      "relation": "candidate_relevant_to",
-      "score": 2,
-      "matched_terms": [
-        "not",
-        "rate"
-      ]
-    },
-    {
       "source": "candidate:repository:blaizzy-mlx-audio",
       "target": "approach:audio-reference-conditioning-cache",
       "relation": "candidate_relevant_to",
@@ -7865,12 +7848,13 @@
     },
     {
       "source": "candidate:repository:blaizzy-mlx-audio",
-      "target": "approach:audio-streaming-and-cache",
+      "target": "approach:qwen3-tts-batch-generation",
       "relation": "candidate_relevant_to",
-      "score": 3,
+      "score": 4,
       "matched_terms": [
         "audio",
-        "codec",
+        "qwen3",
+        "request",
         "tts"
       ]
     },
@@ -7880,10 +7864,10 @@
       "relation": "candidate_relevant_to",
       "score": 5,
       "matched_terms": [
+        "asr",
         "audio",
         "codec",
-        "not",
-        "rate",
+        "qwen3",
         "tts"
       ]
     },
@@ -7911,46 +7895,43 @@
     },
     {
       "source": "candidate:repository:blaizzy-mlx-vlm",
-      "target": "outcome:vlm-mlx-vlm-working-route",
+      "target": "approach:video-input-budgeting",
       "relation": "candidate_relevant_to",
-      "score": 4,
+      "score": 3,
       "matched_terms": [
+        "mode",
         "multimodal",
-        "not",
-        "serving",
         "vlm"
       ]
     },
     {
       "source": "candidate:repository:ml-explore-mlx",
-      "target": "approach:cuda-graphs-decode-capture",
+      "target": "approach:spatial-grid-sample-kernel",
       "relation": "candidate_relevant_to",
       "score": 2,
       "matched_terms": [
-        "not",
-        "runtime"
+        "kernels",
+        "metal"
       ]
     },
     {
       "source": "candidate:repository:ml-explore-mlx",
-      "target": "backlog:top1000-contributor-long-tail-rescreening",
-      "relation": "candidate_relevant_to",
-      "score": 4,
-      "matched_terms": [
-        "explore",
-        "github",
-        "limit",
-        "rate"
-      ]
-    },
-    {
-      "source": "candidate:repository:ml-explore-mlx",
-      "target": "learning:layer-eval-watchdog-guard",
+      "target": "learning:grid-sample-spatial-kernel",
       "relation": "candidate_relevant_to",
       "score": 2,
       "matched_terms": [
-        "not",
-        "runtime"
+        "kernels",
+        "metal"
+      ]
+    },
+    {
+      "source": "candidate:repository:ml-explore-mlx-examples",
+      "target": "approach:audio-streaming-and-cache",
+      "relation": "candidate_relevant_to",
+      "score": 2,
+      "matched_terms": [
+        "add",
+        "audio"
       ]
     },
     {
@@ -7965,25 +7946,23 @@
     },
     {
       "source": "candidate:repository:ml-explore-mlx-examples",
-      "target": "backlog:top1000-contributor-long-tail-rescreening",
-      "relation": "candidate_relevant_to",
-      "score": 4,
-      "matched_terms": [
-        "explore",
-        "github",
-        "limit",
-        "rate"
-      ]
-    },
-    {
-      "source": "candidate:repository:ml-explore-mlx-examples",
-      "target": "outcome:audio-tts-qwen3-and-vocoder-routes",
+      "target": "backlog:non-generative-cv",
       "relation": "candidate_relevant_to",
       "score": 3,
       "matched_terms": [
-        "audio",
-        "not",
-        "rate"
+        "add",
+        "architectures",
+        "vision"
+      ]
+    },
+    {
+      "source": "candidate:repository:ml-explore-mlx-lm",
+      "target": "approach:adaptive-kv-quantization",
+      "relation": "candidate_relevant_to",
+      "score": 2,
+      "matched_terms": [
+        "cache",
+        "rope"
       ]
     },
     {
@@ -7998,78 +7977,42 @@
     },
     {
       "source": "candidate:repository:ml-explore-mlx-lm",
-      "target": "backlog:top1000-contributor-long-tail-rescreening",
+      "target": "approach:content-prefix-cache-vlm",
       "relation": "candidate_relevant_to",
-      "score": 4,
+      "score": 2,
       "matched_terms": [
-        "explore",
-        "github",
-        "limit",
-        "rate"
+        "cache",
+        "language"
       ]
     },
     {
-      "source": "candidate:repository:ml-explore-mlx-lm",
-      "target": "outcome:decoder-mlx-lm-working-route",
+      "source": "candidate:repository:waybarrios-vllm-mlx",
+      "target": "approach:cache-privacy-and-isolation",
+      "relation": "candidate_relevant_to",
+      "score": 2,
+      "matched_terms": [
+        "cache",
+        "serving"
+      ]
+    },
+    {
+      "source": "candidate:repository:waybarrios-vllm-mlx",
+      "target": "approach:prompt-prefix-cache",
       "relation": "candidate_relevant_to",
       "score": 3,
       "matched_terms": [
         "cache",
-        "conversion",
-        "not"
-      ]
-    },
-    {
-      "source": "candidate:repository:openai-codex",
-      "target": "backlog:top1000-contributor-long-tail-rescreening",
-      "relation": "candidate_relevant_to",
-      "score": 3,
-      "matched_terms": [
-        "github",
-        "limit",
-        "rate"
-      ]
-    },
-    {
-      "source": "candidate:repository:openai-codex",
-      "target": "outcome:audio-tts-qwen3-and-vocoder-routes",
-      "relation": "candidate_relevant_to",
-      "score": 2,
-      "matched_terms": [
-        "not",
-        "rate"
-      ]
-    },
-    {
-      "source": "candidate:repository:waybarrios-vllm-mlx",
-      "target": "backlog:top1000-contributor-long-tail-rescreening",
-      "relation": "candidate_relevant_to",
-      "score": 3,
-      "matched_terms": [
-        "github",
-        "limit",
-        "rate"
-      ]
-    },
-    {
-      "source": "candidate:repository:waybarrios-vllm-mlx",
-      "target": "learning:paged-kv-and-gather-qmm-serving",
-      "relation": "candidate_relevant_to",
-      "score": 3,
-      "matched_terms": [
-        "batching",
-        "release",
-        "serving"
+        "serving",
+        "version"
       ]
     },
     {
       "source": "candidate:repository:waybarrios-vllm-mlx",
       "target": "outcome:vlm-mlx-vlm-working-route",
       "relation": "candidate_relevant_to",
-      "score": 4,
+      "score": 3,
       "matched_terms": [
         "cache",
-        "not",
         "serving",
         "vllm"
       ]
@@ -8772,9 +8715,9 @@
   ],
   "latest_delta": {
     "schema_version": 1,
-    "run_id": "2026-06-30-nightly-knowledge-curator",
-    "generated_at": "2026-06-29T18:50:51+00:00",
-    "previous_graph_generated_at": "",
+    "run_id": "2026-07-07-nightly-knowledge-curator",
+    "generated_at": "2026-07-07T22:03:01+00:00",
+    "previous_graph_generated_at": "2026-06-29T18:50:51+00:00",
     "already_read_sources": [
       {
         "id": "candidate:paper:native-llm-and-mllm-inference-at-scale-on-apple-silicon",
@@ -8807,14 +8750,6 @@
         "read_state": "already_read",
         "kind": "paper",
         "known_source_id": "source:paper-2606-20474"
-      },
-      {
-        "id": "candidate:paper:innerq-hardware-aware-tuning-free-quantization-of-kv-cache-for-large-language-models",
-        "label": "InnerQ: Hardware-Aware Tuning-Free Quantization of KV Cache for Large Language Models",
-        "locator": "https://arxiv.org/abs/2602.23200",
-        "read_state": "already_read",
-        "kind": "paper",
-        "known_source_id": "source:paper-2602-23200"
       },
       {
         "id": "candidate:paper:pushing-the-limits-of-on-device-streaming-asr-a-compact-high-accuracy-english-model-for-low-latency-inference",
@@ -8879,232 +8814,57 @@
         "read_state": "already_read",
         "kind": "repository",
         "known_source_id": "source:agent-skills-repo"
-      },
-      {
-        "id": "candidate:repository:openai-codex",
-        "label": "openai/codex",
-        "locator": "https://github.com/openai/codex",
-        "read_state": "already_read",
-        "kind": "repository"
       }
     ],
     "new_unread_sources": [
       {
-        "id": "candidate:paper:benchmarking-on-device-machine-learning-on-apple-silicon-with-mlx",
-        "label": "Benchmarking On-Device Machine Learning on Apple Silicon with MLX",
-        "locator": "https://arxiv.org/abs/2510.18921",
+        "id": "candidate:paper:eliteformer-an-efficient-transformer-for-fpgas",
+        "label": "ELiTeFormer: An Efficient Transformer for FPGAs",
+        "locator": "https://arxiv.org/abs/2607.03652",
         "read_state": "unread_candidate",
         "kind": "paper"
       },
       {
-        "id": "candidate:paper:sub-token-routing-for-kv-cache-compression",
-        "label": "Sub-Token Routing for KV Cache Compression",
-        "locator": "https://arxiv.org/abs/2604.21335",
+        "id": "candidate:paper:lynx-progressive-speculative-quantization-for-accelerating-kv-transfer-in-long-context-inference",
+        "label": "Lynx: Progressive Speculative Quantization for accelerating KV Transfer in Long-Context Inference",
+        "locator": "https://arxiv.org/abs/2607.01831",
         "read_state": "unread_candidate",
         "kind": "paper"
       },
       {
-        "id": "candidate:paper:spherical-kv-angle-domain-attention-and-rate-distortion-retention-for-efficient-long-context-inference",
-        "label": "SPHERICAL KV: Angle-Domain Attention and Rate-Distortion Retention for Efficient Long-Context Inference",
-        "locator": "https://arxiv.org/abs/2605.18856",
-        "read_state": "unread_candidate",
-        "kind": "paper"
-      },
-      {
-        "id": "candidate:paper:stochastic-sparse-attention-for-memory-bound-inference",
-        "label": "Stochastic Sparse Attention for Memory-Bound Inference",
-        "locator": "https://arxiv.org/abs/2605.01910",
-        "read_state": "unread_candidate",
-        "kind": "paper"
-      },
-      {
-        "id": "candidate:paper:pariskv-fast-and-drift-robust-kv-cache-retrieval-for-long-context-llms",
-        "label": "ParisKV: Fast and Drift-Robust KV-Cache Retrieval for Long-Context LLMs",
-        "locator": "https://arxiv.org/abs/2602.07721",
-        "read_state": "unread_candidate",
-        "kind": "paper"
-      },
-      {
-        "id": "candidate:paper:augcodec-a-low-bitrate-disentangled-neural-speech-codec-via-data-augmentation",
-        "label": "AugCodec: A Low-Bitrate Disentangled Neural Speech Codec via Data Augmentation",
-        "locator": "https://arxiv.org/abs/2606.21893",
-        "read_state": "unread_candidate",
-        "kind": "paper"
-      },
-      {
-        "id": "candidate:paper:prosocodec-prosody-oriented-speech-codec-for-voice-conversion",
-        "label": "ProsoCodec: Prosody-Oriented Speech Codec for Voice Conversion",
-        "locator": "https://arxiv.org/abs/2606.21888",
-        "read_state": "unread_candidate",
-        "kind": "paper"
-      },
-      {
-        "id": "candidate:paper:hybridcodec-fast-dual-stream-semantically-enhanced-neural-audio-codec",
-        "label": "HybridCodec: Fast Dual-Stream, Semantically Enhanced Neural Audio Codec",
-        "locator": "https://arxiv.org/abs/2606.06743",
-        "read_state": "unread_candidate",
-        "kind": "paper"
-      },
-      {
-        "id": "candidate:paper:affectcodec-emotion-preserving-neural-speech-codec-with-block-diagonal-residual-fsq",
-        "label": "AffectCodec: Emotion-Preserving Neural Speech Codec with Block-Diagonal Residual FSQ",
-        "locator": "https://arxiv.org/abs/2605.23373",
-        "read_state": "unread_candidate",
-        "kind": "paper"
-      },
-      {
-        "id": "candidate:paper:probing-neural-audio-codecs-for-distinctions-among-english-nuclear-tunes",
-        "label": "Probing neural audio codecs for distinctions among English nuclear tunes",
-        "locator": "https://arxiv.org/abs/2603.14035",
-        "read_state": "unread_candidate",
-        "kind": "paper"
-      },
-      {
-        "id": "candidate:paper:streamvoiceanon-emotion-preserving-streaming-speaker-anonymization-via-frame-level-acoustic-distillation",
-        "label": "StreamVoiceAnon+: Emotion-Preserving Streaming Speaker Anonymization via Frame-Level Acoustic Distillation",
-        "locator": "https://arxiv.org/abs/2603.06079",
-        "read_state": "unread_candidate",
-        "kind": "paper"
-      },
-      {
-        "id": "candidate:paper:flexicodec-a-dynamic-neural-audio-codec-for-low-frame-rates",
-        "label": "FlexiCodec: A Dynamic Neural Audio Codec for Low Frame Rates",
-        "locator": "https://arxiv.org/abs/2510.00981",
-        "read_state": "unread_candidate",
-        "kind": "paper"
-      },
-      {
-        "id": "candidate:paper:flashlabs-chroma-1-0-a-real-time-end-to-end-spoken-dialogue-model-with-personalized-voice-cloning",
-        "label": "FlashLabs Chroma 1.0: A Real-Time End-to-End Spoken Dialogue Model with Personalized Voice Cloning",
-        "locator": "https://arxiv.org/abs/2601.11141",
-        "read_state": "unread_candidate",
-        "kind": "paper"
-      },
-      {
-        "id": "candidate:paper:quantization-for-openai-s-whisper-models-a-comparative-analysis",
-        "label": "Quantization for OpenAI's Whisper Models: A Comparative Analysis",
-        "locator": "https://arxiv.org/abs/2503.09905",
-        "read_state": "unread_candidate",
-        "kind": "paper"
-      },
-      {
-        "id": "candidate:paper:attention-based-on-device-streaming-speech-recognition-with-large-speech-corpus",
-        "label": "Attention based on-device streaming speech recognition with large speech corpus",
-        "locator": "https://arxiv.org/abs/2001.00577",
-        "read_state": "unread_candidate",
-        "kind": "paper"
-      },
-      {
-        "id": "candidate:paper:kernelcraft-benchmarking-for-agentic-close-to-metal-kernel-generation-on-emerging-hardware",
-        "label": "KernelCraft: Benchmarking for Agentic Close-to-Metal Kernel Generation on Emerging Hardware",
-        "locator": "https://arxiv.org/abs/2603.08721",
+        "id": "candidate:paper:rabitqcache-rotated-binary-quantization-for-kvcache-in-long-context-llm-inference",
+        "label": "RaBitQCache: Rotated Binary Quantization for KVCache in Long Context LLM Inference",
+        "locator": "https://arxiv.org/abs/2606.31519",
         "read_state": "unread_candidate",
         "kind": "paper"
       }
     ],
-    "updated_sources": [],
+    "updated_sources": [
+      {
+        "id": "candidate:repository:openai-codex",
+        "label": "openai/codex",
+        "locator": "https://github.com/openai/codex",
+        "read_state": "updated_candidate",
+        "kind": "repository",
+        "head_sha": "2589f7a52df8f65905d47e603f65ec458464d45e"
+      }
+    ],
     "new_approach_leads": [
       {
-        "id": "candidate:paper:benchmarking-on-device-machine-learning-on-apple-silicon-with-mlx",
-        "label": "Benchmarking On-Device Machine Learning on Apple Silicon with MLX",
-        "locator": "https://arxiv.org/abs/2510.18921",
-        "read_state": "unread_candidate",
-        "kind": "paper",
-        "matches": [
-          {
-            "target": "outcome:asr-whisper-working-adjacent-route",
-            "score": 5,
-            "matched_terms": [
-              "apple",
-              "has",
-              "language",
-              "need",
-              "optimization"
-            ]
-          },
-          {
-            "target": "approach:eagle-medusa-mtp-drafters",
-            "score": 4,
-            "matched_terms": [
-              "architecture",
-              "language",
-              "latency",
-              "transformer"
-            ]
-          },
-          {
-            "target": "approach:moe-gather-and-expert-batching",
-            "score": 4,
-            "matched_terms": [
-              "creates",
-              "large",
-              "latency",
-              "transformer"
-            ]
-          }
-        ]
-      },
-      {
-        "id": "candidate:paper:sub-token-routing-for-kv-cache-compression",
-        "label": "Sub-Token Routing for KV Cache Compression",
-        "locator": "https://arxiv.org/abs/2604.21335",
+        "id": "candidate:paper:eliteformer-an-efficient-transformer-for-fpgas",
+        "label": "ELiTeFormer: An Efficient Transformer for FPGAs",
+        "locator": "https://arxiv.org/abs/2607.03652",
         "read_state": "unread_candidate",
         "kind": "paper",
         "matches": [
           {
             "target": "approach:adaptive-kv-quantization",
-            "score": 8,
+            "score": 10,
             "matched_terms": [
               "cache",
               "context",
-              "experiments",
+              "hardware",
               "key",
-              "long",
-              "quantization",
-              "transformer",
-              "value"
-            ]
-          },
-          {
-            "target": "backlog:structured-timeseries-recsys",
-            "score": 6,
-            "matched_terms": [
-              "context",
-              "first",
-              "routing",
-              "then",
-              "transformer",
-              "value"
-            ]
-          },
-          {
-            "target": "approach:multimodal-content-prefix-cache",
-            "score": 5,
-            "matched_terms": [
-              "cache",
-              "context",
-              "language",
-              "long",
-              "multimodal"
-            ]
-          }
-        ]
-      },
-      {
-        "id": "candidate:paper:spherical-kv-angle-domain-attention-and-rate-distortion-retention-for-efficient-long-context-inference",
-        "label": "SPHERICAL KV: Angle-Domain Attention and Rate-Distortion Retention for Efficient Long-Context Inference",
-        "locator": "https://arxiv.org/abs/2605.18856",
-        "read_state": "unread_candidate",
-        "kind": "paper",
-        "matches": [
-          {
-            "target": "approach:adaptive-kv-quantization",
-            "score": 8,
-            "matched_terms": [
-              "allocation",
-              "cache",
-              "context",
-              "dense",
               "long",
               "memory",
               "precision",
@@ -9112,598 +8872,143 @@
             ]
           },
           {
+            "target": "approach:native-low-bit-weight-quantization",
+            "score": 7,
+            "matched_terms": [
+              "language",
+              "linear",
+              "low",
+              "memory",
+              "quantization",
+              "transformer",
+              "weight"
+            ]
+          },
+          {
             "target": "approach:uniform-kv-quantization",
             "score": 6,
             "matched_terms": [
               "cache",
               "context",
-              "dense",
               "long",
               "memory",
-              "quantization"
-            ]
-          },
-          {
-            "target": "learning:block-weight-streaming",
-            "score": 6,
-            "matched_terms": [
-              "eviction",
-              "memory",
-              "method",
-              "path",
-              "repeated",
-              "streaming"
+              "quantization",
+              "transformer"
             ]
           }
         ]
       },
       {
-        "id": "candidate:paper:stochastic-sparse-attention-for-memory-bound-inference",
-        "label": "Stochastic Sparse Attention for Memory-Bound Inference",
-        "locator": "https://arxiv.org/abs/2605.01910",
+        "id": "candidate:paper:lynx-progressive-speculative-quantization-for-accelerating-kv-transfer-in-long-context-inference",
+        "label": "Lynx: Progressive Speculative Quantization for accelerating KV Transfer in Long-Context Inference",
+        "locator": "https://arxiv.org/abs/2607.01831",
         "read_state": "unread_candidate",
         "kind": "paper",
         "matches": [
           {
             "target": "approach:adaptive-kv-quantization",
-            "score": 7,
+            "score": 8,
             "matched_terms": [
               "cache",
               "context",
               "key",
               "long",
-              "memory",
+              "precision",
               "quantization",
+              "until",
               "value"
             ]
           },
           {
-            "target": "approach:uniform-kv-quantization",
+            "target": "approach:multimodal-content-prefix-cache",
             "score": 6,
-            "matched_terms": [
-              "autoregressive",
-              "cache",
-              "context",
-              "long",
-              "memory",
-              "quantization"
-            ]
-          },
-          {
-            "target": "backlog:graph-geometric-scientific",
-            "score": 5,
-            "matched_terms": [
-              "accuracy",
-              "add",
-              "aggregation",
-              "sampling",
-              "sparse"
-            ]
-          }
-        ]
-      },
-      {
-        "id": "candidate:paper:pariskv-fast-and-drift-robust-kv-cache-retrieval-for-long-context-llms",
-        "label": "ParisKV: Fast and Drift-Robust KV-Cache Retrieval for Long-Context LLMs",
-        "locator": "https://arxiv.org/abs/2602.07721",
-        "read_state": "unread_candidate",
-        "kind": "paper",
-        "matches": [
-          {
-            "target": "approach:fast-sdpa",
-            "score": 5,
-            "matched_terms": [
-              "attention",
-              "fast",
-              "latency",
-              "scale",
-              "throughput"
-            ]
-          },
-          {
-            "target": "approach:qwen3-tts-batch-generation",
-            "score": 5,
-            "matched_terms": [
-              "batch",
-              "generation",
-              "latency",
-              "quality",
-              "throughput"
-            ]
-          },
-          {
-            "target": "approach:adaptive-kv-quantization",
-            "score": 4,
             "matched_terms": [
               "cache",
               "context",
+              "language",
               "long",
-              "quantization"
-            ]
-          }
-        ]
-      },
-      {
-        "id": "candidate:paper:augcodec-a-low-bitrate-disentangled-neural-speech-codec-via-data-augmentation",
-        "label": "AugCodec: A Low-Bitrate Disentangled Neural Speech Codec via Data Augmentation",
-        "locator": "https://arxiv.org/abs/2606.21893",
-        "read_state": "unread_candidate",
-        "kind": "paper",
-        "matches": [
-          {
-            "target": "approach:audio-streaming-and-cache",
-            "score": 5,
-            "matched_terms": [
-              "audio",
-              "codec",
-              "preserve",
-              "speech",
-              "streaming"
-            ]
-          },
-          {
-            "target": "outcome:audio-tts-qwen3-and-vocoder-routes",
-            "score": 5,
-            "matched_terms": [
-              "audio",
-              "codec",
-              "each",
-              "rate",
-              "speaker"
-            ]
-          },
-          {
-            "target": "approach:audio-reference-conditioning-cache",
-            "score": 4,
-            "matched_terms": [
-              "audio",
-              "codec",
-              "speaker",
-              "voice"
-            ]
-          }
-        ]
-      },
-      {
-        "id": "candidate:paper:prosocodec-prosody-oriented-speech-codec-for-voice-conversion",
-        "label": "ProsoCodec: Prosody-Oriented Speech Codec for Voice Conversion",
-        "locator": "https://arxiv.org/abs/2606.21888",
-        "read_state": "unread_candidate",
-        "kind": "paper",
-        "matches": [
-          {
-            "target": "outcome:audio-tts-qwen3-and-vocoder-routes",
-            "score": 8,
-            "matched_terms": [
-              "audio",
-              "but",
-              "codec",
-              "generation",
-              "not",
-              "speaker",
-              "text",
-              "transfer"
-            ]
-          },
-          {
-            "target": "approach:audio-reference-conditioning-cache",
-            "score": 6,
-            "matched_terms": [
-              "audio",
-              "cloning",
-              "codec",
-              "conditioning",
-              "speaker",
-              "voice"
-            ]
-          },
-          {
-            "target": "approach:audio-streaming-and-cache",
-            "score": 6,
-            "matched_terms": [
-              "audio",
-              "codec",
-              "preserve",
-              "speech",
-              "streaming",
+              "serving",
               "use"
-            ]
-          }
-        ]
-      },
-      {
-        "id": "candidate:paper:hybridcodec-fast-dual-stream-semantically-enhanced-neural-audio-codec",
-        "label": "HybridCodec: Fast Dual-Stream, Semantically Enhanced Neural Audio Codec",
-        "locator": "https://arxiv.org/abs/2606.06743",
-        "read_state": "unread_candidate",
-        "kind": "paper",
-        "matches": [
-          {
-            "target": "approach:audio-streaming-and-cache",
-            "score": 5,
-            "matched_terms": [
-              "audio",
-              "codec",
-              "first",
-              "speech",
-              "streaming"
-            ]
-          },
-          {
-            "target": "approach:block-weight-streaming",
-            "score": 4,
-            "matched_terms": [
-              "language",
-              "stream",
-              "streaming",
-              "unified"
-            ]
-          },
-          {
-            "target": "backlog:graph-geometric-scientific",
-            "score": 4,
-            "matched_terms": [
-              "architectures",
-              "first",
-              "has",
-              "one"
-            ]
-          }
-        ]
-      },
-      {
-        "id": "candidate:paper:affectcodec-emotion-preserving-neural-speech-codec-with-block-diagonal-residual-fsq",
-        "label": "AffectCodec: Emotion-Preserving Neural Speech Codec with Block-Diagonal Residual FSQ",
-        "locator": "https://arxiv.org/abs/2605.23373",
-        "read_state": "unread_candidate",
-        "kind": "paper",
-        "matches": [
-          {
-            "target": "approach:native-low-bit-weight-quantization",
-            "score": 5,
-            "matched_terms": [
-              "audio",
-              "bit",
-              "language",
-              "quantization",
-              "where"
-            ]
-          },
-          {
-            "target": "approach:audio-streaming-and-cache",
-            "score": 4,
-            "matched_terms": [
-              "audio",
-              "codec",
-              "speech",
-              "streaming"
-            ]
-          },
-          {
-            "target": "approach:block-weight-streaming",
-            "score": 4,
-            "matched_terms": [
-              "block",
-              "language",
-              "stream",
-              "streaming"
-            ]
-          }
-        ]
-      },
-      {
-        "id": "candidate:paper:probing-neural-audio-codecs-for-distinctions-among-english-nuclear-tunes",
-        "label": "Probing neural audio codecs for distinctions among English nuclear tunes",
-        "locator": "https://arxiv.org/abs/2603.14035",
-        "read_state": "unread_candidate",
-        "kind": "paper",
-        "matches": [
-          {
-            "target": "learning:audio-flow-tts-duration-vocoder-gates",
-            "score": 7,
-            "matched_terms": [
-              "audio",
-              "codec",
-              "dependent",
-              "quantized",
-              "speech",
-              "streaming",
-              "these"
-            ]
-          },
-          {
-            "target": "approach:audio-streaming-and-cache",
-            "score": 5,
-            "matched_terms": [
-              "audio",
-              "codec",
-              "speech",
-              "streaming",
-              "use"
-            ]
-          },
-          {
-            "target": "backlog:top1000-contributor-long-tail-rescreening",
-            "score": 5,
-            "matched_terms": [
-              "each",
-              "results",
-              "state",
-              "test",
-              "top"
-            ]
-          }
-        ]
-      },
-      {
-        "id": "candidate:paper:streamvoiceanon-emotion-preserving-streaming-speaker-anonymization-via-frame-level-acoustic-distillation",
-        "label": "StreamVoiceAnon+: Emotion-Preserving Streaming Speaker Anonymization via Frame-Level Acoustic Distillation",
-        "locator": "https://arxiv.org/abs/2603.06079",
-        "read_state": "unread_candidate",
-        "kind": "paper",
-        "matches": [
-          {
-            "target": "approach:audio-streaming-and-cache",
-            "score": 5,
-            "matched_terms": [
-              "audio",
-              "codec",
-              "latency",
-              "speech",
-              "streaming"
-            ]
-          },
-          {
-            "target": "approach:audio-reference-conditioning-cache",
-            "score": 4,
-            "matched_terms": [
-              "audio",
-              "codec",
-              "latency",
-              "speaker"
-            ]
-          },
-          {
-            "target": "learning:audio-flow-tts-duration-vocoder-gates",
-            "score": 4,
-            "matched_terms": [
-              "audio",
-              "codec",
-              "speech",
-              "streaming"
-            ]
-          }
-        ]
-      },
-      {
-        "id": "candidate:paper:flexicodec-a-dynamic-neural-audio-codec-for-low-frame-rates",
-        "label": "FlexiCodec: A Dynamic Neural Audio Codec for Low Frame Rates",
-        "locator": "https://arxiv.org/abs/2510.00981",
-        "read_state": "unread_candidate",
-        "kind": "paper",
-        "matches": [
-          {
-            "target": "outcome:asr-whisper-working-adjacent-route",
-            "score": 6,
-            "matched_terms": [
-              "asr",
-              "but",
-              "can",
-              "feature",
-              "language",
-              "streaming"
-            ]
-          },
-          {
-            "target": "outcome:audio-tts-qwen3-and-vocoder-routes",
-            "score": 6,
-            "matched_terms": [
-              "asr",
-              "audio",
-              "but",
-              "can",
-              "codec",
-              "rate"
-            ]
-          },
-          {
-            "target": "learning:audio-flow-tts-duration-vocoder-gates",
-            "score": 5,
-            "matched_terms": [
-              "audio",
-              "codec",
-              "length",
-              "speech",
-              "streaming"
-            ]
-          }
-        ]
-      },
-      {
-        "id": "candidate:paper:flashlabs-chroma-1-0-a-real-time-end-to-end-spoken-dialogue-model-with-personalized-voice-cloning",
-        "label": "FlashLabs Chroma 1.0: A Real-Time End-to-End Spoken Dialogue Model with Personalized Voice Cloning",
-        "locator": "https://arxiv.org/abs/2601.11141",
-        "read_state": "unread_candidate",
-        "kind": "paper",
-        "matches": [
-          {
-            "target": "approach:audio-reference-conditioning-cache",
-            "score": 7,
-            "matched_terms": [
-              "audio",
-              "cloning",
-              "codec",
-              "first",
-              "latency",
-              "speaker",
-              "voice"
-            ]
-          },
-          {
-            "target": "approach:audio-streaming-and-cache",
-            "score": 7,
-            "matched_terms": [
-              "audio",
-              "codec",
-              "first",
-              "latency",
-              "quality",
-              "speech",
-              "streaming"
-            ]
-          },
-          {
-            "target": "outcome:audio-tts-qwen3-and-vocoder-routes",
-            "score": 7,
-            "matched_terms": [
-              "audio",
-              "codec",
-              "generation",
-              "latency",
-              "quality",
-              "speaker",
-              "text"
-            ]
-          }
-        ]
-      },
-      {
-        "id": "candidate:paper:quantization-for-openai-s-whisper-models-a-comparative-analysis",
-        "label": "Quantization for OpenAI's Whisper Models: A Comparative Analysis",
-        "locator": "https://arxiv.org/abs/2503.09905",
-        "read_state": "unread_candidate",
-        "kind": "paper",
-        "matches": [
-          {
-            "target": "backlog:top1000-contributor-long-tail-rescreening",
-            "score": 4,
-            "matched_terms": [
-              "live",
-              "next",
-              "offline",
-              "open"
-            ]
-          },
-          {
-            "target": "approach:audio-streaming-and-cache",
-            "score": 3,
-            "matched_terms": [
-              "latency",
-              "speech",
-              "streaming"
-            ]
-          },
-          {
-            "target": "backlog:graph-geometric-scientific",
-            "score": 3,
-            "matched_terms": [
-              "offline",
-              "one",
-              "such"
-            ]
-          }
-        ]
-      },
-      {
-        "id": "candidate:paper:attention-based-on-device-streaming-speech-recognition-with-large-speech-corpus",
-        "label": "Attention based on-device streaming speech recognition with large speech corpus",
-        "locator": "https://arxiv.org/abs/2001.00577",
-        "read_state": "unread_candidate",
-        "kind": "paper",
-        "matches": [
-          {
-            "target": "approach:native-low-bit-weight-quantization",
-            "score": 5,
-            "matched_terms": [
-              "bit",
-              "low",
-              "memory",
-              "quantization",
-              "size"
-            ]
-          },
-          {
-            "target": "learning:block-weight-streaming",
-            "score": 4,
-            "matched_terms": [
-              "low",
-              "memory",
-              "method",
-              "streaming"
-            ]
-          },
-          {
-            "target": "approach:adaptive-kv-quantization",
-            "score": 3,
-            "matched_terms": [
-              "bit",
-              "memory",
-              "quantization"
-            ]
-          }
-        ]
-      },
-      {
-        "id": "candidate:paper:kernelcraft-benchmarking-for-agentic-close-to-metal-kernel-generation-on-emerging-hardware",
-        "label": "KernelCraft: Benchmarking for Agentic Close-to-Metal Kernel Generation on Emerging Hardware",
-        "locator": "https://arxiv.org/abs/2603.08721",
-        "read_state": "unread_candidate",
-        "kind": "paper",
-        "matches": [
-          {
-            "target": "backlog:structured-timeseries-recsys",
-            "score": 7,
-            "matched_terms": [
-              "architectures",
-              "based",
-              "code",
-              "error",
-              "first",
-              "has",
-              "time"
             ]
           },
           {
             "target": "outcome:decoder-mlx-lm-working-route",
-            "score": 7,
+            "score": 6,
             "matched_terms": [
-              "architectures",
-              "code",
-              "custom",
+              "cache",
+              "common",
               "generation",
               "llm",
-              "not",
-              "through"
+              "quantization",
+              "speculative"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "candidate:paper:rabitqcache-rotated-binary-quantization-for-kvcache-in-long-context-llm-inference",
+        "label": "RaBitQCache: Rotated Binary Quantization for KVCache in Long Context LLM Inference",
+        "locator": "https://arxiv.org/abs/2606.31519",
+        "read_state": "unread_candidate",
+        "kind": "paper",
+        "matches": [
+          {
+            "target": "approach:adaptive-kv-quantization",
+            "score": 9,
+            "matched_terms": [
+              "adaptive",
+              "aware",
+              "cache",
+              "context",
+              "hardware",
+              "key",
+              "long",
+              "quantization"
             ]
           },
           {
-            "target": "learning:grid-sample-spatial-kernel",
-            "score": 6,
+            "target": "backlog:structured-timeseries-recsys",
+            "score": 8,
             "matched_terms": [
-              "benchmark",
-              "custom",
-              "kernel",
-              "kernels",
-              "level",
-              "metal"
+              "based",
+              "context",
+              "error",
+              "mask",
+              "retrieval",
+              "score",
+              "top",
+              "value"
+            ]
+          },
+          {
+            "target": "approach:multimodal-content-prefix-cache",
+            "score": 7,
+            "matched_terms": [
+              "aware",
+              "cache",
+              "context",
+              "language",
+              "long",
+              "proven",
+              "throughput"
             ]
           }
         ]
       }
     ],
     "gap_hints": [
-      "audio",
-      "cache",
-      "streaming",
       "quantization",
-      "tts",
-      "vocoder",
-      "weight",
       "adaptive",
-      "qwen3",
-      "block",
-      "codec",
-      "conditioning"
+      "cache",
+      "content",
+      "context",
+      "inference",
+      "long",
+      "multimodal",
+      "prefix",
+      "accelerating",
+      "binary",
+      "bit"
     ],
     "policy": {
       "review_only": true,

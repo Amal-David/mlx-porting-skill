@@ -1,0 +1,185 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-07-07-nightly-knowledge-curator-research-loop",
+  "objective": "Nightly MLX knowledge curator: top contributors, papers, blogs, package releases, model outcomes, speedup ranges, and app/CLI skill deltas",
+  "iteration": 1,
+  "iteration_count": 1,
+  "review_only": true,
+  "persona_id": "paper-architecture-scout",
+  "title": "Paper Architecture Scout",
+  "mission": "Find architecture-specific algorithm constraints and evaluation methods for model families the skill supports or should support.",
+  "source_lanes": [
+    "papers",
+    "technical_blogs"
+  ],
+  "sample_plan": [
+    {
+      "source_lane": "papers",
+      "lane_title": "Papers and technical reports",
+      "evidence_role": "architecture semantics, quality metrics, and algorithmic constraints",
+      "targets": [
+        {
+          "title": "arXiv MLX framework search",
+          "kind": "paper-search",
+          "locator": "https://arxiv.org/search/?query=MLX+framework&searchtype=all",
+          "sampling_goal": "Find MLX-specific papers and separate claims from reproducible MLX evidence."
+        },
+        {
+          "title": "arXiv on-device transformer search",
+          "kind": "paper-search",
+          "locator": "https://arxiv.org/search/?query=on-device+transformer+inference&searchtype=all",
+          "sampling_goal": "Find architecture and metric gaps relevant to local Apple-silicon ports."
+        },
+        {
+          "title": "Papers with Code MLX search",
+          "kind": "paper-index",
+          "locator": "https://paperswithcode.com/search?q=MLX",
+          "sampling_goal": "Identify paper-linked implementations that need source and license review."
+        }
+      ]
+    },
+    {
+      "source_lane": "technical_blogs",
+      "lane_title": "Technical blogs and engineering reports",
+      "evidence_role": "implementation details, benchmark caveats, and production constraints",
+      "targets": [
+        {
+          "title": "Apple Machine Learning Research",
+          "kind": "technical-blog-index",
+          "locator": "https://machinelearning.apple.com/",
+          "sampling_goal": "Find Apple-authored implementation constraints or benchmark caveats."
+        },
+        {
+          "title": "MLX examples discussions and notes",
+          "kind": "maintainer-notes",
+          "locator": "https://ml-explore.github.io/mlx-examples/",
+          "sampling_goal": "Find maintained examples that expose operational or benchmark details."
+        }
+      ]
+    }
+  ],
+  "planning": {
+    "persona_id": "paper-architecture-scout",
+    "title": "Paper Architecture Scout",
+    "rank": 4,
+    "config_order": 2,
+    "score": 9,
+    "source_lanes": [
+      "papers",
+      "technical_blogs"
+    ],
+    "matched_objective_terms": [
+      "blogs",
+      "model",
+      "papers",
+      "skill"
+    ],
+    "matched_gap_terms": [
+      "inference"
+    ],
+    "reasons": [
+      "Matched gap terms: inference.",
+      "Matched objective terms: blogs, model, papers, skill.",
+      "Covers source lanes: papers, technical_blogs."
+    ]
+  },
+  "policy": {
+    "auto_modify_recommendations": false,
+    "execute_remote_model_code": false
+  },
+  "prompt": "You are the Paper Architecture Scout for MLX model-porting research loop 2026-07-07-nightly-knowledge-curator-research-loop. Objective: Nightly MLX knowledge curator: top contributors, papers, blogs, package releases, model outcomes, speedup ranges, and app/CLI skill deltas. Source lanes: papers, technical_blogs. Return source-backed findings only. Do not execute remote model code. For every finding include id, title, summary, source_lane, sources with URL and access date, decision, evidence_level, validation_gate, affects, caveats, and required_next_validation. Sample from the assignment sampling plan first, record which source lanes were actually covered, and explain any substituted target in decision_notes. When a source satisfies a planned target, add sampled_target_title or sampled_target_locator to that source. Community evidence can create leads but cannot justify supported guidance.\n\nSampling plan:\n- papers: Papers and technical reports\n  Evidence role: architecture semantics, quality metrics, and algorithmic constraints\n  - arXiv MLX framework search [paper-search]: https://arxiv.org/search/?query=MLX+framework&searchtype=all - Find MLX-specific papers and separate claims from reproducible MLX evidence.\n  - arXiv on-device transformer search [paper-search]: https://arxiv.org/search/?query=on-device+transformer+inference&searchtype=all - Find architecture and metric gaps relevant to local Apple-silicon ports.\n  - Papers with Code MLX search [paper-index]: https://paperswithcode.com/search?q=MLX - Identify paper-linked implementations that need source and license review.\n- technical_blogs: Technical blogs and engineering reports\n  Evidence role: implementation details, benchmark caveats, and production constraints\n  - Apple Machine Learning Research [technical-blog-index]: https://machinelearning.apple.com/ - Find Apple-authored implementation constraints or benchmark caveats.\n  - MLX examples discussions and notes [maintainer-notes]: https://ml-explore.github.io/mlx-examples/ - Find maintained examples that expose operational or benchmark details.",
+  "paths": {
+    "assignment": "agents/paper-architecture-scout.assignment.json",
+    "prompt": "agents/paper-architecture-scout.prompt.md",
+    "result": "agents/paper-architecture-scout.result.json",
+    "blog": "blogs/paper-architecture-scout.md"
+  },
+  "execution": {
+    "kind": "offline-scaffold",
+    "state": "scaffolded_not_run",
+    "executor": null,
+    "log_path": null,
+    "result_path": null,
+    "blog_path": "blogs/paper-architecture-scout.md",
+    "blog_source": "generated"
+  },
+  "blog": {
+    "persona_id": "paper-architecture-scout",
+    "path": "blogs/paper-architecture-scout.md",
+    "source": "generated",
+    "generated_blog_path": "blogs/paper-architecture-scout.md",
+    "preserved_executor_blog": false,
+    "required_sections": [
+      "Assignment",
+      "Planned sampling",
+      "Sources sampled",
+      "Sampling coverage",
+      "Candidate findings",
+      "Decision notes",
+      "Open validation"
+    ],
+    "present_sections": [
+      "Assignment",
+      "Planned sampling",
+      "Sources sampled",
+      "Sampling coverage",
+      "Candidate findings",
+      "Decision notes",
+      "Open validation"
+    ],
+    "missing_sections": [],
+    "contract_status": "pass"
+  },
+  "result_contract": {
+    "path": "agents/paper-architecture-scout.result.json",
+    "format": "json",
+    "required_top_level_fields": [
+      "persona_id",
+      "decision_notes",
+      "findings"
+    ],
+    "finding_required_fields": [
+      "id",
+      "title",
+      "summary",
+      "source_lane",
+      "sources",
+      "decision",
+      "evidence_level",
+      "validation_gate",
+      "affects",
+      "caveats",
+      "required_next_validation"
+    ],
+    "source_optional_fields": [
+      "sampled_target_title",
+      "sampled_target_locator"
+    ]
+  },
+  "blog_contract": {
+    "path": "blogs/paper-architecture-scout.md",
+    "sections": [
+      "Assignment",
+      "Planned sampling",
+      "Sources sampled",
+      "Sampling coverage",
+      "Candidate findings",
+      "Decision notes",
+      "Open validation"
+    ]
+  },
+  "constraints": [
+    "Review-only: do not modify recommendation assets.",
+    "Do not execute remote model code.",
+    "Sample planned targets first and explain substitutions.",
+    "Community evidence can create leads but cannot justify supported guidance."
+  ],
+  "environment": {
+    "MLX_RESEARCH_PERSONA_ID": "paper-architecture-scout",
+    "MLX_RESEARCH_ASSIGNMENT_PATH": "agents/paper-architecture-scout.assignment.json",
+    "MLX_RESEARCH_PROMPT_PATH": "agents/paper-architecture-scout.prompt.md",
+    "MLX_RESEARCH_RESULT_PATH": "agents/paper-architecture-scout.result.json",
+    "MLX_RESEARCH_BLOG_PATH": "blogs/paper-architecture-scout.md",
+    "MLX_RESEARCH_REVIEW_ONLY": "1"
+  }
+}
