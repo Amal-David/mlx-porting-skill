@@ -280,6 +280,7 @@
     }
 
     h2 {
+      scroll-margin-top: 104px;
       margin: 52px 0 16px;
       padding-top: 6px;
       font-size: 28px;
@@ -416,6 +417,7 @@
 
     .tree-board {
       padding: 0;
+      overflow: hidden;
       background:
         linear-gradient(135deg, rgba(155, 226, 45, 0.08), transparent 26%),
         linear-gradient(315deg, rgba(0, 169, 154, 0.07), transparent 32%),
@@ -443,7 +445,7 @@
     }
 
     .tree-copy::after {
-      content: "open canvas: scroll horizontally ->";
+      content: "hover nodes; double-click depth badges to open branches";
       display: inline-flex;
       margin-top: 10px;
       border: 1px solid rgba(65, 105, 225, 0.22);
@@ -454,28 +456,224 @@
       font: 760 0.72rem/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
     }
 
-    pre.mermaid {
-      min-width: 2200px;
-      margin: 0;
-      padding: 18px 20px 22px;
-      overflow: visible;
+    .mindmap-board {
+      border-top: 1px solid rgba(17, 23, 19, 0.08);
+      background:
+        linear-gradient(90deg, rgba(0, 169, 154, 0.045), transparent 38%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.64), rgba(248, 252, 248, 0.92));
+    }
+
+    .mindmap-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 16px;
+      border-bottom: 1px solid rgba(17, 23, 19, 0.08);
+      color: #4d5b54;
+      background: rgba(255, 255, 255, 0.72);
+      font: 760 0.74rem/1.2 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+
+    .mindmap-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .mindmap-action {
+      border: 1px solid rgba(0, 169, 154, 0.24);
+      border-radius: 999px;
+      padding: 7px 10px;
+      color: #174f49;
+      background: rgba(0, 169, 154, 0.08);
+      font: inherit;
+      cursor: pointer;
+      transition: transform 160ms ease, border-color 160ms ease, background 160ms ease;
+    }
+
+    .mindmap-action:hover {
+      transform: translateY(-1px);
+      border-color: rgba(0, 169, 154, 0.48);
+      background: rgba(0, 169, 154, 0.14);
+    }
+
+    .mindmap-canvas {
+      overflow-x: auto;
+      padding: 16px;
+      scrollbar-color: rgba(0, 169, 154, 0.4) rgba(17, 23, 19, 0.06);
+    }
+
+    .mindmap-stage {
+      display: flex;
+      align-items: stretch;
+      gap: 14px;
+      min-width: max-content;
+      padding-bottom: 4px;
+    }
+
+    .mindmap-column {
+      width: 286px;
+      display: grid;
+      align-content: start;
+      gap: 10px;
+      position: relative;
+    }
+
+    .mindmap-column:not(:last-child)::after {
+      content: "";
+      position: absolute;
+      top: 26px;
+      right: -11px;
+      width: 8px;
+      height: 2px;
+      background: var(--kernel-cyan);
+      box-shadow: 0 84px 0 rgba(0, 169, 154, 0.32), 0 168px 0 rgba(0, 169, 154, 0.18);
+    }
+
+    .mind-node {
+      width: 100%;
+      min-height: 118px;
+      border: 1px solid rgba(17, 23, 19, 0.14);
+      border-radius: 8px;
+      padding: 12px;
       color: var(--ink);
-      background: transparent;
-      font: 0.82rem/1.4 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-      white-space: pre;
+      background: rgba(255, 255, 255, 0.9);
+      text-align: left;
+      cursor: default;
+      box-shadow: 0 10px 24px rgba(17, 23, 19, 0.055);
+      transition: transform 160ms ease, border-color 160ms ease, box-shadow 160ms ease, background 160ms ease;
     }
 
-    .mermaid svg {
-      width: 2200px !important;
-      max-width: none !important;
-      height: auto;
+    .mind-node:hover,
+    .mind-node:focus-visible {
+      transform: translateY(-2px);
+      border-color: rgba(0, 169, 154, 0.58);
+      background: #fbfffa;
+      box-shadow: 0 18px 38px rgba(0, 169, 154, 0.13);
     }
 
-    .mermaid .nodeLabel,
-    .mermaid .edgeLabel,
-    .mermaid .label {
-      font-size: 24px !important;
-      line-height: 1.25 !important;
+    .mind-node.has-children {
+      cursor: pointer;
+    }
+
+    .mind-node.is-expanded {
+      border-color: rgba(0, 169, 154, 0.78);
+      background:
+        linear-gradient(135deg, rgba(155, 226, 45, 0.14), transparent 32%),
+        #ffffff;
+      box-shadow: 0 18px 42px rgba(0, 169, 154, 0.16);
+    }
+
+    .mind-node.is-selected {
+      border-color: rgba(65, 105, 225, 0.65);
+      box-shadow: 0 18px 42px rgba(65, 105, 225, 0.14);
+    }
+
+    .node-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 7px;
+    }
+
+    .node-title {
+      margin: 0;
+      color: var(--ink);
+      font-size: 15px;
+      line-height: 1.25;
+      font-weight: 820;
+    }
+
+    .depth-badge {
+      flex: 0 0 auto;
+      border: 1px solid rgba(0, 169, 154, 0.28);
+      border-radius: 999px;
+      padding: 4px 7px;
+      color: #08645d;
+      background: rgba(0, 169, 154, 0.08);
+      font: 820 0.68rem/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      white-space: nowrap;
+    }
+
+    .mind-node.is-expanded .depth-badge {
+      color: #111713;
+      background: var(--tensor-lime);
+      border-color: rgba(17, 23, 19, 0.16);
+    }
+
+    .node-detail {
+      margin: 0 0 9px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .node-meta,
+    .node-metrics {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin: 8px 0 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .node-meta li,
+    .node-metrics li {
+      border-radius: 999px;
+      padding: 4px 7px;
+      font: 760 0.66rem/1.1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+
+    .node-meta li {
+      color: #4d5b54;
+      border: 1px solid rgba(17, 23, 19, 0.1);
+      background: rgba(247, 249, 246, 0.9);
+    }
+
+    .node-meta li.is-source,
+    .node-metrics li.is-source {
+      color: #4d3f86;
+      border-color: rgba(118, 84, 216, 0.22);
+      background: rgba(118, 84, 216, 0.09);
+    }
+
+    .node-meta li.is-local,
+    .node-metrics li.is-local {
+      color: #174f49;
+      border-color: rgba(0, 169, 154, 0.24);
+      background: rgba(0, 169, 154, 0.09);
+    }
+
+    .node-metrics li {
+      color: #111713;
+      border: 1px solid rgba(183, 121, 22, 0.26);
+      background: rgba(251, 239, 217, 0.82);
+    }
+
+    .node-children {
+      display: inline-flex;
+      margin-top: 9px;
+      color: #08645d;
+      font: 820 0.68rem/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+
+    .mindmap-detail {
+      border-top: 1px solid rgba(17, 23, 19, 0.08);
+      padding: 12px 16px 14px;
+      color: var(--muted);
+      background: rgba(247, 249, 246, 0.68);
+      font-size: 14px;
+    }
+
+    .mindmap-detail strong {
+      color: var(--ink);
+    }
+
+    .tree-board pre.mermaid {
+      display: none;
     }
 
     .rule-list {
@@ -690,6 +888,15 @@
         padding: 14px;
       }
 
+      .tree-board {
+        padding: 0;
+      }
+
+      .mindmap-toolbar {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
       pre.mermaid,
       .mermaid svg {
         width: 1500px !important;
@@ -793,6 +1000,7 @@
                   <span>CHANGE_REVIEW.md</span>
                 </div>
               </div>
+              <div class="mindmap" data-tree="artifact"></div>
               <pre class="mermaid">flowchart LR
   Start["User gives a model repo, model dir, config, checkpoint, PyTorch module, or existing MLX project"]
   Existing{"Already MLX code?"}
@@ -836,6 +1044,7 @@
                   <span>references/model-support-map.md</span>
                 </div>
               </div>
+              <div class="mindmap" data-tree="router"></div>
               <pre class="mermaid">flowchart LR
   Input["Static inspection report"]
   Confidence{"Family confidence high?"}
@@ -885,6 +1094,7 @@
                   <span>quantization.md</span>
                 </div>
               </div>
+              <div class="mindmap" data-tree="llm"></div>
               <pre class="mermaid">flowchart LR
   Start["Decoder-family source artifact"]
   Shape{"Architecture subtype?"}
@@ -939,6 +1149,7 @@
                   <span>attention-and-kv.md</span>
                 </div>
               </div>
+              <div class="mindmap" data-tree="transformer"></div>
               <pre class="mermaid">flowchart LR
   Module["Pasted PyTorch module or block source"]
   Contract["Write block contract<br/>inputs, outputs, layouts, state, dtype, masks"]
@@ -979,6 +1190,7 @@
                   <span>benchmarking.md</span>
                 </div>
               </div>
+              <div class="mindmap" data-tree="diffusion"></div>
               <pre class="mermaid">flowchart LR
   Start["Diffusion / flow source artifact"]
   Components{"Which components exist?"}
@@ -1032,6 +1244,7 @@
                   <span>contribution_candidates</span>
                 </div>
               </div>
+              <div class="mindmap" data-tree="inspector"></div>
               <pre class="mermaid">flowchart LR
   Project["Local MLX repo, app, notebook, package, or converted checkpoint"]
   Scan["Static project scan<br/>files, imports, mx.eval, mx.compile, caches, kernels, benchmarks, parity evidence"]
@@ -1076,6 +1289,7 @@
                   <span>assets/optimization_stacks.yaml</span>
                 </div>
               </div>
+              <div class="mindmap" data-tree="optimization"></div>
               <pre class="mermaid">flowchart LR
   Parity["Parity and quality gates already pass"]
   Profile["Profile baseline<br/>TTFT, prefill, decode, RTF, memory, postprocess, compile"]
@@ -1266,31 +1480,939 @@ python3 -m unittest discover -s tests -v</pre>
       </div>
     </main>
   </div>
-  <script type="module">
-    import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
-
-    mermaid.initialize({
-      startOnLoad: true,
-      securityLevel: "loose",
-      theme: "base",
-      flowchart: {
-        curve: "basis",
-        htmlLabels: true,
-        nodeSpacing: 64,
-        rankSpacing: 86,
-        padding: 16
+  <script>
+    const mindMaps = {
+      artifact: {
+        root: {
+          id: "artifact-root",
+          title: "Artifact in hand",
+          detail: "Start from the exact thing the user gave you: model repo, local directory, config, checkpoint, PyTorch module, or existing MLX project.",
+          meta: ["choose one path", "no execution yet"],
+          children: [
+            {
+              id: "artifact-intake",
+              title: "Freeze intake record",
+              detail: "Create the immutable record before coding. This is the handoff contract for humans and smaller agents.",
+              meta: ["intake-and-routing.md", "10 required fields"],
+              children: [
+                {
+                  id: "artifact-intake-source",
+                  title: "Source and provenance",
+                  detail: "Pin repo/model id and revision. Record code, weight, dataset, and derivative license terms separately.",
+                  meta: ["source revision", "license stack"],
+                  children: [
+                    {
+                      id: "artifact-intake-risk-license",
+                      title: "License or provenance missing",
+                      detail: "Hold the route. Do not write a port plan until distribution terms and model lineage are explicit.",
+                      meta: ["stop condition", "risk review"]
+                    }
+                  ]
+                },
+                {
+                  id: "artifact-intake-task",
+                  title: "Task, objective, constraints",
+                  detail: "Name the exact task and metric: TTFT, decode tok/s, throughput, RTF, memory, quality, or energy. Add context/audio length, batch, streaming, precision, and license constraints.",
+                  meta: ["objective scoped", "benchmark target"]
+                },
+                {
+                  id: "artifact-intake-hardware",
+                  title: "Target and Mac environment",
+                  detail: "Record MLX core, MLX-LM, MLX-VLM, MLX-Audio, Swift, or standalone target plus chip, unified memory, OS, MLX version, and power mode.",
+                  meta: ["target package", "hardware"]
+                }
+              ]
+            },
+            {
+              id: "artifact-static",
+              title: "Static inspection",
+              detail: "Run static intake without importing untrusted model code. Network and weight downloads remain explicit opt-ins.",
+              meta: ["inspect_model.py", "no untrusted imports"],
+              children: [
+                {
+                  id: "artifact-static-command",
+                  title: "Command surface",
+                  detail: "Use `python3 mlx-model-porting/scripts/inspect_model.py /path/to/model --output inspection.json`. Hugging Face fetch needs `--allow-network`; weight download is separately gated.",
+                  meta: ["inspection.json", "CLI first"]
+                },
+                {
+                  id: "artifact-static-formats",
+                  title: "Static-only source formats",
+                  detail: "ONNX, GGUF, Flax/Orbax, TensorFlow/Keras, Core ML, and safetensors-only checkpoints can route signals, but that is not conversion support.",
+                  meta: ["triage only", "not support claim"],
+                  children: [
+                    {
+                      id: "artifact-static-safetensors",
+                      title: "Safetensors-only checkpoint",
+                      detail: "Block until config, tokenizer or processor metadata, license/provenance, and source-framework oracle outputs exist.",
+                      meta: ["blocked intake", "oracle required"]
+                    },
+                    {
+                      id: "artifact-static-onnx-gguf",
+                      title: "ONNX or GGUF shape feed",
+                      detail: "Static tensor shapes may feed weight-map coverage. They still do not prove operator lowering, preprocessing, dtype, layout, or numeric parity.",
+                      meta: ["shape coverage only"]
+                    }
+                  ]
+                },
+                {
+                  id: "artifact-static-risk",
+                  title: "Risk gate",
+                  detail: "Flag `auto_map`, custom Python, pickle-capable weights, install hooks, no safe weights, missing license, or architecture/weight disagreement.",
+                  meta: ["remote code", "pickle", "no safe weights"],
+                  children: [
+                    {
+                      id: "artifact-static-stop",
+                      title: "High-risk route",
+                      detail: "Stop on high-risk remote code, unsafe serialization, or no safe-weight path. Smaller agents should report the hold, not work around it.",
+                      meta: ["fail loud"]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              id: "artifact-plan",
+              title: "Plan and weight map",
+              detail: "Generate a plan only after static inspection and risk review. The plan records family, target, oracle, weight map, and known holds.",
+              meta: ["PORT_PLAN.md", "WEIGHT_MAP.json"],
+              children: [
+                {
+                  id: "artifact-plan-command",
+                  title: "Port plan handoff",
+                  detail: "Use `make_port_plan.py` to convert inspection output into a reviewable route. If source oracle is missing, the plan must say so.",
+                  meta: ["make_port_plan.py", "handoff file"]
+                },
+                {
+                  id: "artifact-weight-map",
+                  title: "Weight-map coverage",
+                  detail: "Each mapping records source key, target key, source/target shape, transform sequence, QKV or gate fusion rules, quant/dequant state, tie owner, and checksum or statistics.",
+                  meta: ["shape", "transform", "tie owner"],
+                  children: [
+                    {
+                      id: "artifact-weight-command",
+                      title: "Validate shape coverage",
+                      detail: "Run `validate_weight_map.py --source inspection.json --target target.json --mapping map.json --output weight-report.json`. This proves deterministic shape coverage only.",
+                      meta: ["validate_weight_map.py"]
+                    },
+                    {
+                      id: "artifact-weight-transforms",
+                      title: "Allowed transforms",
+                      detail: "Supported operations: identity, cast, rename, transpose, permute, reshape, squeeze, unsqueeze, and slice. Duplicate mappings, unknown ignored keys, unsupported ops, and unexplained tensors fail unless explicit.",
+                      meta: ["--allow-unmapped is explicit"]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              id: "artifact-parity",
+              title: "Oracle and parity ladder",
+              detail: "Capture deterministic source tensors before trusting MLX output. Compare the first divergent semantic boundary, not only final text or images.",
+              meta: ["8 parity stages", "source oracle"],
+              children: [
+                {
+                  id: "artifact-oracle",
+                  title: "Source oracle",
+                  detail: "Save post-preprocessing inputs and intermediate outputs at semantic boundaries: embeddings, QKV, attention/SSM, MLP, residuals, logits, latents, scheduler state, or waveform stages.",
+                  meta: ["fixed seed", "semantic checkpoints"]
+                },
+                {
+                  id: "artifact-compare",
+                  title: "Tensor comparison",
+                  detail: "`compare_tensors.py source.npz target.npz --output report.json` defaults to atol=1e-5 and rtol=1e-4, fails on NaN/Inf, and supports report-only mode via `--no-fail`.",
+                  meta: ["atol 1e-5", "rtol 1e-4", "NaN fails"]
+                },
+                {
+                  id: "artifact-ladder",
+                  title: "Eight rungs",
+                  detail: "Artifact -> weight -> primitive -> block -> staged model -> end-to-end -> stateful -> task-quality parity.",
+                  meta: ["no rung skipping"],
+                  children: [
+                    {
+                      id: "artifact-quality",
+                      title: "Task-quality parity",
+                      detail: "Use the family metric: LLM perplexity/logprob, ASR WER/CER, diffusion fixed-seed latent/output review, CV top-k/IoU/AP/Dice, forecasting error, ranking NDCG/AUC, graph OGB metrics, or training loss/gradient parity.",
+                      meta: ["family metric"]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              id: "artifact-review",
+              title: "Benchmark and review",
+              detail: "Only after parity, measure the product metric and record keep/revert decisions with raw receipts.",
+              meta: ["BENCHMARK_REPORT.md", "CHANGE_REVIEW.md"],
+              children: [
+                {
+                  id: "artifact-bench-meta",
+                  title: "Mandatory benchmark metadata",
+                  detail: "Record Mac chip, GPU cores, memory, OS, Python, MLX/package revisions, model revision, dtype, quantization, cache/compile state, input length, generated length, batch, seed, memory, and quality gate.",
+                  meta: ["hardware", "workload", "quality"]
+                },
+                {
+                  id: "artifact-rollback",
+                  title: "Rollback condition",
+                  detail: "Write the rollback condition before running the candidate. Revert on correctness failure, quality drift, memory budget violation, weak end-to-end gain, or microbenchmark-only win.",
+                  meta: ["keep/revert"]
+                }
+              ]
+            }
+          ]
+        }
       },
-      themeVariables: {
-        background: "#ffffff",
-        primaryColor: "#fbfcfb",
-        primaryBorderColor: "#00a99a",
-        primaryTextColor: "#111713",
-        lineColor: "#00a99a",
-        secondaryColor: "#f3fff4",
-        tertiaryColor: "#fffaf0",
-        fontFamily: "ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif",
-        fontSize: "24px"
+      router: {
+        root: {
+          id: "router-root",
+          title: "Model-family router",
+          detail: "Use static signals together. A wrong family route is more expensive than explicit uncertainty.",
+          meta: ["assets/architectures.yaml", "17 families"],
+          children: [
+            {
+              id: "router-signals",
+              title: "Collect routing signals",
+              detail: "Combine exact model_type, architecture class, config fingerprints, weight-key signals, task or processor metadata, and source graph only when unavoidable.",
+              meta: ["6 signal classes"],
+              children: [
+                {
+                  id: "router-scoring",
+                  title: "Inspection scoring",
+                  detail: "The router scores exact model_type at +10, partial model type at +5, class pattern at +4, config signals at +0.8 each up to 5, and weight signals at +1.5 each up to 5.",
+                  metrics: ["top 5 candidates", "normalized confidence"]
+                },
+                {
+                  id: "router-low-confidence",
+                  title: "Low confidence",
+                  detail: "Return multiple candidates and ask for more static evidence. Do not force a single route from a weak alias or one weight prefix.",
+                  meta: ["uncertainty is valid"]
+                }
+              ]
+            },
+            {
+              id: "router-target",
+              title: "Select target package",
+              detail: "Route by architecture and serving contract, not by marketing label.",
+              meta: ["MLX-LM", "MLX-VLM", "MLX-Audio", "standalone"],
+              children: [
+                {
+                  id: "router-llm-target",
+                  title: "Decoder language route",
+                  detail: "Use MLX-LM for compatible decoder LMs, MoE/hybrid language models, generation, and LoRA workflows. Otherwise use standalone MLX with the decoder runbook.",
+                  meta: ["decoder", "MoE", "SSM hybrid"]
+                },
+                {
+                  id: "router-vlm-target",
+                  title: "Multimodal route",
+                  detail: "Use MLX-VLM for image/video/audio-conditioned language models, but route encoders, adapters, placeholder counts, and media caches as separate proof surfaces.",
+                  meta: ["processor pinned", "media placeholders"]
+                },
+                {
+                  id: "router-audio-target",
+                  title: "Audio route",
+                  detail: "Use MLX-Audio for TTS, STT, speech-to-speech, codecs, vocoders, and audio serving. Gate with WER/CER, RTF, speaker similarity, spectral metrics, or listening checks.",
+                  meta: ["RTF", "WER/CER", "speaker checks"]
+                },
+                {
+                  id: "router-standalone-target",
+                  title: "Standalone route",
+                  detail: "Use standalone MLX for architectures outside package contracts, research prototypes, training-first ports, graph/scientific models, or custom apps.",
+                  meta: ["custom app", "research route"]
+                }
+              ]
+            },
+            {
+              id: "router-registry",
+              title: "Registered family paths",
+              detail: "The registry declares 17 families with runbook, targets, aliases, config signals, weight signals, state contract, and notes.",
+              meta: ["17/17 routing fixtures"],
+              children: [
+                {
+                  id: "router-family-text",
+                  title: "Text and transformer families",
+                  detail: "Dense decoder, MoE decoder, encoder, encoder-decoder, SSM-hybrid, CV backbone, graph, and time-series routes each carry different state and quality gates.",
+                  meta: ["decoder", "encoder", "SSM", "graph"]
+                },
+                {
+                  id: "router-family-media",
+                  title: "Media and audio families",
+                  detail: "Diffusion/flow, VLM/omni, codec, autoregressive audio, flow TTS, vocoder, ASR, streaming speech, and separation/enhancement need modality-specific oracles.",
+                  meta: ["diffusion", "VLM", "ASR", "TTS"]
+                }
+              ]
+            },
+            {
+              id: "router-candidates",
+              title: "Candidate tracks",
+              detail: "Dense/promptable vision, tabular, ranking/recommender, point-cloud/scientific ML, and training/fine-tuning stay candidate tracks until registry entries, runbooks, fixtures, seeded failures, and task gates exist.",
+              meta: ["do not overclaim"],
+              children: [
+                {
+                  id: "router-candidate-promote",
+                  title: "Promotion bar",
+                  detail: "Promotion needs a reproducible MLX path, task-quality gate, local or official evidence, benchmark metadata, and a rollback condition.",
+                  meta: ["review-only until proven"]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      llm: {
+        root: {
+          id: "llm-root",
+          title: "LLM / decoder route",
+          detail: "For decoder LMs, chat models, MoE decoders, SSM hybrids, and decoder-like language components, prove cache and logits before speed work.",
+          meta: ["decoder runbook", "cache first"],
+          children: [
+            {
+              id: "llm-dense",
+              title: "Dense decoder transformer",
+              detail: "Confirm causal stack, embedding/head tying, norm style, MHA/GQA/MQA/MLA, RoPE/ALiBi, MLP activation, sinks, sliding window, tokenizer, and generation processors.",
+              meta: ["Llama", "Mistral", "Qwen", "Gemma"],
+              children: [
+                {
+                  id: "llm-dense-oracle",
+                  title: "Decoder oracle checkpoints",
+                  detail: "Capture token IDs, attention mask, embeddings, Q/K/V before and after RoPE, attention scores/output, MLP gate/up/down, residuals every N layers, final norm/logits, and cache after prefill plus decode.",
+                  meta: ["8 checkpoint classes"]
+                },
+                {
+                  id: "llm-dense-qkv",
+                  title: "QKV mapping",
+                  detail: "Never infer QKV split sizes from equal thirds under GQA/MQA. Derive from hidden size, query heads, KV heads, and head dimension.",
+                  meta: ["GQA/MQA guard"]
+                },
+                {
+                  id: "llm-dense-cache",
+                  title: "Cache parity",
+                  detail: "Compare full sequence versus token incremental, empty/growing/rotating/truncated cache, reset/reuse behavior, batch merge/split, and long positions.",
+                  meta: ["stateful parity"]
+                }
+              ]
+            },
+            {
+              id: "llm-moe",
+              title: "MoE decoder",
+              detail: "Route experts separately from dense attention. Start with a readable loop oracle before vectorized, gather, segmented, or custom dispatch.",
+              meta: ["runbook-moe-transformer.md"],
+              children: [
+                {
+                  id: "llm-moe-oracle",
+                  title: "Router fixture",
+                  detail: "Capture router input, logits/probabilities, selected expert IDs, top-k weights, token-to-expert dispatch indices, each selected expert output, weighted combine, shared expert, and residual.",
+                  meta: ["duplicate assignments"]
+                },
+                {
+                  id: "llm-moe-dispatch",
+                  title: "Dispatch optimization",
+                  detail: "Use `gather_mm` after loop parity. Use `gather_qmm` only after quantized expert scales/biases, group size, bit width, mode, quality drift, and small-group utilization are measured.",
+                  meta: ["loop oracle first"]
+                },
+                {
+                  id: "llm-moe-metrics",
+                  title: "MoE benchmark fields",
+                  detail: "Report active experts, tokens per expert, sorted flag, expert matmul time, dispatch/combine time, compile count, peak memory, batch/concurrency, and rare-expert quality.",
+                  meta: ["expert histogram"]
+                }
+              ]
+            },
+            {
+              id: "llm-ssm",
+              title: "SSM or recurrent hybrid",
+              detail: "Treat recurrent state as the model. Prove one-step recurrence, full-sequence loop, chunk/scan equivalence, and reset behavior before vectorized scan.",
+              meta: ["Mamba", "RWKV", "Jamba"],
+              children: [
+                {
+                  id: "llm-ssm-state",
+                  title: "State checkpoints",
+                  detail: "Capture projected/gated inputs, convolution state before/after update, SSM parameters, one-step state update, chunk output, gate/output projection, hybrid attention cache, and full-sequence versus recurrent output.",
+                  meta: ["8 checkpoint classes"]
+                },
+                {
+                  id: "llm-ssm-traps",
+                  title: "Common failures",
+                  detail: "Watch off-by-one updates, convolution roll direction, continuous/discrete transform mismatch, state dtype/device/value, packed projection split order, and chunk boundary carry.",
+                  meta: ["chunk invariance"]
+                }
+              ]
+            },
+            {
+              id: "llm-vlm-component",
+              title: "Decoder inside VLM/omni",
+              detail: "Do not let the language route swallow the media route. Pin processor, media encoder revision, placeholder counts, adapter shape, and cold/warm media cache behavior.",
+              meta: ["component route"]
+            },
+            {
+              id: "llm-opt",
+              title: "Decoder optimization order",
+              detail: "After logits and cache pass, remove host sync, use fast SDPA when semantics match, preallocate cache, compile stable decode, chunk long prefill, quantize weights, validate KV quant, add prompt cache, then evaluate speculation.",
+              meta: ["parity before speed"],
+              children: [
+                {
+                  id: "llm-opt-receipts",
+                  title: "Local receipt sanity",
+                  detail: "Existing receipts show the order matters: 4-bit weight quant gave 2.40x decode on Qwen3 1.7B but greedy outputs diverged 3/3; prompt cache gave 23.75x TTFT proxy; speculative k=2 gave 1.25x decode while k=3/k=4 regressed.",
+                  metrics: ["2.40x decode", "23.75x TTFT proxy", "1.25x k=2"]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      transformer: {
+        root: {
+          id: "transformer-root",
+          title: "Transformer block route",
+          detail: "Use this when the input is a PyTorch module or recognizable block. Prove one block before assembling a full model.",
+          meta: ["block first", "eager MLX"],
+          children: [
+            {
+              id: "transformer-contract",
+              title: "Write the block contract",
+              detail: "Record inputs, outputs, layouts, dtypes, masks, state/cache, dynamic dimensions, tied parameters, preprocessing, and postprocessing boundaries.",
+              meta: ["no hidden transposes"],
+              children: [
+                {
+                  id: "transformer-layout",
+                  title: "Layout boundaries",
+                  detail: "Make NCHW/NHWC and sequence/batch/head dimensions explicit. Move recurring transposes to boundaries or convert weights once.",
+                  meta: ["layout is a proof surface"]
+                }
+              ]
+            },
+            {
+              id: "transformer-primitives",
+              title: "Primitive parity",
+              detail: "Test tiny deterministic tensors for normalization, activation, RoPE/position, attention masks, convolution/FFT if present, sampler logic, quantizer lookup, recurrence, and cache updates.",
+              meta: ["primitive fixtures"],
+              children: [
+                {
+                  id: "transformer-norm",
+                  title: "Norm and residual order",
+                  detail: "Check epsilon, dtype, accumulation precision, residual order, sandwich/pre/post-norm placement, QK norm, and final logit scale or soft cap.",
+                  meta: ["epsilon", "dtype"]
+                },
+                {
+                  id: "transformer-position",
+                  title: "Position logic",
+                  detail: "Check RoPE interleaving, base, scaling, offsets, ALiBi/relative bias, sliding-window position, and cache-position advance before versus after write.",
+                  meta: ["RoPE", "ALiBi", "offsets"]
+                },
+                {
+                  id: "transformer-attn",
+                  title: "Attention geometry",
+                  detail: "Validate QKV fusion, scale, MHA/GQA/MQA, causal or bidirectional masks, boolean/additive forms, sinks, local/global tokens, and broadcast against [B, N, T_q, T_kv].",
+                  meta: ["fast SDPA eligibility"]
+                },
+                {
+                  id: "transformer-mlp",
+                  title: "MLP or MoE branch",
+                  detail: "Preserve gate/up/down order, SwiGLU/GeGLU/GELU activation, expert index ordering, router dtype, shared expert gate, duplicate-token scatter, and token dropping/capacity rules.",
+                  meta: ["gate order"]
+                }
+              ]
+            },
+            {
+              id: "transformer-eager",
+              title: "One eager MLX block",
+              detail: "No compile, no quantization, and no custom kernels. Keep layout conversions visible and capture pre-norm, projection, attention/SSM, MLP, residual, and updated state.",
+              meta: ["readable first"]
+            },
+            {
+              id: "transformer-promote",
+              title: "Promote only after block proof",
+              detail: "Once selected tensors match, promote to repeated blocks, staged model parity every N blocks, logits/latents, save/reload, deterministic generation, and family-specific quality.",
+              meta: ["binary-search drift"],
+              children: [
+                {
+                  id: "transformer-failure",
+                  title: "If final output fails",
+                  detail: "Reproduce the smallest fixture, compare preprocessing, find first divergent checkpoint, disable cache/streaming/quant/compile, retry FP32 where possible, inspect shapes/axes/masks/positions/state, and fix only the first divergence.",
+                  meta: ["localize first"]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      diffusion: {
+        root: {
+          id: "diffusion-root",
+          title: "Diffusion / flow route",
+          detail: "Use for image, video, audio diffusion, DiT, latent diffusion, rectified flow, flow matching, consistency/distilled samplers, and denoising systems.",
+          meta: ["fixed seed", "scheduler first"],
+          children: [
+            {
+              id: "diffusion-fingerprint",
+              title: "Architecture fingerprint",
+              detail: "Record latent/waveform/pixel domain, VAE/codec, denoiser type, epsilon/v/x0/velocity parameterization, scheduler, conditioning, CFG, temporal embeddings, attention, patch/video layout, shape, and step count.",
+              meta: ["domain", "prediction type", "steps"],
+              children: [
+                {
+                  id: "diffusion-components",
+                  title: "Component split",
+                  detail: "Treat text encoder, denoiser, scheduler, VAE/decoder, postprocess, and conditioning/control inputs as separate proof surfaces.",
+                  meta: ["component contracts"]
+                }
+              ]
+            },
+            {
+              id: "diffusion-oracle",
+              title: "Fixed-seed oracle",
+              detail: "Capture preprocessed conditioning, initial noise/latent, timestep/sigma embedding, one denoiser block, full denoiser output, scheduler updates, early/mid/final latents, and decoded output before postprocess.",
+              meta: ["7 checkpoint classes"],
+              children: [
+                {
+                  id: "diffusion-denoiser",
+                  title: "One denoiser step",
+                  detail: "First gate is a single timestep. If it fails, inspect scheduler math, conditioning order, CFG concatenation, dtype, layout, patch axis, and timestep/sigma convention.",
+                  meta: ["one-step parity"]
+                },
+                {
+                  id: "diffusion-trajectory",
+                  title: "Latent trajectory",
+                  detail: "After one-step parity, compare short trajectory latents before decoded outputs. Locate the first timestep drift instead of tuning postprocess.",
+                  meta: ["early/mid/final steps"]
+                }
+              ]
+            },
+            {
+              id: "diffusion-weight",
+              title: "Weight conversion",
+              detail: "Map convolution/linear layout explicitly, preserve modulation and norm order, fused QKV/adaptive norm projections, patchify/unpatchify, video axis order, VAE scaling, and scheduler config.",
+              meta: ["VAE scale", "scheduler artifact"]
+            },
+            {
+              id: "diffusion-quality",
+              title: "Quality and output gates",
+              detail: "Fixed-seed latent/output metrics plus perceptual or task review must accompany quantization, fewer-step solvers, distilled modes, or memory shortcuts.",
+              meta: ["not tensor-only"]
+            },
+            {
+              id: "diffusion-opt",
+              title: "Diffusion optimization",
+              detail: "Keep latent state on MLX, compile the denoiser for stable shapes, reuse conditioning/static embeddings, use fast attention and fused paths, cache CFG-safe data, quantize subsystems separately, tile VAE for memory, and add kernels only after profile proof.",
+              meta: ["per-step latency", "memory"],
+              children: [
+                {
+                  id: "diffusion-bench",
+                  title: "Benchmark decomposition",
+                  detail: "Report preprocess/encode, first compiled step, per-step latency distribution, decode/postprocess, total latency, peak memory, and fixed-seed quality.",
+                  meta: ["cold vs warm"]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      inspector: {
+        root: {
+          id: "inspector-root",
+          title: "Existing MLX project inspector",
+          detail: "Use when the project already runs. Static evidence names proof gaps; it does not assume correctness.",
+          meta: ["inspect_mlx_project.py", "static-first"],
+          children: [
+            {
+              id: "inspector-command",
+              title: "Canonical command",
+              detail: "`python3 mlx-model-porting/scripts/inspect_mlx_project.py /path/to/mlx-project --model /path/to/local-model --markdown MLX_INSPECTION.md --output inspection.json`",
+              meta: ["MLX_INSPECTION.md", "inspection.json"]
+            },
+            {
+              id: "inspector-scan",
+              title: "Project scan",
+              detail: "Inventory files without importing the project. Detect raw `mlx.core`, `mlx_lm`, `mlx_vlm`, `mlx_audio`, `mx.eval`, `mx.compile`, fast attention, quantization, caches, kernels, benchmarks, and parity evidence.",
+              meta: ["no import", "surface inventory"],
+              children: [
+                {
+                  id: "inspector-no-surface",
+                  title: "No MLX surface",
+                  detail: "Report that no MLX surface was detected and ask for the correct path or original model artifact.",
+                  meta: ["health: no-surface"]
+                },
+                {
+                  id: "inspector-risk",
+                  title: "Risk review",
+                  detail: "Report risk when remote code, pickle, install hooks, hidden downloads, missing provenance, or unsafe conversion paths appear.",
+                  meta: ["health: risk-review"]
+                }
+              ]
+            },
+            {
+              id: "inspector-fold",
+              title: "Fold model inspection",
+              detail: "If a model path or prior inspection exists, fold in family route, tensor inventory, source-format holds, and risk flags from `inspect_model.py`.",
+              meta: ["same evidence vocabulary"]
+            },
+            {
+              id: "inspector-health",
+              title: "Health classification",
+              detail: "The report has health, code_surface, improvement_opportunities, and contribution_candidates. `looks-good` is static evidence, not numeric correctness.",
+              meta: ["looks-good caveat"],
+              children: [
+                {
+                  id: "inspector-gap",
+                  title: "Proof gaps",
+                  detail: "Name the missing fixture, tensor comparison, quality metric, benchmark metadata, or rollback condition. Turn each gap into a concrete next action.",
+                  meta: ["validation gate"]
+                },
+                {
+                  id: "inspector-good",
+                  title: "Looks good statically",
+                  detail: "Even when static evidence is strong, runtime parity and task-quality checks are still required before publishing claims.",
+                  meta: ["not correctness proof"]
+                }
+              ]
+            },
+            {
+              id: "inspector-contribute",
+              title: "Contribution candidate",
+              detail: "A local learning needs a minimal reproducible fixture, readable fallback for kernels, parity or quality evidence, benchmark metadata, rollback condition, and exact affected runbook or asset.",
+              meta: ["review lead", "not auto-promote"],
+              children: [
+                {
+                  id: "inspector-validation",
+                  title: "Repo validation reminder",
+                  detail: "Offline validation claims routing fixtures and seeded-failure checks, but real MLX-vs-PyTorch numeric parity on an actual ported block/model remains required evidence.",
+                  meta: ["fail loud"]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      optimization: {
+        root: {
+          id: "optimization-root",
+          title: "Optimization and receipts",
+          detail: "Speed work starts after correctness. Profile first, choose one candidate, reprove parity, benchmark the same workload, then keep or revert.",
+          meta: ["no parity, no optimization"],
+          children: [
+            {
+              id: "optimization-baseline",
+              title: "Baseline profile",
+              detail: "Measure load time, compile/first-run time, TTFT, prefill tok/s, decode tok/s, inter-token latency, end-to-end latency, concurrency throughput, memory, and cache bytes/token/layer.",
+              meta: ["language metrics"],
+              children: [
+                {
+                  id: "optimization-protocol",
+                  title: "Benchmark protocol",
+                  detail: "Isolate processes when allocator/cache carryover matters, report cold separately, use identical inputs and generation length, repeat enough for median/tail, capture raw JSON/CSV, rerun baseline after candidate, and test realistic plus adversarial sizes.",
+                  meta: ["median/tail", "thermal drift"]
+                }
+              ]
+            },
+            {
+              id: "optimization-support",
+              title: "Evidence class",
+              detail: "Classify candidate support as official MLX, official MLX project, third-party pinned, paper-only, context-only, or locally reproduced. Papers and blogs are not MLX claims by themselves.",
+              meta: ["support scope"],
+              children: [
+                {
+                  id: "optimization-experimental",
+                  title: "Experimental consent",
+                  detail: "Conditionally-lossy and unvalidated approaches require explicit opt-in before trying them. Keep the fallback path and rollback condition attached.",
+                  meta: ["explicit consent"]
+                },
+                {
+                  id: "optimization-source-reported",
+                  title: "Source-reported leads",
+                  detail: "Keep these visually and textually distinct from local receipts. They are valid directions to reproduce, not claims for every Mac, model, or workload.",
+                  meta: ["source-reported", "remeasure locally"],
+                  children: [
+                    {
+                      id: "optimization-serving-source",
+                      title: "Continuous batching lead",
+                      detail: "vllm-mlx reports up to 4.3x aggregate throughput at 16 concurrent requests and 21%-87% higher text throughput than llama.cpp across tested models. Reproduce against local concurrency, cache, cancellation, and tail-latency gates.",
+                      metrics: ["up to 4.3x source-reported", "16 concurrent requests"]
+                    },
+                    {
+                      id: "optimization-vlm-source",
+                      title: "Repeated-media cache lead",
+                      detail: "vllm-mlx reports 28x repeated image-query speedup and 24.7x video cache speedup on an M4 Max evaluation. Gate on identical media, processor revision, cache keying, warm-output parity, memory, and privacy.",
+                      metrics: ["28x image source-reported", "24.7x video source-reported"]
+                    },
+                    {
+                      id: "optimization-tts-source",
+                      title: "Qwen3-TTS batch lead",
+                      detail: "MLX-Audio docs report 1.67x-5.45x batch throughput on 6-bit short prompts at batch sizes 1-8. Reproduce on the target text, voice/reference mix, RTF, first-audio latency, and quality gates.",
+                      metrics: ["1.67x-5.45x source-reported", "batch 1-8"]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              id: "optimization-quant",
+              title: "Weight quantization branch",
+              detail: "Start with affine, mxfp4, mxfp8, or nvfp4 only where MLX conversion and Linear runtime support the mode. Keep embeddings, heads, norms, small matrices, recurrent state, and sensitive audio layers higher precision until tested.",
+              meta: ["quantization.md"],
+              children: [
+                {
+                  id: "optimization-quant-receipt",
+                  title: "Local 4-bit receipt",
+                  detail: "Qwen3 1.7B bf16 versus 4-bit on Apple M4 Pro, MLX 0.30.4, MLX-LM 0.31.1: decode median 54.318 -> 130.179 tok/s = 2.40x. Caveat: greedy 3-prompt quality note diverged 3/3 and is not a formal eval.",
+                  metrics: ["2.40x decode", "1.773 GB peak", "quality caveat"]
+                }
+              ]
+            },
+            {
+              id: "optimization-cache",
+              title: "Prompt/KV cache branch",
+              detail: "Reuse immutable prefix state only when tokenizer template, model revision, quantization, adapter, positions, generation config, namespace, and media-processing knobs match.",
+              meta: ["cache key fields"],
+              children: [
+                {
+                  id: "optimization-pcache-receipt",
+                  title: "Prompt cache receipt",
+                  detail: "Qwen3 1.7B 4-bit, 4k prefix warm cache: TTFT proxy 2.859s -> 0.120s = 23.75x. Decode went 99.749 -> 91.547 tok/s, so the claim is TTFT proxy, not decode speed.",
+                  metrics: ["23.75x TTFT proxy", "decode 0.92x"]
+                },
+                {
+                  id: "optimization-kv-receipt",
+                  title: "4-bit KV receipt",
+                  detail: "Qwen2.5-Coder 7B 4-bit at 8k context: decode 29.248 -> 32.594 tok/s = 1.11x. Prefill regressed to 0.91x and peak memory rose 5.453 -> 6.570 GB on this receipt.",
+                  metrics: ["1.11x decode", "0.91x prefill", "+1.117 GB peak"]
+                },
+                {
+                  id: "optimization-cache-isolation",
+                  title: "Isolation tests",
+                  detail: "Test mixed batches, shared prefixes, divergent suffixes, cancellation, reset/reuse, save/load, trimming, max_kv_size, tenant namespace, opt-out, and cache-privacy timing.",
+                  meta: ["serving safety"]
+                }
+              ]
+            },
+            {
+              id: "optimization-spec",
+              title: "Speculative decoding branch",
+              detail: "Use only when draft/target tokenizer compatibility, acceptance behavior, deterministic quality, memory, and decode throughput pass. Sweep draft length instead of guessing.",
+              meta: ["draft-model-speculation"],
+              children: [
+                {
+                  id: "optimization-spec-receipts",
+                  title: "Draft length sweep",
+                  detail: "Qwen2.5-Coder 7B target + 1.5B draft on Apple M4 Pro: k=2 decode 45.122 -> 56.583 tok/s = 1.25x; k=3 dropped to 0.67x and k=4 to 0.55x.",
+                  metrics: ["k=2 1.25x", "k=3 0.67x", "k=4 0.55x"]
+                }
+              ]
+            },
+            {
+              id: "optimization-stack",
+              title: "Compound stack branch",
+              detail: "Never multiply incompatible metrics into one headline. The measured-together receipt is the headline when it exists, even if unfavorable.",
+              meta: ["compound-stacks.md"],
+              children: [
+                {
+                  id: "optimization-stack-receipt",
+                  title: "Measured-together result",
+                  detail: "Qwen2.5-Coder 7B 4-bit target + 4-bit KV + prompt cache + 1.5B draft k=2 at matched ~8k context regressed 29.248 -> 9.516 tok/s = 0.33x. The prompt-cache/draft composition required combined target+draft cache under MLX-LM 0.31.1.",
+                  metrics: ["0.33x decode", "matched 8k context"]
+                }
+              ]
+            },
+            {
+              id: "optimization-compile",
+              title: "Compile and custom kernel branch",
+              detail: "Compile pure, shape-stable repeated numerical regions. Custom Metal kernels need a readable MLX reference, contract, shape/dtype tests, gradient tests if trainable, chip benchmarks, compile-cache behavior, fallback, and end-to-end value.",
+              meta: ["mx.compile", "kernel fallback"],
+              children: [
+                {
+                  id: "optimization-retrace",
+                  title: "Retrace and stale-state gate",
+                  detail: "Test static arguments, closure constants, rank/shape changes, dtype/device changes, container structure, hidden mutation, random state, and consecutive cache/state updates across at least two sequence lengths or chunk sizes.",
+                  meta: ["cold/warm split"]
+                }
+              ]
+            }
+          ]
+        }
       }
+    };
+
+    function collectNodes(node, expanded, levels, depth = 0) {
+      if (!levels[depth]) levels[depth] = [];
+      levels[depth].push(node);
+      if (node.children && expanded.has(node.id)) {
+        node.children.forEach((child) => collectNodes(child, expanded, levels, depth + 1));
+      }
+    }
+
+    function walk(node, visit) {
+      visit(node);
+      (node.children || []).forEach((child) => walk(child, visit));
+    }
+
+    function expandFirstPath(node, expanded) {
+      expanded.add(node.id);
+      if (node.children && node.children[0]) expandFirstPath(node.children[0], expanded);
+    }
+
+    function renderList(parent, className, items) {
+      if (!items || !items.length) return;
+      const list = document.createElement("ul");
+      list.className = className;
+      items.forEach((item) => {
+        const li = document.createElement("li");
+        li.textContent = item;
+        const normalized = item.toLowerCase();
+        if (normalized.includes("source-reported")) li.classList.add("is-source");
+        if (normalized.includes("local") || normalized.includes("receipt")) li.classList.add("is-local");
+        list.appendChild(li);
+      });
+      parent.appendChild(list);
+    }
+
+    function renderMindMap(mount, map) {
+      const expanded = new Set();
+      expandFirstPath(map.root, expanded);
+      let selected = map.root;
+
+      const board = document.createElement("div");
+      board.className = "mindmap-board";
+      const toolbar = document.createElement("div");
+      toolbar.className = "mindmap-toolbar";
+      const hint = document.createElement("span");
+      hint.textContent = "Double-click a node to drill into the next proof branch.";
+      const controls = document.createElement("div");
+      controls.className = "mindmap-controls";
+      const expandCore = document.createElement("button");
+      expandCore.className = "mindmap-action";
+      expandCore.type = "button";
+      expandCore.textContent = "Expand core path";
+      const expandAll = document.createElement("button");
+      expandAll.className = "mindmap-action";
+      expandAll.type = "button";
+      expandAll.textContent = "Expand all";
+      const collapse = document.createElement("button");
+      collapse.className = "mindmap-action";
+      collapse.type = "button";
+      collapse.textContent = "Collapse";
+      controls.append(expandCore, expandAll, collapse);
+      toolbar.append(hint, controls);
+
+      const canvas = document.createElement("div");
+      canvas.className = "mindmap-canvas";
+      const detail = document.createElement("div");
+      detail.className = "mindmap-detail";
+      board.append(toolbar, canvas, detail);
+      mount.appendChild(board);
+
+      function setSelected(node) {
+        selected = node;
+        draw();
+      }
+
+      function toggle(node) {
+        if (!node.children || !node.children.length) return;
+        if (expanded.has(node.id)) expanded.delete(node.id);
+        else expanded.add(node.id);
+        selected = node;
+        draw();
+      }
+
+      function nodeButton(node) {
+        const button = document.createElement("div");
+        button.setAttribute("role", "button");
+        button.tabIndex = 0;
+        button.className = "mind-node";
+        if (node.children && node.children.length) button.classList.add("has-children");
+        if (expanded.has(node.id)) button.classList.add("is-expanded");
+        if (selected.id === node.id) button.classList.add("is-selected");
+        button.setAttribute("aria-expanded", node.children && node.children.length ? String(expanded.has(node.id)) : "false");
+
+        const head = document.createElement("div");
+        head.className = "node-head";
+        const title = document.createElement("p");
+        title.className = "node-title";
+        title.textContent = node.title;
+        head.appendChild(title);
+
+        if (node.children && node.children.length) {
+          const badge = document.createElement("span");
+          badge.className = "depth-badge";
+          badge.textContent = expanded.has(node.id) ? `-${node.children.length}` : `+${node.children.length}`;
+          head.appendChild(badge);
+        }
+
+        const copy = document.createElement("p");
+        copy.className = "node-detail";
+        copy.textContent = node.detail;
+        button.append(head, copy);
+        renderList(button, "node-meta", node.meta);
+        renderList(button, "node-metrics", node.metrics);
+
+        if (node.children && node.children.length) {
+          const childCount = document.createElement("span");
+          childCount.className = "node-children";
+          childCount.textContent = expanded.has(node.id) ? "branch open" : `${node.children.length} sub-branches`;
+          button.appendChild(childCount);
+        }
+
+        button.addEventListener("click", () => setSelected(node));
+        button.addEventListener("dblclick", (event) => {
+          event.preventDefault();
+          toggle(node);
+        });
+        button.addEventListener("keydown", (event) => {
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            toggle(node);
+          }
+        });
+        return button;
+      }
+
+      function draw() {
+        canvas.replaceChildren();
+        const stage = document.createElement("div");
+        stage.className = "mindmap-stage";
+        const levels = [];
+        collectNodes(map.root, expanded, levels);
+        levels.forEach((nodes, index) => {
+          const column = document.createElement("div");
+          column.className = "mindmap-column";
+          column.setAttribute("aria-label", `Depth ${index + 1}`);
+          nodes.forEach((node) => column.appendChild(nodeButton(node)));
+          stage.appendChild(column);
+        });
+        canvas.appendChild(stage);
+        detail.innerHTML = "";
+        const strong = document.createElement("strong");
+        strong.textContent = selected.title;
+        detail.appendChild(strong);
+        detail.append(`: ${selected.detail}`);
+      }
+
+      expandCore.addEventListener("click", () => {
+        expanded.clear();
+        expandFirstPath(map.root, expanded);
+        selected = map.root;
+        draw();
+      });
+
+      expandAll.addEventListener("click", () => {
+        expanded.clear();
+        walk(map.root, (node) => {
+          if (node.children && node.children.length) expanded.add(node.id);
+        });
+        selected = map.root;
+        draw();
+      });
+
+      collapse.addEventListener("click", () => {
+        expanded.clear();
+        expanded.add(map.root.id);
+        selected = map.root;
+        draw();
+      });
+
+      draw();
+    }
+
+    document.querySelectorAll(".mindmap").forEach((mount) => {
+      const map = mindMaps[mount.dataset.tree];
+      if (map) renderMindMap(mount, map);
     });
   </script>
 </body>
