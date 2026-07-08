@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>MLX Porter Runbook</title>
-  <meta name="description" content="A doc-friendly landing page for the MLX Porter runbook: port PyTorch and Hugging Face projects to Apple MLX, inspect existing MLX ports, and optimize only after parity and benchmark receipts.">
+  <meta name="description" content="MLX Porter helps engineers and agents move PyTorch and Hugging Face models to Apple MLX, inspect existing MLX ports, and optimize only after parity and benchmark receipts.">
   <style>
     :root {
       color-scheme: dark;
@@ -674,9 +674,9 @@
     <section class="hero" aria-labelledby="title">
       <canvas id="mesh" aria-hidden="true"></canvas>
       <div class="hero-center reveal">
-        <p class="eyebrow">Apple MLX runbook for agents</p>
-        <h1 id="title">Port PyTorch projects and inspect MLX ports without runtime guesswork.</h1>
-        <p class="lead">A doc-friendly landing page for the MLX Porter skill: inspect source or existing local MLX code, prove parity, then apply Apple Silicon optimizations with receipts.</p>
+        <p class="eyebrow">Apple MLX porting runbook</p>
+        <h1 id="title">Port PyTorch to MLX. Inspect existing MLX. Prove every speedup.</h1>
+        <p class="lead">MLX Porter gives engineers and agents a concrete path from PyTorch modules, checkpoints, and local MLX code to verified Apple Silicon implementations.</p>
         <div class="center-cta" aria-label="Primary actions">
           <a class="button primary" href="https://github.com/Amal-David/mlx-porting-skill">
             <svg class="icon" aria-hidden="true" viewBox="0 0 16 16">
@@ -684,12 +684,12 @@
             </svg>
             Start on GitHub
           </a>
-          <a class="button" href="/docs/">Read docs path</a>
-          <a class="button" href="#runbook">See runbook</a>
+          <a class="button" href="/docs/">Read docs</a>
+          <a class="button" href="#inspector">Run inspector</a>
         </div>
         <div class="command-strip" aria-label="Agent command">
           <span class="prompt">agent:</span>
-          <code>inspect -> proof gaps -> improvements -> contributions</code>
+          <code>inspect -> oracle -> eager MLX -> parity -> measured speed</code>
           <span class="status-chip">proof before speed</span>
         </div>
       </div>
@@ -698,29 +698,29 @@
     <section class="band" id="runbook" aria-labelledby="runbook-title">
       <div class="wrap">
         <div class="section-head">
-          <h2 id="runbook-title">The runbook is the product.</h2>
-          <p class="section-copy">MLX Porter turns scattered MLX, Metal, checkpoint, parity, and benchmark knowledge into a sequence an agent can execute without improvising a new conversion strategy every time.</p>
+          <h2 id="runbook-title">A runbook for the messy middle.</h2>
+          <p class="section-copy">MLX Porter turns model archaeology, checkpoint mapping, parity debugging, and Apple Silicon tuning into an ordered workflow an agent can execute without inventing the plan from scratch.</p>
         </div>
         <div class="steps">
           <article class="step" style="--accent: var(--mlx-kernel-cyan)">
             <h3>Inspect statically</h3>
-            <p>Read configs, safetensors headers, project files, licenses, and remote-code risks before executing model code.</p>
+            <p>Read configs, safetensors headers, project files, licenses, and remote-code risks before trusting any model code.</p>
           </article>
           <article class="step" style="--accent: var(--mlx-memory-blue)">
             <h3>Pick the family</h3>
-            <p>Route to dense decoder, ASR, diffusion, audio codec, VLM, SSM, MoE, graph, CV, or another runbook.</p>
+            <p>Route the work to the right playbook: decoder, ASR, diffusion, audio, VLM, SSM, MoE, graph, CV, or a new gap.</p>
           </article>
           <article class="step" style="--accent: var(--mlx-tensor-lime)">
             <h3>Build the oracle</h3>
-            <p>Freeze deterministic source fixtures and capture the right intermediate tensors before porting.</p>
+            <p>Freeze source behavior, capture intermediate tensors, and make correctness debuggable before the MLX rewrite begins.</p>
           </article>
           <article class="step" style="--accent: var(--mlx-metal-violet)">
             <h3>Port eager MLX</h3>
-            <p>Implement the smallest readable MLX graph first. Keep compile, kernels, quantization, and batching out.</p>
+            <p>Start with the smallest readable MLX graph. Keep compile, kernels, quantization, and batching out until parity holds.</p>
           </article>
           <article class="step" style="--accent: var(--mlx-parity-coral)">
             <h3>Validate and optimize</h3>
-            <p>Account for weights, pass parity, profile real bottlenecks, then change one optimization dimension at a time.</p>
+            <p>Account for every weight, pass parity, profile the real bottleneck, then change one optimization dimension at a time.</p>
           </article>
         </div>
       </div>
@@ -730,27 +730,27 @@
       <div class="wrap docs-grid">
         <div>
           <div class="section-head" style="display:block; margin-bottom:22px">
-            <h2 id="inspector-title">Already running MLX? Inspect it first.</h2>
-            <p class="section-copy" style="margin-top:16px">Inspector mode is for local MLX projects that already exist: your own port, a served app, a notebook, or a converted checkpoint. It tells the agent what is present before suggesting any optimization.</p>
+            <h2 id="inspector-title">Already have MLX running? Turn it into an inspection report.</h2>
+            <p class="section-copy" style="margin-top:16px">Point the skill at a local port, served app, notebook, or converted checkpoint. It maps what is already there, what is still unproven, and what is worth improving next.</p>
           </div>
           <div class="grid-3" style="grid-template-columns:1fr; gap:10px">
             <article class="tile">
               <h3>What is running</h3>
-              <p>Detects MLX packages, module surfaces, eval boundaries, compile regions, fast attention, caches, quantization, custom kernels, and risk flags.</p>
+              <p>Find MLX packages, module surfaces, eval boundaries, compile regions, fast attention, caches, quantization, custom kernels, and risk flags.</p>
             </article>
             <article class="tile">
               <h3>What can improve</h3>
-              <p>Names proof gaps first: source oracle, parity evidence, benchmark metadata, cache policy, quantization path, or model-intake blockers.</p>
+              <p>Name the missing proof first: source oracle, parity evidence, benchmark metadata, cache policy, quantization path, or intake blocker.</p>
             </article>
             <article class="tile">
               <h3>What can be contributed</h3>
-              <p>Turns novel local patterns into review leads only when they can be backed by fixtures, parity, benchmarks, rollback notes, and an affected runbook.</p>
+              <p>Promote novel local patterns only when they come with fixtures, parity checks, benchmark receipts, rollback notes, and an affected runbook.</p>
             </article>
           </div>
         </div>
         <div class="doc-panel">
           <h3>Inspector command</h3>
-          <p>Run this against a local project. Add <code>--model</code> when a local checkpoint or model directory should be folded into the same report.</p>
+          <p>Run this against a local project. Add <code>--model</code> when the checkpoint should be inspected in the same report.</p>
           <div class="terminal" aria-label="Inspector command sequence">
             <div class="terminal-head"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
             <pre>python3 mlx-model-porting/scripts/inspect_mlx_project.py /path/to/mlx-project \
@@ -765,21 +765,21 @@
     <section class="band" id="agents" aria-labelledby="agents-title">
       <div class="wrap">
         <div class="section-head">
-          <h2 id="agents-title">Built for frontier agents and tiny local models.</h2>
-          <p class="section-copy">A GPT-5.6-class system can discover many of these paths dynamically. The point here is to distill that work so a smaller open model can inspect, port, and optimize with fewer wrong turns.</p>
+          <h2 id="agents-title">Strong enough for frontier agents. Simple enough for small ones.</h2>
+          <p class="section-copy">A large cloud model may discover these moves on the fly. MLX Porter packages them into a step-by-step runbook that smaller open models and local agents can follow reliably.</p>
         </div>
         <div class="grid-3">
           <article class="tile">
             <h3>Load one compact contract</h3>
-            <p><code>mlx-model-porting/SKILL.md</code> stays small and routes the agent to the exact reference files and scripts needed for the current model.</p>
+            <p><code>mlx-model-porting/SKILL.md</code> stays small and routes the agent to the exact reference files and scripts for the current model.</p>
           </article>
           <article class="tile">
             <h3>Use structured assets</h3>
-            <p>Architecture families, technique states, evidence depth, and benchmark receipts live in machine-readable files.</p>
+            <p>Architecture families, technique states, evidence depth, and benchmark receipts live where agents can read them.</p>
           </article>
           <article class="tile">
             <h3>Fail loud, not clever</h3>
-            <p>Unsupported source formats, missing keys, unreviewed remote code, and parity drift are blockers, not prompts to hand-wave.</p>
+            <p>Unsupported formats, missing keys, unreviewed remote code, and parity drift are blockers, not excuses to improvise.</p>
           </article>
         </div>
       </div>
@@ -788,8 +788,8 @@
     <section class="band" id="palette" aria-labelledby="palette-title">
       <div class="wrap">
         <div class="section-head">
-          <h2 id="palette-title">MLX-specific color system.</h2>
-          <p class="section-copy">The palette is named after the things the runbook actually cares about: tensors, kernels, unified memory, parity, checkpoints, and metal surfaces.</p>
+          <h2 id="palette-title">Visual signals for real porting work.</h2>
+          <p class="section-copy">The palette tracks what matters during an MLX port: tensors, kernels, unified memory, parity, checkpoints, and Metal surfaces.</p>
         </div>
         <div class="palette" aria-label="MLX Porter color palette">
           <div class="color-swatch">
@@ -823,14 +823,14 @@
     <section class="band" aria-labelledby="entry-title">
       <div class="wrap">
         <div class="section-head">
-          <h2 id="entry-title">Common starts become exact routes.</h2>
-          <p class="section-copy">Instead of a generic "convert this" answer, each entry point maps to a concrete oracle, weight map, parity ladder, and optimization gate.</p>
+          <h2 id="entry-title">Start from what engineers actually have.</h2>
+          <p class="section-copy">A pasted module, a checkpoint, an ASR block, or a diffusion component should not get generic advice. Each start maps to an oracle, weight map, parity ladder, and optimization gate.</p>
         </div>
         <div class="grid-4">
-          <article class="tile"><h3>Transformer attention</h3><p>QKV maps, RoPE, masks, KV cache, and fast SDPA only after parity.</p></article>
-          <article class="tile"><h3>Checkpoint loading</h3><p>Safetensors/static intake, deterministic transforms, and no silent missing keys.</p></article>
-          <article class="tile"><h3>Whisper-style ASR</h3><p>Waveform, log-mel, encoder states, token IDs, WER/CER, and timestamps.</p></article>
-          <article class="tile"><h3>Diffusion blocks</h3><p>One denoiser timestep, scheduler math, and fixed-seed latent trajectory.</p></article>
+          <article class="tile"><h3>Transformer attention</h3><p>QKV maps, RoPE, masks, KV cache, and fast SDPA once tensor parity is clean.</p></article>
+          <article class="tile"><h3>Checkpoint loading</h3><p>Static safetensors intake, deterministic transforms, and no silent missing keys.</p></article>
+          <article class="tile"><h3>Whisper-style ASR</h3><p>Waveform, log-mel, encoder states, token IDs, WER/CER, and timestamp checks.</p></article>
+          <article class="tile"><h3>Diffusion blocks</h3><p>One denoiser timestep, scheduler math, and a fixed-seed latent trajectory.</p></article>
         </div>
       </div>
     </section>
@@ -838,8 +838,8 @@
     <section class="band" id="docs" aria-labelledby="docs-title">
       <div class="wrap docs-grid">
         <div>
-          <h2 id="docs-title">Docs path for humans and agents.</h2>
-          <p class="section-copy">The repo is designed so a human can skim it and an agent can execute it. Start with the skill contract, then follow the exact family runbook and validation scripts.</p>
+          <h2 id="docs-title">Docs that point back to executable proof.</h2>
+          <p class="section-copy">Humans can skim the path; agents can run it. Start with the skill contract, then follow the family runbook, inspector, and validation scripts.</p>
           <div class="doc-links">
             <a href="https://github.com/Amal-David/mlx-porting-skill/blob/main/mlx-model-porting/SKILL.md">Skill contract <span>entry point</span></a>
             <a href="https://github.com/Amal-David/mlx-porting-skill/blob/main/mlx-model-porting/references/inspector-mode.md">Inspector mode <span>existing MLX ports</span></a>
@@ -850,7 +850,7 @@
         </div>
         <div class="doc-panel">
           <h3>Offline smoke path</h3>
-          <p>Exercise routing, planning, recommendation, source validation, and the golden scenario suite without downloading a real model.</p>
+          <p>Test the routing, planning, recommendation, source validation, and golden scenarios without downloading a real model.</p>
           <div class="terminal" aria-label="Offline command sequence">
             <div class="terminal-head"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
             <pre>python3 mlx-model-porting/scripts/inspect_model.py tests/fixtures/models/decoder --output /tmp/inspection.json
@@ -865,8 +865,8 @@ python3 -m unittest discover -s tests -v</pre>
 
     <section class="final-cta" aria-labelledby="final-title">
       <div class="wrap">
-        <h2 id="final-title">Give an agent a PyTorch module or an MLX project. Make it prove the next move.</h2>
-        <p class="section-copy">The runbook keeps the promise sharp: source provenance, project inspection, eager MLX, parity, profiling, then measured Apple Silicon optimization.</p>
+        <h2 id="final-title">Give an agent the model. Make it bring back proof.</h2>
+        <p class="section-copy">Source provenance, project inspection, eager MLX, parity, profiling, and measured Apple Silicon optimization in one repeatable path.</p>
         <div class="center-cta">
           <a class="button primary" href="https://github.com/Amal-David/mlx-porting-skill">
             <svg class="icon" aria-hidden="true" viewBox="0 0 16 16">
@@ -881,7 +881,7 @@ python3 -m unittest discover -s tests -v</pre>
   </main>
 
   <footer class="footer">
-    <div class="wrap">MLX Porter is a runbook and validation spine for Apple MLX model ports and inspections. It does not claim a real model is ported or improved until source provenance, parity, quality, benchmark metadata, and rollback conditions exist.</div>
+    <div class="wrap">MLX Porter is a runbook and validation spine for Apple MLX model ports and inspections. A model is not done until provenance, parity, quality, benchmark metadata, and rollback conditions exist.</div>
   </footer>
 
   <script>
