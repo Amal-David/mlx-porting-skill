@@ -1,0 +1,802 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Docs - MLX Porter</title>
+  <meta name="description" content="MLX Porter documentation: a source-first runbook for porting PyTorch and Hugging Face projects to Apple MLX with parity, validation, and measured optimization gates.">
+  <style>
+    :root {
+      color-scheme: light;
+      --page: #f7f9f6;
+      --surface: #ffffff;
+      --surface-2: #eef3ef;
+      --ink: #111713;
+      --muted: #626d67;
+      --line: #d9e0dc;
+      --line-strong: #c0cbc4;
+      --tensor-lime: #9be22d;
+      --kernel-cyan: #00a99a;
+      --memory-blue: #4169e1;
+      --parity-coral: #e46250;
+      --metal-violet: #7654d8;
+      --checkpoint-gold: #b77916;
+      --code-bg: #101317;
+      --code-ink: #e5eee8;
+      --radius: 8px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        linear-gradient(90deg, rgba(0, 169, 154, 0.035), transparent 28%, transparent 72%, rgba(155, 226, 45, 0.04)),
+        var(--page);
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+    }
+
+    a {
+      color: inherit;
+    }
+
+    a:focus-visible,
+    button:focus-visible {
+      outline: 2px solid var(--kernel-cyan);
+      outline-offset: 3px;
+    }
+
+    .shell {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 268px minmax(0, 1fr);
+    }
+
+    .sidebar {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+      border-right: 1px solid var(--line);
+      background: rgba(247, 249, 246, 0.92);
+      backdrop-filter: blur(18px);
+      padding: 18px 16px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-height: 34px;
+      margin-bottom: 18px;
+      color: var(--ink);
+      text-decoration: none;
+      font-weight: 820;
+    }
+
+    .brand-mark {
+      width: 32px;
+      height: 32px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(0, 169, 154, 0.55);
+      border-radius: 8px;
+      color: #0c6f66;
+      background: #eaffd0;
+      font: 800 0.78rem/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+
+    .search-box {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 8px;
+      min-height: 38px;
+      margin-bottom: 22px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 7px 8px;
+      color: var(--muted);
+      background: var(--surface);
+      font-size: 14px;
+    }
+
+    .search-box svg,
+    .icon {
+      width: 17px;
+      height: 17px;
+      flex: 0 0 auto;
+      fill: currentColor;
+    }
+
+    .kbd {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 24px;
+      min-height: 24px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: #f8faf8;
+      color: var(--muted);
+      font: 0.72rem/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+
+    .nav-section {
+      margin: 0 0 22px;
+    }
+
+    .nav-title {
+      margin: 0 0 8px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 760;
+      text-transform: uppercase;
+      letter-spacing: 0;
+    }
+
+    .nav-list {
+      display: grid;
+      gap: 2px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .nav-list a {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      min-height: 36px;
+      border-radius: 8px;
+      padding: 7px 8px;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .nav-list a:hover {
+      color: var(--ink);
+      background: rgba(0, 169, 154, 0.08);
+    }
+
+    .nav-list a.active {
+      color: #0f5f57;
+      background: rgba(155, 226, 45, 0.22);
+    }
+
+    .sidebar-footer {
+      position: sticky;
+      bottom: 0;
+      display: flex;
+      gap: 8px;
+      padding-top: 18px;
+      background: linear-gradient(180deg, transparent, var(--page) 32%);
+    }
+
+    .footer-button {
+      min-height: 36px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 7px 10px;
+      color: var(--muted);
+      background: var(--surface);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .main {
+      min-width: 0;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 10px;
+      min-height: 58px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(247, 249, 246, 0.86);
+      backdrop-filter: blur(18px);
+      padding: 0 28px;
+    }
+
+    .topbar a {
+      min-height: 34px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border-radius: 8px;
+      padding: 7px 10px;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 720;
+    }
+
+    .topbar a:hover {
+      color: var(--ink);
+      background: rgba(17, 23, 19, 0.06);
+    }
+
+    .docs-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 860px) 220px;
+      gap: 42px;
+      width: min(1150px, calc(100% - 64px));
+      margin: 0 auto;
+      padding: 54px 0 92px;
+    }
+
+    .article {
+      min-width: 0;
+    }
+
+    .breadcrumb {
+      margin: 0 0 18px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 680;
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin-top: 0;
+    }
+
+    h1 {
+      margin-bottom: 18px;
+      font-size: 46px;
+      line-height: 1.05;
+      letter-spacing: 0;
+    }
+
+    .lead {
+      max-width: 790px;
+      margin-bottom: 38px;
+      color: var(--muted);
+      font-size: 19px;
+      line-height: 1.65;
+    }
+
+    h2 {
+      margin: 52px 0 16px;
+      padding-top: 6px;
+      font-size: 28px;
+      line-height: 1.15;
+      letter-spacing: 0;
+    }
+
+    h3 {
+      margin-bottom: 8px;
+      font-size: 17px;
+      line-height: 1.25;
+      letter-spacing: 0;
+    }
+
+    .article p,
+    .article li {
+      color: #303832;
+      font-size: 16px;
+    }
+
+    .article strong {
+      color: var(--ink);
+    }
+
+    .quote {
+      margin: 28px 0 34px;
+      border-left: 4px solid var(--kernel-cyan);
+      padding: 10px 0 10px 18px;
+      color: var(--ink);
+      font-size: 18px;
+      font-style: italic;
+      font-weight: 720;
+    }
+
+    code {
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 2px 5px;
+      color: #17231d;
+      background: var(--surface);
+      font: 0.86em/1.2 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+
+    .code-panel {
+      margin: 22px 0;
+      overflow: hidden;
+      border: 1px solid var(--line-strong);
+      border-radius: 8px;
+      background: var(--code-bg);
+      box-shadow: 0 18px 44px rgba(17, 23, 19, 0.08);
+    }
+
+    .code-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 10px 13px;
+      color: #aebbb5;
+      font: 0.78rem/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+
+    .dots {
+      display: inline-flex;
+      gap: 7px;
+    }
+
+    .dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--parity-coral);
+    }
+
+    .dot:nth-child(2) {
+      background: var(--checkpoint-gold);
+    }
+
+    .dot:nth-child(3) {
+      background: var(--tensor-lime);
+    }
+
+    pre {
+      margin: 0;
+      overflow: auto;
+      padding: 18px;
+      color: var(--code-ink);
+      font: 0.88rem/1.6 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      white-space: pre-wrap;
+    }
+
+    .callout {
+      border: 1px solid rgba(0, 169, 154, 0.24);
+      border-radius: 8px;
+      margin: 24px 0;
+      padding: 16px 18px;
+      background: rgba(0, 169, 154, 0.07);
+    }
+
+    .callout p {
+      margin-bottom: 0;
+    }
+
+    .rule-list {
+      display: grid;
+      gap: 10px;
+      padding-left: 0;
+      list-style: none;
+    }
+
+    .rule-list li {
+      border-left: 3px solid var(--line-strong);
+      padding-left: 13px;
+    }
+
+    .rule-list .do {
+      border-left-color: var(--kernel-cyan);
+    }
+
+    .rule-list .dont {
+      border-left-color: var(--parity-coral);
+    }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin: 20px 0 8px;
+    }
+
+    .doc-card {
+      display: block;
+      min-height: 136px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 16px;
+      background: var(--surface);
+      color: inherit;
+      text-decoration: none;
+      transition: transform 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
+    }
+
+    .doc-card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(0, 169, 154, 0.45);
+      box-shadow: 0 18px 38px rgba(17, 23, 19, 0.08);
+    }
+
+    .doc-card p {
+      margin-bottom: 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .route-table {
+      width: 100%;
+      margin: 20px 0;
+      border-collapse: collapse;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--surface);
+    }
+
+    .route-table th,
+    .route-table td {
+      border-bottom: 1px solid var(--line);
+      padding: 12px 14px;
+      text-align: left;
+      vertical-align: top;
+      font-size: 14px;
+    }
+
+    .route-table th {
+      color: var(--muted);
+      background: var(--surface-2);
+      font-weight: 760;
+    }
+
+    .route-table tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .outline {
+      position: sticky;
+      top: 88px;
+      height: max-content;
+      padding-left: 16px;
+      border-left: 1px solid var(--line);
+    }
+
+    .outline p {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 760;
+    }
+
+    .outline ul {
+      display: grid;
+      gap: 9px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .outline a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 13px;
+    }
+
+    .outline a:hover {
+      color: var(--kernel-cyan);
+    }
+
+    .mobile-brand {
+      display: none;
+    }
+
+    @media (max-width: 1120px) {
+      .docs-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .outline {
+        display: none;
+      }
+    }
+
+    @media (max-width: 820px) {
+      .shell {
+        display: block;
+      }
+
+      .sidebar {
+        position: relative;
+        height: auto;
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+        padding: 16px;
+      }
+
+      .nav-section {
+        margin-bottom: 10px;
+      }
+
+      .nav-list {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        column-gap: 6px;
+      }
+
+      .nav-list a {
+        min-height: 32px;
+        padding: 5px 8px;
+      }
+
+      .sidebar-footer {
+        position: static;
+        padding-top: 4px;
+      }
+
+      .topbar {
+        display: none;
+      }
+
+      .docs-layout {
+        width: min(100% - 32px, 860px);
+        padding-top: 36px;
+      }
+
+      h1 {
+        font-size: 38px;
+      }
+
+      .card-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .search-box {
+        grid-template-columns: auto 1fr;
+      }
+
+      .kbd {
+        display: none;
+      }
+
+      h1 {
+        font-size: 32px;
+      }
+
+      .lead {
+        font-size: 17px;
+      }
+
+      .route-table {
+        display: block;
+        overflow-x: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <aside class="sidebar" aria-label="Documentation navigation">
+      <a class="brand" href="/" aria-label="MLX Porter home">
+        <span class="brand-mark">MLX</span>
+        <span>MLX Porter</span>
+      </a>
+
+      <div class="search-box" aria-label="Search placeholder">
+        <svg aria-hidden="true" viewBox="0 0 20 20"><path d="M8.5 3a5.5 5.5 0 0 1 4.33 8.89l3.14 3.14a.75.75 0 0 1-1.06 1.06l-3.14-3.14A5.5 5.5 0 1 1 8.5 3Zm0 1.5a4 4 0 1 0 0 8 4 4 0 0 0 0-8Z"/></svg>
+        <span>Search docs</span>
+        <span class="kbd">/</span>
+      </div>
+
+      <nav>
+        <div class="nav-section">
+          <p class="nav-title">Docs</p>
+          <ul class="nav-list">
+            <li><a class="active" href="#introduction">Introduction</a></li>
+            <li><a href="#looks-like">What it looks like</a></li>
+            <li><a href="#fits">How it fits together</a></li>
+            <li><a href="#rules">Rules</a></li>
+          </ul>
+        </div>
+
+        <div class="nav-section">
+          <p class="nav-title">Getting Started</p>
+          <ul class="nav-list">
+            <li><a href="#start">Start here</a></li>
+            <li><a href="#routes">Architecture routes</a></li>
+            <li><a href="#validation">Validation gates</a></li>
+            <li><a href="#agents">For agents</a></li>
+          </ul>
+        </div>
+
+        <div class="nav-section">
+          <p class="nav-title">Reference</p>
+          <ul class="nav-list">
+            <li><a href="https://github.com/Amal-David/mlx-porting-skill/blob/main/mlx-model-porting/SKILL.md">Skill contract</a></li>
+            <li><a href="https://github.com/Amal-David/mlx-porting-skill/tree/main/mlx-model-porting/references">Runbooks</a></li>
+            <li><a href="https://github.com/Amal-David/mlx-porting-skill/blob/main/mlx-model-porting/examples/porting-patterns.md">Patterns</a></li>
+            <li><a href="https://github.com/Amal-David/mlx-porting-skill/blob/main/VALIDATION.md">Validation</a></li>
+          </ul>
+        </div>
+      </nav>
+
+      <div class="sidebar-footer">
+        <a class="footer-button" href="/">
+          <svg class="icon" aria-hidden="true" viewBox="0 0 20 20"><path d="M10.53 3.47a.75.75 0 0 0-1.06 0l-6 6a.75.75 0 1 0 1.06 1.06l.72-.72V16A1.75 1.75 0 0 0 7 17.75h6A1.75 1.75 0 0 0 14.75 16V9.81l.72.72a.75.75 0 1 0 1.06-1.06l-6-6Z"/></svg>
+          Home
+        </a>
+        <a class="footer-button" href="https://github.com/Amal-David/mlx-porting-skill">
+          <svg class="icon" aria-hidden="true" viewBox="0 0 16 16"><path d="M8 0C3.58 0 0 3.67 0 8.2c0 3.62 2.29 6.69 5.47 7.78.4.08.55-.18.55-.39 0-.19-.01-.83-.01-1.5-2.01.38-2.53-.5-2.69-.97-.09-.24-.48-.97-.82-1.17-.28-.16-.68-.55-.01-.56.63-.01 1.08.59 1.23.84.72 1.24 1.87.89 2.33.68.07-.53.28-.89.51-1.09-1.78-.21-3.64-.91-3.64-4.04 0-.89.31-1.62.82-2.19-.08-.21-.36-1.04.08-2.16 0 0 .67-.22 2.2.84A7.42 7.42 0 0 1 8 3.99c.68 0 1.36.09 2 .28 1.53-1.06 2.2-.84 2.2-.84.44 1.12.16 1.95.08 2.16.51.57.82 1.3.82 2.19 0 3.14-1.87 3.83-3.65 4.04.29.26.54.76.54 1.53 0 1.1-.01 1.99-.01 2.26 0 .21.15.47.55.39A8.08 8.08 0 0 0 16 8.2C16 3.67 12.42 0 8 0Z"/></svg>
+          GitHub
+        </a>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar" aria-label="Top navigation">
+        <a href="/">Landing</a>
+        <a href="https://github.com/Amal-David/mlx-porting-skill">
+          <svg class="icon" aria-hidden="true" viewBox="0 0 16 16"><path d="M8 0C3.58 0 0 3.67 0 8.2c0 3.62 2.29 6.69 5.47 7.78.4.08.55-.18.55-.39 0-.19-.01-.83-.01-1.5-2.01.38-2.53-.5-2.69-.97-.09-.24-.48-.97-.82-1.17-.28-.16-.68-.55-.01-.56.63-.01 1.08.59 1.23.84.72 1.24 1.87.89 2.33.68.07-.53.28-.89.51-1.09-1.78-.21-3.64-.91-3.64-4.04 0-.89.31-1.62.82-2.19-.08-.21-.36-1.04.08-2.16 0 0 .67-.22 2.2.84A7.42 7.42 0 0 1 8 3.99c.68 0 1.36.09 2 .28 1.53-1.06 2.2-.84 2.2-.84.44 1.12.16 1.95.08 2.16.51.57.82 1.3.82 2.19 0 3.14-1.87 3.83-3.65 4.04.29.26.54.76.54 1.53 0 1.1-.01 1.99-.01 2.26 0 .21.15.47.55.39A8.08 8.08 0 0 0 16 8.2C16 3.67 12.42 0 8 0Z"/></svg>
+          GitHub
+        </a>
+      </header>
+
+      <div class="docs-layout">
+        <article class="article">
+          <p class="breadcrumb">Docs / Introduction</p>
+          <h1 id="introduction">Introduction</h1>
+          <p class="lead">A source-first runbook for moving PyTorch and Hugging Face projects to Apple MLX: inspect before executing, prove parity before optimizing, and keep every speed claim attached to a local receipt.</p>
+
+          <p>The dangerous bug in a model port is the one that <strong>looks plausible</strong>. A tensor shape lines up, a checkpoint loads without complaint, a sample decodes, and the agent moves on while a mask, RoPE base, layer norm epsilon, or transposed weight is quietly wrong.</p>
+          <p>MLX Porter exists to make that harder to do. It gives humans and agents one route through source provenance, architecture classification, oracle capture, eager MLX implementation, parity checks, and only then Apple Silicon optimization.</p>
+
+          <div class="quote">No parity, no optimization. No benchmark metadata, no speed claim.</div>
+
+          <h2 id="looks-like">What that looks like</h2>
+          <p>For a small Transformer block, do not start by asking for the fastest MLX version. Start by freezing the source behavior and making the first MLX implementation boring enough to debug:</p>
+
+          <div class="code-panel" aria-label="Example MLX Porter runbook">
+            <div class="code-head">
+              <span class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></span>
+              <span>runbook.txt</span>
+            </div>
+            <pre>load mlx-model-porting/SKILL.md
+classify architecture family
+inspect config + static checkpoint metadata
+capture PyTorch oracle tensors
+implement eager MLX without compile or kernels
+map every weight, with explicit transforms
+compare selected tensors
+profile the real bottleneck
+apply one optimization and re-run parity</pre>
+          </div>
+
+          <p>If an agent cannot explain which source tensor proves the MLX tensor, the port is not done. If it cannot name the baseline, hardware, precision, prompt shape, and rollback condition, the optimization is not done either.</p>
+
+          <h2 id="fits">How it fits together</h2>
+          <p>The docs and repo are split into independent pieces so a small model can follow the path one step at a time instead of discovering the whole porting strategy at runtime.</p>
+          <ol>
+            <li><strong>The skill contract</strong> tells the agent how to classify the request, which files to read, and when to stop.</li>
+            <li><strong>The architecture runbook</strong> gives the family-specific checks: attention, diffusion, ASR, audio codecs, MoE, SSM, graph models, and more.</li>
+            <li><strong>The validation scripts</strong> turn claims into gates: source validation, skill audit, golden scenarios, and unit tests.</li>
+          </ol>
+
+          <div class="callout">
+            <p>Frontier systems may discover these decisions dynamically. MLX Porter distills them into a runbook that a smaller open model can execute with fewer wrong turns.</p>
+          </div>
+
+          <h2 id="rules">The rules: what to do, what to avoid</h2>
+          <ul class="rule-list">
+            <li class="do"><strong>Do inspect statically first.</strong> Read configs, safetensors headers, source files, licenses, and remote-code risk before running model code.</li>
+            <li class="do"><strong>Do build an oracle.</strong> Capture deterministic source outputs and intermediate tensors before writing the MLX path.</li>
+            <li class="do"><strong>Do start eager.</strong> The first MLX graph should be readable, not fused, compiled, quantized, or kernel-heavy.</li>
+            <li class="dont"><strong>Do not treat loading as correctness.</strong> A checkpoint load without missing keys is only one gate, not the port.</li>
+            <li class="dont"><strong>Do not make silent speed claims.</strong> Optimization needs benchmark metadata, a baseline, and a rollback condition.</li>
+          </ul>
+
+          <h2 id="start">Start here</h2>
+          <div class="card-grid">
+            <a class="doc-card" href="https://github.com/Amal-David/mlx-porting-skill/blob/main/mlx-model-porting/SKILL.md">
+              <h3>Skill contract</h3>
+              <p>Load this first. It routes the agent to the relevant runbook, scripts, and stop conditions.</p>
+            </a>
+            <a class="doc-card" href="https://github.com/Amal-David/mlx-porting-skill/tree/main/mlx-model-porting/references">
+              <h3>Architecture runbooks</h3>
+              <p>Pick the family: dense decoder, ASR, diffusion, audio, MoE, SSM, graph, CV, VLM, and more.</p>
+            </a>
+            <a class="doc-card" href="https://github.com/Amal-David/mlx-porting-skill/blob/main/mlx-model-porting/examples/porting-patterns.md">
+              <h3>Porting patterns</h3>
+              <p>Common starts for attention blocks, checkpoint maps, Whisper-style ports, and diffusion blocks.</p>
+            </a>
+            <a class="doc-card" href="https://github.com/Amal-David/mlx-porting-skill/blob/main/VALIDATION.md">
+              <h3>Validation status</h3>
+              <p>What is tested, what is reviewed, and where unsupported techniques must remain blocked.</p>
+            </a>
+          </div>
+
+          <h2 id="routes">Choose an architecture route</h2>
+          <p>Each route narrows the parity problem. Do not mix route assumptions unless the model really crosses families.</p>
+          <table class="route-table">
+            <thead>
+              <tr>
+                <th>Starting point</th>
+                <th>First proof to collect</th>
+                <th>Common trap</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Transformer attention</td>
+                <td>QKV projections, masks, RoPE, KV cache, and selected logits</td>
+                <td>Changing SDPA, cache layout, and quantization before tensor parity</td>
+              </tr>
+              <tr>
+                <td>Whisper-style ASR</td>
+                <td>Log-mel features, encoder states, token IDs, WER/CER, timestamps</td>
+                <td>Comparing decoded text while preprocessing already drifted</td>
+              </tr>
+              <tr>
+                <td>Diffusion block</td>
+                <td>One denoiser timestep, scheduler math, and fixed latent trajectory</td>
+                <td>Optimizing sampling while the scheduler or conditioning path differs</td>
+              </tr>
+              <tr>
+                <td>Checkpoint loading</td>
+                <td>Static tensor inventory, explicit transforms, and missing-key policy</td>
+                <td>Accepting partial loads or shape-compatible transposes silently</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h2 id="validation">Validation gates</h2>
+          <p>The lightweight local path exercises the repo without downloading a real model:</p>
+          <div class="code-panel" aria-label="Validation commands">
+            <div class="code-head">
+              <span class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></span>
+              <span>offline-smoke.sh</span>
+            </div>
+            <pre>python3 mlx-model-porting/scripts/manifest.py check
+python3 mlx-model-porting/scripts/audit_skill.py --strict
+python3 mlx-model-porting/scripts/validate_sources.py
+python3 -m unittest discover -s tests -v</pre>
+          </div>
+          <p>A real model port adds architecture-specific tensor parity, quality metrics, generation or inference benchmarks, and rollback conditions.</p>
+
+          <h2 id="agents">For agents</h2>
+          <p>The intended agent behavior is simple: read the compact contract, choose one family route, keep facts sourced, and fail loudly when a required proof is missing. The runbook should feel like rails, not a suggestion list.</p>
+        </article>
+
+        <aside class="outline" aria-label="On this page">
+          <p>
+            <svg class="icon" aria-hidden="true" viewBox="0 0 20 20"><path d="M4 5.75A.75.75 0 0 1 4.75 5h10.5a.75.75 0 0 1 0 1.5H4.75A.75.75 0 0 1 4 5.75Zm0 4A.75.75 0 0 1 4.75 9h7.5a.75.75 0 0 1 0 1.5h-7.5A.75.75 0 0 1 4 9.75Zm0 4a.75.75 0 0 1 .75-.75h10.5a.75.75 0 0 1 0 1.5H4.75A.75.75 0 0 1 4 13.75Z"/></svg>
+            On this page
+          </p>
+          <ul>
+            <li><a href="#looks-like">What that looks like</a></li>
+            <li><a href="#fits">How it fits together</a></li>
+            <li><a href="#rules">Rules</a></li>
+            <li><a href="#start">Start here</a></li>
+            <li><a href="#routes">Architecture routes</a></li>
+            <li><a href="#validation">Validation gates</a></li>
+            <li><a href="#agents">For agents</a></li>
+          </ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

@@ -2,8 +2,8 @@
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
   "version": "0.2.0",
-  "generated_at": "2026-07-08T10:50:04.345614+00:00",
-  "file_count": 267,
+  "generated_at": "2026-07-08T11:04:48.710810+00:00",
+  "file_count": 268,
   "files": [
     {
       "path": ".github/workflows/daily-research.yml",
@@ -911,9 +911,14 @@
       "sha256": "0a23933d2aceef7eb195e179b5676dd396e9f04ee777b78654ba6caab929f999"
     },
     {
+      "path": "site/docs/index.html",
+      "size_bytes": 25093,
+      "sha256": "d1f6da6db66e845c901d9c2475714463e6089eb198a6d00b752e4501320a06a9"
+    },
+    {
       "path": "site/index.html",
-      "size_bytes": 29832,
-      "sha256": "2d3eac767ddb3bb441038db64fb4137843f4a6f7dc7539f99dc63508810e204e"
+      "size_bytes": 29835,
+      "sha256": "596730947c441e1b8c12ed58bae72bc72c27aca0a83247af7785d7d355360a5c"
     },
     {
       "path": "tasks/lessons.md",
