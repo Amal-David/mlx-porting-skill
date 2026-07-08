@@ -158,21 +158,12 @@
       background: #0e1115;
     }
 
-    .scanlines,
     .hero::before,
     .hero::after {
       position: absolute;
       inset: 0;
       pointer-events: none;
       content: "";
-    }
-
-    .scanlines {
-      z-index: -2;
-      background-image:
-        repeating-linear-gradient(0deg, rgba(216, 225, 220, 0.04) 0 1px, transparent 1px 42px),
-        repeating-linear-gradient(90deg, rgba(216, 225, 220, 0.035) 0 1px, transparent 1px 42px);
-      mask-image: radial-gradient(circle at center, black 0, black 58%, transparent 86%);
     }
 
     .hero::before {
@@ -681,7 +672,6 @@
   <main id="top">
     <section class="hero" aria-labelledby="title">
       <canvas id="mesh" aria-hidden="true"></canvas>
-      <div class="scanlines" aria-hidden="true"></div>
       <div class="hero-center reveal">
         <p class="eyebrow">Apple MLX runbook for agents</p>
         <h1 id="title">Port PyTorch projects to MLX without runtime guesswork.</h1>
@@ -932,13 +922,6 @@ python3 -m unittest discover -s tests -v</pre>
         ctx.fill();
         ctx.globalAlpha = 1;
       });
-
-      const pulse = reduceMotion ? 0.38 : 0.38 + Math.sin(time / 900) * 0.08;
-      ctx.strokeStyle = `rgba(183, 243, 79, ${pulse})`;
-      ctx.lineWidth = 1.5;
-      ctx.strokeRect(centerX - 238, centerY - 118, 476, 236);
-      ctx.strokeStyle = "rgba(255, 122, 102, 0.34)";
-      ctx.strokeRect(centerX - 206, centerY - 86, 412, 172);
 
       if (!reduceMotion) {
         requestAnimationFrame(draw);
