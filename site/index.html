@@ -1,0 +1,516 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MLX Porter Runbook</title>
+  <meta name="description" content="A practical runbook for porting CUDA/PyTorch and Hugging Face models to Apple MLX with source parity, deterministic weight maps, and measured optimization gates.">
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #17201d;
+      --muted: #5d6661;
+      --line: #cfd8d2;
+      --paper: #f8faf8;
+      --panel: #ffffff;
+      --green: #0f6b54;
+      --teal: #0c7b83;
+      --blue: #315f9f;
+      --violet: #684f9c;
+      --amber: #9a6424;
+      --red: #a14242;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--ink);
+      background:
+        linear-gradient(180deg, rgba(247, 250, 248, 0.96), rgba(243, 247, 246, 0.98)),
+        repeating-linear-gradient(90deg, rgba(15, 107, 84, 0.06) 0 1px, transparent 1px 84px),
+        repeating-linear-gradient(0deg, rgba(49, 95, 159, 0.05) 0 1px, transparent 1px 84px);
+      line-height: 1.5;
+    }
+
+    a {
+      color: var(--green);
+      text-decoration-thickness: 0.08em;
+      text-underline-offset: 0.18em;
+    }
+
+    main {
+      width: min(1120px, calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    .hero {
+      min-height: 92vh;
+      display: grid;
+      grid-template-columns: minmax(0, 1.05fr) minmax(320px, 0.95fr);
+      gap: 42px;
+      align-items: center;
+      padding: 56px 0 36px;
+    }
+
+    .eyebrow {
+      margin: 0 0 16px;
+      color: var(--green);
+      font-size: 0.82rem;
+      font-weight: 760;
+      letter-spacing: 0;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      max-width: 850px;
+      font-size: clamp(3.4rem, 8vw, 6.8rem);
+      line-height: 0.94;
+      letter-spacing: 0;
+    }
+
+    .lead {
+      max-width: 740px;
+      margin: 24px 0 0;
+      color: #33423c;
+      font-size: clamp(1.05rem, 2vw, 1.38rem);
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 30px;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      min-height: 44px;
+      padding: 10px 16px;
+      border: 1px solid var(--ink);
+      border-radius: 7px;
+      color: var(--ink);
+      background: var(--panel);
+      font-weight: 720;
+      text-decoration: none;
+      box-shadow: 4px 4px 0 rgba(23, 32, 29, 0.16);
+    }
+
+    .button.primary {
+      color: #ffffff;
+      background: var(--green);
+      border-color: var(--green);
+    }
+
+    .terminal {
+      border: 1px solid var(--ink);
+      background: #0f1715;
+      color: #d9efe6;
+      box-shadow: 12px 12px 0 rgba(15, 107, 84, 0.18);
+    }
+
+    .terminal header {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      padding: 12px 14px;
+      border-bottom: 1px solid rgba(217, 239, 230, 0.18);
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #f36f56;
+    }
+
+    .dot:nth-child(2) {
+      background: #e8b64f;
+    }
+
+    .dot:nth-child(3) {
+      background: #57bf7d;
+    }
+
+    pre {
+      margin: 0;
+      padding: 18px;
+      overflow: auto;
+      font: 0.92rem/1.55 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      white-space: pre-wrap;
+    }
+
+    .screen {
+      display: grid;
+      gap: 18px;
+      padding: 0 0 56px;
+    }
+
+    .band {
+      border-top: 1px solid var(--line);
+      padding: 52px 0;
+    }
+
+    h2 {
+      margin: 0 0 16px;
+      font-size: clamp(1.8rem, 4vw, 3rem);
+      line-height: 1.03;
+      letter-spacing: 0;
+    }
+
+    .section-lead {
+      max-width: 780px;
+      margin: 0 0 28px;
+      color: var(--muted);
+      font-size: 1.05rem;
+    }
+
+    .pipeline {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .step {
+      min-height: 164px;
+      border: 1px solid var(--ink);
+      border-radius: 7px;
+      background: var(--panel);
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .step strong {
+      display: block;
+      font-size: 1rem;
+      line-height: 1.2;
+    }
+
+    .step span {
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .step .num {
+      width: 30px;
+      height: 30px;
+      display: inline-grid;
+      place-items: center;
+      border-radius: 50%;
+      color: #ffffff;
+      background: var(--green);
+      font-weight: 800;
+      font-size: 0.84rem;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      background: rgba(255, 255, 255, 0.82);
+      padding: 18px;
+    }
+
+    .panel h3 {
+      margin: 0 0 10px;
+      font-size: 1.08rem;
+      line-height: 1.22;
+    }
+
+    .panel p,
+    .panel li {
+      color: var(--muted);
+      font-size: 0.96rem;
+    }
+
+    .panel p {
+      margin: 0;
+    }
+
+    ul {
+      margin: 10px 0 0;
+      padding-left: 18px;
+    }
+
+    .matrix {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 1px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      background: var(--line);
+    }
+
+    .cell {
+      min-height: 132px;
+      padding: 16px;
+      background: var(--panel);
+    }
+
+    .cell b {
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    .cell small {
+      display: block;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .rule {
+      display: grid;
+      grid-template-columns: 140px 1fr;
+      gap: 18px;
+      padding: 18px 0;
+      border-top: 1px solid var(--line);
+    }
+
+    .rule b {
+      color: var(--green);
+    }
+
+    .rule p {
+      margin: 0;
+      color: var(--muted);
+    }
+
+    .footer {
+      padding: 46px 0 64px;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .accent-green {
+      border-top: 5px solid var(--green);
+    }
+
+    .accent-teal {
+      border-top: 5px solid var(--teal);
+    }
+
+    .accent-blue {
+      border-top: 5px solid var(--blue);
+    }
+
+    .accent-violet {
+      border-top: 5px solid var(--violet);
+    }
+
+    .accent-amber {
+      border-top: 5px solid var(--amber);
+    }
+
+    .accent-red {
+      border-top: 5px solid var(--red);
+    }
+
+    @media (max-width: 900px) {
+      .hero {
+        min-height: auto;
+        grid-template-columns: 1fr;
+        padding-top: 42px;
+      }
+
+      .pipeline,
+      .grid,
+      .matrix {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 620px) {
+      main {
+        width: min(100% - 22px, 1120px);
+      }
+
+      h1 {
+        font-size: clamp(2.7rem, 16vw, 4.6rem);
+      }
+
+      .pipeline,
+      .grid,
+      .matrix {
+        grid-template-columns: 1fr;
+      }
+
+      .rule {
+        grid-template-columns: 1fr;
+        gap: 6px;
+      }
+
+      .button {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <section class="hero" aria-labelledby="title">
+      <div>
+        <p class="eyebrow">MLX Porter Runbook</p>
+        <h1 id="title">Port PyTorch projects to MLX without guessing.</h1>
+        <p class="lead">A practical runbook for agents converting CUDA/PyTorch and Hugging Face models to Apple MLX: inspect first, prove parity, then optimize with receipts.</p>
+        <div class="actions" aria-label="Primary links">
+          <a class="button primary" href="https://github.com/Amal-David/mlx-porting-skill">GitHub repo</a>
+          <a class="button" href="https://github.com/Amal-David/mlx-porting-skill/tree/main/mlx-model-porting">Agent skill</a>
+          <a class="button" href="https://github.com/Amal-David/mlx-porting-skill/blob/main/mlx-model-porting/examples/porting-patterns.md">Porting patterns</a>
+        </div>
+      </div>
+      <div class="terminal" aria-label="Example agent instruction">
+        <header><span class="dot"></span><span class="dot"></span><span class="dot"></span></header>
+        <pre>Use the MLX model porting skill.
+
+1. Inspect this model statically.
+2. Choose the closest runbook.
+3. Build a source oracle.
+4. Port the smallest eager MLX path.
+5. Validate weights and parity.
+6. Only then optimize.</pre>
+      </div>
+    </section>
+
+    <section class="screen band" aria-labelledby="why">
+      <h2 id="why">Why this exists</h2>
+      <p class="section-lead">Large frontier models can often discover useful conversion and optimization steps at runtime. This repo distills that work into a repeatable path, so smaller open-source and local models can follow the same discipline one step at a time.</p>
+      <div class="grid">
+        <article class="panel accent-green">
+          <h3>It is not a prompt dump</h3>
+          <p>The compact skill delegates detail into architecture runbooks, structured assets, and scripts an agent can inspect and execute.</p>
+        </article>
+        <article class="panel accent-blue">
+          <h3>It resists folklore</h3>
+          <p>CUDA techniques are research candidates until there is a demonstrated MLX path, validation gate, and rollback condition.</p>
+        </article>
+        <article class="panel accent-amber">
+          <h3>It keeps claims honest</h3>
+          <p>Performance claims need hardware, versions, workload, baseline, and a quality gate. A pretty speedup without parity is not a result.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="band" aria-labelledby="runbook">
+      <h2 id="runbook">The runbook agents follow</h2>
+      <p class="section-lead">The path is intentionally boring. That is the point. Every step narrows uncertainty before the next step spends complexity.</p>
+      <div class="pipeline" aria-label="MLX porting pipeline">
+        <div class="step accent-green">
+          <span class="num">1</span>
+          <strong>Inspect and classify</strong>
+          <span>Read config, headers, source files, license, remote-code risk, and architecture signals without executing untrusted model code.</span>
+        </div>
+        <div class="step accent-teal">
+          <span class="num">2</span>
+          <strong>Select a runbook</strong>
+          <span>Route to dense decoder, ASR, diffusion, audio codec, VLM, SSM, MoE, CV, graph, or another proven family path.</span>
+        </div>
+        <div class="step accent-blue">
+          <span class="num">3</span>
+          <strong>Build the source oracle</strong>
+          <span>Freeze deterministic fixtures and capture intermediate tensors at meaningful semantic boundaries.</span>
+        </div>
+        <div class="step accent-violet">
+          <span class="num">4</span>
+          <strong>Port the minimal graph</strong>
+          <span>Implement the smallest eager MLX path first. No quantization, compile, batching, or custom kernels yet.</span>
+        </div>
+        <div class="step accent-red">
+          <span class="num">5</span>
+          <strong>Validate, profile, optimize</strong>
+          <span>Account for weights, pass parity, profile bottlenecks, and change one optimization dimension at a time.</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="band" aria-labelledby="patterns">
+      <h2 id="patterns">Common entry points</h2>
+      <p class="section-lead">People rarely arrive with a clean model-porting brief. These patterns turn familiar PyTorch surfaces into an MLX plan.</p>
+      <div class="matrix">
+        <div class="cell">
+          <b>Transformer attention</b>
+          <small>QKV maps, RoPE, masks, KV cache, fast SDPA after parity.</small>
+        </div>
+        <div class="cell">
+          <b>Checkpoint loading</b>
+          <small>Safetensors/static intake, deterministic key transforms, no silent missing keys.</small>
+        </div>
+        <div class="cell">
+          <b>Whisper-style ASR</b>
+          <small>Waveform, log-mel, encoder states, token IDs, WER/CER, timestamps.</small>
+        </div>
+        <div class="cell">
+          <b>Diffusion blocks</b>
+          <small>One denoiser timestep, scheduler update, fixed-seed latent trajectory.</small>
+        </div>
+        <div class="cell">
+          <b>LoRA fine-tuning</b>
+          <small>Target modules, trainable membership, scalar loss, gradients, adapter resume.</small>
+        </div>
+        <div class="cell">
+          <b>Quantization</b>
+          <small>Quality gates first, then weight/KV/mixed-bit recipes with rollback.</small>
+        </div>
+        <div class="cell">
+          <b>Serving</b>
+          <small>Prompt cache, batching, speculative decoding, streaming, and API behavior.</small>
+        </div>
+        <div class="cell">
+          <b>Packaging</b>
+          <small>Provenance, license, tokenizer, recipe, smoke test, benchmark metadata.</small>
+        </div>
+      </div>
+    </section>
+
+    <section class="band" aria-labelledby="rules">
+      <h2 id="rules">Rules that keep the port real</h2>
+      <div class="rule">
+        <b>Source first</b>
+        <p>Pin repository, revision, artifacts, tokenizer or processor, license, and checksums before writing conversion code.</p>
+      </div>
+      <div class="rule">
+        <b>Parity before speed</b>
+        <p>Tensor checks, intermediates, end-to-end outputs, task quality, cache/state, and boundary cases come before optimization.</p>
+      </div>
+      <div class="rule">
+        <b>Explicit weights</b>
+        <p>Every rename, transpose, reshape, split, concat, cast, quantization state, and tied weight belongs in a testable map.</p>
+      </div>
+      <div class="rule">
+        <b>Measured optimization</b>
+        <p>Use MLX-native operations, cache design, layout changes, and compile before custom kernels. Keep rollback conditions close.</p>
+      </div>
+    </section>
+
+    <section class="band" aria-labelledby="commands">
+      <h2 id="commands">Start from the offline pipeline</h2>
+      <p class="section-lead">The repo ships tiny synthetic fixtures so an agent can exercise routing, planning, recommendation, and validation without network or Apple Silicon.</p>
+      <div class="terminal">
+        <header><span class="dot"></span><span class="dot"></span><span class="dot"></span></header>
+        <pre>python3 mlx-model-porting/scripts/inspect_model.py tests/fixtures/models/decoder --output /tmp/inspection.json
+python3 mlx-model-porting/scripts/make_port_plan.py /tmp/inspection.json --output /tmp/PORT_PLAN.md
+python3 mlx-model-porting/scripts/recommend_optimizations.py /tmp/inspection.json --markdown /tmp/OPTIMIZATIONS.md
+python3 mlx-model-porting/scripts/audit_skill.py --strict mlx-model-porting
+python3 -m unittest discover -s tests -v</pre>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <p>MLX Porter is a runbook and validation spine for Apple MLX model ports. It does not claim a real model is ported until source provenance, parity, quality, benchmark metadata, and rollback conditions exist.</p>
+    </footer>
+  </main>
+</body>
+</html>

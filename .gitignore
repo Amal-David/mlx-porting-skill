@@ -10,6 +10,7 @@ __pycache__/
 .cursor/
 .gemini/
 .opencode/
+.pagecast/
 .superplan/
 
 !.claude/

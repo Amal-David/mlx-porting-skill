@@ -22,7 +22,7 @@ ARTIFACT = "mlx-porting-skill"
 # Mirrors .gitignore: local editor/agent scaffolding and build noise are not distributed.
 EXCLUDE_DIRS = {
     ".git", ".superplan", ".agents", ".amazonq", ".claude", ".codex",
-    ".cursor", ".gemini", ".opencode", "__pycache__", ".pytest_cache", ".ruff_cache",
+    ".cursor", ".gemini", ".opencode", ".pagecast", "__pycache__", ".pytest_cache", ".ruff_cache",
     "node_modules", ".wrangler", "dist-pages",
 }
 EXCLUDE_NAMES = {".DS_Store", ".dev.vars", "MANIFEST.json"}

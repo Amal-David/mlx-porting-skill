@@ -15,6 +15,19 @@ This repository is deliberately **not** a single giant prompt. It has four layer
 3. `assets/`: machine-readable architecture, technique, and evidence registries.
 4. `scripts/`: safe inspection, planning, parity, benchmarking, auditing, and update tools.
 
+## For agents
+
+Agents should treat this repo as an executable runbook, not background reading.
+Load `mlx-model-porting/SKILL.md`, classify the model, choose the closest
+runbook, build a source oracle, port the smallest eager MLX path, validate the
+weight map, pass parity, profile, then apply one optimization dimension at a
+time. This lets frontier cloud agents and smaller open-source/local models
+follow the same disciplined path without doing fresh runtime discovery for every
+CUDA/PyTorch-to-MLX request.
+
+A web version of the runbook lives in [`site/index.html`](site/index.html) and
+is published at [mlx-porter.pages.dev](https://mlx-porter.pages.dev/).
+
 ## What it covers
 
 - model intake, architecture fingerprinting, licensing and remote-code risk review;
