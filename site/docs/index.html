@@ -419,8 +419,8 @@
       padding: 0;
       overflow: hidden;
       background:
-        linear-gradient(135deg, rgba(155, 226, 45, 0.08), transparent 26%),
-        linear-gradient(315deg, rgba(0, 169, 154, 0.07), transparent 32%),
+        linear-gradient(135deg, rgba(193, 47, 228, 0.035), transparent 28%),
+        linear-gradient(315deg, rgba(0, 169, 154, 0.045), transparent 36%),
         var(--surface);
     }
 
@@ -445,56 +445,89 @@
     }
 
     .tree-copy::after {
-      content: "full mind map: scroll horizontally ->";
+      content: "open canvas: drag to pan / scroll to zoom";
       display: inline-flex;
       margin-top: 10px;
-      border: 1px solid rgba(65, 105, 225, 0.22);
+      border: 1px solid rgba(193, 47, 228, 0.2);
       border-radius: 999px;
       padding: 5px 8px;
-      color: #3151b3;
-      background: rgba(65, 105, 225, 0.06);
+      color: #8a1fb0;
+      background: rgba(193, 47, 228, 0.06);
       font: 760 0.72rem/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
     }
 
     .map-canvas {
       border-top: 1px solid rgba(17, 23, 19, 0.08);
-      overflow-x: auto;
+      position: relative;
+      overflow: hidden;
       background:
-        linear-gradient(90deg, rgba(0, 169, 154, 0.045), transparent 38%),
-        linear-gradient(180deg, rgba(255, 255, 255, 0.64), rgba(248, 252, 248, 0.92));
+        radial-gradient(circle at 12% 42%, rgba(193, 47, 228, 0.055), transparent 24%),
+        radial-gradient(circle at 82% 26%, rgba(0, 169, 154, 0.05), transparent 26%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.28), rgba(238, 243, 246, 0.9)),
+        #eef3f6;
+      scrollbar-color: rgba(193, 47, 228, 0.36) rgba(17, 23, 19, 0.05);
     }
 
-    pre.mermaid {
-      min-width: 1900px;
-      margin: 0;
-      padding: 26px 30px 32px;
-      overflow: visible;
-      color: var(--ink);
+    .map-canvas::after {
+      content: "drag canvas / scroll to zoom";
+      position: absolute;
+      right: 14px;
+      bottom: 12px;
+      z-index: 2;
+      border: 1px solid rgba(17, 23, 19, 0.08);
+      border-radius: 999px;
+      padding: 5px 8px;
+      color: rgba(82, 97, 107, 0.78);
+      background: rgba(255, 255, 255, 0.72);
+      font: 760 0.7rem/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      pointer-events: none;
+    }
+
+    .mindmap-source {
+      display: none;
+    }
+
+    .mindmap-viewport {
+      width: 100%;
+      height: 680px;
+      min-height: 560px;
+      cursor: grab;
+    }
+
+    .mindmap-viewport:active {
+      cursor: grabbing;
+    }
+
+    .mindmap-viewport canvas {
+      outline: 0;
+    }
+
+    .vis-network {
       background: transparent;
-      font: 0.86rem/1.45 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-      white-space: pre;
     }
 
-    .mermaid svg {
-      width: 1900px !important;
-      max-width: none !important;
-      height: auto;
-      display: block;
+    .vis-navigation {
+      right: 12px !important;
+      bottom: 44px !important;
+      left: auto !important;
+      top: auto !important;
     }
 
-    .mermaid .mindmap-node,
-    .mermaid .nodeLabel,
-    .mermaid .edgeLabel,
-    .mermaid .label {
-      font-size: 15px !important;
-      line-height: 1.25 !important;
+    .vis-button {
+      border: 1px solid rgba(17, 23, 19, 0.09) !important;
+      border-radius: 8px !important;
+      background-color: rgba(255, 255, 255, 0.78) !important;
+      box-shadow: 0 10px 22px rgba(17, 23, 19, 0.08) !important;
     }
 
-    .mermaid .edge,
-    .mermaid .edgePath path,
-    .mermaid path {
-      stroke-linecap: round;
-      stroke-linejoin: round;
+    .vis-tooltip {
+      border: 1px solid rgba(193, 47, 228, 0.2) !important;
+      border-radius: 8px !important;
+      padding: 8px 10px !important;
+      color: #26323b !important;
+      background: rgba(255, 255, 255, 0.95) !important;
+      box-shadow: 0 12px 28px rgba(17, 23, 19, 0.12) !important;
+      font: 0.78rem/1.35 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace !important;
     }
 
     .rule-list {
@@ -676,10 +709,9 @@
         grid-template-columns: 1fr;
       }
 
-      pre.mermaid,
-      .mermaid svg {
-        width: 1600px !important;
-        min-width: 1600px;
+      .mindmap-viewport {
+        height: 620px;
+        min-height: 520px;
       }
     }
 
@@ -712,10 +744,9 @@
       .tree-board {
         padding: 0;
       }
-      pre.mermaid,
-      .mermaid svg {
-        width: 1400px !important;
-        min-width: 1400px;
+      .mindmap-viewport {
+        height: 560px;
+        min-height: 500px;
       }
     }
   </style>
@@ -816,7 +847,7 @@
                 </div>
               </div>
               <div class="map-canvas">
-                <pre class="mermaid">mindmap
+                <pre class="mindmap-source">mindmap
                   root((Artifact handoff))
                     Intake
                       Pin source
@@ -882,7 +913,7 @@
                 </div>
               </div>
               <div class="map-canvas">
-                <pre class="mermaid">mindmap
+                <pre class="mindmap-source">mindmap
                   root((Family router))
                     Signals
                       model_type
@@ -954,7 +985,7 @@
                 </div>
               </div>
               <div class="map-canvas">
-                <pre class="mermaid">mindmap
+                <pre class="mindmap-source">mindmap
                   root((Decoder route))
                     Dense LLM
                       Fingerprint
@@ -1025,7 +1056,7 @@
                 </div>
               </div>
               <div class="map-canvas">
-                <pre class="mermaid">mindmap
+                <pre class="mindmap-source">mindmap
                   root((Transformer block))
                     Contract
                       inputs outputs
@@ -1082,7 +1113,7 @@
                 </div>
               </div>
               <div class="map-canvas">
-                <pre class="mermaid">mindmap
+                <pre class="mindmap-source">mindmap
                   root((Diffusion flow))
                     Fingerprint
                       domain
@@ -1146,7 +1177,7 @@
                 </div>
               </div>
               <div class="map-canvas">
-                <pre class="mermaid">mindmap
+                <pre class="mindmap-source">mindmap
                   root((Existing MLX inspector))
                     Scan
                       no imports
@@ -1200,7 +1231,7 @@
                 </div>
               </div>
               <div class="map-canvas">
-                <pre class="mermaid">mindmap
+                <pre class="mindmap-source">mindmap
                   root((Optimization review))
                     Entry gate
                       parity first
@@ -1419,37 +1450,248 @@ python3 -m unittest discover -s tests -v</pre>
       </div>
     </main>
   </div>
-  <script type="module">
-    import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
+  <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+  <script>
+    const branchColors = [
+      "#c12fe4",
+      "#00a99a",
+      "#86c900",
+      "#d18b00",
+      "#4169e1",
+      "#e46250",
+      "#7654d8"
+    ];
 
-    mermaid.initialize({
-      startOnLoad: false,
-      securityLevel: "loose",
-      theme: "base",
-      mindmap: {
-        padding: 18,
-        useMaxWidth: false
-      },
-      themeVariables: {
-        background: "#ffffff",
-        primaryColor: "#fbfcfb",
-        primaryBorderColor: "#00a99a",
-        primaryTextColor: "#111713",
-        lineColor: "#00a99a",
-        secondaryColor: "#f3fff4",
-        tertiaryColor: "#fffaf0",
-        fontFamily: "ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif",
-        fontSize: "15px"
-      }
-    });
+    const cleanLabel = (raw) => {
+      const label = raw.trim();
+      const root = label.match(/^root\s*\(\((.*)\)\)$/);
+      if (root) return root[1].trim();
+      return label
+        .replace(/^\(\((.*)\)\)$/, "$1")
+        .replace(/^["'](.*)["']$/, "$1")
+        .trim();
+    };
 
-    await mermaid.run({ querySelector: ".mermaid" });
+    const wrapLabel = (label, width) => {
+      const words = label.split(/\s+/);
+      const lines = [];
+      let line = "";
 
-    requestAnimationFrame(() => {
-      document.querySelectorAll(".map-canvas").forEach((canvas) => {
-        canvas.scrollLeft = Math.max(0, (canvas.scrollWidth - canvas.clientWidth) / 2);
+      words.forEach((word) => {
+        const next = line ? `${line} ${word}` : word;
+        if (next.length > width && line) {
+          lines.push(line);
+          line = word;
+        } else {
+          line = next;
+        }
       });
-    });
+
+      if (line) lines.push(line);
+      return lines.join("\n");
+    };
+
+    const parseMindmap = (source) => {
+      const rows = source.split("\n")
+        .map((line) => ({
+          indent: line.match(/^\s*/)[0].length,
+          label: cleanLabel(line)
+        }))
+        .filter((row) => row.label && row.label !== "mindmap");
+
+      const levels = [...new Set(rows.map((row) => row.indent))].sort((a, b) => a - b);
+      const stack = [];
+      let root = null;
+
+      rows.forEach((row) => {
+        const level = levels.indexOf(row.indent);
+        const node = { label: row.label, children: [], level };
+
+        if (level === 0) {
+          root = node;
+        } else {
+          stack[level - 1].children.push(node);
+        }
+
+        stack[level] = node;
+      });
+
+      return root;
+    };
+
+    const countLeaves = (node) => {
+      if (!node.children.length) return 1;
+      return node.children.reduce((sum, child) => sum + countLeaves(child), 0);
+    };
+
+    const layoutMindmap = (root) => {
+      const leafGap = 62;
+      const levelGap = 265;
+      let cursor = 0;
+      let id = 0;
+      const leaves = countLeaves(root);
+
+      root.id = `node-${id++}`;
+      root.x = 0;
+      root.y = 0;
+      root.depth = 0;
+      root.branch = 0;
+      root.path = [root.label];
+
+      const place = (node, depth, branch, path) => {
+        node.id = `node-${id++}`;
+        node.depth = depth;
+        node.branch = branch;
+        node.path = path;
+        node.x = depth * levelGap;
+
+        if (!node.children.length) {
+          node.y = (cursor - (leaves - 1) / 2) * leafGap;
+          cursor += 1;
+          return;
+        }
+
+        const start = cursor;
+        node.children.forEach((child, childIndex) => {
+          place(child, depth + 1, branch, [...path, child.label], childIndex);
+        });
+        const end = cursor - 1;
+        node.y = ((start + end) / 2 - (leaves - 1) / 2) * leafGap;
+      };
+
+      root.children.forEach((child, index) => {
+        place(child, 1, index, [root.label, child.label]);
+      });
+
+      return { root, leaves };
+    };
+
+    const collectGraph = (root) => {
+      const nodes = [];
+      const edges = [];
+
+      const visit = (node, parent = null) => {
+        const color = branchColors[node.branch % branchColors.length];
+        const isRoot = node.depth === 0;
+        const isBranch = node.depth === 1;
+
+        nodes.push({
+          id: node.id,
+          label: wrapLabel(node.label, isRoot ? 22 : isBranch ? 24 : 30),
+          x: node.x,
+          y: node.y,
+          fixed: { x: true, y: true },
+          physics: false,
+          shape: isRoot ? "box" : "text",
+          margin: isRoot ? { top: 12, right: 16, bottom: 12, left: 16 } : 4,
+          title: node.path.join(" -> "),
+          color: isRoot
+            ? {
+                background: "#ffffff",
+                border: branchColors[0],
+                highlight: { background: "#ffffff", border: branchColors[0] },
+                hover: { background: "#ffffff", border: branchColors[0] }
+              }
+            : {
+                background: "rgba(255,255,255,0)",
+                border: "rgba(255,255,255,0)",
+                highlight: { background: "rgba(255,255,255,0)", border: "rgba(255,255,255,0)" },
+                hover: { background: "rgba(255,255,255,0)", border: "rgba(255,255,255,0)" }
+              },
+          font: {
+            color: isRoot ? "#25313c" : isBranch ? color : "#52616b",
+            size: isRoot ? 20 : isBranch ? 18 : node.depth <= 3 ? 16 : 15,
+            face: "ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif",
+            multi: "html",
+            vadjust: 0
+          },
+          borderWidth: isRoot ? 3 : 0,
+          borderWidthSelected: isRoot ? 3 : 0,
+          shadow: isRoot
+            ? { enabled: true, color: "rgba(44,55,64,0.16)", size: 14, x: 0, y: 7 }
+            : false
+        });
+
+        if (parent) {
+          edges.push({
+            from: parent.id,
+            to: node.id,
+            color: { color, highlight: color, hover: color, opacity: parent.depth === 0 ? 0.98 : 0.86 },
+            width: parent.depth === 0 ? 5 : Math.max(2.8, 4 - node.depth * 0.25),
+            selectionWidth: 1,
+            hoverWidth: 0,
+            smooth: {
+              enabled: true,
+              type: "cubicBezier",
+              forceDirection: "horizontal",
+              roundness: 0.42 + (node.depth % 3) * 0.04
+            }
+          });
+        }
+
+        node.children.forEach((child) => visit(child, node));
+      };
+
+      visit(root);
+      return { nodes, edges };
+    };
+
+    const renderMindmap = (canvas) => {
+      const source = canvas.querySelector(".mindmap-source");
+      if (!source || !window.vis) return;
+
+      const parsed = parseMindmap(source.textContent);
+      const { root, leaves } = layoutMindmap(parsed);
+      const { nodes, edges } = collectGraph(root);
+      const viewport = document.createElement("div");
+      const compactCanvas = window.matchMedia("(max-width: 560px)").matches;
+      viewport.className = "mindmap-viewport";
+      viewport.style.height = compactCanvas
+        ? "500px"
+        : `${Math.max(560, Math.min(820, leaves * 30 + 260))}px`;
+      canvas.appendChild(viewport);
+
+      const network = new vis.Network(
+        viewport,
+        {
+          nodes: new vis.DataSet(nodes),
+          edges: new vis.DataSet(edges)
+        },
+        {
+          autoResize: true,
+          physics: false,
+          nodes: {
+            chosen: false,
+            widthConstraint: { maximum: 260 }
+          },
+          edges: {
+            chosen: false
+          },
+          interaction: {
+            dragNodes: false,
+            dragView: true,
+            hover: true,
+            keyboard: false,
+            multiselect: false,
+            navigationButtons: false,
+            tooltipDelay: 180,
+            zoomView: true
+          }
+        }
+      );
+
+      const startScale = compactCanvas ? 0.6 : 0.78;
+      network.once("afterDrawing", () => {
+        network.moveTo({
+          position: { x: compactCanvas ? 190 : 350, y: -40 },
+          scale: startScale,
+          animation: false
+        });
+        canvas.dataset.rendered = "true";
+      });
+    };
+
+    document.querySelectorAll(".map-canvas").forEach(renderMindmap);
   </script>
 </body>
 </html>
