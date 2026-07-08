@@ -239,9 +239,9 @@
 
     .docs-layout {
       display: grid;
-      grid-template-columns: minmax(0, 860px) 220px;
+      grid-template-columns: minmax(0, 1120px) 220px;
       gap: 42px;
-      width: min(1150px, calc(100% - 64px));
+      width: min(1460px, calc(100% - 64px));
       margin: 0 auto;
       padding: 54px 0 92px;
     }
@@ -386,18 +386,17 @@
 
     .diagram-stack {
       display: grid;
-      gap: 16px;
-      margin: 26px 0 12px;
+      gap: 24px;
+      margin: 26px 0 18px;
     }
 
     .diagram-panel {
       border: 1px solid var(--line);
       border-radius: 8px;
-      padding: 18px;
-      background:
-        linear-gradient(135deg, rgba(155, 226, 45, 0.09), transparent 34%),
-        linear-gradient(315deg, rgba(0, 169, 154, 0.08), transparent 40%),
-        var(--surface);
+      padding: 20px;
+      overflow-x: auto;
+      background: var(--surface);
+      box-shadow: 0 18px 44px rgba(17, 23, 19, 0.06);
     }
 
     .diagram-panel h3 {
@@ -405,165 +404,78 @@
     }
 
     .diagram-panel > p {
-      margin-bottom: 14px;
+      max-width: 860px;
+      margin-bottom: 16px;
       color: var(--muted);
       font-size: 14px;
     }
 
-    .flow-chain {
-      display: grid;
-      grid-template-columns: repeat(5, minmax(0, 1fr));
-      gap: 10px;
+    .decision-tree-grid {
+      gap: 26px;
     }
 
-    .flow-node,
-    .loop-node,
-    .ladder-step {
-      position: relative;
-      border: 1px solid rgba(17, 23, 19, 0.12);
-      border-radius: 8px;
-      background: rgba(255, 255, 255, 0.76);
+    .tree-board {
+      padding: 0;
+      background:
+        linear-gradient(135deg, rgba(155, 226, 45, 0.08), transparent 26%),
+        linear-gradient(315deg, rgba(0, 169, 154, 0.07), transparent 32%),
+        var(--surface);
     }
 
-    .flow-node {
-      min-height: 132px;
-      padding: 14px 12px;
+    .tree-copy {
+      padding: 20px 20px 0;
     }
 
-    .flow-node:not(:last-child)::after {
-      content: "->";
-      position: absolute;
-      top: 50%;
-      right: -17px;
-      z-index: 2;
-      transform: translateY(-50%);
-      color: var(--kernel-cyan);
-      font: 800 0.9rem/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-    }
-
-    .diagram-kicker {
-      display: block;
-      margin-bottom: 8px;
-      color: var(--kernel-cyan);
-      font: 780 0.72rem/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-      text-transform: uppercase;
-      letter-spacing: 0;
-    }
-
-    .flow-node b,
-    .loop-node b,
-    .ladder-step b {
-      display: block;
-      margin-bottom: 6px;
-      color: var(--ink);
-      font-size: 14px;
-      line-height: 1.2;
-    }
-
-    .flow-node span,
-    .loop-node span,
-    .ladder-step span {
-      display: block;
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.45;
-    }
-
-    .ladder {
-      display: grid;
+    .tree-meta {
+      display: flex;
+      flex-wrap: wrap;
       gap: 8px;
+      margin: 12px 0 0;
     }
 
-    .ladder-step {
-      display: grid;
-      grid-template-columns: 88px minmax(0, 1fr);
-      align-items: center;
-      min-height: 68px;
-      overflow: hidden;
-    }
-
-    .ladder-step::before {
-      content: attr(data-level);
-      align-self: stretch;
-      display: grid;
-      place-items: center;
-      color: #0b312d;
-      background: color-mix(in srgb, var(--level-color), white 42%);
-      font: 780 0.78rem/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-    }
-
-    .ladder-copy {
-      padding: 12px 14px;
-    }
-
-    .loop-diagram {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 10px;
-      align-items: stretch;
-    }
-
-    .loop-node {
-      min-height: 128px;
-      padding: 14px;
-    }
-
-    .loop-node::after {
-      content: attr(data-next);
-      position: absolute;
-      right: 12px;
-      bottom: 10px;
-      color: var(--kernel-cyan);
-      font: 800 0.76rem/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-    }
-
-    .loop-node.ship {
-      border-color: rgba(155, 226, 45, 0.58);
-      background: rgba(155, 226, 45, 0.13);
-    }
-
-    .loop-node.rollback {
-      border-color: rgba(228, 98, 80, 0.42);
-      background: rgba(228, 98, 80, 0.08);
-    }
-
-    .proof-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-    }
-
-    .proof-box {
-      position: relative;
-      min-height: 150px;
+    .tree-meta span {
       border: 1px solid rgba(17, 23, 19, 0.12);
-      border-radius: 8px;
-      padding: 14px;
+      border-radius: 999px;
+      padding: 5px 8px;
+      color: #4d5b54;
       background: rgba(255, 255, 255, 0.76);
+      font: 760 0.72rem/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
     }
 
-    .proof-box::before {
-      content: "";
-      position: absolute;
-      inset: 0 auto 0 0;
-      width: 4px;
-      border-radius: 8px 0 0 8px;
-      background: var(--proof-color, var(--kernel-cyan));
+    .tree-copy::after {
+      content: "open canvas: scroll horizontally ->";
+      display: inline-flex;
+      margin-top: 10px;
+      border: 1px solid rgba(65, 105, 225, 0.22);
+      border-radius: 999px;
+      padding: 5px 8px;
+      color: #3151b3;
+      background: rgba(65, 105, 225, 0.06);
+      font: 760 0.72rem/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
     }
 
-    .proof-box b {
-      display: block;
-      margin-bottom: 6px;
+    pre.mermaid {
+      min-width: 2200px;
+      margin: 0;
+      padding: 18px 20px 22px;
+      overflow: visible;
       color: var(--ink);
-      font-size: 14px;
-      line-height: 1.2;
+      background: transparent;
+      font: 0.82rem/1.4 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      white-space: pre;
     }
 
-    .proof-box span {
-      display: block;
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.45;
+    .mermaid svg {
+      width: 2200px !important;
+      max-width: none !important;
+      height: auto;
+    }
+
+    .mermaid .nodeLabel,
+    .mermaid .edgeLabel,
+    .mermaid .label {
+      font-size: 24px !important;
+      line-height: 1.25 !important;
     }
 
     .rule-list {
@@ -745,21 +657,10 @@
         grid-template-columns: 1fr;
       }
 
-      .flow-chain,
-      .loop-diagram,
-      .proof-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .flow-node {
-        min-height: auto;
-      }
-
-      .flow-node:not(:last-child)::after {
-        top: auto;
-        right: 14px;
-        bottom: -15px;
-        transform: rotate(90deg);
+      pre.mermaid,
+      .mermaid svg {
+        width: 1700px !important;
+        min-width: 1700px;
       }
     }
 
@@ -789,12 +690,10 @@
         padding: 14px;
       }
 
-      .ladder-step {
-        grid-template-columns: 1fr;
-      }
-
-      .ladder-step::before {
-        min-height: 34px;
+      pre.mermaid,
+      .mermaid svg {
+        width: 1500px !important;
+        min-width: 1500px;
       }
     }
   </style>
@@ -819,7 +718,7 @@
           <ul class="nav-list">
             <li><a class="active" href="#introduction">Introduction</a></li>
             <li><a href="#looks-like">What it looks like</a></li>
-            <li><a href="#diagrams">Diagrams</a></li>
+            <li><a href="#diagrams">Decision trees</a></li>
             <li><a href="#inspector">Inspector mode</a></li>
             <li><a href="#fits">How it fits together</a></li>
             <li><a href="#rules">Rules</a></li>
@@ -879,167 +778,334 @@
 
           <div class="quote">No parity, no optimization. No benchmark metadata, no speed claim.</div>
 
-          <h2 id="diagrams">Explainer diagrams</h2>
-          <p>The runbook is easiest to follow when the agent can see which proof belongs to which phase. These diagrams show the expected path and the places where work must stop instead of drifting into guesswork.</p>
+          <h2 id="diagrams">Decision trees</h2>
+          <p>Agents should not improvise the route. Start from the artifact in hand, pick the closest tree, follow one branch at a time, and stop whenever a required proof is missing. These canvases map the repo's actual scripts, generated artifacts, runbooks, and failure gates.</p>
 
-          <div class="diagram-stack" aria-label="MLX Porter explainer diagrams">
-            <section class="diagram-panel" aria-labelledby="pipeline-diagram-title">
-              <h3 id="pipeline-diagram-title">Porting pipeline</h3>
-              <p>Move left to right. Do not jump to the next phase until the current proof exists.</p>
-              <div class="flow-chain">
-                <div class="flow-node">
-                  <span class="diagram-kicker">01</span>
-                  <b>Inspect source</b>
-                  <span>Config, license, checkpoint format, remote-code risk.</span>
-                </div>
-                <div class="flow-node">
-                  <span class="diagram-kicker">02</span>
-                  <b>Classify family</b>
-                  <span>Dense decoder, ASR, diffusion, audio, MoE, SSM, CV.</span>
-                </div>
-                <div class="flow-node">
-                  <span class="diagram-kicker">03</span>
-                  <b>Capture oracle</b>
-                  <span>Deterministic source tensors and expected outputs.</span>
-                </div>
-                <div class="flow-node">
-                  <span class="diagram-kicker">04</span>
-                  <b>Port eager MLX</b>
-                  <span>Readable graph first, no compile, no kernel shortcuts.</span>
-                </div>
-                <div class="flow-node">
-                  <span class="diagram-kicker">05</span>
-                  <b>Validate and optimize</b>
-                  <span>Parity, quality, benchmark metadata, rollback condition.</span>
+          <div class="diagram-stack decision-tree-grid" aria-label="MLX Porter decision trees">
+            <section class="diagram-panel tree-board" aria-labelledby="artifact-tree-title">
+              <div class="tree-copy">
+                <h3 id="artifact-tree-title">Generated artifact handoff tree</h3>
+                <p>Use this tree when an agent needs to know which generated file unlocks the next move. The output of one command becomes the input contract for the next branch.</p>
+                <div class="tree-meta">
+                  <span>scripts/inspect_model.py</span>
+                  <span>PORT_PLAN.md</span>
+                  <span>VALIDATION_REPORT.md</span>
+                  <span>CHANGE_REVIEW.md</span>
                 </div>
               </div>
+              <pre class="mermaid">flowchart LR
+  Start["User gives a model repo, model dir, config, checkpoint, PyTorch module, or existing MLX project"]
+  Existing{"Already MLX code?"}
+  InspectProject["Run inspect_mlx_project.py<br/>Output: MLX_INSPECTION.md + inspection.json"]
+  InspectModel["Run inspect_model.py<br/>Static only. No untrusted imports.<br/>Output: inspection.json"]
+  Risk{"License, pickle, remote code, missing config, or provenance hold?"}
+  StopRisk["STOP: risk review or missing metadata<br/>Do not generate a port plan yet"]
+  Plan["Run make_port_plan.py<br/>Output: PORT_PLAN.md<br/>Records family, target, oracle, weight map, risks"]
+  Oracle{"Source oracle captured?"}
+  StopOracle["STOP: capture deterministic PyTorch/source tensors first"]
+  WeightMap["Create/validate WEIGHT_MAP.json<br/>Run validate_weight_map.py"]
+  Parity["Run compare_tensors.py + family tests<br/>Output: VALIDATION_REPORT.md"]
+  ParityGate{"Parity ladder passes?"}
+  StopParity["STOP: localize first divergent boundary<br/>No optimization"]
+  Bench["Run benchmark_command.py or benchmark_generation.py<br/>Output: BENCHMARK_REPORT.md + raw receipt JSON"]
+  Review["Run recommend_optimizations.py<br/>Output: CHANGE_REVIEW.md<br/>Keep, revert, or backlog"]
+  Start --> Existing
+  Existing -- yes --> InspectProject --> Plan
+  Existing -- no --> InspectModel --> Risk
+  Risk -- yes --> StopRisk
+  Risk -- no --> Plan --> Oracle
+  Oracle -- no --> StopOracle
+  Oracle -- yes --> WeightMap --> Parity --> ParityGate
+  ParityGate -- no --> StopParity
+  ParityGate -- yes --> Bench --> Review
+  classDef stop fill:#fff0ec,stroke:#e46250,color:#111713;
+  classDef action fill:#f8fff0,stroke:#00a99a,color:#111713;
+  classDef artifact fill:#f8faf8,stroke:#4169e1,color:#111713;
+  class StopRisk,StopOracle,StopParity stop;
+  class InspectProject,InspectModel,Plan,WeightMap,Parity,Bench,Review action;
+  class Start artifact;</pre>
             </section>
 
-            <section class="diagram-panel" aria-labelledby="inspector-diagram-title">
-              <h3 id="inspector-diagram-title">Inspector flow</h3>
-              <p>Use this when the MLX project already exists or already runs locally. The inspector names the evidence before recommending changes.</p>
-              <div class="flow-chain">
-                <div class="flow-node">
-                  <span class="diagram-kicker">Input</span>
-                  <b>Existing MLX code</b>
-                  <span>Local repo, served app, notebook, package, or converted checkpoint.</span>
-                </div>
-                <div class="flow-node">
-                  <span class="diagram-kicker">Scan</span>
-                  <b>Static project surface</b>
-                  <span>MLX imports, eval boundaries, compile regions, caches, kernels, risks.</span>
-                </div>
-                <div class="flow-node">
-                  <span class="diagram-kicker">Fold in</span>
-                  <b>Model inspection</b>
-                  <span>Optional config, checkpoint, tensor inventory, and architecture route.</span>
-                </div>
-                <div class="flow-node">
-                  <span class="diagram-kicker">Report</span>
-                  <b>Health and gaps</b>
-                  <span>Looks good, proof gaps, review needed, or no MLX surface detected.</span>
-                </div>
-                <div class="flow-node">
-                  <span class="diagram-kicker">Act</span>
-                  <b>Improve or contribute</b>
-                  <span>Add proof, tune one path, or package a new learning for review.</span>
+            <section class="diagram-panel tree-board" aria-labelledby="router-tree-title">
+              <div class="tree-copy">
+                <h3 id="router-tree-title">Model-family router</h3>
+                <p>Use this first when the source is a model artifact. The route is chosen by static signals: config, weight keys, processor metadata, source files, and task metadata.</p>
+                <div class="tree-meta">
+                  <span>references/intake-and-routing.md</span>
+                  <span>assets/architectures.yaml</span>
+                  <span>references/model-support-map.md</span>
                 </div>
               </div>
+              <pre class="mermaid">flowchart LR
+  Input["Static inspection report"]
+  Confidence{"Family confidence high?"}
+  MoreEvidence["Collect more static evidence<br/>config keys, architectures, weight names, processor, source graph"]
+  Task{"Primary task / modality?"}
+  LLM{"Autoregressive text or chat?"}
+  Multi{"Vision/audio conditioned language model?"}
+  Speech{"ASR, TTS, speech-to-speech, codec, vocoder?"}
+  Diffusion{"Diffusion, flow, denoiser, scheduler, or VAE?"}
+  Encoder{"Encoder, encoder-decoder, CV, time-series, graph, ranking?"}
+  LLMRoute["Target: MLX-LM or standalone MLX<br/>Runbook: decoder, MoE, SSM, or autoregressive audio"]
+  MultiRoute["Target: MLX-VLM or standalone MLX<br/>Runbook: multimodal omni + component runbooks"]
+  SpeechRoute["Target: MLX-Audio or standalone MLX<br/>Runbook: ASR, streaming speech, codec, vocoder, flow TTS"]
+  DiffRoute["Target: standalone MLX or package-specific path<br/>Runbook: diffusion-flow"]
+  EncoderRoute["Target: standalone MLX unless package contract exists<br/>Runbook: encoder, encoder-decoder, CV, graph, time-series"]
+  SourceOracle["Next gate: source oracle + family-specific parity fixture"]
+  Input --> Confidence
+  Confidence -- no --> MoreEvidence --> Confidence
+  Confidence -- yes --> Task
+  Task --> LLM
+  LLM -- yes --> LLMRoute --> SourceOracle
+  LLM -- no --> Multi
+  Multi -- yes --> MultiRoute --> SourceOracle
+  Multi -- no --> Speech
+  Speech -- yes --> SpeechRoute --> SourceOracle
+  Speech -- no --> Diffusion
+  Diffusion -- yes --> DiffRoute --> SourceOracle
+  Diffusion -- no --> Encoder
+  Encoder -- yes --> EncoderRoute --> SourceOracle
+  Encoder -- no --> MoreEvidence
+  classDef gate fill:#fffaf0,stroke:#b77916,color:#111713;
+  classDef route fill:#f3fff4,stroke:#00a99a,color:#111713;
+  classDef stop fill:#fff0ec,stroke:#e46250,color:#111713;
+  class Confidence,Task,LLM,Multi,Speech,Diffusion,Encoder gate;
+  class LLMRoute,MultiRoute,SpeechRoute,DiffRoute,EncoderRoute,SourceOracle route;
+  class MoreEvidence stop;</pre>
             </section>
 
-            <section class="diagram-panel" aria-labelledby="proof-diagram-title">
-              <h3 id="proof-diagram-title">Proof packet</h3>
-              <p>A port, optimization, or contributed learning is complete only when the packet has all four pieces.</p>
-              <div class="proof-grid">
-                <div class="proof-box" style="--proof-color: var(--checkpoint-gold)">
-                  <span class="diagram-kicker">Source</span>
-                  <b>Provenance and fixture</b>
-                  <span>Pinned source, license, safe artifact manifest, deterministic prompt/input, and expected source behavior.</span>
-                </div>
-                <div class="proof-box" style="--proof-color: var(--kernel-cyan)">
-                  <span class="diagram-kicker">Parity</span>
-                  <b>Numerical or task match</b>
-                  <span>Intermediate tensors, logits/latents/waveform metrics, cache state, and quality gate.</span>
-                </div>
-                <div class="proof-box" style="--proof-color: var(--memory-blue)">
-                  <span class="diagram-kicker">Benchmark</span>
-                  <b>Local measured receipt</b>
-                  <span>Hardware, OS, MLX versions, workload, dtype, baseline, metric window, and memory notes.</span>
-                </div>
-                <div class="proof-box" style="--proof-color: var(--parity-coral)">
-                  <span class="diagram-kicker">Rollback</span>
-                  <b>Decision boundary</b>
-                  <span>What changes, what regresses, when to hold, and which runbook or asset is affected.</span>
+            <section class="diagram-panel tree-board" aria-labelledby="llm-tree-title">
+              <div class="tree-copy">
+                <h3 id="llm-tree-title">LLM / decoder route</h3>
+                <p>Use this for decoder LMs, chat models, MoE decoders, SSM-hybrids, and decoder-like language components. Do not enter speed work until the cache and logits are proven.</p>
+                <div class="tree-meta">
+                  <span>runbook-decoder-transformer.md</span>
+                  <span>runbook-moe-transformer.md</span>
+                  <span>attention-and-kv.md</span>
+                  <span>quantization.md</span>
                 </div>
               </div>
+              <pre class="mermaid">flowchart LR
+  Start["Decoder-family source artifact"]
+  Shape{"Architecture subtype?"}
+  Dense["Dense decoder transformer"]
+  MoE["MoE decoder<br/>route expert, router, shared expert tensors"]
+  Hybrid["SSM / recurrent hybrid<br/>route state update and scan semantics"]
+  VLM["Decoder inside VLM or omni model<br/>route vision/audio adapter separately"]
+  Oracle["Capture source oracle<br/>tokens, masks, positions, selected block tensors, logits"]
+  Weights["Weight map<br/>embeddings, QKV, out proj, MLP/gates, norms, tied head"]
+  Cache{"KV/state cache advertised?"}
+  FullSeq["Full-sequence parity"]
+  IncSeq["Incremental token/chunk parity<br/>empty, growing, rotating, truncated cache"]
+  Logits{"Logits and deterministic decode pass?"}
+  StopLogits["STOP: compare first divergent block or cache boundary"]
+  Baseline["Baseline benchmark<br/>TTFT, prefill tok/s, decode tok/s, memory"]
+  Optimize{"Bottleneck?"}
+  Quant["Weight/KV quantization<br/>quality + memory gate"]
+  CacheOpt["Prompt cache / KV layout<br/>hit/miss + cache bytes gate"]
+  Compile["mx.compile or fused ops<br/>warm/cold + retrace gate"]
+  Spec["Speculative decoding<br/>acceptance, k sweep, quality gate"]
+  Review["Record CHANGE_REVIEW.md<br/>keep/revert/backlog"]
+  Start --> Shape
+  Shape --> Dense --> Oracle
+  Shape --> MoE --> Oracle
+  Shape --> Hybrid --> Oracle
+  Shape --> VLM --> Oracle
+  Oracle --> Weights --> Cache
+  Cache -- yes --> IncSeq --> FullSeq
+  Cache -- no --> FullSeq
+  FullSeq --> Logits
+  Logits -- no --> StopLogits
+  Logits -- yes --> Baseline --> Optimize
+  Optimize -- memory --> Quant --> Review
+  Optimize -- repeated prompt --> CacheOpt --> Review
+  Optimize -- Python/graph overhead --> Compile --> Review
+  Optimize -- decode bottleneck --> Spec --> Review
+  classDef stop fill:#fff0ec,stroke:#e46250,color:#111713;
+  classDef action fill:#f8fff0,stroke:#00a99a,color:#111713;
+  classDef gate fill:#fffaf0,stroke:#b77916,color:#111713;
+  class StopLogits stop;
+  class Oracle,Weights,FullSeq,IncSeq,Baseline,Quant,CacheOpt,Compile,Spec,Review action;
+  class Shape,Cache,Logits,Optimize gate;</pre>
             </section>
 
-            <section class="diagram-panel" aria-labelledby="parity-diagram-title">
-              <h3 id="parity-diagram-title">Parity ladder</h3>
-              <p>Each rung narrows the bug surface before a model-level claim is allowed.</p>
-              <div class="ladder">
-                <div class="ladder-step" data-level="Rung 1" style="--level-color: var(--checkpoint-gold)">
-                  <div class="ladder-copy">
-                    <b>Weights accounted for</b>
-                    <span>Every source tensor is loaded, transformed, ignored, or rejected explicitly.</span>
-                  </div>
-                </div>
-                <div class="ladder-step" data-level="Rung 2" style="--level-color: var(--kernel-cyan)">
-                  <div class="ladder-copy">
-                    <b>Intermediate tensors match</b>
-                    <span>Attention masks, RoPE, norms, scheduler steps, or feature extraction are checked directly.</span>
-                  </div>
-                </div>
-                <div class="ladder-step" data-level="Rung 3" style="--level-color: var(--memory-blue)">
-                  <div class="ladder-copy">
-                    <b>End output matches</b>
-                    <span>Logits, decoded text, waveform metrics, latent trajectory, or class output matches the oracle.</span>
-                  </div>
-                </div>
-                <div class="ladder-step" data-level="Rung 4" style="--level-color: var(--tensor-lime)">
-                  <div class="ladder-copy">
-                    <b>Quality gate passes</b>
-                    <span>The port passes the model-family metric before performance claims enter the conversation.</span>
-                  </div>
+            <section class="diagram-panel tree-board" aria-labelledby="transformer-tree-title">
+              <div class="tree-copy">
+                <h3 id="transformer-tree-title">Transformer block route</h3>
+                <p>Use this when the user pastes a PyTorch module or asks to port one recognizable transformer block. The agent should prove one block before assembling a full model.</p>
+                <div class="tree-meta">
+                  <span>porting-core.md</span>
+                  <span>parity-and-testing.md</span>
+                  <span>attention-and-kv.md</span>
                 </div>
               </div>
+              <pre class="mermaid">flowchart LR
+  Module["Pasted PyTorch module or block source"]
+  Contract["Write block contract<br/>inputs, outputs, layouts, state, dtype, masks"]
+  Primitive{"Primitive surface?"}
+  Norm["Norm/activation parity<br/>epsilon, dtype, residual order"]
+  Pos["Position parity<br/>RoPE/ALiBi/absolute, base, offsets"]
+  Attn["Attention parity<br/>QKV fusion, masks, scale, causal/windowed rules"]
+  MLP["MLP/MoE parity<br/>gate order, activation, expert routing"]
+  State["State/cache parity<br/>full vs incremental, reset/reuse"]
+  Block["One eager MLX block<br/>no compile, no quant, no custom kernels"]
+  Compare{"Selected tensors match?"}
+  Stop["STOP: binary-search first divergent primitive"]
+  Promote["Promote to repeated-block and model route"]
+  Module --> Contract --> Primitive
+  Primitive --> Norm --> Block
+  Primitive --> Pos --> Block
+  Primitive --> Attn --> Block
+  Primitive --> MLP --> Block
+  Primitive --> State --> Block
+  Block --> Compare
+  Compare -- no --> Stop
+  Compare -- yes --> Promote
+  classDef stop fill:#fff0ec,stroke:#e46250,color:#111713;
+  classDef action fill:#f8fff0,stroke:#00a99a,color:#111713;
+  classDef gate fill:#fffaf0,stroke:#b77916,color:#111713;
+  class Compare,Primitive gate;
+  class Stop stop;
+  class Contract,Norm,Pos,Attn,MLP,State,Block,Promote action;</pre>
             </section>
 
-            <section class="diagram-panel" aria-labelledby="loop-diagram-title">
-              <h3 id="loop-diagram-title">Optimization decision loop</h3>
-              <p>Optimization is a measured loop, not a pile of tricks. One change enters, one gate decides.</p>
-              <div class="loop-diagram">
-                <div class="loop-node" data-next="then">
-                  <span class="diagram-kicker">Profile</span>
-                  <b>Find the real bottleneck</b>
-                  <span>Decode, prefill, memory pressure, preprocessing, or scheduler overhead.</span>
-                </div>
-                <div class="loop-node" data-next="then">
-                  <span class="diagram-kicker">Change one thing</span>
-                  <b>Apply one scoped method</b>
-                  <span>Compile, quantize, cache, batch, fuse, stream, or write a kernel only when supported.</span>
-                </div>
-                <div class="loop-node" data-next="gate">
-                  <span class="diagram-kicker">Re-prove</span>
-                  <b>Run parity and benchmark</b>
-                  <span>Same baseline, hardware, precision, shape, and metric window.</span>
-                </div>
-                <div class="loop-node ship" data-next="ship">
-                  <span class="diagram-kicker">Pass</span>
-                  <b>Record the receipt</b>
-                  <span>Promote the change with speed, quality, metadata, and rollback notes.</span>
-                </div>
-                <div class="loop-node rollback" data-next="rollback">
-                  <span class="diagram-kicker">Fail</span>
-                  <b>Rollback or hold</b>
-                  <span>Keep it out of the supported path until a reproducible MLX route exists.</span>
-                </div>
-                <div class="loop-node" data-next="next">
-                  <span class="diagram-kicker">Repeat</span>
-                  <b>Choose the next bottleneck</b>
-                  <span>Do not stack speculative changes until the measured one is understood.</span>
+            <section class="diagram-panel tree-board" aria-labelledby="diffusion-tree-title">
+              <div class="tree-copy">
+                <h3 id="diffusion-tree-title">Diffusion / flow route</h3>
+                <p>Use this for diffusion and flow models. If the user says "division model", treat it as diffusion unless the source proves another family. The scheduler and one denoiser step are the first gates.</p>
+                <div class="tree-meta">
+                  <span>runbook-diffusion-flow.md</span>
+                  <span>parity-and-testing.md</span>
+                  <span>benchmarking.md</span>
                 </div>
               </div>
+              <pre class="mermaid">flowchart LR
+  Start["Diffusion / flow source artifact"]
+  Components{"Which components exist?"}
+  Text["Text/token encoder<br/>tokenizer, prompt embeds, classifier-free guidance"]
+  Denoiser["UNet, DiT, transformer denoiser, or flow block"]
+  Scheduler["Scheduler / sampler<br/>timesteps, sigma, beta schedule, prediction type"]
+  VAE["VAE / decoder / postprocess"]
+  Oracle["Capture fixed-seed oracle<br/>prompt, latent, timestep, conditioning, expected noise/velocity"]
+  OneStep{"One denoiser step matches?"}
+  StopStep["STOP: check scheduler math, conditioning, layout, dtype"]
+  Trajectory{"Short latent trajectory matches?"}
+  StopTrajectory["STOP: locate first timestep drift"]
+  Output{"Decoded image/audio/video quality gate passes?"}
+  StopOutput["STOP: compare postprocess and perceptual/task metric"]
+  Bench["Benchmark after parity<br/>per-step latency, compile warm/cold, memory, end-to-end"]
+  Optimize{"Bottleneck?"}
+  Compile["mx.compile / shape stability gate"]
+  Memory["dtype, attention, tiling, cache, memory gate"]
+  Kernel["Custom kernel only after proven MLX bottleneck + fallback"]
+  Review["Record receipt and rollback"]
+  Start --> Components
+  Components --> Text --> Oracle
+  Components --> Denoiser --> Oracle
+  Components --> Scheduler --> Oracle
+  Components --> VAE --> Oracle
+  Oracle --> OneStep
+  OneStep -- no --> StopStep
+  OneStep -- yes --> Trajectory
+  Trajectory -- no --> StopTrajectory
+  Trajectory -- yes --> Output
+  Output -- no --> StopOutput
+  Output -- yes --> Bench --> Optimize
+  Optimize -- graph overhead --> Compile --> Review
+  Optimize -- memory pressure --> Memory --> Review
+  Optimize -- unsupported hot op --> Kernel --> Review
+  classDef stop fill:#fff0ec,stroke:#e46250,color:#111713;
+  classDef action fill:#f8fff0,stroke:#00a99a,color:#111713;
+  classDef gate fill:#fffaf0,stroke:#b77916,color:#111713;
+  class OneStep,Trajectory,Output,Optimize,Components gate;
+  class StopStep,StopTrajectory,StopOutput stop;
+  class Oracle,Bench,Compile,Memory,Kernel,Review action;</pre>
+            </section>
+
+            <section class="diagram-panel tree-board" aria-labelledby="inspector-tree-title">
+              <div class="tree-copy">
+                <h3 id="inspector-tree-title">Existing MLX project inspector tree</h3>
+                <p>Use this when the project already runs. The inspector does not assume correctness; it classifies static evidence and turns missing proof into concrete next actions.</p>
+                <div class="tree-meta">
+                  <span>inspect_mlx_project.py</span>
+                  <span>MLX_INSPECTION.md</span>
+                  <span>contribution_candidates</span>
+                </div>
+              </div>
+              <pre class="mermaid">flowchart LR
+  Project["Local MLX repo, app, notebook, package, or converted checkpoint"]
+  Scan["Static project scan<br/>files, imports, mx.eval, mx.compile, caches, kernels, benchmarks, parity evidence"]
+  Surface{"Detected MLX surface?"}
+  NoSurface["Report: no MLX surface detected<br/>Ask for correct path or model artifact"]
+  Risk{"Risk flags?"}
+  RiskReview["Report: needs review<br/>remote code, pickle, hidden install hooks, missing provenance"]
+  FoldModel{"Model path or prior inspection available?"}
+  ModelInspect["Fold in inspect_model.py output<br/>architecture route + tensor inventory"]
+  Proof{"Parity + benchmark evidence present?"}
+  Gaps["Report: proof gaps<br/>add fixture, tensor comparison, quality gate, benchmark metadata"]
+  Good["Report: looks good statically<br/>still requires runtime parity before claims"]
+  Candidate{"Local pattern teaches the runbook?"}
+  Backlog["Keep as review lead or backlog item"]
+  Contribute["Package contribution candidate<br/>minimal fixture, fallback, parity, benchmark, rollback"]
+  Project --> Scan --> Surface
+  Surface -- no --> NoSurface
+  Surface -- yes --> Risk
+  Risk -- yes --> RiskReview
+  Risk -- no --> FoldModel
+  FoldModel -- yes --> ModelInspect --> Proof
+  FoldModel -- no --> Proof
+  Proof -- no --> Gaps --> Backlog
+  Proof -- yes --> Good --> Candidate
+  Candidate -- no --> Backlog
+  Candidate -- yes --> Contribute
+  classDef stop fill:#fff0ec,stroke:#e46250,color:#111713;
+  classDef action fill:#f8fff0,stroke:#00a99a,color:#111713;
+  classDef gate fill:#fffaf0,stroke:#b77916,color:#111713;
+  class NoSurface,RiskReview,Gaps stop;
+  class Scan,ModelInspect,Good,Backlog,Contribute action;
+  class Surface,Risk,FoldModel,Proof,Candidate gate;</pre>
+            </section>
+
+            <section class="diagram-panel tree-board" aria-labelledby="optimization-tree-title">
+              <div class="tree-copy">
+                <h3 id="optimization-tree-title">Optimization and change-review tree</h3>
+                <p>Use this after parity. It keeps speed work honest: profile first, choose one candidate, measure locally, and promote only with a rollback condition.</p>
+                <div class="tree-meta">
+                  <span>recommend_optimizations.py</span>
+                  <span>benchmark_generation.py</span>
+                  <span>assets/optimization_stacks.yaml</span>
+                </div>
+              </div>
+              <pre class="mermaid">flowchart LR
+  Parity["Parity and quality gates already pass"]
+  Profile["Profile baseline<br/>TTFT, prefill, decode, RTF, memory, postprocess, compile"]
+  Candidate{"Candidate support scope?"}
+  Official["Official MLX / project-supported method"]
+  Local["Locally reproduced method with receipt"]
+  Experimental["Paper/blog/contributor lead"]
+  Ask["Ask explicit opt-in:<br/>This is experimental. Do you want to try it?"]
+  Apply["Apply one dimension only<br/>compile, quant, cache, batching, serving, kernel"]
+  Reprove{"Correctness still passes?"}
+  RollbackCorrect["Rollback: correctness or quality regression"]
+  Benchmark["Benchmark same workload<br/>same hardware, dtype, baseline, warm/cold state"]
+  Improve{"End-to-end metric improves beyond noise and memory budget holds?"}
+  RollbackPerf["Rollback or backlog: weak, shape-only, or microbench-only win"]
+  Record["Record CHANGE_REVIEW.md<br/>raw receipt, keep/revert decision, affected runbook/asset"]
+  Parity --> Profile --> Candidate
+  Candidate -- supported --> Official --> Apply
+  Candidate -- reproduced --> Local --> Apply
+  Candidate -- experimental --> Experimental --> Ask --> Apply
+  Apply --> Reprove
+  Reprove -- no --> RollbackCorrect
+  Reprove -- yes --> Benchmark --> Improve
+  Improve -- no --> RollbackPerf
+  Improve -- yes --> Record
+  classDef stop fill:#fff0ec,stroke:#e46250,color:#111713;
+  classDef action fill:#f8fff0,stroke:#00a99a,color:#111713;
+  classDef gate fill:#fffaf0,stroke:#b77916,color:#111713;
+  class RollbackCorrect,RollbackPerf stop;
+  class Profile,Official,Local,Experimental,Ask,Apply,Benchmark,Record action;
+  class Candidate,Reprove,Improve gate;</pre>
             </section>
           </div>
 
@@ -1186,7 +1252,7 @@ python3 -m unittest discover -s tests -v</pre>
             On this page
           </p>
           <ul>
-            <li><a href="#diagrams">Explainer diagrams</a></li>
+            <li><a href="#diagrams">Decision trees</a></li>
             <li><a href="#inspector">Inspector mode</a></li>
             <li><a href="#looks-like">What that looks like</a></li>
             <li><a href="#fits">How it fits together</a></li>
@@ -1200,5 +1266,32 @@ python3 -m unittest discover -s tests -v</pre>
       </div>
     </main>
   </div>
+  <script type="module">
+    import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
+
+    mermaid.initialize({
+      startOnLoad: true,
+      securityLevel: "loose",
+      theme: "base",
+      flowchart: {
+        curve: "basis",
+        htmlLabels: true,
+        nodeSpacing: 64,
+        rankSpacing: 86,
+        padding: 16
+      },
+      themeVariables: {
+        background: "#ffffff",
+        primaryColor: "#fbfcfb",
+        primaryBorderColor: "#00a99a",
+        primaryTextColor: "#111713",
+        lineColor: "#00a99a",
+        secondaryColor: "#f3fff4",
+        tertiaryColor: "#fffaf0",
+        fontFamily: "ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif",
+        fontSize: "24px"
+      }
+    });
+  </script>
 </body>
 </html>
