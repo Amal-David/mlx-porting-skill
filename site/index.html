@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>MLX Porter Runbook</title>
-  <meta name="description" content="MLX Porter helps engineers and agents move PyTorch and Hugging Face models to Apple MLX, inspect existing MLX ports, and optimize only after parity and benchmark receipts.">
+  <meta name="description" content="MLX Porter helps engineers and agents port PyTorch projects to Apple MLX with parity checks and benchmark receipts.">
   <style>
     :root {
       color-scheme: dark;
@@ -253,35 +253,31 @@
     }
 
     .hero-outcomes {
-      width: min(900px, 100%);
+      width: min(820px, 100%);
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 10px;
-      text-align: left;
+      text-align: center;
     }
 
     .outcome {
-      min-height: 112px;
+      min-height: 58px;
       border: 1px solid rgba(216, 225, 220, 0.18);
       border-radius: 8px;
-      padding: 14px 15px;
-      background: rgba(15, 18, 22, 0.72);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px 14px;
+      background: rgba(15, 18, 22, 0.58);
       box-shadow: 0 18px 60px rgba(0, 0, 0, 0.26);
     }
 
     .outcome b {
       display: block;
-      margin-bottom: 7px;
+      margin-bottom: 0;
       color: var(--mlx-ink);
       font-size: 15px;
       line-height: 1.2;
-    }
-
-    .outcome span {
-      display: block;
-      color: #b8c5bf;
-      font-size: 14px;
-      line-height: 1.42;
     }
 
     .outcome strong {
@@ -653,30 +649,27 @@
       <canvas id="mesh" aria-hidden="true"></canvas>
       <div class="hero-center reveal">
         <p class="eyebrow">Apple MLX porting runbook</p>
-        <h1 id="title">Port PyTorch to MLX. Inspect existing MLX. Prove every speedup.</h1>
-        <p class="lead">MLX Porter gives engineers and agents a concrete path from PyTorch modules, checkpoints, and local MLX code to verified Apple Silicon implementations.</p>
+        <h1 id="title">Port PyTorch to MLX with proof.</h1>
+        <p class="lead">Paste a module. Get the route, parity gates, and receipts.</p>
         <div class="center-cta" aria-label="Primary actions">
           <a class="button primary" href="https://github.com/Amal-David/mlx-porting-skill">
             <svg class="icon" aria-hidden="true" viewBox="0 0 16 16">
               <path d="M8 0C3.58 0 0 3.67 0 8.2c0 3.62 2.29 6.69 5.47 7.78.4.08.55-.18.55-.39 0-.19-.01-.83-.01-1.5-2.01.38-2.53-.5-2.69-.97-.09-.24-.48-.97-.82-1.17-.28-.16-.68-.55-.01-.56.63-.01 1.08.59 1.23.84.72 1.24 1.87.89 2.33.68.07-.53.28-.89.51-1.09-1.78-.21-3.64-.91-3.64-4.04 0-.89.31-1.62.82-2.19-.08-.21-.36-1.04.08-2.16 0 0 .67-.22 2.2.84A7.42 7.42 0 0 1 8 3.99c.68 0 1.36.09 2 .28 1.53-1.06 2.2-.84 2.2-.84.44 1.12.16 1.95.08 2.16.51.57.82 1.3.82 2.19 0 3.14-1.87 3.83-3.65 4.04.29.26.54.76.54 1.53 0 1.1-.01 1.99-.01 2.26 0 .21.15.47.55.39A8.08 8.08 0 0 0 16 8.2C16 3.67 12.42 0 8 0Z"/>
             </svg>
-            Start on GitHub
+            GitHub
           </a>
-          <a class="button" href="/docs/">Read docs</a>
-          <a class="button" href="#inspector">Run inspector</a>
+          <a class="button" href="/docs/">Docs</a>
+          <a class="button" href="#inspector">Inspector</a>
         </div>
         <div class="hero-outcomes" aria-label="MLX Porter outcomes">
           <div class="outcome">
-            <b>Paste PyTorch or point at MLX</b>
-            <span>Start from a module, checkpoint, model folder, or already-running local port.</span>
+            <b>Module -> route</b>
           </div>
           <div class="outcome">
-            <b>Get a runnable plan</b>
-            <span>Architecture route, inspection report, parity gates, and common fixes in one path.</span>
+            <b>Port -> report</b>
           </div>
           <div class="outcome">
-            <b><strong>Ship measured MLX wins</strong></b>
-            <span>Apple Silicon optimizations only after source parity and benchmark receipts.</span>
+            <b><strong>Speed -> receipt</strong></b>
           </div>
         </div>
       </div>
