@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Docs - MLX Porter</title>
-  <meta name="description" content="MLX Porter documentation: a source-first runbook for porting PyTorch and Hugging Face projects to Apple MLX, inspecting existing MLX ports, and optimizing only with parity and benchmark receipts.">
+  <meta name="description" content="MLX Porter docs: a source-first Apple MLX porting runbook written for the parts that usually drift: provenance, tensors, parity, caches, and benchmark receipts.">
   <style>
     :root {
       color-scheme: light;
@@ -483,6 +483,46 @@
       pointer-events: none;
     }
 
+    .mindmap-hover-card {
+      position: absolute;
+      z-index: 4;
+      top: 72px;
+      left: 14px;
+      width: min(680px, calc(100% - 28px));
+      display: grid;
+      gap: 4px;
+      border: 1px solid rgba(17, 23, 19, 0.1);
+      border-left: 4px solid var(--kernel-cyan);
+      border-radius: 8px;
+      padding: 10px 12px;
+      color: #26323b;
+      background: rgba(255, 255, 255, 0.88);
+      box-shadow: 0 14px 32px rgba(17, 23, 19, 0.1);
+      pointer-events: none;
+      backdrop-filter: blur(10px);
+    }
+
+    .mindmap-hover-card strong {
+      font-size: 0.86rem;
+      line-height: 1.1;
+    }
+
+    .mindmap-hover-card span {
+      color: #52616b;
+      font-size: 0.78rem;
+      line-height: 1.35;
+    }
+
+    .mindmap-hover-card code {
+      color: #00a99a;
+      font: 760 0.68rem/1.2 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+
+    .mindmap-hover-card[data-active="true"] {
+      border-left-color: var(--tensor-lime);
+      background: rgba(255, 255, 255, 0.94);
+    }
+
     .mindmap-source {
       display: none;
     }
@@ -518,18 +558,6 @@
       border-radius: 8px !important;
       background-color: rgba(255, 255, 255, 0.78) !important;
       box-shadow: 0 10px 22px rgba(17, 23, 19, 0.08) !important;
-    }
-
-    .vis-tooltip {
-      max-width: 300px !important;
-      border: 1px solid rgba(193, 47, 228, 0.2) !important;
-      border-radius: 8px !important;
-      padding: 8px 10px !important;
-      color: #26323b !important;
-      background: rgba(255, 255, 255, 0.95) !important;
-      box-shadow: 0 12px 28px rgba(17, 23, 19, 0.12) !important;
-      font: 0.78rem/1.35 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace !important;
-      white-space: pre-line !important;
     }
 
     .rule-list {
@@ -826,21 +854,21 @@
         <article class="article">
           <p class="breadcrumb">Docs / Introduction</p>
           <h1 id="introduction">Introduction</h1>
-          <p class="lead">A source-first runbook for moving PyTorch and Hugging Face projects to Apple MLX: inspect before executing, prove parity before optimizing, and keep every speed claim attached to a local receipt.</p>
+          <p class="lead">A source-first runbook for the MLX porting bugs that look fine until you compare the right tensor.</p>
 
-          <p>The dangerous bug in a model port is the one that <strong>looks plausible</strong>. A tensor shape lines up, a checkpoint loads without complaint, a sample decodes, and the agent moves on while a mask, RoPE base, layer norm epsilon, or transposed weight is quietly wrong.</p>
-          <p>MLX Porter exists to make that harder to do. It gives humans and agents one route through source provenance, architecture classification, oracle capture, eager MLX implementation, parity checks, and only then Apple Silicon optimization.</p>
+          <p>The dangerous bug is the one that <strong>looks plausible</strong>. A checkpoint loads, a sample decodes, the shapes line up, and the actual error is a mask direction, RoPE offset, layer norm epsilon, cache step, or transposed projection hiding two branches upstream.</p>
+          <p>MLX Porter is the checklist I want before touching speed: pin the source, classify the family, capture an oracle, write the boring eager MLX path, climb parity, then optimize on Apple Silicon with receipts.</p>
 
-          <div class="quote">No parity, no optimization. No benchmark metadata, no speed claim.</div>
+          <div class="quote">If the source tensor cannot explain the MLX tensor, the port is not done.</div>
 
           <h2 id="diagrams">Runbook mind maps</h2>
-          <p>Agents should not improvise the route. Start from the artifact in hand, pick the closest map, follow one branch at a time, and stop whenever a required proof is missing. These canvases map the repo's actual scripts, generated artifacts, runbooks, and failure gates.</p>
+          <p>Use these like a lab notebook, not a slide. Start from the artifact in hand, hover a node to see why it exists, follow one branch at a time, and stop when proof is missing.</p>
 
           <div class="diagram-stack decision-tree-grid" aria-label="MLX Porter decision trees">
             <section class="diagram-panel tree-board" aria-labelledby="artifact-tree-title">
               <div class="tree-copy">
                 <h3 id="artifact-tree-title">Generated artifact handoff map</h3>
-                <p>Use this map when an agent needs to know which generated file unlocks the next move. The output of one command becomes the input contract for the next branch.</p>
+                <p>Use this when the handoff is getting fuzzy. Each generated file should unlock exactly one next move, not a fresh round of guessing.</p>
                 <div class="tree-meta">
                   <span>scripts/inspect_model.py</span>
                   <span>PORT_PLAN.md</span>
@@ -907,7 +935,7 @@
             <section class="diagram-panel tree-board" aria-labelledby="router-tree-title">
               <div class="tree-copy">
                 <h3 id="router-tree-title">Model-family router map</h3>
-                <p>Use this first when the source is a model artifact. The route is chosen by static signals: config, weight keys, processor metadata, source files, and task metadata.</p>
+                <p>Use this when all you have is the artifact. The route comes from static evidence: config, weight keys, processor metadata, source files, and task hints.</p>
                 <div class="tree-meta">
                   <span>references/intake-and-routing.md</span>
                   <span>assets/architectures.yaml</span>
@@ -978,7 +1006,7 @@
             <section class="diagram-panel tree-board" aria-labelledby="llm-tree-title">
               <div class="tree-copy">
                 <h3 id="llm-tree-title">LLM / decoder map</h3>
-                <p>Use this for decoder LMs, chat models, MoE decoders, SSM-hybrids, and decoder-like language components. Do not enter speed work until the cache and logits are proven.</p>
+                <p>Use this for decoder LMs, chat models, MoE decoders, and SSM hybrids. Cache and logits come before every throughput idea.</p>
                 <div class="tree-meta">
                   <span>runbook-decoder-transformer.md</span>
                   <span>runbook-moe-transformer.md</span>
@@ -1050,7 +1078,7 @@
             <section class="diagram-panel tree-board" aria-labelledby="transformer-tree-title">
               <div class="tree-copy">
                 <h3 id="transformer-tree-title">Transformer block map</h3>
-                <p>Use this when the user pastes a PyTorch module or asks to port one recognizable transformer block. The agent should prove one block before assembling a full model.</p>
+                <p>Use this when someone pastes the block and asks for MLX. Prove one block before assembling the model around a hidden mistake.</p>
                 <div class="tree-meta">
                   <span>porting-core.md</span>
                   <span>parity-and-testing.md</span>
@@ -1107,7 +1135,7 @@
             <section class="diagram-panel tree-board" aria-labelledby="diffusion-tree-title">
               <div class="tree-copy">
                 <h3 id="diffusion-tree-title">Diffusion / flow map</h3>
-                <p>Use this for diffusion and flow models. If the user says "division model", treat it as diffusion unless the source proves another family. The scheduler and one denoiser step are the first gates.</p>
+                <p>Use this for diffusion and flow models. The first useful proof is boring: one denoiser step, the scheduler update, and a fixed latent path.</p>
                 <div class="tree-meta">
                   <span>runbook-diffusion-flow.md</span>
                   <span>parity-and-testing.md</span>
@@ -1171,7 +1199,7 @@
             <section class="diagram-panel tree-board" aria-labelledby="inspector-tree-title">
               <div class="tree-copy">
                 <h3 id="inspector-tree-title">Existing MLX project inspector map</h3>
-                <p>Use this when the project already runs. The inspector does not assume correctness; it classifies static evidence and turns missing proof into concrete next actions.</p>
+                <p>Use this when the project already runs. Running once is not proof; the inspector names the MLX surface, risks, and missing evidence.</p>
                 <div class="tree-meta">
                   <span>inspect_mlx_project.py</span>
                   <span>MLX_INSPECTION.md</span>
@@ -1225,7 +1253,7 @@
             <section class="diagram-panel tree-board" aria-labelledby="optimization-tree-title">
               <div class="tree-copy">
                 <h3 id="optimization-tree-title">Optimization and change-review map</h3>
-                <p>Use this after parity. It keeps speed work honest: profile first, choose one candidate, measure locally, and promote only with a rollback condition.</p>
+                <p>Use this after parity. Profile first, change one thing, measure locally, and write down when to roll it back.</p>
                 <div class="tree-meta">
                   <span>recommend_optimizations.py</span>
                   <span>benchmark_generation.py</span>
@@ -1296,7 +1324,7 @@
           </div>
 
           <h2 id="inspector">Inspector mode</h2>
-          <p>When the user already has MLX code, start from the local project rather than a blank port plan. The inspector is static-first: it inventories files, detects MLX runtime patterns, folds in optional model inspections, and emits a report the agent can use as a runbook.</p>
+          <p>When MLX code already exists, do not restart from theory. Inspect the local project, inventory the actual runtime surface, fold in the model if present, and turn missing evidence into the next action.</p>
           <div class="code-panel" aria-label="Inspector command">
             <div class="code-head">
               <span class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></span>
@@ -1307,10 +1335,10 @@
   --markdown MLX_INSPECTION.md \
   --output inspection.json</pre>
           </div>
-          <p>The report can say "looks good" only when static evidence shows MLX code plus parity and benchmark signals. Otherwise it names proof gaps before suggesting optimization or contribution work.</p>
+          <p>The report can say "looks good" only when the evidence is there. Otherwise it should name the proof gap before it suggests optimization or contribution work.</p>
 
           <h2 id="looks-like">What that looks like</h2>
-          <p>For a small Transformer block, do not start by asking for the fastest MLX version. Start by freezing the source behavior and making the first MLX implementation boring enough to debug:</p>
+          <p>For a small Transformer block, do not start with the fastest possible MLX version. Start with a source oracle and make the first MLX implementation boring enough to debug:</p>
 
           <div class="code-panel" aria-label="Example MLX Porter runbook">
             <div class="code-head">
@@ -1328,10 +1356,10 @@ profile the real bottleneck
 apply one optimization and re-run parity</pre>
           </div>
 
-          <p>If an agent cannot explain which source tensor proves the MLX tensor, the port is not done. If it cannot name the baseline, hardware, precision, prompt shape, and rollback condition, the optimization is not done either.</p>
+          <p>If the agent cannot point to the source tensor that proves the MLX tensor, it is still porting. If it cannot name the baseline, hardware, precision, workload, quality gate, and rollback condition, it is not allowed to say faster.</p>
 
           <h2 id="fits">How it fits together</h2>
-          <p>The docs and repo are split into independent pieces so a small model can follow the path one step at a time instead of discovering the whole porting strategy at runtime.</p>
+          <p>The site and docs are split so a smaller model can follow the path one step at a time instead of rediscovering the whole porting strategy mid-run.</p>
           <ol>
             <li><strong>The skill contract</strong> tells the agent how to classify the request, which files to read, and when to stop.</li>
             <li><strong>The architecture runbook</strong> gives the family-specific checks: attention, diffusion, ASR, audio codecs, MoE, SSM, graph models, and more.</li>
@@ -1339,16 +1367,16 @@ apply one optimization and re-run parity</pre>
           </ol>
 
           <div class="callout">
-            <p>Frontier systems may discover these decisions dynamically. MLX Porter distills them into a runbook that a smaller open model can execute with fewer wrong turns.</p>
+            <p>Frontier systems may discover these decisions dynamically. This site distills the path into steps a smaller open model can follow without burning context on the same mistakes.</p>
           </div>
 
-          <h2 id="rules">The rules: what to do, what to avoid</h2>
+          <h2 id="rules">The rules that save the most time</h2>
           <ul class="rule-list">
-            <li class="do"><strong>Do inspect statically first.</strong> Read configs, safetensors headers, source files, licenses, and remote-code risk before running model code.</li>
-            <li class="do"><strong>Do build an oracle.</strong> Capture deterministic source outputs and intermediate tensors before writing the MLX path.</li>
-            <li class="do"><strong>Do start eager.</strong> The first MLX graph should be readable, not fused, compiled, quantized, or kernel-heavy.</li>
-            <li class="dont"><strong>Do not treat loading as correctness.</strong> A checkpoint load without missing keys is only one gate, not the port.</li>
-            <li class="dont"><strong>Do not make silent speed claims.</strong> Optimization needs benchmark metadata, a baseline, and a rollback condition.</li>
+            <li class="do"><strong>Inspect statically first.</strong> Read configs, safetensors headers, source files, licenses, and remote-code risk before running model code.</li>
+            <li class="do"><strong>Build the oracle early.</strong> Capture deterministic source outputs and intermediate tensors before writing the MLX path.</li>
+            <li class="do"><strong>Start with eager MLX.</strong> The first graph should be readable, not fused, compiled, quantized, or kernel-heavy.</li>
+            <li class="dont"><strong>Loading is not correctness.</strong> A checkpoint load without missing keys is one gate, not the port.</li>
+            <li class="dont"><strong>Speed claims need receipts.</strong> Optimization needs benchmark metadata, a baseline, a quality gate, and a rollback condition.</li>
           </ul>
 
           <h2 id="start">Start here</h2>
@@ -1359,11 +1387,11 @@ apply one optimization and re-run parity</pre>
             </a>
             <a class="doc-card" href="https://github.com/Amal-David/mlx-porting-skill/blob/main/mlx-model-porting/references/inspector-mode.md">
               <h3>Inspector mode</h3>
-              <p>Use this for existing local MLX projects, served apps, and already-running ports.</p>
+              <p>Use this when code already runs and you need to know what is actually proven.</p>
             </a>
             <a class="doc-card" href="https://github.com/Amal-David/mlx-porting-skill/tree/main/mlx-model-porting/references">
               <h3>Architecture runbooks</h3>
-              <p>Pick the family: dense decoder, ASR, diffusion, audio, MoE, SSM, graph, CV, VLM, and more.</p>
+              <p>Pick the family before mixing assumptions across decoder, ASR, diffusion, audio, MoE, SSM, graph, CV, or VLM paths.</p>
             </a>
             <a class="doc-card" href="https://github.com/Amal-David/mlx-porting-skill/blob/main/mlx-model-porting/examples/porting-patterns.md">
               <h3>Porting patterns</h3>
@@ -1371,7 +1399,7 @@ apply one optimization and re-run parity</pre>
             </a>
             <a class="doc-card" href="https://github.com/Amal-David/mlx-porting-skill/blob/main/VALIDATION.md">
               <h3>Validation status</h3>
-              <p>What is tested, what is reviewed, and where unsupported techniques must remain blocked.</p>
+              <p>What is tested, what is reviewed, and what must stay blocked until evidence exists.</p>
             </a>
           </div>
 
@@ -1389,7 +1417,7 @@ apply one optimization and re-run parity</pre>
               <tr>
                 <td>Existing MLX project</td>
                 <td>Static MLX surface, model inspection, parity signals, benchmark receipts, and contribution candidates</td>
-                <td>Optimizing because the app runs once, without proving source parity or quality</td>
+                <td>Optimizing because the app runs once, before proving source parity or quality</td>
               </tr>
               <tr>
                 <td>Transformer attention</td>
@@ -1429,7 +1457,7 @@ python3 -m unittest discover -s tests -v</pre>
           <p>A real model port adds architecture-specific tensor parity, quality metrics, generation or inference benchmarks, and rollback conditions.</p>
 
           <h2 id="agents">For agents</h2>
-          <p>The intended agent behavior is simple: read the compact contract, choose one family route, keep facts sourced, and fail loudly when a required proof is missing. The runbook should feel like rails, not a suggestion list.</p>
+          <p>The intended agent behavior is simple: read the compact contract, choose one family route, keep facts sourced, and fail loudly when proof is missing. The docs should feel like rails, not a suggestion list.</p>
         </article>
 
         <aside class="outline" aria-label="On this page">
@@ -1815,10 +1843,6 @@ python3 -m unittest discover -s tests -v</pre>
       return `Runbook checkpoint for ${branch}; use it to decide the next proof step before proceeding.`;
     };
 
-    const tooltipFor = (node) => {
-      return `${node.label}\n${explainNode(node)}\nPath: ${node.path.join(" -> ")}`;
-    };
-
     const cleanLabel = (raw) => {
       const label = raw.trim();
       const root = label.match(/^root\s*\(\((.*)\)\)$/);
@@ -1943,7 +1967,9 @@ python3 -m unittest discover -s tests -v</pre>
           margin: isRoot
             ? { top: 12, right: 16, bottom: 12, left: 16 }
             : { top: 5, right: 9, bottom: 5, left: 9 },
-          title: tooltipFor(node),
+          rawLabel: node.label,
+          explanation: explainNode(node),
+          pathLabel: node.path.join(" -> "),
           color: isRoot
             ? {
                 background: "#ffffff",
@@ -2008,18 +2034,46 @@ python3 -m unittest discover -s tests -v</pre>
       const parsed = parseMindmap(source.textContent);
       const { root, leaves } = layoutMindmap(parsed);
       const { nodes, edges } = collectGraph(root);
+      const nodesData = new vis.DataSet(nodes);
       const viewport = document.createElement("div");
+      const hoverCard = document.createElement("div");
+      const hoverTitle = document.createElement("strong");
+      const hoverBody = document.createElement("span");
+      const hoverPath = document.createElement("code");
       const compactCanvas = window.matchMedia("(max-width: 560px)").matches;
+
+      hoverCard.className = "mindmap-hover-card";
+      hoverCard.setAttribute("aria-live", "polite");
+      hoverCard.dataset.active = "false";
+      hoverCard.append(hoverTitle, hoverBody, hoverPath);
+
+      const resetHover = () => {
+        hoverCard.dataset.active = "false";
+        hoverTitle.textContent = "Hover any node";
+        hoverBody.textContent = "The map will explain why that checkpoint exists and what proof it needs.";
+        hoverPath.textContent = "";
+      };
+
+      const showHover = (node) => {
+        if (!node) return resetHover();
+        hoverCard.dataset.active = "true";
+        hoverTitle.textContent = node.rawLabel;
+        hoverBody.textContent = node.explanation;
+        hoverPath.textContent = node.pathLabel;
+      };
+
+      resetHover();
       viewport.className = "mindmap-viewport";
       viewport.style.height = compactCanvas
         ? "500px"
         : `${Math.max(560, Math.min(820, leaves * 30 + 260))}px`;
+      canvas.appendChild(hoverCard);
       canvas.appendChild(viewport);
 
       const network = new vis.Network(
         viewport,
         {
-          nodes: new vis.DataSet(nodes),
+          nodes: nodesData,
           edges: new vis.DataSet(edges)
         },
         {
@@ -2039,6 +2093,7 @@ python3 -m unittest discover -s tests -v</pre>
             keyboard: false,
             multiselect: false,
             navigationButtons: false,
+            selectable: false,
             tooltipDelay: 180,
             zoomView: true
           }
@@ -2055,6 +2110,12 @@ python3 -m unittest discover -s tests -v</pre>
         });
         canvas.dataset.rendered = "true";
       });
+
+      network.on("hoverNode", (params) => {
+        showHover(nodesData.get(params.node));
+      });
+
+      network.on("blurNode", resetHover);
     };
 
     document.querySelectorAll(".map-canvas").forEach(renderMindmap);
