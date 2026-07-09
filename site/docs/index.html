@@ -1882,8 +1882,8 @@ python3 -m unittest discover -s tests -v</pre>
     };
 
     const layoutMindmap = (root) => {
-      const leafGap = 62;
-      const levelGap = 265;
+      const leafGap = 70;
+      const levelGap = 315;
       let cursor = 0;
       let id = 0;
       const leaves = countLeaves(root);
@@ -1934,13 +1934,15 @@ python3 -m unittest discover -s tests -v</pre>
 
         nodes.push({
           id: node.id,
-          label: wrapLabel(node.label, isRoot ? 22 : isBranch ? 24 : 30),
+          label: wrapLabel(node.label, isRoot ? 22 : isBranch ? 22 : 26),
           x: node.x,
           y: node.y,
           fixed: { x: true, y: true },
           physics: false,
-          shape: isRoot ? "box" : "text",
-          margin: isRoot ? { top: 12, right: 16, bottom: 12, left: 16 } : 4,
+          shape: "box",
+          margin: isRoot
+            ? { top: 12, right: 16, bottom: 12, left: 16 }
+            : { top: 5, right: 9, bottom: 5, left: 9 },
           title: tooltipFor(node),
           color: isRoot
             ? {
@@ -1950,20 +1952,26 @@ python3 -m unittest discover -s tests -v</pre>
                 hover: { background: "#ffffff", border: branchColors[0] }
               }
             : {
-                background: "rgba(255,255,255,0)",
-                border: "rgba(255,255,255,0)",
-                highlight: { background: "rgba(255,255,255,0)", border: "rgba(255,255,255,0)" },
-                hover: { background: "rgba(255,255,255,0)", border: "rgba(255,255,255,0)" }
+                background: "#eef3f6",
+                border: "#eef3f6",
+                highlight: { background: "#ffffff", border: color },
+                hover: { background: "#ffffff", border: color }
               },
           font: {
             color: isRoot ? "#25313c" : isBranch ? color : "#52616b",
             size: isRoot ? 20 : isBranch ? 18 : node.depth <= 3 ? 16 : 15,
             face: "ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif",
             multi: "html",
+            background: "#eef3f6",
+            strokeWidth: 5,
+            strokeColor: "#eef3f6",
             vadjust: 0
           },
-          borderWidth: isRoot ? 3 : 0,
-          borderWidthSelected: isRoot ? 3 : 0,
+          shapeProperties: {
+            borderRadius: isRoot ? 10 : 8
+          },
+          borderWidth: isRoot ? 3 : 1,
+          borderWidthSelected: isRoot ? 3 : 1,
           shadow: isRoot
             ? { enabled: true, color: "rgba(44,55,64,0.16)", size: 14, x: 0, y: 7 }
             : false
@@ -2041,7 +2049,7 @@ python3 -m unittest discover -s tests -v</pre>
       viewport.mlxNetwork = network;
       network.once("afterDrawing", () => {
         network.moveTo({
-          position: { x: compactCanvas ? 190 : 350, y: -40 },
+          position: { x: compactCanvas ? 210 : 410, y: -40 },
           scale: startScale,
           animation: false
         });
