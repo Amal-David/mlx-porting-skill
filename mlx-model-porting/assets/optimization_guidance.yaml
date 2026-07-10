@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "reviewed": "2026-07-09",
+  "reviewed": "2026-07-10",
   "evidence_lineage_policy": {
     "required_for_numeric_band": true,
     "rule": "Every numeric band names one or more evidence_lineage_ids. The same lineage may describe alternatives, but it may contribute at most once to a compound result.",
@@ -204,6 +204,85 @@
         ],
         "papers": [],
         "technical_blogs": []
+      }
+    },
+    {
+      "id": "bf16-weight-cast",
+      "technique_id": "weight-bf16-cast",
+      "category": "quantization",
+      "status": "native-mlx",
+      "objectives": [
+        "model-size",
+        "latency"
+      ],
+      "applies_to": [
+        "linear-heavy-models",
+        "dense-decoder-transformer"
+      ],
+      "recommendation": "Cast a controlled F32 MLX port to BF16 only when the exact target workload retains its declared quality window and the attested end-to-end measurement clears stability and noise gates.",
+      "expected_effect": "The Qwen2.5 0.5B worked-port attested adapter reduced median wall time from 1.655095 s to 0.913307 s (1.8122x inverse-wall-time ratio) while preserving the declared exact six-token output. The timing includes adapter hashing and evidence capture and is not a pure decode claim.",
+      "improvement_band": {
+        "provenance": "local_reproduced",
+        "claim_status": "eligible-with-profile",
+        "evidence_lineage_ids": [
+          "local-qwen2.5-0.5b-f32-vs-bf16-attested-2026-07-10"
+        ],
+        "range": "1.0x-1.8122x",
+        "metric": "wall-time",
+        "measured_on": {
+          "chip": "Apple M4 Pro",
+          "memory_gb": 48,
+          "mlx": "0.24.0",
+          "adapter": "attested-mlx-port-wall-time",
+          "date": "2026-07-10"
+        },
+        "receipts": [
+          "qwen2.5-0.5b-port-f32.json",
+          "qwen2.5-0.5b-port-bf16.json"
+        ],
+        "basis": "One warmup and five isolated measured processes per variant on Apple M4 Pro. The repository-owned runner re-hashed the exact model artifact and retained loaded MLX/port dependency bytes for each run; parent wall time includes that attestation work. F32 median was 1.6550946249917615 s, BF16 median was 0.9133066249778494 s, both CVs passed 0.10, the inverse-wall-time ratio 1.8122003933037305 exceeded the 1.02 noise threshold, and exact six-token output parity passed.",
+        "applies_when": "Only when the full canonical experiment fingerprint matches this Qwen2.5 0.5B attested load-plus-six-token workload, MLX 0.24.0 target, exact-output quality contract, and parent-measured adapter semantics. Re-benchmark other models, MLX versions, or pure decode workloads."
+      },
+      "target_constraints": {
+        "required_profile_fields": [
+          "hardware.chip",
+          "software.mlx",
+          "workloads"
+        ],
+        "exact_software": {
+          "mlx": "0.24.0"
+        },
+        "source_ids": [
+          "mlx-docs"
+        ]
+      },
+      "tradeoffs": [
+        "Reduced precision may change generated outputs beyond the validated six-token window.",
+        "The attested wall-time ratio includes model hashing and evidence capture, so it must not be presented as pure decode speed."
+      ],
+      "validation_gates": [
+        "deterministic F32-to-BF16 conversion manifest",
+        "task-specific quality against F32",
+        "isolated parent-measured end-to-end benchmark",
+        "execution attestation for runner, model, workload, dependencies, and outputs",
+        "stability and noise-floor clearance"
+      ],
+      "rollback_conditions": [
+        "quality output leaves the declared window",
+        "execution attestation fails",
+        "wall-time gain falls within noise",
+        "target model, workload, or software fingerprint changes"
+      ],
+      "evidence_refs": {
+        "official_docs": [
+          "mlx-docs"
+        ],
+        "repositories": [
+          "mlx-repo"
+        ],
+        "papers": [],
+        "technical_blogs": [],
+        "benchmark_artifacts": []
       }
     },
     {

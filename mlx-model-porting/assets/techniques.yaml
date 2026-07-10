@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "reviewed": "2026-07-09",
+  "reviewed": "2026-07-10",
   "statuses": [
     "native-mlx",
     "official-mlx-project",
@@ -656,6 +656,25 @@
         "paper-2402-04396"
       ],
       "reviewed": "2026-06-23"
+    },
+    {
+      "id": "weight-bf16-cast",
+      "title": "BF16 weight casting for MLX inference",
+      "category": "quantization",
+      "status": "native-mlx",
+      "applies_to": [
+        "linear-heavy-models",
+        "dense-decoder-transformer"
+      ],
+      "use_when": "A controlled F32 baseline and task-specific quality gate show that BF16 weights preserve the required output window.",
+      "avoid_when": "The quality window fails, the runtime already stores equivalent precision, or the measured gain does not clear noise.",
+      "validation_gate": "Exact conversion manifest, task quality against F32, isolated end-to-end benchmark, stability, and rollback to F32.",
+      "evidence": [
+        "mlx-docs",
+        "mlx-repo"
+      ],
+      "reviewed": "2026-07-10",
+      "rollback_condition": "Restore F32 when the declared quality window changes, output parity fails, or end-to-end wall time no longer clears the fixed noise gate."
     },
     {
       "id": "mxfp4-nvfp4-mxfp8",

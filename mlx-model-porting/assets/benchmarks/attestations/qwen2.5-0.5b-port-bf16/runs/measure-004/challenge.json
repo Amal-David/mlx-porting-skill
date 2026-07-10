@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "nonce": "83d28b5d8597d2729ebdc630e8057ebefbc73a82f0a626a1cd9e0316097dc52a",
+  "receipt_label": "qwen2.5-0.5b-port-bf16",
+  "phase": "measure",
+  "run_index": 4,
+  "command": [
+    "python3.13",
+    "runners/attested_mlx_port.py",
+    "--model",
+    "local/Qwen2.5-0.5B-Instruct-standalone-mlx",
+    "--revision",
+    "7d325703c071cbba116c2cbd2242f20510c797fb9d9384573e5f6ca370582c7f",
+    "--input",
+    "qwen2.5-0.5b/input.json",
+    "--steps",
+    "6",
+    "--mode",
+    "bf16",
+    "--output",
+    "quality/outputs/qwen2.5-0.5b-port-bf16/result.json",
+    "--attestation-challenge",
+    "attestations/qwen2.5-0.5b-port-bf16/current-challenge.json",
+    "--attestation-output",
+    "attestations/qwen2.5-0.5b-port-bf16/current-evidence.json"
+  ],
+  "command_sha256": "011cb24fbf704754205da7b393b2a2100e68ebb0bed592fb954ff41e8ad8c2d6",
+  "runner_argv_sha256": "0b70c5426a570bffea2252147281ceebcc0a88329f6a43503bdbcfc14775d51b",
+  "quality_contract": {
+    "path": "attestations/qwen2.5-0.5b-port-bf16/runs/measure-004/quality-contract.json",
+    "sha256": "6eff641b34b54a49813c276dc2b2ae730b84441d25dca2c71baa0c33894729fe",
+    "size_bytes": 511
+  }
+}

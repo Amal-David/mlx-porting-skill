@@ -69,7 +69,7 @@ independently establish all of the following:
 
 - aggregate metrics recompute from bounded raw evidence;
 - either the controlled `python -m mlx_lm generate` invocation matches the
-  declared target model and workload, or `external-command-wall-time` resolves
+  declared target model and workload, or an external/attested wall-time lane resolves
   an exact safe argv template that executes a digest-pinned Python runner at
   argv position 1 and binds `models.target.id`, `models.target.revision`,
   workload evidence, semantic variant arguments, and a label-owned output. The
@@ -99,11 +99,56 @@ independently establish all of the following:
 - `execution_attested` proves independently that the exact runner and dependency
   bytes exercised the declared model/workload and generated the measured output.
 
-The final execution-attestation gate is deliberately false for both current
-runner lanes. A digest-pinned generic script can ignore its arguments, and the
+The generic external-command and legacy MLX-LM lanes remain deliberately
+unattested. A digest-pinned generic script can ignore its arguments, and the
 legacy MLX-LM lane trusts package imports and printed metrics without binding
-their bytes. Both lanes therefore generate observations, not promoted numbers,
-until a reviewed built-in adapter closes those gaps.
+their bytes. Self-reported attestation fields do not change either result.
+
+The repository-owned `attested-mlx-port-wall-time` adapter is the one narrow
+attestable lane. Its trust and evidence design is:
+
+- the receipt executes the checked-in runner directly at argv position 1 under
+  the already-bound isolated interpreter (`-I -B`), and both the workload
+  artifact and validator re-hash those exact runner bytes;
+- before each child process, the parent benchmark harness writes a fresh
+  content-random challenge bound to the receipt label, phase, run index,
+  command, and snapshotted quality contract. The trusted runner must consume
+  that challenge, so evidence copied from another run fails closed;
+- the runner validates the declared model, revision, input, workload, and
+  variant, hashes the model artifact from disk before loading it, performs the
+  fixed MLX workload, writes the quality output, then emits a canonical
+  content-signed evidence bundle;
+- that bundle binds the challenge, logical argv, checked-in input bytes,
+  normalized workload, on-disk model digest and size, generated output, and
+  every loaded `mlx`, `_mlx`, and generated port-package file exposed through
+  `sys.modules`;
+- the runner copies those small loaded dependency files into a bounded
+  content-addressed evidence store. The parent snapshots each measured run's
+  challenge, bundle, and output. The validator independently re-hashes every
+  checked-in snapshot and dependency byte, re-derives the runner, argv, input,
+  workload, model-identity, output, challenge, and evidence-set digests, and
+  sets `execution_attested=true` only when every measured run agrees; and
+- wall time remains exclusively the parent's process measurement. Child
+  stdout, stderr, and reported timing values remain non-metrics.
+
+The child necessarily computes the model and dependency digests, but it is no
+longer an arbitrary child: the validator anchors that behavior in the reviewed
+runner's exact checked-in bytes. A runner that lies has different bytes and
+fails the runner digest gate. The large model weights are not duplicated in the
+repository; their runtime digest must equal the receipt's target revision and
+declared size. Imported Python/extension dependency bytes are retained as
+bounded evidence and re-hashed directly.
+
+Residual trust remains explicit. This adapter does not attest firmware, the
+macOS kernel, Metal driver/framework dynamic libraries below the imported
+Python extension, hardware correctness, Python interpreter semantics, or files
+that a native extension opens without exposing them through `sys.modules`.
+Those surfaces remain target/environment provenance, not content-attested
+dependencies. The adapter is intentionally model/workload-specific; the two
+generic lanes remain observations until they gain equally narrow reviewed
+adapters. Parent wall time includes model hashing, dependency capture, and
+evidence writing performed by the trusted adapter. Promoted ratios therefore
+apply only to this attested end-to-end lane and are not pure decode-speed claims.
 
 Legacy Python evaluators, schema-1 declarative scores, and handwritten quality
 attestations are recorded only as provenance; the validator does not execute

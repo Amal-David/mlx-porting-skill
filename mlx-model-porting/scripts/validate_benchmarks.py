@@ -42,6 +42,33 @@ PINNED_REVISION_RE = re.compile(r"^[0-9a-f]{40,64}$")
 RUNNER_OPTION_RE = re.compile(r"^[a-z0-9][a-z0-9-]*$")
 EXTERNAL_RUNNER_ID = "external-command-wall-time"
 EXTERNAL_RUNNER_SHAPE = "direct-argv-template-v1"
+ATTESTED_RUNNER_ID = "attested-mlx-port-wall-time"
+ATTESTED_RUNNER_SHAPE = "repository-owned-qwen2.5-workload-v1"
+ATTESTED_RUNNER_PATH = "runners/attested_mlx_port.py"
+ATTESTED_MODEL_ID = "local/Qwen2.5-0.5B-Instruct-standalone-mlx"
+ATTESTED_WORKLOAD_ID = "qwen2.5-0.5b-load-plus-six-token-greedy-decode"
+ATTESTED_WORKLOAD_PARAMETERS = {
+    "batch": 1,
+    "cache": "growing-kv",
+    "compile": False,
+    "generate_steps": 6,
+    "prompt_tokens": 11,
+    "timing_scope": "separate-process-load-plus-greedy-decode",
+}
+ATTESTED_VARIANTS = {
+    "f32": {
+        "revision": "7df68182b704fb0933625cdb44cc4e89e8f4cfdb5cb75b3e2251f608807f65f0",
+        "weights_path": "converted-f32/model.safetensors",
+        "weights_bytes": 1_976_163_149,
+        "dtype_policy": "f32",
+    },
+    "bf16": {
+        "revision": "7d325703c071cbba116c2cbd2242f20510c797fb9d9384573e5f6ca370582c7f",
+        "weights_path": "converted-bf16/model.safetensors",
+        "weights_bytes": 988_097_714,
+        "dtype_policy": "bf16",
+    },
+}
 EXTERNAL_INTERPRETER_FLAGS = ["-I", "-B"]
 EXTERNAL_MODEL_FIELDS = {"id", "revision", "lineage_id", "source_id", "source_revision"}
 SHELL_EXECUTABLES = {"bash", "cmd", "dash", "fish", "ksh", "powershell", "pwsh", "sh", "zsh"}
@@ -61,6 +88,10 @@ MAX_EXTERNAL_REPORT_BYTES = 8 * 1024 * 1024
 MAX_EXTERNAL_RUNS = 100
 MAX_EXTERNAL_WARMUPS = 20
 MAX_EXTERNAL_TIMEOUT_SECONDS = 3600.0
+MAX_ATTESTATION_CHALLENGE_BYTES = 64 * 1024
+MAX_ATTESTATION_ARTIFACT_BYTES = 16 * 1024 * 1024
+MAX_ATTESTED_DEPENDENCY_BYTES = 16 * 1024 * 1024
+MAX_ATTESTED_DEPENDENCY_SET_BYTES = 32 * 1024 * 1024
 
 
 def exact_output_validator_descriptor_valid(value: Any) -> bool:
@@ -157,6 +188,11 @@ INTEGRITY_BLOCKERS = {
     "target-hash-mismatch",
     "workload-hash-mismatch",
     "quality-artifact-digest-mismatch",
+    "attestation-runner-digest-mismatch",
+    "attestation-challenge-mismatch",
+    "attestation-evidence-digest-mismatch",
+    "attestation-dependency-digest-mismatch",
+    "attestation-output-digest-mismatch",
 }
 HISTORICAL_ENABLED_METHODS = {
     "kv-4bit-8k": ["uniform-kv-quantization"],
@@ -183,7 +219,7 @@ def canonical_hash(value: Any) -> str:
 
 def receipt_metrics(receipt: dict[str, Any]) -> tuple[str, ...]:
     runner = receipt.get("runner")
-    if isinstance(runner, dict) and runner.get("id") == EXTERNAL_RUNNER_ID:
+    if isinstance(runner, dict) and runner.get("id") in {EXTERNAL_RUNNER_ID, ATTESTED_RUNNER_ID}:
         return EXTERNAL_METRICS
     return MLX_METRICS
 
@@ -328,10 +364,48 @@ def build_external_runner_descriptor(receipt: dict[str, Any], template: Any) -> 
         or not external_interpreter_environment_valid(interpreter.get("environment"))
     ):
         raise SkillError("external runner interpreter descriptor is invalid")
+    attested = runner_artifact.get("path") == ATTESTED_RUNNER_PATH
+    if attested:
+        label = receipt.get("label")
+        input_indexes = [
+            index for index, artifact in enumerate(artifacts)
+            if isinstance(artifact, dict) and artifact.get("role") == "input"
+        ]
+        if len(input_indexes) != 1:
+            raise SkillError("attested runner requires exactly one workload input artifact")
+        expected_flags = [
+            "--model",
+            "--revision",
+            "--input",
+            "--steps",
+            "--mode",
+            "--output",
+            "--attestation-challenge",
+            "--attestation-output",
+        ]
+        expected_sources = {
+            3: ["models", "target", "id"],
+            5: ["models", "target", "revision"],
+            7: ["workload", "artifacts", input_indexes[0], "path"],
+            9: ["workload", "parameters", "generate_steps"],
+            11: ["variant_config", "mode"],
+            13: ["variant_config", "quality_output_path"],
+            15: ["variant_config", "attestation_challenge_path"],
+            17: ["variant_config", "attestation_output_path"],
+        }
+        if (
+            not isinstance(label, str)
+            or len(command) != 18
+            or command[2::2] != expected_flags
+            or any(template[index].get("source") != source for index, source in expected_sources.items())
+            or command[15] != f"attestations/{label}/current-challenge.json"
+            or command[17] != f"attestations/{label}/current-evidence.json"
+        ):
+            raise SkillError("attested runner requires the exact built-in argv and label-owned evidence paths")
     return {
-        "id": EXTERNAL_RUNNER_ID,
+        "id": ATTESTED_RUNNER_ID if attested else EXTERNAL_RUNNER_ID,
         "version": 1,
-        "shape": EXTERNAL_RUNNER_SHAPE,
+        "shape": ATTESTED_RUNNER_SHAPE if attested else EXTERNAL_RUNNER_SHAPE,
         "command_sha256": canonical_hash(command),
         "argv_template": template,
         "bindings": bindings,
@@ -475,7 +549,10 @@ def build_experiment_contract(receipt: dict[str, Any]) -> dict[str, Any]:
     environment = receipt.get("environment", {})
     if not isinstance(environment, dict):
         environment = {}
-    external_runner = isinstance(runner, dict) and runner.get("id") == EXTERNAL_RUNNER_ID
+    external_runner = (
+        isinstance(runner, dict)
+        and runner.get("id") in {EXTERNAL_RUNNER_ID, ATTESTED_RUNNER_ID}
+    )
     runner_arguments = runner.get("arguments", {}) if isinstance(runner, dict) else {}
     workload_parameters = workload.get("parameters", {}) if isinstance(workload, dict) else {}
     workload_argument_names = {
@@ -508,7 +585,11 @@ def build_experiment_contract(receipt: dict[str, Any]) -> dict[str, Any]:
             for binding in bindings
             if isinstance(binding, dict)
             and _template_source_kind(binding.get("source")) in {"model", "variant"}
-            and binding.get("source") != ["variant_config", "quality_output_path"]
+            and tuple(binding.get("source", [])) not in {
+                ("variant_config", "quality_output_path"),
+                ("variant_config", "attestation_challenge_path"),
+                ("variant_config", "attestation_output_path"),
+            }
         }
         sample_shape = {
             "run_count": len(runs) if isinstance(runs, list) else 0,
@@ -934,6 +1015,7 @@ def _external_report_matches(root: Path, receipt: dict[str, Any], run: dict[str,
         ):
             return False
     values: list[float] = []
+    attested_report = receipt.get("runner", {}).get("id") == ATTESTED_RUNNER_ID
     for index, (report_run, receipt_run) in enumerate(zip(report_runs, receipt_runs), start=1):
         if not isinstance(report_run, dict) or not isinstance(receipt_run, dict):
             return False
@@ -948,6 +1030,11 @@ def _external_report_matches(root: Path, receipt: dict[str, Any], run: dict[str,
             or float(wall) <= 0
             or receipt_run.get("run") != index
             or report_run.get("quality_output") != expected_quality_output
+            or (
+                attested_report
+                and report_run.get("execution_attestation")
+                != receipt_run.get("execution_attestation")
+            )
             or not math.isclose(float(receipt_run.get("wall_seconds", math.inf)), float(wall), rel_tol=1e-12, abs_tol=1e-12)
         ):
             return False
@@ -1432,6 +1519,379 @@ def controlled_exact_output_quality_payload_valid(
     return quality_payload == expected
 
 
+def _artifact_identity(value: Any) -> dict[str, Any] | None:
+    if not isinstance(value, dict):
+        return None
+    identity = {key: value.get(key) for key in ("path", "sha256", "size_bytes")}
+    if (
+        not isinstance(identity["path"], str)
+        or not identity["path"]
+        or not isinstance(identity["sha256"], str)
+        or HEX_DIGEST_RE.fullmatch(identity["sha256"]) is None
+        or isinstance(identity["size_bytes"], bool)
+        or not isinstance(identity["size_bytes"], int)
+        or identity["size_bytes"] < 0
+    ):
+        return None
+    return identity
+
+
+def _load_bounded_attestation_json(
+    root: Path,
+    artifact: Any,
+    *,
+    limit: int,
+) -> dict[str, Any] | None:
+    identity = _artifact_identity(artifact)
+    if identity is None or identity["size_bytes"] > limit:
+        return None
+    valid, _ = check_artifact(root, identity)
+    path = resolve_artifact(root, identity["path"])
+    if not valid or path is None:
+        return None
+    try:
+        value = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, UnicodeDecodeError, json.JSONDecodeError):
+        return None
+    return value if isinstance(value, dict) else None
+
+
+def expected_attested_workload(receipt: dict[str, Any]) -> dict[str, Any] | None:
+    workload = receipt.get("workload")
+    models = receipt.get("models")
+    target_model = models.get("target") if isinstance(models, dict) else None
+    variant = receipt.get("variant_config")
+    artifacts = workload.get("artifacts") if isinstance(workload, dict) else None
+    if (
+        not isinstance(target_model, dict)
+        or not isinstance(variant, dict)
+        or not isinstance(artifacts, list)
+        or len(artifacts) != 2
+        or artifacts[0].get("role") != "runner"
+        or artifacts[1].get("role") != "input"
+    ):
+        return None
+    input_artifact = _artifact_identity(artifacts[1])
+    if input_artifact is None:
+        return None
+    return {
+        "id": ATTESTED_WORKLOAD_ID,
+        "model": {
+            "id": target_model.get("id"),
+            "revision": target_model.get("revision"),
+        },
+        "input": input_artifact,
+        "parameters": ATTESTED_WORKLOAD_PARAMETERS,
+        "variant": {
+            "mode": variant.get("mode"),
+            "quality_output_path": variant.get("quality_output_path"),
+        },
+    }
+
+
+def attested_execution_state(
+    receipt: dict[str, Any],
+    root: Path,
+) -> tuple[bool, str | None]:
+    runner = receipt.get("runner")
+    if not isinstance(runner, dict) or runner.get("id") != ATTESTED_RUNNER_ID:
+        return False, "execution-semantics-unattested"
+
+    trusted_path = DEFAULT_ROOT / ATTESTED_RUNNER_PATH
+    if trusted_path.is_symlink() or not trusted_path.is_file():
+        return False, "attestation-runner-digest-mismatch"
+    trusted_runner = {
+        "path": ATTESTED_RUNNER_PATH,
+        "sha256": file_sha256(trusted_path),
+        "size_bytes": trusted_path.stat().st_size,
+    }
+    workload = receipt.get("workload")
+    artifacts = workload.get("artifacts") if isinstance(workload, dict) else None
+    runner_artifact = _artifact_identity(artifacts[0]) if isinstance(artifacts, list) and artifacts else None
+    if (
+        runner.get("implementation") != trusted_runner
+        or runner_artifact != trusted_runner
+        or check_artifact(root, trusted_runner)[0] is not True
+    ):
+        return False, "attestation-runner-digest-mismatch"
+
+    label = receipt.get("label")
+    models = receipt.get("models")
+    target_model = models.get("target") if isinstance(models, dict) else None
+    variant = receipt.get("variant_config")
+    if not isinstance(label, str) or not isinstance(target_model, dict) or not isinstance(variant, dict):
+        return False, "attestation-model-mismatch"
+    mode = variant.get("mode")
+    variant_rule = ATTESTED_VARIANTS.get(str(mode))
+    expected_variant_keys = {
+        "dtype_policy",
+        "mode",
+        "quality_output_path",
+        "weights_bytes",
+        "weights_sha256",
+        "attestation_challenge_path",
+        "attestation_output_path",
+    }
+    if (
+        variant_rule is None
+        or target_model.get("id") != ATTESTED_MODEL_ID
+        or target_model.get("revision") != variant_rule["revision"]
+        or set(variant) != expected_variant_keys
+        or variant.get("dtype_policy") != variant_rule["dtype_policy"]
+        or variant.get("weights_sha256") != variant_rule["revision"]
+        or variant.get("weights_bytes") != variant_rule["weights_bytes"]
+        or variant.get("quality_output_path") != f"quality/outputs/{label}/result.json"
+        or variant.get("attestation_challenge_path")
+        != f"attestations/{label}/current-challenge.json"
+        or variant.get("attestation_output_path")
+        != f"attestations/{label}/current-evidence.json"
+    ):
+        return False, "attestation-model-mismatch"
+
+    expected_workload = expected_attested_workload(receipt)
+    if (
+        expected_workload is None
+        or not isinstance(workload, dict)
+        or workload.get("id") != ATTESTED_WORKLOAD_ID
+        or workload.get("parameters") != ATTESTED_WORKLOAD_PARAMETERS
+        or len(workload.get("artifacts", [])) != 2
+        or check_artifact(root, workload["artifacts"][1])[0] is not True
+    ):
+        return False, "attestation-workload-mismatch"
+
+    quality = receipt.get("quality")
+    quality_payload = load_json_artifact(
+        root,
+        quality.get("artifact") if isinstance(quality, dict) else None,
+    )
+    provenance = quality_payload.get("provenance") if isinstance(quality_payload, dict) else None
+    stored_contract = load_json_artifact(
+        root,
+        provenance.get("input") if isinstance(provenance, dict) else None,
+    )
+    if not isinstance(stored_contract, dict):
+        return False, "attestation-challenge-mismatch"
+
+    command = receipt.get("command")
+    runs = receipt.get("runs")
+    if (
+        not isinstance(command, list)
+        or not all(isinstance(item, str) and item for item in command)
+        or not isinstance(runs, list)
+        or not runs
+    ):
+        return False, "attestation-evidence-missing"
+
+    seen_nonces: set[str] = set()
+    seen_challenges: set[str] = set()
+    seen_evidence: set[str] = set()
+    for run_index, run in enumerate(runs, start=1):
+        attestation = run.get("execution_attestation") if isinstance(run, dict) else None
+        if not isinstance(attestation, dict) or set(attestation) != {"challenge", "evidence", "output"}:
+            return False, "attestation-evidence-missing"
+        prefix = f"attestations/{label}/runs/measure-{run_index:03d}"
+        expected_paths = {
+            "challenge": f"{prefix}/challenge.json",
+            "evidence": f"{prefix}/evidence.json",
+            "output": f"{prefix}/output.json",
+        }
+        for key, expected_path in expected_paths.items():
+            identity = _artifact_identity(attestation.get(key))
+            if identity is None or identity["path"] != expected_path:
+                return False, (
+                    "attestation-output-digest-mismatch"
+                    if key == "output"
+                    else "attestation-evidence-digest-mismatch"
+                )
+            valid, _ = check_artifact(root, identity)
+            if not valid:
+                return False, (
+                    "attestation-output-digest-mismatch"
+                    if key == "output"
+                    else "attestation-evidence-digest-mismatch"
+                )
+
+        challenge_artifact = _artifact_identity(attestation["challenge"])
+        evidence_artifact = _artifact_identity(attestation["evidence"])
+        output_artifact = _artifact_identity(attestation["output"])
+        assert challenge_artifact and evidence_artifact and output_artifact
+        challenge = _load_bounded_attestation_json(
+            root,
+            challenge_artifact,
+            limit=MAX_ATTESTATION_CHALLENGE_BYTES,
+        )
+        if challenge is None:
+            return False, "attestation-challenge-mismatch"
+        contract_artifact = challenge.get("quality_contract")
+        expected_challenge = {
+            "schema_version": 1,
+            "nonce": challenge.get("nonce"),
+            "receipt_label": label,
+            "phase": "measure",
+            "run_index": run_index,
+            "command": command,
+            "command_sha256": canonical_hash(command),
+            "runner_argv_sha256": canonical_hash(command[1:]),
+            "quality_contract": contract_artifact,
+        }
+        nonce = challenge.get("nonce")
+        contract_identity = _artifact_identity(contract_artifact)
+        contract_payload = _load_bounded_attestation_json(
+            root,
+            contract_identity,
+            limit=MAX_QUALITY_ARTIFACT_BYTES,
+        ) if contract_identity is not None else None
+        if (
+            challenge != expected_challenge
+            or not isinstance(nonce, str)
+            or HEX_DIGEST_RE.fullmatch(nonce) is None
+            or nonce in seen_nonces
+            or challenge_artifact["sha256"] in seen_challenges
+            or contract_identity is None
+            or contract_identity["path"] != f"{prefix}/quality-contract.json"
+            or contract_payload != stored_contract
+        ):
+            return False, "attestation-challenge-mismatch"
+        seen_nonces.add(nonce)
+        seen_challenges.add(challenge_artifact["sha256"])
+
+        evidence = _load_bounded_attestation_json(
+            root,
+            evidence_artifact,
+            limit=MAX_ATTESTATION_ARTIFACT_BYTES,
+        )
+        if evidence is None or set(evidence) != {
+            "schema_version",
+            "adapter",
+            "challenge",
+            "runner_argv_sha256",
+            "workload",
+            "model_artifact",
+            "dependencies",
+            "dependency_set_sha256",
+            "output_artifact",
+            "evidence_sha256",
+        }:
+            return False, "attestation-evidence-digest-mismatch"
+        evidence_payload = {
+            key: value for key, value in evidence.items() if key != "evidence_sha256"
+        }
+        expected_adapter = {
+            "id": ATTESTED_RUNNER_ID,
+            "version": 1,
+            "implementation": trusted_runner,
+        }
+        expected_challenge_identity = {
+            "sha256": challenge_artifact["sha256"],
+            "size_bytes": challenge_artifact["size_bytes"],
+        }
+        evidence_digest = evidence.get("evidence_sha256")
+        if evidence.get("challenge") != expected_challenge_identity:
+            return False, "attestation-challenge-mismatch"
+        if (
+            evidence.get("schema_version") != 1
+            or evidence.get("adapter") != expected_adapter
+            or evidence.get("runner_argv_sha256") != canonical_hash(command[1:])
+            or evidence_digest != canonical_hash(evidence_payload)
+            or not isinstance(evidence_digest, str)
+            or evidence_digest in seen_evidence
+        ):
+            return False, "attestation-evidence-digest-mismatch"
+        seen_evidence.add(evidence_digest)
+
+        evidence_workload = evidence.get("workload")
+        if evidence_workload != {
+            "descriptor": expected_workload,
+            "sha256": canonical_hash(expected_workload),
+        }:
+            return False, "attestation-workload-mismatch"
+        expected_model_artifact = {
+            "path": variant_rule["weights_path"],
+            "sha256": variant_rule["revision"],
+            "size_bytes": variant_rule["weights_bytes"],
+        }
+        if evidence.get("model_artifact") != expected_model_artifact:
+            return False, "attestation-model-mismatch"
+
+        dependencies = evidence.get("dependencies")
+        if not isinstance(dependencies, list) or not dependencies or len(dependencies) > 256:
+            return False, "attestation-dependency-digest-mismatch"
+        dependency_total = 0
+        dependency_scopes: set[str] = set()
+        loaded_paths: set[tuple[str, str]] = set()
+        loaded_modules: set[str] = set()
+        for dependency in dependencies:
+            if not isinstance(dependency, dict) or set(dependency) != {
+                "scope",
+                "module_names",
+                "loaded_path",
+                "artifact",
+            }:
+                return False, "attestation-dependency-digest-mismatch"
+            scope = dependency.get("scope")
+            module_names = dependency.get("module_names")
+            loaded_path = dependency.get("loaded_path")
+            artifact = _artifact_identity(dependency.get("artifact"))
+            if (
+                scope not in {"mlx-runtime", "port-package", "port-config"}
+                or not isinstance(module_names, list)
+                or module_names != sorted(set(module_names))
+                or not all(isinstance(name, str) and name for name in module_names)
+                or not isinstance(loaded_path, str)
+                or not loaded_path
+                or (scope, loaded_path) in loaded_paths
+                or any(name in loaded_modules for name in module_names)
+                or artifact is None
+                or artifact["path"] != f"attestations/dependencies/{artifact['sha256']}.bin"
+                or artifact["size_bytes"] > MAX_ATTESTED_DEPENDENCY_BYTES
+                or check_artifact(root, artifact)[0] is not True
+            ):
+                return False, "attestation-dependency-digest-mismatch"
+            if scope == "mlx-runtime" and (
+                not module_names
+                or not all(name in {"mlx", "_mlx"} or name.startswith(("mlx.", "_mlx.")) for name in module_names)
+                or not loaded_path.startswith("runtime/")
+            ):
+                return False, "attestation-dependency-digest-mismatch"
+            if scope == "port-package" and (
+                not module_names
+                or not all(name in {"model", "config"} for name in module_names)
+                or not loaded_path.startswith("port/")
+            ):
+                return False, "attestation-dependency-digest-mismatch"
+            if scope == "port-config" and (
+                module_names != [] or loaded_path != "port/config.json"
+            ):
+                return False, "attestation-dependency-digest-mismatch"
+            dependency_total += artifact["size_bytes"]
+            if dependency_total > MAX_ATTESTED_DEPENDENCY_SET_BYTES:
+                return False, "attestation-dependency-digest-mismatch"
+            dependency_scopes.add(scope)
+            loaded_paths.add((scope, loaded_path))
+            loaded_modules.update(module_names)
+        if (
+            dependency_scopes != {"mlx-runtime", "port-package", "port-config"}
+            or not {"model", "config"}.issubset(loaded_modules)
+            or not any(name in {"mlx", "_mlx"} or name.startswith(("mlx.", "_mlx.")) for name in loaded_modules)
+            or evidence.get("dependency_set_sha256") != canonical_hash(dependencies)
+        ):
+            return False, "attestation-dependency-digest-mismatch"
+
+        evidence_output = _artifact_identity(evidence.get("output_artifact"))
+        expected_quality_output = _controlled_quality_candidate_artifact(root, receipt)
+        if (
+            evidence_output is None
+            or evidence_output["path"] != variant["quality_output_path"]
+            or evidence_output["sha256"] != output_artifact["sha256"]
+            or evidence_output["size_bytes"] != output_artifact["size_bytes"]
+            or expected_quality_output is None
+            or evidence_output != expected_quality_output
+        ):
+            return False, "attestation-output-digest-mismatch"
+
+    return True, None
+
+
 def schema2_gate_state(receipt: dict[str, Any], root: Path) -> tuple[list[str], dict[str, bool], dict[str, Any]]:
     blockers: list[str] = []
     checks = {
@@ -1468,7 +1928,10 @@ def schema2_gate_state(receipt: dict[str, Any], root: Path) -> tuple[list[str], 
     command = receipt.get("command")
     runner = receipt.get("runner")
     if isinstance(command, list) and all(isinstance(item, str) for item in command):
-        if isinstance(runner, dict) and runner.get("id") == EXTERNAL_RUNNER_ID:
+        if (
+            isinstance(runner, dict)
+            and runner.get("id") in {EXTERNAL_RUNNER_ID, ATTESTED_RUNNER_ID}
+        ):
             try:
                 expected_runner = build_external_runner_descriptor(receipt, runner.get("argv_template"))
             except SkillError:
@@ -1491,7 +1954,15 @@ def schema2_gate_state(receipt: dict[str, Any], root: Path) -> tuple[list[str], 
             )
     if not checks["runner_valid"]:
         blockers.append("uncontrolled-benchmark-runner")
-    blockers.append("execution-semantics-unattested")
+    if isinstance(runner, dict) and runner.get("id") == ATTESTED_RUNNER_ID:
+        checks["execution_attested"], attestation_blocker = attested_execution_state(
+            receipt,
+            root,
+        )
+        if attestation_blocker is not None:
+            blockers.append(attestation_blocker)
+    else:
+        blockers.append("execution-semantics-unattested")
 
     expected_experiment = build_experiment_contract(receipt)
     checks["experiment_descriptor_valid"] = receipt.get("experiment") == expected_experiment
@@ -2088,6 +2559,8 @@ def render_benchmark_report(report: dict[str, Any]) -> str:
         ratio_key = "wall_seconds_inverse" if row.get("primary_metric") == "wall_seconds" else "decode_tps"
         ratio = (row.get("recomputed_median_ratios") or {}).get(ratio_key)
         ratio_text = f"{float(ratio):.4f}x" if isinstance(ratio, (int, float)) else "n/a"
+        if row.get("classification") == "promotion_ready" and ratio_text != "n/a":
+            ratio_text += " receipt"
         reasons = "<br>".join(row.get("reasons", [])) or "none"
         lines.append(
             f"| `{row['receipt']}` | `{row['classification']}` | {methods} | {cv_text} | {ratio_text} | {reasons} |"
@@ -2096,7 +2569,7 @@ def render_benchmark_report(report: dict[str, Any]) -> str:
         "",
         "## Promotion rule",
         "",
-        "A candidate is `promotion_ready` only when aggregate recomputation, pinned target/source lineage, the canonical experiment invariant, normalized target/workload hashes, bounded raw evidence, controlled quality, stability, rollback, baseline compatibility, and independent execution attestation all pass. Execution attestation must bind the exact runner/dependency bytes and prove that the declared model/workload generated every measured output; neither current runner lane passes this final gate. The primary-metric ratio must also exceed `1 + max(2%, 2 x max(candidate CV, baseline CV))`. Missing evidence is never inferred.",
+        "A candidate is `promotion_ready` only when aggregate recomputation, pinned target/source lineage, the canonical experiment invariant, normalized target/workload hashes, bounded raw evidence, controlled quality, stability, rollback, baseline compatibility, and independent execution attestation all pass. Execution attestation must bind the exact runner/dependency bytes and prove that the declared model/workload generated every measured output. The generic external-command and MLX-LM lanes remain unattested; only the repository-owned Qwen worked-port adapter can satisfy this gate. The primary-metric ratio must also exceed `1 + max(2%, 2 x max(candidate CV, baseline CV))`. Missing evidence is never inferred.",
         "",
     ])
     return "\n".join(lines)

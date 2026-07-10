@@ -839,7 +839,8 @@ def experiment_identity_from_fingerprint(value: Any) -> dict[str, Any] | None:
     argv_template = runner.get("argv_template") if isinstance(runner, dict) else None
     external_runner = (
         isinstance(runner, dict)
-        and runner.get("id") == "external-command-wall-time"
+        and runner.get("id")
+        in {"external-command-wall-time", "attested-mlx-port-wall-time"}
         and isinstance(argv_template, list)
         and any(
             isinstance(entry, dict)
@@ -848,7 +849,16 @@ def experiment_identity_from_fingerprint(value: Any) -> dict[str, Any] | None:
         )
     )
     semantic_config = (
-        {key: item for key, item in config.items() if key != "quality_output_path"}
+        {
+            key: item
+            for key, item in config.items()
+            if key
+            not in {
+                "quality_output_path",
+                "attestation_challenge_path",
+                "attestation_output_path",
+            }
+        }
         if external_runner and isinstance(config, dict)
         else config
     )

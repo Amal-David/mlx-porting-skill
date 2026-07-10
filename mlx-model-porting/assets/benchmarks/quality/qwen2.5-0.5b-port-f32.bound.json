@@ -16,9 +16,9 @@
   "bindings": {
     "receipt_label": "qwen2.5-0.5b-port-f32",
     "model_lineage_sha256": "ffc48ffd58004e200ac3ad7ddf19f404158dae08708a0450d4dc94423f924342",
-    "workload_sha256": "9ac0ea6cfaf9db183c7aba486803c7815da416fd198a3df4576f59d90cc483ba",
+    "workload_sha256": "a76b7c67d075d769a74ff9c29b31099163fb9c705764013551c77c3fb4b84734",
     "baseline_receipt_sha256": null,
-    "raw_output_set_sha256": "23b3b0af2225a78d71857617be878b470d15a8e1ec37b5d8537035b3e7a3edce"
+    "raw_output_set_sha256": "d3e9c9de81aea93fcc138f6aa6c5728fcf98d940f8ffdffa92feb7b996b9c550"
   },
   "provenance": {
     "mode": "controlled-exact-output-v1",

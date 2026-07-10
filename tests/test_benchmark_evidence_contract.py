@@ -463,6 +463,426 @@ def write_external_pair(root: Path) -> tuple[dict[str, object], dict[str, object
     return baseline, candidate
 
 
+def attested_argv_template() -> list[dict[str, object]]:
+    return [
+        {"literal": "python3.13"},
+        {"source": ["workload", "artifacts", 0, "path"]},
+        {"literal": "--model"},
+        {"source": ["models", "target", "id"]},
+        {"literal": "--revision"},
+        {"source": ["models", "target", "revision"]},
+        {"literal": "--input"},
+        {"source": ["workload", "artifacts", 1, "path"]},
+        {"literal": "--steps"},
+        {"source": ["workload", "parameters", "generate_steps"]},
+        {"literal": "--mode"},
+        {"source": ["variant_config", "mode"]},
+        {"literal": "--output"},
+        {"source": ["variant_config", "quality_output_path"]},
+        {"literal": "--attestation-challenge"},
+        {"source": ["variant_config", "attestation_challenge_path"]},
+        {"literal": "--attestation-output"},
+        {"source": ["variant_config", "attestation_output_path"]},
+    ]
+
+
+def _attested_dependency(
+    root: Path,
+    *,
+    scope: str,
+    module_names: list[str],
+    loaded_path: str,
+    content: str,
+) -> dict[str, object]:
+    digest = hashlib.sha256(content.encode("utf-8")).hexdigest()
+    return {
+        "scope": scope,
+        "module_names": module_names,
+        "loaded_path": loaded_path,
+        "artifact": artifact(root, f"attestations/dependencies/{digest}.bin", content),
+    }
+
+
+def attested_receipt(
+    root: Path,
+    label: str,
+    *,
+    role: str,
+    wall_values: tuple[float, ...],
+    baseline_path: Path | None = None,
+) -> dict[str, object]:
+    mode = "f32" if role == "baseline" else "bf16"
+    rule = validate_benchmarks.ATTESTED_VARIANTS[mode]
+    runner_text = (BENCHMARKS / validate_benchmarks.ATTESTED_RUNNER_PATH).read_text(
+        encoding="utf-8"
+    )
+    runner_artifact = artifact(
+        root,
+        validate_benchmarks.ATTESTED_RUNNER_PATH,
+        runner_text,
+    )
+    input_artifact = artifact(
+        root,
+        "qwen2.5-0.5b/input.json",
+        (BENCHMARKS / "qwen2.5-0.5b/input.json").read_text(encoding="utf-8"),
+    )
+    expected_text = (BENCHMARKS / "qwen2.5-0.5b/expected.json").read_text(
+        encoding="utf-8"
+    )
+    reference = artifact(root, "qwen2.5-0.5b/expected.json", expected_text)
+    quality_output = artifact(
+        root,
+        f"quality/outputs/{label}/result.json",
+        expected_text,
+    )
+    quality_contract = {
+        "schema_version": 2,
+        "validator": validate_benchmarks.EXACT_OUTPUT_QUALITY_VALIDATOR,
+        "metric": "exact-output-parity",
+        "reference_artifact": reference,
+        "candidate_artifact": quality_output,
+    }
+    interpreter_payload = {
+        "schema_version": 1,
+        "sys_path_sha256": "9" * 64,
+        "distributions": [],
+        "startup_files": [],
+    }
+    interpreter = {
+        "name": "python3.13",
+        "sha256": "f" * 64,
+        "size_bytes": 1024,
+        "version": "Python 3.13.5",
+        "flags": ["-I", "-B"],
+        "environment": {
+            **interpreter_payload,
+            "sha256": validate_benchmarks.canonical_hash(interpreter_payload),
+        },
+    }
+    system = {
+        "platform": "macOS-test",
+        "machine": "arm64",
+        "processor": "arm",
+        "python": "3.13.5",
+        "cpu_count": 10,
+        "mac_model": "Mac16,8",
+        "cpu_brand": "Apple M4 Pro",
+        "memory_bytes": 48_000_000_000,
+        "macos_version": "26.0",
+        "mlx_version": "0.27.1",
+    }
+    target_descriptor = {
+        "hardware": {
+            "chip": "Apple M4 Pro",
+            "model": "Mac16,8",
+            "memory_bytes": 48_000_000_000,
+        },
+        "software": {"python": "3.13.5", "mlx": "0.27.1"},
+        "benchmark_system": system,
+        "execution_environment_sha256": "e" * 64,
+        "interpreter": interpreter,
+    }
+    workload_descriptor = {
+        "id": validate_benchmarks.ATTESTED_WORKLOAD_ID,
+        "artifacts": [
+            {"role": "runner", **runner_artifact},
+            {"role": "input", **input_artifact},
+        ],
+        "parameters": validate_benchmarks.ATTESTED_WORKLOAD_PARAMETERS,
+    }
+    variant = {
+        "dtype_policy": rule["dtype_policy"],
+        "mode": mode,
+        "quality_output_path": quality_output["path"],
+        "weights_bytes": rule["weights_bytes"],
+        "weights_sha256": rule["revision"],
+        "attestation_challenge_path": f"attestations/{label}/current-challenge.json",
+        "attestation_output_path": f"attestations/{label}/current-evidence.json",
+    }
+    receipt: dict[str, object] = {
+        "schema_version": 2,
+        "label": label,
+        "timestamp": "2026-07-10T00:00:00+00:00",
+        "environment": system,
+        "versions": {"mlx": "0.27.1"},
+        "cwd": ".",
+        "config_notes": variant,
+        "variant_config": variant,
+        "enabled_methods": ["bf16-weight-cast"] if role == "candidate" else [],
+        "models": {
+            "target": {
+                "id": validate_benchmarks.ATTESTED_MODEL_ID,
+                "revision": rule["revision"],
+                "lineage_id": "qwen2.5-0.5b-instruct-worked-port",
+                "source_id": "Qwen/Qwen2.5-0.5B-Instruct",
+                "source_revision": "7ae557604adf67be50417f59c2c2f167def9a775",
+            }
+        },
+        "target": {
+            "descriptor": target_descriptor,
+            "sha256": validate_benchmarks.canonical_hash(target_descriptor),
+        },
+        "workload": {
+            **workload_descriptor,
+            "sha256": validate_benchmarks.canonical_hash(workload_descriptor),
+        },
+        "comparison": {"role": role, "primary_metric": "wall_seconds"},
+        "warmup_runs": 0,
+        "measured_runs": len(wall_values),
+        "timeout_seconds": 10.0,
+        "rollback_condition": "Rollback on output mismatch or a wall-time gain within noise.",
+    }
+    if baseline_path is not None:
+        receipt["comparison"].update({
+            "baseline_receipt": baseline_path.name,
+            "baseline_sha256": hashlib.sha256(baseline_path.read_bytes()).hexdigest(),
+        })
+    template = attested_argv_template()
+    receipt["command"] = validate_benchmarks.resolve_external_argv_template(receipt, template)
+    receipt["command_display"] = shlex.join(receipt["command"])
+
+    dependencies = [
+        _attested_dependency(
+            root,
+            scope="mlx-runtime",
+            module_names=["mlx", "mlx.core"],
+            loaded_path="runtime/core.py",
+            content="# mlx runtime fixture\n",
+        ),
+        _attested_dependency(
+            root,
+            scope="port-package",
+            module_names=["model"],
+            loaded_path="port/model.py",
+            content="# generated model fixture\n",
+        ),
+        _attested_dependency(
+            root,
+            scope="port-package",
+            module_names=["config"],
+            loaded_path="port/config.py",
+            content="# generated config fixture\n",
+        ),
+        _attested_dependency(
+            root,
+            scope="port-config",
+            module_names=[],
+            loaded_path="port/config.json",
+            content="{\"model_type\":\"qwen2\"}\n",
+        ),
+    ]
+    expected_workload = validate_benchmarks.expected_attested_workload(receipt)
+    assert expected_workload is not None
+    report_runs: list[dict[str, object]] = []
+    receipt_attestations: list[dict[str, object]] = []
+    quality_contract_text = json.dumps(quality_contract, indent=2) + "\n"
+    for run_index, wall_seconds in enumerate(wall_values, start=1):
+        prefix = f"attestations/{label}/runs/measure-{run_index:03d}"
+        contract_snapshot = artifact(
+            root,
+            f"{prefix}/quality-contract.json",
+            quality_contract_text,
+        )
+        challenge = {
+            "schema_version": 1,
+            "nonce": f"{run_index:064x}",
+            "receipt_label": label,
+            "phase": "measure",
+            "run_index": run_index,
+            "command": receipt["command"],
+            "command_sha256": validate_benchmarks.canonical_hash(receipt["command"]),
+            "runner_argv_sha256": validate_benchmarks.canonical_hash(receipt["command"][1:]),
+            "quality_contract": contract_snapshot,
+        }
+        challenge_artifact = artifact(
+            root,
+            f"{prefix}/challenge.json",
+            json.dumps(challenge, indent=2) + "\n",
+        )
+        output_snapshot = artifact(root, f"{prefix}/output.json", expected_text)
+        evidence_payload = {
+            "schema_version": 1,
+            "adapter": {
+                "id": validate_benchmarks.ATTESTED_RUNNER_ID,
+                "version": 1,
+                "implementation": runner_artifact,
+            },
+            "challenge": {
+                "sha256": challenge_artifact["sha256"],
+                "size_bytes": challenge_artifact["size_bytes"],
+            },
+            "runner_argv_sha256": validate_benchmarks.canonical_hash(receipt["command"][1:]),
+            "workload": {
+                "descriptor": expected_workload,
+                "sha256": validate_benchmarks.canonical_hash(expected_workload),
+            },
+            "model_artifact": {
+                "path": rule["weights_path"],
+                "sha256": rule["revision"],
+                "size_bytes": rule["weights_bytes"],
+            },
+            "dependencies": dependencies,
+            "dependency_set_sha256": validate_benchmarks.canonical_hash(dependencies),
+            "output_artifact": quality_output,
+        }
+        evidence = {
+            **evidence_payload,
+            "evidence_sha256": validate_benchmarks.canonical_hash(evidence_payload),
+        }
+        evidence_artifact = artifact(
+            root,
+            f"{prefix}/evidence.json",
+            json.dumps(evidence, indent=2) + "\n",
+        )
+        execution_attestation = {
+            "challenge": challenge_artifact,
+            "evidence": evidence_artifact,
+            "output": output_snapshot,
+        }
+        receipt_attestations.append(execution_attestation)
+        report_runs.append({
+            "wall_seconds": wall_seconds,
+            "returncode": 0,
+            "timed_out": False,
+            "peak_rss_bytes": None,
+            "stdout_tail": "execution_attested=true is self-report only",
+            "stderr_tail": "",
+            "phase": "measure",
+            "quality_output": quality_output,
+            "execution_attestation": execution_attestation,
+        })
+    report = {
+        "schema_version": 1,
+        "generated_at": receipt["timestamp"],
+        "command": receipt["command"],
+        "command_display": receipt["command_display"],
+        "cwd": ".",
+        "environment_overrides": {},
+        "system": system,
+        "warmup_count": 0,
+        "requested_runs": len(wall_values),
+        "timeout_seconds": 10.0,
+        "ok": True,
+        "summary": {
+            "successful_runs": len(wall_values),
+            "wall_seconds_min": min(wall_values),
+            "wall_seconds_median": statistics.median(wall_values),
+            "wall_seconds_mean": statistics.mean(wall_values),
+            "wall_seconds_p95": benchmark_command.percentile(list(wall_values), 0.95),
+            "wall_seconds_max": max(wall_values),
+            "peak_rss_bytes_max": None,
+        },
+        "warmups": [],
+        "runs": report_runs,
+        "notes": [],
+        "execution_environment_sha256": "e" * 64,
+        "interpreter": interpreter,
+    }
+    report_path = root / "raw" / label / "benchmark-command.json"
+    write_json(report_path, report)
+    report_artifact = {
+        "path": str(report_path.relative_to(root)),
+        "sha256": hashlib.sha256(report_path.read_bytes()).hexdigest(),
+        "size_bytes": report_path.stat().st_size,
+        "truncated": False,
+    }
+    receipt["runs"] = [
+        {
+            "run": run_index,
+            "wall_seconds": wall_seconds,
+            "raw_output": report_artifact,
+            "execution_attestation": execution_attestation,
+        }
+        for run_index, (wall_seconds, execution_attestation) in enumerate(
+            zip(wall_values, receipt_attestations),
+            start=1,
+        )
+    ]
+    receipt["aggregate"] = validate_benchmarks.recompute_aggregates(
+        receipt["runs"],
+        validate_benchmarks.EXTERNAL_METRICS,
+    )
+    receipt["stability"] = {
+        "primary_metric": "wall_seconds",
+        "max_cv": 0.10,
+        "min_runs": 5,
+    }
+    receipt["runner"] = validate_benchmarks.build_external_runner_descriptor(receipt, template)
+    receipt["experiment"] = validate_benchmarks.build_experiment_contract(receipt)
+    canonical_contract = json.dumps(
+        quality_contract,
+        indent=2,
+        ensure_ascii=False,
+        sort_keys=True,
+    ) + "\n"
+    contract_digest = hashlib.sha256(canonical_contract.encode("utf-8")).hexdigest()
+    contract_artifact = artifact(
+        root,
+        f"quality/inputs/{contract_digest}.json",
+        canonical_contract,
+    )
+    quality_payload = validate_benchmarks.build_controlled_exact_output_quality_payload(
+        receipt,
+        contract_artifact,
+        quality_contract,
+        root,
+    )
+    bound_path = root / "quality" / f"{label}.bound.json"
+    write_json(bound_path, quality_payload)
+    receipt["quality"] = {
+        "status": "pass",
+        "artifact": {
+            "path": str(bound_path.relative_to(root)),
+            "sha256": hashlib.sha256(bound_path.read_bytes()).hexdigest(),
+            "size_bytes": bound_path.stat().st_size,
+        },
+    }
+    return receipt
+
+
+def write_attested_pair(root: Path) -> tuple[dict[str, object], dict[str, object]]:
+    baseline = attested_receipt(
+        root,
+        "attested-baseline",
+        role="baseline",
+        wall_values=(1.00, 1.01, 0.99, 1.00, 1.00),
+    )
+    baseline_path = root / "attested-baseline.json"
+    write_json(baseline_path, baseline)
+    candidate = attested_receipt(
+        root,
+        "attested-candidate",
+        role="candidate",
+        wall_values=(0.70, 0.71, 0.69, 0.70, 0.70),
+        baseline_path=baseline_path,
+    )
+    write_json(root / "attested-candidate.json", candidate)
+    return baseline, candidate
+
+
+def rewrite_attested_report(root: Path, receipt: dict[str, object]) -> None:
+    runs = receipt["runs"]
+    assert isinstance(runs, list) and runs
+    first_raw = runs[0]["raw_output"]
+    assert isinstance(first_raw, dict)
+    report_path = root / str(first_raw["path"])
+    report = json.loads(report_path.read_text(encoding="utf-8"))
+    for report_run, receipt_run in zip(report["runs"], runs):
+        if "execution_attestation" in receipt_run:
+            report_run["execution_attestation"] = receipt_run["execution_attestation"]
+        else:
+            report_run.pop("execution_attestation", None)
+    write_json(report_path, report)
+    raw_artifact = {
+        "path": str(report_path.relative_to(root)),
+        "sha256": hashlib.sha256(report_path.read_bytes()).hexdigest(),
+        "size_bytes": report_path.stat().st_size,
+        "truncated": False,
+    }
+    for run in runs:
+        run["raw_output"] = raw_artifact
+
+
 class BenchmarkEvidenceContractTests(unittest.TestCase):
     def test_historical_receipts_remain_immutable_observations(self) -> None:
         for name, expected in HISTORICAL_HASHES.items():
@@ -473,10 +893,16 @@ class BenchmarkEvidenceContractTests(unittest.TestCase):
         self.assertEqual(first, second)
         summary = validate_benchmarks.assessment_summary(first)
         self.assertEqual(summary["receipt_count"], 13)
-        self.assertEqual(summary["promotion_ready_count"], 0)
+        self.assertEqual(summary["promotion_ready_count"], 1)
         self.assertEqual(summary["rejected_count"], 1)
         by_label = {row["label"]: row for row in first["assessments"]}
-        self.assertTrue(all(row["classification"] != "promotion_ready" for row in by_label.values()))
+        self.assertEqual(
+            [
+                label for label, row in by_label.items()
+                if row["classification"] == "promotion_ready"
+            ],
+            ["qwen2.5-0.5b-port-bf16"],
+        )
         self.assertTrue(all(row["gates"]["aggregates_recomputed"] for row in by_label.values()))
         self.assertIn("incompatible-quant-baseline", by_label["quant-4bit"]["reasons"])
         self.assertIn("missing-checked-in-input", by_label["pcache-warm"]["reasons"])
@@ -582,6 +1008,136 @@ class BenchmarkEvidenceContractTests(unittest.TestCase):
                 fingerprint["payload"]["measured_runs"][0]["metrics"],
                 {"wall_seconds": 0.70},
             )
+
+    def test_repository_owned_attested_lane_can_promote(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            _, candidate = write_attested_pair(root)
+            report = validate_benchmarks.build_assessment_report(root)
+            by_label = {row["label"]: row for row in report["assessments"]}
+            self.assertTrue(by_label["attested-baseline"]["gates"]["execution_attested"])
+            row = by_label["attested-candidate"]
+            self.assertEqual(row["classification"], "promotion_ready")
+            self.assertTrue(row["promotion_ready"])
+            self.assertTrue(row["gates"]["execution_attested"])
+            self.assertEqual(row["reasons"], [])
+            self.assertGreater(
+                row["recomputed_median_ratios"]["wall_seconds_inverse"],
+                row["improvement"]["required_ratio"],
+            )
+            self.assertIsNotNone(row["experiment_fingerprint"])
+
+    def test_attested_system_metadata_uses_executed_interpreter_versions(self) -> None:
+        system = {"python": "3.14-parent", "mlx_version": "0.30.4"}
+        interpreter = {
+            "version": "Python 3.13.11",
+            "environment": {
+                "distributions": [
+                    {"name": "mlx", "version": "0.24.0"},
+                ]
+            },
+        }
+        self.assertEqual(
+            benchmark_command.attested_system_metadata(system, interpreter),
+            {"python": "3.13.11", "mlx_version": "0.24.0"},
+        )
+
+    def test_attested_lane_rejects_forged_runner_bytes(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            _, candidate = write_attested_pair(root)
+            runner_path = root / validate_benchmarks.ATTESTED_RUNNER_PATH
+            runner_path.write_text("# forged runner bytes\n", encoding="utf-8")
+
+            row = next(
+                item for item in validate_benchmarks.build_assessment_report(root)["assessments"]
+                if item["label"] == candidate["label"]
+            )
+            self.assertFalse(row["gates"]["execution_attested"])
+            self.assertIn("attestation-runner-digest-mismatch", row["reasons"])
+
+    def test_attested_lane_rejects_swapped_output_artifact(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            _, candidate = write_attested_pair(root)
+            output = candidate["runs"][0]["execution_attestation"]["output"]
+            (root / output["path"]).write_text("swapped output\n", encoding="utf-8")
+
+            row = next(
+                item for item in validate_benchmarks.build_assessment_report(root)["assessments"]
+                if item["label"] == candidate["label"]
+            )
+            self.assertFalse(row["gates"]["execution_attested"])
+            self.assertIn("attestation-output-digest-mismatch", row["reasons"])
+
+    def test_attested_lane_rejects_edited_dependency_hash(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            _, candidate = write_attested_pair(root)
+            run = candidate["runs"][0]
+            evidence_artifact = run["execution_attestation"]["evidence"]
+            evidence_path = root / evidence_artifact["path"]
+            evidence = json.loads(evidence_path.read_text(encoding="utf-8"))
+            evidence["dependencies"][0]["artifact"]["sha256"] = "0" * 64
+            evidence["dependency_set_sha256"] = validate_benchmarks.canonical_hash(
+                evidence["dependencies"]
+            )
+            evidence_payload = {
+                key: value for key, value in evidence.items() if key != "evidence_sha256"
+            }
+            evidence["evidence_sha256"] = validate_benchmarks.canonical_hash(evidence_payload)
+            write_json(evidence_path, evidence)
+            evidence_artifact.update({
+                "sha256": hashlib.sha256(evidence_path.read_bytes()).hexdigest(),
+                "size_bytes": evidence_path.stat().st_size,
+            })
+            rewrite_attested_report(root, candidate)
+            write_json(root / "attested-candidate.json", candidate)
+
+            row = next(
+                item for item in validate_benchmarks.build_assessment_report(root)["assessments"]
+                if item["label"] == candidate["label"]
+            )
+            self.assertFalse(row["gates"]["execution_attested"])
+            self.assertIn("attestation-dependency-digest-mismatch", row["reasons"])
+
+    def test_attested_lane_rejects_copied_evidence_bundle(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            _, candidate = write_attested_pair(root)
+            source = candidate["runs"][0]["execution_attestation"]["evidence"]
+            copied = candidate["runs"][1]["execution_attestation"]["evidence"]
+            copied_path = root / copied["path"]
+            copied_path.write_bytes((root / source["path"]).read_bytes())
+            copied.update({
+                "sha256": hashlib.sha256(copied_path.read_bytes()).hexdigest(),
+                "size_bytes": copied_path.stat().st_size,
+            })
+            rewrite_attested_report(root, candidate)
+            write_json(root / "attested-candidate.json", candidate)
+
+            row = next(
+                item for item in validate_benchmarks.build_assessment_report(root)["assessments"]
+                if item["label"] == candidate["label"]
+            )
+            self.assertFalse(row["gates"]["execution_attested"])
+            self.assertIn("attestation-challenge-mismatch", row["reasons"])
+
+    def test_attested_lane_rejects_self_reported_only_attestation(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            _, candidate = write_attested_pair(root)
+            for run in candidate["runs"]:
+                run.pop("execution_attestation")
+            rewrite_attested_report(root, candidate)
+            write_json(root / "attested-candidate.json", candidate)
+
+            row = next(
+                item for item in validate_benchmarks.build_assessment_report(root)["assessments"]
+                if item["label"] == candidate["label"]
+            )
+            self.assertFalse(row["gates"]["execution_attested"])
+            self.assertIn("attestation-evidence-missing", row["reasons"])
 
     def test_external_repetition_identity_ignores_only_label_owned_quality_output(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

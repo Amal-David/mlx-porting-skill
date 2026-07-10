@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-07-10T15:04:08.350001+00:00",
+  "generated_at": "2026-07-10T16:02:49.741348+00:00",
   "command": [
     "python3.13",
-    "qwen2.5-0.5b/runner.py",
+    "runners/attested_mlx_port.py",
     "--model",
     "local/Qwen2.5-0.5B-Instruct-standalone-mlx",
     "--revision",
@@ -15,22 +15,26 @@
     "--mode",
     "bf16",
     "--output",
-    "quality/outputs/qwen2.5-0.5b-port-bf16/result.json"
+    "quality/outputs/qwen2.5-0.5b-port-bf16/result.json",
+    "--attestation-challenge",
+    "attestations/qwen2.5-0.5b-port-bf16/current-challenge.json",
+    "--attestation-output",
+    "attestations/qwen2.5-0.5b-port-bf16/current-evidence.json"
   ],
-  "command_display": "python3.13 qwen2.5-0.5b/runner.py --model local/Qwen2.5-0.5B-Instruct-standalone-mlx --revision 7d325703c071cbba116c2cbd2242f20510c797fb9d9384573e5f6ca370582c7f --input qwen2.5-0.5b/input.json --steps 6 --mode bf16 --output quality/outputs/qwen2.5-0.5b-port-bf16/result.json",
+  "command_display": "python3.13 runners/attested_mlx_port.py --model local/Qwen2.5-0.5B-Instruct-standalone-mlx --revision 7d325703c071cbba116c2cbd2242f20510c797fb9d9384573e5f6ca370582c7f --input qwen2.5-0.5b/input.json --steps 6 --mode bf16 --output quality/outputs/qwen2.5-0.5b-port-bf16/result.json --attestation-challenge attestations/qwen2.5-0.5b-port-bf16/current-challenge.json --attestation-output attestations/qwen2.5-0.5b-port-bf16/current-evidence.json",
   "cwd": ".",
   "environment_overrides": {},
   "system": {
     "platform": "macOS-26.3-arm64-arm-64bit-Mach-O",
     "machine": "arm64",
     "processor": "arm",
-    "python": "3.14.4 (main, Apr  7 2026, 13:13:20) [Clang 21.0.0 (clang-2100.0.123.102)]",
+    "python": "3.13.11",
     "cpu_count": 14,
     "mac_model": "Mac16,8",
     "cpu_brand": "Apple M4 Pro",
     "memory_bytes": 51539607552,
     "macos_version": "26.3",
-    "mlx_version": "0.30.4"
+    "mlx_version": "0.24.0"
   },
   "warmup_count": 1,
   "requested_runs": 5,
@@ -38,27 +42,44 @@
   "ok": true,
   "summary": {
     "successful_runs": 5,
-    "wall_seconds_min": 0.210192750004353,
-    "wall_seconds_median": 0.24909129098523408,
-    "wall_seconds_mean": 0.24317001659073867,
-    "wall_seconds_p95": 0.2583149999962188,
-    "wall_seconds_max": 0.25844312499975786,
+    "wall_seconds_min": 0.8963898750080261,
+    "wall_seconds_median": 0.9133066249778494,
+    "wall_seconds_mean": 0.9100628168031107,
+    "wall_seconds_p95": 0.9186785998172127,
+    "wall_seconds_max": 0.9194653330196161,
     "peak_rss_bytes_max": null
   },
   "warmups": [
     {
-      "wall_seconds": 0.6616248750069644,
+      "wall_seconds": 0.8972900410008151,
       "returncode": 0,
       "timed_out": false,
       "peak_rss_bytes": null,
       "stdout_tail": "",
       "stderr_tail": "",
-      "phase": "warmup"
+      "phase": "warmup",
+      "execution_attestation": {
+        "challenge": {
+          "path": "attestations/qwen2.5-0.5b-port-bf16/runs/warmup-001/challenge.json",
+          "sha256": "da4953d4f35a2a8067d2eb7334816f1389b62a2da200286802f9079e2fe90598",
+          "size_bytes": 1179
+        },
+        "evidence": {
+          "path": "attestations/qwen2.5-0.5b-port-bf16/runs/warmup-001/evidence.json",
+          "sha256": "cb50e4d281160e84cff6efb45f6ed3beec0868ce3ab1e13d832eddbdc6042ab3",
+          "size_bytes": 13426
+        },
+        "output": {
+          "path": "attestations/qwen2.5-0.5b-port-bf16/runs/warmup-001/output.json",
+          "sha256": "fab6ebd4d30cf608888c50b82e0b3752b340ebc8d6f42585f7a71bf2763821e9",
+          "size_bytes": 54
+        }
+      }
     }
   ],
   "runs": [
     {
-      "wall_seconds": 0.210192750004353,
+      "wall_seconds": 0.8963898750080261,
       "returncode": 0,
       "timed_out": false,
       "peak_rss_bytes": null,
@@ -69,10 +90,27 @@
         "path": "quality/outputs/qwen2.5-0.5b-port-bf16/result.json",
         "sha256": "fab6ebd4d30cf608888c50b82e0b3752b340ebc8d6f42585f7a71bf2763821e9",
         "size_bytes": 54
+      },
+      "execution_attestation": {
+        "challenge": {
+          "path": "attestations/qwen2.5-0.5b-port-bf16/runs/measure-001/challenge.json",
+          "sha256": "9384da5888e158ba0883cb4744a4c9805c7eacdc09596b715eb3eed94e1151c6",
+          "size_bytes": 1181
+        },
+        "evidence": {
+          "path": "attestations/qwen2.5-0.5b-port-bf16/runs/measure-001/evidence.json",
+          "sha256": "a655a6f04a3069d29bf170ccd2a06322994230d412b28265916d29b0f2c7ed94",
+          "size_bytes": 13426
+        },
+        "output": {
+          "path": "attestations/qwen2.5-0.5b-port-bf16/runs/measure-001/output.json",
+          "sha256": "fab6ebd4d30cf608888c50b82e0b3752b340ebc8d6f42585f7a71bf2763821e9",
+          "size_bytes": 54
+        }
       }
     },
     {
-      "wall_seconds": 0.24909129098523408,
+      "wall_seconds": 0.9194653330196161,
       "returncode": 0,
       "timed_out": false,
       "peak_rss_bytes": null,
@@ -83,10 +121,27 @@
         "path": "quality/outputs/qwen2.5-0.5b-port-bf16/result.json",
         "sha256": "fab6ebd4d30cf608888c50b82e0b3752b340ebc8d6f42585f7a71bf2763821e9",
         "size_bytes": 54
+      },
+      "execution_attestation": {
+        "challenge": {
+          "path": "attestations/qwen2.5-0.5b-port-bf16/runs/measure-002/challenge.json",
+          "sha256": "3f7a913a6a1f6e5a4ca2e276919e40fbe693bc9a0c9dc5338fc9226b7b42abab",
+          "size_bytes": 1181
+        },
+        "evidence": {
+          "path": "attestations/qwen2.5-0.5b-port-bf16/runs/measure-002/evidence.json",
+          "sha256": "fc78edad4c45b80ca7384a03e21b9d164bcfb556c0ef4d7d0734db46ca5e3ddc",
+          "size_bytes": 13426
+        },
+        "output": {
+          "path": "attestations/qwen2.5-0.5b-port-bf16/runs/measure-002/output.json",
+          "sha256": "fab6ebd4d30cf608888c50b82e0b3752b340ebc8d6f42585f7a71bf2763821e9",
+          "size_bytes": 54
+        }
       }
     },
     {
-      "wall_seconds": 0.25844312499975786,
+      "wall_seconds": 0.915531667007599,
       "returncode": 0,
       "timed_out": false,
       "peak_rss_bytes": null,
@@ -97,10 +152,27 @@
         "path": "quality/outputs/qwen2.5-0.5b-port-bf16/result.json",
         "sha256": "fab6ebd4d30cf608888c50b82e0b3752b340ebc8d6f42585f7a71bf2763821e9",
         "size_bytes": 54
+      },
+      "execution_attestation": {
+        "challenge": {
+          "path": "attestations/qwen2.5-0.5b-port-bf16/runs/measure-003/challenge.json",
+          "sha256": "20da5f0194451714163c5d3a53fc8feb4f4eec8ddeb129a0a3c8a6db1317a50b",
+          "size_bytes": 1181
+        },
+        "evidence": {
+          "path": "attestations/qwen2.5-0.5b-port-bf16/runs/measure-003/evidence.json",
+          "sha256": "ae5ff6574aa22addc9a3b35bf889f3c4bdb4cb7c347c6f2e80d178f07694dcd0",
+          "size_bytes": 13426
+        },
+        "output": {
+          "path": "attestations/qwen2.5-0.5b-port-bf16/runs/measure-003/output.json",
+          "sha256": "fab6ebd4d30cf608888c50b82e0b3752b340ebc8d6f42585f7a71bf2763821e9",
+          "size_bytes": 54
+        }
       }
     },
     {
-      "wall_seconds": 0.2578024999820627,
+      "wall_seconds": 0.9056205840024631,
       "returncode": 0,
       "timed_out": false,
       "peak_rss_bytes": null,
@@ -111,10 +183,27 @@
         "path": "quality/outputs/qwen2.5-0.5b-port-bf16/result.json",
         "sha256": "fab6ebd4d30cf608888c50b82e0b3752b340ebc8d6f42585f7a71bf2763821e9",
         "size_bytes": 54
+      },
+      "execution_attestation": {
+        "challenge": {
+          "path": "attestations/qwen2.5-0.5b-port-bf16/runs/measure-004/challenge.json",
+          "sha256": "4850a89ce7f170fa28b3abed50db2019e6cc113e7e7120d173b41458b676a8c9",
+          "size_bytes": 1181
+        },
+        "evidence": {
+          "path": "attestations/qwen2.5-0.5b-port-bf16/runs/measure-004/evidence.json",
+          "sha256": "9388f754dcc303c3f535fcbf9847c011255f3f93aae0a5eba7a0544df57e2865",
+          "size_bytes": 13426
+        },
+        "output": {
+          "path": "attestations/qwen2.5-0.5b-port-bf16/runs/measure-004/output.json",
+          "sha256": "fab6ebd4d30cf608888c50b82e0b3752b340ebc8d6f42585f7a71bf2763821e9",
+          "size_bytes": 54
+        }
       }
     },
     {
-      "wall_seconds": 0.24032041698228568,
+      "wall_seconds": 0.9133066249778494,
       "returncode": 0,
       "timed_out": false,
       "peak_rss_bytes": null,
@@ -125,6 +214,23 @@
         "path": "quality/outputs/qwen2.5-0.5b-port-bf16/result.json",
         "sha256": "fab6ebd4d30cf608888c50b82e0b3752b340ebc8d6f42585f7a71bf2763821e9",
         "size_bytes": 54
+      },
+      "execution_attestation": {
+        "challenge": {
+          "path": "attestations/qwen2.5-0.5b-port-bf16/runs/measure-005/challenge.json",
+          "sha256": "ec613862cd54eda35336d3eddfd41d66d4ab7268bcbdfde51f1410d3d110182d",
+          "size_bytes": 1181
+        },
+        "evidence": {
+          "path": "attestations/qwen2.5-0.5b-port-bf16/runs/measure-005/evidence.json",
+          "sha256": "cfbdac1d73d3b2c4fdc531852886d74e5ff5c585efcbda1caede3086db673e45",
+          "size_bytes": 13426
+        },
+        "output": {
+          "path": "attestations/qwen2.5-0.5b-port-bf16/runs/measure-005/output.json",
+          "sha256": "fab6ebd4d30cf608888c50b82e0b3752b340ebc8d6f42585f7a71bf2763821e9",
+          "size_bytes": 54
+        }
       }
     }
   ],
@@ -133,7 +239,7 @@
     "Peak RSS is available only when psutil is installed and may not equal MLX active/cache memory.",
     "Cold compile/load and warm steady-state should be reported separately."
   ],
-  "execution_environment_sha256": "0f3ef71a0e6547142f588ff49c9c31c2e5c5d2ddd68aa332d9263936a859c26d",
+  "execution_environment_sha256": "fb92dff807869db984ce006d301f2963c0ff65fce5c2dc3cd3208c91fb97827c",
   "interpreter": {
     "name": "python3.13",
     "sha256": "98ebb7c41c86d099dc16c02320f3634b5665bbe2bdf064e642fefc923262fbb1",

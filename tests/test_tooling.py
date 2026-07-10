@@ -292,7 +292,7 @@ class ToolingTests(unittest.TestCase):
         self.assertTrue(report["ok"], report)
         source_count = len(json.loads((SKILL / "assets" / "sources.yaml").read_text())["sources"])
         self.assertEqual(report["sources"], source_count)
-        self.assertEqual(report["optimization_methods"], 27)
+        self.assertEqual(report["optimization_methods"], 28)
         self.assertEqual(report["optimization_stacks"], 4)
         self.assertTrue(report["recommendation_taxonomy"])
 

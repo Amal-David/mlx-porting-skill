@@ -15,7 +15,11 @@
     {"literal": "--mode"},
     {"source": ["variant_config", "mode"]},
     {"literal": "--output"},
-    {"source": ["variant_config", "quality_output_path"]}
+    {"source": ["variant_config", "quality_output_path"]},
+    {"literal": "--attestation-challenge"},
+    {"source": ["variant_config", "attestation_challenge_path"]},
+    {"literal": "--attestation-output"},
+    {"source": ["variant_config", "attestation_output_path"]}
   ],
   "models": {
     "target": {
@@ -31,9 +35,9 @@
     "artifacts": [
       {
         "role": "runner",
-        "path": "qwen2.5-0.5b/runner.py",
-        "sha256": "9ab4d84254089530549f74f574fb4d60bd0704dca33698f7afdc67b3a2734908",
-        "size_bytes": 2956
+        "path": "runners/attested_mlx_port.py",
+        "sha256": "146f7cde42480a1a17b61ffb588cfcf114214c151641d292ceb7271b0a0f8196",
+        "size_bytes": 13424
       },
       {
         "role": "input",
@@ -55,6 +59,8 @@
     "dtype_policy": "f32",
     "mode": "f32",
     "quality_output_path": "quality/outputs/qwen2.5-0.5b-port-f32/result.json",
+    "attestation_challenge_path": "attestations/qwen2.5-0.5b-port-f32/current-challenge.json",
+    "attestation_output_path": "attestations/qwen2.5-0.5b-port-f32/current-evidence.json",
     "weights_bytes": 1976163149,
     "weights_sha256": "7df68182b704fb0933625cdb44cc4e89e8f4cfdb5cb75b3e2251f608807f65f0"
   },

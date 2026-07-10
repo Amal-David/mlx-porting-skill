@@ -1,0 +1,380 @@
+{
+  "adapter": {
+    "id": "attested-mlx-port-wall-time",
+    "implementation": {
+      "path": "runners/attested_mlx_port.py",
+      "sha256": "146f7cde42480a1a17b61ffb588cfcf114214c151641d292ceb7271b0a0f8196",
+      "size_bytes": 13424
+    },
+    "version": 1
+  },
+  "challenge": {
+    "sha256": "4850a89ce7f170fa28b3abed50db2019e6cc113e7e7120d173b41458b676a8c9",
+    "size_bytes": 1181
+  },
+  "dependencies": [
+    {
+      "artifact": {
+        "path": "attestations/dependencies/99bbc9e8f50ab6aa1942d8afde9ae4f5f36fd3af31c916f769b66108299676af.bin",
+        "sha256": "99bbc9e8f50ab6aa1942d8afde9ae4f5f36fd3af31c916f769b66108299676af",
+        "size_bytes": 3616
+      },
+      "loaded_path": "port/config.py",
+      "module_names": [
+        "config"
+      ],
+      "scope": "port-package"
+    },
+    {
+      "artifact": {
+        "path": "attestations/dependencies/f16d40bace757e068a3afac593b5df900743ea69f71d42bd34efd352567981dd.bin",
+        "sha256": "f16d40bace757e068a3afac593b5df900743ea69f71d42bd34efd352567981dd",
+        "size_bytes": 9825
+      },
+      "loaded_path": "port/model.py",
+      "module_names": [
+        "model"
+      ],
+      "scope": "port-package"
+    },
+    {
+      "artifact": {
+        "path": "attestations/dependencies/7bdd4fd41047a617ec84f7eb214cde3aaa3c3e4c932550468bae1204d1df6550.bin",
+        "sha256": "7bdd4fd41047a617ec84f7eb214cde3aaa3c3e4c932550468bae1204d1df6550",
+        "size_bytes": 303
+      },
+      "loaded_path": "runtime/mlx/_os_warning/_os_warning.py",
+      "module_names": [
+        "mlx._os_warning"
+      ],
+      "scope": "mlx-runtime"
+    },
+    {
+      "artifact": {
+        "path": "attestations/dependencies/f748ea4f10995bf30ed6ba76ed3539f23c18cdf541031e1c0968dd60dc98f723.bin",
+        "sha256": "f748ea4f10995bf30ed6ba76ed3539f23c18cdf541031e1c0968dd60dc98f723",
+        "size_bytes": 321
+      },
+      "loaded_path": "runtime/mlx/_reprlib_fix/_reprlib_fix.py",
+      "module_names": [
+        "mlx._reprlib_fix"
+      ],
+      "scope": "mlx-runtime"
+    },
+    {
+      "artifact": {
+        "path": "attestations/dependencies/311bb75620c546b7ad092f6864e45452a3d5a4fc8a698b3e691769484e2f0469.bin",
+        "sha256": "311bb75620c546b7ad092f6864e45452a3d5a4fc8a698b3e691769484e2f0469",
+        "size_bytes": 1034096
+      },
+      "loaded_path": "runtime/mlx/core/core.cpython-313-darwin.so",
+      "module_names": [
+        "mlx.core"
+      ],
+      "scope": "mlx-runtime"
+    },
+    {
+      "artifact": {
+        "path": "attestations/dependencies/e538cddf7479f1aad592a0058e9a1eb29120fbbb4c6e6507b54ed1fbad02fb45.bin",
+        "sha256": "e538cddf7479f1aad592a0058e9a1eb29120fbbb4c6e6507b54ed1fbad02fb45",
+        "size_bytes": 151
+      },
+      "loaded_path": "runtime/mlx/nn/__init__.py",
+      "module_names": [
+        "mlx.nn"
+      ],
+      "scope": "mlx-runtime"
+    },
+    {
+      "artifact": {
+        "path": "attestations/dependencies/d1e740f70dc8a2dcce8f24f39c1c43db1824724312314919cb40109a81ec6fe8.bin",
+        "sha256": "d1e740f70dc8a2dcce8f24f39c1c43db1824724312314919cb40109a81ec6fe8",
+        "size_bytes": 13856
+      },
+      "loaded_path": "runtime/mlx/nn/init/init.py",
+      "module_names": [
+        "mlx.nn.init"
+      ],
+      "scope": "mlx-runtime"
+    },
+    {
+      "artifact": {
+        "path": "attestations/dependencies/3a2364d8096a54c302c820e24beabb976d2b8b9502ca865337711307ed8a4d61.bin",
+        "sha256": "3a2364d8096a54c302c820e24beabb976d2b8b9502ca865337711307ed8a4d61",
+        "size_bytes": 1842
+      },
+      "loaded_path": "runtime/mlx/nn/layers/__init__.py",
+      "module_names": [
+        "mlx.nn.layers"
+      ],
+      "scope": "mlx-runtime"
+    },
+    {
+      "artifact": {
+        "path": "attestations/dependencies/4b0b2f3a82a33037efafd221d83c4add53ef7915b7fedaf04ed546d8c3f7ba75.bin",
+        "sha256": "4b0b2f3a82a33037efafd221d83c4add53ef7915b7fedaf04ed546d8c3f7ba75",
+        "size_bytes": 15971
+      },
+      "loaded_path": "runtime/mlx/nn/layers/activations/activations.py",
+      "module_names": [
+        "mlx.nn.layers.activations"
+      ],
+      "scope": "mlx-runtime"
+    },
+    {
+      "artifact": {
+        "path": "attestations/dependencies/e62a3b11aff60a72009bd7690502043cdfdcd493ff71a27f557a7f299ca74ec8.bin",
+        "sha256": "e62a3b11aff60a72009bd7690502043cdfdcd493ff71a27f557a7f299ca74ec8",
+        "size_bytes": 23008
+      },
+      "loaded_path": "runtime/mlx/nn/layers/base/base.py",
+      "module_names": [
+        "mlx.nn.layers.base"
+      ],
+      "scope": "mlx-runtime"
+    },
+    {
+      "artifact": {
+        "path": "attestations/dependencies/29ef203c13d9bebb6b8cad6aadb44d1ad495e2bbc19184ca5415b6a505eb36f6.bin",
+        "sha256": "29ef203c13d9bebb6b8cad6aadb44d1ad495e2bbc19184ca5415b6a505eb36f6",
+        "size_bytes": 618
+      },
+      "loaded_path": "runtime/mlx/nn/layers/containers/containers.py",
+      "module_names": [
+        "mlx.nn.layers.containers"
+      ],
+      "scope": "mlx-runtime"
+    },
+    {
+      "artifact": {
+        "path": "attestations/dependencies/e34b902aa24fe1971420b7ef33935f322c7cf24d6f16911d46171f770ee60bd0.bin",
+        "sha256": "e34b902aa24fe1971420b7ef33935f322c7cf24d6f16911d46171f770ee60bd0",
+        "size_bytes": 7757
+      },
+      "loaded_path": "runtime/mlx/nn/layers/convolution/convolution.py",
+      "module_names": [
+        "mlx.nn.layers.convolution"
+      ],
+      "scope": "mlx-runtime"
+    },
+    {
+      "artifact": {
+        "path": "attestations/dependencies/ba01c5485dfe46d9819ecf016f844ef2ca2e721418e805fe0e4ddec852a5a8c3.bin",
+        "sha256": "ba01c5485dfe46d9819ecf016f844ef2ca2e721418e805fe0e4ddec852a5a8c3",
+        "size_bytes": 6995
+      },
+      "loaded_path": "runtime/mlx/nn/layers/convolution_transpose/convolution_transpose.py",
+      "module_names": [
+        "mlx.nn.layers.convolution_transpose"
+      ],
+      "scope": "mlx-runtime"
+    },
+    {
+      "artifact": {
+        "path": "attestations/dependencies/d1a2088211cfe5b4cb9723da93243efdc0a2b94e5cf74f7d1af31cc6a42aaf1e.bin",
+        "sha256": "d1a2088211cfe5b4cb9723da93243efdc0a2b94e5cf74f7d1af31cc6a42aaf1e",
+        "size_bytes": 4628
+      },
+      "loaded_path": "runtime/mlx/nn/layers/dropout/dropout.py",
+      "module_names": [
+        "mlx.nn.layers.dropout"
+      ],
+      "scope": "mlx-runtime"
+    },
+    {
+      "artifact": {
+        "path": "attestations/dependencies/3bbfbecc997379696313844c6056ffaf7c88d59300dcb92adb47709eb2410e9e.bin",
+        "sha256": "3bbfbecc997379696313844c6056ffaf7c88d59300dcb92adb47709eb2410e9e",
+        "size_bytes": 1401
+      },
+      "loaded_path": "runtime/mlx/nn/layers/embedding/embedding.py",
+      "module_names": [
+        "mlx.nn.layers.embedding"
+      ],
+      "scope": "mlx-runtime"
+    },
+    {
+      "artifact": {
+        "path": "attestations/dependencies/90e8e529c1cc2e48d81caf697247b5f46912ab83446014087c7116075542b235.bin",
+        "sha256": "90e8e529c1cc2e48d81caf697247b5f46912ab83446014087c7116075542b235",
+        "size_bytes": 4455
+      },
+      "loaded_path": "runtime/mlx/nn/layers/linear/linear.py",
+      "module_names": [
+        "mlx.nn.layers.linear"
+      ],
+      "scope": "mlx-runtime"
+    },
+    {
+      "artifact": {
+        "path": "attestations/dependencies/92cfbc9ba53d4b2d7681a9096881d8cce4c7f5aff06ce054efbd6d454cf8c14f.bin",
+        "sha256": "92cfbc9ba53d4b2d7681a9096881d8cce4c7f5aff06ce054efbd6d454cf8c14f",
+        "size_bytes": 11776
+      },
+      "loaded_path": "runtime/mlx/nn/layers/normalization/normalization.py",
+      "module_names": [
+        "mlx.nn.layers.normalization"
+      ],
+      "scope": "mlx-runtime"
+    },
+    {
+      "artifact": {
+        "path": "attestations/dependencies/8f61a6438d46b55ce5579edf247f9988bd98bd801a37e4ccdaf295f1c3aa5bc0.bin",
+        "sha256": "8f61a6438d46b55ce5579edf247f9988bd98bd801a37e4ccdaf295f1c3aa5bc0",
+        "size_bytes": 14479
+      },
+      "loaded_path": "runtime/mlx/nn/layers/pooling/pooling.py",
+      "module_names": [
+        "mlx.nn.layers.pooling"
+      ],
+      "scope": "mlx-runtime"
+    },
+    {
+      "artifact": {
+        "path": "attestations/dependencies/c02ca21d6abf70d741db7a322e8cdde793b97604a926d0014223b22b011b5adf.bin",
+        "sha256": "c02ca21d6abf70d741db7a322e8cdde793b97604a926d0014223b22b011b5adf",
+        "size_bytes": 5509
+      },
+      "loaded_path": "runtime/mlx/nn/layers/positional_encoding/positional_encoding.py",
+      "module_names": [
+        "mlx.nn.layers.positional_encoding"
+      ],
+      "scope": "mlx-runtime"
+    },
+    {
+      "artifact": {
+        "path": "attestations/dependencies/a129a2c913db5bb7004a76e189c1121d8957cac174934a4b4b671200199dd659.bin",
+        "sha256": "a129a2c913db5bb7004a76e189c1121d8957cac174934a4b4b671200199dd659",
+        "size_bytes": 8264
+      },
+      "loaded_path": "runtime/mlx/nn/layers/quantized/quantized.py",
+      "module_names": [
+        "mlx.nn.layers.quantized"
+      ],
+      "scope": "mlx-runtime"
+    },
+    {
+      "artifact": {
+        "path": "attestations/dependencies/933c0376d99e23e3348569d9029809caeb66e96e14f89d80c120cb280e871f14.bin",
+        "sha256": "933c0376d99e23e3348569d9029809caeb66e96e14f89d80c120cb280e871f14",
+        "size_bytes": 8712
+      },
+      "loaded_path": "runtime/mlx/nn/layers/recurrent/recurrent.py",
+      "module_names": [
+        "mlx.nn.layers.recurrent"
+      ],
+      "scope": "mlx-runtime"
+    },
+    {
+      "artifact": {
+        "path": "attestations/dependencies/700eff903c2312233b464bb0f49f0d9d22241d93801a8c137b2e0119c150e822.bin",
+        "sha256": "700eff903c2312233b464bb0f49f0d9d22241d93801a8c137b2e0119c150e822",
+        "size_bytes": 12265
+      },
+      "loaded_path": "runtime/mlx/nn/layers/transformer/transformer.py",
+      "module_names": [
+        "mlx.nn.layers.transformer"
+      ],
+      "scope": "mlx-runtime"
+    },
+    {
+      "artifact": {
+        "path": "attestations/dependencies/9050a138850c3d4e1f10057ea46425ae41ee80900a98524468742f3a44db91e5.bin",
+        "sha256": "9050a138850c3d4e1f10057ea46425ae41ee80900a98524468742f3a44db91e5",
+        "size_bytes": 9603
+      },
+      "loaded_path": "runtime/mlx/nn/layers/upsample/upsample.py",
+      "module_names": [
+        "mlx.nn.layers.upsample"
+      ],
+      "scope": "mlx-runtime"
+    },
+    {
+      "artifact": {
+        "path": "attestations/dependencies/b325de6ce79d3cb39a0541aecd42a60296ad37f8dde5720c9a3775811151ce1b.bin",
+        "sha256": "b325de6ce79d3cb39a0541aecd42a60296ad37f8dde5720c9a3775811151ce1b",
+        "size_bytes": 20578
+      },
+      "loaded_path": "runtime/mlx/nn/losses/losses.py",
+      "module_names": [
+        "mlx.nn.losses"
+      ],
+      "scope": "mlx-runtime"
+    },
+    {
+      "artifact": {
+        "path": "attestations/dependencies/c055c2e5658faa050c0814e2eaac1ad5d31212a199e659f729abe6e2c6c86fa9.bin",
+        "sha256": "c055c2e5658faa050c0814e2eaac1ad5d31212a199e659f729abe6e2c6c86fa9",
+        "size_bytes": 5787
+      },
+      "loaded_path": "runtime/mlx/nn/utils/utils.py",
+      "module_names": [
+        "mlx.nn.utils"
+      ],
+      "scope": "mlx-runtime"
+    },
+    {
+      "artifact": {
+        "path": "attestations/dependencies/623e1dd10d518a2461ef30229cf63ea36cb9b61b93ebb7f5371ec5b05f479aae.bin",
+        "sha256": "623e1dd10d518a2461ef30229cf63ea36cb9b61b93ebb7f5371ec5b05f479aae",
+        "size_bytes": 9972
+      },
+      "loaded_path": "runtime/mlx/utils/utils.py",
+      "module_names": [
+        "mlx.utils"
+      ],
+      "scope": "mlx-runtime"
+    },
+    {
+      "artifact": {
+        "path": "attestations/dependencies/18e18afcaccafade98daf13a54092927904649e1dd4eba8299ab717d5d94ff45.bin",
+        "sha256": "18e18afcaccafade98daf13a54092927904649e1dd4eba8299ab717d5d94ff45",
+        "size_bytes": 659
+      },
+      "loaded_path": "port/config.json",
+      "module_names": [],
+      "scope": "port-config"
+    }
+  ],
+  "dependency_set_sha256": "6a1b94e6950d0e6dd4df48783fe3cd85c7b6a84fed1d9a7ed0d3f106213019ea",
+  "evidence_sha256": "eabc8b2ab74f224475c1d10a71e9f11ba16e109dc5d419fde18552aed1f755a8",
+  "model_artifact": {
+    "path": "converted-bf16/model.safetensors",
+    "sha256": "7d325703c071cbba116c2cbd2242f20510c797fb9d9384573e5f6ca370582c7f",
+    "size_bytes": 988097714
+  },
+  "output_artifact": {
+    "path": "quality/outputs/qwen2.5-0.5b-port-bf16/result.json",
+    "sha256": "fab6ebd4d30cf608888c50b82e0b3752b340ebc8d6f42585f7a71bf2763821e9",
+    "size_bytes": 54
+  },
+  "runner_argv_sha256": "0b70c5426a570bffea2252147281ceebcc0a88329f6a43503bdbcfc14775d51b",
+  "schema_version": 1,
+  "workload": {
+    "descriptor": {
+      "id": "qwen2.5-0.5b-load-plus-six-token-greedy-decode",
+      "input": {
+        "path": "qwen2.5-0.5b/input.json",
+        "sha256": "8e911fbfaba3da99dd167de55602eea203a0e19fd9a09786daf4ccd55421abfe",
+        "size_bytes": 165
+      },
+      "model": {
+        "id": "local/Qwen2.5-0.5B-Instruct-standalone-mlx",
+        "revision": "7d325703c071cbba116c2cbd2242f20510c797fb9d9384573e5f6ca370582c7f"
+      },
+      "parameters": {
+        "batch": 1,
+        "cache": "growing-kv",
+        "compile": false,
+        "generate_steps": 6,
+        "prompt_tokens": 11,
+        "timing_scope": "separate-process-load-plus-greedy-decode"
+      },
+      "variant": {
+        "mode": "bf16",
+        "quality_output_path": "quality/outputs/qwen2.5-0.5b-port-bf16/result.json"
+      }
+    },
+    "sha256": "17bee145329cb579f8225ce96dd7b2c12b338052bb7646c79957624db84e0d51"
+  }
+}

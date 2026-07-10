@@ -192,44 +192,45 @@
     {
       "label": "qwen2.5-0.5b-port-bf16",
       "file": "qwen2.5-0.5b-port-bf16.json",
-      "date": "2026-07-10T15:04:08.350001+00:00",
+      "date": "2026-07-10T16:02:49.741348+00:00",
       "chip": "Apple M4 Pro",
-      "command_summary": "python3.13 qwen2.5-0.5b/runner.py --model local/Qwen2.5-0.5B-Instruct-standalone-mlx --revision 7d325703c071cbba116c2cbd2242f20510c797fb9d9384573e5f6ca370582c7f --input qwen2.5-0.5b/input.json --steps 6 --mode bf16 --output quality/outputs/qwen2.5-0.5b-port-bf16/result.json",
+      "command_summary": "python3.13 runners/attested_mlx_port.py --model local/Qwen2.5-0.5B-Instruct-standalone-mlx --revision 7d325703c071cbba116c2cbd2242f20510c797fb9d9384573e5f6ca370582c7f --input qwen2.5-0.5b/input.json --steps 6 --mode bf16 --output quality/outputs/qwen2.5-0.5b-port-bf16/result.json --attestation-challenge attestations/qwen2.5-0.5b-port-bf16/current-challenge.json --attestation-output attestations/qwen2.5-0.5b-port-bf16/current-evidence.json",
       "config_notes": {
         "dtype_policy": "bf16",
         "mode": "bf16",
         "quality_output_path": "quality/outputs/qwen2.5-0.5b-port-bf16/result.json",
+        "attestation_challenge_path": "attestations/qwen2.5-0.5b-port-bf16/current-challenge.json",
+        "attestation_output_path": "attestations/qwen2.5-0.5b-port-bf16/current-evidence.json",
         "weights_bytes": 988097714,
         "weights_sha256": "7d325703c071cbba116c2cbd2242f20510c797fb9d9384573e5f6ca370582c7f"
       },
       "schema_version": 2,
-      "receipt_sha256": "4710976c8c5df13e87ab3186168364487e0309e7f93896c847327a12a9692f86",
-      "classification": "performance_observation",
-      "promotion_ready": false,
-      "reasons": [
-        "execution-semantics-unattested"
-      ]
+      "receipt_sha256": "11ede57ed58d4623214f852bf7827fece79fd77daac70f2beb11d68d076f333d",
+      "classification": "promotion_ready",
+      "promotion_ready": true,
+      "reasons": []
     },
     {
       "label": "qwen2.5-0.5b-port-f32",
       "file": "qwen2.5-0.5b-port-f32.json",
-      "date": "2026-07-10T15:03:59.306111+00:00",
+      "date": "2026-07-10T16:02:34.042907+00:00",
       "chip": "Apple M4 Pro",
-      "command_summary": "python3.13 qwen2.5-0.5b/runner.py --model local/Qwen2.5-0.5B-Instruct-standalone-mlx --revision 7df68182b704fb0933625cdb44cc4e89e8f4cfdb5cb75b3e2251f608807f65f0 --input qwen2.5-0.5b/input.json --steps 6 --mode f32 --output quality/outputs/qwen2.5-0.5b-port-f32/result.json",
+      "command_summary": "python3.13 runners/attested_mlx_port.py --model local/Qwen2.5-0.5B-Instruct-standalone-mlx --revision 7df68182b704fb0933625cdb44cc4e89e8f4cfdb5cb75b3e2251f608807f65f0 --input qwen2.5-0.5b/input.json --steps 6 --mode f32 --output quality/outputs/qwen2.5-0.5b-port-f32/result.json --attestation-challenge attestations/qwen2.5-0.5b-port-f32/current-challenge.json --attestation-output attestations/qwen2.5-0.5b-port-f32/current-evidence.json",
       "config_notes": {
         "dtype_policy": "f32",
         "mode": "f32",
         "quality_output_path": "quality/outputs/qwen2.5-0.5b-port-f32/result.json",
+        "attestation_challenge_path": "attestations/qwen2.5-0.5b-port-f32/current-challenge.json",
+        "attestation_output_path": "attestations/qwen2.5-0.5b-port-f32/current-evidence.json",
         "weights_bytes": 1976163149,
         "weights_sha256": "7df68182b704fb0933625cdb44cc4e89e8f4cfdb5cb75b3e2251f608807f65f0"
       },
       "schema_version": 2,
-      "receipt_sha256": "47e573066f0537fd92bd9f31925c36bee645a93ce332b929bdddd719b0774902",
+      "receipt_sha256": "c7775a8a3bce14dbbca143ca622ae14e1d7a81a986bae6304d6ea90c307ad04a",
       "classification": "performance_observation",
       "promotion_ready": false,
       "reasons": [
-        "baseline-role-not-promotable",
-        "execution-semantics-unattested"
+        "baseline-role-not-promotable"
       ]
     },
     {

@@ -289,7 +289,14 @@ class ClaimCatalogContractTests(unittest.TestCase):
         self.assertEqual([claim["method_id"] for claim in catalog["claims"]], method_ids)
         self.assertTrue(all("observed_range" in claim for claim in catalog["claims"]))
         self.assertTrue(all("effective_range" in claim for claim in catalog["claims"]))
-        self.assertTrue(all(claim["effective_range"] is None for claim in catalog["claims"]))
+        promoted = [
+            claim for claim in catalog["claims"]
+            if claim["effective_range"] is not None
+        ]
+        self.assertEqual([claim["method_id"] for claim in promoted], ["bf16-weight-cast"])
+        self.assertEqual(promoted[0]["effective_range"], "1.0x-1.8122x")
+        self.assertEqual(promoted[0]["promotion_state"], "local-promotion")
+        self.assertEqual(promoted[0]["withheld_reasons"], [])
 
         by_id = {claim["method_id"]: claim for claim in catalog["claims"]}
         for method_id, observed_range in {

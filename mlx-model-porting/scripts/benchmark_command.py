@@ -10,6 +10,7 @@ import math
 import os
 import platform
 import re
+import secrets
 import shutil
 import signal
 import shlex
@@ -687,6 +688,31 @@ def resolve_receipt_interpreter(
     }
 
 
+def attested_system_metadata(
+    system: dict[str, Any],
+    interpreter: dict[str, Any],
+) -> dict[str, Any]:
+    """Project software versions from the interpreter that executed the runner."""
+    result = dict(system)
+    version = interpreter.get("version")
+    if isinstance(version, str) and version.startswith("Python "):
+        result["python"] = version.removeprefix("Python ")
+    environment = interpreter.get("environment")
+    distributions = environment.get("distributions") if isinstance(environment, dict) else None
+    mlx_versions = [
+        distribution.get("version")
+        for distribution in distributions
+        if isinstance(distribution, dict)
+        and str(distribution.get("name", "")).lower() == "mlx"
+        and isinstance(distribution.get("version"), str)
+        and distribution["version"]
+    ] if isinstance(distributions, list) else []
+    if len(mlx_versions) != 1:
+        raise SkillError("attested interpreter must expose exactly one MLX distribution version")
+    result["mlx_version"] = mlx_versions[0]
+    return result
+
+
 def prepare_receipt_quality_output(
     root: Path,
     spec: dict[str, Any],
@@ -953,6 +979,155 @@ def file_artifact(root: Path, path: Path, *, truncated: bool | None = None) -> d
     return result
 
 
+def initialize_attestation_layout(root: Path, spec: dict[str, Any]) -> None:
+    label = str(spec.get("label"))
+    label_root = root / "attestations" / label
+    if label_root.exists() or label_root.is_symlink():
+        raise SkillError(
+            f"attested receipt evidence already exists for {label}; refusing to overwrite"
+        )
+    label_root.mkdir(parents=True)
+
+
+def prepare_attested_invocation(
+    root: Path,
+    spec: dict[str, Any],
+    command: list[str],
+    quality_control: dict[str, Any],
+    *,
+    phase: str,
+    run_index: int,
+) -> dict[str, Any]:
+    import validate_benchmarks as validation
+
+    label = str(spec["label"])
+    invocation_prefix = f"attestations/{label}/runs/{phase}-{run_index:03d}"
+    contract_source = quality_control.get("path")
+    if not isinstance(contract_source, Path):
+        raise SkillError("attested invocation is missing the quality-contract snapshot")
+    contract_raw = contract_source.read_bytes()
+    contract_path = prepare_receipt_output_path(
+        root,
+        f"{invocation_prefix}/quality-contract.json",
+    )
+    if contract_path.exists():
+        raise SkillError("attested invocation evidence already exists; refusing to overwrite")
+    try:
+        contract_text = contract_raw.decode("utf-8")
+    except UnicodeDecodeError as exc:
+        raise SkillError("attested quality-contract snapshot is not UTF-8") from exc
+    atomic_write_text(contract_path, contract_text)
+    contract_artifact = file_artifact(root, contract_path)
+
+    challenge = {
+        "schema_version": 1,
+        "nonce": secrets.token_hex(32),
+        "receipt_label": label,
+        "phase": phase,
+        "run_index": run_index,
+        "command": command,
+        "command_sha256": canonical_sha256(command),
+        "runner_argv_sha256": canonical_sha256(command[1:]),
+        "quality_contract": contract_artifact,
+    }
+    challenge_snapshot = prepare_receipt_output_path(
+        root,
+        f"{invocation_prefix}/challenge.json",
+    )
+    if challenge_snapshot.exists():
+        raise SkillError("attested invocation challenge already exists; refusing to overwrite")
+    challenge_text = dump_json(challenge)
+    atomic_write_text(challenge_snapshot, challenge_text)
+
+    variant = spec.get("variant_config", {})
+    current_challenge = prepare_receipt_output_path(
+        root,
+        str(variant.get("attestation_challenge_path")),
+    )
+    current_evidence = prepare_receipt_output_path(
+        root,
+        str(variant.get("attestation_output_path")),
+    )
+    if current_evidence.exists():
+        current_evidence.unlink()
+    atomic_write_text(current_challenge, challenge_text)
+    challenge_artifact = file_artifact(root, challenge_snapshot)
+    if challenge_artifact["size_bytes"] > validation.MAX_ATTESTATION_CHALLENGE_BYTES:
+        raise SkillError("attestation challenge exceeds the bounded evidence limit")
+    return {
+        "prefix": invocation_prefix,
+        "challenge": challenge_artifact,
+        "current_challenge": current_challenge,
+        "current_evidence": current_evidence,
+    }
+
+
+def capture_attested_invocation(
+    root: Path,
+    context: dict[str, Any],
+    quality_output_path: Path,
+) -> dict[str, Any]:
+    import validate_benchmarks as validation
+
+    evidence_path = context.get("current_evidence")
+    if (
+        not isinstance(evidence_path, Path)
+        or evidence_path.is_symlink()
+        or not evidence_path.is_file()
+        or evidence_path.stat().st_size > validation.MAX_ATTESTATION_ARTIFACT_BYTES
+    ):
+        raise SkillError("attested runner did not create bounded regular evidence")
+    try:
+        evidence_text = evidence_path.read_text(encoding="utf-8")
+        evidence_payload = json.loads(evidence_text)
+    except (OSError, UnicodeDecodeError, json.JSONDecodeError) as exc:
+        raise SkillError(f"attested runner evidence is invalid JSON: {exc}") from exc
+    current_challenge = context.get("current_challenge")
+    if not isinstance(current_challenge, Path):
+        raise SkillError("attested invocation challenge state is missing")
+    challenge_descriptor = {
+        "sha256": hashlib.sha256(current_challenge.read_bytes()).hexdigest(),
+        "size_bytes": current_challenge.stat().st_size,
+    }
+    if evidence_payload.get("challenge") != challenge_descriptor:
+        raise SkillError("attested runner evidence does not bind the parent challenge")
+
+    prefix = str(context["prefix"])
+    evidence_snapshot = prepare_receipt_output_path(root, f"{prefix}/evidence.json")
+    output_snapshot = prepare_receipt_output_path(root, f"{prefix}/output.json")
+    if evidence_snapshot.exists() or output_snapshot.exists():
+        raise SkillError("attested invocation evidence already exists; refusing to overwrite")
+    atomic_write_text(evidence_snapshot, evidence_text)
+    try:
+        output_text = quality_output_path.read_text(encoding="utf-8")
+    except (OSError, UnicodeDecodeError) as exc:
+        raise SkillError("attested measured output is not bounded UTF-8") from exc
+    if len(output_text.encode("utf-8")) > validation.MAX_ATTESTATION_ARTIFACT_BYTES:
+        raise SkillError("attested output exceeds the bounded evidence limit")
+    atomic_write_text(output_snapshot, output_text)
+    output_artifact = file_artifact(root, output_snapshot)
+    evidence_output = evidence_payload.get("output_artifact")
+    if (
+        not isinstance(evidence_output, dict)
+        or evidence_output.get("sha256") != output_artifact["sha256"]
+        or evidence_output.get("size_bytes") != output_artifact["size_bytes"]
+    ):
+        raise SkillError("attested runner evidence does not bind the measured output")
+    return {
+        "challenge": context["challenge"],
+        "evidence": file_artifact(root, evidence_snapshot),
+        "output": output_artifact,
+    }
+
+
+def remove_current_attestation_outputs(root: Path, spec: dict[str, Any]) -> None:
+    variant = spec.get("variant_config", {})
+    for key in ("attestation_challenge_path", "attestation_output_path"):
+        path = prepare_receipt_output_path(root, str(variant.get(key)))
+        if path.exists():
+            path.unlink()
+
+
 def build_controlled_quality(
     receipt: dict[str, Any],
     receipt_path: Path,
@@ -1042,6 +1217,11 @@ def build_external_receipt(
             "run": index,
             "wall_seconds": measured["wall_seconds"],
             "raw_output": report_artifact,
+            **(
+                {"execution_attestation": measured["execution_attestation"]}
+                if "execution_attestation" in measured
+                else {}
+            ),
         }
         for index, measured in enumerate(report["runs"], start=1)
     ]
@@ -1103,6 +1283,7 @@ def main() -> int:
         execution_environment_sha256: str | None = None
         interpreter_descriptor: dict[str, Any] | None = None
         resolved_interpreter: str | None = None
+        attested_mode = False
         serialized_cwd = args.cwd or "."
         if args.receipt_spec:
             if args.command:
@@ -1164,6 +1345,7 @@ def main() -> int:
             )
 
             template_receipt = {
+                "label": receipt_spec["label"],
                 "models": receipt_spec["models"],
                 "workload": receipt_spec["workload"],
                 "variant_config": receipt_spec["variant_config"],
@@ -1172,10 +1354,16 @@ def main() -> int:
                 template_receipt,
                 receipt_spec["argv_template"],
             )
-            validation.build_external_runner_descriptor(template_receipt, receipt_spec["argv_template"])
+            runner_descriptor = validation.build_external_runner_descriptor(
+                template_receipt,
+                receipt_spec["argv_template"],
+            )
+            attested_mode = runner_descriptor.get("id") == validation.ATTESTED_RUNNER_ID
             if not validation.external_command_is_safe(args.command):
                 raise SkillError("external receipt command is unsafe")
             cwd = str(receipt_path.parent)
+            if attested_mode:
+                initialize_attestation_layout(receipt_path.parent, receipt_spec)
         else:
             if args.quality_contract or args.baseline_receipt:
                 raise SkillError("--quality-contract and --baseline-receipt require --receipt-spec")
@@ -1205,11 +1393,37 @@ def main() -> int:
             execution_command = args.command
         warmups: list[dict[str, Any]] = []
         runs: list[dict[str, Any]] = []
-        for _ in range(args.warmup):
+        for run_index in range(1, args.warmup + 1):
+            attestation_context = (
+                prepare_attested_invocation(
+                    receipt_path.parent,
+                    receipt_spec,
+                    args.command,
+                    quality_control,
+                    phase="warmup",
+                    run_index=run_index,
+                )
+                if attested_mode
+                and receipt_path is not None
+                and receipt_spec is not None
+                and quality_control is not None
+                else None
+            )
             result = run_once(execution_command, cwd=cwd, env=env, timeout=args.timeout, stdout_tail=args.stdout_tail, stderr_tail=args.stderr_tail)
             result["stdout_tail"] = redact_environment_values(result["stdout_tail"], environment_overrides)
             result["stderr_tail"] = redact_environment_values(result["stderr_tail"], environment_overrides)
             result["phase"] = "warmup"
+            if (
+                attestation_context is not None
+                and quality_output_path is not None
+                and result["returncode"] == 0
+                and result["timed_out"] is False
+            ):
+                result["execution_attestation"] = capture_attested_invocation(
+                    receipt_path.parent,
+                    attestation_context,
+                    quality_output_path,
+                )
             warmups.append(result)
             if result["returncode"] != 0 or result["timed_out"] is True:
                 break
@@ -1218,9 +1432,24 @@ def main() -> int:
             and warmups[-1]["returncode"] == 0
             and warmups[-1]["timed_out"] is False
         ):
-            for _ in range(args.runs):
+            for run_index in range(1, args.runs + 1):
                 if quality_output_path is not None and quality_output_path.exists():
                     quality_output_path.unlink()
+                attestation_context = (
+                    prepare_attested_invocation(
+                        receipt_path.parent,
+                        receipt_spec,
+                        args.command,
+                        quality_control,
+                        phase="measure",
+                        run_index=run_index,
+                    )
+                    if attested_mode
+                    and receipt_path is not None
+                    and receipt_spec is not None
+                    and quality_control is not None
+                    else None
+                )
                 result = run_once(execution_command, cwd=cwd, env=env, timeout=args.timeout, stdout_tail=args.stdout_tail, stderr_tail=args.stderr_tail)
                 result["stdout_tail"] = redact_environment_values(result["stdout_tail"], environment_overrides)
                 result["stderr_tail"] = redact_environment_values(result["stderr_tail"], environment_overrides)
@@ -1236,6 +1465,12 @@ def main() -> int:
                         quality_output_path,
                         expected_quality_output,
                     )
+                    if attestation_context is not None:
+                        result["execution_attestation"] = capture_attested_invocation(
+                            receipt_path.parent,
+                            attestation_context,
+                            quality_output_path,
+                        )
                 runs.append(result)
                 if result["returncode"] != 0 or result["timed_out"] is True:
                     break
@@ -1248,6 +1483,7 @@ def main() -> int:
                 receipt_spec is None
                 or result.get("quality_output") == expected_quality_output
             )
+            and (not attested_mode or isinstance(result.get("execution_attestation"), dict))
         ]
         times = [float(result["wall_seconds"]) for result in successful_runs]
         rss = [
@@ -1257,6 +1493,7 @@ def main() -> int:
         ]
         warmups_ok = len(warmups) == args.warmup and all(
             result["returncode"] == 0 and result["timed_out"] is False
+            and (not attested_mode or isinstance(result.get("execution_attestation"), dict))
             for result in warmups
         )
         ok = warmups_ok and len(successful_runs) == args.runs
@@ -1270,6 +1507,11 @@ def main() -> int:
                 or current_descriptor != interpreter_descriptor
             ):
                 raise SkillError("receipt interpreter environment changed during measured execution")
+        system = environment_metadata()
+        if attested_mode:
+            if interpreter_descriptor is None:
+                raise SkillError("attested execution is missing its interpreter descriptor")
+            system = attested_system_metadata(system, interpreter_descriptor)
         report = {
             "schema_version": 1,
             "generated_at": datetime.now(timezone.utc).isoformat(),
@@ -1277,7 +1519,7 @@ def main() -> int:
             "command_display": shlex.join(args.command),
             "cwd": serialized_cwd,
             "environment_overrides": {key: "[REDACTED]" for key in environment_overrides},
-            "system": environment_metadata(),
+            "system": system,
             "warmup_count": args.warmup,
             "requested_runs": args.runs,
             "timeout_seconds": args.timeout,
@@ -1307,6 +1549,8 @@ def main() -> int:
             if quality_control is None:
                 raise SkillError("receipt mode quality control snapshot is missing")
             verify_quality_control_snapshot(quality_control)
+            if attested_mode:
+                remove_current_attestation_outputs(receipt_path.parent, receipt_spec)
             raw_report_path = prepare_receipt_output_path(
                 receipt_path.parent,
                 f"raw/{receipt_spec['label']}/benchmark-command.json",

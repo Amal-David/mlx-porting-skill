@@ -2,8 +2,8 @@
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
   "version": "0.4.0",
-  "generated_at": "2026-07-10T15:21:09.649854+00:00",
-  "file_count": 382,
+  "generated_at": "2026-07-10T16:14:48.469139+00:00",
+  "file_count": 458,
   "files": [
     {
       "path": ".agents/skills/mlx-model-porting",
@@ -99,8 +99,8 @@
     },
     {
       "path": "VALIDATION.md",
-      "size_bytes": 12214,
-      "sha256": "592f8500df053ada0e060bedaf62e4a26a0de5eb878885c1f3ab78f61b9a5740",
+      "size_bytes": 15157,
+      "sha256": "a5f43a32c00a3f64741b828cc1af34141625ef60fa715325b61e5cd3cbda1e3a",
       "executable": false
     },
     {
@@ -171,8 +171,8 @@
     },
     {
       "path": "mlx-model-porting/assets/BENCHMARK_REPORT.md",
-      "size_bytes": 5401,
-      "sha256": "70c6c67f79b4c4a0d307759ed4cffb716d209e68290201eaefefa9995f86780a",
+      "size_bytes": 5428,
+      "sha256": "c55dd156166c48a2019485ead4f377c7eee7a3774e37721b24f774505449a56e",
       "executable": false
     },
     {
@@ -203,6 +203,456 @@
       "path": "mlx-model-porting/assets/architectures.yaml",
       "size_bytes": 27394,
       "sha256": "64445d61bda45f0f1d453a0a8d510dfb525a3e88bfc5d0a82cd056202b933a26",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/assets/benchmarks/attestations/dependencies/18e18afcaccafade98daf13a54092927904649e1dd4eba8299ab717d5d94ff45.bin",
+      "size_bytes": 659,
+      "sha256": "18e18afcaccafade98daf13a54092927904649e1dd4eba8299ab717d5d94ff45",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/assets/benchmarks/attestations/dependencies/29ef203c13d9bebb6b8cad6aadb44d1ad495e2bbc19184ca5415b6a505eb36f6.bin",
+      "size_bytes": 618,
+      "sha256": "29ef203c13d9bebb6b8cad6aadb44d1ad495e2bbc19184ca5415b6a505eb36f6",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/assets/benchmarks/attestations/dependencies/311bb75620c546b7ad092f6864e45452a3d5a4fc8a698b3e691769484e2f0469.bin",
+      "size_bytes": 1034096,
+      "sha256": "311bb75620c546b7ad092f6864e45452a3d5a4fc8a698b3e691769484e2f0469",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/assets/benchmarks/attestations/dependencies/3a2364d8096a54c302c820e24beabb976d2b8b9502ca865337711307ed8a4d61.bin",
+      "size_bytes": 1842,
+      "sha256": "3a2364d8096a54c302c820e24beabb976d2b8b9502ca865337711307ed8a4d61",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/assets/benchmarks/attestations/dependencies/3bbfbecc997379696313844c6056ffaf7c88d59300dcb92adb47709eb2410e9e.bin",
+      "size_bytes": 1401,
+      "sha256": "3bbfbecc997379696313844c6056ffaf7c88d59300dcb92adb47709eb2410e9e",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/assets/benchmarks/attestations/dependencies/4b0b2f3a82a33037efafd221d83c4add53ef7915b7fedaf04ed546d8c3f7ba75.bin",
+      "size_bytes": 15971,
+      "sha256": "4b0b2f3a82a33037efafd221d83c4add53ef7915b7fedaf04ed546d8c3f7ba75",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/assets/benchmarks/attestations/dependencies/623e1dd10d518a2461ef30229cf63ea36cb9b61b93ebb7f5371ec5b05f479aae.bin",
+      "size_bytes": 9972,
+      "sha256": "623e1dd10d518a2461ef30229cf63ea36cb9b61b93ebb7f5371ec5b05f479aae",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/assets/benchmarks/attestations/dependencies/700eff903c2312233b464bb0f49f0d9d22241d93801a8c137b2e0119c150e822.bin",
+      "size_bytes": 12265,
+      "sha256": "700eff903c2312233b464bb0f49f0d9d22241d93801a8c137b2e0119c150e822",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/assets/benchmarks/attestations/dependencies/7bdd4fd41047a617ec84f7eb214cde3aaa3c3e4c932550468bae1204d1df6550.bin",
+      "size_bytes": 303,
+      "sha256": "7bdd4fd41047a617ec84f7eb214cde3aaa3c3e4c932550468bae1204d1df6550",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/assets/benchmarks/attestations/dependencies/8f61a6438d46b55ce5579edf247f9988bd98bd801a37e4ccdaf295f1c3aa5bc0.bin",
+      "size_bytes": 14479,
+      "sha256": "8f61a6438d46b55ce5579edf247f9988bd98bd801a37e4ccdaf295f1c3aa5bc0",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/assets/benchmarks/attestations/dependencies/9050a138850c3d4e1f10057ea46425ae41ee80900a98524468742f3a44db91e5.bin",
+      "size_bytes": 9603,
+      "sha256": "9050a138850c3d4e1f10057ea46425ae41ee80900a98524468742f3a44db91e5",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/assets/benchmarks/attestations/dependencies/90e8e529c1cc2e48d81caf697247b5f46912ab83446014087c7116075542b235.bin",
+      "size_bytes": 4455,
+      "sha256": "90e8e529c1cc2e48d81caf697247b5f46912ab83446014087c7116075542b235",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/assets/benchmarks/attestations/dependencies/92cfbc9ba53d4b2d7681a9096881d8cce4c7f5aff06ce054efbd6d454cf8c14f.bin",
+      "size_bytes": 11776,
+      "sha256": "92cfbc9ba53d4b2d7681a9096881d8cce4c7f5aff06ce054efbd6d454cf8c14f",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/assets/benchmarks/attestations/dependencies/933c0376d99e23e3348569d9029809caeb66e96e14f89d80c120cb280e871f14.bin",
+      "size_bytes": 8712,
+      "sha256": "933c0376d99e23e3348569d9029809caeb66e96e14f89d80c120cb280e871f14",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/assets/benchmarks/attestations/dependencies/99bbc9e8f50ab6aa1942d8afde9ae4f5f36fd3af31c916f769b66108299676af.bin",
+      "size_bytes": 3616,
+      "sha256": "99bbc9e8f50ab6aa1942d8afde9ae4f5f36fd3af31c916f769b66108299676af",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/assets/benchmarks/attestations/dependencies/a129a2c913db5bb7004a76e189c1121d8957cac174934a4b4b671200199dd659.bin",
+      "size_bytes": 8264,
+      "sha256": "a129a2c913db5bb7004a76e189c1121d8957cac174934a4b4b671200199dd659",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/assets/benchmarks/attestations/dependencies/b325de6ce79d3cb39a0541aecd42a60296ad37f8dde5720c9a3775811151ce1b.bin",
+      "size_bytes": 20578,
+      "sha256": "b325de6ce79d3cb39a0541aecd42a60296ad37f8dde5720c9a3775811151ce1b",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/assets/benchmarks/attestations/dependencies/ba01c5485dfe46d9819ecf016f844ef2ca2e721418e805fe0e4ddec852a5a8c3.bin",
+      "size_bytes": 6995,
+      "sha256": "ba01c5485dfe46d9819ecf016f844ef2ca2e721418e805fe0e4ddec852a5a8c3",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/assets/benchmarks/attestations/dependencies/c02ca21d6abf70d741db7a322e8cdde793b97604a926d0014223b22b011b5adf.bin",
+      "size_bytes": 5509,
+      "sha256": "c02ca21d6abf70d741db7a322e8cdde793b97604a926d0014223b22b011b5adf",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/assets/benchmarks/attestations/dependencies/c055c2e5658faa050c0814e2eaac1ad5d31212a199e659f729abe6e2c6c86fa9.bin",
+      "size_bytes": 5787,
+      "sha256": "c055c2e5658faa050c0814e2eaac1ad5d31212a199e659f729abe6e2c6c86fa9",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/assets/benchmarks/attestations/dependencies/d1a2088211cfe5b4cb9723da93243efdc0a2b94e5cf74f7d1af31cc6a42aaf1e.bin",
+      "size_bytes": 4628,
+      "sha256": "d1a2088211cfe5b4cb9723da93243efdc0a2b94e5cf74f7d1af31cc6a42aaf1e",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/assets/benchmarks/attestations/dependencies/d1e740f70dc8a2dcce8f24f39c1c43db1824724312314919cb40109a81ec6fe8.bin",
+      "size_bytes": 13856,
+      "sha256": "d1e740f70dc8a2dcce8f24f39c1c43db1824724312314919cb40109a81ec6fe8",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/assets/benchmarks/attestations/dependencies/e34b902aa24fe1971420b7ef33935f322c7cf24d6f16911d46171f770ee60bd0.bin",
+      "size_bytes": 7757,
+      "sha256": "e34b902aa24fe1971420b7ef33935f322c7cf24d6f16911d46171f770ee60bd0",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/assets/benchmarks/attestations/dependencies/e538cddf7479f1aad592a0058e9a1eb29120fbbb4c6e6507b54ed1fbad02fb45.bin",
+      "size_bytes": 151,
+      "sha256": "e538cddf7479f1aad592a0058e9a1eb29120fbbb4c6e6507b54ed1fbad02fb45",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/assets/benchmarks/attestations/dependencies/e62a3b11aff60a72009bd7690502043cdfdcd493ff71a27f557a7f299ca74ec8.bin",
+      "size_bytes": 23008,
+      "sha256": "e62a3b11aff60a72009bd7690502043cdfdcd493ff71a27f557a7f299ca74ec8",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/assets/benchmarks/attestations/dependencies/f16d40bace757e068a3afac593b5df900743ea69f71d42bd34efd352567981dd.bin",
+      "size_bytes": 9825,
+      "sha256": "f16d40bace757e068a3afac593b5df900743ea69f71d42bd34efd352567981dd",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/assets/benchmarks/attestations/dependencies/f748ea4f10995bf30ed6ba76ed3539f23c18cdf541031e1c0968dd60dc98f723.bin",
+      "size_bytes": 321,
+      "sha256": "f748ea4f10995bf30ed6ba76ed3539f23c18cdf541031e1c0968dd60dc98f723",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/assets/benchmarks/attestations/qwen2.5-0.5b-port-bf16/runs/measure-001/challenge.json",
+      "size_bytes": 1181,
+      "sha256": "9384da5888e158ba0883cb4744a4c9805c7eacdc09596b715eb3eed94e1151c6",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/assets/benchmarks/attestations/qwen2.5-0.5b-port-bf16/runs/measure-001/evidence.json",
+      "size_bytes": 13426,
+      "sha256": "a655a6f04a3069d29bf170ccd2a06322994230d412b28265916d29b0f2c7ed94",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/assets/benchmarks/attestations/qwen2.5-0.5b-port-bf16/runs/measure-001/output.json",
+      "size_bytes": 54,
+      "sha256": "fab6ebd4d30cf608888c50b82e0b3752b340ebc8d6f42585f7a71bf2763821e9",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/assets/benchmarks/attestations/qwen2.5-0.5b-port-bf16/runs/measure-001/quality-contract.json",
+      "size_bytes": 511,
+      "sha256": "6eff641b34b54a49813c276dc2b2ae730b84441d25dca2c71baa0c33894729fe",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/assets/benchmarks/attestations/qwen2.5-0.5b-port-bf16/runs/measure-002/challenge.json",
+      "size_bytes": 1181,
+      "sha256": "3f7a913a6a1f6e5a4ca2e276919e40fbe693bc9a0c9dc5338fc9226b7b42abab",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/assets/benchmarks/attestations/qwen2.5-0.5b-port-bf16/runs/measure-002/evidence.json",
+      "size_bytes": 13426,
+      "sha256": "fc78edad4c45b80ca7384a03e21b9d164bcfb556c0ef4d7d0734db46ca5e3ddc",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/assets/benchmarks/attestations/qwen2.5-0.5b-port-bf16/runs/measure-002/output.json",
+      "size_bytes": 54,
+      "sha256": "fab6ebd4d30cf608888c50b82e0b3752b340ebc8d6f42585f7a71bf2763821e9",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/assets/benchmarks/attestations/qwen2.5-0.5b-port-bf16/runs/measure-002/quality-contract.json",
+      "size_bytes": 511,
+      "sha256": "6eff641b34b54a49813c276dc2b2ae730b84441d25dca2c71baa0c33894729fe",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/assets/benchmarks/attestations/qwen2.5-0.5b-port-bf16/runs/measure-003/challenge.json",
+      "size_bytes": 1181,
+      "sha256": "20da5f0194451714163c5d3a53fc8feb4f4eec8ddeb129a0a3c8a6db1317a50b",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/assets/benchmarks/attestations/qwen2.5-0.5b-port-bf16/runs/measure-003/evidence.json",
+      "size_bytes": 13426,
+      "sha256": "ae5ff6574aa22addc9a3b35bf889f3c4bdb4cb7c347c6f2e80d178f07694dcd0",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/assets/benchmarks/attestations/qwen2.5-0.5b-port-bf16/runs/measure-003/output.json",
+      "size_bytes": 54,
+      "sha256": "fab6ebd4d30cf608888c50b82e0b3752b340ebc8d6f42585f7a71bf2763821e9",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/assets/benchmarks/attestations/qwen2.5-0.5b-port-bf16/runs/measure-003/quality-contract.json",
+      "size_bytes": 511,
+      "sha256": "6eff641b34b54a49813c276dc2b2ae730b84441d25dca2c71baa0c33894729fe",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/assets/benchmarks/attestations/qwen2.5-0.5b-port-bf16/runs/measure-004/challenge.json",
+      "size_bytes": 1181,
+      "sha256": "4850a89ce7f170fa28b3abed50db2019e6cc113e7e7120d173b41458b676a8c9",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/assets/benchmarks/attestations/qwen2.5-0.5b-port-bf16/runs/measure-004/evidence.json",
+      "size_bytes": 13426,
+      "sha256": "9388f754dcc303c3f535fcbf9847c011255f3f93aae0a5eba7a0544df57e2865",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/assets/benchmarks/attestations/qwen2.5-0.5b-port-bf16/runs/measure-004/output.json",
+      "size_bytes": 54,
+      "sha256": "fab6ebd4d30cf608888c50b82e0b3752b340ebc8d6f42585f7a71bf2763821e9",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/assets/benchmarks/attestations/qwen2.5-0.5b-port-bf16/runs/measure-004/quality-contract.json",
+      "size_bytes": 511,
+      "sha256": "6eff641b34b54a49813c276dc2b2ae730b84441d25dca2c71baa0c33894729fe",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/assets/benchmarks/attestations/qwen2.5-0.5b-port-bf16/runs/measure-005/challenge.json",
+      "size_bytes": 1181,
+      "sha256": "ec613862cd54eda35336d3eddfd41d66d4ab7268bcbdfde51f1410d3d110182d",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/assets/benchmarks/attestations/qwen2.5-0.5b-port-bf16/runs/measure-005/evidence.json",
+      "size_bytes": 13426,
+      "sha256": "cfbdac1d73d3b2c4fdc531852886d74e5ff5c585efcbda1caede3086db673e45",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/assets/benchmarks/attestations/qwen2.5-0.5b-port-bf16/runs/measure-005/output.json",
+      "size_bytes": 54,
+      "sha256": "fab6ebd4d30cf608888c50b82e0b3752b340ebc8d6f42585f7a71bf2763821e9",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/assets/benchmarks/attestations/qwen2.5-0.5b-port-bf16/runs/measure-005/quality-contract.json",
+      "size_bytes": 511,
+      "sha256": "6eff641b34b54a49813c276dc2b2ae730b84441d25dca2c71baa0c33894729fe",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/assets/benchmarks/attestations/qwen2.5-0.5b-port-bf16/runs/warmup-001/challenge.json",
+      "size_bytes": 1179,
+      "sha256": "da4953d4f35a2a8067d2eb7334816f1389b62a2da200286802f9079e2fe90598",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/assets/benchmarks/attestations/qwen2.5-0.5b-port-bf16/runs/warmup-001/evidence.json",
+      "size_bytes": 13426,
+      "sha256": "cb50e4d281160e84cff6efb45f6ed3beec0868ce3ab1e13d832eddbdc6042ab3",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/assets/benchmarks/attestations/qwen2.5-0.5b-port-bf16/runs/warmup-001/output.json",
+      "size_bytes": 54,
+      "sha256": "fab6ebd4d30cf608888c50b82e0b3752b340ebc8d6f42585f7a71bf2763821e9",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/assets/benchmarks/attestations/qwen2.5-0.5b-port-bf16/runs/warmup-001/quality-contract.json",
+      "size_bytes": 511,
+      "sha256": "6eff641b34b54a49813c276dc2b2ae730b84441d25dca2c71baa0c33894729fe",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/assets/benchmarks/attestations/qwen2.5-0.5b-port-f32/runs/measure-001/challenge.json",
+      "size_bytes": 1175,
+      "sha256": "bdee75de5362573a3c4f36493c81f43c80db3b1cff7330fa41a00c1c48a74efd",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/assets/benchmarks/attestations/qwen2.5-0.5b-port-f32/runs/measure-001/evidence.json",
+      "size_bytes": 13423,
+      "sha256": "cdfe44f1dac24909f80dd49e1ae8aeba25b38de8338ae65d95fb39f9c776fb6a",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/assets/benchmarks/attestations/qwen2.5-0.5b-port-f32/runs/measure-001/output.json",
+      "size_bytes": 54,
+      "sha256": "fab6ebd4d30cf608888c50b82e0b3752b340ebc8d6f42585f7a71bf2763821e9",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/assets/benchmarks/attestations/qwen2.5-0.5b-port-f32/runs/measure-001/quality-contract.json",
+      "size_bytes": 510,
+      "sha256": "0689b458c611abc9a766edc43d826327ac7c87a394ea0dc545a36621aa1f082c",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/assets/benchmarks/attestations/qwen2.5-0.5b-port-f32/runs/measure-002/challenge.json",
+      "size_bytes": 1175,
+      "sha256": "9a7784d512010de5e479f830547af7076bf3ff1891191ca46be09e56d287a35e",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/assets/benchmarks/attestations/qwen2.5-0.5b-port-f32/runs/measure-002/evidence.json",
+      "size_bytes": 13423,
+      "sha256": "a83d6f4688bf83079fd4856b26aff9bce805e069631a212238510530e3551c7a",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/assets/benchmarks/attestations/qwen2.5-0.5b-port-f32/runs/measure-002/output.json",
+      "size_bytes": 54,
+      "sha256": "fab6ebd4d30cf608888c50b82e0b3752b340ebc8d6f42585f7a71bf2763821e9",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/assets/benchmarks/attestations/qwen2.5-0.5b-port-f32/runs/measure-002/quality-contract.json",
+      "size_bytes": 510,
+      "sha256": "0689b458c611abc9a766edc43d826327ac7c87a394ea0dc545a36621aa1f082c",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/assets/benchmarks/attestations/qwen2.5-0.5b-port-f32/runs/measure-003/challenge.json",
+      "size_bytes": 1175,
+      "sha256": "a1057cec8e9b261c7ace9ce4808a84a41c3bd34cdabcf9dab39ec5c77988e879",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/assets/benchmarks/attestations/qwen2.5-0.5b-port-f32/runs/measure-003/evidence.json",
+      "size_bytes": 13423,
+      "sha256": "5bb7184e7287a28c21d7706e01eaac743ededbb901b1b444f82bc509753d5c68",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/assets/benchmarks/attestations/qwen2.5-0.5b-port-f32/runs/measure-003/output.json",
+      "size_bytes": 54,
+      "sha256": "fab6ebd4d30cf608888c50b82e0b3752b340ebc8d6f42585f7a71bf2763821e9",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/assets/benchmarks/attestations/qwen2.5-0.5b-port-f32/runs/measure-003/quality-contract.json",
+      "size_bytes": 510,
+      "sha256": "0689b458c611abc9a766edc43d826327ac7c87a394ea0dc545a36621aa1f082c",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/assets/benchmarks/attestations/qwen2.5-0.5b-port-f32/runs/measure-004/challenge.json",
+      "size_bytes": 1175,
+      "sha256": "4265f6fbf399ebd6b74dbe831331cae7507d6fe11dd787022e992eb84ef41326",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/assets/benchmarks/attestations/qwen2.5-0.5b-port-f32/runs/measure-004/evidence.json",
+      "size_bytes": 13423,
+      "sha256": "5392945f91e0ad1afd705a27ec8f09c8d415ac63b1e3bbd259dc63087e8d76f0",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/assets/benchmarks/attestations/qwen2.5-0.5b-port-f32/runs/measure-004/output.json",
+      "size_bytes": 54,
+      "sha256": "fab6ebd4d30cf608888c50b82e0b3752b340ebc8d6f42585f7a71bf2763821e9",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/assets/benchmarks/attestations/qwen2.5-0.5b-port-f32/runs/measure-004/quality-contract.json",
+      "size_bytes": 510,
+      "sha256": "0689b458c611abc9a766edc43d826327ac7c87a394ea0dc545a36621aa1f082c",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/assets/benchmarks/attestations/qwen2.5-0.5b-port-f32/runs/measure-005/challenge.json",
+      "size_bytes": 1175,
+      "sha256": "2b37fc38e0225a7e630e9f14fe7ffe1001fe33330b078f5a2154defc173c949e",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/assets/benchmarks/attestations/qwen2.5-0.5b-port-f32/runs/measure-005/evidence.json",
+      "size_bytes": 13423,
+      "sha256": "8e41659740d94372b7d821d82556937bf62ccc249a2ea7a31760670c1fa610e3",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/assets/benchmarks/attestations/qwen2.5-0.5b-port-f32/runs/measure-005/output.json",
+      "size_bytes": 54,
+      "sha256": "fab6ebd4d30cf608888c50b82e0b3752b340ebc8d6f42585f7a71bf2763821e9",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/assets/benchmarks/attestations/qwen2.5-0.5b-port-f32/runs/measure-005/quality-contract.json",
+      "size_bytes": 510,
+      "sha256": "0689b458c611abc9a766edc43d826327ac7c87a394ea0dc545a36621aa1f082c",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/assets/benchmarks/attestations/qwen2.5-0.5b-port-f32/runs/warmup-001/challenge.json",
+      "size_bytes": 1173,
+      "sha256": "5ffa1df9ce9846a6017327aba1400f797437081c756a10fd1239606a3b460474",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/assets/benchmarks/attestations/qwen2.5-0.5b-port-f32/runs/warmup-001/evidence.json",
+      "size_bytes": 13423,
+      "sha256": "eddf3988bf914463dc0f7dc3b080998721a6e18baabfd6a088b62d1a72146baa",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/assets/benchmarks/attestations/qwen2.5-0.5b-port-f32/runs/warmup-001/output.json",
+      "size_bytes": 54,
+      "sha256": "fab6ebd4d30cf608888c50b82e0b3752b340ebc8d6f42585f7a71bf2763821e9",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/assets/benchmarks/attestations/qwen2.5-0.5b-port-f32/runs/warmup-001/quality-contract.json",
+      "size_bytes": 510,
+      "sha256": "0689b458c611abc9a766edc43d826327ac7c87a394ea0dc545a36621aa1f082c",
       "executable": false
     },
     {
@@ -274,13 +724,13 @@
     {
       "path": "mlx-model-porting/assets/benchmarks/quality/qwen2.5-0.5b-port-bf16.bound.json",
       "size_bytes": 1295,
-      "sha256": "01c1e6bd096cf0b11a0f9764b5a31842243f8f831eed96da9a0239d494232846",
+      "sha256": "4cbb1a2016dc1c3a94b42d252e51c141ca4df81506564cb46216871320359338",
       "executable": false
     },
     {
       "path": "mlx-model-porting/assets/benchmarks/quality/qwen2.5-0.5b-port-f32.bound.json",
       "size_bytes": 1232,
-      "sha256": "9aa52a091e43d8f796ccf7a71b15248be6c09adf76e02ef696e3144a9e3281c4",
+      "sha256": "e1f41957f69a8b40db381016899e8e3af79b94a9177037d245e02428adef5f6a",
       "executable": false
     },
     {
@@ -297,14 +747,14 @@
     },
     {
       "path": "mlx-model-porting/assets/benchmarks/qwen2.5-0.5b-port-bf16.json",
-      "size_bytes": 25658,
-      "sha256": "4710976c8c5df13e87ab3186168364487e0309e7f93896c847327a12a9692f86",
+      "size_bytes": 31829,
+      "sha256": "11ede57ed58d4623214f852bf7827fece79fd77daac70f2beb11d68d076f333d",
       "executable": false
     },
     {
       "path": "mlx-model-porting/assets/benchmarks/qwen2.5-0.5b-port-f32.json",
-      "size_bytes": 25442,
-      "sha256": "47e573066f0537fd92bd9f31925c36bee645a93ce332b929bdddd719b0774902",
+      "size_bytes": 31585,
+      "sha256": "c7775a8a3bce14dbbca143ca622ae14e1d7a81a986bae6304d6ea90c307ad04a",
       "executable": false
     },
     {
@@ -327,26 +777,32 @@
     },
     {
       "path": "mlx-model-porting/assets/benchmarks/raw/qwen2.5-0.5b-port-bf16/benchmark-command.json",
-      "size_bytes": 9344,
-      "sha256": "7fc2ee332f19b1194759334342761b82eb18aff876977b737ad6277229889129",
+      "size_bytes": 14145,
+      "sha256": "3bbdd975241bb4209312a239bdc78c1d6574aeee909fa60b680fe4042913bea8",
       "executable": false
     },
     {
       "path": "mlx-model-porting/assets/benchmarks/raw/qwen2.5-0.5b-port-f32/benchmark-command.json",
-      "size_bytes": 9337,
-      "sha256": "883ff3cde97a5b1830abd6ea33f5f0c2b92d2023f8d2cba77b3b9efc2a6675c9",
+      "size_bytes": 14112,
+      "sha256": "4773312d265ed66a23abd4ab57e91de2df3a4e36afdaab085c5374e55d702c3c",
       "executable": false
     },
     {
       "path": "mlx-model-porting/assets/benchmarks/receipt_assessments.json",
-      "size_bytes": 28420,
-      "sha256": "29a489806c02f74cdd1e0b5aea24355e7f5f76d61850f88d7c0b7b74e5c3b610",
+      "size_bytes": 49816,
+      "sha256": "8be48454e444cca702fc4897015b92a96a425e47a4de8927de86d9f90756db80",
       "executable": false
     },
     {
       "path": "mlx-model-porting/assets/benchmarks/receipts_index.json",
-      "size_bytes": 20459,
-      "sha256": "4318b6aae13502518849240c2558c63c9944c6a4f5c242cdef61c278eb2f2ec5",
+      "size_bytes": 21084,
+      "sha256": "467d0836c18e5d1438560b4aba6009d1e5b3cfc067315c0637a5b4cb2d1e522f",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/assets/benchmarks/runners/attested_mlx_port.py",
+      "size_bytes": 13424,
+      "sha256": "146f7cde42480a1a17b61ffb588cfcf114214c151641d292ceb7271b0a0f8196",
       "executable": false
     },
     {
@@ -393,8 +849,8 @@
     },
     {
       "path": "mlx-model-porting/assets/effective_claims.json",
-      "size_bytes": 15211,
-      "sha256": "b2318579fb49656d3412196deff59df9532394211086fe94e892b16f46e0c88a",
+      "size_bytes": 62166,
+      "sha256": "0327cae1fec3e5a8a7426ece1d54388051f45aa322a7f6b6cd4737ffd15640aa",
       "executable": false
     },
     {
@@ -411,8 +867,8 @@
     },
     {
       "path": "mlx-model-porting/assets/optimization_guidance.yaml",
-      "size_bytes": 58913,
-      "sha256": "327621494a00d33673f74feff3ef809607e82a4451980ebc5fef0be602bfbeeb",
+      "size_bytes": 62513,
+      "sha256": "bba87dc9ac0939347c14fa04c50deedd7c95f7a4cd62186578be4ca67c12bb6c",
       "executable": false
     },
     {
@@ -447,8 +903,8 @@
     },
     {
       "path": "mlx-model-porting/assets/techniques.yaml",
-      "size_bytes": 47506,
-      "sha256": "1628c8a97ed8a65635624ac5668a813c9f1ed8da839cd54ded9f5bfec97541b1",
+      "size_bytes": 48460,
+      "sha256": "feec3b4a3f9c95a6d005cfef1d58f350b9f4bf1b43416c38ccb4c39b32f7d659",
       "executable": false
     },
     {
@@ -483,8 +939,8 @@
     },
     {
       "path": "mlx-model-porting/examples/worked-port-qwen2.5-0.5b-instruct/README.md",
-      "size_bytes": 10792,
-      "sha256": "82e5153c20a29a4e45bf3e00a4170c6e89d78e20f7cb85df140c0d9b12c288cd",
+      "size_bytes": 11677,
+      "sha256": "0bc75c8a232394d5c1e752fd31cde05cb71fb43f3f5841e707ad0ed3c65e827c",
       "executable": false
     },
     {
@@ -501,8 +957,8 @@
     },
     {
       "path": "mlx-model-porting/examples/worked-port-qwen2.5-0.5b-instruct/benchmark-bf16.spec.json",
-      "size_bytes": 2250,
-      "sha256": "031696dbbfaeaae80554aba54253f5288d95b46a91b0d067ef3df5d8e5e56778",
+      "size_bytes": 2659,
+      "sha256": "faa8c694931583d9aadce5f3507a693518b430ae5474734838d6a9f7a64ea793",
       "executable": false
     },
     {
@@ -513,14 +969,14 @@
     },
     {
       "path": "mlx-model-porting/examples/worked-port-qwen2.5-0.5b-instruct/benchmark-f32.spec.json",
-      "size_bytes": 2233,
-      "sha256": "8356a89600a56202b4b3d8219fc721ee7571e236639ff5319187bba679df0357",
+      "size_bytes": 2640,
+      "sha256": "95d5c7a95d71750a3503074b929c686458abdca56a052cac6f999cddf49f1b1a",
       "executable": false
     },
     {
       "path": "mlx-model-porting/examples/worked-port-qwen2.5-0.5b-instruct/benchmark-receipts.md",
-      "size_bytes": 1339,
-      "sha256": "01c71f993aca7b00f9fdfbdbc4dc9f67d367c63f8c3258ec7b041f45760b6dd7",
+      "size_bytes": 1868,
+      "sha256": "9ddad1e743a75f08238cba4fcd31fb9a6588139bf4ba754817e5f9e4f6aca33c",
       "executable": false
     },
     {
@@ -561,8 +1017,8 @@
     },
     {
       "path": "mlx-model-porting/references/benchmarking.md",
-      "size_bytes": 9592,
-      "sha256": "acd726bc595474627df670ecb8cc0cb7db89ed4936d8280d48889b19a1846b3b",
+      "size_bytes": 10291,
+      "sha256": "1b00520b05fcbcf6c75c712bb0b1d2c65f1fe4619b0b075bcb3b20afc8375b69",
       "executable": false
     },
     {
@@ -1323,8 +1779,8 @@
     },
     {
       "path": "mlx-model-porting/scripts/_common.py",
-      "size_bytes": 55867,
-      "sha256": "512e389c4b8ba195dd09d767c4e634abcd2d8af177815c70a7f9af16e90b36c9",
+      "size_bytes": 56092,
+      "sha256": "76e352b8dfae2fc3a8d9b43af07582327ce8ac67c7567359f6dc9a2fa3319834",
       "executable": true
     },
     {
@@ -1335,8 +1791,8 @@
     },
     {
       "path": "mlx-model-porting/scripts/benchmark_command.py",
-      "size_bytes": 55162,
-      "sha256": "0eac3fb5b39f5f47cbd2b88fba308837bdf4224c38b2d87299b6d6345467aaff",
+      "size_bytes": 65428,
+      "sha256": "e61f6c728a78a90a44ef238807c421ed8670124f0c78ed67739f775b26e479dc",
       "executable": true
     },
     {
@@ -1479,8 +1935,8 @@
     },
     {
       "path": "mlx-model-porting/scripts/validate_benchmarks.py",
-      "size_bytes": 92919,
-      "sha256": "f1218a0d22487cdf32cd2103ecf495d7142f92b6a3ea93c90f37d1c5cebab612",
+      "size_bytes": 112955,
+      "sha256": "3ff2d5138bdcddc2af4759a0cb0482ed82b402ef164e7024067ff6b7b39bf46b",
       "executable": false
     },
     {
@@ -1503,14 +1959,14 @@
     },
     {
       "path": "site/data.js",
-      "size_bytes": 4428,
-      "sha256": "2bdd3ae3bb7d42a90f17ec3d3f96b353db98711110b070fe2069af675a2c035c",
+      "size_bytes": 4485,
+      "sha256": "ba2cf4f31e463050ccf6eaad620acb68321903b17f805c350190d0ef595ec267",
       "executable": false
     },
     {
       "path": "site/docs/index.html",
-      "size_bytes": 33744,
-      "sha256": "ff29e90519eed92d9722d269296321fc63b005d9be859af01da383558033ac1a",
+      "size_bytes": 33866,
+      "sha256": "ae6178399023fbb6354da1cc31f759b1f28144ff0dfc90da702c64235454c0d2",
       "executable": false
     },
     {
@@ -1521,8 +1977,8 @@
     },
     {
       "path": "site/index.html",
-      "size_bytes": 16726,
-      "sha256": "ceb70e8a8d0c17190866bda4282926a6180ed6e666ed17933814e03724fba938",
+      "size_bytes": 16781,
+      "sha256": "b42d2a45ef2065c30fae054db9ab3606005cac3f121b8defa32a5d1349d75cb5",
       "executable": false
     },
     {
@@ -2079,8 +2535,8 @@
     },
     {
       "path": "tests/test_benchmark_evidence_contract.py",
-      "size_bytes": 73495,
-      "sha256": "880bdd2f2883e26e8c36f4aee2b649486bfa2d3a16a1408bf273a1e3d2b9f4a4",
+      "size_bytes": 95175,
+      "sha256": "c4b65a4d8493ecd96fea35aea6e6a6f03a941b3469501512fa2c5a4950266925",
       "executable": false
     },
     {
@@ -2091,8 +2547,8 @@
     },
     {
       "path": "tests/test_claim_catalog_contract.py",
-      "size_bytes": 33040,
-      "sha256": "2d67e8a79e776ed4b434adce3db1b4f10b0f76591f8cc7e40888f34244451ff4",
+      "size_bytes": 33380,
+      "sha256": "2baec68b6a6e23af4e0a729ec621cdfdf55985453b599b091425a97437dd4081",
       "executable": false
     },
     {
@@ -2217,8 +2673,8 @@
     },
     {
       "path": "tests/test_promotion_validation_contract.py",
-      "size_bytes": 4765,
-      "sha256": "310282adbbb0688c6be5b60f49ffddc2275291287da2744cac73ec55a9b8019e",
+      "size_bytes": 6069,
+      "sha256": "fed3b3a886bcca18fea0a0f0d021c1a2e1b17ab9eff6ed72459221f013ce8f71",
       "executable": false
     },
     {
@@ -2278,7 +2734,7 @@
     {
       "path": "tests/test_tooling.py",
       "size_bytes": 188209,
-      "sha256": "c6bd5e07d96abef172656f435e4eb1fe4e4f8ed5f2fc059498e20546eef3cc5e",
+      "sha256": "81c6e067aed0939395f8da83848c724c6c079292fe312df1fd788d4fb90d6296",
       "executable": true
     },
     {

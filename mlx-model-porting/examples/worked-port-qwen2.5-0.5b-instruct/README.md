@@ -19,8 +19,10 @@ tensor captures remain outside the repository.
   eight-token greedy output.
 - Independent check: Torch, the standalone scaffold cache path, and local
   MLX-LM 0.31.1 produced the same eight IDs and continuation.
-- Benchmark: F32 and BF16 schema-2 receipts are both honest
-  `performance_observation` records with `execution_attested=false`.
+- Benchmark: the F32 schema-2 receipt is an execution-attested baseline
+  observation; the BF16 receipt is `promotion_ready` with every gate passing.
+  Its fingerprint-scoped, catalogued range is `1.0x-1.8122x` for the attested
+  adapter workload, not pure decode throughput.
 
 ## Local setup and provenance
 
@@ -224,10 +226,21 @@ six tokens were selected because F32 and BF16 preserve that exact fixed output.
 The seventh BF16 token diverges, so no broader BF16 quality equivalence is
 claimed.
 
-The receipt harness used isolated `python3.13 -I -B`, whose system site contains
-MLX on this machine. Isolated Python 3.14 correctly excluded the user-site MLX
-installation and failed before measurement; no hidden environment override was
-used to bypass that isolation.
+The receipt harness used isolated Python 3.13.11 with MLX 0.24.0 under `-I -B`.
+The checked-in runner is content-pinned at argv position 1. For every process,
+the parent wrote a fresh nonce challenge and snapshotted the quality contract;
+the runner hashed the selected model artifact, executed the fixed workload,
+retained the actually loaded MLX and generated-port dependency bytes, and wrote
+the measured output plus a content-bound evidence bundle. The validator
+re-derived those bindings before setting `execution_attested=true`.
+
+The parent-measured wall time includes the adapter's model hashing, dependency
+capture, and evidence writing. The F32 median was 1.6550946250 seconds (CV
+0.0060855); BF16 was 0.9133066250 seconds (CV 0.0090013). The inverse-wall-time
+ratio 1.8122003933 cleared the fixed 1.02 noise threshold, and the exact
+six-token quality contract passed. The seventh BF16 token still diverges, so
+the promoted range remains fingerprint-scoped to this exact six-token attested
+workload.
 
 ```bash
 python3 mlx-model-porting/scripts/benchmark_command.py \
