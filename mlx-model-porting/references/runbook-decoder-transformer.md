@@ -56,7 +56,7 @@ Never infer QKV split sizes from equal thirds when GQA/MQA makes K/V smaller. De
 4. Validate normalization, configured gated MLP activation, and RoPE scaling independently.
 5. Validate attention without cache, including exact causal/padding mask behavior, and test one complete block.
 6. Validate the generated full/growing KV cache against full-context logits.
-7. Convert every weight deterministically, then check the assembled stack, final norm, tied or untied head, and logits.
+7. Declare every rename, transpose, QKV split, merge, target shape, and dtype policy in `WEIGHT_MAP.json`; run `scripts/convert_checkpoint.py --source MODEL --mapping WEIGHT_MAP.json --output converted`, then validate `converted/target-manifest.json` with `scripts/validate_weight_map.py` before checking the assembled stack, final norm, tied or untied head, and logits. The converter refuses draft or unresolved maps and unexplained source tensors.
 8. Run generated `capture.py` and compare its stable tensor keys to the source oracle with `scripts/compare_tensors.py`.
 9. Validate deterministic greedy generation, save/reload, boundary context, and cache reset/reuse.
 

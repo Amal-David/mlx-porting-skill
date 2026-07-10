@@ -2,8 +2,8 @@
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
   "version": "0.4.0",
-  "generated_at": "2026-07-10T12:13:02.533541+00:00",
-  "file_count": 350,
+  "generated_at": "2026-07-10T13:49:12.949052+00:00",
+  "file_count": 352,
   "files": [
     {
       "path": ".agents/skills/mlx-model-porting",
@@ -166,7 +166,7 @@
     {
       "path": "mlx-model-porting/SKILL.md",
       "size_bytes": 13462,
-      "sha256": "584c96e7c0860092fa070fe64fbee7fa5f37db1d5588364dd25f3a090cc527c1",
+      "sha256": "11604e2c6c38a8eb027f8f8140885dd9237f52164041234c22ffa24bbe01466e",
       "executable": false
     },
     {
@@ -489,8 +489,8 @@
     },
     {
       "path": "mlx-model-porting/references/porting-core.md",
-      "size_bytes": 3413,
-      "sha256": "9ee945ab749ee2075c67ef2441ec8f844488e5ccb1359995a6e4c5b1458c7a07",
+      "size_bytes": 5273,
+      "sha256": "dd9c20c3c91a1534c0252bfcab2f3ac8b8acca4111fb95a914766372161c7cc8",
       "executable": false
     },
     {
@@ -519,8 +519,8 @@
     },
     {
       "path": "mlx-model-porting/references/runbook-decoder-transformer.md",
-      "size_bytes": 5357,
-      "sha256": "070fdec6b2cee59d07ef54a81d72611bd7ab9b169f6bbd3148dff880d6793d68",
+      "size_bytes": 5687,
+      "sha256": "ae6b4d9fa8ba848da070d661ee3f71ff566763d485bdc6151acd54fba3a43956",
       "executable": false
     },
     {
@@ -1208,6 +1208,12 @@
       "executable": true
     },
     {
+      "path": "mlx-model-porting/scripts/convert_checkpoint.py",
+      "size_bytes": 57468,
+      "sha256": "77831a625f9524a816d02d51ada697c2fe0f260380a78766a3418b1f54429e54",
+      "executable": true
+    },
+    {
       "path": "mlx-model-porting/scripts/generate_claim_catalog.py",
       "size_bytes": 44613,
       "sha256": "dd27c2c44bf2296a2fc5c593018227b110edb7f69badf27731610e6b02f7fd80",
@@ -1311,8 +1317,8 @@
     },
     {
       "path": "mlx-model-porting/scripts/validate_weight_map.py",
-      "size_bytes": 10312,
-      "sha256": "0a23933d2aceef7eb195e179b5676dd396e9f04ee777b78654ba6caab929f999",
+      "size_bytes": 17627,
+      "sha256": "bb50707dba40c8e5fb7115a2023a2d51ef98096e5faa24bd30c41a5608b02f54",
       "executable": true
     },
     {
@@ -1919,6 +1925,12 @@
       "path": "tests/test_compare_tensors_boundedness.py",
       "size_bytes": 9717,
       "sha256": "c23c87fc89ba6901d98cd7cc50960be9591cff76b165b340e4657ee4a965a575",
+      "executable": false
+    },
+    {
+      "path": "tests/test_convert_checkpoint_contract.py",
+      "size_bytes": 22620,
+      "sha256": "47b6c4c6c5d3d9df1a6c78c5403c4cc902d5b4de8b1d9ca6a157ff826e2cc034",
       "executable": false
     },
     {

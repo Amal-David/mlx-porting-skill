@@ -143,6 +143,141 @@ def apply_transforms(shape: list[int], transforms: list[dict[str, Any]]) -> list
     return current
 
 
+def _axis(axis: int, rank: int) -> int:
+    if rank <= 0:
+        raise SkillError("axis transform requires a non-scalar tensor")
+    axis %= rank
+    return axis
+
+
+def entry_shape_pairs(
+    entry: dict[str, Any],
+    source: dict[str, dict[str, Any]],
+) -> list[tuple[list[str], str, list[int], list[int] | None]]:
+    """Return (sources, target, transformed shape, declared target shape)."""
+    transforms = entry.get("transforms", [])
+    if not isinstance(transforms, list) or not all(isinstance(item, dict) for item in transforms):
+        raise SkillError("transforms must be a list of objects")
+    if "sources" in entry:
+        records = entry.get("sources")
+        target = entry.get("target")
+        if not isinstance(records, list) or len(records) < 2 or not isinstance(target, str):
+            raise SkillError("merge entries require sources records and one target")
+        source_names: list[str] = []
+        shapes: list[list[int]] = []
+        for record in records:
+            if not isinstance(record, dict) or not isinstance(record.get("source"), str):
+                raise SkillError("merge source records require source strings")
+            name = record["source"]
+            if name not in source:
+                raise SkillError(f"missing source tensor {name}")
+            actual = shape_of(source[name])
+            declared = record.get("shape")
+            if declared is not None and shape_of({"shape": declared}) != actual:
+                raise SkillError(f"declared source shape mismatch for {name}")
+            source_names.append(name)
+            shapes.append(actual)
+        current: list[int] | None = None
+        for transform in transforms:
+            op = transform.get("op")
+            if op == "merge":
+                if current is not None:
+                    raise SkillError("merge transform may appear only once")
+                if any(len(shape) != len(shapes[0]) for shape in shapes):
+                    raise SkillError("merge sources must have the same rank")
+                axis = _axis(int(transform["axis"]), len(shapes[0]))
+                for shape in shapes[1:]:
+                    if any(shape[index] != shapes[0][index] for index in range(len(shape)) if index != axis):
+                        raise SkillError("merge source shapes differ outside the merge axis")
+                current = list(shapes[0])
+                current[axis] = sum(shape[axis] for shape in shapes)
+            elif current is None:
+                if op not in (None, "identity", "rename", "cast"):
+                    raise SkillError("only identity, rename, or cast may precede merge")
+            else:
+                current = apply_transforms(current, [transform])
+        if current is None:
+            raise SkillError("grouped sources require exactly one merge transform")
+        declared_target = entry.get("target_shape")
+        declared_shape = shape_of({"shape": declared_target}) if declared_target is not None else None
+        return [(source_names, target, current, declared_shape)]
+
+    source_name = entry.get("source")
+    if not isinstance(source_name, str):
+        raise SkillError("entry source must be a string")
+    if source_name not in source:
+        raise SkillError(f"missing source tensor {source_name}")
+    current = shape_of(source[source_name])
+    declared_source = entry.get("source_shape")
+    if declared_source is not None and shape_of({"shape": declared_source}) != current:
+        raise SkillError(f"declared source shape mismatch for {source_name}")
+    if "targets" not in entry:
+        target = entry.get("target")
+        if not isinstance(target, str):
+            raise SkillError("entry target must be a string")
+        actual = apply_transforms(current, transforms)
+        declared_target = entry.get("target_shape")
+        declared_shape = shape_of({"shape": declared_target}) if declared_target is not None else None
+        return [([source_name], target, actual, declared_shape)]
+
+    targets = entry.get("targets")
+    if not isinstance(targets, list) or len(targets) < 2:
+        raise SkillError("split entries require at least two target records")
+    output_shapes: list[list[int]] | None = None
+    for transform in transforms:
+        op = transform.get("op")
+        if op == "split":
+            if output_shapes is not None:
+                raise SkillError("split transform may appear only once")
+            axis = _axis(int(transform["axis"]), len(current))
+            sizes = transform.get("sizes")
+            if (
+                not isinstance(sizes, list)
+                or len(sizes) != len(targets)
+                or not all(isinstance(size, int) and not isinstance(size, bool) and size >= 0 for size in sizes)
+                or sum(sizes) != current[axis]
+            ):
+                raise SkillError("split sizes must match the source axis and target count")
+            output_shapes = []
+            for size in sizes:
+                shape = list(current)
+                shape[axis] = size
+                output_shapes.append(shape)
+        elif output_shapes is None:
+            current = apply_transforms(current, [transform])
+        elif op not in (None, "identity", "rename", "cast"):
+            raise SkillError("only identity, rename, or cast may follow split")
+    if output_shapes is None:
+        raise SkillError("grouped targets require exactly one split transform")
+    pairs: list[tuple[list[str], str, list[int], list[int] | None]] = []
+    for record, actual in zip(targets, output_shapes):
+        if not isinstance(record, dict) or not isinstance(record.get("target"), str):
+            raise SkillError("split target records require target strings")
+        declared = record.get("shape")
+        declared_shape = shape_of({"shape": declared}) if declared is not None else None
+        pairs.append(([source_name], record["target"], actual, declared_shape))
+    return pairs
+
+
+def ignored_source_names(mapping: dict[str, Any], errors: list[str]) -> set[str]:
+    ignored = set(mapping.get("ignored_source", []))
+    reasoned = mapping.get("ignore", [])
+    if not isinstance(reasoned, list):
+        errors.append("mapping.ignore must be a list")
+        return ignored
+    for index, record in enumerate(reasoned):
+        if (
+            not isinstance(record, dict)
+            or not isinstance(record.get("source"), str)
+            or not isinstance(record.get("reason"), str)
+            or not record["reason"].strip()
+        ):
+            errors.append(f"ignore {index}: source and non-empty reason are required")
+            continue
+        ignored.add(record["source"])
+    return ignored
+
+
 def main() -> int:
     args = parse_args()
     try:
@@ -150,12 +285,12 @@ def main() -> int:
         target = tensor_map(load_structured(args.target))
         mapping = load_structured(args.mapping)
         entries = mapping.get("entries", []) if isinstance(mapping, dict) else []
-        ignored = set(mapping.get("ignored_source", [])) if isinstance(mapping, dict) else set()
+        errors: list[str] = []
+        ignored = ignored_source_names(mapping, errors) if isinstance(mapping, dict) else set()
         generated = set(mapping.get("generated_target", [])) if isinstance(mapping, dict) else set()
         if not isinstance(entries, list):
             raise SkillError("mapping.entries must be a list")
 
-        errors: list[str] = []
         warnings: list[str] = []
         mapped_source: set[str] = set()
         mapped_target: set[str] = set()
@@ -164,34 +299,48 @@ def main() -> int:
             if not isinstance(entry, dict):
                 errors.append(f"entry {index}: not an object")
                 continue
-            src = entry.get("source")
-            dst = entry.get("target")
-            if not isinstance(src, str) or not isinstance(dst, str):
-                errors.append(f"entry {index}: source and target must be strings")
-                continue
-            if src in mapped_source:
-                errors.append(f"source mapped more than once: {src}")
-            if dst in mapped_target and not entry.get("allow_shared_target"):
-                errors.append(f"target mapped more than once: {dst}")
-            mapped_source.add(src)
-            mapped_target.add(dst)
-            if src not in source:
-                errors.append(f"entry {index}: missing source tensor {src}")
-                continue
-            if dst not in target:
-                errors.append(f"entry {index}: missing target tensor {dst}")
-                continue
-            src_shape = shape_of(source[src])
-            dst_shape = shape_of(target[dst])
             try:
-                actual = apply_transforms(src_shape, entry.get("transforms", []))
+                pairs = entry_shape_pairs(entry, source)
             except (SkillError, KeyError, ValueError) as exc:
-                errors.append(f"entry {index} {src}->{dst}: {exc}")
+                errors.append(f"entry {index}: {exc}")
                 continue
-            ok = actual == dst_shape
-            checks.append({"source": src, "target": dst, "source_shape": src_shape, "transformed_shape": actual, "target_shape": dst_shape, "ok": ok})
-            if not ok:
-                errors.append(f"shape mismatch {src} {src_shape} -> {actual}, target {dst} {dst_shape}")
+            entry_sources = sorted({name for pair in pairs for name in pair[0]})
+            for src in entry_sources:
+                if src in mapped_source:
+                    errors.append(f"source mapped more than once: {src}")
+                mapped_source.add(src)
+            for sources, dst, actual, declared_target in pairs:
+                if dst in mapped_target and not entry.get("allow_shared_target"):
+                    errors.append(f"target mapped more than once: {dst}")
+                mapped_target.add(dst)
+                if dst not in target:
+                    errors.append(f"entry {index}: missing target tensor {dst}")
+                    continue
+                dst_shape = shape_of(target[dst])
+                if declared_target is not None and declared_target != dst_shape:
+                    errors.append(
+                        f"declared target shape mismatch for {dst}: mapping {declared_target}, target {dst_shape}"
+                    )
+                ok = actual == dst_shape and (declared_target is None or declared_target == dst_shape)
+                source_shape: Any
+                if len(sources) == 1:
+                    source_shape = shape_of(source[sources[0]])
+                    source_field: Any = sources[0]
+                else:
+                    source_shape = [shape_of(source[name]) for name in sources]
+                    source_field = sources
+                checks.append({
+                    "source": source_field,
+                    "target": dst,
+                    "source_shape": source_shape,
+                    "transformed_shape": actual,
+                    "target_shape": dst_shape,
+                    "ok": ok,
+                })
+                if actual != dst_shape:
+                    errors.append(
+                        f"shape mismatch {source_field} {source_shape} -> {actual}, target {dst} {dst_shape}"
+                    )
 
         unexplained_source = sorted(set(source) - mapped_source - ignored)
         unexplained_target = sorted(set(target) - mapped_target - generated)

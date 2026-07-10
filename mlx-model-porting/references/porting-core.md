@@ -68,6 +68,37 @@ Each mapping entry should record:
 
 Model-specific `sanitize()` functions are useful, but the transformations must remain testable and documented.
 
+Use `scripts/convert_checkpoint.py` as the executable conversion gate for
+safetensors checkpoints. Its schema-version 2 map keeps the one-to-one
+`source`/`target` entries and adds:
+
+- declared `source_shape` and `target_shape` for one-to-one entries;
+- `targets: [{target, shape, dtype_policy?}, ...]` plus one explicit `split`
+  transform with `axis` and `sizes`;
+- `sources: [{source, shape}, ...]` plus one explicit `merge` transform with
+  `axis` and a declared `target_shape`;
+- global or per-entry `dtype_policy` (`keep`, `f16`, `bf16`, or `f32`);
+- `ignore: [{source, reason}, ...]` and `unresolved: [...]` instead of silent
+  coverage exceptions.
+
+The converter also accepts the existing unary transform vocabulary (`rename`,
+`transpose`/`permute`, `reshape`, `squeeze`, `unsqueeze`, `slice`, and `cast`).
+It validates safetensors with a bounded pure-Python header reader even when the
+optional `safetensors` package is installed. It uses that package lazily for
+payload reads when possible, otherwise the validated NumPy reader. Output is
+`model.safetensors`: `mlx.core.save_safetensors` is used when MLX is importable;
+the dependency-free fallback is a deterministic pure-Python safetensors writer,
+not NPZ. `target-manifest.json` and `conversion-report.json` record shapes,
+dtypes, coverage counts, applied transforms, policies, writers, and SHA-256
+digests. Draft maps emitted from source and scaffold manifests are intentionally
+non-runnable until `draft` is false and `unresolved` is empty.
+
+The dependency-free reader allowlist is `BOOL`, signed and unsigned 8/16/32/64
+bit integers, and `F16`/`BF16`/`F32`/`F64`. Float8 and complex tensors are
+rejected because NumPy-only CI cannot round-trip them into the declared MLX
+checkpoint contract. BF16 payloads are decoded losslessly through float32 and
+rounded back to BF16 by the fallback writer.
+
 `validate_weight_map.py` accepts normal inspection reports with safetensors
 headers and static source-format reports that expose tensor shapes, currently
 ONNX initializers and GGUF tensor tables. That validation proves deterministic

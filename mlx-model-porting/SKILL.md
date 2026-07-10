@@ -97,9 +97,9 @@ Start eager: FP, batch one unless intrinsic, no compile/kernels, state/cache, as
 
 ### 5. Convert weights deterministically
 
-Map keys/shapes, transform, dtype, ties; validate with `scripts/validate_weight_map.py`. `inspection.json` can be `--source`.
-
-No `strict=False` masking; classify every exception.
+Run `scripts/convert_checkpoint.py`; it rejects shard, coverage, shape, draft,
+and unresolved gaps. Validate manifest with
+`scripts/validate_weight_map.py`; never mask exceptions.
 
 ### 6. Pass the parity ladder
 
