@@ -2,8 +2,8 @@
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
   "version": "0.4.0",
-  "generated_at": "2026-07-10T11:54:16.027590+00:00",
-  "file_count": 348,
+  "generated_at": "2026-07-10T12:13:02.533541+00:00",
+  "file_count": 350,
   "files": [
     {
       "path": ".agents/skills/mlx-model-porting",
@@ -165,8 +165,8 @@
     },
     {
       "path": "mlx-model-porting/SKILL.md",
-      "size_bytes": 13125,
-      "sha256": "3cc13612f9fe04f58d5172deac8a01d85d003389438b1d7201176c62bd1e78b8",
+      "size_bytes": 13462,
+      "sha256": "584c96e7c0860092fa070fe64fbee7fa5f37db1d5588364dd25f3a090cc527c1",
       "executable": false
     },
     {
@@ -519,8 +519,8 @@
     },
     {
       "path": "mlx-model-porting/references/runbook-decoder-transformer.md",
-      "size_bytes": 4235,
-      "sha256": "833e7a6442217f1f031871372c2027b8cbdd54d07dc60b27aa17e4d4bb34d6ba",
+      "size_bytes": 5357,
+      "sha256": "070fdec6b2cee59d07ef54a81d72611bd7ab9b169f6bbd3148dff880d6793d68",
       "executable": false
     },
     {
@@ -1286,6 +1286,12 @@
       "executable": false
     },
     {
+      "path": "mlx-model-porting/scripts/scaffold_port.py",
+      "size_bytes": 39234,
+      "sha256": "8e51cbec58c62a9835f556ef176ebf61689939f8a73387599a6b001bb821cef5",
+      "executable": true
+    },
+    {
       "path": "mlx-model-porting/scripts/update_sources.py",
       "size_bytes": 14027,
       "sha256": "583d8118a7edfb7dec8bf7664f6ee66c8c841ec7ba71d390544aee4e74a845d3",
@@ -2045,6 +2051,12 @@
       "path": "tests/test_routing_contract.py",
       "size_bytes": 10742,
       "sha256": "6e2fd92a37236cb7541907602a82767665c10f1d4ca8e696bdbf9aa48b877af9",
+      "executable": false
+    },
+    {
+      "path": "tests/test_scaffold_port_contract.py",
+      "size_bytes": 17499,
+      "sha256": "007e42ed606e041bb75d6ed25eff6de7c7f4121e54fd276963f5c4e0c768fb84",
       "executable": false
     },
     {

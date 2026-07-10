@@ -85,6 +85,14 @@ Run `scripts/capture_oracle.py` against the pinned local Hugging Face model befo
 
 Read [core porting method](references/porting-core.md); choose via the trigger map and the controlled family records in `assets/architectures.yaml`. Load every runbook returned by a hybrid route. The registry is the complete runbook inventory; do not substitute an abbreviated parallel list.
 
+For an unblocked `dense-decoder-transformer` inspection, scaffold implementation:
+
+```bash
+python3 scripts/scaffold_port.py inspection.json --artifact-root MODEL --output mlx_port
+```
+
+This re-inspects the artifact and fails closed on unsupported semantics. Treat output as a parity starting point; revise every source-oracle mismatch.
+
 Start eager: FP, batch one unless intrinsic, no compile/kernels, state/cache, assertions, reversible map.
 
 ### 5. Convert weights deterministically

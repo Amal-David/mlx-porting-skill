@@ -50,15 +50,17 @@ Never infer QKV split sizes from equal thirds when GQA/MQA makes K/V smaller. De
 
 ## Minimal MLX path
 
-1. Implement config parser with explicit defaults.
-2. Implement normalization and MLP.
-3. Implement RoPE/position logic.
-4. Implement attention without cache and test a block.
-5. Add exact causal/padding mask behavior.
-6. Add a simple full/growing KV cache.
-7. Assemble stack and logits.
-8. Add deterministic greedy generation.
-9. Save/reload and retest.
+1. Capture the pinned source oracle with `scripts/capture_oracle.py`.
+2. For an unblocked trusted inspection, run `scripts/scaffold_port.py inspection.json --artifact-root MODEL --output mlx_port`. It re-inspects the artifact and fails closed on unsupported config semantics.
+3. Review the generated config assumptions and stable parameter-name scheme against the source implementation before converting any weight.
+4. Validate normalization, configured gated MLP activation, and RoPE scaling independently.
+5. Validate attention without cache, including exact causal/padding mask behavior, and test one complete block.
+6. Validate the generated full/growing KV cache against full-context logits.
+7. Convert every weight deterministically, then check the assembled stack, final norm, tied or untied head, and logits.
+8. Run generated `capture.py` and compare its stable tensor keys to the source oracle with `scripts/compare_tensors.py`.
+9. Validate deterministic greedy generation, save/reload, boundary context, and cache reset/reuse.
+
+`scaffold_port.py` is a starting implementation, not a guaranteed port. It currently covers only the explicit dense-decoder feature allowlist and rejects sliding-window attention, QK normalization, MoE, quantization metadata, unknown RoPE scaling, soft caps, and unrecognized computation-bearing config keys. A generated package must still pass source parity and task-quality gates; edit it when inspection-backed source semantics differ.
 
 ## Parity traps
 
