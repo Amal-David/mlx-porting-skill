@@ -1,12 +1,38 @@
 {
   "schema_version": 1,
-  "reviewed": "2026-06-27",
+  "reviewed": "2026-07-09",
   "review_depth_definitions": {
     "synthesized": "Directly informed a runbook, rule, or technique decision.",
     "screened": "Abstract/readme/code path reviewed for relevance and limits.",
     "indexed": "Catalogued for future review; do not represent as fully reviewed."
   },
-  "count": 349,
+  "support_scope_definitions": {
+    "official_mlx": "Apple-maintained MLX framework evidence. It establishes source or API support at the recorded snapshot, not target-workload performance.",
+    "official_mlx_project": "Apple-maintained project evidence built on MLX. It establishes project-scoped behavior, not a framework-wide guarantee.",
+    "third_party_pinned": "Pinned non-Apple MLX implementation evidence. Treat it as reproducible prior art, not an official framework guarantee.",
+    "paper_only": "Algorithm or architecture evidence without a demonstrated MLX implementation. Reproduce the path and pass parity before recommending it.",
+    "context_only": "Context, discovery, or source-selection evidence. It does not establish implementation support or performance.",
+    "local_reproduced": "Local benchmark or validation evidence. It applies only to the captured hardware, software, model, inputs, and workload."
+  },
+  "claim_type_definitions": {
+    "api_support": "The cited API exists at the recorded snapshot; compatibility with a target model still requires validation.",
+    "mlx_implementation": "An MLX implementation exists in the cited scope; this does not by itself prove parity or speed on another target.",
+    "algorithm_candidate": "The source supports considering an algorithm, not claiming that the repository implements it.",
+    "performance": "A latency or throughput claim is limited to the exact measured setup and must not be generalized.",
+    "memory": "A memory claim is limited to the exact measured setup and accounting method.",
+    "quality": "A quality claim is limited to the recorded task, dataset, metric, and configuration.",
+    "serving_semantics": "The source supports stated scheduling, caching, or isolation behavior only in the cited implementation.",
+    "audio_quality": "An audio-quality claim requires the cited listening or objective evaluation conditions.",
+    "risk_or_negative": "The source records a failure, limitation, or risk; it is not positive support for the technique."
+  },
+  "claim_boundary_policy": [
+    "Review depth describes how the source informed this skill; it is not proof that the source was reproduced on MLX.",
+    "A source without evidence_class, support_scope, or claim_types is catalogue evidence only and grants no implicit implementation, performance, memory, or quality claim.",
+    "Performance, memory, quality, and audio-quality claims stay attached to the exact recorded hardware, software, model, inputs, workload, and metric.",
+    "A record note may narrow these boundaries. The narrowest applicable boundary always wins."
+  ],
+  "benchmark_assessment": "mlx-model-porting/assets/BENCHMARK_REPORT.md",
+  "count": 350,
   "sources": [
     {
       "id": "agent-skills-spec",
@@ -54,7 +80,7 @@
     {
       "id": "codex-skill-loader",
       "title": "Codex skill loader implementation",
-      "url": "https://github.com/openai/codex/blob/main/codex-rs/core-skills/src/loader.rs",
+      "url": "https://github.com/openai/codex/blob/31e428a1ef3396a0e962687e61f11c224b9f4dbc/codex-rs/core-skills/src/loader.rs",
       "kind": "source-code",
       "owner": "OpenAI",
       "topics": [
@@ -68,7 +94,7 @@
     {
       "id": "mlx-repo",
       "title": "MLX array framework repository",
-      "url": "https://github.com/ml-explore/mlx",
+      "url": "https://github.com/ml-explore/mlx/tree/96296e9c3075a2389bc5c0f078bf01b5aa377cd9",
       "kind": "repository",
       "owner": "Apple MLX",
       "topics": [
@@ -94,6 +120,11 @@
       ],
       "review_depth": "synthesized",
       "snapshot": "2026-06-24",
+      "evidence_class": "official_api_doc",
+      "support_scope": "official_mlx",
+      "claim_types": [
+        "api_support"
+      ],
       "note": ""
     },
     {
@@ -108,6 +139,11 @@
       ],
       "review_depth": "synthesized",
       "snapshot": "2026-06-24",
+      "evidence_class": "official_api_doc",
+      "support_scope": "official_mlx",
+      "claim_types": [
+        "api_support"
+      ],
       "note": ""
     },
     {
@@ -123,6 +159,11 @@
       ],
       "review_depth": "synthesized",
       "snapshot": "2026-06-24",
+      "evidence_class": "official_api_doc",
+      "support_scope": "official_mlx",
+      "claim_types": [
+        "api_support"
+      ],
       "note": ""
     },
     {
@@ -138,6 +179,11 @@
       ],
       "review_depth": "synthesized",
       "snapshot": "2026-06-24",
+      "evidence_class": "official_api_doc",
+      "support_scope": "official_mlx",
+      "claim_types": [
+        "api_support"
+      ],
       "note": ""
     },
     {
@@ -229,6 +275,11 @@
       ],
       "review_depth": "synthesized",
       "snapshot": "2026-06-24",
+      "evidence_class": "official_api_doc",
+      "support_scope": "official_mlx",
+      "claim_types": [
+        "api_support"
+      ],
       "note": ""
     },
     {
@@ -246,6 +297,11 @@
       ],
       "review_depth": "synthesized",
       "snapshot": "2026-06-24",
+      "evidence_class": "official_api_doc",
+      "support_scope": "official_mlx",
+      "claim_types": [
+        "api_support"
+      ],
       "note": ""
     },
     {
@@ -292,6 +348,11 @@
       ],
       "review_depth": "synthesized",
       "snapshot": "2026-06-24",
+      "evidence_class": "official_api_doc",
+      "support_scope": "official_mlx",
+      "claim_types": [
+        "api_support"
+      ],
       "note": ""
     },
     {
@@ -326,9 +387,33 @@
       "note": ""
     },
     {
+      "id": "mlx-release-0320",
+      "title": "MLX v0.32.0 release",
+      "url": "https://github.com/ml-explore/mlx/releases/tag/v0.32.0",
+      "kind": "release",
+      "owner": "Apple MLX",
+      "topics": [
+        "mlx",
+        "release",
+        "correctness",
+        "metal",
+        "quantized-matmul"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "v0.32.0",
+      "evidence_class": "release_note",
+      "support_scope": "official_mlx",
+      "claim_types": [
+        "api_support",
+        "mlx_implementation",
+        "risk_or_negative"
+      ],
+      "note": "Official primary release evidence for MLX 0.32.0. The release records API additions and correctness fixes, including quantized-matmul, gather, SDPA, compile, Metal, and shape-overflow paths; it does not prove a target-model speedup. Reviewed 2026-07-09."
+    },
+    {
       "id": "mlx-lm-repo",
       "title": "MLX-LM repository",
-      "url": "https://github.com/ml-explore/mlx-lm",
+      "url": "https://github.com/ml-explore/mlx-lm/tree/2c008fd0252b2c569227d12568356ab88ab0560a",
       "kind": "repository",
       "owner": "Apple MLX",
       "topics": [
@@ -340,6 +425,22 @@
       "review_depth": "synthesized",
       "snapshot": "2c008fd0252b2c569227d12568356ab88ab0560a",
       "note": ""
+    },
+    {
+      "id": "mlx-lm-release-0312",
+      "title": "MLX-LM v0.31.2 release",
+      "url": "https://github.com/ml-explore/mlx-lm/releases/tag/v0.31.2",
+      "kind": "release",
+      "owner": "Apple MLX",
+      "topics": [
+        "mlx-lm",
+        "speculative-decoding",
+        "prompt-cache",
+        "correctness-fix"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "v0.31.2",
+      "note": "Official release evidence that speculative decoding output corruption and prompt-cache behavior changed after the stored MLX-LM 0.31.1 local receipts."
     },
     {
       "id": "mlx-lm-release-0313",
@@ -359,7 +460,7 @@
     {
       "id": "mlx-lm-convert",
       "title": "MLX-LM model conversion and quantization",
-      "url": "https://github.com/ml-explore/mlx-lm/blob/main/mlx_lm/convert.py",
+      "url": "https://github.com/ml-explore/mlx-lm/blob/2c008fd0252b2c569227d12568356ab88ab0560a/mlx_lm/convert.py",
       "kind": "source-code",
       "owner": "Apple MLX",
       "topics": [
@@ -369,12 +470,17 @@
       ],
       "review_depth": "synthesized",
       "snapshot": "2c008fd0252b2c569227d12568356ab88ab0560a",
+      "evidence_class": "primary_source_code",
+      "support_scope": "official_mlx_project",
+      "claim_types": [
+        "mlx_implementation"
+      ],
       "note": ""
     },
     {
       "id": "mlx-lm-cache",
       "title": "MLX-LM cache implementations",
-      "url": "https://github.com/ml-explore/mlx-lm/blob/main/mlx_lm/models/cache.py",
+      "url": "https://github.com/ml-explore/mlx-lm/blob/2c008fd0252b2c569227d12568356ab88ab0560a/mlx_lm/models/cache.py",
       "kind": "source-code",
       "owner": "Apple MLX",
       "topics": [
@@ -384,12 +490,17 @@
       ],
       "review_depth": "synthesized",
       "snapshot": "2c008fd0252b2c569227d12568356ab88ab0560a",
+      "evidence_class": "primary_source_code",
+      "support_scope": "official_mlx_project",
+      "claim_types": [
+        "mlx_implementation"
+      ],
       "note": ""
     },
     {
       "id": "mlx-lm-speculative",
       "title": "MLX-LM speculative generation implementation",
-      "url": "https://github.com/ml-explore/mlx-lm/blob/main/mlx_lm/generate.py",
+      "url": "https://github.com/ml-explore/mlx-lm/blob/2c008fd0252b2c569227d12568356ab88ab0560a/mlx_lm/generate.py",
       "kind": "source-code",
       "owner": "Apple MLX",
       "topics": [
@@ -398,12 +509,17 @@
       ],
       "review_depth": "synthesized",
       "snapshot": "2c008fd0252b2c569227d12568356ab88ab0560a",
+      "evidence_class": "primary_source_code",
+      "support_scope": "official_mlx_project",
+      "claim_types": [
+        "mlx_implementation"
+      ],
       "note": ""
     },
     {
       "id": "mlx-lm-models",
       "title": "MLX-LM architecture implementations",
-      "url": "https://github.com/ml-explore/mlx-lm/tree/main/mlx_lm/models",
+      "url": "https://github.com/ml-explore/mlx-lm/tree/2c008fd0252b2c569227d12568356ab88ab0560a/mlx_lm/models",
       "kind": "source-code",
       "owner": "Apple MLX",
       "topics": [
@@ -433,7 +549,7 @@
     {
       "id": "mlx-vlm-repo",
       "title": "MLX-VLM repository",
-      "url": "https://github.com/Blaizzy/mlx-vlm",
+      "url": "https://github.com/Blaizzy/mlx-vlm/tree/6a8cdff6a1f53f46a15d4adb997c3b2d5f621263",
       "kind": "repository",
       "owner": "Blaizzy",
       "topics": [
@@ -448,7 +564,7 @@
     {
       "id": "mlx-vlm-readme",
       "title": "MLX-VLM serving, caching, and speculative decoding documentation",
-      "url": "https://github.com/Blaizzy/mlx-vlm/blob/main/README.md",
+      "url": "https://github.com/Blaizzy/mlx-vlm/blob/6a8cdff6a1f53f46a15d4adb997c3b2d5f621263/README.md",
       "kind": "source-code",
       "owner": "Blaizzy",
       "topics": [
@@ -459,12 +575,18 @@
       ],
       "review_depth": "synthesized",
       "snapshot": "6a8cdff6a1f53f46a15d4adb997c3b2d5f621263",
+      "evidence_class": "primary_source_code",
+      "support_scope": "third_party_pinned",
+      "claim_types": [
+        "mlx_implementation",
+        "serving_semantics"
+      ],
       "note": ""
     },
     {
       "id": "mlx-audio-repo",
       "title": "MLX-Audio repository",
-      "url": "https://github.com/Blaizzy/mlx-audio",
+      "url": "https://github.com/Blaizzy/mlx-audio/tree/412cf7cd381c2a3f6a8189af04a95af24cb415b6",
       "kind": "repository",
       "owner": "Blaizzy",
       "topics": [
@@ -481,7 +603,7 @@
     {
       "id": "mlx-audio-convert",
       "title": "MLX-Audio conversion implementation",
-      "url": "https://github.com/Blaizzy/mlx-audio/blob/main/mlx_audio/convert.py",
+      "url": "https://github.com/Blaizzy/mlx-audio/blob/412cf7cd381c2a3f6a8189af04a95af24cb415b6/mlx_audio/convert.py",
       "kind": "source-code",
       "owner": "Blaizzy",
       "topics": [
@@ -497,7 +619,7 @@
     {
       "id": "mlx-audio-codecs",
       "title": "MLX-Audio codec implementations",
-      "url": "https://github.com/Blaizzy/mlx-audio/tree/main/mlx_audio/codec/models",
+      "url": "https://github.com/Blaizzy/mlx-audio/tree/412cf7cd381c2a3f6a8189af04a95af24cb415b6/mlx_audio/codec/models",
       "kind": "source-code",
       "owner": "Blaizzy",
       "topics": [
@@ -512,7 +634,7 @@
     {
       "id": "mlx-audio-models",
       "title": "MLX-Audio model implementations",
-      "url": "https://github.com/Blaizzy/mlx-audio/tree/main/mlx_audio",
+      "url": "https://github.com/Blaizzy/mlx-audio/tree/412cf7cd381c2a3f6a8189af04a95af24cb415b6/mlx_audio",
       "kind": "source-code",
       "owner": "Blaizzy",
       "topics": [
@@ -538,8 +660,13 @@
         "codec"
       ],
       "review_depth": "synthesized",
-      "snapshot": "a7ef986",
-      "note": ""
+      "snapshot": "a7ef98604cfd752e9e5c9011bcee8ec8c67228be",
+      "evidence_class": "release_note",
+      "support_scope": "third_party_pinned",
+      "claim_types": [
+        "mlx_implementation"
+      ],
+      "note": "Pinned release identity for the exact MLX-Audio 0.4.4 software constraint; the performance table is cited separately from the versioned model guide."
     },
     {
       "id": "vllm-mlx-repo",
@@ -560,7 +687,7 @@
     {
       "id": "mlx-dev-skill",
       "title": "General MLX development Agent Skill",
-      "url": "https://github.com/ettrickshepherd/mlx-dev-skill",
+      "url": "https://github.com/ettrickshepherd/mlx-dev-skill/tree/99e8bd62dd4f0e1649ae9647a1f7ee65b65d02fe",
       "kind": "repository",
       "owner": "ettrickshepherd",
       "topics": [
@@ -4027,6 +4154,12 @@
       ],
       "review_depth": "synthesized",
       "snapshot": "2601.19139",
+      "evidence_class": "primary_paper",
+      "support_scope": "paper_only",
+      "claim_types": [
+        "performance",
+        "serving_semantics"
+      ],
       "note": "Used for vllm-mlx source-reported throughput and repeated-media cache ranges; not generalized beyond its benchmark setup."
     },
     {
@@ -4092,21 +4225,6 @@
       "review_depth": "screened",
       "snapshot": "2026-06-24",
       "note": "General serving reference for prefix-cache behavior; not MLX framework support."
-    },
-    {
-      "id": "sankalp-prompt-cache-blog",
-      "title": "How prompt caching works - Paged Attention and Automatic Prefix Caching",
-      "url": "https://sankalp.bearblog.dev/how-prompt-caching-works/",
-      "kind": "technical-blog",
-      "owner": "Sankalp Mukim",
-      "topics": [
-        "prompt-cache",
-        "paged-attention",
-        "serving"
-      ],
-      "review_depth": "screened",
-      "snapshot": "2026-06-24",
-      "note": "Practitioner explanation for prompt-cache mechanics; validate with implementation sources."
     },
     {
       "id": "nvidia-nvfp4-blog",
@@ -4217,11 +4335,11 @@
     },
     {
       "review_depth": "synthesized",
-      "snapshot": "2c008fd0d8f1d1a3e69a54c4482f18a1068f1d48",
-      "note": "Implementation evidence for SwitchLinear/SwitchGLU-style expert dispatch; check installed revision before use.",
+      "snapshot": "ed1fca4cef15a824c5f1702c80f70b4cffc8e4dd",
+      "note": "Implementation evidence for SwitchLinear/SwitchGLU-style expert dispatch at the pinned MLX-LM v0.31.3 commit; check the installed revision before use.",
       "id": "mlx-lm-switch-layers",
       "title": "MLX-LM Switch/MoE layers implementation",
-      "url": "https://github.com/ml-explore/mlx-lm/blob/main/mlx_lm/models/switch_layers.py",
+      "url": "https://github.com/ml-explore/mlx-lm/blob/ed1fca4cef15a824c5f1702c80f70b4cffc8e4dd/mlx_lm/models/switch_layers.py",
       "kind": "source-code",
       "owner": "Apple MLX",
       "topics": [
@@ -4229,6 +4347,11 @@
         "moe",
         "gather-mm",
         "gather-qmm"
+      ],
+      "evidence_class": "primary_source_code",
+      "support_scope": "official_mlx_project",
+      "claim_types": [
+        "mlx_implementation"
       ]
     },
     {
@@ -4312,12 +4435,12 @@
     },
     {
       "review_depth": "synthesized",
-      "snapshot": "2026-06-24",
+      "snapshot": "a7ef98604cfd752e9e5c9011bcee8ec8c67228be",
       "note": "Source for Qwen3-TTS streaming and source-reported short-prompt batch throughput table.",
       "id": "mlx-audio-qwen3-tts-docs",
       "title": "MLX-Audio Qwen3-TTS model guide",
-      "url": "https://blaizzy.github.io/mlx-audio/models/tts/qwen3-tts/",
-      "kind": "official-doc",
+      "url": "https://github.com/Blaizzy/mlx-audio/blob/a7ef98604cfd752e9e5c9011bcee8ec8c67228be/docs/models/tts/qwen3-tts.md",
+      "kind": "source-code",
       "owner": "Blaizzy",
       "topics": [
         "mlx-audio",
@@ -4325,6 +4448,13 @@
         "tts",
         "batching",
         "streaming"
+      ],
+      "evidence_class": "primary_source_code",
+      "support_scope": "third_party_pinned",
+      "claim_types": [
+        "mlx_implementation",
+        "performance",
+        "audio_quality"
       ]
     },
     {
@@ -4381,13 +4511,20 @@
       "note": "Third-party pinned serving guide; text/VLM evidence must not be promoted to generic audio support.",
       "id": "vllm-mlx-continuous-batching-guide",
       "title": "vLLM-MLX continuous batching guide",
-      "url": "https://github.com/waybarrios/vllm-mlx/blob/main/docs/guides/continuous-batching.md",
+      "url": "https://github.com/waybarrios/vllm-mlx/blob/a48c86c1a41900f7d26658471b5f67e5fdd35445/docs/guides/continuous-batching.md",
       "kind": "source-code",
       "owner": "waybarrios",
       "topics": [
         "vllm-mlx",
         "continuous-batching",
         "serving"
+      ],
+      "evidence_class": "primary_source_code",
+      "support_scope": "third_party_pinned",
+      "claim_types": [
+        "mlx_implementation",
+        "performance",
+        "serving_semantics"
       ]
     },
     {
@@ -4396,7 +4533,7 @@
       "note": "Source for video FPS/max-frame knobs and multimodal serving caveats.",
       "id": "vllm-mlx-multimodal-guide",
       "title": "vLLM-MLX multimodal serving guide",
-      "url": "https://github.com/waybarrios/vllm-mlx/blob/main/docs/guides/multimodal.md",
+      "url": "https://github.com/waybarrios/vllm-mlx/blob/a48c86c1a41900f7d26658471b5f67e5fdd35445/docs/guides/multimodal.md",
       "kind": "source-code",
       "owner": "waybarrios",
       "topics": [
@@ -4404,6 +4541,12 @@
         "multimodal",
         "video",
         "serving"
+      ],
+      "evidence_class": "primary_source_code",
+      "support_scope": "third_party_pinned",
+      "claim_types": [
+        "mlx_implementation",
+        "serving_semantics"
       ]
     },
     {
@@ -4420,6 +4563,12 @@
         "vision-cache",
         "multimodal",
         "cache"
+      ],
+      "evidence_class": "primary_source_code",
+      "support_scope": "third_party_pinned",
+      "claim_types": [
+        "mlx_implementation",
+        "serving_semantics"
       ]
     },
     {
@@ -4468,6 +4617,12 @@
         "vision-cache",
         "multimodal",
         "serving"
+      ],
+      "evidence_class": "primary_source_code",
+      "support_scope": "third_party_pinned",
+      "claim_types": [
+        "mlx_implementation",
+        "serving_semantics"
       ]
     },
     {
@@ -4484,6 +4639,12 @@
         "multimodal",
         "batching",
         "prefix-cache"
+      ],
+      "evidence_class": "primary_source_code",
+      "support_scope": "third_party_pinned",
+      "claim_types": [
+        "mlx_implementation",
+        "serving_semantics"
       ]
     },
     {
@@ -4610,7 +4771,7 @@
     {
       "id": "dgrauet-ltx2-block-streaming-source",
       "title": "ltx-2-mlx BlockStreamer implementation",
-      "url": "https://github.com/dgrauet/ltx-2-mlx/blob/3f5897a9582b/packages/ltx-core-mlx/src/ltx_core_mlx/loader/block_streaming.py",
+      "url": "https://github.com/dgrauet/ltx-2-mlx/blob/3f5897a9582b5c14379c8f88216ae0fd6e55741d/packages/ltx-core-mlx/src/ltx_core_mlx/loader/block_streaming.py",
       "kind": "source-code",
       "owner": "dgrauet",
       "topics": [
@@ -4621,13 +4782,19 @@
         "diffusion"
       ],
       "review_depth": "synthesized",
-      "snapshot": "3f5897a9582b",
+      "snapshot": "3f5897a9582b5c14379c8f88216ae0fd6e55741d",
+      "evidence_class": "primary_source_code",
+      "support_scope": "third_party_pinned",
+      "claim_types": [
+        "mlx_implementation",
+        "memory"
+      ],
       "note": "Pinned implementation evidence for memory-mapped repeated-block weight streaming."
     },
     {
       "id": "dgrauet-ltx2-block-streaming-tests",
       "title": "ltx-2-mlx block streaming tests",
-      "url": "https://github.com/dgrauet/ltx-2-mlx/blob/3f5897a9582b/tests/test_block_streaming.py",
+      "url": "https://github.com/dgrauet/ltx-2-mlx/blob/3f5897a9582b5c14379c8f88216ae0fd6e55741d/tests/test_block_streaming.py",
       "kind": "source-code",
       "owner": "dgrauet",
       "topics": [
@@ -4638,13 +4805,13 @@
         "tests"
       ],
       "review_depth": "synthesized",
-      "snapshot": "3f5897a9582b",
+      "snapshot": "3f5897a9582b5c14379c8f88216ae0fd6e55741d",
       "note": "Pinned correctness evidence for block discovery, weight binding, streamed/eager parity, and eviction/reload behavior."
     },
     {
       "id": "dgrauet-ltx2-regression-report",
       "title": "ltx-2-mlx v0.11.0 regression report",
-      "url": "https://github.com/dgrauet/ltx-2-mlx/blob/3f5897a9582b/docs/REGRESSION_TESTS_v0.11.0.md",
+      "url": "https://github.com/dgrauet/ltx-2-mlx/blob/3f5897a9582b5c14379c8f88216ae0fd6e55741d/docs/REGRESSION_TESTS_v0.11.0.md",
       "kind": "source-code",
       "owner": "dgrauet",
       "topics": [
@@ -4654,7 +4821,7 @@
         "video-diffusion"
       ],
       "review_depth": "synthesized",
-      "snapshot": "3f5897a9582b",
+      "snapshot": "3f5897a9582b5c14379c8f88216ae0fd6e55741d",
       "note": "Pinned report claiming byte-identical low-RAM/eager output for a q8 LTX-2 path; source-reported, not locally reproduced here."
     },
     {
@@ -4741,7 +4908,7 @@
     {
       "id": "katlun-grid-sample-source",
       "title": "mlx-grid-sample custom Metal implementation",
-      "url": "https://github.com/katlun-lgtm/mlx-grid-sample/blob/467385fa2b84/mlx_grid_sample.py",
+      "url": "https://github.com/katlun-lgtm/mlx-grid-sample/blob/467385fa2b84864659bf3076eca32c4c4d4ddbec/mlx_grid_sample.py",
       "kind": "source-code",
       "owner": "katlun-lgtm",
       "topics": [
@@ -4752,13 +4919,18 @@
         "video"
       ],
       "review_depth": "synthesized",
-      "snapshot": "467385fa2b84",
+      "snapshot": "467385fa2b84864659bf3076eca32c4c4d4ddbec",
+      "evidence_class": "primary_source_code",
+      "support_scope": "third_party_pinned",
+      "claim_types": [
+        "mlx_implementation"
+      ],
       "note": "Pinned implementation evidence for PyTorch-compatible 2D/3D grid_sample kernels using mx.fast.metal_kernel."
     },
     {
       "id": "katlun-grid-sample-tests",
       "title": "mlx-grid-sample correctness tests",
-      "url": "https://github.com/katlun-lgtm/mlx-grid-sample/blob/467385fa2b84/test_grid_sample.py",
+      "url": "https://github.com/katlun-lgtm/mlx-grid-sample/blob/467385fa2b84864659bf3076eca32c4c4d4ddbec/test_grid_sample.py",
       "kind": "source-code",
       "owner": "katlun-lgtm",
       "topics": [
@@ -4769,13 +4941,13 @@
         "tests"
       ],
       "review_depth": "synthesized",
-      "snapshot": "467385fa2b84",
+      "snapshot": "467385fa2b84864659bf3076eca32c4c4d4ddbec",
       "note": "Pinned correctness evidence for align_corners and zeros/border padding parity against NumPy and optional Torch."
     },
     {
       "id": "katlun-grid-sample-benchmark",
       "title": "mlx-grid-sample benchmark harness",
-      "url": "https://github.com/katlun-lgtm/mlx-grid-sample/blob/467385fa2b84/bench_grid_sample.py",
+      "url": "https://github.com/katlun-lgtm/mlx-grid-sample/blob/467385fa2b84864659bf3076eca32c4c4d4ddbec/bench_grid_sample.py",
       "kind": "source-code",
       "owner": "katlun-lgtm",
       "topics": [
@@ -4785,7 +4957,7 @@
         "benchmarking"
       ],
       "review_depth": "synthesized",
-      "snapshot": "467385fa2b84",
+      "snapshot": "467385fa2b84864659bf3076eca32c4c4d4ddbec",
       "note": "Pinned benchmark harness comparing the custom 3D grid_sample kernel with a pure-MLX gather baseline."
     },
     {

@@ -8,7 +8,14 @@
     "multi_modal_projector.linear_1.weight",
     "language_model.model.layers.0.self_attn.q_proj.weight"
   ],
-  "optimization_must_include": "content-prefix-cache-vlm",
+  "optimization_must_include": "multimodal-content-prefix-cache",
   "optimization_must_exclude": "qwen3-tts-batch-generation",
+  "target_profile": {
+    "schema_version": 1,
+    "hardware": {},
+    "software": {},
+    "capabilities": [],
+    "workloads": ["repeated-media"]
+  },
   "seeded_parity_bug": {"shape": [3, 2, 2], "delta": 6.5}
 }

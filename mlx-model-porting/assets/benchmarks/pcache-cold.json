@@ -21,17 +21,17 @@
   "command": [
     "sh",
     "-lc",
-    "cat /tmp/t206-benchmark/pcache_cold_prompt.txt | python3 -m mlx_lm generate --model mlx-community/Qwen3-1.7B-4bit --prompt - --max-tokens 256 --temp 0.0 --seed 206"
+    "cat <historical-ephemeral-input>/pcache_cold_prompt.txt | python3 -m mlx_lm generate --model mlx-community/Qwen3-1.7B-4bit --prompt - --max-tokens 256 --temp 0.0 --seed 206"
   ],
-  "command_display": "sh -lc 'cat /tmp/t206-benchmark/pcache_cold_prompt.txt | python3 -m mlx_lm generate --model mlx-community/Qwen3-1.7B-4bit --prompt - --max-tokens 256 --temp 0.0 --seed 206'",
+  "command_display": "sh -lc 'cat <historical-ephemeral-input>/pcache_cold_prompt.txt | python3 -m mlx_lm generate --model mlx-community/Qwen3-1.7B-4bit --prompt - --max-tokens 256 --temp 0.0 --seed 206'",
   "config_notes": {
     "model": "mlx-community/Qwen3-1.7B-4bit",
     "model_revision": "3b1b1768f8f8cf8351c712464f906e86c2b8269e",
     "cache_state": "cold_no_prompt_cache",
     "workload": "4056_raw_qwen3_tokens_prompt_max_tokens_256_temp_0_seed_206",
-    "prefix_file": "/tmp/t206-benchmark/prefix_4k.txt",
-    "suffix_file": "/tmp/t206-benchmark/pcache_suffix.txt",
-    "cold_prompt_file": "/tmp/t206-benchmark/pcache_cold_prompt.txt"
+    "prefix_file": "<historical-ephemeral-input>/prefix_4k.txt",
+    "suffix_file": "<historical-ephemeral-input>/pcache_suffix.txt",
+    "cold_prompt_file": "<historical-ephemeral-input>/pcache_cold_prompt.txt"
   },
   "warmup_runs": 1,
   "measured_runs": 5,

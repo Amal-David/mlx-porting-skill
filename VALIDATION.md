@@ -1,103 +1,183 @@
 # Validation status
 
-This file states plainly what the skill's tooling **demonstrates offline** versus what
-still **requires Apple Silicon or network access**. It exists so readiness is never
-overclaimed: passing the offline suite does **not** prove a real model ports correctly
-on a Mac — it proves the method, routing, and guards behave as documented.
+**Release snapshot:** 0.4.0
 
-Corpus review date: **2026-06-27**. Receipt / validation review date: **2026-07-06**.
+**Review date:** 2026-07-10
 
-## Demonstrated offline (no Apple Silicon, no model download, no network)
+This file separates repository-level proof from target-model proof. Offline
+tests can demonstrate deterministic routing, safety controls, evidence
+boundaries, and artifact consistency. They cannot demonstrate that an unseen
+checkpoint has been converted correctly, that a model is useful, or that an
+optimization improves a particular Mac workload.
 
-Run with `python3 -m unittest discover -s tests -v` plus the audit, provenance, and
-manifest gates. Each item below is enforced by a runnable pass/fail test.
+## Canonical snapshot
 
-| Claim | Guard |
+| Surface | Current checked-in truth | Canonical source |
+|---|---:|---|
+| Architecture-family routes | 17 | `mlx-model-porting/assets/architectures.yaml` |
+| Evidence sources | 350 | `mlx-model-porting/assets/sources.yaml` |
+| Technique records | 65 | `mlx-model-porting/assets/techniques.yaml` |
+| Optimization-guidance methods | 27 | `mlx-model-porting/assets/optimization_guidance.yaml` |
+| Optimization stacks | 4 | `mlx-model-porting/assets/optimization_stacks.yaml` |
+| Benchmark receipts | 11 | `mlx-model-porting/assets/benchmarks/receipt_assessments.json` |
+| Performance observations | 10 | generated benchmark assessment |
+| Promotion-ready receipts | 0 | generated benchmark assessment |
+| Rejected receipts | 1 | generated benchmark assessment |
+
+The 17 routes are synthetic golden scenarios. They prove that every declared
+family has a fixture exercising route selection, expected weight coverage, a
+seeded parity failure, and optimization inclusion/exclusion. They do **not**
+represent 17 completed real-model ports.
+
+## What the offline gates cover
+
+| Contract | Evidence |
 |---|---|
-| An agent routes a model to the correct family **and** runbook | `tests/test_scenarios.py` (17/17 declared families with fixtures) |
-| Expected source weight keys are present after inspection | `tests/test_scenarios.py` |
-| A **seeded parity bug is caught** by the parity stage | `tests/test_scenarios.py` (compare_tensors must fail) |
-| The right optimizations are recommended and wrong ones are **not** | `tests/test_scenarios.py`, `test_tooling.py` |
-| KV-cache quantization actually reaches dense/MoE decoders | `test_optimization_guidance_has_no_unreachable_methods`, `test_recommender_rejects_cuda_only_method` |
-| A CUDA-only optimization is **rejected**, never recommended | `test_recommender_rejects_cuda_only_method`, `test_port_plan_excludes_rejected_methods` |
-| Blocked intake **holds** recommendations until resolved | `test_recommender_holds_candidates_when_intake_blocked` |
-| Parity check fails loud on NaN/Inf, cosine drift, and reports report-only honestly | `test_compare_tensors_*` |
-| Weight-map shape transforms (reshape/squeeze/unsqueeze/slice/permute) are correct | `test_weight_map_transform_ops_*` |
-| The CLI pipeline chains (`inspect → plan → recommend → validate_weight_map`) | `test_pipeline_chains_inspect_to_plan_recommend_and_validate` |
-| Fixtures are reproducible and auditable from a generator | `tests/test_fixtures.py` |
-| Static source-format manifests hold recommendations and report conservative operator/layer coverage for ONNX, GGUF, Flax/Orbax, TensorFlow SavedModel, Keras archive, Core ML package, and safetensors-only checkpoint artifacts | `test_static_inspection_reports_*_source_format_manifest`, `test_static_inspection_reports_*_manifest`, `test_static_inspection_holds_safetensors_only_checkpoint` |
-| Source-format reports with static tensor metadata can feed deterministic weight-map shape coverage, while reports without shapes fail loud | `test_weight_mapping_accepts_onnx_source_format_initializers`, `test_weight_mapping_accepts_gguf_source_format_tensors`, `test_weight_mapping_rejects_source_format_without_static_tensors` |
-| The deep research loop emits review-only assignments, dynamic assignment-planner receipts, subagent handoff manifests, campaign-wave receipts, adaptive next-wave scaffold handoffs, campaign-runner receipts, opt-in adaptive campaign-runner followups, explicit sampling-target receipts, externally ingested result receipts, planned-versus-sampled coverage, cross-agent evidence matrices, review-readiness gates, per-iteration and loop-level promotion-review ledgers, loop-level learning dossiers, fixed and adaptive iterative loop receipts, planned multi-source sampling, worker-authored or generated blogs with provenance and section-contract receipts, synthesis, bounded parallel executor receipts, and rejects malformed findings | `test_research_loop_*`, `test_research_campaign_runner_*` |
-| Contributor-scale collection follows `Link` pagination, caps retained counts, stores receipts, and redacts raw `anon=true` identities | `test_contributor_collector_*` |
-| The distributed artifact has no silent file drift | `scripts/manifest.py check` |
-| Source provenance is well-formed; supported techniques cite implementation evidence | `scripts/validate_sources.py` |
+| Weak, unknown, and tied architecture signals stop for manual review; compatible hybrid routes remain explicit. | `tests/test_scenarios.py`, `tests/test_routing_contract.py` |
+| Intake is static by default, remote code is not executed, hostile model artifacts are read through bounded no-follow paths, partial shards block recommendations, local paths are portable by default, and truncation blocks clean conclusions. | `tests/test_model_intake_hardening.py`, `tests/test_tooling.py`, `tests/test_hardening_filesystem_contract.py`, `tests/test_hardening_project_inspection_contract.py` |
+| Weight-map transforms are explicit and tensor comparison fails on NaN/Inf, shape drift, tolerance failure, or cosine drift. | `tests/test_tooling.py`, `tests/test_scenarios.py` |
+| Recommendations match controlled family, capability, workload, objective, and version identifiers exactly. | `tests/test_recommendation_contract.py` |
+| The five advisor buckets are enforced, experimental approaches require opt-in, blocked intake forbids execution, and rejected methods stay rejected. | `tests/test_recommendation_contract.py`, `tests/test_tooling.py` |
+| Compound numbers require compatible measured-together coverage and unique evidence lineage; regressions and duplicate composition are not promoted. | `tests/test_recommendation_contract.py`, `tests/test_claim_catalog_contract.py` |
+| Historical schema-1 receipts remain observations. Schema-2 promotion requires every runner, execution-attestation, lineage, workload, raw-output, quality, stability, rollback, baseline, and noise gate. | `tests/test_benchmark_evidence_contract.py`, `tests/test_promotion_validation_contract.py` |
+| Benchmark assessments, the receipt index, human report, claim catalog, evidence index, and site data are deterministic generated artifacts with drift checks. | `tests/test_benchmark_evidence_contract.py`, `tests/test_claim_catalog_contract.py`, `tests/test_evidence_index_contract.py`, `tests/test_site_data_contract.py` |
+| Supported evidence is pinned and typed; review depth cannot silently imply MLX support or local reproduction. | `mlx-model-porting/scripts/validate_sources.py`, `tests/test_evidence_index_contract.py` |
+| Research campaigns are review-only, bounded, path-confined, provenance-preserving, and fail on malformed or stale results. | `tests/test_hardening_campaign_contract.py`, `tests/test_hardening_contract.py`, `tests/test_tooling.py` |
+| Network origins, redirects, pagination, process trees, output capture, archives, structured inputs, and filesystem traversal are bounded or fail closed. | `tests/test_hardening_network_process_contract.py`, `tests/test_hardening_benchmark_command_contract.py`, `tests/test_hardening_common_contract.py`, `tests/test_hardening_filesystem_contract.py` |
+| Distribution text is checkout-agnostic; copy installation is an exact manifest-attested allowlist with a complete in-payload license; symlink installation is mode-aware and idempotent; the retired public worker is absent; and the static site has local runtime dependencies and accessible fallbacks. | `tests/test_distribution_portability.py`, `tests/test_installer_manifest_contract.py`, `tests/test_worker_retirement.py`, `tests/test_site_contract.py` |
 
-## Demonstrated on Apple Silicon (this repository's receipts)
+## Benchmark and claim boundary
 
-The local receipt catalogue is `mlx-model-porting/assets/benchmarks/receipts_index.json`.
-All receipt-backed rows below were measured on Apple M4 Pro (Mac16,8, 48 GB
-unified memory), macOS 26.3, Python 3.14.4, MLX 0.30.4, and MLX-LM 0.31.1.
-They are workload-specific receipts, not portable guarantees.
+The generated assessment in
+`mlx-model-porting/assets/benchmarks/receipt_assessments.json` classifies the
+current receipt set as:
 
-### Locally reproduced receipts
+| Classification | Count | Meaning |
+|---|---:|---|
+| `performance_observation` | 10 | A measurement is preserved, but one or more promotion gates are missing or failed. It is not a reusable speed or memory claim. |
+| `promotion_ready` | 0 | No local receipt currently authorizes a promoted numeric claim. |
+| `rejected` | 1 | The measured configuration regressed or otherwise fails the claim boundary. |
 
-| Claim | Receipt labels | Chip | What was measured | Honest band / result |
-|---|---|---|---|---|
-| Native low-bit weight quantization | `quant-baseline-bf16`, `quant-4bit` | Apple M4 Pro | `mlx-community/Qwen3-1.7B-bf16` versus `mlx-community/Qwen3-1.7B-4bit`; 548 median prompt tokens, 256 generated tokens; median decode 54.318 -> 130.179 tok/s; median peak memory 3.825 -> 1.773 GB. | `1.0x-2.4x` decode-tokens/sec for this workload. Prefill ratio was 0.858x, and the greedy 3-prompt note diverged 3/3 versus bf16, so quality remains eval-required. |
-| Prompt prefix cache | `pcache-cold`, `pcache-warm` | Apple M4 Pro | Cold 4064-token prompt versus warm 21-token suffix after reusing a 4040-token prefix cache; median TTFT proxy 2.8588s -> 0.1204s; median decode 99.749 -> 91.547 tok/s. | `1.0x-23.8x` TTFT-proxy only. This is `prompt_tokens / prompt_tps`, not instrumented first-token latency; decode ratio was 0.918x. |
-| Uniform KV quantization | `kv-baseline-8k`, `kv-4bit-8k` | Apple M4 Pro | Same Qwen2.5-Coder 7B 4-bit target on an 8058-token long prompt, 256 generated tokens; median decode 29.248 -> 32.594 tok/s; median prefill 311.125 -> 282.858 tok/s; median peak memory 5.453 -> 6.570 GB. | `1.0x-1.1x` decode-tokens/sec. This receipt does not demonstrate a memory saving; peak memory increased by 1.117 GB. |
-| Draft-model speculative decoding | `spec-baseline`, `spec-draft-k2`, `spec-draft-k3`, `spec-draft-k4` | Apple M4 Pro | Qwen2.5-Coder 7B 4-bit target with 1.5B 4-bit draft on a 552-token code prompt, 256 generated tokens; median decode baseline 45.122 tok/s, k=2 56.583 tok/s, k=3 30.359 tok/s, k=4 24.809 tok/s. | `1.0x-1.3x` decode-tokens/sec for the k=2-compatible slice. k=3 and k=4 regressed, so the selected draft-token count must be profiled locally. |
-| Dense decoder stack measured together | `kv-baseline-8k`, `stack-measured-together` | Apple M4 Pro | Matched ~8k context: plain 4-bit baseline on an 8058-token prompt versus target 4-bit weights plus 4-bit KV, prompt cache, and k=2 draft model on a cached 8053-token prefix plus 34-token suffix; median decode 29.248 -> 9.516 tok/s = 0.33x. The earlier `spec-baseline` comparison used a 552-token context and was corrected because it mixed context lengths. | Measured together as `0.33x` decode throughput, so it remains a negative primary-metric result, not a speedup. Regression is driven by the draft model at long context; KV-4bit alone improved decode at 8k. The advisor's derived compound ceiling remains an unmeasured multiplicative hypothesis, not a measured claim. |
+The checked-in observations include older Apple M4 Pro runs, but they use
+legacy receipt contracts or lack required lineage, workload, output, quality,
+rollback, stability, compatibility, or controlled-runner evidence. Their raw
+ratios may help design a future experiment; they must not be advertised as
+reliable wins.
 
-The local 3D `grid_sample` kernel note in `optimization_guidance.yaml` is a local
-reproduction without an `assets/benchmarks/` receipt and is therefore not part of
-this receipt catalogue.
+A schema-2 candidate becomes `promotion_ready` only when the validator can
+independently establish all of the following:
 
-### Source-reported bands, not locally reproduced here
+- aggregate metrics recompute from bounded raw evidence;
+- either the controlled `python -m mlx_lm generate` invocation matches the
+  declared target model and workload, or `external-command-wall-time` resolves
+  an exact safe argv template that executes a digest-pinned Python runner at
+  argv position 1 and binds `models.target.id`, `models.target.revision`,
+  workload evidence, semantic variant arguments, and a label-owned output. The
+  resolved interpreter and sanitized ambient environment are part of the
+  target identity, while `-I -B` disables current-directory, user-site, and
+  environment-injected imports;
+- external wall time comes only from the parent-measured, size-bounded
+  `benchmark_command` schema-1 report; copied reports, command output metrics,
+  failed/timed-out runs, command/template drift, shells, dynamic code, wrappers,
+  secrets, and private ephemeral paths fail closed;
+- external warmup count, run count, and a finite positive timeout (maximum 3600
+  seconds) are bound into the experiment protocol;
+- immutable target, source, and optional draft lineage are pinned;
+- checked-in workload artifacts and normalized target/workload hashes match;
+- artifact and receipt-output paths are statically rejected when they contain
+  symlink components, and the quality contract is snapshotted before execution
+  and verified unchanged;
+- a schema-2 built-in exact-output-parity contract independently compares a
+  digest-bound reference with the candidate artifact recreated and recorded by
+  every measured run;
+- candidate and baseline experiments are exactly compatible, and the baseline
+  path, registered root receipt, digest, metrics, and fingerprint all identify
+  the same artifact;
+- both runs meet the stability threshold and the gain exceeds the noise floor;
+- enabled methods match the invocation; and
+- an explicit rollback condition exists; and
+- `execution_attested` proves independently that the exact runner and dependency
+  bytes exercised the declared model/workload and generated the measured output.
 
-| Claim | Provenance | Band | Boundary |
-|---|---|---:|---|
-| Continuous batching serving | Source-reported `vllm-mlx` benchmark | `1.0x-4.3x` batch-throughput | Applies only to comparable concurrent serving workloads; local baseline reproduction is still required. |
-| VLM repeated media / multimodal content prefix cache | Source-reported `vllm-mlx` benchmark | `1.0x-28.0x` repeated-media TTFT | High end is for repeated identical media cache hits, not generic VLM prompting. |
-| Qwen3-TTS batch generation | Source-reported MLX-Audio docs | `1.0x-5.45x` batch-throughput | Applies only to comparable batch size, prompt length, quantization, voice/reference, and audio-quality gates. |
+The final execution-attestation gate is deliberately false for both current
+runner lanes. A digest-pinned generic script can ignore its arguments, and the
+legacy MLX-LM lane trusts package imports and printed metrics without binding
+their bytes. Both lanes therefore generate observations, not promoted numbers,
+until a reviewed built-in adapter closes those gaps.
 
-### Still profile-required or parity-required
+Legacy Python evaluators, schema-1 declarative scores, and handwritten quality
+attestations are recorded only as provenance; the validator does not execute
+contributor code and does not accept contributor-selected JSON values,
+comparators, or thresholds as promotion proof. Exact-output parity is currently
+the only controlled built-in task metric. Lossy or task-specific candidates
+remain observations until an equally controlled evaluator is implemented.
 
-- Real MLX-vs-PyTorch numeric parity on an actual ported block or model.
-- Formal task-quality gates for the local quantization, KV-cache, prompt-cache,
-  speculation, and stack receipts; the current receipts use fixed greedy prompts
-  and explicit no-formal-eval caveats.
-- A KV-cache memory-saving claim for the measured flag set; the local 8k receipt
-  increased peak memory.
-- Any positive dense-decoder compound decode-speed claim from the derived
-  multiplicative ceiling; the only measured-together stack receipt regressed on
-  decode throughput.
-- Local reproduction of source-reported continuous batching, repeated-media VLM
-  cache, and Qwen3-TTS batch bands.
-- End-to-end real-model conversion runs for the 17 architecture families; the
-  offline scenarios prove routing and guard behavior, not real checkpoint support.
-- Tabular, ranking, and recommender support; the offline forecasting scenario
-  proves only time-series forecasting routing and guards.
-- Dense vision, promptable masks, OCR, depth, and pose support; the offline CV
-  backbone scenario proves only image-backbone/classifier routing and guards.
-- Point-cloud, equivariant, protein, chemistry, and energy/force scientific
-  support; the offline graph scenario proves only GCN-style message-passing
-  routing and guards.
-- Source-format conversion from ONNX, GGUF, Flax/Orbax, TensorFlow/Keras, or
-  Core ML artifacts into executable MLX graphs; offline tests prove static
-  metadata triage and recommendation holds only.
+The generated `mlx-model-porting/assets/effective_claims.json` is the sole
+numeric authority consumed by the advisor. It keeps current local observations
+withheld and currently withholds every source-reported range because the exact
+source experiment is not representable by the existing `TargetProfile` schema.
+Source evidence can justify trying a method, but only a locally reproduced
+receipt set can promote its number. The catalog never treats a multiplied stack
+ceiling as a measured compound result. A locally promoted range carries one
+canonical experiment fingerprint through receipt assessment and claim
+generation. Heterogeneous semantic identities cannot be pooled. Compatible
+repetitions require the same exact baseline file/digest, warmup/run/timeout protocol,
+and exact-output quality contract; they use the conservative minimum ratio and
+carry that repetition's complete fingerprint. The advisor exposes the range only when
+the `TargetProfile` carries the full canonical fingerprint plus exact
+receipt-derived model, target, workload, hardware, and software descriptors and
+a non-empty controlled workload set. The fingerprint binds the candidate
+receipt digest, aggregates, measured runs, raw-output descriptors and digests,
+and quality artifact/result digest; a copied fingerprint digest alone is never
+enough.
 
-## Requires network access (not proven here)
+## What still requires real Apple Silicon execution
 
-- Source link health: `scripts/validate_sources.py --check-urls`.
-- Upstream revision pin-drift detection and the live daily-research pipeline.
-- Live execution of external research subagents or network collectors; offline tests cover the harness contract, campaign receipts, adaptive next-wave scaffold receipts, campaign runner behavior with deterministic fake researchers, bounded local executor concurrency, iterative receipts, loop-level learning dossiers, fixture ingestion, and contributor collector receipt behavior only.
+- Source-oracle parity for an actual PyTorch/Hugging Face model and its MLX
+  implementation.
+- Complete checkpoint conversion for any of the 17 routed architecture
+  families.
+- Task-specific language, vision, audio, speech, diffusion, streaming, or
+  scientific quality evaluation.
+- Target-chip latency, throughput, memory, energy, compilation, and thermal
+  measurements.
+- Baseline-compatible schema-2 receipts for any local numeric promotion.
+- End-to-end validation of a measured-together optimization stack.
+- License and publication review for a particular converted checkpoint.
 
-## Offline gate commands
+Static source-format inspection of ONNX, GGUF, Flax/Orbax, TensorFlow/Keras,
+Core ML, or safetensors artifacts is metadata triage only. The repository does
+not include a generic converter from those formats to executable MLX graphs.
+
+## What requires network access
+
+- Live source-link checks:
+  `python3 mlx-model-porting/scripts/validate_sources.py mlx-model-porting --check-urls`.
+- Upstream revision drift detection and collection of new research candidates.
+- Live GitHub contributor collection and external researcher execution.
+
+Offline tests exercise deterministic fakes and contract fixtures for these
+paths. That does not prove a live upstream service, token, repository, or result
+is available.
+
+## Offline release gates
+
+Run from the repository root:
 
 ```bash
 python3 -m unittest discover -s tests -v
 python3 mlx-model-porting/scripts/audit_skill.py --strict mlx-model-porting
 python3 mlx-model-porting/scripts/validate_sources.py mlx-model-porting
+python3 mlx-model-porting/scripts/validate_benchmarks.py check
+python3 mlx-model-porting/scripts/generate_claim_catalog.py --check
+python3 mlx-model-porting/scripts/generate_evidence_index.py --check
+python3 mlx-model-porting/scripts/generate_site_data.py --check
+node --check site/data.js
+node --check site/app.js
 python3 mlx-model-porting/scripts/manifest.py check
+git diff --check
 ```
+
+`check` modes are non-mutating drift gates. Regeneration commands and ownership
+rules are documented in `CONTRIBUTING.md`; `MANIFEST.json` must be regenerated
+last after all distributed files are final.

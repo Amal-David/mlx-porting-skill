@@ -1,0 +1,11 @@
+{
+  "name": "unknown-architecture",
+  "config": {
+    "model_type": "novel_sequence_network",
+    "architectures": ["CompletelyNovelNetwork"],
+    "hidden_size": 768,
+    "license": "apache-2.0"
+  },
+  "tensor_keys": ["backbone.layers.0.projection.weight"],
+  "expected_status": "ambiguous"
+}

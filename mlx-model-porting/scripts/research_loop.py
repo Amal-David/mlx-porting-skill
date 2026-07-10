@@ -8,14 +8,30 @@ import json
 import os
 import re
 import shlex
-import subprocess
 import sys
 from collections import Counter
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-from _common import SkillError, dump_json, load_structured, safe_relpath, slugify
+from _common import (
+    SkillError,
+    atomic_write_text,
+    dump_json,
+    load_structured,
+    redact_secret_text,
+    run_process_capture,
+    safe_relpath,
+    slugify,
+)
+from run_research_campaign import (
+    MAX_AGENTS_PER_WAVE,
+    MAX_CAMPAIGN_WAVES,
+    campaign_path,
+    quarantine_preexisting_result,
+    result_file_identity,
+    validate_campaign_schema,
+)
 
 SCRIPT_DIR = Path(__file__).resolve().parent
 SKILL_ROOT = SCRIPT_DIR.parent
@@ -492,6 +508,27 @@ def rel_output_path(output_dir: Path, path: Path) -> str:
     return safe_relpath(output_dir, path)
 
 
+def portable_skill_path(path: Path) -> str:
+    """Render paths under the shipped skill without embedding a workstation path."""
+    resolved = path.resolve()
+    try:
+        return safe_relpath(SKILL_ROOT, resolved)
+    except SkillError:
+        return str(path if path.is_absolute() else path.absolute())
+
+
+def validate_persona_storage_ids(assignments: list[dict[str, Any]]) -> None:
+    storage_ids: set[str] = set()
+    for assignment in assignments:
+        persona_id = assignment.get("persona_id")
+        if not isinstance(persona_id, str) or not persona_id:
+            raise SkillError("research assignments require non-empty persona_id values")
+        storage_id = slugify(persona_id)
+        if storage_id in storage_ids:
+            raise SkillError(f"research assignments contain duplicate persona storage identity: {storage_id}")
+        storage_ids.add(storage_id)
+
+
 def agent_output_paths(output_dir: Path, assignment: dict[str, Any]) -> dict[str, Path]:
     slug = slugify(assignment["persona_id"])
     agent_dir = output_dir / "agents"
@@ -547,13 +584,14 @@ def write_subagent_handoffs(
     execution_mode: str,
     executor_command: str | None = None,
 ) -> dict[str, Any]:
+    validate_persona_storage_ids(assignments)
     agent_dir = output_dir / "agents"
     agent_dir.mkdir(parents=True, exist_ok=True)
     agents = []
     for index, assignment in enumerate(assignments):
         paths = agent_output_paths(output_dir, assignment)
         rel_paths = agent_rel_paths(output_dir, assignment)
-        paths["prompt"].write_text(render_executor_prompt(assignment), encoding="utf-8")
+        atomic_write_text(paths["prompt"], render_executor_prompt(assignment))
         handoff = {
             "assignment_index": index,
             "persona_id": assignment["persona_id"],
@@ -720,9 +758,37 @@ def ingest_command_args_for_wave(summary: dict[str, Any], output_dir: Path) -> l
     command_args.extend([
         "--ingest-subagent-results",
         "--output-dir",
-        str(output_dir),
+        portable_skill_path(output_dir),
     ])
     return command_args
+
+
+def ingest_operation_for_wave(summary: dict[str, Any], output_dir: Path) -> dict[str, Any]:
+    """Return a typed, allowlist-friendly description of a wave ingest."""
+    planner = summary.get("assignment_planner", {})
+    dispatch = summary.get("subagent_dispatch", {})
+    requirements = summary.get("review_gate", {}).get("requirements", {})
+    arguments: dict[str, Any] = {
+        "run_id": str(summary["run_id"]),
+        "objective": str(summary["objective"]),
+        "agent_count": int(dispatch.get("agent_count", summary.get("agent_count", 0))),
+        "assignment_mode": str(planner.get("mode", "config-order")),
+        "gap_hints": [str(hint) for hint in summary.get("gap_hints", [])],
+        "min_sampled_targets": int(requirements.get("min_sampled_targets", 0)),
+        "min_non_github_lanes": int(requirements.get("min_non_github_lanes", 0)),
+        "required_source_lanes": [str(lane) for lane in requirements.get("required_source_lanes", [])],
+        "require_explicit_sampling_receipts": bool(requirements.get("require_explicit_sampling_receipts")),
+        "fail_on_review_gate": bool(summary.get("fail_on_review_gate")),
+        "require_worker_blog_contract": bool(summary.get("require_worker_blog_contract")),
+        "ingest_subagent_results": True,
+        "output_dir": portable_skill_path(output_dir),
+    }
+    iteration = int(summary.get("iteration", 1))
+    iteration_count = int(summary.get("iteration_count", 1))
+    if iteration_count > 1:
+        arguments["iteration_index"] = iteration
+        arguments["iteration_count_total"] = iteration_count
+    return {"type": "research_loop_ingest", "arguments": arguments}
 
 
 def campaign_rel_path(root: Path, wave_output_dir: Path, relative_path: str | None) -> str | None:
@@ -757,8 +823,12 @@ def build_next_wave_scaffold(
     next_output_dir = next_wave_output_dir(output_dir, next_iteration)
     gap_hints = summary.get("next_gap_hints", [])
     command_args = ["python3", "scripts/research_loop.py"]
+    operation_arguments: dict[str, Any] = {}
     if str(args.config) != str(DEFAULT_CONFIG):
-        command_args.extend(["--config", str(args.config)])
+        rendered_config = portable_skill_path(Path(args.config))
+        command_args.extend(["--config", rendered_config])
+        operation_arguments["config"] = rendered_config
+    rendered_output_dir = portable_skill_path(next_output_dir)
     command_args.extend([
         "--run-id",
         next_run_id,
@@ -778,7 +848,25 @@ def build_next_wave_scaffold(
     append_review_gate_command_args(command_args, summary.get("review_gate", {}).get("requirements", {}))
     append_failure_command_args(command_args, summary)
     append_blog_contract_command_args(command_args, summary)
-    command_args.extend(["--output-dir", str(next_output_dir)])
+    command_args.extend(["--output-dir", rendered_output_dir])
+    requirements = summary.get("review_gate", {}).get("requirements", {})
+    operation_arguments.update({
+        "run_id": next_run_id,
+        "objective": str(summary["objective"]),
+        "agent_count": int(summary.get("agent_count", 0)),
+        "assignment_mode": "dynamic",
+        "gap_hints": [str(hint) for hint in gap_hints],
+        "iteration_index": next_iteration,
+        "iteration_count_total": iteration_count,
+        "min_sampled_targets": int(requirements.get("min_sampled_targets", 0)),
+        "min_non_github_lanes": int(requirements.get("min_non_github_lanes", 0)),
+        "required_source_lanes": [str(lane) for lane in requirements.get("required_source_lanes", [])],
+        "require_explicit_sampling_receipts": bool(requirements.get("require_explicit_sampling_receipts")),
+        "fail_on_review_gate": bool(summary.get("fail_on_review_gate")),
+        "require_worker_blog_contract": bool(summary.get("require_worker_blog_contract")),
+        "ingest_subagent_results": False,
+        "output_dir": rendered_output_dir,
+    })
     return {
         "schema_version": 1,
         "review_only": True,
@@ -787,10 +875,11 @@ def build_next_wave_scaffold(
         "next_iteration": next_iteration,
         "iteration_count": iteration_count,
         "run_id": next_run_id,
-        "output_dir": str(next_output_dir),
+        "output_dir": rendered_output_dir,
         "assignment_mode": "dynamic",
         "gap_hints": gap_hints,
         "command_args": command_args,
+        "operation": {"type": "research_loop_scaffold", "arguments": operation_arguments},
         "requires_current_wave_ingestion": True,
         "instructions": [
             "Run the current wave ingest command after worker result files are present.",
@@ -868,6 +957,7 @@ def build_campaign_wave(
         },
         "ingest": {
             "command_args": ingest_command_args_for_wave(summary, wave_output_dir),
+            "operation": ingest_operation_for_wave(summary, wave_output_dir),
             "wait_for_result_paths": [
                 agent["result_path"] for agent in agents if agent.get("result_path")
             ],
@@ -970,6 +1060,12 @@ def write_campaign_receipts(
     output_dir: Path,
     campaign: dict[str, Any],
 ) -> dict[str, Any]:
+    validate_campaign_schema(campaign, output_dir)
+    for wave in campaign["waves"]:
+        for agent in wave["agents"]:
+            if agent.get("execution_state") == "scaffolded_not_run":
+                result_path = campaign_path(output_dir, agent.get("result_path"), "result_path")
+                quarantine_preexisting_result(output_dir, result_path)
     dump_json(campaign, output_dir / "campaign.json")
     write_campaign_markdown(output_dir, campaign)
     return {
@@ -980,7 +1076,7 @@ def write_campaign_receipts(
 
 
 def load_executor_result(result_path: Path, persona_id: str) -> dict[str, Any]:
-    if not result_path.exists():
+    if result_path.is_symlink() or not result_path.is_file():
         raise SkillError("executor did not write result JSON")
     data = load_structured(result_path)
     if not isinstance(data, dict):
@@ -1004,6 +1100,14 @@ def execute_assignments(
         raise SkillError("--execution-timeout must be positive")
     if workers <= 0:
         raise SkillError("--executor-workers must be positive")
+    if len(assignments) > MAX_AGENTS_PER_WAVE:
+        raise SkillError(f"executor assignment limit exceeded: {len(assignments)} > {MAX_AGENTS_PER_WAVE}")
+    persona_ids = [assignment.get("persona_id") for assignment in assignments]
+    if any(not isinstance(persona_id, str) or not persona_id for persona_id in persona_ids):
+        raise SkillError("executor assignments require non-empty persona_id values")
+    if len(persona_ids) != len(set(persona_ids)):
+        raise SkillError("executor assignments contain duplicate persona_id values")
+    validate_persona_storage_ids(assignments)
     try:
         command_parts = shlex.split(command)
     except ValueError as exc:
@@ -1024,7 +1128,8 @@ def execute_assignments(
         stdout_path = paths["stdout"]
         stderr_path = paths["stderr"]
         blog_path = paths["blog"]
-        prompt_path.write_text(render_executor_prompt(assignment), encoding="utf-8")
+        stale_result_quarantined_to = quarantine_preexisting_result(output_dir, result_path)
+        atomic_write_text(prompt_path, render_executor_prompt(assignment))
 
         started_at = utc_now()
         exit_code: int | None = None
@@ -1032,36 +1137,30 @@ def execute_assignments(
         stdout = ""
         stderr = ""
         failure_reason = None
-        try:
-            completed = subprocess.run(
-                command_parts,
-                cwd=Path.cwd(),
-                env={
-                    **os.environ,
-                    "MLX_RESEARCH_PERSONA_ID": persona_id,
-                    "MLX_RESEARCH_ASSIGNMENT_PATH": str(assignment_path),
-                    "MLX_RESEARCH_PROMPT_PATH": str(prompt_path),
-                    "MLX_RESEARCH_RESULT_PATH": str(result_path),
-                    "MLX_RESEARCH_BLOG_PATH": str(blog_path),
-                    "MLX_RESEARCH_RUN_ID": run_id,
-                    "MLX_RESEARCH_OUTPUT_DIR": str(output_dir),
-                    "MLX_RESEARCH_REVIEW_ONLY": "1",
-                },
-                capture_output=True,
-                text=True,
-                timeout=timeout,
-            )
-            exit_code = completed.returncode
-            stdout = stringify_process_output(completed.stdout)
-            stderr = stringify_process_output(completed.stderr)
-        except subprocess.TimeoutExpired as exc:
-            timed_out = True
-            stdout = stringify_process_output(exc.stdout)
-            stderr = stringify_process_output(exc.stderr)
+        completed, timed_out = run_process_capture(
+            command_parts,
+            cwd=Path.cwd(),
+            env={
+                **os.environ,
+                "MLX_RESEARCH_PERSONA_ID": persona_id,
+                "MLX_RESEARCH_ASSIGNMENT_PATH": str(assignment_path),
+                "MLX_RESEARCH_PROMPT_PATH": str(prompt_path),
+                "MLX_RESEARCH_RESULT_PATH": str(result_path),
+                "MLX_RESEARCH_BLOG_PATH": str(blog_path),
+                "MLX_RESEARCH_RUN_ID": run_id,
+                "MLX_RESEARCH_OUTPUT_DIR": str(output_dir),
+                "MLX_RESEARCH_REVIEW_ONLY": "1",
+            },
+            timeout=timeout,
+        )
+        exit_code = completed.returncode
+        stdout = stringify_process_output(completed.stdout)
+        stderr = stringify_process_output(completed.stderr)
+        if timed_out:
             failure_reason = f"executor timed out after {timeout:g}s"
 
-        stdout_path.write_text(stdout, encoding="utf-8")
-        stderr_path.write_text(stderr, encoding="utf-8")
+        atomic_write_text(stdout_path, redact_secret_text(stdout))
+        atomic_write_text(stderr_path, redact_secret_text(stderr))
 
         state = "executor_failed"
         agent = None
@@ -1089,6 +1188,8 @@ def execute_assignments(
             "stdout_path": rel_output_path(output_dir, stdout_path),
             "stderr_path": rel_output_path(output_dir, stderr_path),
             "result_path": rel_output_path(output_dir, result_path),
+            "result_identity": result_file_identity(result_path) if agent is not None else None,
+            "stale_result_quarantined_to": stale_result_quarantined_to,
             "exit_code": exit_code,
             "timed_out": timed_out,
             "started_at": started_at,
@@ -3153,6 +3254,8 @@ def main() -> int:
             raise SkillError("--ingest-subagent-results and --offline-fixture are mutually exclusive")
         if args.iterations <= 0:
             raise SkillError("--iterations must be positive")
+        if args.iterations > MAX_CAMPAIGN_WAVES:
+            raise SkillError(f"--iterations must be <= {MAX_CAMPAIGN_WAVES}")
         if args.executor_workers <= 0:
             raise SkillError("--executor-workers must be positive")
         if (args.iteration_index is None) != (args.iteration_count_total is None):
@@ -3160,6 +3263,8 @@ def main() -> int:
         if args.iteration_index is not None:
             if args.iteration_index <= 0 or args.iteration_count_total <= 0:
                 raise SkillError("--iteration-index and --iteration-count-total must be positive")
+            if args.iteration_count_total > MAX_CAMPAIGN_WAVES:
+                raise SkillError(f"--iteration-count-total must be <= {MAX_CAMPAIGN_WAVES}")
             if args.iteration_index > args.iteration_count_total:
                 raise SkillError("--iteration-index cannot exceed --iteration-count-total")
             if args.iterations != 1:
@@ -3167,7 +3272,7 @@ def main() -> int:
         config = load_config(args.config)
         review_requirements = review_gate_requirements(args, config)
         run_id = args.run_id or default_run_id()
-        output_dir = Path(args.output_dir)
+        output_dir = Path(args.output_dir).absolute()
         output_dir.mkdir(parents=True, exist_ok=True)
         if args.iterations == 1 and not args.until_review_gate:
             summary = run_iteration(

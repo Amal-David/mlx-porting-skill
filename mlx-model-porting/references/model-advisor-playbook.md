@@ -26,9 +26,9 @@ For a specific model, answer as an engineering advisor:
 - check whether the model or family has a recorded outcome in
   `assets/model_outcomes.json`, and separate “known working route” from
   “numeric speedup proved locally”;
-- show the overall potential speedup range and speculative-decoding potential
-  range from the matched outcome record, including the conditions needed for
-  the high end of each range;
+- show a numeric overall or speculative-decoding range only when the matched
+  outcome exposes one; otherwise label `observed_source_range` as a withheld
+  observation and report its hold reasons without presenting it as advice;
 - show benchmark-required optimizations separately from already validated
   source/theory guidance;
 - preserve every relevant research lead as either validated, experimental,
@@ -48,9 +48,19 @@ and what not to use.
 2. **Run static intake.**
    ```bash
    python3 scripts/inspect_model.py MODEL_OR_DIRECTORY --output inspection.json
-   python3 scripts/make_port_plan.py inspection.json --output PORT_PLAN.md
-   python3 scripts/recommend_optimizations.py inspection.json --markdown OPTIMIZATIONS.md
+   python3 scripts/recommend_optimizations.py inspection.json \
+     --output recommendations.json --markdown OPTIMIZATIONS.md
+   python3 scripts/make_port_plan.py inspection.json \
+     --artifact-root MODEL_OR_DIRECTORY \
+     --recommendations recommendations.json --output PORT_PLAN.md
    ```
+   If intake is blocked, skip optimization advice and generate the plan without
+   `--recommendations`. The result is remediation-only; a family override does
+   not clear integrity, provenance, license, safety, or routing blockers.
+   An actionable plan re-runs static inspection against `--artifact-root` and
+   recomputes the complete recommendation report before using it. A family
+   override may reorder an inspected hybrid route, but cannot discard its other
+   families, runbooks, or traits.
 3. **Classify the route.** Load `assets/architectures.yaml`,
    `references/model-support-map.md`, and the selected runbook. If source
    format manifests are present, treat them as static triage until parity and
@@ -61,12 +71,16 @@ and what not to use.
 5. **Check observed outcomes.** Match the model id, task, library, family, and
    top-model snapshot entry against `assets/model_outcomes.json`. Report:
    what worked elsewhere, what did not work or remains blocked, the claim
-   boundary, the potential speedup ranges, the conditions behind those ranges,
-   and the next validation gate. Do not turn a source-backed working route into
-   a measured speed claim.
+   boundary, any eligible potential range, withheld source observations and
+   their hold reasons, and the next validation gate. Do not turn a
+   source-backed working route into a measured speed claim.
 6. **Build the validated path.** Give the source-oracle, minimal eager MLX,
    weight-map, parity, quality, profile, and packaging steps before any
    optimization.
+   A locally reproduced number remains held unless the profile carries the full
+   canonical experiment fingerprint and exact receipt-derived model, target,
+   workload, hardware, and software descriptors; a copied digest is not a
+   profile match.
 7. **Classify all branches.** Use the advisor buckets:
    - `validated-locally`: local test, benchmark, fixture, or skill gate exists;
    - `validated-source-theory`: official docs, primary paper, or pinned source

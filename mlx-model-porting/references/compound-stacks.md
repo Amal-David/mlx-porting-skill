@@ -31,6 +31,9 @@ the stack registry.
 
 `moe-serving` covers `moe-decoder-transformer`. Its registered steps are:
 
+It is selected only for a controlled `concurrent-serving` or `server` workload
+and a matching serving objective.
+
 - `moe-expert-dispatch-and-quantization` - conditionally-lossy expert dispatch
   and precision path;
 - `continuous-batching-serving` - lossless serving scheduler path;
@@ -38,14 +41,19 @@ the stack registry.
 
 `vlm-repeated-media` covers `vision-language-omni`. Its registered steps are:
 
+It is selected only for a controlled `repeated-media` or `multimodal-serving`
+workload and a matching TTFT, prefill, or concurrent-throughput objective.
+
 - `vision-feature-cache` - lossless repeated image/video feature reuse;
-- `content-prefix-cache-vlm` - lossless repeated-media prefix reuse;
 - `multimodal-content-prefix-cache` - lossless media-aware block prefix cache;
 - `continuous-batching-serving` - lossless concurrent serving scheduler;
 - `cache-privacy-and-isolation` - lossless safety gate, not a speed multiplier.
 
 `tts-batch` covers `flow-diffusion-tts` and `autoregressive-audio-lm`. Its
 registered steps are:
+
+It is selected only for a controlled concurrent-TTS, repeated-reference, or
+streaming-audio workload and a matching batch, first-audio, or RTF objective.
 
 - `qwen3-tts-batch-generation` - lossless compatible concurrent TTS batching;
 - `audio-reference-conditioning-cache` - lossless repeated reference reuse;
@@ -60,11 +68,13 @@ Each stack declares `primary_metric`. The hypothesis floor stays `1.0x`; per-ste
 floors do not raise the compound floor, even when a source reports a non-1.0
 floor.
 
-The hypothesis ceiling is the product of the ceilings from steps whose method
-`improvement_band.metric` matches the stack `primary_metric` and whose
-`improvement_band.provenance` is `source_reported` or `local_reproduced`.
-Steps without a band, steps whose provenance is `profile_required`, and steps
-with any other provenance are not multiplied into the ceiling.
+The generated `assets/effective_claims.json` is the only numeric authority.
+Before composition, the advisor replaces every raw guidance band with that
+catalogue's effective state. A step can enter a hypothesis ceiling only when its
+catalog-authorized range matches the stack `primary_metric`, its provenance is
+eligible for numeric use, and its band carries
+`numeric_authority: effective_claims`. Raw source prose and handwritten
+receipt sidecars never enter the product.
 
 Bands for a different metric are never multiplied into the primary metric
 ceiling. They are returned as `other_metric_upside` and rendered as
@@ -75,20 +85,22 @@ Profile-required steps are still important. They are returned as
 `unmeasured_upside`, meaning they need a profile and local benchmark before they
 can contribute a numeric range.
 
-Known-conflicting pairs are excluded before multiplication. If a composition
-note has `validity: known-conflicting`, both methods in that pair are omitted
-from the compound product and the pair appears in `excluded_conflicts`.
+Every pair among retained stack steps must be explicitly
+`validated-composable` before a numeric hypothesis is emitted. Unlisted pairs
+default to `unknown`; `known-conflicting` and `mutually-exclusive` pairs remain
+visible as exclusions. Numeric steps must also have nonempty, unique evidence
+lineage ids so one experiment cannot be counted twice.
 
 If `compound.measured_together` is false, the derived provenance is
 `multiplicative_hypothesis` and the advisor must carry this exact flag:
 `unmeasured composition - multiplicative hypothesis, not a claim`.
 
 The hypothesis ceiling provenance is always `multiplicative_hypothesis`, even
-when `compound.measured_together` is true. If a measured-together receipt has a
-resolvable ratio, the measured value is the headline compound result and carries
-`local_reproduced`; the hypothesis product stays secondary and flagged. Keep the
-receipt basis and caveat attached, especially when the measured value is an
-unfavorable interaction.
+when `compound.measured_together` is true. A measured headline appears only
+when the generated receipt assessment is promotion-ready, the receipt hashes
+and comparable baseline verify, the primary metric matches, and the exact
+ordered enabled-method list covers the registered stack. The measured value
+carries `local_reproduced`; the hypothesis product stays secondary and flagged.
 
 ## Composition validity
 
@@ -138,11 +150,24 @@ receipt must identify:
 - correctness or quality gate result;
 - target metric, repetitions, median/tail or distribution summary, and raw
   artifact path;
+- a canonical fingerprint binding the candidate receipt SHA-256, aggregates,
+  every measured result and raw-output descriptor/digest, and the quality
+  artifact/result digest;
 - rollback condition and caveats.
+- independent execution attestation for the exact runner/dependency bytes and
+  proof that the declared model/workload produced each measured output.
 
-Benchmark receipts should live under `assets/benchmarks/` once the benchmark
-receipt harness exists. Until then, describe the contract in the review packet
-and do not fabricate receipt files.
+No current runner lane passes that final gate, so current receipts cannot
+promote a method or stack number even when their other measurement gates pass.
+
+Benchmark receipts live under `assets/benchmarks/`. Generate and validate their
+assessments with `scripts/validate_benchmarks.py`; never hand-edit the generated
+assessment, index, or report to manufacture promotion.
+
+Advisor use requires more than copying that fingerprint's digest into a generic
+profile. The `TargetProfile` must carry the full canonical fingerprint, exact
+receipt-derived models, target, and workload objects, exact non-empty hardware
+and software descriptors, and a non-empty controlled workload set.
 
 To flip `compound.measured_together`, measure the full registered stack together
 against the same baseline receipt, with the same model revision, workload,

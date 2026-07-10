@@ -21,14 +21,14 @@
   "command": [
     "sh",
     "-lc",
-    "cat /tmp/t206-benchmark/prompt_500.txt | python3 -m mlx_lm generate --model mlx-community/Qwen3-1.7B-bf16 --prompt - --max-tokens 256 --temp 0.0 --seed 206"
+    "cat <historical-ephemeral-input>/prompt_500.txt | python3 -m mlx_lm generate --model mlx-community/Qwen3-1.7B-bf16 --prompt - --max-tokens 256 --temp 0.0 --seed 206"
   ],
-  "command_display": "sh -lc 'cat /tmp/t206-benchmark/prompt_500.txt | python3 -m mlx_lm generate --model mlx-community/Qwen3-1.7B-bf16 --prompt - --max-tokens 256 --temp 0.0 --seed 206'",
+  "command_display": "sh -lc 'cat <historical-ephemeral-input>/prompt_500.txt | python3 -m mlx_lm generate --model mlx-community/Qwen3-1.7B-bf16 --prompt - --max-tokens 256 --temp 0.0 --seed 206'",
   "config_notes": {
     "model": "mlx-community/Qwen3-1.7B-bf16",
     "model_revision": "9cd6692855d3e06772228e9a962b2606359b2d24",
     "workload": "539_raw_qwen3_tokens_prompt_max_tokens_256_temp_0_seed_206",
-    "prompt_file": "/tmp/t206-benchmark/prompt_500.txt",
+    "prompt_file": "<historical-ephemeral-input>/prompt_500.txt",
     "quality_note": "greedy_3_prompt_check_vs_4bit_diverged_3_of_3_no_formal_eval"
   },
   "warmup_runs": 1,

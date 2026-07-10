@@ -3,2122 +3,421 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Docs - MLX Porter</title>
-  <meta name="description" content="MLX Porter docs: a source-first Apple MLX porting runbook written for the parts that usually drift: provenance, tensors, parity, caches, and benchmark receipts.">
-  <style>
-    :root {
-      color-scheme: light;
-      --page: #f7f9f6;
-      --surface: #ffffff;
-      --surface-2: #eef3ef;
-      --ink: #111713;
-      --muted: #626d67;
-      --line: #d9e0dc;
-      --line-strong: #c0cbc4;
-      --tensor-lime: #9be22d;
-      --kernel-cyan: #00a99a;
-      --memory-blue: #4169e1;
-      --parity-coral: #e46250;
-      --metal-violet: #7654d8;
-      --checkpoint-gold: #b77916;
-      --code-bg: #101317;
-      --code-ink: #e5eee8;
-      --radius: 8px;
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
-    html {
-      scroll-behavior: smooth;
-    }
-
-    body {
-      margin: 0;
-      color: var(--ink);
-      background:
-        linear-gradient(90deg, rgba(0, 169, 154, 0.035), transparent 28%, transparent 72%, rgba(155, 226, 45, 0.04)),
-        var(--page);
-      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      line-height: 1.65;
-    }
-
-    a {
-      color: inherit;
-    }
-
-    a:focus-visible,
-    button:focus-visible {
-      outline: 2px solid var(--kernel-cyan);
-      outline-offset: 3px;
-    }
-
-    .shell {
-      min-height: 100vh;
-      display: grid;
-      grid-template-columns: 268px minmax(0, 1fr);
-    }
-
-    .sidebar {
-      position: sticky;
-      top: 0;
-      height: 100vh;
-      overflow-y: auto;
-      border-right: 1px solid var(--line);
-      background: rgba(247, 249, 246, 0.92);
-      backdrop-filter: blur(18px);
-      padding: 18px 16px;
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      min-height: 34px;
-      margin-bottom: 18px;
-      color: var(--ink);
-      text-decoration: none;
-      font-weight: 820;
-    }
-
-    .brand-mark {
-      width: 32px;
-      height: 32px;
-      display: grid;
-      place-items: center;
-      border: 1px solid rgba(0, 169, 154, 0.55);
-      border-radius: 8px;
-      color: #0c6f66;
-      background: #eaffd0;
-      font: 800 0.78rem/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-    }
-
-    .search-box {
-      display: grid;
-      grid-template-columns: auto 1fr auto;
-      align-items: center;
-      gap: 8px;
-      min-height: 38px;
-      margin-bottom: 22px;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      padding: 7px 8px;
-      color: var(--muted);
-      background: var(--surface);
-      font-size: 14px;
-    }
-
-    .search-box svg,
-    .icon {
-      width: 17px;
-      height: 17px;
-      flex: 0 0 auto;
-      fill: currentColor;
-    }
-
-    .kbd {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-width: 24px;
-      min-height: 24px;
-      border: 1px solid var(--line);
-      border-radius: 6px;
-      background: #f8faf8;
-      color: var(--muted);
-      font: 0.72rem/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-    }
-
-    .nav-section {
-      margin: 0 0 22px;
-    }
-
-    .nav-title {
-      margin: 0 0 8px;
-      color: var(--muted);
-      font-size: 12px;
-      font-weight: 760;
-      text-transform: uppercase;
-      letter-spacing: 0;
-    }
-
-    .nav-list {
-      display: grid;
-      gap: 2px;
-      margin: 0;
-      padding: 0;
-      list-style: none;
-    }
-
-    .nav-list a {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      min-height: 36px;
-      border-radius: 8px;
-      padding: 7px 8px;
-      color: var(--muted);
-      text-decoration: none;
-      font-size: 14px;
-      font-weight: 600;
-    }
-
-    .nav-list a:hover {
-      color: var(--ink);
-      background: rgba(0, 169, 154, 0.08);
-    }
-
-    .nav-list a.active {
-      color: #0f5f57;
-      background: rgba(155, 226, 45, 0.22);
-    }
-
-    .sidebar-footer {
-      position: sticky;
-      bottom: 0;
-      display: flex;
-      gap: 8px;
-      padding-top: 18px;
-      background: linear-gradient(180deg, transparent, var(--page) 32%);
-    }
-
-    .footer-button {
-      min-height: 36px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      padding: 7px 10px;
-      color: var(--muted);
-      background: var(--surface);
-      text-decoration: none;
-      font-size: 14px;
-      font-weight: 700;
-    }
-
-    .main {
-      min-width: 0;
-    }
-
-    .topbar {
-      position: sticky;
-      top: 0;
-      z-index: 10;
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-      gap: 10px;
-      min-height: 58px;
-      border-bottom: 1px solid var(--line);
-      background: rgba(247, 249, 246, 0.86);
-      backdrop-filter: blur(18px);
-      padding: 0 28px;
-    }
-
-    .topbar a {
-      min-height: 34px;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      border-radius: 8px;
-      padding: 7px 10px;
-      color: var(--muted);
-      text-decoration: none;
-      font-size: 14px;
-      font-weight: 720;
-    }
-
-    .topbar a:hover {
-      color: var(--ink);
-      background: rgba(17, 23, 19, 0.06);
-    }
-
-    .docs-layout {
-      display: grid;
-      grid-template-columns: minmax(0, 1120px) 220px;
-      gap: 42px;
-      width: min(1460px, calc(100% - 64px));
-      margin: 0 auto;
-      padding: 54px 0 92px;
-    }
-
-    .article {
-      min-width: 0;
-    }
-
-    .breadcrumb {
-      margin: 0 0 18px;
-      color: var(--muted);
-      font-size: 13px;
-      font-weight: 680;
-    }
-
-    h1,
-    h2,
-    h3,
-    p {
-      margin-top: 0;
-    }
-
-    h1 {
-      margin-bottom: 18px;
-      font-size: 46px;
-      line-height: 1.05;
-      letter-spacing: 0;
-    }
-
-    .lead {
-      max-width: 790px;
-      margin-bottom: 38px;
-      color: var(--muted);
-      font-size: 19px;
-      line-height: 1.65;
-    }
-
-    h2 {
-      scroll-margin-top: 104px;
-      margin: 52px 0 16px;
-      padding-top: 6px;
-      font-size: 28px;
-      line-height: 1.15;
-      letter-spacing: 0;
-    }
-
-    h3 {
-      margin-bottom: 8px;
-      font-size: 17px;
-      line-height: 1.25;
-      letter-spacing: 0;
-    }
-
-    .article p,
-    .article li {
-      color: #303832;
-      font-size: 16px;
-    }
-
-    .article strong {
-      color: var(--ink);
-    }
-
-    .quote {
-      margin: 28px 0 34px;
-      border-left: 4px solid var(--kernel-cyan);
-      padding: 10px 0 10px 18px;
-      color: var(--ink);
-      font-size: 18px;
-      font-style: italic;
-      font-weight: 720;
-    }
-
-    code {
-      border: 1px solid var(--line);
-      border-radius: 6px;
-      padding: 2px 5px;
-      color: #17231d;
-      background: var(--surface);
-      font: 0.86em/1.2 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-    }
-
-    .code-panel {
-      margin: 22px 0;
-      overflow: hidden;
-      border: 1px solid var(--line-strong);
-      border-radius: 8px;
-      background: var(--code-bg);
-      box-shadow: 0 18px 44px rgba(17, 23, 19, 0.08);
-    }
-
-    .code-head {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-      padding: 10px 13px;
-      color: #aebbb5;
-      font: 0.78rem/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-    }
-
-    .dots {
-      display: inline-flex;
-      gap: 7px;
-    }
-
-    .dot {
-      width: 9px;
-      height: 9px;
-      border-radius: 50%;
-      background: var(--parity-coral);
-    }
-
-    .dot:nth-child(2) {
-      background: var(--checkpoint-gold);
-    }
-
-    .dot:nth-child(3) {
-      background: var(--tensor-lime);
-    }
-
-    pre {
-      margin: 0;
-      overflow: auto;
-      padding: 18px;
-      color: var(--code-ink);
-      font: 0.88rem/1.6 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-      white-space: pre-wrap;
-    }
-
-    .callout {
-      border: 1px solid rgba(0, 169, 154, 0.24);
-      border-radius: 8px;
-      margin: 24px 0;
-      padding: 16px 18px;
-      background: rgba(0, 169, 154, 0.07);
-    }
-
-    .callout p {
-      margin-bottom: 0;
-    }
-
-    .diagram-stack {
-      display: grid;
-      gap: 24px;
-      margin: 26px 0 18px;
-    }
-
-    .diagram-panel {
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      padding: 20px;
-      overflow-x: auto;
-      background: var(--surface);
-      box-shadow: 0 18px 44px rgba(17, 23, 19, 0.06);
-    }
-
-    .diagram-panel h3 {
-      margin-bottom: 6px;
-    }
-
-    .diagram-panel > p {
-      max-width: 860px;
-      margin-bottom: 16px;
-      color: var(--muted);
-      font-size: 14px;
-    }
-
-    .decision-tree-grid {
-      gap: 26px;
-    }
-
-    .tree-board {
-      padding: 0;
-      overflow: hidden;
-      background:
-        linear-gradient(135deg, rgba(193, 47, 228, 0.035), transparent 28%),
-        linear-gradient(315deg, rgba(0, 169, 154, 0.045), transparent 36%),
-        var(--surface);
-    }
-
-    .tree-copy {
-      padding: 20px 20px 0;
-    }
-
-    .tree-meta {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin: 12px 0 0;
-    }
-
-    .tree-meta span {
-      border: 1px solid rgba(17, 23, 19, 0.12);
-      border-radius: 999px;
-      padding: 5px 8px;
-      color: #4d5b54;
-      background: rgba(255, 255, 255, 0.76);
-      font: 760 0.72rem/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-    }
-
-    .tree-copy::after {
-      content: "open canvas: drag to pan / scroll to zoom";
-      display: inline-flex;
-      margin-top: 10px;
-      border: 1px solid rgba(193, 47, 228, 0.2);
-      border-radius: 999px;
-      padding: 5px 8px;
-      color: #8a1fb0;
-      background: rgba(193, 47, 228, 0.06);
-      font: 760 0.72rem/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-    }
-
-    .map-canvas {
-      border-top: 1px solid rgba(17, 23, 19, 0.08);
-      position: relative;
-      overflow: hidden;
-      background:
-        radial-gradient(circle at 12% 42%, rgba(193, 47, 228, 0.055), transparent 24%),
-        radial-gradient(circle at 82% 26%, rgba(0, 169, 154, 0.05), transparent 26%),
-        linear-gradient(180deg, rgba(255, 255, 255, 0.28), rgba(238, 243, 246, 0.9)),
-        #eef3f6;
-      scrollbar-color: rgba(193, 47, 228, 0.36) rgba(17, 23, 19, 0.05);
-    }
-
-    .map-canvas::after {
-      content: "drag canvas / scroll to zoom";
-      position: absolute;
-      right: 14px;
-      bottom: 12px;
-      z-index: 2;
-      border: 1px solid rgba(17, 23, 19, 0.08);
-      border-radius: 999px;
-      padding: 5px 8px;
-      color: rgba(82, 97, 107, 0.78);
-      background: rgba(255, 255, 255, 0.72);
-      font: 760 0.7rem/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-      pointer-events: none;
-    }
-
-    .mindmap-hover-card {
-      position: absolute;
-      z-index: 4;
-      top: 72px;
-      left: 14px;
-      width: min(680px, calc(100% - 28px));
-      display: grid;
-      gap: 4px;
-      border: 1px solid rgba(17, 23, 19, 0.1);
-      border-left: 4px solid var(--kernel-cyan);
-      border-radius: 8px;
-      padding: 10px 12px;
-      color: #26323b;
-      background: rgba(255, 255, 255, 0.88);
-      box-shadow: 0 14px 32px rgba(17, 23, 19, 0.1);
-      pointer-events: none;
-      backdrop-filter: blur(10px);
-    }
-
-    .mindmap-hover-card strong {
-      font-size: 0.86rem;
-      line-height: 1.1;
-    }
-
-    .mindmap-hover-card span {
-      color: #52616b;
-      font-size: 0.78rem;
-      line-height: 1.35;
-    }
-
-    .mindmap-hover-card code {
-      color: #00a99a;
-      font: 760 0.68rem/1.2 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-    }
-
-    .mindmap-hover-card[data-active="true"] {
-      border-left-color: var(--tensor-lime);
-      background: rgba(255, 255, 255, 0.94);
-    }
-
-    .mindmap-source {
-      display: none;
-    }
-
-    .mindmap-viewport {
-      width: 100%;
-      height: 680px;
-      min-height: 560px;
-      cursor: grab;
-    }
-
-    .mindmap-viewport:active {
-      cursor: grabbing;
-    }
-
-    .mindmap-viewport canvas {
-      outline: 0;
-    }
-
-    .vis-network {
-      background: transparent;
-    }
-
-    .vis-navigation {
-      right: 12px !important;
-      bottom: 44px !important;
-      left: auto !important;
-      top: auto !important;
-    }
-
-    .vis-button {
-      border: 1px solid rgba(17, 23, 19, 0.09) !important;
-      border-radius: 8px !important;
-      background-color: rgba(255, 255, 255, 0.78) !important;
-      box-shadow: 0 10px 22px rgba(17, 23, 19, 0.08) !important;
-    }
-
-    .rule-list {
-      display: grid;
-      gap: 10px;
-      padding-left: 0;
-      list-style: none;
-    }
-
-    .rule-list li {
-      border-left: 3px solid var(--line-strong);
-      padding-left: 13px;
-    }
-
-    .rule-list .do {
-      border-left-color: var(--kernel-cyan);
-    }
-
-    .rule-list .dont {
-      border-left-color: var(--parity-coral);
-    }
-
-    .card-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 12px;
-      margin: 20px 0 8px;
-    }
-
-    .doc-card {
-      display: block;
-      min-height: 136px;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      padding: 16px;
-      background: var(--surface);
-      color: inherit;
-      text-decoration: none;
-      transition: transform 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
-    }
-
-    .doc-card:hover {
-      transform: translateY(-2px);
-      border-color: rgba(0, 169, 154, 0.45);
-      box-shadow: 0 18px 38px rgba(17, 23, 19, 0.08);
-    }
-
-    .doc-card p {
-      margin-bottom: 0;
-      color: var(--muted);
-      font-size: 14px;
-    }
-
-    .route-table {
-      width: 100%;
-      margin: 20px 0;
-      border-collapse: collapse;
-      overflow: hidden;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      background: var(--surface);
-    }
-
-    .route-table th,
-    .route-table td {
-      border-bottom: 1px solid var(--line);
-      padding: 12px 14px;
-      text-align: left;
-      vertical-align: top;
-      font-size: 14px;
-    }
-
-    .route-table th {
-      color: var(--muted);
-      background: var(--surface-2);
-      font-weight: 760;
-    }
-
-    .route-table tr:last-child td {
-      border-bottom: 0;
-    }
-
-    .outline {
-      position: sticky;
-      top: 88px;
-      height: max-content;
-      padding-left: 16px;
-      border-left: 1px solid var(--line);
-    }
-
-    .outline p {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 12px;
-      color: var(--muted);
-      font-size: 13px;
-      font-weight: 760;
-    }
-
-    .outline ul {
-      display: grid;
-      gap: 9px;
-      margin: 0;
-      padding: 0;
-      list-style: none;
-    }
-
-    .outline a {
-      color: var(--muted);
-      text-decoration: none;
-      font-size: 13px;
-    }
-
-    .outline a:hover {
-      color: var(--kernel-cyan);
-    }
-
-    .mobile-brand {
-      display: none;
-    }
-
-    @media (max-width: 1120px) {
-      .docs-layout {
-        grid-template-columns: 1fr;
-      }
-
-      .outline {
-        display: none;
-      }
-    }
-
-    @media (max-width: 820px) {
-      .shell {
-        display: block;
-      }
-
-      .sidebar {
-        position: relative;
-        height: auto;
-        border-right: 0;
-        border-bottom: 1px solid var(--line);
-        padding: 16px;
-      }
-
-      .nav-section {
-        margin-bottom: 10px;
-      }
-
-      .nav-list {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        column-gap: 6px;
-      }
-
-      .nav-list a {
-        min-height: 32px;
-        padding: 5px 8px;
-      }
-
-      .sidebar-footer {
-        position: static;
-        padding-top: 4px;
-      }
-
-      .topbar {
-        display: none;
-      }
-
-      .docs-layout {
-        width: min(100% - 32px, 860px);
-        padding-top: 36px;
-      }
-
-      h1 {
-        font-size: 38px;
-      }
-
-      .card-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .mindmap-viewport {
-        height: 620px;
-        min-height: 520px;
-      }
-    }
-
-    @media (max-width: 560px) {
-      .search-box {
-        grid-template-columns: auto 1fr;
-      }
-
-      .kbd {
-        display: none;
-      }
-
-      h1 {
-        font-size: 32px;
-      }
-
-      .lead {
-        font-size: 17px;
-      }
-
-      .route-table {
-        display: block;
-        overflow-x: auto;
-      }
-
-      .diagram-panel {
-        padding: 14px;
-      }
-
-      .tree-board {
-        padding: 0;
-      }
-      .mindmap-viewport {
-        height: 560px;
-        min-height: 500px;
-      }
-    }
-  </style>
+  <title>Documentation — MLX Porter</title>
+  <meta name="description" content="Technical documentation for inspecting, routing, porting, validating, benchmarking, and publishing Apple MLX model ports.">
+  <meta name="theme-color" content="#f4f1e9">
+  <meta property="og:title" content="MLX Porter documentation">
+  <meta property="og:description" content="A source-first, evidence-aware workflow for model ports on Apple MLX.">
+  <link rel="canonical" href="https://mlx-porter.pages.dev/docs/">
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../data.js" defer></script>
+  <script src="../app.js" defer></script>
 </head>
-<body>
-  <div class="shell">
-    <aside class="sidebar" aria-label="Documentation navigation">
-      <a class="brand" href="/" aria-label="MLX Porter home">
-        <span class="brand-mark">MLX</span>
+<body class="docs-page">
+  <a class="skip-link docs-skip" href="#docs-main">Skip to documentation</a>
+  <div class="docs-shell">
+    <aside class="docs-sidebar" id="docs-sidebar" aria-label="Documentation navigation">
+      <button class="docs-sidebar-close" type="button" data-docs-nav-close aria-label="Close documentation contents">Close ×</button>
+      <a class="brand" href="../index.html">
+        <span class="brand-mark" aria-hidden="true">MX</span>
         <span>MLX Porter</span>
       </a>
-
-      <div class="search-box" aria-label="Search placeholder">
-        <svg aria-hidden="true" viewBox="0 0 20 20"><path d="M8.5 3a5.5 5.5 0 0 1 4.33 8.89l3.14 3.14a.75.75 0 0 1-1.06 1.06l-3.14-3.14A5.5 5.5 0 1 1 8.5 3Zm0 1.5a4 4 0 1 0 0 8 4 4 0 0 0 0-8Z"/></svg>
-        <span>Search docs</span>
-        <span class="kbd">/</span>
+      <a class="docs-home-link" href="../index.html">← Product overview</a>
+      <div class="search-wrap">
+        <label for="docs-search">Search documentation</label>
+        <input class="docs-search" id="docs-search" type="search" autocomplete="off" placeholder="parity, GGUF, receipts…">
+        <span class="search-key" aria-hidden="true">/</span>
       </div>
+      <p class="search-status" id="search-status" aria-live="polite">Search all documentation</p>
+      <p class="docs-search-fallback">Use your browser’s Find command to search this page.</p>
 
-      <nav>
-        <div class="nav-section">
-          <p class="nav-title">Docs</p>
-          <ul class="nav-list">
-            <li><a class="active" href="#introduction">Introduction</a></li>
-            <li><a href="#looks-like">What it looks like</a></li>
-            <li><a href="#diagrams">Mind maps</a></li>
-            <li><a href="#inspector">Inspector mode</a></li>
-            <li><a href="#fits">How it fits together</a></li>
-            <li><a href="#rules">Rules</a></li>
-          </ul>
-        </div>
-
-        <div class="nav-section">
-          <p class="nav-title">Getting Started</p>
-          <ul class="nav-list">
-            <li><a href="#start">Start here</a></li>
-            <li><a href="#routes">Architecture routes</a></li>
-            <li><a href="#validation">Validation gates</a></li>
-            <li><a href="#agents">For agents</a></li>
-          </ul>
-        </div>
-
-        <div class="nav-section">
-          <p class="nav-title">Reference</p>
-          <ul class="nav-list">
-            <li><a href="https://github.com/Amal-David/mlx-porting-skill/blob/main/mlx-model-porting/SKILL.md">Skill contract</a></li>
-            <li><a href="https://github.com/Amal-David/mlx-porting-skill/tree/main/mlx-model-porting/references">Runbooks</a></li>
-            <li><a href="https://github.com/Amal-David/mlx-porting-skill/blob/main/mlx-model-porting/examples/porting-patterns.md">Patterns</a></li>
-            <li><a href="https://github.com/Amal-David/mlx-porting-skill/blob/main/VALIDATION.md">Validation</a></li>
-          </ul>
-        </div>
-      </nav>
-
-      <div class="sidebar-footer">
-        <a class="footer-button" href="/">
-          <svg class="icon" aria-hidden="true" viewBox="0 0 20 20"><path d="M10.53 3.47a.75.75 0 0 0-1.06 0l-6 6a.75.75 0 1 0 1.06 1.06l.72-.72V16A1.75 1.75 0 0 0 7 17.75h6A1.75 1.75 0 0 0 14.75 16V9.81l.72.72a.75.75 0 1 0 1.06-1.06l-6-6Z"/></svg>
-          Home
-        </a>
-        <a class="footer-button" href="https://github.com/Amal-David/mlx-porting-skill">
-          <svg class="icon" aria-hidden="true" viewBox="0 0 16 16"><path d="M8 0C3.58 0 0 3.67 0 8.2c0 3.62 2.29 6.69 5.47 7.78.4.08.55-.18.55-.39 0-.19-.01-.83-.01-1.5-2.01.38-2.53-.5-2.69-.97-.09-.24-.48-.97-.82-1.17-.28-.16-.68-.55-.01-.56.63-.01 1.08.59 1.23.84.72 1.24 1.87.89 2.33.68.07-.53.28-.89.51-1.09-1.78-.21-3.64-.91-3.64-4.04 0-.89.31-1.62.82-2.19-.08-.21-.36-1.04.08-2.16 0 0 .67-.22 2.2.84A7.42 7.42 0 0 1 8 3.99c.68 0 1.36.09 2 .28 1.53-1.06 2.2-.84 2.2-.84.44 1.12.16 1.95.08 2.16.51.57.82 1.3.82 2.19 0 3.14-1.87 3.83-3.65 4.04.29.26.54.76.54 1.53 0 1.1-.01 1.99-.01 2.26 0 .21.15.47.55.39A8.08 8.08 0 0 0 16 8.2C16 3.67 12.42 0 8 0Z"/></svg>
-          GitHub
-        </a>
+      <div class="docs-nav-group">
+        <p class="docs-nav-title">Start</p>
+        <ul class="docs-nav">
+          <li><a href="#quick-start">Quick start</a></li>
+          <li><a href="#install">Installation</a></li>
+          <li><a href="#workflow">Workflow contract</a></li>
+        </ul>
+      </div>
+      <div class="docs-nav-group">
+        <p class="docs-nav-title">Port</p>
+        <ul class="docs-nav">
+          <li><a href="#routes">Architecture routes</a></li>
+          <li><a href="#inspect">Static inspection</a></li>
+          <li><a href="#oracle">Source oracle</a></li>
+          <li><a href="#weights">Weight mapping</a></li>
+          <li><a href="#parity">Parity ladder</a></li>
+        </ul>
+      </div>
+      <div class="docs-nav-group">
+        <p class="docs-nav-title">Measure</p>
+        <ul class="docs-nav">
+          <li><a href="#optimize">Optimization policy</a></li>
+          <li><a href="#benchmarks">Benchmark receipts</a></li>
+          <li><a href="#evidence">Evidence states</a></li>
+        </ul>
+      </div>
+      <div class="docs-nav-group">
+        <p class="docs-nav-title">Ship</p>
+        <ul class="docs-nav">
+          <li><a href="#validate">Validation commands</a></li>
+          <li><a href="#sources">Primary sources</a></li>
+          <li><a href="#contribute">Contribution flow</a></li>
+          <li><a href="#limitations">Limitations</a></li>
+        </ul>
       </div>
     </aside>
+    <div class="docs-backdrop" data-docs-backdrop aria-hidden="true"></div>
 
-    <main class="main">
-      <header class="topbar" aria-label="Top navigation">
-        <a href="/">Landing</a>
-        <a href="https://github.com/Amal-David/mlx-porting-skill">
-          <svg class="icon" aria-hidden="true" viewBox="0 0 16 16"><path d="M8 0C3.58 0 0 3.67 0 8.2c0 3.62 2.29 6.69 5.47 7.78.4.08.55-.18.55-.39 0-.19-.01-.83-.01-1.5-2.01.38-2.53-.5-2.69-.97-.09-.24-.48-.97-.82-1.17-.28-.16-.68-.55-.01-.56.63-.01 1.08.59 1.23.84.72 1.24 1.87.89 2.33.68.07-.53.28-.89.51-1.09-1.78-.21-3.64-.91-3.64-4.04 0-.89.31-1.62.82-2.19-.08-.21-.36-1.04.08-2.16 0 0 .67-.22 2.2.84A7.42 7.42 0 0 1 8 3.99c.68 0 1.36.09 2 .28 1.53-1.06 2.2-.84 2.2-.84.44 1.12.16 1.95.08 2.16.51.57.82 1.3.82 2.19 0 3.14-1.87 3.83-3.65 4.04.29.26.54.76.54 1.53 0 1.1-.01 1.99-.01 2.26 0 .21.15.47.55.39A8.08 8.08 0 0 0 16 8.2C16 3.67 12.42 0 8 0Z"/></svg>
-          GitHub
-        </a>
+    <main class="docs-main" id="docs-main">
+      <header class="docs-topbar">
+        <button class="docs-menu-button" type="button" data-docs-nav-toggle aria-expanded="false" aria-controls="docs-sidebar">Contents</button>
+        <a class="hide-small" href="https://github.com/Amal-David/mlx-porting-skill/blob/main/mlx-model-porting/SKILL.md">SKILL.md</a>
+        <a href="https://github.com/Amal-David/mlx-porting-skill">GitHub ↗</a>
       </header>
 
-      <div class="docs-layout">
-        <article class="article">
-          <p class="breadcrumb">Docs / Introduction</p>
-          <h1 id="introduction">Introduction</h1>
-          <p class="lead">A source-first runbook for the MLX porting bugs that look fine until you compare the right tensor.</p>
-
-          <p>The dangerous bug is the one that <strong>looks plausible</strong>. A checkpoint loads, a sample decodes, the shapes line up, and the actual error is a mask direction, RoPE offset, layer norm epsilon, cache step, or transposed projection hiding two branches upstream.</p>
-          <p>MLX Porter is the checklist I want before touching speed: pin the source, classify the family, capture an oracle, write the boring eager MLX path, climb parity, then optimize on Apple Silicon with receipts.</p>
-
-          <div class="quote">If the source tensor cannot explain the MLX tensor, the port is not done.</div>
-
-          <h2 id="diagrams">Runbook mind maps</h2>
-          <p>Use these like a lab notebook, not a slide. Start from the artifact in hand, hover a node to see why it exists, follow one branch at a time, and stop when proof is missing.</p>
-
-          <div class="diagram-stack decision-tree-grid" aria-label="MLX Porter decision trees">
-            <section class="diagram-panel tree-board" aria-labelledby="artifact-tree-title">
-              <div class="tree-copy">
-                <h3 id="artifact-tree-title">Generated artifact handoff map</h3>
-                <p>Use this when the handoff is getting fuzzy. Each generated file should unlock exactly one next move, not a fresh round of guessing.</p>
-                <div class="tree-meta">
-                  <span>scripts/inspect_model.py</span>
-                  <span>PORT_PLAN.md</span>
-                  <span>VALIDATION_REPORT.md</span>
-                  <span>CHANGE_REVIEW.md</span>
-                </div>
-              </div>
-              <div class="map-canvas">
-                <pre class="mindmap-source">mindmap
-                  root((Artifact handoff))
-                    Intake
-                      Pin source
-                        License
-                        Revision
-                        Objective
-                      Choose target
-                        MLX core
-                        MLX LM
-                        MLX VLM
-                        MLX Audio
-                    Inspect
-                      Static only
-                        No imports
-                        Network opt in
-                      Format holds
-                        Safetensors needs config oracle license
-                        ONNX GGUF are shape triage
-                      Risk gate
-                        Remote code
-                        Pickle weights
-                        Missing provenance
-                    Plan
-                      PORT_PLAN
-                        Family
-                        Target
-                        Oracle
-                      WEIGHT_MAP
-                        Keys and shapes
-                        QKV or gate transforms
-                        Shape coverage only
-                    Prove
-                      Source oracle
-                        Semantic checkpoints
-                        Post preprocess inputs
-                      Parity ladder
-                        Artifact
-                        Primitive
-                        Block
-                        End to end
-                        Stateful
-                        Task quality
-                    Review
-                      Benchmark receipt
-                        Hardware
-                        Workload
-                        Quality gate
-                      Change review
-                        Keep
-                        Revert
-                        Backlog</pre>
-              </div>
-            </section>
-
-            <section class="diagram-panel tree-board" aria-labelledby="router-tree-title">
-              <div class="tree-copy">
-                <h3 id="router-tree-title">Model-family router map</h3>
-                <p>Use this when all you have is the artifact. The route comes from static evidence: config, weight keys, processor metadata, source files, and task hints.</p>
-                <div class="tree-meta">
-                  <span>references/intake-and-routing.md</span>
-                  <span>assets/architectures.yaml</span>
-                  <span>references/model-support-map.md</span>
-                </div>
-              </div>
-              <div class="map-canvas">
-                <pre class="mindmap-source">mindmap
-                  root((Family router))
-                    Signals
-                      model_type
-                        exact plus 10
-                        partial plus 5
-                      Architecture class
-                        plus 4
-                      Config keys
-                        plus 0.8
-                      Weight keys
-                        plus 1.5
-                      Processor task metadata
-                    Confidence
-                      High
-                        pick route
-                        record target
-                      Low
-                        return candidates
-                        gather evidence
-                        do not force it
-                    Targets
-                      MLX LM
-                        decoder
-                        MoE
-                        LoRA
-                      MLX VLM
-                        media encoder
-                        projector
-                        placeholders
-                      MLX Audio
-                        ASR
-                        TTS
-                        codec
-                      Standalone
-                        graph
-                        time series
-                        research
-                    Registry
-                      17 families
-                        decoder
-                        encoder
-                        MoE
-                        SSM
-                        diffusion
-                        VLM
-                        audio
-                      Each route has
-                        runbook
-                        state contract
-                        proof gates
-                    Candidate tracks
-                      tabular
-                      ranking
-                      point cloud
-                      training
-                      promote only with fixtures</pre>
-              </div>
-            </section>
-
-            <section class="diagram-panel tree-board" aria-labelledby="llm-tree-title">
-              <div class="tree-copy">
-                <h3 id="llm-tree-title">LLM / decoder map</h3>
-                <p>Use this for decoder LMs, chat models, MoE decoders, and SSM hybrids. Cache and logits come before every throughput idea.</p>
-                <div class="tree-meta">
-                  <span>runbook-decoder-transformer.md</span>
-                  <span>runbook-moe-transformer.md</span>
-                  <span>attention-and-kv.md</span>
-                  <span>quantization.md</span>
-                </div>
-              </div>
-              <div class="map-canvas">
-                <pre class="mindmap-source">mindmap
-                  root((Decoder route))
-                    Dense LLM
-                      Fingerprint
-                        causal stack
-                        RoPE or ALiBI
-                        MHA GQA MQA
-                      Oracle
-                        tokens
-                        Q K V
-                        logits
-                        cache
-                      Weight map
-                        no equal thirds for GQA
-                        tied head preserved
-                      Cache proof
-                        full vs incremental
-                        reset and reuse
-                    MoE
-                      Router proof
-                        IDs
-                        weights
-                        dispatch
-                      Loop oracle first
-                        then gather_mm
-                        then gather_qmm
-                      Metrics
-                        active experts
-                        tokens per expert
-                        dispatch time
-                    SSM hybrid
-                      State proof
-                        one step
-                        chunk scan
-                        reset
-                      Optimize after
-                        scan
-                        compile
-                        fallback
-                    Speed path
-                      host sync cleanup
-                      fast SDPA
-                      preallocated cache
-                      compile stable step
-                      quantization
-                      prompt cache
-                      speculation sweep
-                    Receipts
-                      quant
-                        2.40x decode
-                        quality caveat
-                      prompt cache
-                        23.75x TTFT proxy
-                        not decode speed
-                      speculation
-                        k2 1.25x
-                        k3 and k4 regress</pre>
-              </div>
-            </section>
-
-            <section class="diagram-panel tree-board" aria-labelledby="transformer-tree-title">
-              <div class="tree-copy">
-                <h3 id="transformer-tree-title">Transformer block map</h3>
-                <p>Use this when someone pastes the block and asks for MLX. Prove one block before assembling the model around a hidden mistake.</p>
-                <div class="tree-meta">
-                  <span>porting-core.md</span>
-                  <span>parity-and-testing.md</span>
-                  <span>attention-and-kv.md</span>
-                </div>
-              </div>
-              <div class="map-canvas">
-                <pre class="mindmap-source">mindmap
-                  root((Transformer block))
-                    Contract
-                      inputs outputs
-                      layout
-                      dtype
-                      masks
-                      cache
-                    Primitives
-                      Norm
-                        epsilon
-                        residual order
-                      Position
-                        RoPE base
-                        offsets
-                      Attention
-                        QKV
-                        scale
-                        mask geometry
-                      MLP or MoE
-                        gate order
-                        expert scatter
-                    Eager block
-                      no compile
-                      no quant
-                      no kernels
-                      capture tensors
-                        pre norm
-                        projections
-                        attention output
-                        residual
-                        state
-                    Promote
-                      repeated blocks
-                      staged model
-                      logits
-                      save reload
-                      deterministic generation
-                    Localize failure
-                      smallest fixture
-                      first divergent checkpoint
-                      disable cache quant compile
-                      fix first divergence</pre>
-              </div>
-            </section>
-
-            <section class="diagram-panel tree-board" aria-labelledby="diffusion-tree-title">
-              <div class="tree-copy">
-                <h3 id="diffusion-tree-title">Diffusion / flow map</h3>
-                <p>Use this for diffusion and flow models. The first useful proof is boring: one denoiser step, the scheduler update, and a fixed latent path.</p>
-                <div class="tree-meta">
-                  <span>runbook-diffusion-flow.md</span>
-                  <span>parity-and-testing.md</span>
-                  <span>benchmarking.md</span>
-                </div>
-              </div>
-              <div class="map-canvas">
-                <pre class="mindmap-source">mindmap
-                  root((Diffusion flow))
-                    Fingerprint
-                      domain
-                        latent
-                        pixel
-                        waveform
-                      components
-                        encoder
-                        denoiser
-                        scheduler
-                        VAE
-                      parameterization
-                        epsilon
-                        v
-                        x0
-                        velocity
-                    Oracle
-                      fixed seed
-                        noise
-                        timestep
-                        conditioning
-                      checkpoints
-                        one block
-                        denoiser output
-                        scheduler update
-                        latent path
-                    Gates
-                      one denoiser step
-                        scheduler math
-                        CFG order
-                        layout
-                      short trajectory
-                        first drift
-                      output quality
-                        perceptual review
-                        task metric
-                    Convert
-                      conv layout
-                      adaptive norm
-                      patch axes
-                      VAE scale
-                      scheduler artifact
-                    Optimize
-                      keep latents on MLX
-                      compile denoiser
-                      reuse conditioning
-                      fast attention
-                      tile VAE
-                      kernel only with fallback</pre>
-              </div>
-            </section>
-
-            <section class="diagram-panel tree-board" aria-labelledby="inspector-tree-title">
-              <div class="tree-copy">
-                <h3 id="inspector-tree-title">Existing MLX project inspector map</h3>
-                <p>Use this when the project already runs. Running once is not proof; the inspector names the MLX surface, risks, and missing evidence.</p>
-                <div class="tree-meta">
-                  <span>inspect_mlx_project.py</span>
-                  <span>MLX_INSPECTION.md</span>
-                  <span>contribution_candidates</span>
-                </div>
-              </div>
-              <div class="map-canvas">
-                <pre class="mindmap-source">mindmap
-                  root((Existing MLX inspector))
-                    Scan
-                      no imports
-                      files
-                      mlx imports
-                      mx.eval
-                      mx.compile
-                      caches
-                      kernels
-                    Health
-                      no surface
-                        wrong path
-                      risk review
-                        remote code
-                        pickle
-                        provenance
-                      proof gaps
-                        parity
-                        benchmark
-                        rollback
-                      looks good
-                        static only
-                    Fold model
-                      family route
-                      tensor inventory
-                      source holds
-                      same vocabulary
-                    Report
-                      health
-                      code surface
-                      opportunities
-                      contribution candidates
-                    Contribute
-                      fixture
-                      fallback
-                      quality proof
-                      benchmark metadata
-                      rollback
-                      affected runbook</pre>
-              </div>
-            </section>
-
-            <section class="diagram-panel tree-board" aria-labelledby="optimization-tree-title">
-              <div class="tree-copy">
-                <h3 id="optimization-tree-title">Optimization and change-review map</h3>
-                <p>Use this after parity. Profile first, change one thing, measure locally, and write down when to roll it back.</p>
-                <div class="tree-meta">
-                  <span>recommend_optimizations.py</span>
-                  <span>benchmark_generation.py</span>
-                  <span>assets/optimization_stacks.yaml</span>
-                </div>
-              </div>
-              <div class="map-canvas">
-                <pre class="mindmap-source">mindmap
-                  root((Optimization review))
-                    Entry gate
-                      parity first
-                      one dimension
-                      rollback first
-                      no receipt no claim
-                    Baseline
-                      product question
-                        TTFT
-                        decode
-                        throughput
-                        memory
-                        RTF
-                      metadata
-                        Mac
-                        MLX versions
-                        model revision
-                        cache state
-                        quality gate
-                      protocol
-                        cold warm
-                        median tail
-                        two workloads
-                    Evidence
-                      official
-                      third party pinned
-                      paper only
-                      source reported
-                      local receipt
-                    Techniques
-                      quantization
-                        model change
-                        module exclusions
-                      cache
-                        exact key
-                        privacy gate
-                      speculation
-                        acceptance sweep
-                      compile
-                        stable shapes
-                      kernel
-                        fallback required
-                    Local receipts
-                      4 bit weights
-                        2.40x decode
-                        quality caveat
-                      prompt cache
-                        23.75x TTFT proxy
-                      KV cache
-                        1.11x decode
-                        memory increased
-                      full stack
-                        0.33x regression
-                    Source leads
-                      batching up to 4.3x
-                      VLM cache 28x image
-                      TTS batch 1.67x to 5.45x</pre>
-              </div>
-            </section>
+      <article class="docs-article">
+        <header class="docs-hero">
+          <p class="docs-breadcrumb">Documentation / executable porting standard / v<span data-value="version">0.4.0</span></p>
+          <h1>Make the port <em>explain itself.</em></h1>
+          <p class="docs-lead">MLX Porter guides an agent or engineer through the evidence chain around a model port. It supplies routing, runbooks, static inspectors, validators, benchmark contracts, and publication gates. It does not contain a magic arbitrary-model converter.</p>
+          <div class="docs-summary" aria-label="Generated documentation summary">
+            <div><strong data-value="architectures.total">17</strong><span>declared routes with golden scenarios</span></div>
+            <div><strong data-value="local_docs.runbooks">17</strong><span>architecture runbooks</span></div>
+            <div><strong data-value="sources.total">350</strong><span>live sources at recorded review depths</span></div>
           </div>
+        </header>
 
-          <h2 id="inspector">Inspector mode</h2>
-          <p>When MLX code already exists, do not restart from theory. Inspect the local project, inventory the actual runtime surface, fold in the model if present, and turn missing evidence into the next action.</p>
-          <div class="code-panel" aria-label="Inspector command">
-            <div class="code-head">
-              <span class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></span>
-              <span>inspect-existing-mlx.sh</span>
-            </div>
-            <pre>python3 mlx-model-porting/scripts/inspect_mlx_project.py /path/to/mlx-project \
-  --model /path/to/local-model \
-  --markdown MLX_INSPECTION.md \
-  --output inspection.json</pre>
+        <div class="no-results" id="no-results" hidden>No sections match that search. Press Escape to clear it.</div>
+
+        <section class="doc-section" id="quick-start" data-search="quick start inspect plan">
+          <span class="label">01 / start</span>
+          <h2>Quick start</h2>
+          <p>Run static inspection first. It reads local metadata and safe tensor headers, classifies the architecture, emits risk blockers, and recommends one or more runbooks. It does not execute project code.</p>
+          <pre data-copy><code>python3 mlx-model-porting/scripts/inspect_model.py /path/to/model \
+  --output inspection.json \
+  --markdown inspection.md
+
+python3 mlx-model-porting/scripts/make_port_plan.py inspection.json \
+  --artifact-root /path/to/model \
+  --output PORT_PLAN.md</code></pre>
+          <div class="callout proof"><strong>Expected result</strong><p><span class="inline-code">inspection.json</span> contains controlled family ids, architecture traits, routing status, risks, blockers, tensor metadata, source-format observations, and recommended runbooks. Ambiguity stays explicit.</p></div>
+          <p>For an existing MLX codebase, inspect that surface separately:</p>
+          <pre data-copy><code>python3 mlx-model-porting/scripts/inspect_mlx_project.py /path/to/project \
+  --model /path/to/local/model \
+  --output mlx-inspection.json \
+  --markdown MLX_INSPECTION.md</code></pre>
+        </section>
+
+        <section class="doc-section" id="install" data-search="install codex claude cursor gemini windsurf copilot">
+          <span class="label">02 / install</span>
+          <h2>Installation</h2>
+          <p>Client presets select a documented destination and copy or symlink mode. Always dry-run first when the target matters; <span class="inline-code">--force</span> atomically replaces an existing target.</p>
+          <pre data-copy><code>python3 mlx-model-porting/scripts/install_skill.py \
+  --client codex \
+  --dry-run
+
+# Inspect the printed source, destination, target, and mode.
+# Then repeat without --dry-run.</code></pre>
+          <div class="doc-grid">
+            <div class="doc-card"><h3>Preset clients</h3><p>Claude Code, Codex, Cursor, Gemini CLI, Windsurf, and GitHub Copilot.</p></div>
+            <div class="doc-card"><h3>Explicit destination</h3><p>Use <span class="inline-code">--dest ~/.agents/skills --mode symlink</span> when a product version or local convention differs.</p></div>
           </div>
-          <p>The report can say "looks good" only when the evidence is there. Otherwise it should name the proof gap before it suggests optimization or contribution work.</p>
+          <div class="callout warning"><strong>Safety boundary</strong><p>The installer rejects recursive destinations, ancestor targets that contain the source, path escapes, and symlink cycles. It compares content and modes for idempotence.</p></div>
+        </section>
 
-          <h2 id="looks-like">What that looks like</h2>
-          <p>For a small Transformer block, do not start with the fastest possible MLX version. Start with a source oracle and make the first MLX implementation boring enough to debug:</p>
-
-          <div class="code-panel" aria-label="Example MLX Porter runbook">
-            <div class="code-head">
-              <span class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></span>
-              <span>runbook.txt</span>
-            </div>
-            <pre>load mlx-model-porting/SKILL.md
-classify architecture family
-inspect config + static checkpoint metadata
-capture PyTorch oracle tensors
-implement eager MLX without compile or kernels
-map every weight, with explicit transforms
-compare selected tensors
-profile the real bottleneck
-apply one optimization and re-run parity</pre>
+        <section class="doc-section" id="workflow" data-search="workflow inspect route oracle eager map parity profile optimize benchmark publish">
+          <span class="label">03 / method</span>
+          <h2>The workflow contract</h2>
+          <p>The order is a correctness device. A profiler cannot rescue a mismapped checkpoint, and a throughput number cannot replace task quality.</p>
+          <div class="route-map" aria-label="Porting workflow">
+            <div class="route-node"><strong>Inspect → route</strong><span>Metadata, lineage, risk, family, traits, runbook.</span></div>
+            <div class="route-node"><strong>Source oracle</strong><span>Frozen inputs, intermediates, state, masks, caches, outputs.</span></div>
+            <div class="route-node"><strong>Eager MLX</strong><span>Plain graph with explicit shapes and evaluation boundaries.</span></div>
+            <div class="route-node"><strong>Weight map</strong><span>Rename, transpose, split, merge, reshape, dtype, coverage.</span></div>
+            <div class="route-node"><strong>Parity ladder</strong><span>Tensor → block → output → state → task.</span></div>
+            <div class="route-node"><strong>Profile → publish</strong><span>One change, quality gate, benchmark receipt, rollback.</span></div>
           </div>
+          <div class="callout"><strong>No generic conversion command</strong><p>The repository validates the method and evidence around a conversion. The agent or engineer writes the eager MLX implementation and deterministic mapping for the target architecture.</p></div>
+        </section>
 
-          <p>If the agent cannot point to the source tensor that proves the MLX tensor, it is still porting. If it cannot name the baseline, hardware, precision, workload, quality gate, and rollback condition, it is not allowed to say faster.</p>
+        <section class="doc-section" id="routes" data-search="families runbook transformer moe vision language audio diffusion flow speech graph time series cv">
+          <span class="label">04 / route</span>
+          <h2>Architecture routes</h2>
+          <p>The registry declares <strong data-value="architectures.total">17</strong> routes. Each has a golden scenario for routing, source-key coverage, seeded parity-bug detection, and optimization policy. That is not evidence of <strong data-value="architectures.total">17</strong> completed real-checkpoint ports.</p>
+          <div class="route-map" id="docs-route-map" aria-live="polite">
+            <p class="generated-fallback">See the <a href="https://github.com/Amal-David/mlx-porting-skill/blob/main/mlx-model-porting/assets/architectures.yaml">generated architecture registry</a>. Interactive route cards require the local generated data file.</p>
+          </div>
+          <div class="callout warning"><strong>Route ambiguity is a result</strong><p>Qwen3-Next, Falcon-H1, Nemotron-H, Whisper, Qwen2-Audio, Moshi, RNN-T, Voxtral Realtime, and Gemma 3 vision-style compositions are routed through capability-aware profiles. Conflicting or weak signals remain ambiguous.</p></div>
+        </section>
 
-          <h2 id="fits">How it fits together</h2>
-          <p>The site and docs are split so a smaller model can follow the path one step at a time instead of rediscovering the whole porting strategy mid-run.</p>
+        <section class="doc-section" id="inspect" data-search="static inspect safetensors gguf onnx keras tensorflow flax orbax core ml pickle remote code">
+          <span class="label">05 / inspect</span>
+          <h2>Static inspection</h2>
+          <p>The inspector recognizes local directories, individual files, and Hugging Face ids. Network access is off by default. Local intake hashes every inventoried file into a portable SHA-256 tree identity and binds accepted license evidence to that same tree. Incomplete identity or missing evidence blocks recommendations. When network access is enabled, pin a revision; weight downloads are a separate opt-in.</p>
+          <pre data-copy><code>python3 mlx-model-porting/scripts/inspect_model.py org/model \
+  --allow-network \
+  --revision 0123456789abcdef0123456789abcdef01234567 \
+  --output inspection.json</code></pre>
+          <div class="doc-grid">
+            <div class="doc-card"><h3>Safe metadata paths</h3><p>Config JSON, tokenizer metadata, safetensors headers, bounded GGUF/ONNX/protobuf metadata, and preflighted archive tables.</p></div>
+            <div class="doc-card"><h3>Blocked confidence</h3><p>Pickle weights, dynamic imports, custom model code, escaping symlinks, truncated inventories, missing license evidence, oversized structures, and conflicting identities.</p></div>
+          </div>
+          <p>ONNX, GGUF, Flax/Orbax, TensorFlow/Keras, and Core ML are intake and mapping surfaces here. Static recognition does not lower arbitrary graphs into executable MLX.</p>
+        </section>
+
+        <section class="doc-section" id="oracle" data-search="source oracle intermediate hooks determinism masks cache state task quality">
+          <span class="label">06 / oracle</span>
+          <h2>Build a source oracle</h2>
+          <p>Freeze a small, representative fixture before porting. Record source revision, preprocessing, tokenizer or processor, seed, train/eval state, dtype, device, generation settings, and cache/state behavior.</p>
           <ol>
-            <li><strong>The skill contract</strong> tells the agent how to classify the request, which files to read, and when to stop.</li>
-            <li><strong>The architecture runbook</strong> gives the family-specific checks: attention, diffusion, ASR, audio codecs, MoE, SSM, graph models, and more.</li>
-            <li><strong>The validation scripts</strong> turn claims into gates: source validation, skill audit, golden scenarios, and unit tests.</li>
+            <li>Capture embeddings or earliest feature transforms.</li>
+            <li>Capture one block at the first non-trivial mask, routing, recurrence, or multimodal boundary.</li>
+            <li>Capture final logits, waveform, image, embedding, forecast, or graph output.</li>
+            <li>Capture mutable state: KV cache, convolution buffer, recurrent state, diffusion schedule, or streaming flush state.</li>
+            <li>Define a task-quality metric before measuring speed.</li>
           </ol>
+          <div class="callout proof"><strong>Why this matters</strong><p>A final-output mismatch tells you that something is wrong. A staged oracle tells you where semantics first diverged.</p></div>
+        </section>
 
-          <div class="callout">
-            <p>Frontier systems may discover these decisions dynamically. This site distills the path into steps a smaller open model can follow without burning context on the same mistakes.</p>
+        <section class="doc-section" id="weights" data-search="weights map tensor rename transpose reshape split merge dtype coverage">
+          <span class="label">07 / weights</span>
+          <h2>Validate the weight map</h2>
+          <p>Author a mapping manifest that records each source key, target key, transform, expected shape, dtype decision, and reason for any intentionally unmapped value.</p>
+          <pre data-copy><code>python3 mlx-model-porting/scripts/validate_weight_map.py \
+  --source source-manifest.json \
+  --target target-manifest.json \
+  --mapping WEIGHT_MAP.json \
+  --output weight-map-report.json</code></pre>
+          <div class="callout warning"><strong>Proof boundary</strong><p>This validates key and shape-transform coverage. It does not prove operator semantics or numerical parity. <span class="inline-code">--allow-unmapped</span> weakens the default release gate.</p></div>
+        </section>
+
+        <section class="doc-section" id="parity" data-search="parity tensors npz atol rtol cosine output state task">
+          <span class="label">08 / parity</span>
+          <h2>Climb the parity ladder</h2>
+          <pre data-copy><code>python3 mlx-model-porting/scripts/compare_tensors.py \
+  source.npz target.npz \
+  --mapping mapping.json \
+  --atol 1e-5 --rtol 1e-4 --cosine-min 0.99 \
+  --output parity.json</code></pre>
+          <div class="route-table-wrap">
+            <table>
+              <thead><tr><th>Level</th><th>Compare</th><th>Typical failure</th></tr></thead>
+              <tbody>
+                <tr><td>Tensor</td><td>Shapes, dtypes, exact transforms</td><td>Transpose, split/merge, padding, layout</td></tr>
+                <tr><td>Block</td><td>Norm, attention/SSM, MLP/expert, residual</td><td>Axis, mask, router, recurrence, evaluation timing</td></tr>
+                <tr><td>Output</td><td>Logits, image latent, waveform, embedding</td><td>Head, denormalization, processor, decoder</td></tr>
+                <tr><td>State</td><td>Cache, buffer, recurrent state, streaming flush</td><td>Offset, window, mutation, boundary continuity</td></tr>
+                <tr><td>Task</td><td>Accuracy, WER/CER, perceptual or domain metric</td><td>Numerically close but behaviorally wrong</td></tr>
+              </tbody>
+            </table>
           </div>
+          <p><span class="inline-code">--no-fail</span> is report-only. <span class="inline-code">--allow-empty</span> must not be used as a release gate.</p>
+        </section>
 
-          <h2 id="rules">The rules that save the most time</h2>
-          <ul class="rule-list">
-            <li class="do"><strong>Inspect statically first.</strong> Read configs, safetensors headers, source files, licenses, and remote-code risk before running model code.</li>
-            <li class="do"><strong>Build the oracle early.</strong> Capture deterministic source outputs and intermediate tensors before writing the MLX path.</li>
-            <li class="do"><strong>Start with eager MLX.</strong> The first graph should be readable, not fused, compiled, quantized, or kernel-heavy.</li>
-            <li class="dont"><strong>Loading is not correctness.</strong> A checkpoint load without missing keys is one gate, not the port.</li>
-            <li class="dont"><strong>Speed claims need receipts.</strong> Optimization needs benchmark metadata, a baseline, a quality gate, and a rollback condition.</li>
-          </ul>
-
-          <h2 id="start">Start here</h2>
-          <div class="card-grid">
-            <a class="doc-card" href="https://github.com/Amal-David/mlx-porting-skill/blob/main/mlx-model-porting/SKILL.md">
-              <h3>Skill contract</h3>
-              <p>Load this first. It routes the agent to the relevant runbook, scripts, and stop conditions.</p>
-            </a>
-            <a class="doc-card" href="https://github.com/Amal-David/mlx-porting-skill/blob/main/mlx-model-porting/references/inspector-mode.md">
-              <h3>Inspector mode</h3>
-              <p>Use this when code already runs and you need to know what is actually proven.</p>
-            </a>
-            <a class="doc-card" href="https://github.com/Amal-David/mlx-porting-skill/tree/main/mlx-model-porting/references">
-              <h3>Architecture runbooks</h3>
-              <p>Pick the family before mixing assumptions across decoder, ASR, diffusion, audio, MoE, SSM, graph, CV, or VLM paths.</p>
-            </a>
-            <a class="doc-card" href="https://github.com/Amal-David/mlx-porting-skill/blob/main/mlx-model-porting/examples/porting-patterns.md">
-              <h3>Porting patterns</h3>
-              <p>Common starts for attention blocks, checkpoint maps, Whisper-style ports, and diffusion blocks.</p>
-            </a>
-            <a class="doc-card" href="https://github.com/Amal-David/mlx-porting-skill/blob/main/VALIDATION.md">
-              <h3>Validation status</h3>
-              <p>What is tested, what is reviewed, and what must stay blocked until evidence exists.</p>
-            </a>
+        <section class="doc-section" id="optimize" data-search="optimization target profile consent compile quantization cache speculative kernel research experimental">
+          <span class="label">09 / optimize</span>
+          <h2>Optimization is a controlled experiment</h2>
+          <p>The recommender matches controlled family, capability, workload, software, and hardware identifiers. Raw guidance numbers are scrubbed; the generated effective-claim catalog is the only numeric authority. It currently withholds all <strong data-value="effective_claims.total">9</strong> numeric records. A future local promotion requires the full canonical <span class="inline-code">TargetProfile.experiment_fingerprint</span>, exact receipt-derived model, target, and workload descriptors, exact hardware and software, and a non-empty controlled workload set. A copied digest or generic profile cannot unlock a number.</p>
+          <pre data-copy><code>python3 mlx-model-porting/scripts/recommend_optimizations.py inspection.json \
+  --target-profile target-profile.json \
+  --objective peak-memory \
+  --output recommendations.json \
+  --markdown OPTIMIZATIONS.md</code></pre>
+          <div class="route-table-wrap">
+            <table>
+              <thead><tr><th>Advisor bucket</th><th>Meaning</th><th>Execution policy</th></tr></thead>
+              <tbody>
+                <tr><td>Validated locally</td><td>A local parity fixture, benchmark, or skill gate reproduced the behavior in its captured scope.</td><td>Keep the exact model, inputs, target, and validation gate attached; do not generalize.</td></tr>
+                <tr><td>Validated by source or theory</td><td>Native MLX or official project path exists.</td><td>Confirm on the target; no portable speed promise.</td></tr>
+                <tr><td>Benchmark required</td><td>Prior MLX port evidence exists.</td><td>Profile and reproduce against the named baseline.</td></tr>
+                <tr><td>Experimental approach</td><td>Research candidate or incomplete MLX path.</td><td>Explicit user opt-in before implementation.</td></tr>
+                <tr><td>Rejected / do not use</td><td>Superseded, conflicting, regressing, or unsafe.</td><td>Cannot execute as a recommendation.</td></tr>
+              </tbody>
+            </table>
           </div>
+          <p>Blocked intake holds candidates by default. <span class="inline-code">--allow-blocked</span> is a deliberate override, not a way to erase the blocker.</p>
+        </section>
 
-          <h2 id="routes">Choose an architecture route</h2>
-          <p>Each route narrows the parity problem. Do not mix route assumptions unless the model really crosses families.</p>
-          <table class="route-table">
-            <thead>
-              <tr>
-                <th>Starting point</th>
-                <th>First proof to collect</th>
-                <th>Common trap</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Existing MLX project</td>
-                <td>Static MLX surface, model inspection, parity signals, benchmark receipts, and contribution candidates</td>
-                <td>Optimizing because the app runs once, before proving source parity or quality</td>
-              </tr>
-              <tr>
-                <td>Transformer attention</td>
-                <td>QKV projections, masks, RoPE, KV cache, and selected logits</td>
-                <td>Changing SDPA, cache layout, and quantization before tensor parity</td>
-              </tr>
-              <tr>
-                <td>Whisper-style ASR</td>
-                <td>Log-mel features, encoder states, token IDs, WER/CER, timestamps</td>
-                <td>Comparing decoded text while preprocessing already drifted</td>
-              </tr>
-              <tr>
-                <td>Diffusion block</td>
-                <td>One denoiser timestep, scheduler math, and fixed latent trajectory</td>
-                <td>Optimizing sampling while the scheduler or conditioning path differs</td>
-              </tr>
-              <tr>
-                <td>Checkpoint loading</td>
-                <td>Static tensor inventory, explicit transforms, and missing-key policy</td>
-                <td>Accepting partial loads or shape-compatible transposes silently</td>
-              </tr>
-            </tbody>
-          </table>
+        <section class="doc-section" id="benchmarks" data-search="benchmark receipt baseline runner quality contract stability rollback noise aggregate raw output">
+          <span class="label">10 / measure</span>
+          <h2>Benchmark receipts</h2>
+          <p>A generic command benchmark can record bounded wall-time output and optional RSS. With <span class="inline-code">--receipt-spec</span>, the family-neutral <span class="inline-code">external-command-wall-time</span> adapter produces controlled observation evidence. Its exact argv template executes one digest-pinned Python runner at argv position 1 and binds <span class="inline-code">models.target.id</span>, <span class="inline-code">models.target.revision</span>, checked-in workload evidence, and semantic <span class="inline-code">variant_config</span>. The harness hashes the resolved interpreter and package metadata, sanitizes and binds the ambient environment, starts Python with <span class="inline-code">-I -B</span>, statically rejects symlink components, snapshots the quality contract before execution, and requires every measured run to recreate the declared output under <span class="inline-code">quality/outputs/&lt;label&gt;/</span>. Only parent-measured wall time counts; child stdout cannot attest performance.</p>
+          <div class="callout warning"><strong>Execution is not attested yet</strong><p>A digest-pinned script can still ignore its model/workload arguments, and the legacy MLX-LM lane does not bind imported package bytes or per-run model output. The explicit <span class="inline-code">execution_attested</span> gate is therefore false for both lanes; receipts remain observations until a reviewed built-in adapter closes this boundary.</p></div>
+          <pre data-copy><code>python3 mlx-model-porting/scripts/benchmark_command.py \
+  --warmup 1 --runs 5 --timeout 600 \
+  --output benchmark.json \
+  -- COMMAND ...</code></pre>
+          <pre data-copy><code>python3 mlx-model-porting/scripts/benchmark_command.py \
+  --receipt-spec bench/candidate-spec.json \
+  --quality-contract bench/quality-contract.json \
+  --baseline-receipt baseline.json \
+  --warmup 1 --runs 5 --timeout 600 \
+  --output bench/candidate.json</code></pre>
+          <h3>Family-neutral receipt spec</h3>
+          <pre data-copy><code>{
+  "schema_version": 1,
+  "label": "candidate",
+  "argv_template": [
+    {"literal": "python3"},
+    {"source": ["workload", "artifacts", 0, "path"]},
+    {"literal": "--model"},
+    {"source": ["models", "target", "id"]},
+    {"literal": "--revision"},
+    {"source": ["models", "target", "revision"]},
+    {"literal": "--input"},
+    {"source": ["workload", "artifacts", 1, "path"]},
+    {"literal": "--mode"},
+    {"source": ["variant_config", "mode"]},
+    {"literal": "--output"},
+    {"source": ["variant_config", "quality_output_path"]}
+  ],
+  "models": {"target": {
+    "id": "owner/model", "revision": "&lt;pinned 40-64 hex&gt;",
+    "lineage_id": "controlled-lineage", "source_id": "owner/source-model",
+    "source_revision": "&lt;pinned 40-64 hex&gt;"
+  }},
+  "workload": {
+    "id": "controlled-workload",
+    "artifacts": [
+      {"role": "runner", "path": "runner.py", "sha256": "...", "size_bytes": 1234},
+      {"role": "input", "path": "input.bin", "sha256": "...", "size_bytes": 5678}
+    ],
+    "parameters": {"shape": "fixed"}
+  },
+  "variant_config": {
+    "mode": "candidate",
+    "quality_output_path": "quality/outputs/candidate/result.txt"
+  },
+  "enabled_methods": ["method-id"],
+  "comparison_role": "candidate",
+  "rollback_condition": "Rollback on quality failure or a gain within noise."
+}</code></pre>
+          <h3>Schema-2 candidate receipt shape (observation-only today)</h3>
+          <pre data-copy><code>python3 mlx-model-porting/scripts/benchmark_generation.py \
+  --label candidate \
+  --runs 5 --warmup 1 \
+  --target-model "$TARGET_MODEL" \
+  --target-revision "$TARGET_REVISION" \
+  --lineage-id "$LINEAGE_ID" \
+  --source-id "$SOURCE_MODEL" \
+  --source-revision "$SOURCE_REVISION" \
+  --workload-id deterministic-smoke-v1 \
+  --workload-artifact prompt=bench/prompt.txt \
+  --workload-params-json '{"max_tokens":128,"temperature":0.0,"seed":7}' \
+  --quality-contract bench/quality-contract.json \
+  --rollback-condition "Rollback on quality or throughput regression." \
+  --baseline-receipt bench/baseline.json \
+  --enabled-method native-low-bit-weight-quantization \
+  --output bench/candidate.json \
+  -- python3 -m mlx_lm generate \
+  --model "$TARGET_MODEL" --prompt "$PROMPT" \
+  --max-tokens 128 --temp 0.0 --seed 7</code></pre>
+          <h3>Current controlled quality contract</h3>
+          <pre data-copy><code>{
+  "schema_version": 2,
+  "validator": {"id": "mlx-benchmark-exact-output-parity", "version": 1},
+  "metric": "exact-output-parity",
+  "reference_artifact": {"path": "quality/reference.txt", "size_bytes": 123, "sha256": "..."},
+  "candidate_artifact": {"path": "quality/outputs/candidate/result.txt", "size_bytes": 123, "sha256": "..."}
+}</code></pre>
+          <div class="callout warning"><strong>Byte identity matters</strong><p>The validator independently rereads two distinct, bounded, size- and digest-bound artifacts and compares their bytes. Schema-1 arbitrary JSON scores, legacy <span class="inline-code">--quality-artifact</span>, and Python <span class="inline-code">--quality-evaluator</span> inputs remain observations; they cannot authorize promotion. Lossy or task-specific candidates stay held until a controlled built-in metric exists.</p></div>
+          <div class="callout"><strong>Repetitions stay conservative</strong><p>Receipts can pool only when their exact baseline file and digest, warmup/run/timeout protocol, semantic experiment, and exact-output quality contract match. The lowest compatible ratio supplies any future range and its receipt-specific full fingerprint; missing, rejected, or heterogeneous repetitions withhold the number.</p></div>
+          <pre data-copy><code>python3 mlx-model-porting/scripts/validate_benchmarks.py generate \
+  --root mlx-model-porting/assets/benchmarks
 
-          <h2 id="validation">Validation gates</h2>
-          <p>The lightweight local path exercises the repo without downloading a real model:</p>
-          <div class="code-panel" aria-label="Validation commands">
-            <div class="code-head">
-              <span class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></span>
-              <span>offline-smoke.sh</span>
-            </div>
-            <pre>python3 mlx-model-porting/scripts/manifest.py check
-python3 mlx-model-porting/scripts/audit_skill.py --strict
-python3 mlx-model-porting/scripts/validate_sources.py
-python3 -m unittest discover -s tests -v</pre>
+python3 mlx-model-porting/scripts/validate_benchmarks.py check \
+  --root mlx-model-porting/assets/benchmarks</code></pre>
+        </section>
+
+        <section class="doc-section" id="evidence" data-search="evidence indexed screened synthesized official mlx third party paper local reproduced observation promoted rejected">
+          <span class="label">11 / evidence</span>
+          <h2>Evidence states are separate axes</h2>
+          <p>Review depth says how deeply a source has been read. Support scope says who maintains the implementation or whether it is paper-only. Benchmark classification says whether a local measurement can authorize a number. Do not collapse these into one “validated” badge.</p>
+          <div class="route-table-wrap">
+            <table>
+              <thead><tr><th>Axis</th><th>States</th><th>Safe public wording</th></tr></thead>
+              <tbody>
+                <tr><td>Review depth</td><td><span class="inline-code">indexed</span>, <span class="inline-code">screened</span>, <span class="inline-code">synthesized</span></td><td>Catalogued; limitations reviewed; directly informed a rule/runbook.</td></tr>
+                <tr><td>Support scope</td><td><span class="inline-code">official_mlx</span>, <span class="inline-code">official_mlx_project</span>, <span class="inline-code">third_party_pinned</span>, <span class="inline-code">paper_only</span>, <span class="inline-code">context_only</span>, <span class="inline-code">local_reproduced</span></td><td>Apple framework; Apple project; pinned third-party prior art; research candidate; discovery context; captured local result.</td></tr>
+                <tr><td>Receipt class</td><td>Observation, promotion-ready, rejected</td><td>Historical measurement; all gates pass; negative or invalid evidence.</td></tr>
+              </tbody>
+            </table>
           </div>
-          <p>A real model port adds architecture-specific tensor parity, quality metrics, generation or inference benchmarks, and rollback conditions.</p>
+          <div class="callout proof"><strong>Current committed receipts</strong><p><strong data-value="benchmarks.total">11</strong> total: <strong data-value="benchmarks.by_classification.performance_observation">10</strong> observations, <strong data-value="benchmarks.promotion_ready">0</strong> promotion-ready, and <strong data-value="benchmarks.by_classification.rejected">1</strong> rejected. No existing local number is presented here as a validated speedup.</p></div>
+        </section>
 
-          <h2 id="agents">For agents</h2>
-          <p>The intended agent behavior is simple: read the compact contract, choose one family route, keep facts sourced, and fail loudly when proof is missing. The docs should feel like rails, not a suggestion list.</p>
-        </article>
+        <section class="doc-section" id="validate" data-search="validate audit strict manifest tests offline urls CI">
+          <span class="label">12 / validate</span>
+          <h2>Package validation</h2>
+          <p>Run deterministic offline gates before any release. Live URL health and upstream pin drift are separate networked checks so a transient outage cannot corrupt prior evidence.</p>
+          <pre data-copy><code>python3 mlx-model-porting/scripts/audit_skill.py --strict mlx-model-porting
+python3 mlx-model-porting/scripts/validate_sources.py mlx-model-porting
+python3 mlx-model-porting/scripts/validate_benchmarks.py check
+python3 mlx-model-porting/scripts/generate_claim_catalog.py --check
+python3 mlx-model-porting/scripts/generate_evidence_index.py --check
+python3 mlx-model-porting/scripts/generate_site_data.py --check
+python3 mlx-model-porting/scripts/manifest.py check
+python3 -m unittest discover -s tests -v</code></pre>
+          <p>Run <span class="inline-code">validate_sources.py --check-urls</span> only when network validation is intended. Missing or unhealthy URLs fail loudly without upgrading or rewriting evidence.</p>
+        </section>
 
-        <aside class="outline" aria-label="On this page">
-          <p>
-            <svg class="icon" aria-hidden="true" viewBox="0 0 20 20"><path d="M4 5.75A.75.75 0 0 1 4.75 5h10.5a.75.75 0 0 1 0 1.5H4.75A.75.75 0 0 1 4 5.75Zm0 4A.75.75 0 0 1 4.75 9h7.5a.75.75 0 0 1 0 1.5h-7.5A.75.75 0 0 1 4 9.75Zm0 4a.75.75 0 0 1 .75-.75h10.5a.75.75 0 0 1 0 1.5H4.75A.75.75 0 0 1 4 13.75Z"/></svg>
-            On this page
-          </p>
+        <section class="doc-section" id="sources" data-search="primary sources mlx release mlx-lm mlx-vlm mlx-audio vllm pinned snapshot">
+          <span class="label">13 / sources</span>
+          <h2>Registry-current primary sources</h2>
+          <p>“Current” means the pinned registry snapshot reviewed on 2026-07-09, not an unverified claim about live upstream latest versions.</p>
+          <div class="route-table-wrap">
+            <table data-audited-sources>
+              <thead><tr><th>Surface</th><th>Recorded immutable reference</th><th>Scope</th></tr></thead>
+              <tbody>
+                <tr><td>Apple MLX</td><td><a href="https://github.com/ml-explore/mlx/tree/96296e9c3075a2389bc5c0f078bf01b5aa377cd9">mlx-repo · 96296e9 ↗</a></td><td><span class="inline-code">official_mlx</span></td></tr>
+                <tr><td>Apple MLX-LM</td><td><a href="https://github.com/ml-explore/mlx-lm/tree/2c008fd0252b2c569227d12568356ab88ab0560a">mlx-lm-repo · 2c008fd ↗</a></td><td>Apple-maintained project; model/workload confirmation still required.</td></tr>
+                <tr><td>MLX source snapshot</td><td><a href="https://github.com/ml-explore/mlx/tree/96296e9c3075a2389bc5c0f078bf01b5aa377cd9">Registered framework tree ↗</a></td><td>Canonical <span class="inline-code">mlx-repo</span> snapshot; not a speed guarantee.</td></tr>
+                <tr><td>MLX-Audio</td><td><a href="https://github.com/Blaizzy/mlx-audio/tree/412cf7cd381c2a3f6a8189af04a95af24cb415b6">mlx-audio-repo · 412cf7c ↗</a></td><td><span class="inline-code">third_party_pinned</span>; not Apple-official.</td></tr>
+                <tr><td>MLX-VLM / vLLM-MLX</td><td><a href="https://github.com/Blaizzy/mlx-vlm/tree/6a8cdff6a1f53f46a15d4adb997c3b2d5f621263">MLX-VLM 6a8cdff ↗</a> · <a href="https://github.com/waybarrios/vllm-mlx/blob/a48c86c1a41900f7d26658471b5f67e5fdd35445/docs/guides/continuous-batching.md">vLLM-MLX batching source ↗</a></td><td>Pinned third-party implementation evidence.</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>The generated <a href="https://github.com/Amal-David/mlx-porting-skill/blob/main/EVIDENCE_INDEX.md">evidence index</a> preserves every source id, URL, review depth, affected surface, and limitation.</p>
+        </section>
+
+        <section class="doc-section" id="contribute" data-search="contribute research daily source provenance review promotion rollback tests">
+          <span class="label">14 / contribute</span>
+          <h2>Contribution flow</h2>
+          <ol>
+            <li>Collect a candidate as review-only evidence. Daily automation may update candidates and open a PR; it cannot change supported guidance or merge itself.</li>
+            <li>Pin the source and record review depth, classification, support scope, affected rule/runbook, limitations, and access date.</li>
+            <li>Provide a reproducible MLX path, correctness or quality gate, benchmark metadata when performance is claimed, and rollback condition.</li>
+            <li>Update the smallest concrete asset or runbook, regenerate derived artifacts, and add a test that fails if the requirement drifts.</li>
+            <li>Keep rejected and superseded evidence visible. Never average contradictory sources into a vague compromise.</li>
+          </ol>
+          <div class="section-actions">
+            <a class="button primary" href="https://github.com/Amal-David/mlx-porting-skill/blob/main/CONTRIBUTING.md">Read CONTRIBUTING.md</a>
+            <a class="button" href="https://github.com/Amal-David/mlx-porting-skill/blob/main/EVIDENCE_INDEX.md">Browse evidence index</a>
+          </div>
+        </section>
+
+        <section class="doc-section" id="limitations" data-search="limitations offline real models conversion formats cv graph forecasting network apple silicon">
+          <span class="label">15 / boundary</span>
+          <h2>Limitations</h2>
+          <div class="callout warning"><strong>Offline green is not a real-model claim</strong><p>Golden scenarios prove routing, guard behavior, source-key coverage, seeded parity failure, and recommendations; the broader tooling suite validates the weight-map command. Neither proves end-to-end conversion or parity for real checkpoints across every declared family.</p></div>
           <ul>
-            <li><a href="#diagrams">Mind maps</a></li>
-            <li><a href="#inspector">Inspector mode</a></li>
-            <li><a href="#looks-like">What that looks like</a></li>
-            <li><a href="#fits">How it fits together</a></li>
-            <li><a href="#rules">Rules</a></li>
-            <li><a href="#start">Start here</a></li>
-            <li><a href="#routes">Architecture routes</a></li>
-            <li><a href="#validation">Validation gates</a></li>
-            <li><a href="#agents">For agents</a></li>
+            <li>Forecasting coverage does not imply tabular, ranking, or recommender support.</li>
+            <li>Current CV route coverage centers on backbone/classifier patterns; dense vision, promptable masks, OCR, depth, and pose remain candidate tracks.</li>
+            <li>Graph coverage proves GCN-style message-passing routing, not point-cloud, equivariant, molecular, or scientific ML.</li>
+            <li>Training is a supporting workflow for adapters, distillation, QAT, or architecture artifacts—not a generic port target.</li>
+            <li>Legacy local benchmark observations lack one or more modern receipt gates; none is promotion-ready.</li>
+            <li>Live Apple Silicon execution, external researcher agents, network collectors, URL health, and upstream revision drift are not proven by deterministic offline tests.</li>
           </ul>
-        </aside>
-      </div>
+          <p>For the complete boundary, read <a href="https://github.com/Amal-David/mlx-porting-skill/blob/main/VALIDATION.md">VALIDATION.md</a> and the generated <a href="https://github.com/Amal-David/mlx-porting-skill/blob/main/mlx-model-porting/assets/BENCHMARK_REPORT.md">benchmark assessment</a>.</p>
+        </section>
+
+        <footer class="doc-footer">
+          <p>MLX Porter v<span data-value="version">0.4.0</span> · generated site facts come from the checked-in registries and receipts · © <span data-year></span></p>
+        </footer>
+      </article>
     </main>
   </div>
-  <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
-  <script>
-    const branchColors = [
-      "#c12fe4",
-      "#00a99a",
-      "#86c900",
-      "#d18b00",
-      "#4169e1",
-      "#e46250",
-      "#7654d8"
-    ];
-
-    const nodeExplanations = {
-      "Artifact handoff": "Shows which generated artifact becomes the next input contract in the porting workflow.",
-      "Intake": "Collect source, license, revision, and target facts before touching runtime code.",
-      "Pin source": "Lock the upstream repo, checkpoint, and revision so parity is reproducible.",
-      "License": "Confirm use, redistribution, and packaging rights before publishing a port.",
-      "Revision": "Record the exact commit, model revision, or checkpoint hash used for evidence.",
-      "Objective": "State the requested outcome: inspect, port, load, benchmark, optimize, or package.",
-      "Choose target": "Pick the MLX surface before weight mapping or API design starts.",
-      "MLX core": "Use raw mlx primitives for custom modules or low-level graph ports.",
-      "MLX LM": "Use mlx-lm conventions for decoder language models and generation workflows.",
-      "MLX VLM": "Use multimodal MLX patterns for image/audio placeholders, projectors, and text backbones.",
-      "MLX Audio": "Use audio-specific preprocessing, streaming, codec, ASR, TTS, and waveform checks.",
-      "Inspect": "Gather static evidence first: configs, headers, source files, and model metadata.",
-      "Static only": "Analyze without importing remote model code or executing untrusted modules.",
-      "No imports": "Avoid importing model files while provenance and code risk are still unknown.",
-      "Network opt in": "Require explicit permission before downloading or calling external services.",
-      "Format holds": "Treat file format as a hold condition until config, source, and tensors line up.",
-      "Safetensors needs config oracle license": "Safetensors shape inventory is not enough; require config, oracle, and license evidence.",
-      "ONNX GGUF are shape triage": "Use these formats for tensor and shape clues, not as source parity proof by themselves.",
-      "Risk gate": "Stop here when execution, provenance, or safety evidence is missing.",
-      "Remote code": "Flag model code that would execute arbitrary upstream Python or custom modules.",
-      "Pickle weights": "Treat pickle-capable formats as unsafe until provenance and load policy are explicit.",
-      "Missing provenance": "Block promotion when source, license, revision, or checkpoint origin is unclear.",
-      "Plan": "Turn inspection evidence into a scoped port plan, weight map, and validation route.",
-      "PORT_PLAN": "The planned route: family, target surface, oracle points, and stop conditions.",
-      "Family": "The architecture family that selects the runbook and expected proof gates.",
-      "Target": "The chosen MLX implementation surface and packaging destination.",
-      "Oracle": "The source behavior or tensors the MLX port must reproduce.",
-      "WEIGHT_MAP": "The explicit mapping from source tensors to MLX parameters and transforms.",
-      "Keys and shapes": "Compare tensor names, shapes, and coverage before claiming a checkpoint maps.",
-      "QKV or gate transforms": "Document fused/split attention or gated-MLP transforms instead of guessing by shape.",
-      "Shape coverage only": "A coverage report proves mapping reach, not numerical correctness.",
-      "Prove": "Run parity evidence before review or optimization.",
-      "Source oracle": "Capture deterministic source outputs and intermediate tensors for comparison.",
-      "Semantic checkpoints": "Choose checkpoints that expose meaningful behavior, not only final outputs.",
-      "Post preprocess inputs": "Compare after tokenizer, feature extractor, scheduler, or image preprocess has run.",
-      "Parity ladder": "Climb from artifact checks to primitives, blocks, state, task quality, and end-to-end behavior.",
-      "Artifact": "Validate the generated file or checkpoint artifact before deeper runtime claims.",
-      "Primitive": "Prove one low-level operation before debugging a whole block.",
-      "Block": "Prove a repeated module once before assembling the full model.",
-      "End to end": "Compare the full inference path after smaller checkpoints pass.",
-      "Stateful": "Validate cache, recurrent state, streaming state, or scheduler state across steps.",
-      "Task quality": "Use WER, CER, image quality, task metric, or human review when tensors are not enough.",
-      "Review": "Decide whether evidence supports keep, revert, backlog, or more proof.",
-      "Benchmark receipt": "Attach hardware, workload, versions, metric, quality gate, and baseline.",
-      "Hardware": "Name the Apple Silicon device and memory profile for the measurement.",
-      "Workload": "Record prompt length, batch, audio duration, image size, or trajectory shape.",
-      "Quality gate": "Confirm the optimized path still passes parity or task-quality constraints.",
-      "Change review": "Classify the change using evidence, rollback condition, and affected runbook.",
-      "Keep": "Promote only when proof, quality, and benchmark metadata are complete.",
-      "Revert": "Back out changes that regress correctness, quality, or measured workload performance.",
-      "Backlog": "Hold promising work that lacks enough proof or repeatable receipts.",
-
-      "Family router": "Select the closest architecture route from static model and artifact evidence.",
-      "Signals": "Evidence used to score the model family without executing untrusted code.",
-      "model_type": "Primary config hint; strong when exact, weak when missing or generic.",
-      "exact plus 10": "Exact registry match adds high confidence to the route score.",
-      "partial plus 5": "Partial config match is useful but still needs supporting evidence.",
-      "Architecture class": "Class names and config architecture entries that identify a model family.",
-      "plus 4": "Moderate scoring weight for architecture-class evidence.",
-      "Config keys": "Distinctive keys such as hidden size, heads, layers, vocab, or scheduler fields.",
-      "plus 0.8": "Small additive score for each supporting config key.",
-      "Weight keys": "Tensor-name patterns that reveal attention, experts, encoders, or schedulers.",
-      "plus 1.5": "Weight-key evidence is stronger than generic config hints but not decisive alone.",
-      "Processor task metadata": "Tokenizer, processor, feature extractor, or task metadata that confirms route context.",
-      "Confidence": "Decide whether the evidence is strong enough to route or needs more inspection.",
-      "High": "Proceed with the selected route and record why the route is supported.",
-      "pick route": "Choose the runbook only after the evidence score is sufficient.",
-      "record target": "Write the target surface and route into the plan for later review.",
-      "Low": "Do not force a family; return candidates and ask for more evidence.",
-      "return candidates": "Show plausible routes and the missing evidence for each.",
-      "gather evidence": "Collect more config, source files, tensor keys, or task metadata.",
-      "do not force it": "Avoid inventing an architecture route when evidence is inconclusive.",
-      "Targets": "Implementation surfaces the route can land on.",
-      "MoE": "Mixture-of-experts decoder route with router, dispatch, and expert parity gates.",
-      "LoRA": "Adapter path that must preserve target module names, rank, scaling, and merge policy.",
-      "media encoder": "The image, audio, or video encoder feeding a multimodal projector.",
-      "projector": "Bridge layer between media embeddings and the language model token space.",
-      "placeholders": "Special media tokens or feature slots that must align with tokenizer behavior.",
-      "ASR": "Automatic speech recognition route with feature, decoder, timestamp, and WER/CER checks.",
-      "TTS": "Text-to-speech route with acoustic, vocoder, duration, and perceptual quality checks.",
-      "codec": "Neural audio codec route with encode/decode and reconstruction metrics.",
-      "Standalone": "Custom research or nonstandard route outside the primary MLX model packages.",
-      "graph": "Graph message-passing route with node, edge, adjacency, and batching proof.",
-      "time series": "Forecasting route with windowing, scaling, horizon, and metric gates.",
-      "research": "Hold as exploratory until fixtures and reproducible validation exist.",
-      "Registry": "The source of known family routes and their runbook contracts.",
-      "17 families": "Current golden coverage spans seventeen architecture families.",
-      "decoder": "Autoregressive language decoder route.",
-      "encoder": "Encoder-only route for embeddings, classification, or feature extraction.",
-      "SSM": "State-space or recurrent hybrid route with state-transition proof.",
-      "diffusion": "Denoising or flow route with scheduler and trajectory parity gates.",
-      "VLM": "Vision-language or multimodal route with media projector alignment.",
-      "audio": "Audio route family for ASR, TTS, codec, vocoder, or streaming work.",
-      "Each route has": "Every supported family needs a runbook, state contract, and proof gates.",
-      "runbook": "The ordered checklist an agent follows for this architecture.",
-      "state contract": "The expected cache, recurrent, scheduler, or streaming state behavior.",
-      "proof gates": "Required checks before a route can be marked supported.",
-      "Candidate tracks": "Research tracks that are not promoted until fixtures validate the route.",
-      "tabular": "Tabular models need feature schema, preprocessing, and metric fixtures.",
-      "ranking": "Ranking models need candidate set, scoring, and ordering metrics.",
-      "point cloud": "Point-cloud routes need coordinate layout, neighborhood, and batching proof.",
-      "training": "Training support needs gradients, optimizer state, reproducibility, and loss checks.",
-      "promote only with fixtures": "Move a route into support only after repeatable local fixtures pass.",
-
-      "Decoder route": "Runbook for decoder LMs, chat models, MoE decoders, and SSM hybrids.",
-      "Dense LLM": "Standard decoder transformer path without expert dispatch.",
-      "Fingerprint": "Identify attention, position, norm, cache, and head structure before porting.",
-      "causal stack": "Confirm the model is autoregressive and mask behavior is causal.",
-      "RoPE or ALiBI": "Position encoding choice affects offsets, cache updates, and logits parity.",
-      "MHA GQA MQA": "Head grouping determines Q, K, V shapes and cache layout.",
-      "tokens": "Use deterministic token inputs for oracle and generation comparisons.",
-      "Q K V": "Capture projected query, key, and value tensors to localize attention drift.",
-      "logits": "Compare final vocabulary scores before judging decoded text.",
-      "cache": "Validate incremental key/value cache behavior against full-prefix inference.",
-      "no equal thirds for GQA": "Do not split fused QKV evenly when grouped-query attention uses different K/V sizes.",
-      "tied head preserved": "Keep shared embedding and LM head behavior intact when the source ties weights.",
-      "Cache proof": "Show full and incremental decoding produce matching logits under controlled inputs.",
-      "full vs incremental": "Compare one full forward pass with token-by-token cached generation.",
-      "reset and reuse": "Confirm cache reset, reuse, and continuation semantics are safe.",
-      "Router proof": "For MoE, prove selected experts and routing weights before optimizing dispatch.",
-      "IDs": "Compare chosen expert IDs against the source oracle.",
-      "weights": "Compare router probabilities or weights, not just final output.",
-      "dispatch": "Validate token-to-expert movement and combine order.",
-      "Loop oracle first": "Start with the readable source-like loop before vectorizing expert dispatch.",
-      "then gather_mm": "Promote to gathered matrix multiply after loop parity passes.",
-      "then gather_qmm": "Add quantized gathered matmul only after dispatch and quality are proven.",
-      "Metrics": "Record expert distribution and time spent in routing/dispatch.",
-      "active experts": "Number of experts used per token or batch.",
-      "tokens per expert": "Distribution that reveals imbalance or dispatch bugs.",
-      "dispatch time": "Runtime spent moving tokens through expert paths.",
-      "SSM hybrid": "Decoder route that mixes transformer layers with recurrent or state-space blocks.",
-      "State proof": "Validate recurrent state transitions before batching or compile changes.",
-      "one step": "Compare a single state update to isolate recurrence bugs.",
-      "chunk scan": "Validate multi-token scan or chunked recurrence against the one-step oracle.",
-      "reset": "Confirm state reset semantics for new sequences or stream boundaries.",
-      "Optimize after": "Only optimize the state path after step and chunk parity pass.",
-      "scan": "Use scan-style execution after proving state order and reset behavior.",
-      "compile": "Compile only stable, parity-proven shapes and functions.",
-      "fallback": "Keep a readable fallback for debugging and unsupported shapes.",
-      "Speed path": "Ordered optimization candidates after parity and quality pass.",
-      "host sync cleanup": "Remove unnecessary CPU synchronization and scalar reads from the hot path.",
-      "fast SDPA": "Use optimized attention once masks, scale, and cache layout are proven.",
-      "preallocated cache": "Allocate KV cache up front to avoid repeated growth and copies.",
-      "compile stable step": "Compile a generation step only when shapes and control flow are stable.",
-      "quantization": "Reduce weight precision only with quality gates and module exclusions.",
-      "prompt cache": "Reuse prefix computation for repeated long-context prompts.",
-      "speculation sweep": "Benchmark draft-model acceptance across k values instead of assuming speedup.",
-      "Receipts": "Local measurements that can support a speed claim.",
-      "quant": "Quantization receipt; note metric, quality, and excluded modules.",
-      "2.40x decode": "Measured 4-bit decode speedup for the scoped local workload.",
-      "quality caveat": "Keep quality checks attached because compression can preserve speed while hurting output.",
-      "prompt cache": "Prefix-cache receipt; scope it to TTFT or prefill, not decode.",
-      "23.75x TTFT proxy": "Measured prompt-cache improvement for time-to-first-token on a repeated long prompt.",
-      "not decode speed": "Do not reuse TTFT or prefill gains as decode-throughput claims.",
-      "speculation": "Draft-model decoding path that only helps when acceptance and overhead balance.",
-      "k2 1.25x": "Measured speculative decoding speedup at k=2 for the scoped workload.",
-      "k3 and k4 regress": "Measured larger speculation windows regressed in this local setup.",
-
-      "Transformer block": "Port and prove one block before assembling the whole model.",
-      "Contract": "The module boundary: inputs, outputs, dtypes, masks, and state.",
-      "inputs outputs": "Freeze tensor shapes, names, and expected return values.",
-      "layout": "Confirm batch, sequence, channel, head, or image-axis ordering.",
-      "dtype": "Track precision choices because dtype drift can hide parity bugs.",
-      "masks": "Validate mask rank, broadcast, causal direction, and additive/boolean form.",
-      "Primitives": "Small operations that should be proven before the full block.",
-      "Norm": "LayerNorm/RMSNorm behavior, epsilon, and residual placement.",
-      "epsilon": "Small norm constant that can materially change parity.",
-      "residual order": "Whether residuals wrap norm, attention, and MLP in pre/post order.",
-      "Position": "Position encoding path and offset handling.",
-      "RoPE base": "Rotary base and scaling must match source config.",
-      "offsets": "Position offsets must match cached and non-cached execution.",
-      "Attention": "Attention projections, scale, mask, softmax, and output projection.",
-      "scale": "Attention scale must match source, especially with custom head dimensions.",
-      "mask geometry": "Mask shape and orientation decide which tokens can attend.",
-      "MLP or MoE": "Feed-forward path, including gated activations or expert dispatch.",
-      "gate order": "Gated MLP order can swap up/down/gate tensors silently.",
-      "expert scatter": "MoE token placement and recombination must match source order.",
-      "Eager block": "First MLX implementation should be readable and unfused.",
-      "no compile": "Avoid compile until block-level parity is proven.",
-      "no quant": "Avoid quantization until the eager full-precision path is correct.",
-      "no kernels": "Avoid custom kernels until the reference MLX path is proven.",
-      "capture tensors": "Save intermediate tensors to locate the first divergence.",
-      "pre norm": "Capture normalized input before attention or MLP.",
-      "projections": "Capture QKV or MLP projections to isolate mapping bugs.",
-      "attention output": "Compare post-attention output before residual mixing.",
-      "residual": "Check residual addition points and shapes explicitly.",
-      "state": "Capture cache or recurrent state before and after the block.",
-      "Promote": "Move from a single proven block to repeated blocks and full model.",
-      "repeated blocks": "Validate tied structure across many layers with shared logic.",
-      "staged model": "Assemble the model in phases so failures stay local.",
-      "save reload": "Verify serialization round-trips preserve parameters and config.",
-      "deterministic generation": "Use fixed prompts and decoding settings for repeatable logits and text.",
-      "Localize failure": "Reduce divergence to the smallest failing tensor or fixture.",
-      "smallest fixture": "Create the minimal input that reproduces the bug.",
-      "first divergent checkpoint": "Debug the earliest tensor mismatch, not later symptoms.",
-      "disable cache quant compile": "Turn off optimization layers before investigating correctness.",
-      "fix first divergence": "Repair the earliest mismatch, then rerun the ladder.",
-
-      "Diffusion flow": "Route for denoising, flow, latent, pixel, waveform, and scheduler-driven models.",
-      "domain": "The data domain determines axes, metrics, and quality review.",
-      "latent": "Latent-space diffusion needs VAE scale and latent layout proof.",
-      "pixel": "Pixel-space routes need image layout, normalization, and denoiser parity.",
-      "waveform": "Audio diffusion needs sample-rate, chunking, and perceptual checks.",
-      "components": "Identify encoder, denoiser, scheduler, VAE, and conditioning pieces.",
-      "denoiser": "Core network predicting noise, velocity, sample, or flow update.",
-      "scheduler": "The timestep and update math that drives trajectory behavior.",
-      "VAE": "Latent encoder/decoder and scaling path for image or audio models.",
-      "parameterization": "What the model predicts: epsilon, v, x0, velocity, or flow.",
-      "epsilon": "Noise-prediction parameterization; compare against matching source target.",
-      "v": "Velocity-prediction parameterization; do not compare as epsilon.",
-      "x0": "Clean-sample prediction path with different scheduler expectations.",
-      "velocity": "Flow or velocity target that changes update equations.",
-      "fixed seed": "Hold noise, timestep, and conditioning fixed for repeatable trajectory checks.",
-      "noise": "Initial random tensor must match source for trajectory parity.",
-      "timestep": "Scheduler step index or continuous time input.",
-      "conditioning": "Text, audio, image, class, or CFG inputs that steer denoising.",
-      "checkpoints": "Intermediate tensors used to locate drift.",
-      "one block": "Prove one repeated denoiser block before the full network.",
-      "denoiser output": "Compare predicted update before applying scheduler math.",
-      "scheduler update": "Compare the next latent/sample after one scheduler step.",
-      "latent path": "Track latents through denoiser, scheduler, and VAE scale.",
-      "Gates": "Required correctness checks before optimization or quality claims.",
-      "one denoiser step": "First diffusion gate: one fixed step must match.",
-      "scheduler math": "Scheduler formulas, order, and scaling must mirror source.",
-      "CFG order": "Classifier-free guidance combine order must match source.",
-      "short trajectory": "Run a short fixed trajectory to expose accumulation drift.",
-      "first drift": "Find the first timestep where MLX and source diverge.",
-      "output quality": "Final output needs perceptual or task-specific review.",
-      "perceptual review": "Human or model-assisted quality check when tensor equality is insufficient.",
-      "task metric": "Objective metric such as WER, FID-like proxy, reconstruction error, or SNR.",
-      "Convert": "Port source module structure and tensor layouts into MLX.",
-      "conv layout": "Map convolution weights and input axes correctly.",
-      "adaptive norm": "Conditioned normalization must preserve scale and shift behavior.",
-      "patch axes": "Patchify/unpatchify or image token axes must align with source.",
-      "VAE scale": "Latent scaling factor must match the original pipeline.",
-      "scheduler artifact": "Save scheduler config and state as part of the port.",
-      "Optimize": "Apply performance work only after denoiser and trajectory gates pass.",
-      "keep latents on MLX": "Avoid CPU round trips for latent tensors in the hot path.",
-      "compile denoiser": "Compile the denoiser only after fixed-shape parity passes.",
-      "reuse conditioning": "Cache repeated conditioning embeddings across steps.",
-      "tile VAE": "Tile memory-heavy VAE decode/encode only with quality checks.",
-      "kernel only with fallback": "Custom kernels need a correctness-preserving fallback path.",
-
-      "Existing MLX inspector": "Static-first review path for projects that already contain MLX code.",
-      "Scan": "Inventory files and MLX runtime patterns without importing the project.",
-      "files": "Project files included in the static inspection surface.",
-      "mlx imports": "Evidence that code uses MLX APIs.",
-      "mx.eval": "Explicit evaluation boundaries that may affect performance and synchronization.",
-      "mx.compile": "Compiled regions that need shape and fallback review.",
-      "caches": "Cache structures that affect generation, streaming, or repeated inference.",
-      "kernels": "Custom or fast paths that require correctness fallback evidence.",
-      "Health": "Summary of whether the project has MLX surface, proof, and risks.",
-      "no surface": "No clear MLX implementation was found at the inspected path.",
-      "wrong path": "The target path likely points outside the actual MLX project.",
-      "risk review": "Review provenance, execution risk, and unsupported file formats.",
-      "proof gaps": "Missing parity, quality, benchmark, or rollback evidence.",
-      "parity": "Correctness comparison against the source implementation.",
-      "benchmark": "Local performance measurement with reproducible metadata.",
-      "rollback": "Condition that tells maintainers when to disable or revert the change.",
-      "looks good": "Static evidence is healthy, though runtime proof may still be needed.",
-      "Fold model": "Combine project inspection with optional model artifact inspection.",
-      "family route": "Route the inspected model through the architecture map.",
-      "tensor inventory": "List tensors, shapes, and formats without executing model code.",
-      "source holds": "Source evidence that must remain blocked until reviewed.",
-      "same vocabulary": "Use consistent family, proof, and artifact terms across reports.",
-      "Report": "Generated inspection output for humans and agents.",
-      "health": "Health summary for the inspected MLX project.",
-      "code surface": "Files, APIs, caches, compile regions, and kernels found.",
-      "opportunities": "Specific improvements that are safe to consider next.",
-      "contribution candidates": "Evidence-backed changes suitable for review or upstream contribution.",
-      "Contribute": "Package a verified improvement as a reviewable contribution.",
-      "fixture": "Small reproducible input/output case that proves behavior.",
-      "affected runbook": "The documentation branch that must be updated with the learning.",
-
-      "Optimization review": "Post-parity review path for speed, memory, and quality-preserving changes.",
-      "Entry gate": "Required conditions before optimization work begins.",
-      "parity first": "Correctness evidence must exist before speed work.",
-      "one dimension": "Optimize one variable at a time so regressions are attributable.",
-      "rollback first": "Define how to disable the optimization before shipping it.",
-      "no receipt no claim": "Do not publish speed claims without local measurement metadata.",
-      "Baseline": "The unoptimized reference measurement for the same workload.",
-      "product question": "Choose the metric that matters for the user-visible workflow.",
-      "TTFT": "Time to first token; mostly prefill and prompt-cache sensitive.",
-      "decode": "Token generation throughput after prefill.",
-      "throughput": "Total work per unit time for batch or service workloads.",
-      "memory": "Peak or steady memory use under the scoped workload.",
-      "RTF": "Real-time factor for audio generation or transcription workloads.",
-      "metadata": "Measurement context required to reproduce the result.",
-      "Mac": "The Apple Silicon hardware used for the receipt.",
-      "MLX versions": "Exact MLX, mlx-lm, and related package versions.",
-      "model revision": "The model or checkpoint revision used in the benchmark.",
-      "cache state": "Whether prompt/KV caches were cold, warm, reused, or disabled.",
-      "protocol": "How the benchmark was run and summarized.",
-      "cold warm": "Separate cold-start and warmed-run measurements.",
-      "median tail": "Report typical and tail behavior, not only best-case numbers.",
-      "two workloads": "Measure at least two shapes to catch context-length or batch regressions.",
-      "Evidence": "Source strength behind an optimization recommendation.",
-      "official": "Primary MLX or project source; strongest external evidence.",
-      "third party pinned": "External result with versioned, reproducible details.",
-      "paper only": "Research result that still needs an MLX reproduction path.",
-      "source reported": "Claim reported by a source but not locally reproduced.",
-      "local receipt": "Measurement generated in this repo or local workflow.",
-      "Techniques": "Optimization families that can be evaluated after parity.",
-      "model change": "Optimization changes model representation or precision.",
-      "module exclusions": "Modules left unquantized or unfused to preserve quality.",
-      "exact key": "Cache key must identify the exact reusable input safely.",
-      "privacy gate": "Do not cache or reuse sensitive content without policy approval.",
-      "acceptance sweep": "Measure speculative acceptance and speed across settings.",
-      "stable shapes": "Compilation works best when shapes and branches are stable.",
-      "kernel": "Custom low-level fast path with higher correctness and maintenance risk.",
-      "fallback required": "Every kernel or fast path needs a proven non-kernel fallback.",
-      "Local receipts": "Measured local outcomes that constrain the recommendation.",
-      "4 bit weights": "Weight-only quantization receipt for the measured decoder workload.",
-      "KV cache": "Cache optimization receipt; watch both speed and memory.",
-      "1.11x decode": "Measured small decode speedup for the scoped KV-cache path.",
-      "memory increased": "The speed path raised memory use and needs workload-specific judgment.",
-      "full stack": "Combined optimization stack receipt; measure together, do not multiply pieces.",
-      "0.33x regression": "Measured stack regression on the matched long-context workload.",
-      "Source leads": "Promising external leads that still require local proof.",
-      "batching up to 4.3x": "External batching claim; treat as candidate until reproduced locally.",
-      "VLM cache 28x image": "External image-cache claim; needs route-specific reproduction.",
-      "TTS batch 1.67x to 5.45x": "External TTS batching claim; validate with local audio workload."
-    };
-
-    const explainNode = (node) => {
-      if (nodeExplanations[node.label]) return nodeExplanations[node.label];
-
-      const parent = node.path[node.path.length - 2];
-      const root = node.path[0];
-      const branch = node.path.length > 2 ? node.path.slice(1, -1).join(" / ") : root;
-
-      if (/^\d+(\.\d+)?x/.test(node.label)) {
-        return "Measured speed ratio; keep it scoped to the exact metric, hardware, and workload.";
-      }
-
-      if (/plus \d+/.test(node.label)) {
-        return "Route-scoring weight; useful only when combined with supporting evidence.";
-      }
-
-      if (node.label.toLowerCase().includes("gate")) {
-        return "Stop condition: do not continue until this proof is satisfied.";
-      }
-
-      if (parent && nodeExplanations[parent]) {
-        return `Concrete ${parent} checkpoint in the ${root} map; capture evidence before following child branches.`;
-      }
-
-      return `Runbook checkpoint for ${branch}; use it to decide the next proof step before proceeding.`;
-    };
-
-    const cleanLabel = (raw) => {
-      const label = raw.trim();
-      const root = label.match(/^root\s*\(\((.*)\)\)$/);
-      if (root) return root[1].trim();
-      return label
-        .replace(/^\(\((.*)\)\)$/, "$1")
-        .replace(/^["'](.*)["']$/, "$1")
-        .trim();
-    };
-
-    const wrapLabel = (label, width) => {
-      const words = label.split(/\s+/);
-      const lines = [];
-      let line = "";
-
-      words.forEach((word) => {
-        const next = line ? `${line} ${word}` : word;
-        if (next.length > width && line) {
-          lines.push(line);
-          line = word;
-        } else {
-          line = next;
-        }
-      });
-
-      if (line) lines.push(line);
-      return lines.join("\n");
-    };
-
-    const parseMindmap = (source) => {
-      const rows = source.split("\n")
-        .map((line) => ({
-          indent: line.match(/^\s*/)[0].length,
-          label: cleanLabel(line)
-        }))
-        .filter((row) => row.label && row.label !== "mindmap");
-
-      const levels = [...new Set(rows.map((row) => row.indent))].sort((a, b) => a - b);
-      const stack = [];
-      let root = null;
-
-      rows.forEach((row) => {
-        const level = levels.indexOf(row.indent);
-        const node = { label: row.label, children: [], level };
-
-        if (level === 0) {
-          root = node;
-        } else {
-          stack[level - 1].children.push(node);
-        }
-
-        stack[level] = node;
-      });
-
-      return root;
-    };
-
-    const countLeaves = (node) => {
-      if (!node.children.length) return 1;
-      return node.children.reduce((sum, child) => sum + countLeaves(child), 0);
-    };
-
-    const layoutMindmap = (root) => {
-      const leafGap = 70;
-      const levelGap = 315;
-      let cursor = 0;
-      let id = 0;
-      const leaves = countLeaves(root);
-
-      root.id = `node-${id++}`;
-      root.x = 0;
-      root.y = 0;
-      root.depth = 0;
-      root.branch = 0;
-      root.path = [root.label];
-
-      const place = (node, depth, branch, path) => {
-        node.id = `node-${id++}`;
-        node.depth = depth;
-        node.branch = branch;
-        node.path = path;
-        node.x = depth * levelGap;
-
-        if (!node.children.length) {
-          node.y = (cursor - (leaves - 1) / 2) * leafGap;
-          cursor += 1;
-          return;
-        }
-
-        const start = cursor;
-        node.children.forEach((child, childIndex) => {
-          place(child, depth + 1, branch, [...path, child.label], childIndex);
-        });
-        const end = cursor - 1;
-        node.y = ((start + end) / 2 - (leaves - 1) / 2) * leafGap;
-      };
-
-      root.children.forEach((child, index) => {
-        place(child, 1, index, [root.label, child.label]);
-      });
-
-      return { root, leaves };
-    };
-
-    const collectGraph = (root) => {
-      const nodes = [];
-      const edges = [];
-
-      const visit = (node, parent = null) => {
-        const color = branchColors[node.branch % branchColors.length];
-        const isRoot = node.depth === 0;
-        const isBranch = node.depth === 1;
-
-        nodes.push({
-          id: node.id,
-          label: wrapLabel(node.label, isRoot ? 22 : isBranch ? 22 : 26),
-          x: node.x,
-          y: node.y,
-          fixed: { x: true, y: true },
-          physics: false,
-          shape: "box",
-          margin: isRoot
-            ? { top: 12, right: 16, bottom: 12, left: 16 }
-            : { top: 5, right: 9, bottom: 5, left: 9 },
-          rawLabel: node.label,
-          explanation: explainNode(node),
-          pathLabel: node.path.join(" -> "),
-          color: isRoot
-            ? {
-                background: "#ffffff",
-                border: branchColors[0],
-                highlight: { background: "#ffffff", border: branchColors[0] },
-                hover: { background: "#ffffff", border: branchColors[0] }
-              }
-            : {
-                background: "#eef3f6",
-                border: "#eef3f6",
-                highlight: { background: "#ffffff", border: color },
-                hover: { background: "#ffffff", border: color }
-              },
-          font: {
-            color: isRoot ? "#25313c" : isBranch ? color : "#52616b",
-            size: isRoot ? 20 : isBranch ? 18 : node.depth <= 3 ? 16 : 15,
-            face: "ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif",
-            multi: "html",
-            background: "#eef3f6",
-            strokeWidth: 5,
-            strokeColor: "#eef3f6",
-            vadjust: 0
-          },
-          shapeProperties: {
-            borderRadius: isRoot ? 10 : 8
-          },
-          borderWidth: isRoot ? 3 : 1,
-          borderWidthSelected: isRoot ? 3 : 1,
-          shadow: isRoot
-            ? { enabled: true, color: "rgba(44,55,64,0.16)", size: 14, x: 0, y: 7 }
-            : false
-        });
-
-        if (parent) {
-          edges.push({
-            from: parent.id,
-            to: node.id,
-            color: { color, highlight: color, hover: color, opacity: parent.depth === 0 ? 0.98 : 0.86 },
-            width: parent.depth === 0 ? 5 : Math.max(2.8, 4 - node.depth * 0.25),
-            selectionWidth: 1,
-            hoverWidth: 0,
-            smooth: {
-              enabled: true,
-              type: "cubicBezier",
-              forceDirection: "horizontal",
-              roundness: 0.42 + (node.depth % 3) * 0.04
-            }
-          });
-        }
-
-        node.children.forEach((child) => visit(child, node));
-      };
-
-      visit(root);
-      return { nodes, edges };
-    };
-
-    const renderMindmap = (canvas) => {
-      const source = canvas.querySelector(".mindmap-source");
-      if (!source || !window.vis) return;
-
-      const parsed = parseMindmap(source.textContent);
-      const { root, leaves } = layoutMindmap(parsed);
-      const { nodes, edges } = collectGraph(root);
-      const nodesData = new vis.DataSet(nodes);
-      const viewport = document.createElement("div");
-      const hoverCard = document.createElement("div");
-      const hoverTitle = document.createElement("strong");
-      const hoverBody = document.createElement("span");
-      const hoverPath = document.createElement("code");
-      const compactCanvas = window.matchMedia("(max-width: 560px)").matches;
-
-      hoverCard.className = "mindmap-hover-card";
-      hoverCard.setAttribute("aria-live", "polite");
-      hoverCard.dataset.active = "false";
-      hoverCard.append(hoverTitle, hoverBody, hoverPath);
-
-      const resetHover = () => {
-        hoverCard.dataset.active = "false";
-        hoverTitle.textContent = "Hover any node";
-        hoverBody.textContent = "The map will explain why that checkpoint exists and what proof it needs.";
-        hoverPath.textContent = "";
-      };
-
-      const showHover = (node) => {
-        if (!node) return resetHover();
-        hoverCard.dataset.active = "true";
-        hoverTitle.textContent = node.rawLabel;
-        hoverBody.textContent = node.explanation;
-        hoverPath.textContent = node.pathLabel;
-      };
-
-      resetHover();
-      viewport.className = "mindmap-viewport";
-      viewport.style.height = compactCanvas
-        ? "500px"
-        : `${Math.max(560, Math.min(820, leaves * 30 + 260))}px`;
-      canvas.appendChild(hoverCard);
-      canvas.appendChild(viewport);
-
-      const network = new vis.Network(
-        viewport,
-        {
-          nodes: nodesData,
-          edges: new vis.DataSet(edges)
-        },
-        {
-          autoResize: true,
-          physics: false,
-          nodes: {
-            chosen: false,
-            widthConstraint: { maximum: 260 }
-          },
-          edges: {
-            chosen: false
-          },
-          interaction: {
-            dragNodes: false,
-            dragView: true,
-            hover: true,
-            keyboard: false,
-            multiselect: false,
-            navigationButtons: false,
-            selectable: false,
-            tooltipDelay: 180,
-            zoomView: true
-          }
-        }
-      );
-
-      const startScale = compactCanvas ? 0.6 : 0.78;
-      viewport.mlxNetwork = network;
-      network.once("afterDrawing", () => {
-        network.moveTo({
-          position: { x: compactCanvas ? 210 : 410, y: -40 },
-          scale: startScale,
-          animation: false
-        });
-        canvas.dataset.rendered = "true";
-      });
-
-      network.on("hoverNode", (params) => {
-        showHover(nodesData.get(params.node));
-      });
-
-      network.on("blurNode", resetHover);
-    };
-
-    document.querySelectorAll(".map-canvas").forEach(renderMindmap);
-  </script>
 </body>
 </html>

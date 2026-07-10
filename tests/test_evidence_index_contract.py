@@ -1,0 +1,149 @@
+from __future__ import annotations
+
+import collections
+import json
+import re
+import subprocess
+import sys
+import tempfile
+import unittest
+from pathlib import Path
+
+
+ROOT = Path(__file__).resolve().parents[1]
+SKILL = ROOT / "mlx-model-porting"
+SOURCES = SKILL / "assets" / "sources.yaml"
+GENERATOR = SKILL / "scripts" / "generate_evidence_index.py"
+INDEX = ROOT / "EVIDENCE_INDEX.md"
+
+
+def run_generator(*args: object, expected: int = 0) -> subprocess.CompletedProcess[str]:
+    result = subprocess.run(
+        [sys.executable, str(GENERATOR), *(str(arg) for arg in args)],
+        cwd=ROOT,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    if result.returncode != expected:
+        raise AssertionError(
+            f"generator exited {result.returncode}, expected {expected}\n"
+            f"stdout:\n{result.stdout}\nstderr:\n{result.stderr}"
+        )
+    return result
+
+
+class EvidenceIndexContractTests(unittest.TestCase):
+    def test_generated_index_is_deterministic_complete_and_registry_order_is_unchanged(self) -> None:
+        registry_before = json.loads(SOURCES.read_text(encoding="utf-8"))
+        ids_before = [source["id"] for source in registry_before["sources"]]
+
+        with tempfile.TemporaryDirectory() as tmp:
+            first = Path(tmp) / "first.md"
+            second = Path(tmp) / "second.md"
+            run_generator("--sources", SOURCES, "--output", first)
+            run_generator("--sources", SOURCES, "--output", second)
+            self.assertEqual(first.read_bytes(), second.read_bytes())
+            rendered = first.read_text(encoding="utf-8")
+
+        registry_after = json.loads(SOURCES.read_text(encoding="utf-8"))
+        self.assertEqual(
+            [source["id"] for source in registry_after["sources"]],
+            ids_before,
+            "rendering must not reorder the canonical source registry",
+        )
+        full_list = rendered.split("## Full source list", 1)[1]
+        rendered_ids = re.findall(r"^\| `([^`]+)` \|", full_list, flags=re.MULTILINE)
+        self.assertEqual(rendered_ids, sorted(ids_before))
+        self.assertEqual(collections.Counter(rendered_ids), collections.Counter(ids_before))
+        self.assertIn(f"**Total records:** {len(ids_before)}", rendered)
+
+        source_kinds = collections.Counter(source["kind"] for source in registry_before["sources"])
+        for kind, count in source_kinds.items():
+            self.assertIn(f"| `{kind}` | {count} |", rendered)
+
+        generator_text = GENERATOR.read_text(encoding="utf-8")
+        self.assertNotIn(str(len(ids_before)), generator_text, "record counts must be computed from sources.yaml")
+
+    def test_check_detects_drift_and_committed_index_is_current(self) -> None:
+        run_generator("--check")
+        with tempfile.TemporaryDirectory() as tmp:
+            output = Path(tmp) / "index.md"
+            run_generator("--sources", SOURCES, "--output", output)
+            output.write_text(output.read_text(encoding="utf-8") + "\nmanual drift\n", encoding="utf-8")
+            result = run_generator("--sources", SOURCES, "--output", output, "--check", expected=1)
+            self.assertIn("drift", result.stderr.lower())
+
+    def test_index_explains_claim_boundaries_and_links_benchmark_assessment(self) -> None:
+        text = INDEX.read_text(encoding="utf-8")
+        for phrase in (
+            "Review depth",
+            "Support scope",
+            "Claim boundary",
+            "does not prove target-workload performance",
+        ):
+            self.assertIn(phrase, text)
+        self.assertIn(
+            "[Benchmark assessment](mlx-model-porting/assets/BENCHMARK_REPORT.md)",
+            text,
+        )
+
+    def test_check_rejects_synthesized_moving_github_urls(self) -> None:
+        moving_urls = (
+            "https://github.com/example/project",
+            "https://github.com/example/project/blob/main/path.py",
+            "https://github.com/example/project/tree/main/src",
+        )
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp = Path(tmp)
+            for index, url in enumerate(moving_urls):
+                registry = {
+                    "schema_version": 1,
+                    "reviewed": "2026-07-09",
+                    "review_depth_definitions": {
+                        "synthesized": "used",
+                        "screened": "reviewed",
+                        "indexed": "catalogued",
+                    },
+                    "count": 1,
+                    "sources": [{
+                        "id": f"moving-{index}",
+                        "title": "Moving source",
+                        "url": url,
+                        "kind": "source-code" if "/blob/" in url else "repository",
+                        "owner": "example",
+                        "topics": ["test"],
+                        "review_depth": "synthesized",
+                        "snapshot": "0123456789abcdef0123456789abcdef01234567",
+                        "note": "",
+                    }],
+                }
+                source_path = tmp / f"sources-{index}.json"
+                output = tmp / f"index-{index}.md"
+                source_path.write_text(json.dumps(registry), encoding="utf-8")
+                result = run_generator(
+                    "--sources", source_path,
+                    "--output", output,
+                    "--check",
+                    expected=2,
+                )
+                self.assertIn("moving github url", result.stderr.lower())
+
+    def test_synthesized_github_sources_are_pinned_and_current_mlx_release_is_primary(self) -> None:
+        registry = json.loads(SOURCES.read_text(encoding="utf-8"))
+        by_id = {source["id"]: source for source in registry["sources"]}
+        self.assertIn("mlx-lm-release-0312", by_id)
+
+        release = by_id["mlx-release-0320"]
+        self.assertEqual(release["url"], "https://github.com/ml-explore/mlx/releases/tag/v0.32.0")
+        self.assertEqual(release["snapshot"], "v0.32.0")
+        self.assertEqual(release["review_depth"], "synthesized")
+        self.assertEqual(release["evidence_class"], "release_note")
+        self.assertEqual(release["support_scope"], "official_mlx")
+        self.assertIn("api_support", release["claim_types"])
+
+        run_generator("--check")
+
+
+if __name__ == "__main__":
+    unittest.main()

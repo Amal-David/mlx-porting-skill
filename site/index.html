@@ -3,963 +3,210 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>MLX Porter Runbook</title>
-  <meta name="description" content="MLX Porter is a researcher-style runbook for porting PyTorch projects to Apple MLX without losing provenance, parity, or benchmark receipts.">
-  <style>
-    :root {
-      color-scheme: dark;
-      --mlx-graphite: #101317;
-      --mlx-surface: #171d21;
-      --mlx-surface-2: #20282e;
-      --mlx-aluminum: #d8e1dc;
-      --mlx-muted: #92a09a;
-      --mlx-line: rgba(216, 225, 220, 0.18);
-      --mlx-tensor-lime: #b7f34f;
-      --mlx-kernel-cyan: #21d6c7;
-      --mlx-memory-blue: #5b8cff;
-      --mlx-parity-coral: #ff7a66;
-      --mlx-metal-violet: #a78bfa;
-      --mlx-checkpoint-gold: #f1b84b;
-      --mlx-ink: #f4f8f5;
-      --radius: 8px;
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
-    html {
-      scroll-behavior: smooth;
-    }
-
-    body {
-      margin: 0;
-      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      color: var(--mlx-ink);
-      background: var(--mlx-graphite);
-      line-height: 1.5;
-    }
-
-    a {
-      color: inherit;
-    }
-
-    a:focus-visible,
-    button:focus-visible {
-      outline: 2px solid var(--mlx-tensor-lime);
-      outline-offset: 4px;
-    }
-
-    .topbar {
-      position: fixed;
-      z-index: 20;
-      top: 0;
-      left: 0;
-      right: 0;
-      border-bottom: 1px solid rgba(216, 225, 220, 0.14);
-      background: rgba(16, 19, 23, 0.82);
-      backdrop-filter: blur(18px);
-    }
-
-    .nav {
-      width: min(1180px, calc(100% - 32px));
-      min-height: 64px;
-      margin: 0 auto;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 18px;
-    }
-
-    .brand {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      text-decoration: none;
-      font-weight: 820;
-    }
-
-    .brand-mark {
-      width: 34px;
-      height: 34px;
-      border: 1px solid rgba(183, 243, 79, 0.72);
-      border-radius: 8px;
-      display: grid;
-      place-items: center;
-      color: var(--mlx-tensor-lime);
-      background: #12191a;
-      box-shadow: inset 0 0 20px rgba(33, 214, 199, 0.16);
-      font: 800 0.82rem/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-    }
-
-    .nav-links {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .nav-actions {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .nav-links a,
-    .github-link {
-      min-height: 38px;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      border-radius: 8px;
-      padding: 8px 11px;
-      color: var(--mlx-muted);
-      text-decoration: none;
-      font-size: 0.94rem;
-      font-weight: 680;
-      transition: color 160ms ease, background 160ms ease, transform 160ms ease;
-    }
-
-    .nav-links a:hover,
-    .github-link:hover {
-      color: var(--mlx-ink);
-      background: rgba(216, 225, 220, 0.08);
-      transform: translateY(-1px);
-    }
-
-    .github-link {
-      color: var(--mlx-ink) !important;
-      border: 1px solid rgba(216, 225, 220, 0.2);
-      background: rgba(216, 225, 220, 0.08);
-    }
-
-    .icon {
-      width: 18px;
-      height: 18px;
-      flex: 0 0 auto;
-      fill: currentColor;
-    }
-
-    .hero {
-      position: relative;
-      min-height: 100vh;
-      overflow: hidden;
-      display: grid;
-      place-items: center;
-      padding: 112px 16px 54px;
-      isolation: isolate;
-    }
-
-    #mesh {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      z-index: -3;
-      background: #0e1115;
-    }
-
-    .hero::before,
-    .hero::after {
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      content: "";
-    }
-
-    .hero::before {
-      z-index: -1;
-      background:
-        radial-gradient(circle at 50% 48%, rgba(16, 19, 23, 0.12) 0 20%, rgba(16, 19, 23, 0.64) 48%, rgba(16, 19, 23, 0.92) 100%);
-    }
-
-    .hero::after {
-      z-index: -1;
-      background:
-        linear-gradient(180deg, rgba(16, 19, 23, 0) 0%, rgba(16, 19, 23, 0) 76%, var(--mlx-graphite) 100%);
-    }
-
-    .hero-center {
-      width: min(950px, 100%);
-      display: grid;
-      justify-items: center;
-      text-align: center;
-      padding-top: 32px;
-    }
-
-    .eyebrow {
-      margin: 0 0 18px;
-      color: var(--mlx-kernel-cyan);
-      font: 780 0.83rem/1.2 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-      text-transform: uppercase;
-      letter-spacing: 0;
-    }
-
-    h1,
-    h2,
-    h3,
-    p {
-      margin-top: 0;
-    }
-
-    h1 {
-      margin-bottom: 24px;
-      max-width: 910px;
-      font-size: 72px;
-      line-height: 0.96;
-      letter-spacing: 0;
-    }
-
-    .lead {
-      max-width: 780px;
-      margin-bottom: 32px;
-      color: #c8d2cd;
-      font-size: 20px;
-    }
-
-    .center-cta {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 12px;
-      margin-bottom: 34px;
-    }
-
-    .button {
-      min-height: 46px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      border: 1px solid rgba(216, 225, 220, 0.22);
-      border-radius: 8px;
-      padding: 11px 16px;
-      color: var(--mlx-ink);
-      background: rgba(216, 225, 220, 0.08);
-      text-decoration: none;
-      font-weight: 760;
-      transition: transform 180ms ease, border-color 180ms ease, background 180ms ease;
-    }
-
-    .button:hover {
-      transform: translateY(-2px);
-      border-color: rgba(183, 243, 79, 0.6);
-      background: rgba(216, 225, 220, 0.12);
-    }
-
-    .button.primary {
-      color: #111713;
-      border-color: var(--mlx-tensor-lime);
-      background: var(--mlx-tensor-lime);
-    }
-
-    .hero-outcomes {
-      width: min(820px, 100%);
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 10px;
-      text-align: center;
-    }
-
-    .outcome {
-      min-height: 58px;
-      border: 1px solid rgba(216, 225, 220, 0.18);
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 12px 14px;
-      background: rgba(15, 18, 22, 0.58);
-      box-shadow: 0 18px 60px rgba(0, 0, 0, 0.26);
-    }
-
-    .outcome b {
-      display: block;
-      margin-bottom: 0;
-      color: var(--mlx-ink);
-      font-size: 15px;
-      line-height: 1.2;
-    }
-
-    .outcome strong {
-      color: var(--mlx-tensor-lime);
-      font-weight: 800;
-    }
-
-    .wrap {
-      width: min(1160px, calc(100% - 32px));
-      margin: 0 auto;
-    }
-
-    section {
-      scroll-margin-top: 86px;
-    }
-
-    .band {
-      padding: 86px 0;
-      border-top: 1px solid var(--mlx-line);
-    }
-
-    #docs {
-      padding-bottom: 56px;
-    }
-
-    .section-head {
-      display: grid;
-      grid-template-columns: minmax(0, 0.9fr) minmax(280px, 0.7fr);
-      gap: 38px;
-      align-items: end;
-      margin-bottom: 30px;
-    }
-
-    h2 {
-      margin-bottom: 0;
-      font-size: 42px;
-      line-height: 1.05;
-      letter-spacing: 0;
-    }
-
-    .section-copy {
-      margin-bottom: 0;
-      color: var(--mlx-muted);
-      font-size: 17px;
-    }
-
-    .grid-3,
-    .grid-4,
-    .docs-grid {
-      display: grid;
-      gap: 14px;
-    }
-
-    .grid-3 {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-
-    .grid-4 {
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-    }
-
-    .docs-grid {
-      grid-template-columns: 0.95fr 1.05fr;
-      align-items: start;
-    }
-
-    .tile,
-    .doc-panel,
-    .step {
-      border: 1px solid var(--mlx-line);
-      border-radius: 8px;
-      background: rgba(255, 255, 255, 0.035);
-    }
-
-    .tile,
-    .doc-panel,
-    .step {
-      padding: 18px;
-    }
-
-    .tile h3,
-    .doc-panel h3,
-    .step h3 {
-      margin-bottom: 10px;
-      font-size: 18px;
-      line-height: 1.2;
-      letter-spacing: 0;
-    }
-
-    .tile p,
-    .doc-panel p,
-    .step p,
-    .tile li,
-    .doc-panel li {
-      color: var(--mlx-muted);
-      font-size: 15px;
-    }
-
-    .tile p,
-    .doc-panel p,
-    .step p {
-      margin-bottom: 0;
-    }
-
-    .steps {
-      display: grid;
-      grid-template-columns: repeat(5, minmax(0, 1fr));
-      gap: 10px;
-      counter-reset: step;
-    }
-
-    .step {
-      position: relative;
-      min-height: 220px;
-      padding-top: 54px;
-    }
-
-    .step::before {
-      counter-increment: step;
-      content: "0" counter(step);
-      position: absolute;
-      top: 16px;
-      left: 16px;
-      color: var(--mlx-tensor-lime);
-      font: 760 0.8rem/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-    }
-
-    .step::after {
-      content: "";
-      position: absolute;
-      top: 18px;
-      right: 16px;
-      width: 34px;
-      height: 8px;
-      border-radius: 999px;
-      background: var(--accent, var(--mlx-kernel-cyan));
-    }
-
-    .terminal {
-      border: 1px solid rgba(216, 225, 220, 0.18);
-      border-radius: 8px;
-      overflow: hidden;
-      background: #0a0d10;
-      max-width: 100%;
-      min-width: 0;
-    }
-
-    .terminal-head {
-      display: flex;
-      gap: 8px;
-      align-items: center;
-      padding: 12px 14px;
-      border-bottom: 1px solid rgba(216, 225, 220, 0.12);
-    }
-
-    .dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background: var(--mlx-parity-coral);
-    }
-
-    .dot:nth-child(2) {
-      background: var(--mlx-checkpoint-gold);
-    }
-
-    .dot:nth-child(3) {
-      background: var(--mlx-tensor-lime);
-    }
-
-    pre {
-      margin: 0;
-      padding: 18px;
-      overflow: auto;
-      color: #dce7e1;
-      font: 0.92rem/1.58 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-      white-space: pre-wrap;
-      overflow-wrap: anywhere;
-      word-break: break-word;
-    }
-
-    .doc-links {
-      display: grid;
-      gap: 10px;
-      margin-top: 18px;
-    }
-
-    .doc-links a {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 14px;
-      min-height: 48px;
-      border: 1px solid rgba(216, 225, 220, 0.16);
-      border-radius: 8px;
-      padding: 12px 14px;
-      color: var(--mlx-ink);
-      text-decoration: none;
-      background: rgba(255, 255, 255, 0.03);
-      transition: transform 160ms ease, border-color 160ms ease;
-    }
-
-    .doc-links a:hover {
-      transform: translateX(3px);
-      border-color: rgba(33, 214, 199, 0.52);
-    }
-
-    .doc-links span {
-      color: var(--mlx-muted);
-      font-size: 14px;
-    }
-
-    .final-cta {
-      display: grid;
-      justify-items: center;
-      text-align: center;
-      gap: 16px;
-      padding: 52px 0 62px;
-      border-top: 1px solid var(--mlx-line);
-    }
-
-    .final-cta h2 {
-      max-width: 780px;
-    }
-
-    .final-cta .section-copy {
-      max-width: 980px;
-    }
-
-    .final-cta .center-cta {
-      margin-bottom: 0;
-    }
-
-    .footer {
-      border-top: 1px solid var(--mlx-line);
-      padding: 26px 0 36px;
-      color: var(--mlx-muted);
-      font-size: 14px;
-    }
-
-    .reveal {
-      animation: rise 580ms ease both;
-    }
-
-    @keyframes rise {
-      from {
-        opacity: 0;
-        transform: translateY(18px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      *,
-      *::before,
-      *::after {
-        animation: none !important;
-        transition: none !important;
-        scroll-behavior: auto !important;
-      }
-    }
-
-    @media (max-width: 980px) {
-      h1 {
-        font-size: 52px;
-      }
-
-      .lead {
-        font-size: 18px;
-      }
-
-      .section-head,
-      .docs-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .grid-3,
-      .grid-4,
-      .steps {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-    }
-
-    @media (max-width: 620px) {
-      .nav {
-        width: min(100% - 24px, 1180px);
-        min-height: 58px;
-        gap: 12px;
-      }
-
-      .nav-links {
-        display: none;
-      }
-
-      .github-link {
-        padding: 8px 10px;
-      }
-
-      .hero {
-        min-height: 100svh;
-        place-items: start center;
-        padding-top: 100px;
-      }
-
-      h1 {
-        font-size: 36px;
-      }
-
-      h2 {
-        font-size: 30px;
-      }
-
-      .center-cta {
-        display: grid;
-        grid-template-columns: 1fr;
-      }
-
-      .button {
-        width: 100%;
-      }
-
-      .hero-outcomes {
-        grid-template-columns: 1fr;
-      }
-
-      .outcome {
-        min-height: auto;
-        text-align: center;
-      }
-
-      .grid-3,
-      .grid-4,
-      .steps {
-        grid-template-columns: 1fr;
-      }
-    }
-  </style>
+  <title>MLX Porter — Port models to Apple MLX with proof</title>
+  <meta name="description" content="An executable, source-first standard for inspecting, routing, porting, validating, benchmarking, and publishing models on Apple MLX.">
+  <meta name="theme-color" content="#090c0e">
+  <meta property="og:title" content="MLX Porter">
+  <meta property="og:description" content="Port models to Apple MLX with proof at every step.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://mlx-porter.pages.dev/">
+  <link rel="canonical" href="https://mlx-porter.pages.dev/">
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./styles.css">
+  <script src="./data.js" defer></script>
+  <script src="./app.js" defer></script>
 </head>
 <body>
-  <header class="topbar">
-    <nav class="nav" aria-label="Primary navigation">
-      <a class="brand" href="#top" aria-label="MLX Porter home">
-        <span class="brand-mark">MLX</span>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header">
+    <nav class="nav-shell" aria-label="Primary navigation">
+      <a class="brand" href="./index.html" aria-label="MLX Porter home">
+        <span class="brand-mark" aria-hidden="true">MX</span>
         <span>MLX Porter</span>
       </a>
+      <button class="nav-menu-button" type="button" data-nav-toggle aria-expanded="false" aria-controls="primary-links">Menu</button>
+      <div class="nav-links" id="primary-links">
+        <a href="#workflow">Workflow</a>
+        <a href="#routes">Routes</a>
+        <a href="#evidence">Evidence</a>
+        <a href="#limits">Limits</a>
+      </div>
       <div class="nav-actions">
-        <div class="nav-links">
-          <a href="#runbook">Runbook</a>
-          <a href="#inspector">Inspector</a>
-          <a href="#agents">Agents</a>
-          <a href="/docs/">Docs</a>
-          <a href="#cli">CLI</a>
-        </div>
-        <a class="github-link" href="https://github.com/Amal-David/mlx-porting-skill" aria-label="Open MLX Porter on GitHub">
-          <svg class="icon" aria-hidden="true" viewBox="0 0 16 16">
-            <path d="M8 0C3.58 0 0 3.67 0 8.2c0 3.62 2.29 6.69 5.47 7.78.4.08.55-.18.55-.39 0-.19-.01-.83-.01-1.5-2.01.38-2.53-.5-2.69-.97-.09-.24-.48-.97-.82-1.17-.28-.16-.68-.55-.01-.56.63-.01 1.08.59 1.23.84.72 1.24 1.87.89 2.33.68.07-.53.28-.89.51-1.09-1.78-.21-3.64-.91-3.64-4.04 0-.89.31-1.62.82-2.19-.08-.21-.36-1.04.08-2.16 0 0 .67-.22 2.2.84A7.42 7.42 0 0 1 8 3.99c.68 0 1.36.09 2 .28 1.53-1.06 2.2-.84 2.2-.84.44 1.12.16 1.95.08 2.16.51.57.82 1.3.82 2.19 0 3.14-1.87 3.83-3.65 4.04.29.26.54.76.54 1.53 0 1.1-.01 1.99-.01 2.26 0 .21.15.47.55.39A8.08 8.08 0 0 0 16 8.2C16 3.67 12.42 0 8 0Z"/>
-          </svg>
-          GitHub
-        </a>
+        <a href="./docs/index.html">Docs</a>
+        <a class="repo-link" href="https://github.com/Amal-David/mlx-porting-skill">GitHub ↗</a>
       </div>
     </nav>
   </header>
 
-  <main id="top">
-    <section class="hero" aria-labelledby="title">
-      <canvas id="mesh" aria-hidden="true"></canvas>
-      <div class="hero-center reveal">
-        <p class="eyebrow">Apple MLX porting runbook</p>
-        <h1 id="title">Port PyTorch to MLX without guessing.</h1>
-        <p class="lead">Inspect the source, prove parity, then touch speed.</p>
-        <div class="center-cta" aria-label="Primary actions">
-          <a class="button primary" href="https://github.com/Amal-David/mlx-porting-skill">
-            <svg class="icon" aria-hidden="true" viewBox="0 0 16 16">
-              <path d="M8 0C3.58 0 0 3.67 0 8.2c0 3.62 2.29 6.69 5.47 7.78.4.08.55-.18.55-.39 0-.19-.01-.83-.01-1.5-2.01.38-2.53-.5-2.69-.97-.09-.24-.48-.97-.82-1.17-.28-.16-.68-.55-.01-.56.63-.01 1.08.59 1.23.84.72 1.24 1.87.89 2.33.68.07-.53.28-.89.51-1.09-1.78-.21-3.64-.91-3.64-4.04 0-.89.31-1.62.82-2.19-.08-.21-.36-1.04.08-2.16 0 0 .67-.22 2.2.84A7.42 7.42 0 0 1 8 3.99c.68 0 1.36.09 2 .28 1.53-1.06 2.2-.84 2.2-.84.44 1.12.16 1.95.08 2.16.51.57.82 1.3.82 2.19 0 3.14-1.87 3.83-3.65 4.04.29.26.54.76.54 1.53 0 1.1-.01 1.99-.01 2.26 0 .21.15.47.55.39A8.08 8.08 0 0 0 16 8.2C16 3.67 12.42 0 8 0Z"/>
-            </svg>
-            GitHub
-          </a>
-          <a class="button" href="/docs/">Docs</a>
-          <a class="button" href="#inspector">Inspector</a>
+  <main class="landing-main" id="main">
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-shell">
+        <div class="hero-copy">
+          <div class="status-kicker"><span class="status-dot" aria-hidden="true"></span>Executable standard · v<span data-value="version">0.4.0</span></div>
+          <h1 id="hero-title">Port models to MLX with <em>proof at every step.</em></h1>
+          <p class="hero-lead">Start with a PyTorch module, model directory, checkpoint, or existing MLX project. Leave with an architecture route, deterministic weight map, parity ladder, benchmark receipts, and an honest publication boundary.</p>
+          <div class="hero-actions">
+            <a class="button primary" href="./docs/index.html#quick-start">Start a port →</a>
+            <a class="button" href="https://github.com/Amal-David/mlx-porting-skill">Inspect the repository</a>
+          </div>
         </div>
-        <div class="hero-outcomes" aria-label="MLX Porter outcomes">
-          <div class="outcome">
-            <b>Oracle first</b>
+
+        <div class="chip-stage" aria-label="Illustration of an auditable MLX porting pipeline">
+          <div class="chip-board">
+            <span class="trace one" aria-hidden="true"></span>
+            <span class="trace two" aria-hidden="true"></span>
+            <span class="trace three" aria-hidden="true"></span>
+            <div class="chip-core">
+              <strong>PORT / VALIDATE / PROFILE</strong>
+              <div class="signal-list" aria-hidden="true">
+                <div class="signal"><span>lineage</span><span class="signal-track"><span style="--signal: 94%; --signal-color: var(--lime)"></span></span><b>pinned</b></div>
+                <div class="signal"><span>weights</span><span class="signal-track"><span style="--signal: 86%; --signal-color: var(--cyan)"></span></span><b>mapped</b></div>
+                <div class="signal"><span>parity</span><span class="signal-track"><span style="--signal: 78%; --signal-color: var(--blue)"></span></span><b>staged</b></div>
+                <div class="signal"><span>claims</span><span class="signal-track"><span style="--signal: 48%; --signal-color: var(--gold)"></span></span><b>gated</b></div>
+              </div>
+              <div class="chip-foot"><span>APPLE SILICON</span><span>RECEIPT 01</span></div>
+            </div>
           </div>
-          <div class="outcome">
-            <b>Eager MLX</b>
-          </div>
-          <div class="outcome">
-            <b><strong>Speed with receipts</strong></b>
-          </div>
+        </div>
+
+        <div class="hero-stats" aria-label="Current corpus summary">
+          <div class="stat"><strong data-value="architectures.total">17</strong><span>architecture families with golden routing scenarios</span></div>
+          <div class="stat"><strong data-value="sources.total">350</strong><span>catalogued live evidence sources with recorded review depth</span></div>
+          <div class="stat"><strong data-value="techniques.total">65</strong><span>techniques separated by support status</span></div>
+          <div class="stat"><strong data-value="benchmarks.promotion_ready">0</strong><span>promotion-ready local speed claims after every gate</span></div>
         </div>
       </div>
     </section>
 
-    <section class="band" id="runbook" aria-labelledby="runbook-title">
-      <div class="wrap">
-        <div class="section-head">
-          <h2 id="runbook-title">A runbook from the part that usually breaks.</h2>
-          <p class="section-copy">Most failed MLX ports do not fail loudly. A mask is flipped, a RoPE offset drifts, a checkpoint loads but the logits are wrong. This keeps the work boring enough to debug.</p>
+    <section class="section" id="start">
+      <div class="section-shell">
+        <div class="section-heading">
+          <span class="section-kicker">Start from the artifact</span>
+          <h2>One intake contract. Four honest entry points.</h2>
+          <p>The tool reads metadata and safe tensor headers first. It does not import repository code, execute remote model code, or pretend an unfamiliar architecture is a decoder-only Transformer.</p>
         </div>
-        <div class="steps">
-          <article class="step" style="--accent: var(--mlx-kernel-cyan)">
-            <h3>Inspect statically</h3>
-            <p>Read configs, safetensors headers, project files, licenses, and remote-code risks before any model code gets a chance to lie.</p>
-          </article>
-          <article class="step" style="--accent: var(--mlx-memory-blue)">
-            <h3>Pick the family</h3>
-            <p>Pick the closest route from evidence: decoder, ASR, diffusion, audio, VLM, SSM, MoE, graph, CV, or a real gap.</p>
-          </article>
-          <article class="step" style="--accent: var(--mlx-tensor-lime)">
-            <h3>Build the oracle</h3>
-            <p>Freeze source behavior and capture intermediate tensors before the MLX rewrite has anywhere to hide drift.</p>
-          </article>
-          <article class="step" style="--accent: var(--mlx-metal-violet)">
-            <h3>Port eager MLX</h3>
-            <p>Start with the smallest readable MLX graph. No compile, kernels, quantization, or batching until parity holds.</p>
-          </article>
-          <article class="step" style="--accent: var(--mlx-parity-coral)">
-            <h3>Validate and optimize</h3>
-            <p>Account for every weight, pass parity, profile the bottleneck, then change one thing and keep the rollback path.</p>
-          </article>
+        <div class="artifact-grid">
+          <article class="artifact-card" style="--card-accent: var(--lime)"><span class="card-index">01 / source</span><h3>PyTorch module</h3><p>Freeze source behavior as an oracle, inventory parameter names and shapes, then build the smallest readable MLX graph.</p></article>
+          <article class="artifact-card" style="--card-accent: var(--cyan)"><span class="card-index">02 / directory</span><h3>Model directory</h3><p>Inspect configs, tokenizer assets, safetensors headers, custom-code risks, provenance, and routing signals without importing the project.</p></article>
+          <article class="artifact-card" style="--card-accent: var(--gold)"><span class="card-index">03 / checkpoint</span><h3>Checkpoint or archive</h3><p>Recognize safetensors, GGUF, ONNX, Keras, Flax/Orbax, TensorFlow, and Core ML shapes while keeping executable formats quarantined.</p></article>
+          <article class="artifact-card" style="--card-accent: var(--blue)"><span class="card-index">04 / existing port</span><h3>Existing MLX project</h3><p>Inventory evaluation boundaries, runtime and fast-path hints, parity and benchmark signals, plus proof gaps. Static inspection does not validate numerical correctness.</p></article>
+          <article class="artifact-card" style="--card-accent: var(--coral)"><span class="card-index">risk gate</span><h3>Ambiguity blocks action</h3><p>Weak identity, truncated inspection, unsafe files, or conflicting routes produce blockers—not a confident recommendation assembled from substrings.</p></article>
+          <article class="artifact-card" style="--card-accent: var(--aluminum-400)"><span class="card-index">publication gate</span><h3>Portable proof receipts</h3><p>Local inspection emits portable relative paths, a complete artifact-tree fingerprint, and identity-bound license evidence by default. Promotion receipts bind exact experiments and controlled quality artifacts; rejected evidence stays visible.</p></article>
         </div>
       </div>
     </section>
 
-    <section class="band" id="inspector" aria-labelledby="inspector-title">
-      <div class="wrap docs-grid">
+    <section class="section alt" id="workflow">
+      <div class="section-shell">
+        <div class="section-heading">
+          <span class="section-kicker">The porting rail</span>
+          <h2>Readable first. Fast only after parity.</h2>
+          <p>Every phase creates evidence for the next. Optimization does not get to rewrite the history of a port that never matched its source.</p>
+        </div>
+        <div class="workflow" aria-label="Eight-step MLX porting workflow">
+          <article class="workflow-step"><h3>Inspect</h3><p>Inventory metadata, formats, lineage, custom-code risk, tensors, and architecture signals.</p></article>
+          <article class="workflow-step"><h3>Route</h3><p>Select a controlled family, traits, capabilities, workloads, and the matching runbook.</p></article>
+          <article class="workflow-step"><h3>Oracle</h3><p>Capture deterministic source intermediates, masks, caches, state, and task outputs.</p></article>
+          <article class="workflow-step"><h3>Eager MLX</h3><p>Implement the plain graph with explicit shapes, axes, state updates, and evaluation points.</p></article>
+          <article class="workflow-step"><h3>Map weights</h3><p>Record every rename, transpose, split, merge, reshape, dtype decision, and unmapped tensor.</p></article>
+          <article class="workflow-step"><h3>Prove parity</h3><p>Compare embeddings, blocks, logits or outputs, state transitions, and task behavior in stages.</p></article>
+          <article class="workflow-step"><h3>Profile + optimize</h3><p>Change one bottleneck at a time; keep experimental or lossy paths behind explicit consent.</p></article>
+          <article class="workflow-step"><h3>Benchmark + publish</h3><p>Bind workload, runner, quality, baseline, raw output, rollback, and model lineage into receipts.</p></article>
+        </div>
+
+        <div class="terminal" style="margin-top: 34px">
+          <div class="terminal-bar"><span class="terminal-dots" aria-hidden="true">● ● ●</span><span>safe static intake</span></div>
+          <pre data-copy><code>python3 mlx-model-porting/scripts/inspect_model.py /path/to/model \
+  --output inspection.json \
+  --markdown inspection.md</code></pre>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="routes">
+      <div class="section-shell">
+        <div class="section-heading">
+          <span class="section-kicker">Architecture-specific routes</span>
+          <h2>Different graphs deserve different runbooks.</h2>
+          <p>The registry covers dense and MoE Transformers, vision-language and audio-language systems, diffusion and flow, speech stacks, state-space hybrids, time series, graph models, codecs, vocoders, and CV backbones. Coverage means the routing and guard behavior is tested; it does not mean every checkpoint has been ported end to end.</p>
+        </div>
+        <div class="family-grid" id="family-grid" aria-live="polite">
+          <p class="generated-fallback">The complete family list is available in the repository’s <a href="https://github.com/Amal-David/mlx-porting-skill/blob/main/mlx-model-porting/assets/architectures.yaml">architecture registry</a>. Interactive route cards require the local generated data file.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section alt" id="evidence">
+      <div class="section-shell proof-layout">
         <div>
-          <div class="section-head" style="display:block; margin-bottom:22px">
-            <h2 id="inspector-title">Already have MLX running? Make it show its receipts.</h2>
-            <p class="section-copy" style="margin-top:16px">Point the skill at a local port, served app, notebook, or converted checkpoint. It separates code that merely runs from code that has source parity, quality checks, and benchmark metadata.</p>
+          <div class="section-heading">
+            <span class="section-kicker">Evidence before adjectives</span>
+            <h2>A number is not a claim until its lineage survives recomputation.</h2>
+            <p>The catalog separates source-reported potential, historical observations, promotion-ready local measurements, and rejected configurations. Missing evidence is never inferred.</p>
           </div>
-          <div class="grid-3" style="grid-template-columns:1fr; gap:10px">
-            <article class="tile">
-              <h3>What is running</h3>
-              <p>Find MLX packages, module surfaces, eval boundaries, compile regions, fast attention, caches, quantization, kernels, and risk flags.</p>
-            </article>
-            <article class="tile">
-              <h3>What can improve</h3>
-              <p>Name the missing proof before recommending work: source oracle, parity evidence, benchmark metadata, cache policy, or intake blocker.</p>
-            </article>
-            <article class="tile">
-              <h3>What can be contributed</h3>
-              <p>Promote local tricks only when they come with fixtures, parity checks, benchmark receipts, rollback notes, and the runbook they change.</p>
-            </article>
+          <div class="limitation-box">
+            <h3>Current local benchmark status</h3>
+            <p><strong data-value="benchmarks.total">11</strong> receipts are retained: <strong data-value="benchmarks.by_classification.performance_observation">10</strong> performance observations, <strong data-value="benchmarks.by_classification.rejected">1</strong> rejected configuration, and <strong data-value="benchmarks.promotion_ready">0</strong> promotion-ready local speed claims.</p>
+            <p>The effective catalog withholds <strong data-value="effective_claims.by_state.withheld">9</strong> of <strong data-value="effective_claims.total">9</strong> numeric records. No source-reported range is currently profile-eligible.</p>
           </div>
         </div>
-        <div class="doc-panel">
-          <h3>Inspector command</h3>
-          <p>Run this against a local project. Add <code>--model</code> when the checkpoint needs to be judged in the same report.</p>
-          <div class="terminal" aria-label="Inspector command sequence">
-            <div class="terminal-head"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
-            <pre>python3 mlx-model-porting/scripts/inspect_mlx_project.py /path/to/mlx-project \
-  --model /path/to/local-model \
-  --markdown MLX_INSPECTION.md \
-  --output inspection.json</pre>
-          </div>
+        <div class="evidence-ledger" aria-label="Evidence state definitions">
+          <div class="ledger-row" style="--ledger-color: var(--cyan)"><i class="ledger-mark" aria-hidden="true"></i><strong>Implementation-backed route</strong><span>An official API, Apple project, pinned third-party implementation, or release note supports a technical path—without turning it into a local performance promise.</span></div>
+          <div class="ledger-row" style="--ledger-color: var(--aluminum-400)"><i class="ledger-mark" aria-hidden="true"></i><strong>Research candidate</strong><span>A primary paper can support considering an algorithm or architecture. It still needs an MLX implementation, source oracle, and parity before recommendation.</span></div>
+          <div class="ledger-row" style="--ledger-color: var(--gold)"><i class="ledger-mark" aria-hidden="true"></i><strong>Source-reported observation</strong><span>A source number can justify a local experiment, never a portable recommendation. It stays held until an equivalent local run passes promotion.</span></div>
+          <div class="ledger-row" style="--ledger-color: var(--blue)"><i class="ledger-mark" aria-hidden="true"></i><strong>Observation</strong><span>A real historical measurement is preserved, but legacy schema, incomplete quality, incompatible baselines, or unstable metrics block promotion.</span></div>
+          <div class="ledger-row" style="--ledger-color: var(--lime)"><i class="ledger-mark" aria-hidden="true"></i><strong>Promotion-ready</strong><span>Aggregates, pinned lineage, runner semantics, workload, raw output, declarative quality, stability, rollback, baseline, and noise margin all pass.</span></div>
+          <div class="ledger-row" style="--ledger-color: var(--coral)"><i class="ledger-mark" aria-hidden="true"></i><strong>Rejected / incomplete</strong><span>Regressions and invalid stacks remain visible as negative evidence. They cannot silently reappear as “measured together.”</span></div>
         </div>
       </div>
     </section>
 
-    <section class="band" id="agents" aria-labelledby="agents-title">
-      <div class="wrap">
-        <div class="section-head">
-          <h2 id="agents-title">Enough detail for big agents. Enough rails for small ones.</h2>
-          <p class="section-copy">A frontier model can rediscover many of these checks at runtime. This distills them into a runbook that local and open models can follow without inventing the debugging strategy.</p>
-        </div>
-        <div class="grid-3">
-          <article class="tile">
-            <h3>Load one compact contract</h3>
-            <p><code>mlx-model-porting/SKILL.md</code> stays small and sends the agent to the exact reference files and scripts for the current model.</p>
-          </article>
-          <article class="tile">
-            <h3>Use structured assets</h3>
-            <p>Architecture families, technique states, evidence depth, and benchmark receipts live in structured files agents can actually read.</p>
-          </article>
-          <article class="tile">
-            <h3>Fail loud, not clever</h3>
-            <p>Unsupported formats, missing keys, unreviewed remote code, and parity drift are blockers, not invitations to be clever.</p>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <section class="band" id="cli" aria-labelledby="cli-title">
-      <div class="wrap docs-grid">
+    <section class="section" id="limits">
+      <div class="section-shell contribute-layout">
         <div>
-        <div class="section-head">
-          <h2 id="cli-title">CLI first. The page is only the map.</h2>
-          <p class="section-copy">The useful parts live in the repo: the skill contract, runbooks, structured assets, and scripts that produce inspection reports, port plans, parity checks, and benchmark receipts.</p>
-        </div>
-        <div class="grid-3" style="grid-template-columns:1fr; gap:10px">
-          <article class="tile">
-            <h3>Inspect</h3>
-            <p>Point at a model folder or local MLX project and get JSON/Markdown evidence instead of a hunch.</p>
-          </article>
-          <article class="tile">
-            <h3>Plan</h3>
-            <p>Turn model metadata into a family route, runbook, weight-map requirements, and parity ladder.</p>
-          </article>
-          <article class="tile">
-            <h3>Verify</h3>
-            <p>Run source validation, tensor comparison, and benchmark commands before calling anything faster.</p>
-          </article>
-        </div>
-        </div>
-        <div class="doc-panel">
-          <h3>Typical command path</h3>
-          <p>Use the generated artifacts as handoff packets for an agent or as the checklist I would want beside a real port.</p>
-          <div class="terminal" aria-label="MLX Porter CLI workflow">
-            <div class="terminal-head"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
-            <pre>S=mlx-model-porting/scripts
-
-python3 $S/inspect_model.py \
-  /path/to/model \
-  --output inspection.json
-python3 $S/make_port_plan.py \
-  inspection.json \
-  --output PORT_PLAN.md
-python3 $S/recommend_optimizations.py \
-  inspection.json \
-  --markdown OPTIMIZATIONS.md
-python3 $S/inspect_mlx_project.py \
-  /path/to/mlx-project \
-  --markdown MLX_INSPECTION.md</pre>
+          <div class="section-heading">
+            <span class="section-kicker">Reliability boundary</span>
+            <h2>What the offline suite proves—and what it does not.</h2>
+          </div>
+          <div class="limitation-box">
+            <ul>
+              <li>Golden scenarios prove routing, source-key coverage, seeded parity-bug detection, and recommendation policy—not real checkpoint support for every family. Broader tooling tests validate weight-map behavior.</li>
+              <li>Static format inspection does not convert ONNX, GGUF, Flax/Orbax, TensorFlow/Keras, or Core ML graphs into executable MLX.</li>
+              <li>Source-reported speed ranges are not portable guarantees across chips, versions, shapes, concurrency, precision, or quality constraints.</li>
+              <li>Apple Silicon execution, external research agents, live links, and upstream pin drift remain separate hardware, live-execution, and network validation surfaces.</li>
+            </ul>
           </div>
         </div>
-      </div>
-    </section>
-
-    <section class="band" aria-labelledby="entry-title">
-      <div class="wrap">
-        <div class="section-head">
-          <h2 id="entry-title">Start from what is actually on disk.</h2>
-          <p class="section-copy">A pasted module, a checkpoint, an ASR block, or a diffusion component should not get generic advice. Each start maps to an oracle, weight map, parity ladder, and optimization gate.</p>
-        </div>
-        <div class="grid-4">
-          <article class="tile"><h3>Transformer attention</h3><p>QKV maps, RoPE, masks, cache parity, then fast SDPA.</p></article>
-          <article class="tile"><h3>Checkpoint loading</h3><p>Static safetensors intake, explicit transforms, no silent gaps.</p></article>
-          <article class="tile"><h3>Whisper-style ASR</h3><p>Waveform, log-mel, encoder states, tokens, WER/CER, timestamps.</p></article>
-          <article class="tile"><h3>Diffusion blocks</h3><p>One denoiser step, scheduler math, fixed-seed latent trajectory.</p></article>
-        </div>
-      </div>
-    </section>
-
-    <section class="band" id="docs" aria-labelledby="docs-title">
-      <div class="wrap docs-grid">
         <div>
-          <h2 id="docs-title">Docs that keep pointing back to proof.</h2>
-          <p class="section-copy">Humans can skim the path; agents can run it. Start with the compact contract, then follow the family runbook, inspector, and validation scripts.</p>
-          <div class="doc-links">
-            <a href="https://github.com/Amal-David/mlx-porting-skill/blob/main/mlx-model-porting/SKILL.md">Skill contract <span>entry point</span></a>
-            <a href="https://github.com/Amal-David/mlx-porting-skill/blob/main/mlx-model-porting/references/inspector-mode.md">Inspector mode <span>existing MLX ports</span></a>
-            <a href="https://github.com/Amal-David/mlx-porting-skill/tree/main/mlx-model-porting/references">Architecture runbooks <span>family routes</span></a>
-            <a href="https://github.com/Amal-David/mlx-porting-skill/blob/main/mlx-model-porting/examples/porting-patterns.md">Porting patterns <span>common starts</span></a>
-            <a href="https://github.com/Amal-David/mlx-porting-skill/blob/main/VALIDATION.md">Validation status <span>what is proven</span></a>
+          <div class="section-heading">
+            <span class="section-kicker">Use it, inspect it, improve it</span>
+            <h2>Install one skill. Keep every judgment reviewable.</h2>
+            <p>Client presets cover Claude Code, Codex, Cursor, Gemini CLI, Windsurf, and GitHub Copilot. The installer is atomic and idempotent; explicit destinations remain available when a client changes discovery conventions.</p>
           </div>
-        </div>
-        <div class="doc-panel">
-          <h3>Offline smoke path</h3>
-          <p>Test routing, planning, recommendations, source validation, and golden scenarios without downloading a real model.</p>
-          <div class="terminal" aria-label="Offline command sequence">
-            <div class="terminal-head"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
-            <pre>python3 mlx-model-porting/scripts/inspect_model.py tests/fixtures/models/decoder --output /tmp/inspection.json
-python3 mlx-model-porting/scripts/make_port_plan.py /tmp/inspection.json --output /tmp/PORT_PLAN.md
-python3 mlx-model-porting/scripts/recommend_optimizations.py /tmp/inspection.json --markdown /tmp/OPTIMIZATIONS.md
-python3 mlx-model-porting/scripts/audit_skill.py --strict mlx-model-porting
-python3 -m unittest discover -s tests -v</pre>
+          <div class="terminal">
+            <div class="terminal-bar"><span class="terminal-dots" aria-hidden="true">● ● ●</span><span>Codex / Agent Skills</span></div>
+            <pre data-copy><code>python3 mlx-model-porting/scripts/install_skill.py \
+  --client codex</code></pre>
           </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="final-cta" aria-labelledby="final-title">
-      <div class="wrap">
-        <h2 id="final-title">Give an agent the model. Make it come back with evidence.</h2>
-        <p class="section-copy">Source provenance, eager MLX, parity, profiling, and measured Apple Silicon optimization in one repeatable path.</p>
-        <div class="center-cta">
-          <a class="button primary" href="https://github.com/Amal-David/mlx-porting-skill">
-            <svg class="icon" aria-hidden="true" viewBox="0 0 16 16">
-              <path d="M8 0C3.58 0 0 3.67 0 8.2c0 3.62 2.29 6.69 5.47 7.78.4.08.55-.18.55-.39 0-.19-.01-.83-.01-1.5-2.01.38-2.53-.5-2.69-.97-.09-.24-.48-.97-.82-1.17-.28-.16-.68-.55-.01-.56.63-.01 1.08.59 1.23.84.72 1.24 1.87.89 2.33.68.07-.53.28-.89.51-1.09-1.78-.21-3.64-.91-3.64-4.04 0-.89.31-1.62.82-2.19-.08-.21-.36-1.04.08-2.16 0 0 .67-.22 2.2.84A7.42 7.42 0 0 1 8 3.99c.68 0 1.36.09 2 .28 1.53-1.06 2.2-.84 2.2-.84.44 1.12.16 1.95.08 2.16.51.57.82 1.3.82 2.19 0 3.14-1.87 3.83-3.65 4.04.29.26.54.76.54 1.53 0 1.1-.01 1.99-.01 2.26 0 .21.15.47.55.39A8.08 8.08 0 0 0 16 8.2C16 3.67 12.42 0 8 0Z"/>
-            </svg>
-            Open repo
-          </a>
-          <a class="button" href="/docs/">Use the docs</a>
+          <div class="section-actions" style="margin-top: 18px">
+            <a class="button primary" href="./docs/index.html#install">Open installation guide</a>
+            <a class="button" href="https://github.com/Amal-David/mlx-porting-skill/blob/main/CONTRIBUTING.md">Contribution standard</a>
+          </div>
         </div>
       </div>
     </section>
   </main>
 
-  <footer class="footer">
-    <div class="wrap">MLX Porter is a runbook for Apple MLX ports and inspections. A model is not done until provenance, parity, quality, benchmark metadata, and rollback conditions exist.</div>
+  <footer class="site-footer">
+    <div class="footer-shell">
+      <div><strong>MLX Porter</strong><br><span>Evidence-aware model porting for Apple Silicon.</span></div>
+      <div class="footer-links">
+        <a href="./docs/index.html">Documentation</a>
+        <a href="https://github.com/Amal-David/mlx-porting-skill">Repository</a>
+        <a href="https://github.com/ml-explore/mlx">Apple MLX</a>
+      </div>
+      <span>© <span data-year></span></span>
+    </div>
   </footer>
-
-  <script>
-    const canvas = document.getElementById("mesh");
-    const ctx = canvas.getContext("2d");
-    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const nodeTones = ["#21d6c7", "#b7f34f", "#5b8cff", "#ff7a66", "#a78bfa", "#f1b84b"];
-    let nodes = [];
-    let width = 0;
-    let height = 0;
-    let ratio = 1;
-
-    function resize() {
-      ratio = Math.min(window.devicePixelRatio || 1, 2);
-      width = canvas.clientWidth;
-      height = canvas.clientHeight;
-      canvas.width = Math.floor(width * ratio);
-      canvas.height = Math.floor(height * ratio);
-      ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
-      const count = width < 700 ? 34 : 58;
-      nodes = Array.from({ length: count }, (_, index) => ({
-        x: Math.random() * width,
-        y: Math.random() * height,
-        vx: (Math.random() - 0.5) * 0.32,
-        vy: (Math.random() - 0.5) * 0.32,
-        r: 1.4 + Math.random() * 2.8,
-        color: nodeTones[index % nodeTones.length]
-      }));
-    }
-
-    function draw(time) {
-      ctx.clearRect(0, 0, width, height);
-      ctx.fillStyle = "#0e1115";
-      ctx.fillRect(0, 0, width, height);
-
-      const centerX = width / 2;
-      const centerY = height / 2;
-      const ringCount = width < 700 ? 5 : 7;
-      for (let i = ringCount; i > 0; i -= 1) {
-        const radiusX = 96 + i * 74;
-        const radiusY = 44 + i * 34;
-        ctx.beginPath();
-        ctx.ellipse(centerX, centerY + 18, radiusX, radiusY, 0, 0, Math.PI * 2);
-        ctx.strokeStyle = `rgba(216, 225, 220, ${0.035 + i * 0.012})`;
-        ctx.lineWidth = 1;
-        ctx.stroke();
-      }
-
-      nodes.forEach((node, index) => {
-        if (!reduceMotion) {
-          node.x += node.vx;
-          node.y += node.vy;
-          if (node.x < -20) node.x = width + 20;
-          if (node.x > width + 20) node.x = -20;
-          if (node.y < -20) node.y = height + 20;
-          if (node.y > height + 20) node.y = -20;
-        }
-        for (let j = index + 1; j < nodes.length; j += 1) {
-          const other = nodes[j];
-          const dx = node.x - other.x;
-          const dy = node.y - other.y;
-          const distance = Math.sqrt(dx * dx + dy * dy);
-          if (distance < 170) {
-            ctx.beginPath();
-            ctx.moveTo(node.x, node.y);
-            ctx.lineTo(other.x, other.y);
-            ctx.strokeStyle = `rgba(33, 214, 199, ${(1 - distance / 170) * 0.2})`;
-            ctx.lineWidth = 1;
-            ctx.stroke();
-          }
-        }
-        ctx.beginPath();
-        ctx.arc(node.x, node.y, node.r, 0, Math.PI * 2);
-        ctx.fillStyle = node.color;
-        ctx.globalAlpha = 0.7;
-        ctx.fill();
-        ctx.globalAlpha = 1;
-      });
-
-      if (!reduceMotion) {
-        requestAnimationFrame(draw);
-      }
-    }
-
-    resize();
-    window.addEventListener("resize", resize);
-    requestAnimationFrame(draw);
-  </script>
 </body>
 </html>

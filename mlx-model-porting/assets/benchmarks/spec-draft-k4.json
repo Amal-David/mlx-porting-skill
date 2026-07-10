@@ -31,7 +31,7 @@
     "draft_revision": "b3252a2f97102b1fb1571fec2c9b27219a8536be",
     "num_draft_tokens": "4",
     "workload": "552_chat_tokens_code_generation_prompt_max_tokens_256_temp_0_seed_207",
-    "prompt_file": "/Users/amal/Downloads/mlx-porting-skill/mlx-model-porting/assets/benchmarks/prompts/t207-code-prompt-500.txt",
+    "prompt_file": "<repo-root>/mlx-model-porting/assets/benchmarks/prompts/t207-code-prompt-500.txt",
     "baseline_basis": "spec-baseline_plain_4bit_single_request_baseline",
     "quality_gate": "greedy_code_generation_fixed_prompt_no_formal_correctness_eval"
   },
@@ -123,7 +123,7 @@
   },
   "speedup_vs_baseline": {
     "baseline_label": "spec-baseline",
-    "baseline_file": "/Users/amal/Downloads/mlx-porting-skill/mlx-model-porting/assets/benchmarks/spec-baseline.json",
+    "baseline_file": "<repo-root>/mlx-model-porting/assets/benchmarks/spec-baseline.json",
     "basis": "Ratios of aggregate medians; ttft_proxy uses inverse ratio because lower is better.",
     "ratios": {
       "decode_tps": 0.5498204866805549,

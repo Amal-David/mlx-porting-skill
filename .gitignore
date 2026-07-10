@@ -27,9 +27,3 @@ __pycache__/
 # Local validation scratch output
 *.tmp
 *.log
-
-# Worker app local state
-node_modules/
-.wrangler/
-dist-pages/
-.dev.vars

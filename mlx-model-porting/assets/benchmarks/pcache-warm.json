@@ -21,16 +21,16 @@
   "command": [
     "sh",
     "-lc",
-    "cat /tmp/t206-benchmark/pcache_suffix.txt | python3 -m mlx_lm generate --model mlx-community/Qwen3-1.7B-4bit --prompt - --prompt-cache-file /tmp/t206-pc.safetensors --max-tokens 256 --temp 0.0 --seed 206"
+    "cat <historical-ephemeral-input>/pcache_suffix.txt | python3 -m mlx_lm generate --model mlx-community/Qwen3-1.7B-4bit --prompt - --prompt-cache-file <historical-ephemeral-cache>/t206-pc.safetensors --max-tokens 256 --temp 0.0 --seed 206"
   ],
-  "command_display": "sh -lc 'cat /tmp/t206-benchmark/pcache_suffix.txt | python3 -m mlx_lm generate --model mlx-community/Qwen3-1.7B-4bit --prompt - --prompt-cache-file /tmp/t206-pc.safetensors --max-tokens 256 --temp 0.0 --seed 206'",
+  "command_display": "sh -lc 'cat <historical-ephemeral-input>/pcache_suffix.txt | python3 -m mlx_lm generate --model mlx-community/Qwen3-1.7B-4bit --prompt - --prompt-cache-file <historical-ephemeral-cache>/t206-pc.safetensors --max-tokens 256 --temp 0.0 --seed 206'",
   "config_notes": {
     "model": "mlx-community/Qwen3-1.7B-4bit",
     "model_revision": "3b1b1768f8f8cf8351c712464f906e86c2b8269e",
     "cache_state": "warm_prompt_cache_file",
-    "prompt_cache_file": "/tmp/t206-pc.safetensors",
-    "cached_prefix_file": "/tmp/t206-benchmark/prefix_4k.txt",
-    "suffix_file": "/tmp/t206-benchmark/pcache_suffix.txt",
+    "prompt_cache_file": "<historical-ephemeral-cache>/t206-pc.safetensors",
+    "cached_prefix_file": "<historical-ephemeral-input>/prefix_4k.txt",
+    "suffix_file": "<historical-ephemeral-input>/pcache_suffix.txt",
     "workload": "cached_4040_raw_token_prefix_plus_16_raw_token_suffix_max_tokens_256_temp_0_seed_206",
     "ttft_proxy_caveat": "compares_cold_full_prefix_prefill_to_warm_cached_prefix_suffix_prompt_processing"
   },
@@ -122,7 +122,7 @@
   },
   "speedup_vs_baseline": {
     "baseline_label": "pcache-cold",
-    "baseline_file": "/Users/amal/Downloads/mlx-porting-skill/mlx-model-porting/assets/benchmarks/pcache-cold.json",
+    "baseline_file": "<repo-root>/mlx-model-porting/assets/benchmarks/pcache-cold.json",
     "basis": "Ratios of aggregate medians; ttft_proxy uses inverse ratio because lower is better.",
     "ratios": {
       "decode_tps": 0.9177736117655315,

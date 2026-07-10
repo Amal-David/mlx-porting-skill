@@ -18,6 +18,9 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+from _common import SkillError, dump_json, load_structured
+from validate_sources import PublicHTTPSRedirectHandler, require_public_https_url
+
 
 OPEN_LICENSE_HINTS = {
     "apache-2.0",
@@ -44,6 +47,8 @@ RESTRICTED_LICENSE_HINTS = {
     "non-commercial",
     "cc-by-nc",
 }
+MAX_NETWORK_RESPONSE_BYTES = 16 * 1024 * 1024
+MAX_MODEL_LIMIT = 5_000
 
 
 def parse_args() -> argparse.Namespace:
@@ -66,17 +71,28 @@ def parse_args() -> argparse.Namespace:
 
 
 def read_json(path: Path) -> Any:
-    return json.loads(path.read_text(encoding="utf-8"))
+    try:
+        return load_structured(path)
+    except SkillError as exc:
+        raise SystemExit(str(exc)) from exc
 
 
 def fetch_models(base: str, limit: int) -> list[dict[str, Any]]:
     query = urllib.parse.urlencode({"sort": "downloads", "direction": "-1", "limit": str(limit), "full": "true"})
     url = f"{base.rstrip('/')}/api/models?{query}"
     request = urllib.request.Request(url, headers={"accept": "application/json", "user-agent": "mlx-porting-skill-top-model-collector/0.1"})
+    opener = urllib.request.build_opener(PublicHTTPSRedirectHandler())
     try:
-        with urllib.request.urlopen(request, timeout=60) as response:
-            payload = json.load(response)
-    except urllib.error.URLError as error:
+        require_public_https_url(url)
+        with opener.open(request, timeout=60) as response:
+            require_public_https_url(response.geturl())
+            raw = response.read(MAX_NETWORK_RESPONSE_BYTES + 1)
+            if len(raw) > MAX_NETWORK_RESPONSE_BYTES:
+                raise SystemExit(
+                    f"Hugging Face response exceeds {MAX_NETWORK_RESPONSE_BYTES} bytes"
+                )
+            payload = json.loads(raw.decode("utf-8"))
+    except (urllib.error.URLError, TimeoutError, UnicodeDecodeError, json.JSONDecodeError) as error:
         raise SystemExit(f"failed to fetch Hugging Face models: {error}") from error
     if not isinstance(payload, list):
         raise SystemExit("Hugging Face API returned a non-list payload")
@@ -164,8 +180,12 @@ def compact_model(rank: int, model: dict[str, Any], outcomes: list[dict[str, Any
 
 def main() -> int:
     args = parse_args()
-    if args.limit < 1:
-        raise SystemExit("--limit must be positive")
+    if not 1 <= args.limit <= MAX_MODEL_LIMIT:
+        raise SystemExit(f"--limit must be between 1 and {MAX_MODEL_LIMIT}")
+    try:
+        require_public_https_url(args.hf_api_base)
+    except urllib.error.URLError as error:
+        raise SystemExit(f"--hf-api-base must be public HTTPS: {error.reason}") from error
     outcomes_payload = read_json(args.outcomes)
     outcomes = outcomes_payload.get("records", [])
     if not isinstance(outcomes, list):
@@ -183,8 +203,7 @@ def main() -> int:
         "unknown_count": sum(1 for model in compact if model["coverage_state"] == "unknown"),
         "models": compact,
     }
-    args.out.parent.mkdir(parents=True, exist_ok=True)
-    args.out.write_text(json.dumps(output, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    dump_json(output, args.out)
     print(f"wrote {args.out} ({len(compact)} models, {output['covered_count']} with outcome matches)")
     return 0
 

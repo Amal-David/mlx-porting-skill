@@ -1,0 +1,37 @@
+{
+  "name": "falcon-h1-hybrid",
+  "config": {
+    "model_type": "falcon_h1",
+    "architectures": ["FalconH1ForCausalLM"],
+    "hidden_size": 1024,
+    "num_hidden_layers": 36,
+    "num_attention_heads": 8,
+    "num_key_value_heads": 2,
+    "mamba_d_state": 128,
+    "mamba_d_conv": 4,
+    "mamba_n_heads": 24,
+    "license": "apache-2.0"
+  },
+  "tensor_keys": [
+    "model.layers.0.mamba.in_proj.weight",
+    "model.layers.0.mamba.A_log",
+    "model.layers.0.mamba.conv1d.weight",
+    "model.layers.0.self_attn.q_proj.weight",
+    "lm_head.weight"
+  ],
+  "expected_status": "recommended",
+  "expected_primary_family": "ssm-recurrent-hybrid",
+  "expected_families": [
+    "ssm-recurrent-hybrid",
+    "dense-decoder-transformer"
+  ],
+  "expected_runbooks": [
+    "references/runbook-ssm-hybrid.md",
+    "references/runbook-decoder-transformer.md"
+  ],
+  "expected_traits": [
+    "causal-decoder",
+    "mamba2-state-space",
+    "full-attention"
+  ]
+}

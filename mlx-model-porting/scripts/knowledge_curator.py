@@ -12,12 +12,12 @@ from typing import Any
 from urllib.parse import urlparse, urlunparse
 
 from _common import SkillError, dump_json, load_structured, slugify
+from update_sources import normalize_arxiv_revision, parse_arxiv_identity, source_arxiv_revision
 
 SCRIPT_DIR = Path(__file__).resolve().parent
 SKILL_ROOT = SCRIPT_DIR.parent
 REPO_ROOT = SKILL_ROOT.parent
 DEFAULT_RUN_ROOT = SKILL_ROOT / "research-runs"
-ARXIV_VERSION_RE = re.compile(r"v\d+$")
 STOP_TERMS = {
     "and", "approach", "are", "backlog", "before", "candidate", "for",
     "from", "into", "learning", "model", "models", "mlx", "only",
@@ -64,10 +64,10 @@ def normalize_locator(value: str | None) -> str:
     text = str(value).strip()
     if not text:
         return ""
-    if "arxiv.org/abs/" in text:
-        ident = text.rsplit("/abs/", 1)[1].split("?", 1)[0].split("#", 1)[0]
-        ident = ARXIV_VERSION_RE.sub("", ident)
-        return f"https://arxiv.org/abs/{ident}"
+    if "arxiv.org/abs/" in text or "arxiv.org/pdf/" in text:
+        paper_id, _revision = parse_arxiv_identity(text)
+        if paper_id:
+            return f"https://arxiv.org/abs/{paper_id}"
     if text.startswith("http://") or text.startswith("https://"):
         parsed = urlparse(text)
         path = parsed.path.rstrip("/")
@@ -77,6 +77,25 @@ def normalize_locator(value: str | None) -> str:
     if "/" in text and " " not in text:
         return f"https://github.com/{text.strip('/')}"
     return text.lower()
+
+
+def github_repository_identity(value: str | None) -> str:
+    """Return a stable owner/repository key without weakening pinned locators."""
+    locator = normalize_locator(value)
+    if not locator:
+        return ""
+    parsed = urlparse(locator)
+    if parsed.netloc.lower() != "github.com":
+        return ""
+    parts = [part for part in parsed.path.split("/") if part]
+    if len(parts) < 2:
+        return ""
+    owner, repository = parts[:2]
+    if repository.endswith(".git"):
+        repository = repository[:-4]
+    if not owner or not repository:
+        return ""
+    return f"{owner.lower()}/{repository.lower()}"
 
 
 def token_set(*values: Any) -> set[str]:
@@ -108,7 +127,7 @@ def source_read_state(source: dict[str, Any]) -> str:
 def source_node(source: dict[str, Any]) -> dict[str, Any]:
     source_id = str(source.get("id") or slugify(source.get("title") or source.get("url") or "source"))
     locator = normalize_locator(source.get("url"))
-    return {
+    node = {
         "id": f"source:{source_id}",
         "kind": "source",
         "source_id": source_id,
@@ -121,6 +140,15 @@ def source_node(source: dict[str, Any]) -> dict[str, Any]:
         "topics": source.get("topics") or [],
         "snapshot": source.get("snapshot") or "",
     }
+    paper_id, _url_revision = parse_arxiv_identity(source.get("url"))
+    if source.get("kind") == "paper" and paper_id:
+        revision = source_arxiv_revision(source)
+        node.update({
+            "paper_id": paper_id,
+            "revision": revision or "",
+            "immutable_locator": f"https://arxiv.org/abs/{paper_id}{revision}" if revision else "",
+        })
+    return node
 
 
 def flatten_evidence_refs(refs: dict[str, Any] | None) -> list[str]:
@@ -169,7 +197,19 @@ def build_approaches(
             "validation_gate": first(method.get("validation_gates")),
             "rollback": first(method.get("rollback_conditions")),
         })
-        approach_terms[node_id] = token_set(method_id, method.get("technique_id"), method.get("category"), method.get("objectives"), method.get("applies_to"), method.get("recommendation"))
+        # Retain superseded methods in the graph for provenance, but never
+        # surface them as fresh approach leads. A curator match is a review
+        # suggestion, and suggesting a registry tombstone would silently undo
+        # the decision that superseded it.
+        if method.get("status") != "rejected-or-superseded":
+            approach_terms[node_id] = token_set(
+                method_id,
+                method.get("technique_id"),
+                method.get("category"),
+                method.get("objectives"),
+                method.get("applies_to"),
+                method.get("recommendation"),
+            )
         for source_id in flatten_evidence_refs(method.get("evidence_refs")):
             if source_id in source_by_id:
                 add_edge(edges, f"source:{source_id}", node_id, "evidence_for")
@@ -256,17 +296,85 @@ def previous_index(path: Path) -> tuple[dict[str, Any], set[str], dict[str, dict
     return graph, locators, nodes
 
 
-def candidate_node_from_paper(paper: dict[str, Any], known: dict[str, dict[str, Any]], previous_locators: set[str]) -> tuple[dict[str, Any], str]:
-    locator = normalize_locator(paper.get("id") or paper.get("url"))
-    known_source = known.get(locator)
-    read_state = known_source.get("read_state") if known_source else ("seen_unread_candidate" if locator in previous_locators else "unread_candidate")
-    title = paper.get("title") or locator or "paper"
+def compare_revisions(before: str | None, after: str | None, basis: str) -> dict[str, Any]:
+    before_value = str(before or "").strip() or None
+    after_value = str(after or "").strip() or None
+    if before_value and after_value:
+        status = "same" if before_value == after_value else "changed"
+    elif before_value:
+        status = "candidate_unpinned"
+    elif after_value:
+        status = "comparison_unpinned"
+    else:
+        status = "unversioned"
     return {
-        "id": f"candidate:paper:{slugify(title)}",
+        "before": before_value,
+        "after": after_value,
+        "status": status,
+        "basis": basis,
+    }
+
+
+def candidate_node_from_paper(
+    paper: dict[str, Any],
+    known: dict[str, dict[str, Any]],
+    previous_locators: set[str],
+    previous_nodes: dict[str, dict[str, Any]],
+) -> tuple[dict[str, Any], str]:
+    raw_identity = paper.get("id") or paper.get("url")
+    parsed_paper_id, parsed_revision = parse_arxiv_identity(raw_identity)
+    paper_id = str(parsed_paper_id or paper.get("arxiv_id") or "")
+    revision = parsed_revision or normalize_arxiv_revision(paper.get("revision"))
+    locator = (
+        f"https://arxiv.org/abs/{paper_id}"
+        if paper_id
+        else normalize_locator(paper.get("canonical_url") or raw_identity)
+    )
+    known_source = known.get(locator)
+    title = paper.get("title") or locator or "paper"
+    node_id = f"candidate:paper:{slugify(title)}"
+    previous = previous_nodes.get(node_id)
+    immutable_locator = f"https://arxiv.org/abs/{paper_id}{revision}" if paper_id and revision else ""
+
+    revision_comparison: dict[str, Any] | None = None
+    if known_source:
+        revision_comparison = compare_revisions(
+            str(known_source.get("revision") or "") or None,
+            revision,
+            "source_registry",
+        )
+        read_state = (
+            known_source.get("read_state")
+            if revision_comparison["status"] == "same"
+            else "updated_candidate"
+        )
+    elif previous:
+        revision_comparison = compare_revisions(
+            str(previous.get("revision") or "") or None,
+            revision,
+            "previous_graph",
+        )
+        if previous.get("read_state") == "updated_candidate" or revision_comparison["status"] in {
+            "changed",
+            "candidate_unpinned",
+            "comparison_unpinned",
+        }:
+            read_state = "updated_candidate"
+        else:
+            read_state = "seen_unread_candidate"
+    else:
+        read_state = "seen_unread_candidate" if locator in previous_locators else "unread_candidate"
+
+    return {
+        "id": node_id,
         "kind": "source_candidate",
         "candidate_kind": "paper",
         "label": title,
         "locator": locator,
+        "immutable_locator": immutable_locator,
+        "paper_id": paper_id,
+        "revision": revision or "",
+        "revision_comparison": revision_comparison,
         "read_state": read_state,
         "known_source_id": known_source.get("id") if known_source else "",
         "query": paper.get("query") or "",
@@ -277,17 +385,43 @@ def candidate_node_from_paper(paper: dict[str, Any], known: dict[str, dict[str, 
     }, read_state
 
 
-def candidate_node_from_repo(repo: dict[str, Any], known: dict[str, dict[str, Any]], previous_locators: set[str], previous_nodes: dict[str, dict[str, Any]]) -> tuple[dict[str, Any], str]:
+def candidate_node_from_repo(
+    repo: dict[str, Any],
+    known: dict[str, dict[str, Any]],
+    known_repositories: dict[str, dict[str, Any]],
+    previous_locators: set[str],
+    previous_nodes: dict[str, dict[str, Any]],
+) -> tuple[dict[str, Any], str]:
     repo_name = repo.get("repo") or ""
     locator = normalize_locator(repo.get("url") or repo_name)
-    known_source = known.get(locator)
+    repository_identity = github_repository_identity(locator)
+    known_source = known.get(locator) or known_repositories.get(repository_identity)
     node_id = f"candidate:repository:{slugify(repo_name or locator)}"
     previous = previous_nodes.get(node_id)
     head_sha = repo.get("head_sha") or ""
+    known_snapshot = str(known_source.get("snapshot") or "") if known_source else ""
+    revision_comparison: dict[str, Any] | None = None
     if known_source:
-        read_state = known_source.get("read_state")
-    elif previous and previous.get("head_sha") != head_sha:
-        read_state = "updated_candidate"
+        revision_comparison = compare_revisions(known_snapshot or None, head_sha or None, "source_registry")
+        read_state = (
+            known_source.get("read_state")
+            if revision_comparison["status"] == "same"
+            else "updated_candidate"
+        )
+    elif previous:
+        revision_comparison = compare_revisions(
+            str(previous.get("head_sha") or "") or None,
+            head_sha or None,
+            "previous_graph",
+        )
+        if previous.get("read_state") == "updated_candidate" or revision_comparison["status"] in {
+            "changed",
+            "candidate_unpinned",
+            "comparison_unpinned",
+        }:
+            read_state = "updated_candidate"
+        else:
+            read_state = "seen_unread_candidate"
     elif locator in previous_locators:
         read_state = "seen_unread_candidate"
     else:
@@ -301,6 +435,7 @@ def candidate_node_from_repo(repo: dict[str, Any], known: dict[str, dict[str, An
         "read_state": read_state,
         "known_source_id": known_source.get("id") if known_source else "",
         "head_sha": head_sha,
+        "revision_comparison": revision_comparison,
         "head_date": repo.get("head_date") or "",
         "head_message": repo.get("head_message") or "",
         "topics": repo.get("topics") or [],
@@ -326,15 +461,35 @@ def append_candidate(
         "read_state": candidate["read_state"],
         "kind": candidate["candidate_kind"],
     }
+    if candidate.get("known_source_id"):
+        compact["known_source_id"] = candidate["known_source_id"]
+    for field in ("immutable_locator", "revision", "revision_comparison"):
+        if candidate.get(field) not in (None, "", {}):
+            compact[field] = candidate[field]
     if candidate["read_state"] in KNOWN_READ_STATES:
-        known = {"known_source_id": candidate.get("known_source_id")} if candidate.get("known_source_id") else {}
-        delta["already_read_sources"].append(compact | known)
+        delta["already_read_sources"].append(compact)
     elif candidate["read_state"] == "updated_candidate":
-        delta["updated_sources"].append(compact | {"head_sha": candidate.get("head_sha")})
+        updated = dict(compact)
+        if candidate.get("head_sha"):
+            updated["head_sha"] = candidate["head_sha"]
+        delta["updated_sources"].append(updated)
     elif candidate["read_state"] == "unread_candidate":
         delta["new_unread_sources"].append(compact)
     if matches and candidate["read_state"] not in KNOWN_READ_STATES | {"seen_unread_candidate"}:
         delta["new_approach_leads"].append(compact | {"matches": matches})
+
+
+def add_candidate_lineage(edges: list[dict[str, Any]], candidate: dict[str, Any]) -> None:
+    known_source_id = candidate.get("known_source_id")
+    if not known_source_id:
+        return
+    add_edge(
+        edges,
+        candidate["id"],
+        str(known_source_id),
+        "candidate_version_of",
+        revision_comparison=candidate.get("revision_comparison"),
+    )
 
 
 def build_markdown(delta: dict[str, Any], graph: dict[str, Any]) -> str:
@@ -375,7 +530,16 @@ def build_markdown(delta: dict[str, Any], graph: dict[str, Any]) -> str:
 def markdown_items(items: list[dict[str, Any]]) -> list[str]:
     if not items:
         return ["- None."]
-    return [f"- `{item['id']}` - {item['label']} ({item.get('locator', '')})" for item in items]
+    lines: list[str] = []
+    for item in items:
+        line = f"- `{item['id']}` - {item['label']} ({item.get('locator', '')})"
+        comparison = item.get("revision_comparison")
+        if isinstance(comparison, dict):
+            before = comparison.get("before") or "unpinned"
+            after = comparison.get("after") or "unpinned"
+            line += f"; revision `{before}` -> `{after}` ({comparison.get('status', 'unknown')})"
+        lines.append(line)
+    return lines
 
 
 def derive_gap_hints(delta: dict[str, Any]) -> list[str]:
@@ -414,7 +578,7 @@ def main() -> int:
         edges: list[dict[str, Any]] = []
         source_by_id: dict[str, dict[str, Any]] = {}
         source_by_locator: dict[str, dict[str, Any]] = {}
-        source_snapshots: set[str] = set()
+        source_by_repository: dict[str, dict[str, Any]] = {}
         for source in sources.get("sources", []):
             if not isinstance(source, dict):
                 continue
@@ -423,8 +587,9 @@ def main() -> int:
             source_by_id[node["source_id"]] = node
             if node["locator"]:
                 source_by_locator[node["locator"]] = node
-            if node["snapshot"]:
-                source_snapshots.add(str(node["snapshot"]))
+            repository_identity = github_repository_identity(node["locator"])
+            if node["source_kind"] == "repository" and repository_identity:
+                source_by_repository.setdefault(repository_identity, node)
 
         approach_terms = build_approaches(nodes, edges, guidance, learnings, backlog, outcomes, source_by_id)
         delta: dict[str, Any] = {
@@ -445,16 +610,25 @@ def main() -> int:
         }
 
         for paper in candidates.get("papers", []):
-            node, _read_state = candidate_node_from_paper(paper, source_by_locator, previous_locators)
+            node, _read_state = candidate_node_from_paper(
+                paper,
+                source_by_locator,
+                previous_locators,
+                previous_nodes,
+            )
             append_candidate(nodes, edges, node, approach_terms, delta)
-            if node.get("known_source_id"):
-                add_edge(edges, node["id"], node["known_source_id"], "already_read_as")
+            add_candidate_lineage(edges, node)
 
         for repo in candidates.get("repositories", []):
-            node, _read_state = candidate_node_from_repo(repo, source_by_locator, previous_locators, previous_nodes)
-            if node.get("head_sha") in source_snapshots and node["read_state"] != "already_read":
-                node["read_state"] = "already_read"
+            node, _read_state = candidate_node_from_repo(
+                repo,
+                source_by_locator,
+                source_by_repository,
+                previous_locators,
+                previous_nodes,
+            )
             append_candidate(nodes, edges, node, approach_terms, delta)
+            add_candidate_lineage(edges, node)
 
         delta["gap_hints"] = derive_gap_hints(delta)
         graph = {

@@ -6,48 +6,147 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
-  pull-requests: write
+  contents: read
+
+concurrency:
+  group: daily-mlx-research-${{ github.repository }}
+  cancel-in-progress: false
 
 jobs:
   collect:
+    permissions:
+      contents: read
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           fetch-depth: 0
-      - uses: actions/setup-python@v5
+          persist-credentials: false
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
         with:
           python-version: "3.12"
-      - name: Install test dependency
-        run: python3 -m pip install --disable-pip-version-check numpy
+      - name: Install pinned test dependency
+        run: >-
+          python3 -m pip install --disable-pip-version-check
+          --require-hashes --only-binary=:all:
+          -r .github/requirements-ci.txt
       - name: Check artifact manifest integrity
         run: python3 mlx-model-porting/scripts/manifest.py check
-      - name: Collect review-only candidates
+      - name: Collect complete review-only candidate artifact
         env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          set -euo pipefail
+          candidate_path="$RUNNER_TEMP/update-candidates.json"
+          previous_candidate_path="$RUNNER_TEMP/automation-update-candidates.json"
+          branch="automation/daily-mlx-research"
+          if gh api \
+            -H "Accept: application/vnd.github.raw+json" \
+            "repos/${GITHUB_REPOSITORY}/contents/mlx-model-porting/assets/update-candidates.json?ref=automation%2Fdaily-mlx-research" \
+            > "$previous_candidate_path"; then
+            python3 -m json.tool "$previous_candidate_path" >/dev/null
+          elif gh api "repos/${GITHUB_REPOSITORY}/git/ref/heads/automation%2Fdaily-mlx-research" >/dev/null 2>&1; then
+            echo "Automation branch exists but its candidate snapshot could not be read" >&2
+            exit 1
+          else
+            install -m 0644 mlx-model-porting/assets/update-candidates.json "$previous_candidate_path"
+          fi
           python3 mlx-model-porting/scripts/update_sources.py \
-            --output mlx-model-porting/assets/update-candidates.json
+            --fail-on-network-error \
+            --previous "$previous_candidate_path" \
+            --base mlx-model-porting/assets/update-candidates.json \
+            --output "$candidate_path"
+          python3 -m json.tool "$candidate_path" >/dev/null
+          artifact_dir="$RUNNER_TEMP/daily-research-candidates"
+          install -d "$artifact_dir"
+          install -m 0644 "$candidate_path" "$artifact_dir/update-candidates.json"
       - name: Validate package
         run: |
+          set -euo pipefail
           python3 mlx-model-porting/scripts/audit_skill.py --strict mlx-model-porting
           python3 mlx-model-porting/scripts/validate_sources.py mlx-model-porting
           PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s tests -v
+      - name: Upload complete candidate artifact
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: daily-research-candidates
+          path: ${{ runner.temp }}/daily-research-candidates/update-candidates.json
+          if-no-files-found: error
+          retention-days: 1
+
+  publish:
+    needs: collect
+    permissions:
+      actions: read
+      contents: write
+      pull-requests: write
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
+        with:
+          python-version: "3.12"
+      - name: Download complete candidate artifact
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: daily-research-candidates
+          path: ${{ runner.temp }}/daily-research-candidates
       - name: Open or update review PR
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          if git diff --quiet -- mlx-model-porting/assets/update-candidates.json; then
-            echo "No candidate diff"
+          set -euo pipefail
+          candidate_path="$RUNNER_TEMP/daily-research-candidates/update-candidates.json"
+          automation_snapshot_path="$RUNNER_TEMP/current-automation-update-candidates.json"
+          branch="automation/daily-mlx-research"
+          default_branch="${{ github.event.repository.default_branch }}"
+          python3 -m json.tool "$candidate_path" >/dev/null
+          if cmp -s "$candidate_path" mlx-model-porting/assets/update-candidates.json; then
+            pr_number="$(gh pr list --state open --head "$branch" --json number --jq '.[0].number // empty')"
+            if [ -n "$pr_number" ]; then
+              gh pr close "$pr_number" --delete-branch \
+                --comment "Closing stale daily research state because candidates returned to the default-branch snapshot."
+            elif git ls-remote --exit-code --heads origin "$branch" >/dev/null 2>&1; then
+              git push origin --delete "$branch"
+            fi
+            echo "No candidate diff; stale automation state is closed"
             exit 0
           fi
-          branch="automation/daily-mlx-research"
+
+          if gh api \
+            -H "Accept: application/vnd.github.raw+json" \
+            "repos/${GITHUB_REPOSITORY}/contents/mlx-model-porting/assets/update-candidates.json?ref=automation%2Fdaily-mlx-research" \
+            > "$automation_snapshot_path"; then
+            python3 -m json.tool "$automation_snapshot_path" >/dev/null
+            if cmp -s "$candidate_path" "$automation_snapshot_path"; then
+              pr_number="$(gh pr list --state open --head "$branch" --json number --jq '.[0].number // empty')"
+              if [ -z "$pr_number" ]; then
+                gh pr create \
+                  --base "$default_branch" \
+                  --head "$branch" \
+                  --title "Daily MLX research candidates" \
+                  --body "Review-only source changes. This workflow does not modify runbooks, technique status, or merge automatically."
+              fi
+              echo "Automation candidate snapshot is unchanged; branch was not rewritten"
+              exit 0
+            fi
+          elif git ls-remote --exit-code --heads origin "$branch" >/dev/null 2>&1; then
+            echo "Automation branch exists but its candidate snapshot could not be read" >&2
+            exit 1
+          fi
+
+          git checkout -B "$branch" "origin/${default_branch}"
+          install -m 0644 "$candidate_path" mlx-model-porting/assets/update-candidates.json
+          python3 mlx-model-porting/scripts/manifest.py generate
+          python3 mlx-model-porting/scripts/manifest.py check
+
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git checkout -B "$branch"
           git add mlx-model-porting/assets/update-candidates.json
-          python3 mlx-model-porting/scripts/manifest.py generate
           git add MANIFEST.json
           git commit -m "chore: refresh MLX research candidates"
           git push --force-with-lease origin "$branch"

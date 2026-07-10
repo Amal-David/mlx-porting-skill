@@ -67,7 +67,12 @@ class ScenarioHarnessTests(unittest.TestCase):
 
                 # 4. Optimization inclusion/exclusion for this family.
                 rec = tmp / f"{name}_rec.json"
-                run_script("recommend_optimizations.py", inspection, "--output", rec, "--limit", 50)
+                recommendation_args: list[object] = [inspection, "--output", rec, "--limit", 50]
+                if "target_profile" in case:
+                    profile = tmp / f"{name}_target_profile.json"
+                    profile.write_text(json.dumps(case["target_profile"]), encoding="utf-8")
+                    recommendation_args.extend(["--target-profile", profile])
+                run_script("recommend_optimizations.py", *recommendation_args)
                 report = json.loads(rec.read_text())
                 surfaced = {m["id"] for m in report["ready_candidates"] + report["research_candidates"]}
                 self.assertIn(case["optimization_must_include"], surfaced, f"{name}: missing must-include")

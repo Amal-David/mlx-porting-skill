@@ -1,0 +1,15 @@
+{
+  "name": "ambiguous-synthetic-route",
+  "config": {
+    "model_type": "mamba_bert",
+    "architectures": ["MambaEncoder"],
+    "hidden_size": 768,
+    "layer_types": ["mamba", "encoder"],
+    "license": "apache-2.0"
+  },
+  "tensor_keys": [
+    "backbone.layers.0.mixer.A_log",
+    "pooler.dense.weight"
+  ],
+  "expected_status": "ambiguous"
+}

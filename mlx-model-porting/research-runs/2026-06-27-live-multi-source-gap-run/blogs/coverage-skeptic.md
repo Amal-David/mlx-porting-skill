@@ -29,9 +29,9 @@ Look for blind spots, unsupported architecture families, missing validation gate
 - repo_local_audit: Tooling tests [local-file] - ../tests/test_tooling.py
 
 ## Sources sampled
-- Local architectures registry (file:///Users/amal/Downloads/mlx-porting-skill/mlx-model-porting/assets/architectures.yaml, accessed 2026-06-27)
-- Local golden scenario harness (file:///Users/amal/Downloads/mlx-porting-skill/tests/test_scenarios.py, accessed 2026-06-27)
-- Local research backlog (file:///Users/amal/Downloads/mlx-porting-skill/mlx-model-porting/assets/research_backlog.json, accessed 2026-06-27)
+- Local architectures registry (file://<repo-root>/mlx-model-porting/assets/architectures.yaml, accessed 2026-06-27)
+- Local golden scenario harness (file://<repo-root>/tests/test_scenarios.py, accessed 2026-06-27)
+- Local research backlog (file://<repo-root>/mlx-model-porting/assets/research_backlog.json, accessed 2026-06-27)
 - MLX examples: CIFAR and ResNets (https://github.com/ml-explore/mlx-examples/tree/main/cifar, accessed 2026-06-27)
 - MLX examples: Segment Anything (https://github.com/ml-explore/mlx-examples/tree/main/segment_anything, accessed 2026-06-27)
 - MLX examples: Graph Convolutional Network (https://github.com/ml-explore/mlx-examples/tree/main/gcn, accessed 2026-06-27)

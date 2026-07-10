@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import contextlib
+import hashlib
 import io
 import json
 import os
@@ -50,6 +51,134 @@ def run_script(name: str, *args: object, expected: int = 0) -> SimpleNamespace:
             f"stdout:\n{stdout.getvalue()}\nstderr:\n{stderr.getvalue()}"
         )
     return SimpleNamespace(returncode=code, stdout=stdout.getvalue(), stderr=stderr.getvalue())
+
+
+def trusted_inspection_fixture(
+    families: list[str],
+    *,
+    model_type: str = "synthetic",
+    traits: list[str] | None = None,
+    blockers: list[str] | None = None,
+    runbooks: list[str] | None = None,
+) -> dict[str, object]:
+    """Build a complete synthetic inspect_model.py report for downstream contract tests."""
+    resolved_blockers = list(blockers or [])
+    primary = families[0] if families else None
+    resolved_runbooks = runbooks or [f"references/runbook-{family}.md" for family in families]
+    recommended = not resolved_blockers and primary is not None
+    manifest = [
+        {"path": "config.json", "size_bytes": 128, "sha256": "1" * 64},
+        {"path": "model.safetensors", "size_bytes": 12, "sha256": "2" * 64},
+    ]
+    canonical_identity = json.dumps(
+        {"schema_version": 1, "files": manifest},
+        ensure_ascii=True,
+        separators=(",", ":"),
+        sort_keys=True,
+    ).encode("utf-8")
+    return {
+        "schema_version": 1,
+        "generated_at": "2026-07-10T00:00:00+00:00",
+        "inspection_mode": "static-no-model-import",
+        "source": {
+            "kind": "local",
+            "input": "synthetic-model",
+            "revision": "a" * 40,
+        },
+        "artifact_identity": {
+            "schema_version": 1,
+            "algorithm": "sha256-tree-v1",
+            "status": "verified",
+            "immutable": True,
+            "fingerprint": "sha256:" + hashlib.sha256(canonical_identity).hexdigest(),
+            "file_count": len(manifest),
+            "total_bytes": sum(record["size_bytes"] for record in manifest),
+            "manifest": manifest,
+            "errors": [],
+        },
+        "local_path": "synthetic-model",
+        "configs": {"config.json": {"model_type": model_type, "license": "apache-2.0"}},
+        "file_summary": {
+            "count": 2,
+            "truncated": False,
+            "extensions": {".json": 1, ".safetensors": 1},
+            "files": [
+                {"path": "config.json", "size_bytes": 128, "suffix": ".json"},
+                {"path": "model.safetensors", "size_bytes": 12, "suffix": ".safetensors"},
+            ],
+        },
+        "tensor_summary": {
+            "count": 1,
+            "parameters": 1,
+            "estimated_bytes": 4,
+            "dtypes": {"F32": 1},
+            "files": {"model.safetensors": 1},
+            "metadata": {},
+            "errors": [],
+            "integrity_ok": True,
+        },
+        "tensors": [],
+        "source_format_summary": {
+            "count": 0,
+            "formats": [],
+            "errors": [],
+            "integrity_ok": True,
+            "aggregate": {
+                "artifact_count": 0,
+                "inspected_bytes": 0,
+                "artifact_limit": 256,
+                "byte_limit": 536870912,
+            },
+            "manifests": [],
+        },
+        "architecture_candidates": [
+            {
+                "family": family,
+                "score": 20.0 - index,
+                "confidence": 1.0,
+                "runbook": resolved_runbooks[index] if index < len(resolved_runbooks) else None,
+                "targets": [],
+                "state": "must be documented",
+                "evidence": ["synthetic exact identity"],
+                "notes": "",
+            }
+            for index, family in enumerate(families)
+        ],
+        "architecture_profile": None,
+        "architecture_traits": list(traits or []),
+        "routing_decision": {
+            "status": "recommended",
+            "minimum_score": 8.0,
+            "minimum_margin": 2.0,
+            "winner_family": primary,
+            "winner_score": 20.0 if primary else 0.0,
+            "runner_up_family": families[1] if len(families) > 1 else None,
+            "runner_up_score": 15.0 if len(families) > 1 else None,
+            "winner_margin": 5.0 if len(families) > 1 else None,
+            "reasons": [],
+        },
+        "recommended_family": primary if recommended else None,
+        "recommended_runbook": resolved_runbooks[0] if recommended and resolved_runbooks else None,
+        "recommended_families": list(families) if recommended else [],
+        "recommended_runbooks": list(resolved_runbooks) if recommended else [],
+        "recommendation_blockers": resolved_blockers,
+        "license": {
+            "declared": [{"source": "config.json", "value": "apache-2.0"}],
+            "license_files": [],
+            "file_evidence": [],
+            "accepted_evidence": [{
+                "kind": "declaration",
+                "source": "config.json",
+                "value": "apache-2.0",
+            }],
+            "status": "acceptable-evidence",
+            "requires_review": False,
+            "compatibility_assessed": False,
+            "reasons": [],
+        },
+        "risks": [],
+        "limitations": [],
+    }
 
 
 def proto_varint(value: int) -> bytes:
@@ -161,7 +290,8 @@ class ToolingTests(unittest.TestCase):
         result = run_script("validate_sources.py", SKILL)
         report = json.loads(result.stdout)
         self.assertTrue(report["ok"], report)
-        self.assertEqual(report["sources"], 349)
+        source_count = len(json.loads((SKILL / "assets" / "sources.yaml").read_text())["sources"])
+        self.assertEqual(report["sources"], source_count)
         self.assertEqual(report["optimization_methods"], 27)
         self.assertEqual(report["optimization_stacks"], 4)
         self.assertTrue(report["recommendation_taxonomy"])
@@ -192,13 +322,13 @@ class ToolingTests(unittest.TestCase):
                 self.assertTrue(step_ids)
                 self.assertTrue(step_ids.issubset(method_ids))
                 compound = stack["compound"]
+                self.assertIs(compound["measured_together"], False)
+                self.assertEqual(compound["receipts"], [])
                 if stack["id"] == "dense-decoder-inference":
-                    self.assertIs(compound["measured_together"], True)
-                    self.assertEqual(compound["receipts"][0]["label"], "stack-measured-together")
-                    self.assertIn("plain 4-bit", compound["receipts"][0]["basis"])
-                else:
-                    self.assertIs(compound["measured_together"], False)
-                    self.assertEqual(compound["receipts"], [])
+                    rejected = stack["observed_configurations"][0]
+                    self.assertEqual(rejected["decision"], "rejected")
+                    self.assertEqual(rejected["measured_ratio"], "0.33x")
+                    self.assertIn("not a measurement", rejected["basis"])
                 compound_shape = {key: value for key, value in compound.items() if key != "receipts"}
                 self.assertIsNone(numeric_range.search(json.dumps(compound_shape)))
                 for note in stack["composition_notes"]:
@@ -224,13 +354,28 @@ class ToolingTests(unittest.TestCase):
                 result = run_script("validate_sources.py", tmp_skill, expected=1)
                 self.assertIn(expected, result.stdout)
 
-    def test_improvement_band_floor_policy_allows_local_receipted_floor_only(self) -> None:
+    def test_improvement_band_floor_policy_rejects_unpromoted_local_receipts(self) -> None:
         cases = (
-            ("local-reproduced-with-receipts", "local_reproduced", "keep", 0),
-            ("source-reported", "source_reported", "remove", 1),
-            ("local-reproduced-without-receipts", "local_reproduced", "empty", 1),
+            (
+                "local-reproduced-with-receipts",
+                "local_reproduced",
+                "keep",
+                "is not backed by a local-promotion effective claim",
+            ),
+            (
+                "source-reported",
+                "source_reported",
+                "remove",
+                "improvement_band range must start at 1.0x unless local_reproduced has receipts",
+            ),
+            (
+                "local-reproduced-without-receipts",
+                "local_reproduced",
+                "empty",
+                "improvement_band range must start at 1.0x unless local_reproduced has receipts",
+            ),
         )
-        for name, provenance, receipt_mode, expected in cases:
+        for name, provenance, receipt_mode, expected_error in cases:
             with self.subTest(case=name), tempfile.TemporaryDirectory() as tmp:
                 tmp_skill = Path(tmp) / "skill"
                 shutil.copytree(SKILL / "assets", tmp_skill / "assets")
@@ -247,9 +392,51 @@ class ToolingTests(unittest.TestCase):
                     band["receipts"] = []
                 guidance_path.write_text(json.dumps(guidance, indent=2) + "\n")
 
-                result = run_script("validate_sources.py", tmp_skill, expected=expected)
-                if expected:
-                    self.assertIn("improvement_band range must start at 1.0x unless local_reproduced has receipts", result.stdout)
+                result = run_script("validate_sources.py", tmp_skill, expected=1)
+                self.assertIn(expected_error, result.stdout)
+
+    def test_source_reported_ranges_cannot_be_marked_profile_eligible(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_skill = Path(tmp) / "skill"
+            shutil.copytree(SKILL / "assets", tmp_skill / "assets")
+            guidance_path = tmp_skill / "assets" / "optimization_guidance.yaml"
+            guidance = json.loads(guidance_path.read_text())
+            method = next(
+                item for item in guidance["methods"]
+                if item["id"] == "continuous-batching-serving"
+            )
+            band = method["improvement_band"]
+            band["provenance"] = "source_reported"
+            band["claim_status"] = "eligible-with-profile"
+            band["range"] = band.pop("observed_source_range")
+            guidance_path.write_text(json.dumps(guidance, indent=2) + "\n")
+
+            result = run_script("validate_sources.py", tmp_skill, expected=1)
+            self.assertIn(
+                "source_reported improvement_band for continuous-batching-serving "
+                "must remain held until locally reproduced",
+                result.stdout,
+            )
+
+    def test_supported_method_status_requires_classified_compatible_evidence(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_skill = Path(tmp) / "skill"
+            shutil.copytree(SKILL / "assets", tmp_skill / "assets")
+            guidance_path = tmp_skill / "assets" / "optimization_guidance.yaml"
+            guidance = json.loads(guidance_path.read_text())
+            method = next(
+                item for item in guidance["methods"]
+                if item["id"] == "generic-audio-prefix-cache"
+            )
+            method["status"] = "proven-mlx-port"
+            guidance_path.write_text(json.dumps(guidance, indent=2) + "\n")
+
+            result = run_script("validate_sources.py", tmp_skill, expected=1)
+            self.assertIn(
+                "optimization guidance method generic-audio-prefix-cache status proven-mlx-port "
+                "lacks synthesized pinned supporting evidence",
+                result.stdout,
+            )
 
     def test_model_outcome_registry_covers_top_snapshot_without_false_decoder_routes(self) -> None:
         sources = {source["id"] for source in json.loads((SKILL / "assets" / "sources.yaml").read_text())["sources"]}
@@ -269,16 +456,27 @@ class ToolingTests(unittest.TestCase):
                 self.assertIn("potential_speedup", record)
                 self.assertIn("overall", record["potential_speedup"])
                 self.assertIn("speculative_decoding", record["potential_speedup"])
-                self.assertRegex(record["potential_speedup"]["overall"]["range"], r"\d+(?:\.\d+)?x-\d+(?:\.\d+)?x")
-                self.assertRegex(record["potential_speedup"]["speculative_decoding"]["range"], r"\d+(?:\.\d+)?x-\d+(?:\.\d+)?x")
+                for claim_name in ("overall", "speculative_decoding"):
+                    claim = record["potential_speedup"][claim_name]
+                    if claim.get("provenance") in {"profile_required", "performance_observation"}:
+                        self.assertIsNone(claim.get("range"))
+                    else:
+                        self.assertRegex(claim["range"], r"\d+(?:\.\d+)?x-\d+(?:\.\d+)?x")
                 self.assertTrue(record["potential_speedup"]["overall"]["applies_when"])
                 self.assertTrue(record["potential_speedup"]["overall"]["measure"])
                 self.assertTrue(record["next_validation"])
                 self.assertTrue(set(record["source_ids"]).issubset(sources | local_sources))
 
         decoder = next(record for record in outcomes["records"] if record["id"] == "decoder-mlx-lm-working-route")
-        self.assertEqual(decoder["potential_speedup"]["overall"]["range"], "1.0x-4.3x")
-        self.assertEqual(decoder["potential_speedup"]["speculative_decoding"]["range"], "1.0x-1.3x")
+        overall = decoder["potential_speedup"]["overall"]
+        self.assertIsNone(overall["range"])
+        self.assertEqual(overall["provenance"], "profile_required")
+        self.assertEqual(overall["observed_source_range"], "1.0x-4.3x")
+        self.assertEqual(overall["claim_status"], "held")
+        speculative = decoder["potential_speedup"]["speculative_decoding"]
+        self.assertIsNone(speculative["range"])
+        self.assertEqual(speculative["provenance"], "performance_observation")
+        self.assertEqual(speculative["observed_source_range"], "1.0x-1.3x")
 
         by_id = {model["id"]: model for model in snapshot["models"]}
         self.assertIn("decoder-mlx-lm-working-route", by_id["Qwen/Qwen3-0.6B"]["matched_outcome_ids"])
@@ -472,16 +670,28 @@ class ToolingTests(unittest.TestCase):
     def test_port_plan_is_architecture_and_evidence_aware(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             inspection = Path(tmp) / "inspection.json"
+            recommendations = Path(tmp) / "recommendations.json"
             plan = Path(tmp) / "PORT_PLAN.md"
             run_script("inspect_model.py", FIXTURES / "models" / "decoder", "--output", inspection)
-            run_script("make_port_plan.py", inspection, "--output", plan)
+            run_script("recommend_optimizations.py", inspection, "--output", recommendations)
+            run_script(
+                "make_port_plan.py",
+                inspection,
+                "--artifact-root",
+                FIXTURES / "models" / "decoder",
+                "--recommendations",
+                recommendations,
+                "--output",
+                plan,
+            )
             text = plan.read_text()
             self.assertIn("dense-decoder-transformer", text)
             self.assertIn("runbook-decoder-transformer.md", text)
             self.assertIn("Source oracle", text)
-            self.assertIn("Optimization shortlist", text)
-            self.assertIn("Expected effect", text)
-            self.assertIn("Research candidates", text)
+            self.assertIn("Optimization advice", text)
+            self.assertIn("recommend_optimizations.py", text)
+            self.assertNotIn("Expected effect", text)
+            self.assertIn("Experimental approaches", text)
             self.assertIn("Stop conditions", text)
 
     def test_optimization_recommender_splits_ready_and_research_candidates(self) -> None:
@@ -499,79 +709,99 @@ class ToolingTests(unittest.TestCase):
                 "--limit", 5,
             )
             report = json.loads(output.read_text())
-            self.assertEqual(report["schema_version"], 1)
-            stack = report["recommended_stack"]
+            self.assertEqual(report["schema_version"], 2)
+            stack = report["planning_stack"]
             self.assertEqual(stack["id"], "dense-decoder-inference")
             compound = stack["compound"]
             hypothesis = compound["hypothesis_ceiling"]
-            measured = compound["measured"]
             self.assertEqual(hypothesis["floor"], "1.0x")
-            self.assertEqual(hypothesis["provenance"], "multiplicative_hypothesis")
-            self.assertEqual(
-                hypothesis["flag"],
-                "unmeasured composition - multiplicative hypothesis, not a claim",
-            )
-            self.assertEqual(measured["ratio"], "0.33x")
-            self.assertEqual(measured["provenance"], "local_reproduced")
-            self.assertEqual(measured["receipt"], "stack-measured-together.json")
-            self.assertIn(
-                {"method": "prompt-prefix-cache", "metric": "ttft-proxy", "range": "1.0x-23.8x"},
-                compound["other_metric_upside"],
-            )
-            guidance = {m["id"]: m for m in json.loads((SKILL / "assets" / "optimization_guidance.yaml").read_text())["methods"]}
-            excluded = {method for pair in compound["excluded_conflicts"] for method in pair}
-            same_metric_product = 1.0
-            conflict_excluded_product = 1.0
-            primary_metric = compound["primary_metric"]
-            for step in compound["per_step"]:
-                band = guidance[step["method"]].get("improvement_band")
-                if step["method"] in excluded or not band:
-                    if band and band.get("metric") == primary_metric:
-                        same_metric_product *= parse_band(band["range"])[1]
-                    continue
-                self.assertIn(band["provenance"], {"source_reported", "local_reproduced"})
-                if band.get("metric") != primary_metric:
-                    continue
-                ceiling = parse_band(band["range"])[1]
-                same_metric_product *= ceiling
-                conflict_excluded_product *= ceiling
-            hypothesis_ceiling = float(hypothesis["ceiling"].removesuffix("x"))
-            self.assertAlmostEqual(same_metric_product, 3.432)
-            self.assertAlmostEqual(conflict_excluded_product, 2.64)
-            self.assertLessEqual(hypothesis_ceiling, same_metric_product)
-            self.assertAlmostEqual(hypothesis_ceiling, conflict_excluded_product)
+            self.assertIsNone(hypothesis["ceiling"])
+            self.assertEqual(hypothesis["provenance"], "withheld")
+            self.assertEqual(compound["composition_status"], "withheld")
+            self.assertTrue(compound["withheld_reasons"])
+            self.assertNotIn("measured", compound)
+            rejected = stack["rejected_observations"][0]
+            self.assertEqual(rejected["decision"], "rejected")
+            self.assertEqual(rejected["measured_ratio"], "0.33x")
             ready_ids = {item["id"] for item in report["ready_candidates"]}
             research_ids = {item["id"] for item in report["research_candidates"]}
             self.assertIn("fast-sdpa", ready_ids)
             self.assertNotIn("moe-expert-dispatch-and-quantization", ready_ids)
-            self.assertIn("prompt-lookup-ngram-speculation", research_ids)
+            self.assertIn("eagle-medusa-mtp-drafters", research_ids)
+            self.assertNotIn("prompt-lookup-ngram-speculation", research_ids)
             text = markdown.read_text()
-            self.assertIn("Recommended stack", text)
-            self.assertIn("Measured together: `0.33x`", text)
-            self.assertIn("Hypothesis ceiling: `2.64x`", text)
-            self.assertIn("unmeasured composition - multiplicative hypothesis, not a claim", text)
-            self.assertIn("Workload-conditional upside (different metric): `prompt-prefix-cache` `ttft-proxy` `1.0x-23.8x`", text)
-            self.assertIn("Ready candidates", text)
-            self.assertIn("Research experiments", text)
+            self.assertIn("Optimization experiment plan", text)
+            self.assertIn("Numeric compound: **withheld**", text)
+            self.assertIn("Rejected observed configurations", text)
+            self.assertNotIn("Hypothesis ceiling: `2.64x`", text)
+            self.assertNotIn("Measured together: `0.33x`", text)
+            self.assertIn("Validated by source or theory", text)
+            self.assertIn("Experimental approaches", text)
 
     def test_optimization_recommender_selects_specific_exact_stack_for_moe(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             tmp_path = Path(tmp)
             inspection = tmp_path / "inspection.json"
             output = tmp_path / "recommendations.json"
+            profile = tmp_path / "target-profile.json"
+            profile.write_text(json.dumps({
+                "schema_version": 1,
+                "hardware": {},
+                "software": {},
+                "capabilities": [],
+                "workloads": ["concurrent-serving"],
+            }))
             run_script("inspect_model.py", FIXTURES / "models" / "moe", "--output", inspection)
-            run_script("recommend_optimizations.py", inspection, "--output", output, "--limit", 5)
+            run_script(
+                "recommend_optimizations.py",
+                inspection,
+                "--target-profile",
+                profile,
+                "--output",
+                output,
+                "--limit",
+                5,
+            )
             report = json.loads(output.read_text())
             self.assertEqual(report["family"], "moe-decoder-transformer")
-            self.assertEqual(report["recommended_stack"]["id"], "moe-serving")
+            self.assertEqual(report["planning_stack"]["id"], "moe-serving")
+
+    def test_workload_specific_vlm_stack_is_not_selected_by_family_or_memory_objective_alone(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            inspection = Path(tmp) / "inspection.json"
+            inspection.write_text(json.dumps(trusted_inspection_fixture(
+                ["vision-language-omni"],
+                model_type="llava",
+            )))
+            report = json.loads(run_script(
+                "recommend_optimizations.py",
+                inspection,
+                "--objective",
+                "peak-memory",
+            ).stdout)
+            self.assertNotIn("planning_stack", report)
+            self.assertNotIn(
+                "vision-feature-cache",
+                {candidate["id"] for candidate in report["ready_candidates"]},
+            )
 
     def test_compose_stack_band_matches_shared_fixture_and_excludes_conflicts(self) -> None:
         case = load_structured(FIXTURES / "stack_compose_case.json")
-        actual = compose_stack_band(case["stack"], case["guidance_methods"])
-        self.assertEqual(actual, case["expected"])
-        self.assertEqual(actual["hypothesis_ceiling"]["provenance"], "multiplicative_hypothesis")
-        self.assertEqual(actual["measured"]["provenance"], "local_reproduced")
-        self.assertEqual(actual["other_metric_upside"], [{"method": "ttft-method", "metric": "ttft-proxy", "range": "1.0x-9.0x"}])
+        actual = compose_stack_band(
+            case["stack"],
+            case["guidance_methods"],
+            case["receipt_assessments"],
+        )
+        self.assertEqual(actual["composition_status"], "withheld")
+        self.assertIsNone(actual["hypothesis_ceiling"]["ceiling"])
+        self.assertEqual(actual["hypothesis_ceiling"]["provenance"], "withheld")
+        self.assertTrue(any("known-conflicting" in reason for reason in actual["withheld_reasons"]))
+        self.assertNotIn("measured", actual)
+        self.assertEqual(actual["measured_evidence"][0]["classification"], "performance_observation")
+        self.assertEqual(actual["other_metric_upside"], [])
+        self.assertTrue(
+            any("effective_claims numeric authority" in reason for reason in actual["withheld_reasons"])
+        )
 
     def test_parse_band_rejects_malformed_input(self) -> None:
         for value in ("1.0-3.0x", "fast", "3.0x-1.0x", "0x-1.0x"):
@@ -634,7 +864,7 @@ class ToolingTests(unittest.TestCase):
     def test_block_weight_streaming_is_scoped_to_repeated_block_memory_pressure(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             inspection = Path(tmp) / "inspection.json"
-            inspection.write_text(json.dumps({"recommended_family": "diffusion-flow"}))
+            inspection.write_text(json.dumps(trusted_inspection_fixture(["diffusion-flow"])))
             diffusion = json.loads(run_script(
                 "recommend_optimizations.py", inspection,
                 "--objective", "peak-memory", "--limit", 50,
@@ -642,7 +872,7 @@ class ToolingTests(unittest.TestCase):
             diffusion_ready = {m["id"] for m in diffusion["ready_candidates"]}
             self.assertIn("block-weight-streaming", diffusion_ready)
 
-            inspection.write_text(json.dumps({"recommended_family": "dense-decoder-transformer"}))
+            inspection.write_text(json.dumps(trusted_inspection_fixture(["dense-decoder-transformer"])))
             decoder = json.loads(run_script(
                 "recommend_optimizations.py", inspection,
                 "--objective", "peak-memory", "--limit", 50,
@@ -653,7 +883,7 @@ class ToolingTests(unittest.TestCase):
     def test_grid_sample_kernel_is_scoped_to_spatial_ports(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             inspection = Path(tmp) / "inspection.json"
-            inspection.write_text(json.dumps({"recommended_family": "diffusion-flow"}))
+            inspection.write_text(json.dumps(trusted_inspection_fixture(["diffusion-flow"])))
             diffusion = json.loads(run_script(
                 "recommend_optimizations.py", inspection,
                 "--objective", "latency", "--limit", 50,
@@ -661,7 +891,7 @@ class ToolingTests(unittest.TestCase):
             diffusion_ready = {m["id"] for m in diffusion["ready_candidates"]}
             self.assertIn("spatial-grid-sample-kernel", diffusion_ready)
 
-            inspection.write_text(json.dumps({"recommended_family": "dense-decoder-transformer"}))
+            inspection.write_text(json.dumps(trusted_inspection_fixture(["dense-decoder-transformer"])))
             decoder = json.loads(run_script(
                 "recommend_optimizations.py", inspection,
                 "--objective", "latency", "--limit", 50,
@@ -685,7 +915,7 @@ class ToolingTests(unittest.TestCase):
     def test_recommender_rejects_cuda_only_method(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             inspection = Path(tmp) / "inspection.json"
-            inspection.write_text(json.dumps({"recommended_family": "dense-decoder-transformer"}))
+            inspection.write_text(json.dumps(trusted_inspection_fixture(["dense-decoder-transformer"])))
             result = run_script("recommend_optimizations.py", inspection, "--limit", 50)
             report = json.loads(result.stdout)
             ready = {m["id"] for m in report["ready_candidates"]}
@@ -699,38 +929,96 @@ class ToolingTests(unittest.TestCase):
     def test_recommender_holds_candidates_when_intake_blocked(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             inspection = Path(tmp) / "inspection.json"
-            inspection.write_text(json.dumps({
-                "recommended_family": "dense-decoder-transformer",
-                "recommendation_blockers": ["high: remote-code auto_map present"],
-            }))
-            blocked = json.loads(run_script("recommend_optimizations.py", inspection).stdout)
+            inspection.write_text(json.dumps(trusted_inspection_fixture(
+                ["dense-decoder-transformer"],
+                blockers=["high: remote-code auto_map present"],
+            )))
+            blocked = json.loads(run_script(
+                "recommend_optimizations.py",
+                inspection,
+                "--family",
+                "dense-decoder-transformer",
+            ).stdout)
             self.assertTrue(blocked["blocked"])
             self.assertEqual(blocked["ready_candidates"], [])
             self.assertEqual(blocked["research_candidates"], [])
-            self.assertNotIn("recommended_stack", blocked)
-            self.assertEqual(blocked["held_recommended_stack"]["id"], "dense-decoder-inference")
+            self.assertTrue(all(not items for items in blocked["advisor_buckets"].values()))
+            self.assertNotIn("planning_stack", blocked)
+            self.assertEqual(blocked["held_planning_stack"]["id"], "dense-decoder-inference")
             self.assertTrue(blocked["held_candidates"])
-            allowed = json.loads(run_script("recommend_optimizations.py", inspection, "--allow-blocked").stdout)
-            self.assertFalse(allowed["blocked"])
+            allowed = json.loads(run_script(
+                "recommend_optimizations.py",
+                inspection,
+                "--family",
+                "dense-decoder-transformer",
+                "--allow-blocked",
+            ).stdout)
+            self.assertTrue(allowed["blocked"])
+            self.assertTrue(allowed["blocked_advice_visible"])
             self.assertTrue(allowed["ready_candidates"])
-            self.assertEqual(allowed["recommended_stack"]["id"], "dense-decoder-inference")
+            self.assertTrue(all(not candidate["execution_allowed"] for candidate in allowed["ready_candidates"]))
+            self.assertEqual(allowed["held_planning_stack"]["id"], "dense-decoder-inference")
+            self.assertTrue(
+                all(not step["execution_allowed"] for step in allowed["held_planning_stack"]["steps"])
+            )
+
+    def test_port_plan_never_bypasses_exact_advisor_or_effective_claims(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            inspection = Path(tmp) / "inspection.json"
+            plan = Path(tmp) / "PORT_PLAN.md"
+            model = FIXTURES / "models" / "autoregressive_audio_lm"
+            run_script("inspect_model.py", model, "--output", inspection)
+            run_script(
+                "make_port_plan.py",
+                inspection,
+                "--artifact-root",
+                model,
+                "--output",
+                plan,
+            )
+            text = plan.read_text()
+            self.assertIn("recommend_optimizations.py", text)
+            self.assertIn("No optimization candidates are embedded", text)
+            self.assertNotIn("Proven/native optimization candidates", text)
+            for held_range in ("1.67x", "5.45x", "28.0x", "4.3x"):
+                self.assertNotIn(held_range, text)
 
     def test_recommender_requires_family_and_respects_overrides(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             inspection = Path(tmp) / "inspection.json"
             inspection.write_text(json.dumps({"recommendation_blockers": []}))
-            # No family anywhere -> hard error, not a silent empty shortlist.
-            run_script("recommend_optimizations.py", inspection, expected=2)
-            # --family override + schema_version + gated stdout (no print when --output is set).
+            # Missing safety/provenance fields fail closed, even with a family override.
+            missing = run_script("recommend_optimizations.py", inspection, expected=2)
+            self.assertIn("Untrusted inspection report", missing.stderr)
+            overridden_missing = run_script(
+                "recommend_optimizations.py",
+                inspection,
+                "--family",
+                "moe-decoder-transformer",
+                expected=2,
+            )
+            self.assertIn("Untrusted inspection report", overridden_missing.stderr)
+            plan_missing = run_script(
+                "make_port_plan.py",
+                inspection,
+                "--family",
+                "moe-decoder-transformer",
+                "--output",
+                Path(tmp) / "PORT_PLAN.md",
+                expected=2,
+            )
+            self.assertIn("Untrusted inspection report", plan_missing.stderr)
+
+            inspection.write_text(json.dumps(trusted_inspection_fixture(["dense-decoder-transformer"])))
+            # A family override cannot invent a route that static inspection did not observe.
             output = Path(tmp) / "rec.json"
             result = run_script(
                 "recommend_optimizations.py", inspection,
                 "--family", "moe-decoder-transformer", "--output", output,
+                expected=2,
             )
-            self.assertEqual(result.stdout.strip(), "")
-            report = json.loads(output.read_text())
-            self.assertEqual(report["schema_version"], 1)
-            self.assertEqual(report["family"], "moe-decoder-transformer")
+            self.assertIn("not present in the trusted inspection candidates", result.stderr)
+            self.assertFalse(output.exists())
             # --objective filter narrows to methods that carry that objective.
             filtered = json.loads(run_script(
                 "recommend_optimizations.py", inspection,
@@ -745,9 +1033,20 @@ class ToolingTests(unittest.TestCase):
     def test_port_plan_excludes_rejected_methods(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             inspection = Path(tmp) / "inspection.json"
+            recommendations = Path(tmp) / "recommendations.json"
             plan = Path(tmp) / "PORT_PLAN.md"
             run_script("inspect_model.py", FIXTURES / "models" / "decoder", "--output", inspection)
-            run_script("make_port_plan.py", inspection, "--output", plan)
+            run_script("recommend_optimizations.py", inspection, "--output", recommendations)
+            run_script(
+                "make_port_plan.py",
+                inspection,
+                "--artifact-root",
+                FIXTURES / "models" / "decoder",
+                "--recommendations",
+                recommendations,
+                "--output",
+                plan,
+            )
             self.assertNotIn("cuda-graphs-decode-capture", plan.read_text())
 
     def test_pipeline_chains_inspect_to_plan_recommend_and_validate(self) -> None:
@@ -760,11 +1059,19 @@ class ToolingTests(unittest.TestCase):
             data = json.loads(inspection.read_text())
             self.assertTrue(data["tensors"])
 
-            run_script("make_port_plan.py", inspection, "--output", tmp / "PORT_PLAN.md")
-
             rec = tmp / "rec.json"
             run_script("recommend_optimizations.py", inspection, "--output", rec)
-            self.assertEqual(json.loads(rec.read_text())["schema_version"], 1)
+            self.assertEqual(json.loads(rec.read_text())["schema_version"], 2)
+            run_script(
+                "make_port_plan.py",
+                inspection,
+                "--artifact-root",
+                FIXTURES / "models" / "decoder",
+                "--recommendations",
+                rec,
+                "--output",
+                tmp / "PORT_PLAN.md",
+            )
 
             # inspection.json is itself a valid --source manifest for validate_weight_map.
             target = {"tensors": [{"key": t["key"], "shape": t["shape"]} for t in data["tensors"]]}
@@ -1320,8 +1627,27 @@ class ToolingTests(unittest.TestCase):
             self.assertGreater(graph["edge_count"], 0)
             self.assertTrue(delta["policy"]["review_only"])
             self.assertTrue(delta["gap_hints"])
-            known_locators = {item["locator"] for item in delta["already_read_sources"]}
-            self.assertIn("https://arxiv.org/abs/2211.17192", known_locators)
+            updated_by_locator = {
+                item["locator"]: item for item in delta["updated_sources"]
+            }
+            unpinned_known = updated_by_locator["https://arxiv.org/abs/2211.17192"]
+            self.assertEqual(unpinned_known["revision"], "v1")
+            self.assertEqual(
+                unpinned_known["immutable_locator"],
+                "https://arxiv.org/abs/2211.17192v1",
+            )
+            self.assertEqual(unpinned_known["revision_comparison"], {
+                "before": None,
+                "after": "v1",
+                "status": "comparison_unpinned",
+                "basis": "source_registry",
+            })
+            self.assertTrue(any(
+                edge["source"] == unpinned_known["id"]
+                and edge["target"] == unpinned_known["known_source_id"]
+                and edge["relation"] == "candidate_version_of"
+                for edge in graph["edges"]
+            ))
             unread_labels = {item["label"] for item in delta["new_unread_sources"]}
             self.assertIn("Fixture Speculative Decoding for MLX", unread_labels)
             lead_targets = {
@@ -1331,6 +1657,273 @@ class ToolingTests(unittest.TestCase):
             }
             self.assertIn("approach:draft-model-speculation", lead_targets)
             self.assertIn("New Approach Leads", markdown_path.read_text())
+
+    def test_knowledge_curator_preserves_arxiv_revision_and_detects_drift(self) -> None:
+        import knowledge_curator
+
+        source = knowledge_curator.source_node({
+            "id": "fixture-versioned-paper",
+            "title": "Versioned paper",
+            "url": "https://arxiv.org/abs/2601.12345v1",
+            "kind": "paper",
+            "review_depth": "synthesized",
+            "snapshot": "2601.12345v1",
+        })
+        known = {source["locator"]: source}
+        candidate = {
+            "id": "http://arxiv.org/abs/2601.12345v2",
+            "title": "Versioned paper",
+            "updated": "2026-07-10T00:00:00Z",
+        }
+
+        node, state = knowledge_curator.candidate_node_from_paper(
+            candidate,
+            known,
+            set(),
+            {},
+        )
+
+        self.assertEqual(state, "updated_candidate")
+        self.assertEqual(node["locator"], "https://arxiv.org/abs/2601.12345")
+        self.assertEqual(node["immutable_locator"], "https://arxiv.org/abs/2601.12345v2")
+        self.assertEqual(node["revision"], "v2")
+        self.assertEqual(node["revision_comparison"], {
+            "before": "v1",
+            "after": "v2",
+            "status": "changed",
+            "basis": "source_registry",
+        })
+
+        delta = {
+            "already_read_sources": [],
+            "new_unread_sources": [],
+            "updated_sources": [],
+            "new_approach_leads": [],
+        }
+        edges: list[dict[str, object]] = []
+        knowledge_curator.append_candidate({}, edges, node, {}, delta)
+        knowledge_curator.add_candidate_lineage(edges, node)
+        self.assertEqual(delta["updated_sources"][0]["revision_comparison"], node["revision_comparison"])
+        self.assertIn(
+            "revision `v1` -> `v2` (changed)",
+            knowledge_curator.markdown_items(delta["updated_sources"])[0],
+        )
+        self.assertEqual(edges, [{
+            "source": node["id"],
+            "target": "source:fixture-versioned-paper",
+            "relation": "candidate_version_of",
+            "revision_comparison": node["revision_comparison"],
+        }])
+
+        same, same_state = knowledge_curator.candidate_node_from_paper(
+            candidate | {"id": "https://arxiv.org/abs/2601.12345v1"},
+            known,
+            set(),
+            {},
+        )
+        self.assertEqual(same_state, "already_read")
+        self.assertEqual(same["revision_comparison"]["status"], "same")
+
+    def test_knowledge_curator_keeps_superseded_methods_out_of_new_leads(self) -> None:
+        import knowledge_curator
+
+        nodes: dict[str, dict[str, object]] = {}
+        edges: list[dict[str, object]] = []
+        terms = knowledge_curator.build_approaches(
+            nodes,
+            edges,
+            {
+                "methods": [
+                    {
+                        "id": "active-content-cache",
+                        "status": "benchmark-required",
+                        "category": "multimodal-serving",
+                        "recommendation": "Cache repeated multimodal content.",
+                    },
+                    {
+                        "id": "superseded-content-cache",
+                        "status": "rejected-or-superseded",
+                        "category": "multimodal-serving",
+                        "recommendation": "Superseded alias for repeated multimodal content caching.",
+                    },
+                ]
+            },
+            {"learnings": []},
+            {"items": []},
+            {"outcomes": []},
+            {},
+        )
+
+        self.assertIn("approach:active-content-cache", terms)
+        self.assertNotIn("approach:superseded-content-cache", terms)
+        self.assertIn("approach:superseded-content-cache", nodes)
+
+    def test_knowledge_curator_matches_pinned_repositories_and_preserves_updates(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_path = Path(tmp)
+            pinned_sha = "a" * 40
+            updated_sha = "b" * 40
+            sources = {
+                "sources": [
+                    {
+                        "id": "fixture-pinned-repo",
+                        "title": "Pinned repository",
+                        "url": f"https://github.com/Fixture/Pinned-Repo/tree/{pinned_sha}",
+                        "kind": "repository",
+                        "owner": "Fixture",
+                        "topics": ["mlx"],
+                        "review_depth": "synthesized",
+                        "snapshot": pinned_sha,
+                    },
+                    {
+                        "id": "fixture-updated-repo",
+                        "title": "Updated repository",
+                        "url": f"https://github.com/Fixture/Updated-Repo/tree/{pinned_sha}",
+                        "kind": "repository",
+                        "owner": "Fixture",
+                        "topics": ["mlx"],
+                        "review_depth": "synthesized",
+                        "snapshot": pinned_sha,
+                    },
+                ]
+            }
+            candidates = {
+                "repositories": [
+                    {
+                        "repo": "fixture/pinned-repo",
+                        "url": "https://github.com/fixture/pinned-repo",
+                        "head_sha": pinned_sha,
+                    },
+                    {
+                        "repo": "fixture/updated-repo",
+                        "url": "https://github.com/fixture/updated-repo",
+                        "head_sha": updated_sha,
+                    },
+                    {
+                        "repo": "fixture/pending-review",
+                        "url": "https://github.com/fixture/pending-review",
+                        "head_sha": updated_sha,
+                    },
+                ],
+                "papers": [],
+            }
+            previous = {
+                "generated_at": "2026-07-09T00:00:00+00:00",
+                "nodes": [
+                    {
+                        "id": "candidate:repository:fixture-pinned-repo",
+                        "locator": "https://github.com/fixture/pinned-repo",
+                        "head_sha": pinned_sha,
+                    },
+                    {
+                        "id": "candidate:repository:fixture-updated-repo",
+                        "locator": "https://github.com/fixture/updated-repo",
+                        "head_sha": pinned_sha,
+                    },
+                    {
+                        "id": "candidate:repository:fixture-pending-review",
+                        "locator": "https://github.com/fixture/pending-review",
+                        "head_sha": updated_sha,
+                        "read_state": "updated_candidate",
+                    },
+                ],
+            }
+            inputs = {
+                "sources.json": sources,
+                "candidates.json": candidates,
+                "guidance.json": {"methods": []},
+                "learnings.json": {"learnings": []},
+                "backlog.json": {"items": []},
+                "outcomes.json": {"records": []},
+                "previous.json": previous,
+            }
+            for name, payload in inputs.items():
+                (tmp_path / name).write_text(json.dumps(payload), encoding="utf-8")
+
+            graph_path = tmp_path / "knowledge_graph.json"
+            delta_path = tmp_path / "knowledge-delta.json"
+            markdown_path = tmp_path / "knowledge-delta.md"
+            run_script(
+                "knowledge_curator.py",
+                "--run-id", "fixture-pinned-repositories",
+                "--sources", tmp_path / "sources.json",
+                "--update-candidates", tmp_path / "candidates.json",
+                "--optimization-guidance", tmp_path / "guidance.json",
+                "--contributor-learnings", tmp_path / "learnings.json",
+                "--research-backlog", tmp_path / "backlog.json",
+                "--model-outcomes", tmp_path / "outcomes.json",
+                "--previous-graph", tmp_path / "previous.json",
+                "--graph-output", graph_path,
+                "--delta-output", delta_path,
+                "--markdown-output", markdown_path,
+            )
+
+            graph = json.loads(graph_path.read_text())
+            delta = json.loads(delta_path.read_text())
+            by_id = {node["id"]: node for node in graph["nodes"]}
+            pinned = by_id["candidate:repository:fixture-pinned-repo"]
+            updated = by_id["candidate:repository:fixture-updated-repo"]
+            pending = by_id["candidate:repository:fixture-pending-review"]
+            source = by_id["source:fixture-pinned-repo"]
+
+            self.assertEqual(pinned["read_state"], "already_read")
+            self.assertEqual(pinned["known_source_id"], "source:fixture-pinned-repo")
+            self.assertEqual(pinned["locator"], "https://github.com/fixture/pinned-repo")
+            self.assertEqual(
+                source["locator"],
+                f"https://github.com/Fixture/Pinned-Repo/tree/{pinned_sha}",
+            )
+            self.assertEqual(updated["read_state"], "updated_candidate")
+            self.assertEqual(updated["known_source_id"], "source:fixture-updated-repo")
+            self.assertEqual(pending["read_state"], "updated_candidate")
+            self.assertEqual(pinned["revision_comparison"], {
+                "before": pinned_sha,
+                "after": pinned_sha,
+                "status": "same",
+                "basis": "source_registry",
+            })
+            self.assertEqual(updated["revision_comparison"], {
+                "before": pinned_sha,
+                "after": updated_sha,
+                "status": "changed",
+                "basis": "source_registry",
+            })
+            self.assertEqual(pending["revision_comparison"], {
+                "before": updated_sha,
+                "after": updated_sha,
+                "status": "same",
+                "basis": "previous_graph",
+            })
+            lineage = {
+                (edge["source"], edge["target"], edge["relation"])
+                for edge in graph["edges"]
+                if edge["relation"] == "candidate_version_of"
+            }
+            self.assertIn(
+                (pinned["id"], "source:fixture-pinned-repo", "candidate_version_of"),
+                lineage,
+            )
+            self.assertIn(
+                (updated["id"], "source:fixture-updated-repo", "candidate_version_of"),
+                lineage,
+            )
+            self.assertIn(
+                "fixture/pinned-repo",
+                {item["label"] for item in delta["already_read_sources"]},
+            )
+            self.assertIn(
+                "fixture/updated-repo",
+                {item["label"] for item in delta["updated_sources"]},
+            )
+            updated_delta = next(
+                item for item in delta["updated_sources"]
+                if item["label"] == "fixture/updated-repo"
+            )
+            self.assertEqual(
+                updated_delta["known_source_id"],
+                "source:fixture-updated-repo",
+            )
+            self.assertEqual(updated_delta["revision_comparison"], updated["revision_comparison"])
 
     def test_nightly_knowledge_curator_scaffolds_graph_and_campaign_offline(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -1654,6 +2247,40 @@ class ToolingTests(unittest.TestCase):
             self.assertIn("Research Campaign campaign-loop", campaign_markdown)
             self.assertIn("ingest command args", campaign_markdown)
             self.assertIn("official-docs-cartographer", campaign_markdown)
+
+    def test_research_loop_campaign_command_paths_are_portable_inside_skill_root(self) -> None:
+        output_dir = Path(tempfile.mkdtemp(prefix="campaign-portable-", dir=SKILL))
+        try:
+            run_script(
+                "research_loop.py",
+                "--run-id", "portable-campaign-loop",
+                "--objective", "Keep campaign rerun commands portable",
+                "--iterations", 2,
+                "--agent-count", 1,
+                "--output-dir", output_dir,
+            )
+            campaign_path = output_dir / "campaign.json"
+            campaign_text = campaign_path.read_text()
+            campaign_markdown = (output_dir / "campaign.md").read_text()
+            self.assertNotIn(str(output_dir), campaign_text)
+            self.assertNotIn(str(SKILL), campaign_text)
+            self.assertNotIn(str(output_dir), campaign_markdown)
+            self.assertNotIn(str(SKILL), campaign_markdown)
+
+            campaign = json.loads(campaign_text)
+            first_wave, second_wave = campaign["waves"]
+            first_output = f"{output_dir.name}/iterations/01"
+            second_output = f"{output_dir.name}/iterations/02"
+            first_command = first_wave["ingest"]["command_args"]
+            second_command = second_wave["ingest"]["command_args"]
+            scaffold = first_wave["next_wave_scaffold"]
+            self.assertEqual(first_command[first_command.index("--output-dir") + 1], first_output)
+            self.assertEqual(second_command[second_command.index("--output-dir") + 1], second_output)
+            self.assertEqual(scaffold["output_dir"], second_output)
+            scaffold_command = scaffold["command_args"]
+            self.assertEqual(scaffold_command[scaffold_command.index("--output-dir") + 1], second_output)
+        finally:
+            shutil.rmtree(output_dir, ignore_errors=True)
 
     def test_research_loop_campaign_manifest_records_iteration_waves(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

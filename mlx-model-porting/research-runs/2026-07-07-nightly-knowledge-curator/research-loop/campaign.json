@@ -294,7 +294,7 @@
           "repo_local_audit",
           "--ingest-subagent-results",
           "--output-dir",
-          "/Users/amal/Downloads/mlx-porting-skill-nightly-2026-07-07/mlx-model-porting/research-runs/2026-07-07-nightly-knowledge-curator/research-loop"
+          "<repo-root>/mlx-model-porting/research-runs/2026-07-07-nightly-knowledge-curator/research-loop"
         ],
         "wait_for_result_paths": [
           "agents/coverage-skeptic.result.json",

@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "reviewed": "2026-06-27",
+  "reviewed": "2026-07-09",
   "statuses": [
     "native-mlx",
     "official-mlx-project",
@@ -678,21 +678,25 @@
     },
     {
       "id": "activation-quant",
-      "title": "Activation quantization",
+      "title": "MLX quantized-input path for supported low-bit modes",
       "category": "quantization",
-      "status": "research-candidate",
+      "status": "native-mlx",
       "applies_to": [
-        "large-transformer"
+        "linear-heavy-models"
       ],
-      "use_when": "Weight-only memory is insufficient and efficient kernels exist.",
-      "avoid_when": "No MLX kernel or activation outliers cause quality collapse.",
-      "validation_gate": "Calibration/quality and true end-to-end MLX speed.",
+      "use_when": "The exact MLX quantization mode documents quantize_input=True support for the target QuantizedLinear or quantized matmul path.",
+      "avoid_when": "Treating generic calibrated activation quantization, arbitrary operators, unsupported modes, or paper-only recipes as native MLX support.",
+      "validation_gate": "Exact mode and group-size support, layer coverage, calibration/quality, load roundtrip, and true end-to-end MLX speed.",
       "evidence": [
+        "mlx-doc-core-quantize",
+        "mlx-doc-nn-quantize",
+        "mlx-doc-quantized-matmul",
         "paper-2211-10438",
         "paper-2404-00456",
         "paper-2405-04532"
       ],
-      "reviewed": "2026-06-23"
+      "reviewed": "2026-07-09",
+      "rollback_condition": "Disable quantized input if the selected MLX mode or layer path does not support it, quality exceeds budget, or end-to-end latency regresses."
     },
     {
       "id": "lora",
@@ -964,7 +968,6 @@
       "evidence": [
         "paper-2606-21842",
         "vllm-blog-anatomy",
-        "sankalp-prompt-cache-blog",
         "vllm-mlx-repo"
       ],
       "reviewed": "2026-06-24"

@@ -1,12 +1,12 @@
 ---
 name: mlx-model-porting
-description: Ports PyTorch/Hugging Face models to Apple MLX, inspects existing local MLX projects, and makes them faster on Apple Silicon. Use when the user asks to run, port, convert, inspect, quantize, benchmark, or fix a model (LLM, VLM, audio/TTS/ASR, diffusion, SSM, MoE) for MLX, MLX-LM, MLX-VLM, MLX-Audio, or a Mac - e.g. "port this HF model to my Mac", "inspect this MLX app", "run Qwen on Apple Silicon", "convert these safetensors to MLX", "make this faster on my M3", "fix NaN in my MLX port", "speed up prefill / KV cache / speculative decoding", "publish an MLX checkpoint". Also use mid-task when a config.json, safetensors index, weight-shape or tokenizer mismatch, or Metal kernel question appears. Do not use for CUDA-only optimization, non-Apple hardware targets, or general PyTorch/ML questions with no MLX or Apple Silicon connection.
+description: Guides and validates architecture-aware ports of PyTorch/Hugging Face models to Apple MLX, inspects existing local MLX projects, and plans evidence-gated optimizations for Apple Silicon. Use when the user asks to run, port, convert, inspect, quantize, benchmark, or fix a model (LLM, VLM, audio/TTS/ASR, diffusion, SSM, MoE) for MLX, MLX-LM, MLX-VLM, MLX-Audio, or a Mac - e.g. "port this HF model to my Mac", "inspect this MLX app", "run Qwen on Apple Silicon", "convert these safetensors to MLX", "make this faster on my M3", "fix NaN in my MLX port", "speed up prefill / KV cache / speculative decoding", "publish an MLX checkpoint". Also use mid-task when a config.json, safetensors index, weight-shape or tokenizer mismatch, or Metal kernel question appears. Do not use for CUDA-only optimization, non-Apple hardware targets, or general PyTorch/ML questions with no MLX or Apple Silicon connection.
 license: Apache-2.0
-compatibility: Execution and performance validation require an Apple Silicon Mac with a supported MLX installation. Planning and static inspection can run elsewhere. Python 3.10+ and git are recommended; network access is optional and must be explicitly enabled.
+compatibility: Execution and performance validation require an Apple Silicon Mac with a supported MLX installation. Planning and static inspection can run elsewhere. Python 3.10+ and git are recommended; NumPy is required only for tensor parity and huggingface-hub only for explicitly enabled network intake (see requirements-tools.txt). Network access is optional and must be explicitly enabled.
 metadata:
   author: mlx-porting-skill
-  version: "0.3.0"
-  last-reviewed: "2026-07-08"
+  version: "0.4.0"
+  last-reviewed: "2026-07-10"
 ---
 
 # MLX model porting and optimization
@@ -69,13 +69,13 @@ Re-consult this map whenever a new signal appears mid-session: a pasted config, 
 
 ### 1. Inspect and classify
 
-For source models, run `scripts/inspect_model.py`, `scripts/make_port_plan.py`, `scripts/recommend_optimizations.py`. For existing MLX projects or already-running ports, run `scripts/inspect_mlx_project.py` and read [inspector mode](references/inspector-mode.md) before changing code.
+For source models, run `scripts/inspect_model.py`, then `scripts/recommend_optimizations.py`, then `scripts/make_port_plan.py --artifact-root MODEL --recommendations ...`. An actionable plan re-runs static inspection against those local bytes and recomputes the complete recommendation report before embedding advice. A blocked inspection may produce only a remediation plan; neither a family override nor direct registry reads may bypass its blockers. A family override may reorder an inspected hybrid route but must preserve every routed family, runbook, and trait. For existing MLX projects or already-running ports, run `scripts/inspect_mlx_project.py` and read [inspector mode](references/inspector-mode.md) before changing code.
 
-Read [intake and routing](references/intake-and-routing.md). Confirm source, risk, Mac, memory, performance, quality; record ambiguity in `PORT_PLAN.md`. For advice, read [model advisor playbook](references/model-advisor-playbook.md); split assets into four branches; speedups are planning bands.
+Read [intake and routing](references/intake-and-routing.md). Confirm source, risk, Mac, memory, performance, quality; record ambiguity in `PORT_PLAN.md`. For advice, read [model advisor playbook](references/model-advisor-playbook.md) and separate results into all five controlled advisor buckets: validated locally, validated by source or theory, benchmark required, experimental approach, and rejected / do not use. Numeric output may come only from `assets/effective_claims.json`; missing gates withhold the number.
 
 ### 2. Select the closest proven MLX reference
 
-Consult [model support map](references/model-support-map.md) and `assets/architectures.yaml`. Prefer official MLX, tested MLX-VLM/Audio, third-party MLX, source+paper, then new code; verify config/layout.
+Consult [model support map](references/model-support-map.md) and `assets/architectures.yaml`. Prefer official MLX, Apple-maintained projects, pinned third-party MLX implementation evidence, paper-only research candidates, then new code; keep the support scope explicit and verify config/layout.
 
 ### 3. Establish the source oracle
 
@@ -83,9 +83,7 @@ Follow [parity and testing](references/parity-and-testing.md): oracle, fixtures,
 
 ### 4. Implement the minimal eager MLX graph
 
-Read [core porting method](references/porting-core.md); choose via trigger map.
-
-RB: [D](references/runbook-decoder-transformer.md),[MoE](references/runbook-moe-transformer.md),[E](references/runbook-encoder-transformer.md),[ED](references/runbook-encoder-decoder.md),[SSM](references/runbook-ssm-hybrid.md),[diff](references/runbook-diffusion-flow.md),[omni](references/runbook-multimodal-omni.md),[c](references/runbook-audio-codec.md),[AR](references/runbook-autoregressive-audio.md),[FTTS](references/runbook-flow-tts.md),[voc](references/runbook-vocoder.md),[ASR](references/runbook-asr.md),[st](references/runbook-streaming-speech.md),[sep](references/runbook-separation-enhancement.md).
+Read [core porting method](references/porting-core.md); choose via the trigger map and the controlled family records in `assets/architectures.yaml`. Load every runbook returned by a hybrid route. The registry is the complete runbook inventory; do not substitute an abbreviated parallel list.
 
 Start eager: FP, batch one unless intrinsic, no compile/kernels, state/cache, assertions, reversible map.
 

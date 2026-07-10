@@ -1,14 +1,14 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-07-07T22:03:01+00:00",
-  "run_id": "2026-07-07-nightly-knowledge-curator",
+  "generated_at": "2026-07-10T07:59:59+00:00",
+  "run_id": "2026-07-10-source-health-reconciliation",
   "policy": {
     "review_only": true,
     "auto_promote_sources": false,
     "auto_modify_recommendations": false
   },
-  "node_count": 431,
-  "edge_count": 227,
+  "node_count": 432,
+  "edge_count": 233,
   "nodes": [
     {
       "id": "approach:adaptive-kv-quantization",
@@ -80,10 +80,10 @@
       "id": "approach:content-prefix-cache-vlm",
       "kind": "approach",
       "label": "content-prefix-cache-vlm",
-      "status": "proven-mlx-port",
+      "status": "rejected-or-superseded",
       "category": "multimodal-serving",
       "decision_state": "method_registry",
-      "summary": "Use content-based prefix/image cache only when processor output is deterministic and cache keying includes model and processor revisions.",
+      "summary": "Superseded by multimodal-content-prefix-cache; do not count this alias as a separate optimization or evidence line.",
       "validation_gate": "same-image/different-encoding hit tests",
       "rollback": "false cache hit"
     },
@@ -393,7 +393,16 @@
       "candidate_kind": "paper",
       "label": "AffectCodec: Emotion-Preserving Neural Speech Codec with Block-Diagonal Residual FSQ",
       "locator": "https://arxiv.org/abs/2605.23373",
-      "read_state": "seen_unread_candidate",
+      "immutable_locator": "https://arxiv.org/abs/2605.23373v1",
+      "paper_id": "2605.23373",
+      "revision": "v1",
+      "revision_comparison": {
+        "before": null,
+        "after": "v1",
+        "status": "comparison_unpinned",
+        "basis": "previous_graph"
+      },
+      "read_state": "updated_candidate",
       "known_source_id": "",
       "query": "neural audio codec speech tokenizer streaming",
       "updated": "2026-05-22T08:37:38Z",
@@ -413,7 +422,16 @@
       "candidate_kind": "paper",
       "label": "Agent-Assisted Side-Channel Attacks on Non-Prefix KV Cache in RAG",
       "locator": "https://arxiv.org/abs/2606.21842",
-      "read_state": "already_read",
+      "immutable_locator": "https://arxiv.org/abs/2606.21842v1",
+      "paper_id": "2606.21842",
+      "revision": "v1",
+      "revision_comparison": {
+        "before": null,
+        "after": "v1",
+        "status": "comparison_unpinned",
+        "basis": "source_registry"
+      },
+      "read_state": "updated_candidate",
       "known_source_id": "source:paper-2606-21842",
       "query": "KV cache quantization long context",
       "updated": "2026-06-20T02:28:28Z",
@@ -434,7 +452,16 @@
       "candidate_kind": "paper",
       "label": "Attention based on-device streaming speech recognition with large speech corpus",
       "locator": "https://arxiv.org/abs/2001.00577",
-      "read_state": "seen_unread_candidate",
+      "immutable_locator": "https://arxiv.org/abs/2001.00577v1",
+      "paper_id": "2001.00577",
+      "revision": "v1",
+      "revision_comparison": {
+        "before": null,
+        "after": "v1",
+        "status": "comparison_unpinned",
+        "basis": "previous_graph"
+      },
+      "read_state": "updated_candidate",
       "known_source_id": "",
       "query": "streaming ASR on-device quantization",
       "updated": "2020-01-02T04:24:44Z",
@@ -462,7 +489,16 @@
       "candidate_kind": "paper",
       "label": "AugCodec: A Low-Bitrate Disentangled Neural Speech Codec via Data Augmentation",
       "locator": "https://arxiv.org/abs/2606.21893",
-      "read_state": "seen_unread_candidate",
+      "immutable_locator": "https://arxiv.org/abs/2606.21893v1",
+      "paper_id": "2606.21893",
+      "revision": "v1",
+      "revision_comparison": {
+        "before": null,
+        "after": "v1",
+        "status": "comparison_unpinned",
+        "basis": "previous_graph"
+      },
+      "read_state": "updated_candidate",
       "known_source_id": "",
       "query": "neural audio codec speech tokenizer streaming",
       "updated": "2026-06-20T05:58:50Z",
@@ -490,7 +526,16 @@
       "candidate_kind": "paper",
       "label": "Benchmarking On-Device Machine Learning on Apple Silicon with MLX",
       "locator": "https://arxiv.org/abs/2510.18921",
-      "read_state": "seen_unread_candidate",
+      "immutable_locator": "https://arxiv.org/abs/2510.18921v1",
+      "paper_id": "2510.18921",
+      "revision": "v1",
+      "revision_comparison": {
+        "before": null,
+        "after": "v1",
+        "status": "comparison_unpinned",
+        "basis": "previous_graph"
+      },
+      "read_state": "updated_candidate",
       "known_source_id": "",
       "query": "MLX Apple Silicon inference optimization",
       "updated": "2025-10-21T08:19:27Z",
@@ -507,7 +552,16 @@
       "candidate_kind": "paper",
       "label": "ELiTeFormer: An Efficient Transformer for FPGAs",
       "locator": "https://arxiv.org/abs/2607.03652",
-      "read_state": "unread_candidate",
+      "immutable_locator": "https://arxiv.org/abs/2607.03652v1",
+      "paper_id": "2607.03652",
+      "revision": "v1",
+      "revision_comparison": {
+        "before": null,
+        "after": "v1",
+        "status": "comparison_unpinned",
+        "basis": "previous_graph"
+      },
+      "read_state": "updated_candidate",
       "known_source_id": "",
       "query": "KV cache quantization long context",
       "updated": "2026-07-04T00:52:06Z",
@@ -525,7 +579,16 @@
       "candidate_kind": "paper",
       "label": "FlashLabs Chroma 1.0: A Real-Time End-to-End Spoken Dialogue Model with Personalized Voice Cloning",
       "locator": "https://arxiv.org/abs/2601.11141",
-      "read_state": "seen_unread_candidate",
+      "immutable_locator": "https://arxiv.org/abs/2601.11141v1",
+      "paper_id": "2601.11141",
+      "revision": "v1",
+      "revision_comparison": {
+        "before": null,
+        "after": "v1",
+        "status": "comparison_unpinned",
+        "basis": "previous_graph"
+      },
+      "read_state": "updated_candidate",
       "known_source_id": "",
       "query": "neural audio codec speech tokenizer streaming",
       "updated": "2026-01-16T10:00:03Z",
@@ -547,7 +610,16 @@
       "candidate_kind": "paper",
       "label": "FlexiCodec: A Dynamic Neural Audio Codec for Low Frame Rates",
       "locator": "https://arxiv.org/abs/2510.00981",
-      "read_state": "seen_unread_candidate",
+      "immutable_locator": "https://arxiv.org/abs/2510.00981v3",
+      "paper_id": "2510.00981",
+      "revision": "v3",
+      "revision_comparison": {
+        "before": null,
+        "after": "v3",
+        "status": "comparison_unpinned",
+        "basis": "previous_graph"
+      },
+      "read_state": "updated_candidate",
       "known_source_id": "",
       "query": "neural audio codec speech tokenizer streaming",
       "updated": "2026-02-25T08:24:00Z",
@@ -567,12 +639,46 @@
       "summary": "Neural audio codecs are foundational to speech language models. It is expected to have a low frame rate and decoupled semantic and acoustic information. A lower frame rate codec can reduce the computational cost of speech language models by shortening the sequence length. Recent studies have developed 12.5Hz low-frame-rate audio codecs, but even lower frame rate codecs remain underexplored. We find that a major challenge for very low frame rate tokens is missing semantic information. This paper introduces FlexiCodec to address this limitation. FlexiCodec improves semantic preservation with a dynamic frame rate approach and introduces a novel architecture featuring an ASR feature-assisted dual stream encoding and Transformer bottlenecks. With dynamic frame rates, it uses less frames at info"
     },
     {
+      "id": "candidate:paper:fractal-kv-cache-archives-lossless-symbolic-storage-with-in-place-retrieval-for-long-context-llm-inference",
+      "kind": "source_candidate",
+      "candidate_kind": "paper",
+      "label": "Fractal KV-Cache Archives: Lossless Symbolic Storage with In-Place Retrieval for Long-Context LLM Inference",
+      "locator": "https://arxiv.org/abs/2607.07144",
+      "immutable_locator": "https://arxiv.org/abs/2607.07144v1",
+      "paper_id": "2607.07144",
+      "revision": "v1",
+      "revision_comparison": {
+        "before": null,
+        "after": "v1",
+        "status": "comparison_unpinned",
+        "basis": "previous_graph"
+      },
+      "read_state": "updated_candidate",
+      "known_source_id": "",
+      "query": "KV cache quantization long context",
+      "updated": "2026-07-08T08:37:49Z",
+      "published": "2026-07-08T08:37:49Z",
+      "authors": [
+        "Vladimir Gusev"
+      ],
+      "summary": "The key-value (KV) cache dominates the memory cost of long-context autoregressive inference, and a growing body of work compresses it through quantization, eviction, or offloading. We study a complementary question: once a position's KV state has been quantized to codebook indices, how should the resulting symbol stream be stored, and can the storage layer do more than store? A family of contractive iterated-map codes that serialize a symbol sequence into a sequence of low-dimensional real vectors is revisited, and it is shown that they form a natural archive format for a quantized KV cache with the following features. The method provides exactly the access pattern a growing cache requires. It is lossless, it runs in linear time, and supports O(1) random access and O(1) amortized append. A"
+    },
+    {
       "id": "candidate:paper:hybridcodec-fast-dual-stream-semantically-enhanced-neural-audio-codec",
       "kind": "source_candidate",
       "candidate_kind": "paper",
       "label": "HybridCodec: Fast Dual-Stream, Semantically Enhanced Neural Audio Codec",
       "locator": "https://arxiv.org/abs/2606.06743",
-      "read_state": "seen_unread_candidate",
+      "immutable_locator": "https://arxiv.org/abs/2606.06743v1",
+      "paper_id": "2606.06743",
+      "revision": "v1",
+      "revision_comparison": {
+        "before": null,
+        "after": "v1",
+        "status": "comparison_unpinned",
+        "basis": "previous_graph"
+      },
+      "read_state": "updated_candidate",
       "known_source_id": "",
       "query": "neural audio codec speech tokenizer streaming",
       "updated": "2026-06-04T21:57:18Z",
@@ -589,7 +695,16 @@
       "candidate_kind": "paper",
       "label": "KernelCraft: Benchmarking for Agentic Close-to-Metal Kernel Generation on Emerging Hardware",
       "locator": "https://arxiv.org/abs/2603.08721",
-      "read_state": "seen_unread_candidate",
+      "immutable_locator": "https://arxiv.org/abs/2603.08721v2",
+      "paper_id": "2603.08721",
+      "revision": "v2",
+      "revision_comparison": {
+        "before": null,
+        "after": "v2",
+        "status": "comparison_unpinned",
+        "basis": "previous_graph"
+      },
+      "read_state": "updated_candidate",
       "known_source_id": "",
       "query": "Metal GPU custom kernel machine learning",
       "updated": "2026-05-29T10:02:49Z",
@@ -616,7 +731,16 @@
       "candidate_kind": "paper",
       "label": "Lynx: Progressive Speculative Quantization for accelerating KV Transfer in Long-Context Inference",
       "locator": "https://arxiv.org/abs/2607.01831",
-      "read_state": "unread_candidate",
+      "immutable_locator": "https://arxiv.org/abs/2607.01831v1",
+      "paper_id": "2607.01831",
+      "revision": "v1",
+      "revision_comparison": {
+        "before": null,
+        "after": "v1",
+        "status": "comparison_unpinned",
+        "basis": "previous_graph"
+      },
+      "read_state": "updated_candidate",
       "known_source_id": "",
       "query": "KV cache quantization long context",
       "updated": "2026-07-02T07:52:43Z",
@@ -637,7 +761,16 @@
       "candidate_kind": "paper",
       "label": "Native LLM and MLLM Inference at Scale on Apple Silicon",
       "locator": "https://arxiv.org/abs/2601.19139",
-      "read_state": "already_read",
+      "immutable_locator": "https://arxiv.org/abs/2601.19139v2",
+      "paper_id": "2601.19139",
+      "revision": "v2",
+      "revision_comparison": {
+        "before": null,
+        "after": "v2",
+        "status": "comparison_unpinned",
+        "basis": "source_registry"
+      },
+      "read_state": "updated_candidate",
       "known_source_id": "source:paper-2601-19139",
       "query": "MLX Apple Silicon inference optimization",
       "updated": "2026-01-29T06:19:19Z",
@@ -653,7 +786,16 @@
       "candidate_kind": "paper",
       "label": "Probing neural audio codecs for distinctions among English nuclear tunes",
       "locator": "https://arxiv.org/abs/2603.14035",
-      "read_state": "seen_unread_candidate",
+      "immutable_locator": "https://arxiv.org/abs/2603.14035v1",
+      "paper_id": "2603.14035",
+      "revision": "v1",
+      "revision_comparison": {
+        "before": null,
+        "after": "v1",
+        "status": "comparison_unpinned",
+        "basis": "previous_graph"
+      },
+      "read_state": "updated_candidate",
       "known_source_id": "",
       "query": "neural audio codec speech tokenizer streaming",
       "updated": "2026-03-14T17:17:35Z",
@@ -670,7 +812,16 @@
       "candidate_kind": "paper",
       "label": "ProsoCodec: Prosody-Oriented Speech Codec for Voice Conversion",
       "locator": "https://arxiv.org/abs/2606.21888",
-      "read_state": "seen_unread_candidate",
+      "immutable_locator": "https://arxiv.org/abs/2606.21888v1",
+      "paper_id": "2606.21888",
+      "revision": "v1",
+      "revision_comparison": {
+        "before": null,
+        "after": "v1",
+        "status": "comparison_unpinned",
+        "basis": "previous_graph"
+      },
+      "read_state": "updated_candidate",
       "known_source_id": "",
       "query": "neural audio codec speech tokenizer streaming",
       "updated": "2026-06-20T05:19:07Z",
@@ -689,7 +840,16 @@
       "candidate_kind": "paper",
       "label": "Pushing the Limits of On-Device Streaming ASR: A Compact, High-Accuracy English Model for Low-Latency Inference",
       "locator": "https://arxiv.org/abs/2604.14493",
-      "read_state": "already_read",
+      "immutable_locator": "https://arxiv.org/abs/2604.14493v2",
+      "paper_id": "2604.14493",
+      "revision": "v2",
+      "revision_comparison": {
+        "before": null,
+        "after": "v2",
+        "status": "comparison_unpinned",
+        "basis": "source_registry"
+      },
+      "read_state": "updated_candidate",
       "known_source_id": "source:paper-2604-14493",
       "query": "streaming ASR on-device quantization",
       "updated": "2026-04-19T17:58:49Z",
@@ -712,7 +872,16 @@
       "candidate_kind": "paper",
       "label": "Quantization for OpenAI's Whisper Models: A Comparative Analysis",
       "locator": "https://arxiv.org/abs/2503.09905",
-      "read_state": "seen_unread_candidate",
+      "immutable_locator": "https://arxiv.org/abs/2503.09905v1",
+      "paper_id": "2503.09905",
+      "revision": "v1",
+      "revision_comparison": {
+        "before": null,
+        "after": "v1",
+        "status": "comparison_unpinned",
+        "basis": "previous_graph"
+      },
+      "read_state": "updated_candidate",
       "known_source_id": "",
       "query": "streaming ASR on-device quantization",
       "updated": "2025-03-12T23:50:35Z",
@@ -728,7 +897,16 @@
       "candidate_kind": "paper",
       "label": "RaBitQCache: Rotated Binary Quantization for KVCache in Long Context LLM Inference",
       "locator": "https://arxiv.org/abs/2606.31519",
-      "read_state": "unread_candidate",
+      "immutable_locator": "https://arxiv.org/abs/2606.31519v1",
+      "paper_id": "2606.31519",
+      "revision": "v1",
+      "revision_comparison": {
+        "before": null,
+        "after": "v1",
+        "status": "comparison_unpinned",
+        "basis": "previous_graph"
+      },
+      "read_state": "updated_candidate",
       "known_source_id": "",
       "query": "KV cache quantization long context",
       "updated": "2026-06-30T11:32:14Z",
@@ -749,7 +927,16 @@
       "candidate_kind": "paper",
       "label": "RoPE-Aware Bit Allocation for KV-Cache Quantization",
       "locator": "https://arxiv.org/abs/2606.24033",
-      "read_state": "already_read",
+      "immutable_locator": "https://arxiv.org/abs/2606.24033v1",
+      "paper_id": "2606.24033",
+      "revision": "v1",
+      "revision_comparison": {
+        "before": null,
+        "after": "v1",
+        "status": "comparison_unpinned",
+        "basis": "source_registry"
+      },
+      "read_state": "updated_candidate",
       "known_source_id": "source:paper-2606-24033",
       "query": "KV cache quantization long context",
       "updated": "2026-06-23T00:17:48Z",
@@ -762,34 +949,21 @@
       "summary": "Existing low-bit KV-cache quantizers often treat each cached key as a flat vector. Under RoPE, however, a key's contribution to a future attention logit decomposes into a position-dependent sum over two-dimensional frequency blocks. This makes key-cache quantization a block-wise bit-allocation problem: high-energy RoPE blocks are more sensitive to quantization error and should receive more bits. We introduce Block-GTQ, a RoPE-aware bit allocator for key-cache quantization built on TurboQuant-MSE(TQ-MSE). For each layer and KV head, Block-GTQ computes a label-free energy score for each RoPE block and greedily allocates integer bit widths by marginal gain. Under matched K/V bit budgets, Block-GTQ better preserves RoPE query-key logits on a ten-model diagnostic panel, cutting per-layer MAE by"
     },
     {
-      "id": "candidate:paper:spherical-kv-angle-domain-attention-and-rate-distortion-retention-for-efficient-long-context-inference",
-      "kind": "source_candidate",
-      "candidate_kind": "paper",
-      "label": "SPHERICAL KV: Angle-Domain Attention and Rate-Distortion Retention for Efficient Long-Context Inference",
-      "locator": "https://arxiv.org/abs/2605.18856",
-      "read_state": "seen_unread_candidate",
-      "known_source_id": "",
-      "query": "KV cache quantization long context",
-      "updated": "2026-06-07T06:58:25Z",
-      "published": "2026-05-13T18:48:48Z",
-      "authors": [
-        "Anay Chauhan",
-        "Gurucharan Marthi Krishna Kumar",
-        "Arion Das",
-        "Amit Dhanda",
-        "Vinija Jain",
-        "Aman Chadha",
-        "Amitava Das"
-      ],
-      "summary": "Long-context inference is increasingly constrained by the KV cache: resident memory grows with context length, and decoding becomes limited by repeated High Bandwidth Memory (HBM) streaming rather than arithmetic. Existing methods such as eviction, windowing, quantization, and offloading reduce footprint, but often leave the critical-path bottleneck only partially addressed, especially when compressed states must still be reconstructed into dense vectors during decoding. We present Spherical KV, a long-context inference method that treats KV allocation as a rate-distortion problem grounded in attention geometry for efficient decoding. The method is built on two ideas: (i) represent directional information cheaply in the decode hot loop, and (ii) allocate retention and precision according t"
-    },
-    {
       "id": "candidate:paper:streamvoiceanon-emotion-preserving-streaming-speaker-anonymization-via-frame-level-acoustic-distillation",
       "kind": "source_candidate",
       "candidate_kind": "paper",
       "label": "StreamVoiceAnon+: Emotion-Preserving Streaming Speaker Anonymization via Frame-Level Acoustic Distillation",
       "locator": "https://arxiv.org/abs/2603.06079",
-      "read_state": "seen_unread_candidate",
+      "immutable_locator": "https://arxiv.org/abs/2603.06079v1",
+      "paper_id": "2603.06079",
+      "revision": "v1",
+      "revision_comparison": {
+        "before": null,
+        "after": "v1",
+        "status": "comparison_unpinned",
+        "basis": "previous_graph"
+      },
+      "read_state": "updated_candidate",
       "known_source_id": "",
       "query": "neural audio codec speech tokenizer streaming",
       "updated": "2026-03-06T09:30:20Z",
@@ -802,29 +976,21 @@
       "summary": "We address the challenge of preserving emotional content in streaming speaker anonymization (SA). Neural audio codec language models trained for audio continuation tend to degrade source emotion: content tokens discard emotional information, and the model defaults to dominant acoustic patterns rather than preserving paralinguistic attributes. We propose supervised finetuning with neutral-emotion utterance pairs from the same speaker, combined with frame-level emotion distillation on acoustic token hidden states. All modifications are confined to finetuning, which takes less than 2 hours on 4 GPUs and adds zero inference latency overhead, while maintaining a competitive 180ms streaming latency. On the VoicePrivacy 2024 protocol, our approach achieves a 49.2% UAR (emotion preservation) with "
     },
     {
-      "id": "candidate:paper:sub-token-routing-for-kv-cache-compression",
-      "kind": "source_candidate",
-      "candidate_kind": "paper",
-      "label": "Sub-Token Routing for KV Cache Compression",
-      "locator": "https://arxiv.org/abs/2604.21335",
-      "read_state": "seen_unread_candidate",
-      "known_source_id": "",
-      "query": "KV cache quantization long context",
-      "updated": "2026-06-12T16:58:45Z",
-      "published": "2026-04-23T06:47:33Z",
-      "authors": [
-        "Wei Jiang",
-        "Wei Wang"
-      ],
-      "summary": "Transformer inference often requires a large KV cache, especially for long-context language modeling and multimodal generation. Existing compression methods usually reduce cache cost by selecting, evicting, quantizing, or compressing cached tokens, or by reducing the visual-token sequence before language-model inference. We introduce sub-token routing, a KV-compression method that adds a finer control axis inside retained tokens. It splits each retained value vector into groups and keeps only selected groups, while leaving query and key states unchanged. The method is designed to work after token-level reduction. First, a token-reduction method determines which tokens are retained. Then, sub-token routing compresses the value states inside those retained tokens. Experiments under matched K"
-    },
-    {
       "id": "candidate:paper:ultraquant-4-bit-kv-caching-for-context-heavy-agents",
       "kind": "source_candidate",
       "candidate_kind": "paper",
       "label": "UltraQuant: 4-bit KV Caching for Context-Heavy Agents",
       "locator": "https://arxiv.org/abs/2606.20474",
-      "read_state": "already_read",
+      "immutable_locator": "https://arxiv.org/abs/2606.20474v2",
+      "paper_id": "2606.20474",
+      "revision": "v2",
+      "revision_comparison": {
+        "before": null,
+        "after": "v2",
+        "status": "comparison_unpinned",
+        "basis": "source_registry"
+      },
+      "read_state": "updated_candidate",
       "known_source_id": "source:paper-2606-20474",
       "query": "KV cache quantization long context",
       "updated": "2026-06-19T08:02:54Z",
@@ -841,14 +1007,46 @@
       "summary": "Context-heavy agents place unusual pressure on the key-value (KV) cache: long prefixes are reused across many short turns, while concurrency determines whether the serving system can keep GPUs utilized. We study 4-bit KV-cache compression for this setting, using TurboQuant-style rotation and codebook quantization as a quality anchor and vLLM FP8 KV caching as the deployment anchor. We report three contributions. First, we frame 4-bit KV caching around multi-round agent workloads where task quality, cache residency, and serving throughput must be measured jointly. Second, we describe the practical design choices needed to make the 4-bit path robust, including asymmetric K/V treatment, Walsh-Hadamard rotation, QJL removal, and block-scale variants. Third, we present serving optimizations on "
     },
     {
+      "id": "candidate:paper:what-to-keep-what-to-forget-a-rate-distortion-view-of-memory-compaction-in-llms-and-agents",
+      "kind": "source_candidate",
+      "candidate_kind": "paper",
+      "label": "What to Keep, What to Forget: A Rate--Distortion View of Memory Compaction in LLMs and Agents",
+      "locator": "https://arxiv.org/abs/2607.08032",
+      "immutable_locator": "https://arxiv.org/abs/2607.08032v1",
+      "paper_id": "2607.08032",
+      "revision": "v1",
+      "revision_comparison": {
+        "before": null,
+        "after": "v1",
+        "status": "comparison_unpinned",
+        "basis": "previous_graph"
+      },
+      "read_state": "updated_candidate",
+      "known_source_id": "",
+      "query": "KV cache quantization long context",
+      "updated": "2026-07-09T01:15:03Z",
+      "published": "2026-07-09T01:15:03Z",
+      "authors": [
+        "Ashwin Gerard Colaco",
+        "Nada Lahjouji"
+      ],
+      "summary": "Large language models, and the agents built on them, spend an ever-growing share of their compute and memory on remembering: caching attention keys and values, carrying long prompts, maintaining recurrent state, and storing what happened in previous turns and sessions. Because none of this memory is free, four largely separate research communities have each learned to compact it. They evict or quantize the KV cache, prune or distill prompts, bound architectural state, and consolidate agent memory. We argue that these are instances of one problem: a rate--distortion decision about what context-derived information to retain versus discard, at what fidelity, under a resource budget, so as to preserve downstream task utility. We make this lens precise with a single compaction objective and a l"
+    },
+    {
       "id": "candidate:repository:anthropics-skills",
       "kind": "source_candidate",
       "candidate_kind": "repository",
       "label": "anthropics/skills",
       "locator": "https://github.com/anthropics/skills",
-      "read_state": "already_read",
+      "read_state": "updated_candidate",
       "known_source_id": "source:agent-skills-repo",
       "head_sha": "9d2f1ae187231d8199c64b5b762e1bdf2244733d",
+      "revision_comparison": {
+        "before": "57546260929473d4e0d1c1bb75297be2fdfa1949",
+        "after": "9d2f1ae187231d8199c64b5b762e1bdf2244733d",
+        "status": "changed",
+        "basis": "source_registry"
+      },
       "head_date": "2026-07-01T18:11:23Z",
       "head_message": "Update claude-api skill: Claude Sonnet 5 and Managed Agents July updates (#1373)",
       "topics": [
@@ -862,18 +1060,24 @@
       "candidate_kind": "repository",
       "label": "Blaizzy/mlx-audio",
       "locator": "https://github.com/Blaizzy/mlx-audio",
-      "read_state": "already_read",
+      "read_state": "updated_candidate",
       "known_source_id": "source:mlx-audio-repo",
-      "head_sha": "c46d15312ad52b0928c0f20dc2d6a880461f32c5",
-      "head_date": "2026-07-06T17:56:47Z",
-      "head_message": "Merge pull request #783 from hhh2210/feat/qwen3-asr-segment-batching",
+      "head_sha": "64e8416c303fb3b3463dab8eb4ebd78c55a87c1a",
+      "revision_comparison": {
+        "before": "412cf7cd381c2a3f6a8189af04a95af24cb415b6",
+        "after": "64e8416c303fb3b3463dab8eb4ebd78c55a87c1a",
+        "status": "changed",
+        "basis": "source_registry"
+      },
+      "head_date": "2026-07-10T05:04:55Z",
+      "head_message": "Merge pull request #826 from lucasnewman/improve-transcribe-diarize-performance",
       "topics": [
         "audio",
         "tts",
         "stt",
         "codec"
       ],
-      "summary": "Merge pull request #783 from hhh2210/feat/qwen3-asr-segment-batching"
+      "summary": "Merge pull request #826 from lucasnewman/improve-transcribe-diarize-performance"
     },
     {
       "id": "candidate:repository:blaizzy-mlx-vlm",
@@ -881,17 +1085,23 @@
       "candidate_kind": "repository",
       "label": "Blaizzy/mlx-vlm",
       "locator": "https://github.com/Blaizzy/mlx-vlm",
-      "read_state": "already_read",
+      "read_state": "updated_candidate",
       "known_source_id": "source:mlx-vlm-repo",
-      "head_sha": "e9c5bd75e7d641f9ebc36c4ed18849513b25c5fd",
-      "head_date": "2026-07-07T19:52:39Z",
-      "head_message": "Merge pull request #1519 from weklund/apc-exact-mode-integration-tests",
+      "head_sha": "05440cc57c62799fe8d4d79079fb8d281f149b4b",
+      "revision_comparison": {
+        "before": "6a8cdff6a1f53f46a15d4adb997c3b2d5f621263",
+        "after": "05440cc57c62799fe8d4d79079fb8d281f149b4b",
+        "status": "changed",
+        "basis": "source_registry"
+      },
+      "head_date": "2026-07-09T18:01:14Z",
+      "head_message": "Merge pull request #1522 from sxy-trans-n/codex/qwen3-omni-incremental-audio",
       "topics": [
         "multimodal",
         "serving",
         "speculative"
       ],
-      "summary": "Merge pull request #1519 from weklund/apc-exact-mode-integration-tests"
+      "summary": "Merge pull request #1522 from sxy-trans-n/codex/qwen3-omni-incremental-audio"
     },
     {
       "id": "candidate:repository:ml-explore-mlx",
@@ -899,17 +1109,23 @@
       "candidate_kind": "repository",
       "label": "ml-explore/mlx",
       "locator": "https://github.com/ml-explore/mlx",
-      "read_state": "already_read",
+      "read_state": "updated_candidate",
       "known_source_id": "source:mlx-repo",
-      "head_sha": "7a1d4f5c12ac82f4b4d0a6e71538d89ca0605247",
-      "head_date": "2026-07-07T16:10:33Z",
-      "head_message": "Fix conv2 gradients in grouped strided case on Metal (#3800)",
+      "head_sha": "4367c73b60541ddd5a266ce4644fd93d20223b6e",
+      "revision_comparison": {
+        "before": "96296e9c3075a2389bc5c0f078bf01b5aa377cd9",
+        "after": "4367c73b60541ddd5a266ce4644fd93d20223b6e",
+        "status": "changed",
+        "basis": "source_registry"
+      },
+      "head_date": "2026-07-10T00:37:28Z",
+      "head_message": "Warn at configure time when NAX kernels are disabled (#3824)",
       "topics": [
         "runtime",
         "kernels",
         "quantization"
       ],
-      "summary": "Fix conv2 gradients in grouped strided case on Metal (#3800)"
+      "summary": "Warn at configure time when NAX kernels are disabled (#3824)"
     },
     {
       "id": "candidate:repository:ml-explore-mlx-examples",
@@ -920,6 +1136,12 @@
       "read_state": "already_read",
       "known_source_id": "source:mlx-examples-repo",
       "head_sha": "796f5b53cab69a3d48a44233ce21aae889e94a08",
+      "revision_comparison": {
+        "before": "796f5b53cab69a3d48a44233ce21aae889e94a08",
+        "after": "796f5b53cab69a3d48a44233ce21aae889e94a08",
+        "status": "same",
+        "basis": "source_registry"
+      },
       "head_date": "2026-04-06T18:56:05Z",
       "head_message": "Add wan 2.1 model (#1409)",
       "topics": [
@@ -935,18 +1157,24 @@
       "candidate_kind": "repository",
       "label": "ml-explore/mlx-lm",
       "locator": "https://github.com/ml-explore/mlx-lm",
-      "read_state": "already_read",
+      "read_state": "updated_candidate",
       "known_source_id": "source:mlx-lm-repo",
-      "head_sha": "2ed22318cd6a2fcc5c2e0caa1e1fb0ddeb7cafd5",
-      "head_date": "2026-06-24T23:12:59Z",
-      "head_message": "Fix deepseek indexer rope argument (#1431)",
+      "head_sha": "a790972f0f844d81067ed45c28b524220a10c019",
+      "revision_comparison": {
+        "before": "2c008fd0252b2c569227d12568356ab88ab0560a",
+        "after": "a790972f0f844d81067ed45c28b524220a10c019",
+        "status": "changed",
+        "basis": "source_registry"
+      },
+      "head_date": "2026-07-09T00:03:19Z",
+      "head_message": "Fix broadcast crash in quantized SDPA with GQA + batched padding mask (batch >= 2) (#1467)",
       "topics": [
         "language",
         "conversion",
         "decoding",
         "cache"
       ],
-      "summary": "Fix deepseek indexer rope argument (#1431)"
+      "summary": "Fix broadcast crash in quantized SDPA with GQA + batched padding mask (batch >= 2) (#1467)"
     },
     {
       "id": "candidate:repository:openai-codex",
@@ -956,14 +1184,20 @@
       "locator": "https://github.com/openai/codex",
       "read_state": "updated_candidate",
       "known_source_id": "",
-      "head_sha": "2589f7a52df8f65905d47e603f65ec458464d45e",
-      "head_date": "2026-07-07T22:02:08Z",
-      "head_message": "Handle completion separators and popup dismissal (#31191)",
+      "head_sha": "1f0566d3f59298d1bb88820a0d35294f1eeb07ea",
+      "revision_comparison": {
+        "before": "1f0566d3f59298d1bb88820a0d35294f1eeb07ea",
+        "after": "1f0566d3f59298d1bb88820a0d35294f1eeb07ea",
+        "status": "same",
+        "basis": "previous_graph"
+      },
+      "head_date": "2026-07-10T01:28:55Z",
+      "head_message": "exec-server: expose process helper to outer sandbox (#31937)",
       "topics": [
         "agent-skills",
         "codex"
       ],
-      "summary": "Handle completion separators and popup dismissal (#31191)"
+      "summary": "exec-server: expose process helper to outer sandbox (#31937)"
     },
     {
       "id": "candidate:repository:waybarrios-vllm-mlx",
@@ -971,9 +1205,15 @@
       "candidate_kind": "repository",
       "label": "waybarrios/vllm-mlx",
       "locator": "https://github.com/waybarrios/vllm-mlx",
-      "read_state": "already_read",
+      "read_state": "updated_candidate",
       "known_source_id": "source:vllm-mlx-repo",
       "head_sha": "0dd115769ef1196a715b96b181353edacd2a4f69",
+      "revision_comparison": {
+        "before": "a48c86c1a41900f7d26658471b5f67e5fdd35445",
+        "after": "0dd115769ef1196a715b96b181353edacd2a4f69",
+        "status": "changed",
+        "basis": "source_registry"
+      },
       "head_date": "2026-06-28T20:18:29Z",
       "head_message": "bump version to 0.4.0",
       "topics": [
@@ -1271,7 +1511,7 @@
       "kind": "source",
       "source_id": "codex-skill-loader",
       "label": "Codex skill loader implementation",
-      "locator": "https://github.com/openai/codex/blob/main/codex-rs/core-skills/src/loader.rs",
+      "locator": "https://github.com/openai/codex/blob/31e428a1ef3396a0e962687e61f11c224b9f4dbc/codex-rs/core-skills/src/loader.rs",
       "read_state": "already_read",
       "review_depth": "synthesized",
       "source_kind": "source-code",
@@ -1305,7 +1545,7 @@
       "kind": "source",
       "source_id": "dgrauet-ltx2-block-streaming-source",
       "label": "ltx-2-mlx BlockStreamer implementation",
-      "locator": "https://github.com/dgrauet/ltx-2-mlx/blob/3f5897a9582b/packages/ltx-core-mlx/src/ltx_core_mlx/loader/block_streaming.py",
+      "locator": "https://github.com/dgrauet/ltx-2-mlx/blob/3f5897a9582b5c14379c8f88216ae0fd6e55741d/packages/ltx-core-mlx/src/ltx_core_mlx/loader/block_streaming.py",
       "read_state": "already_read",
       "review_depth": "synthesized",
       "source_kind": "source-code",
@@ -1317,14 +1557,14 @@
         "peak-memory",
         "diffusion"
       ],
-      "snapshot": "3f5897a9582b"
+      "snapshot": "3f5897a9582b5c14379c8f88216ae0fd6e55741d"
     },
     {
       "id": "source:dgrauet-ltx2-block-streaming-tests",
       "kind": "source",
       "source_id": "dgrauet-ltx2-block-streaming-tests",
       "label": "ltx-2-mlx block streaming tests",
-      "locator": "https://github.com/dgrauet/ltx-2-mlx/blob/3f5897a9582b/tests/test_block_streaming.py",
+      "locator": "https://github.com/dgrauet/ltx-2-mlx/blob/3f5897a9582b5c14379c8f88216ae0fd6e55741d/tests/test_block_streaming.py",
       "read_state": "already_read",
       "review_depth": "synthesized",
       "source_kind": "source-code",
@@ -1336,14 +1576,14 @@
         "eviction",
         "tests"
       ],
-      "snapshot": "3f5897a9582b"
+      "snapshot": "3f5897a9582b5c14379c8f88216ae0fd6e55741d"
     },
     {
       "id": "source:dgrauet-ltx2-regression-report",
       "kind": "source",
       "source_id": "dgrauet-ltx2-regression-report",
       "label": "ltx-2-mlx v0.11.0 regression report",
-      "locator": "https://github.com/dgrauet/ltx-2-mlx/blob/3f5897a9582b/docs/REGRESSION_TESTS_v0.11.0.md",
+      "locator": "https://github.com/dgrauet/ltx-2-mlx/blob/3f5897a9582b5c14379c8f88216ae0fd6e55741d/docs/REGRESSION_TESTS_v0.11.0.md",
       "read_state": "already_read",
       "review_depth": "synthesized",
       "source_kind": "source-code",
@@ -1354,7 +1594,7 @@
         "regression-tests",
         "video-diffusion"
       ],
-      "snapshot": "3f5897a9582b"
+      "snapshot": "3f5897a9582b5c14379c8f88216ae0fd6e55741d"
     },
     {
       "id": "source:dropbox-hqq-repo",
@@ -1554,7 +1794,7 @@
       "kind": "source",
       "source_id": "katlun-grid-sample-benchmark",
       "label": "mlx-grid-sample benchmark harness",
-      "locator": "https://github.com/katlun-lgtm/mlx-grid-sample/blob/467385fa2b84/bench_grid_sample.py",
+      "locator": "https://github.com/katlun-lgtm/mlx-grid-sample/blob/467385fa2b84864659bf3076eca32c4c4d4ddbec/bench_grid_sample.py",
       "read_state": "already_read",
       "review_depth": "synthesized",
       "source_kind": "source-code",
@@ -1565,14 +1805,14 @@
         "grid-sample",
         "benchmarking"
       ],
-      "snapshot": "467385fa2b84"
+      "snapshot": "467385fa2b84864659bf3076eca32c4c4d4ddbec"
     },
     {
       "id": "source:katlun-grid-sample-source",
       "kind": "source",
       "source_id": "katlun-grid-sample-source",
       "label": "mlx-grid-sample custom Metal implementation",
-      "locator": "https://github.com/katlun-lgtm/mlx-grid-sample/blob/467385fa2b84/mlx_grid_sample.py",
+      "locator": "https://github.com/katlun-lgtm/mlx-grid-sample/blob/467385fa2b84864659bf3076eca32c4c4d4ddbec/mlx_grid_sample.py",
       "read_state": "already_read",
       "review_depth": "synthesized",
       "source_kind": "source-code",
@@ -1584,14 +1824,14 @@
         "spatial-warp",
         "video"
       ],
-      "snapshot": "467385fa2b84"
+      "snapshot": "467385fa2b84864659bf3076eca32c4c4d4ddbec"
     },
     {
       "id": "source:katlun-grid-sample-tests",
       "kind": "source",
       "source_id": "katlun-grid-sample-tests",
       "label": "mlx-grid-sample correctness tests",
-      "locator": "https://github.com/katlun-lgtm/mlx-grid-sample/blob/467385fa2b84/test_grid_sample.py",
+      "locator": "https://github.com/katlun-lgtm/mlx-grid-sample/blob/467385fa2b84864659bf3076eca32c4c4d4ddbec/test_grid_sample.py",
       "read_state": "already_read",
       "review_depth": "synthesized",
       "source_kind": "source-code",
@@ -1603,7 +1843,7 @@
         "parity",
         "tests"
       ],
-      "snapshot": "467385fa2b84"
+      "snapshot": "467385fa2b84864659bf3076eca32c4c4d4ddbec"
     },
     {
       "id": "source:llava-onevision-blog",
@@ -1664,7 +1904,7 @@
       "kind": "source",
       "source_id": "mlx-audio-codecs",
       "label": "MLX-Audio codec implementations",
-      "locator": "https://github.com/Blaizzy/mlx-audio/tree/main/mlx_audio/codec/models",
+      "locator": "https://github.com/Blaizzy/mlx-audio/tree/412cf7cd381c2a3f6a8189af04a95af24cb415b6/mlx_audio/codec/models",
       "read_state": "already_read",
       "review_depth": "synthesized",
       "source_kind": "source-code",
@@ -1681,7 +1921,7 @@
       "kind": "source",
       "source_id": "mlx-audio-convert",
       "label": "MLX-Audio conversion implementation",
-      "locator": "https://github.com/Blaizzy/mlx-audio/blob/main/mlx_audio/convert.py",
+      "locator": "https://github.com/Blaizzy/mlx-audio/blob/412cf7cd381c2a3f6a8189af04a95af24cb415b6/mlx_audio/convert.py",
       "read_state": "already_read",
       "review_depth": "synthesized",
       "source_kind": "source-code",
@@ -1717,7 +1957,7 @@
       "kind": "source",
       "source_id": "mlx-audio-models",
       "label": "MLX-Audio model implementations",
-      "locator": "https://github.com/Blaizzy/mlx-audio/tree/main/mlx_audio",
+      "locator": "https://github.com/Blaizzy/mlx-audio/tree/412cf7cd381c2a3f6a8189af04a95af24cb415b6/mlx_audio",
       "read_state": "already_read",
       "review_depth": "synthesized",
       "source_kind": "source-code",
@@ -1771,10 +2011,10 @@
       "kind": "source",
       "source_id": "mlx-audio-qwen3-tts-docs",
       "label": "MLX-Audio Qwen3-TTS model guide",
-      "locator": "https://blaizzy.github.io/mlx-audio/models/tts/qwen3-tts",
+      "locator": "https://github.com/Blaizzy/mlx-audio/blob/a7ef98604cfd752e9e5c9011bcee8ec8c67228be/docs/models/tts/qwen3-tts.md",
       "read_state": "already_read",
       "review_depth": "synthesized",
-      "source_kind": "official-doc",
+      "source_kind": "source-code",
       "owner": "Blaizzy",
       "topics": [
         "mlx-audio",
@@ -1783,7 +2023,7 @@
         "batching",
         "streaming"
       ],
-      "snapshot": "2026-06-24"
+      "snapshot": "a7ef98604cfd752e9e5c9011bcee8ec8c67228be"
     },
     {
       "id": "source:mlx-audio-release-044",
@@ -1801,14 +2041,14 @@
         "cache",
         "codec"
       ],
-      "snapshot": "a7ef986"
+      "snapshot": "a7ef98604cfd752e9e5c9011bcee8ec8c67228be"
     },
     {
       "id": "source:mlx-audio-repo",
       "kind": "source",
       "source_id": "mlx-audio-repo",
       "label": "MLX-Audio repository",
-      "locator": "https://github.com/Blaizzy/mlx-audio",
+      "locator": "https://github.com/Blaizzy/mlx-audio/tree/412cf7cd381c2a3f6a8189af04a95af24cb415b6",
       "read_state": "already_read",
       "review_depth": "synthesized",
       "source_kind": "repository",
@@ -1880,7 +2120,7 @@
       "kind": "source",
       "source_id": "mlx-dev-skill",
       "label": "General MLX development Agent Skill",
-      "locator": "https://github.com/ettrickshepherd/mlx-dev-skill",
+      "locator": "https://github.com/ettrickshepherd/mlx-dev-skill/tree/99e8bd62dd4f0e1649ae9647a1f7ee65b65d02fe",
       "read_state": "already_read",
       "review_depth": "synthesized",
       "source_kind": "repository",
@@ -2311,7 +2551,7 @@
       "kind": "source",
       "source_id": "mlx-lm-cache",
       "label": "MLX-LM cache implementations",
-      "locator": "https://github.com/ml-explore/mlx-lm/blob/main/mlx_lm/models/cache.py",
+      "locator": "https://github.com/ml-explore/mlx-lm/blob/2c008fd0252b2c569227d12568356ab88ab0560a/mlx_lm/models/cache.py",
       "read_state": "already_read",
       "review_depth": "synthesized",
       "source_kind": "source-code",
@@ -2328,7 +2568,7 @@
       "kind": "source",
       "source_id": "mlx-lm-convert",
       "label": "MLX-LM model conversion and quantization",
-      "locator": "https://github.com/ml-explore/mlx-lm/blob/main/mlx_lm/convert.py",
+      "locator": "https://github.com/ml-explore/mlx-lm/blob/2c008fd0252b2c569227d12568356ab88ab0560a/mlx_lm/convert.py",
       "read_state": "already_read",
       "review_depth": "synthesized",
       "source_kind": "source-code",
@@ -2363,7 +2603,7 @@
       "kind": "source",
       "source_id": "mlx-lm-models",
       "label": "MLX-LM architecture implementations",
-      "locator": "https://github.com/ml-explore/mlx-lm/tree/main/mlx_lm/models",
+      "locator": "https://github.com/ml-explore/mlx-lm/tree/2c008fd0252b2c569227d12568356ab88ab0560a/mlx_lm/models",
       "read_state": "already_read",
       "review_depth": "synthesized",
       "source_kind": "source-code",
@@ -2373,6 +2613,24 @@
         "language-models"
       ],
       "snapshot": "2c008fd0252b2c569227d12568356ab88ab0560a"
+    },
+    {
+      "id": "source:mlx-lm-release-0312",
+      "kind": "source",
+      "source_id": "mlx-lm-release-0312",
+      "label": "MLX-LM v0.31.2 release",
+      "locator": "https://github.com/ml-explore/mlx-lm/releases/tag/v0.31.2",
+      "read_state": "already_read",
+      "review_depth": "synthesized",
+      "source_kind": "release",
+      "owner": "Apple MLX",
+      "topics": [
+        "mlx-lm",
+        "speculative-decoding",
+        "prompt-cache",
+        "correctness-fix"
+      ],
+      "snapshot": "v0.31.2"
     },
     {
       "id": "source:mlx-lm-release-0313",
@@ -2396,7 +2654,7 @@
       "kind": "source",
       "source_id": "mlx-lm-repo",
       "label": "MLX-LM repository",
-      "locator": "https://github.com/ml-explore/mlx-lm",
+      "locator": "https://github.com/ml-explore/mlx-lm/tree/2c008fd0252b2c569227d12568356ab88ab0560a",
       "read_state": "already_read",
       "review_depth": "synthesized",
       "source_kind": "repository",
@@ -2414,7 +2672,7 @@
       "kind": "source",
       "source_id": "mlx-lm-speculative",
       "label": "MLX-LM speculative generation implementation",
-      "locator": "https://github.com/ml-explore/mlx-lm/blob/main/mlx_lm/generate.py",
+      "locator": "https://github.com/ml-explore/mlx-lm/blob/2c008fd0252b2c569227d12568356ab88ab0560a/mlx_lm/generate.py",
       "read_state": "already_read",
       "review_depth": "synthesized",
       "source_kind": "source-code",
@@ -2430,7 +2688,7 @@
       "kind": "source",
       "source_id": "mlx-lm-switch-layers",
       "label": "MLX-LM Switch/MoE layers implementation",
-      "locator": "https://github.com/ml-explore/mlx-lm/blob/main/mlx_lm/models/switch_layers.py",
+      "locator": "https://github.com/ml-explore/mlx-lm/blob/ed1fca4cef15a824c5f1702c80f70b4cffc8e4dd/mlx_lm/models/switch_layers.py",
       "read_state": "already_read",
       "review_depth": "synthesized",
       "source_kind": "source-code",
@@ -2441,7 +2699,7 @@
         "gather-mm",
         "gather-qmm"
       ],
-      "snapshot": "2c008fd0d8f1d1a3e69a54c4482f18a1068f1d48"
+      "snapshot": "ed1fca4cef15a824c5f1702c80f70b4cffc8e4dd"
     },
     {
       "id": "source:mlx-metal-examples",
@@ -2478,11 +2736,30 @@
       "snapshot": "68cf2fd"
     },
     {
+      "id": "source:mlx-release-0320",
+      "kind": "source",
+      "source_id": "mlx-release-0320",
+      "label": "MLX v0.32.0 release",
+      "locator": "https://github.com/ml-explore/mlx/releases/tag/v0.32.0",
+      "read_state": "already_read",
+      "review_depth": "synthesized",
+      "source_kind": "release",
+      "owner": "Apple MLX",
+      "topics": [
+        "mlx",
+        "release",
+        "correctness",
+        "metal",
+        "quantized-matmul"
+      ],
+      "snapshot": "v0.32.0"
+    },
+    {
       "id": "source:mlx-repo",
       "kind": "source",
       "source_id": "mlx-repo",
       "label": "MLX array framework repository",
-      "locator": "https://github.com/ml-explore/mlx",
+      "locator": "https://github.com/ml-explore/mlx/tree/96296e9c3075a2389bc5c0f078bf01b5aa377cd9",
       "read_state": "already_read",
       "review_depth": "synthesized",
       "source_kind": "repository",
@@ -2552,7 +2829,7 @@
       "kind": "source",
       "source_id": "mlx-vlm-readme",
       "label": "MLX-VLM serving, caching, and speculative decoding documentation",
-      "locator": "https://github.com/Blaizzy/mlx-vlm/blob/main/README.md",
+      "locator": "https://github.com/Blaizzy/mlx-vlm/blob/6a8cdff6a1f53f46a15d4adb997c3b2d5f621263/README.md",
       "read_state": "already_read",
       "review_depth": "synthesized",
       "source_kind": "source-code",
@@ -2570,7 +2847,7 @@
       "kind": "source",
       "source_id": "mlx-vlm-repo",
       "label": "MLX-VLM repository",
-      "locator": "https://github.com/Blaizzy/mlx-vlm",
+      "locator": "https://github.com/Blaizzy/mlx-vlm/tree/6a8cdff6a1f53f46a15d4adb997c3b2d5f621263",
       "read_state": "already_read",
       "review_depth": "synthesized",
       "source_kind": "repository",
@@ -2701,7 +2978,10 @@
         "autoregressive",
         "vocoder"
       ],
-      "snapshot": "1609.03499"
+      "snapshot": "1609.03499",
+      "paper_id": "1609.03499",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-1703-10135",
@@ -2716,7 +2996,10 @@
       "topics": [
         "tts"
       ],
-      "snapshot": "1703.10135"
+      "snapshot": "1703.10135",
+      "paper_id": "1703.10135",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-1706-03762",
@@ -2732,7 +3015,10 @@
         "transformer",
         "attention"
       ],
-      "snapshot": "1706.03762"
+      "snapshot": "1706.03762",
+      "paper_id": "1706.03762",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-1712-05884",
@@ -2748,7 +3034,10 @@
         "tacotron2",
         "tts"
       ],
-      "snapshot": "1712.05884"
+      "snapshot": "1712.05884",
+      "paper_id": "1712.05884",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-1802-08435",
@@ -2764,7 +3053,10 @@
         "wavernn",
         "vocoder"
       ],
-      "snapshot": "1802.08435"
+      "snapshot": "1802.08435",
+      "paper_id": "1802.08435",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-1810-04805",
@@ -2779,7 +3071,10 @@
       "topics": [
         "encoder-transformer"
       ],
-      "snapshot": "1810.04805"
+      "snapshot": "1810.04805",
+      "paper_id": "1810.04805",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-1810-11846",
@@ -2795,7 +3090,10 @@
         "vocoder",
         "on-device"
       ],
-      "snapshot": "1810.11846"
+      "snapshot": "1810.11846",
+      "paper_id": "1810.11846",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-1811-00002",
@@ -2811,7 +3109,10 @@
         "vocoder",
         "flow"
       ],
-      "snapshot": "1811.00002"
+      "snapshot": "1811.00002",
+      "paper_id": "1811.00002",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-1905-09263",
@@ -2827,7 +3128,10 @@
         "tts",
         "non-autoregressive"
       ],
-      "snapshot": "1905.09263"
+      "snapshot": "1905.09263",
+      "paper_id": "1905.09263",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-1910-06711",
@@ -2843,7 +3147,10 @@
         "vocoder",
         "gan"
       ],
-      "snapshot": "1910.06711"
+      "snapshot": "1910.06711",
+      "paper_id": "1910.06711",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-1910-10683",
@@ -2859,7 +3166,10 @@
         "t5",
         "encoder-decoder"
       ],
-      "snapshot": "1910.10683"
+      "snapshot": "1910.10683",
+      "paper_id": "1910.10683",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-1910-11480",
@@ -2875,7 +3185,10 @@
         "vocoder",
         "gan"
       ],
-      "snapshot": "1910.11480"
+      "snapshot": "1910.11480",
+      "paper_id": "1910.11480",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-1910-13461",
@@ -2891,7 +3204,10 @@
         "bart",
         "encoder-decoder"
       ],
-      "snapshot": "1910.13461"
+      "snapshot": "1910.13461",
+      "paper_id": "1910.13461",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-1911-02150",
@@ -2907,7 +3223,10 @@
         "mqa",
         "attention"
       ],
-      "snapshot": "1911.02150"
+      "snapshot": "1911.02150",
+      "paper_id": "1911.02150",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2002-02562",
@@ -2924,7 +3243,10 @@
         "streaming",
         "rnnt"
       ],
-      "snapshot": "2002.02562"
+      "snapshot": "2002.02562",
+      "paper_id": "2002.02562",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2005-08100",
@@ -2940,7 +3262,10 @@
         "asr",
         "conformer"
       ],
-      "snapshot": "2005.08100"
+      "snapshot": "2005.08100",
+      "paper_id": "2005.08100",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2005-11129",
@@ -2956,7 +3281,10 @@
         "tts",
         "flow"
       ],
-      "snapshot": "2005.11129"
+      "snapshot": "2005.11129",
+      "paper_id": "2005.11129",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2006-04558",
@@ -2972,7 +3300,10 @@
         "tts",
         "non-autoregressive"
       ],
-      "snapshot": "2006.04558"
+      "snapshot": "2006.04558",
+      "paper_id": "2006.04558",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2006-11477",
@@ -2988,7 +3319,10 @@
         "asr",
         "speech-encoder"
       ],
-      "snapshot": "2006.11477"
+      "snapshot": "2006.11477",
+      "paper_id": "2006.11477",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2009-00713",
@@ -3004,7 +3338,10 @@
         "vocoder",
         "diffusion"
       ],
-      "snapshot": "2009.00713"
+      "snapshot": "2009.00713",
+      "paper_id": "2009.00713",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2009-09761",
@@ -3021,7 +3358,10 @@
         "diffusion",
         "vocoder"
       ],
-      "snapshot": "2009.09761"
+      "snapshot": "2009.09761",
+      "paper_id": "2009.09761",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2010-05646",
@@ -3037,7 +3377,10 @@
         "vocoder",
         "gan"
       ],
-      "snapshot": "2010.05646"
+      "snapshot": "2010.05646",
+      "paper_id": "2010.05646",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2010-11929",
@@ -3052,7 +3395,10 @@
       "topics": [
         "vision-transformer"
       ],
-      "snapshot": "2010.11929"
+      "snapshot": "2010.11929",
+      "paper_id": "2010.11929",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2105-06337",
@@ -3068,7 +3414,10 @@
         "tts",
         "diffusion"
       ],
-      "snapshot": "2105.06337"
+      "snapshot": "2105.06337",
+      "paper_id": "2105.06337",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2106-06103",
@@ -3084,7 +3433,10 @@
         "vits",
         "tts"
       ],
-      "snapshot": "2106.06103"
+      "snapshot": "2106.06103",
+      "paper_id": "2106.06103",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2106-07447",
@@ -3100,7 +3452,10 @@
         "asr",
         "speech-encoder"
       ],
-      "snapshot": "2106.07447"
+      "snapshot": "2106.07447",
+      "paper_id": "2106.07447",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2106-07889",
@@ -3115,7 +3470,10 @@
       "topics": [
         "vocoder"
       ],
-      "snapshot": "2106.07889"
+      "snapshot": "2106.07889",
+      "paper_id": "2106.07889",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2106-09685",
@@ -3132,7 +3490,10 @@
         "training",
         "parameter-efficient"
       ],
-      "snapshot": "2106.09685"
+      "snapshot": "2106.09685",
+      "paper_id": "2106.09685",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2107-03312",
@@ -3149,7 +3510,10 @@
         "rvq",
         "streaming"
       ],
-      "snapshot": "2107.03312"
+      "snapshot": "2107.03312",
+      "paper_id": "2107.03312",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2110-13900",
@@ -3165,7 +3529,10 @@
         "speech-encoder",
         "asr"
       ],
-      "snapshot": "2110.13900"
+      "snapshot": "2110.13900",
+      "paper_id": "2110.13900",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2112-10752",
@@ -3180,7 +3547,10 @@
       "topics": [
         "latent-diffusion"
       ],
-      "snapshot": "2112.10752"
+      "snapshot": "2112.10752",
+      "paper_id": "2112.10752",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2203-02395",
@@ -3196,7 +3566,10 @@
         "vocoder",
         "istft"
       ],
-      "snapshot": "2203.02395"
+      "snapshot": "2203.02395",
+      "paper_id": "2203.02395",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2204-14198",
@@ -3212,7 +3585,10 @@
         "vision-language",
         "resampler"
       ],
-      "snapshot": "2204.14198"
+      "snapshot": "2204.14198",
+      "paper_id": "2204.14198",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2205-04421",
@@ -3227,7 +3603,10 @@
       "topics": [
         "tts"
       ],
-      "snapshot": "2205.04421"
+      "snapshot": "2205.04421",
+      "paper_id": "2205.04421",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2205-14135",
@@ -3243,7 +3622,10 @@
         "attention",
         "kernel"
       ],
-      "snapshot": "2205.14135"
+      "snapshot": "2205.14135",
+      "paper_id": "2205.14135",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2206-01861",
@@ -3258,7 +3640,10 @@
       "topics": [
         "quantization"
       ],
-      "snapshot": "2206.01861"
+      "snapshot": "2206.01861",
+      "paper_id": "2206.01861",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2206-04658",
@@ -3274,7 +3659,10 @@
         "vocoder",
         "gan"
       ],
-      "snapshot": "2206.04658"
+      "snapshot": "2206.04658",
+      "paper_id": "2206.04658",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2206-08317",
@@ -3290,7 +3678,10 @@
         "asr",
         "non-autoregressive"
       ],
-      "snapshot": "2206.08317"
+      "snapshot": "2206.08317",
+      "paper_id": "2206.08317",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2208-07339",
@@ -3306,7 +3697,10 @@
         "quantization",
         "outliers"
       ],
-      "snapshot": "2208.07339"
+      "snapshot": "2208.07339",
+      "paper_id": "2208.07339",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2209-03003",
@@ -3321,7 +3715,10 @@
       "topics": [
         "rectified-flow"
       ],
-      "snapshot": "2209.03003"
+      "snapshot": "2209.03003",
+      "paper_id": "2209.03003",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2209-03143",
@@ -3337,7 +3734,10 @@
         "audio-lm",
         "codec-tokens"
       ],
-      "snapshot": "2209.03143"
+      "snapshot": "2209.03143",
+      "paper_id": "2209.03143",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2209-15352",
@@ -3353,7 +3753,10 @@
         "audio-generation",
         "codec-tokens"
       ],
-      "snapshot": "2209.15352"
+      "snapshot": "2209.15352",
+      "paper_id": "2209.15352",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2210-02747",
@@ -3368,7 +3771,10 @@
       "topics": [
         "flow-matching"
       ],
-      "snapshot": "2210.02747"
+      "snapshot": "2210.02747",
+      "paper_id": "2210.02747",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2210-13438",
@@ -3384,7 +3790,10 @@
         "encodec",
         "audio-codec"
       ],
-      "snapshot": "2210.13438"
+      "snapshot": "2210.13438",
+      "paper_id": "2210.13438",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2210-17323",
@@ -3399,7 +3808,10 @@
       "topics": [
         "weight-quantization"
       ],
-      "snapshot": "2210.17323"
+      "snapshot": "2210.17323",
+      "paper_id": "2210.17323",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2211-10438",
@@ -3414,7 +3826,10 @@
       "topics": [
         "activation-quantization"
       ],
-      "snapshot": "2211.10438"
+      "snapshot": "2211.10438",
+      "paper_id": "2211.10438",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2211-15841",
@@ -3431,7 +3846,10 @@
         "block-sparse",
         "training"
       ],
-      "snapshot": "2211.15841"
+      "snapshot": "2211.15841",
+      "paper_id": "2211.15841",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2211-17192",
@@ -3446,7 +3864,10 @@
       "topics": [
         "speculative-decoding"
       ],
-      "snapshot": "2211.17192"
+      "snapshot": "2211.17192",
+      "paper_id": "2211.17192",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2212-04356",
@@ -3462,7 +3883,10 @@
         "whisper",
         "asr"
       ],
-      "snapshot": "2212.04356"
+      "snapshot": "2212.04356",
+      "paper_id": "2212.04356",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2212-09748",
@@ -3478,7 +3902,10 @@
         "dit",
         "diffusion"
       ],
-      "snapshot": "2212.09748"
+      "snapshot": "2212.09748",
+      "paper_id": "2212.09748",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2301-02111",
@@ -3495,7 +3922,10 @@
         "tts",
         "audio-codec"
       ],
-      "snapshot": "2301.02111"
+      "snapshot": "2301.02111",
+      "paper_id": "2301.02111",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2301-12597",
@@ -3511,7 +3941,10 @@
         "vision-language",
         "projector"
       ],
-      "snapshot": "2301.12597"
+      "snapshot": "2301.12597",
+      "paper_id": "2301.12597",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2302-01318",
@@ -3526,7 +3959,10 @@
       "topics": [
         "speculative-decoding"
       ],
-      "snapshot": "2302.01318"
+      "snapshot": "2302.01318",
+      "paper_id": "2302.01318",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2302-10866",
@@ -3542,7 +3978,10 @@
         "long-context",
         "convolution"
       ],
-      "snapshot": "2302.10866"
+      "snapshot": "2302.10866",
+      "paper_id": "2302.10866",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2302-13971",
@@ -3557,7 +3996,10 @@
       "topics": [
         "decoder-transformer"
       ],
-      "snapshot": "2302.13971"
+      "snapshot": "2302.13971",
+      "paper_id": "2302.13971",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2304-08485",
@@ -3573,7 +4015,10 @@
         "llava",
         "vision-language"
       ],
-      "snapshot": "2304.08485"
+      "snapshot": "2304.08485",
+      "paper_id": "2304.08485",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2304-09116",
@@ -3589,7 +4034,10 @@
         "tts",
         "diffusion"
       ],
-      "snapshot": "2304.09116"
+      "snapshot": "2304.09116",
+      "paper_id": "2304.09116",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2305-09636",
@@ -3605,7 +4053,10 @@
         "audio-generation",
         "parallel-codebooks"
       ],
-      "snapshot": "2305.09636"
+      "snapshot": "2305.09636",
+      "paper_id": "2305.09636",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2305-09781",
@@ -3621,7 +4072,10 @@
         "speculative-decoding",
         "serving"
       ],
-      "snapshot": "2305.09781"
+      "snapshot": "2305.09781",
+      "paper_id": "2305.09781",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2305-13048",
@@ -3637,7 +4091,10 @@
         "recurrent",
         "language-model"
       ],
-      "snapshot": "2305.13048"
+      "snapshot": "2305.13048",
+      "paper_id": "2305.13048",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2305-13245",
@@ -3653,7 +4110,10 @@
         "gqa",
         "attention"
       ],
-      "snapshot": "2305.13245"
+      "snapshot": "2305.13245",
+      "paper_id": "2305.13245",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2305-14314",
@@ -3670,7 +4130,10 @@
         "lora",
         "training"
       ],
-      "snapshot": "2305.14314"
+      "snapshot": "2305.14314",
+      "paper_id": "2305.14314",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2305-17118",
@@ -3685,7 +4148,10 @@
       "topics": [
         "kv-pruning"
       ],
-      "snapshot": "2305.17118"
+      "snapshot": "2305.17118",
+      "paper_id": "2305.17118",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2306-00814",
@@ -3701,7 +4167,10 @@
         "vocoder",
         "fourier"
       ],
-      "snapshot": "2306.00814"
+      "snapshot": "2306.00814",
+      "paper_id": "2306.00814",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2306-00978",
@@ -3716,7 +4185,10 @@
       "topics": [
         "weight-quantization"
       ],
-      "snapshot": "2306.00978"
+      "snapshot": "2306.00978",
+      "paper_id": "2306.00978",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2306-03078",
@@ -3732,7 +4204,10 @@
         "weight-quantization",
         "outliers"
       ],
-      "snapshot": "2306.03078"
+      "snapshot": "2306.03078",
+      "paper_id": "2306.03078",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2306-05284",
@@ -3749,7 +4224,10 @@
         "audio-lm",
         "delay-pattern"
       ],
-      "snapshot": "2306.05284"
+      "snapshot": "2306.05284",
+      "paper_id": "2306.05284",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2306-06546",
@@ -3765,7 +4243,10 @@
         "dac",
         "audio-codec"
       ],
-      "snapshot": "2306.06546"
+      "snapshot": "2306.06546",
+      "paper_id": "2306.06546",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2306-07629",
@@ -3780,7 +4261,10 @@
       "topics": [
         "weight-quantization"
       ],
-      "snapshot": "2306.07629"
+      "snapshot": "2306.07629",
+      "paper_id": "2306.07629",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2306-14048",
@@ -3796,7 +4280,10 @@
         "kv-pruning",
         "long-context"
       ],
-      "snapshot": "2306.14048"
+      "snapshot": "2306.14048",
+      "paper_id": "2306.14048",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2306-15687",
@@ -3812,7 +4299,10 @@
         "speech-generation",
         "flow"
       ],
-      "snapshot": "2306.15687"
+      "snapshot": "2306.15687",
+      "paper_id": "2306.15687",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2307-08621",
@@ -3828,7 +4318,10 @@
         "recurrent",
         "linear-attention"
       ],
-      "snapshot": "2307.08621"
+      "snapshot": "2307.08621",
+      "paper_id": "2307.08621",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2307-08691",
@@ -3844,7 +4337,10 @@
         "attention",
         "kernel"
       ],
-      "snapshot": "2307.08691"
+      "snapshot": "2307.08691",
+      "paper_id": "2307.08691",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2307-09288",
@@ -3859,7 +4355,10 @@
       "topics": [
         "decoder-transformer"
       ],
-      "snapshot": "2307.09288"
+      "snapshot": "2307.09288",
+      "paper_id": "2307.09288",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2308-11596",
@@ -3876,7 +4375,10 @@
         "asr",
         "translation"
       ],
-      "snapshot": "2308.11596"
+      "snapshot": "2308.11596",
+      "paper_id": "2308.11596",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2308-13137",
@@ -3891,7 +4393,10 @@
       "topics": [
         "quantization"
       ],
-      "snapshot": "2308.13137"
+      "snapshot": "2308.13137",
+      "paper_id": "2308.13137",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2308-16692",
@@ -3907,7 +4412,10 @@
         "speech-tokenizer",
         "audio-codec"
       ],
-      "snapshot": "2308.16692"
+      "snapshot": "2308.16692",
+      "paper_id": "2308.16692",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2309-03199",
@@ -3923,7 +4431,10 @@
         "tts",
         "flow-matching"
       ],
-      "snapshot": "2309.03199"
+      "snapshot": "2309.03199",
+      "paper_id": "2309.03199",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2309-06180",
@@ -3939,7 +4450,10 @@
         "paged-attention",
         "serving"
       ],
-      "snapshot": "2309.06180"
+      "snapshot": "2309.06180",
+      "paper_id": "2309.06180",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2309-07405",
@@ -3955,7 +4469,10 @@
         "audio-codec",
         "toolkit"
       ],
-      "snapshot": "2309.07405"
+      "snapshot": "2309.07405",
+      "paper_id": "2309.07405",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2309-08168",
@@ -3970,7 +4487,10 @@
       "topics": [
         "self-speculative"
       ],
-      "snapshot": "2309.08168"
+      "snapshot": "2309.08168",
+      "paper_id": "2309.08168",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2309-15505",
@@ -3987,7 +4507,10 @@
         "quantization",
         "audio-codec"
       ],
-      "snapshot": "2309.15505"
+      "snapshot": "2309.15505",
+      "paper_id": "2309.15505",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2309-15531",
@@ -4003,7 +4526,10 @@
         "weight-quantization",
         "outliers"
       ],
-      "snapshot": "2309.15531"
+      "snapshot": "2309.15531",
+      "paper_id": "2309.15531",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2309-17453",
@@ -4019,7 +4545,10 @@
         "streamingllm",
         "attention-sinks"
       ],
-      "snapshot": "2309.17453"
+      "snapshot": "2309.17453",
+      "paper_id": "2309.17453",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2310-00014",
@@ -4035,7 +4564,10 @@
         "audio-codec",
         "tts"
       ],
-      "snapshot": "2310.00014"
+      "snapshot": "2310.00014",
+      "paper_id": "2310.00014",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2310-01889",
@@ -4051,7 +4583,10 @@
         "long-context",
         "distributed-attention"
       ],
-      "snapshot": "2310.01889"
+      "snapshot": "2310.01889",
+      "paper_id": "2310.01889",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2310-06825",
@@ -4068,7 +4603,10 @@
         "sliding-window",
         "gqa"
       ],
-      "snapshot": "2310.06825"
+      "snapshot": "2310.06825",
+      "paper_id": "2310.06825",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2310-13289",
@@ -4084,7 +4622,10 @@
         "audio-language",
         "multimodal"
       ],
-      "snapshot": "2310.13289"
+      "snapshot": "2310.13289",
+      "paper_id": "2310.13289",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2310-16836",
@@ -4100,7 +4641,10 @@
         "fp4",
         "quantization"
       ],
-      "snapshot": "2310.16836"
+      "snapshot": "2310.16836",
+      "paper_id": "2310.16836",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2311-00430",
@@ -4116,7 +4660,10 @@
         "asr",
         "distillation"
       ],
-      "snapshot": "2311.00430"
+      "snapshot": "2311.00430",
+      "paper_id": "2311.00430",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2311-08252",
@@ -4132,7 +4679,10 @@
         "retrieval",
         "speculative-decoding"
       ],
-      "snapshot": "2311.08252"
+      "snapshot": "2311.08252",
+      "paper_id": "2311.08252",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2312-00752",
@@ -4148,7 +4698,10 @@
         "ssm",
         "recurrent"
       ],
-      "snapshot": "2312.00752"
+      "snapshot": "2312.00752",
+      "paper_id": "2312.00752",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2312-03788",
@@ -4163,7 +4716,10 @@
       "topics": [
         "quantization"
       ],
-      "snapshot": "2312.03788"
+      "snapshot": "2312.03788",
+      "paper_id": "2312.03788",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2312-05187",
@@ -4179,7 +4735,10 @@
         "speech-to-speech",
         "streaming"
       ],
-      "snapshot": "2312.05187"
+      "snapshot": "2312.05187",
+      "paper_id": "2312.05187",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2312-17279",
@@ -4196,7 +4755,10 @@
         "streaming",
         "cache"
       ],
-      "snapshot": "2312.17279"
+      "snapshot": "2312.17279",
+      "paper_id": "2312.17279",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2401-04088",
@@ -4212,7 +4774,10 @@
         "moe",
         "decoder-transformer"
       ],
-      "snapshot": "2401.04088"
+      "snapshot": "2401.04088",
+      "paper_id": "2401.04088",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2401-04577",
@@ -4228,7 +4793,10 @@
         "audio-generation",
         "non-autoregressive"
       ],
-      "snapshot": "2401.04577"
+      "snapshot": "2401.04577",
+      "paper_id": "2401.04577",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2401-06118",
@@ -4243,7 +4811,10 @@
       "topics": [
         "quantization"
       ],
-      "snapshot": "2401.06118"
+      "snapshot": "2401.06118",
+      "paper_id": "2401.06118",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2401-07851",
@@ -4259,7 +4830,10 @@
         "speculative-decoding",
         "survey"
       ],
-      "snapshot": "2401.07851"
+      "snapshot": "2401.07851",
+      "paper_id": "2401.07851",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2401-10774",
@@ -4275,7 +4849,10 @@
         "medusa",
         "speculative-decoding"
       ],
-      "snapshot": "2401.10774"
+      "snapshot": "2401.10774",
+      "paper_id": "2401.10774",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2401-15077",
@@ -4291,7 +4868,10 @@
         "eagle",
         "speculative-decoding"
       ],
-      "snapshot": "2401.15077"
+      "snapshot": "2401.15077",
+      "paper_id": "2401.15077",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2401-18079",
@@ -4306,7 +4886,10 @@
       "topics": [
         "kv-quantization"
       ],
-      "snapshot": "2401.18079"
+      "snapshot": "2401.18079",
+      "paper_id": "2401.18079",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2402-01831",
@@ -4322,7 +4905,10 @@
         "audio-language",
         "multimodal"
       ],
-      "snapshot": "2402.01831"
+      "snapshot": "2402.01831",
+      "paper_id": "2402.01831",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2402-02057",
@@ -4337,7 +4923,10 @@
       "topics": [
         "lookahead-decoding"
       ],
-      "snapshot": "2402.02057"
+      "snapshot": "2402.02057",
+      "paper_id": "2402.02057",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2402-02750",
@@ -4352,7 +4941,10 @@
       "topics": [
         "kv-quantization"
       ],
-      "snapshot": "2402.02750"
+      "snapshot": "2402.02750",
+      "paper_id": "2402.02750",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2402-04396",
@@ -4368,7 +4960,10 @@
         "quantization",
         "hadamard"
       ],
-      "snapshot": "2402.04396"
+      "snapshot": "2402.04396",
+      "paper_id": "2402.04396",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2402-05099",
@@ -4384,7 +4979,10 @@
         "prefix-sharing",
         "serving"
       ],
-      "snapshot": "2402.05099"
+      "snapshot": "2402.05099",
+      "paper_id": "2402.05099",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2402-06082",
@@ -4399,7 +4997,10 @@
       "topics": [
         "kv-compression"
       ],
-      "snapshot": "2402.06082"
+      "snapshot": "2402.06082",
+      "paper_id": "2402.06082",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2402-11131",
@@ -4415,7 +5016,10 @@
         "multi-token",
         "speculative-decoding"
       ],
-      "snapshot": "2402.11131"
+      "snapshot": "2402.11131",
+      "paper_id": "2402.11131",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2402-13236",
@@ -4432,7 +5036,10 @@
         "survey",
         "codec"
       ],
-      "snapshot": "2402.13236"
+      "snapshot": "2402.13236",
+      "paper_id": "2402.13236",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2402-13720",
@@ -4447,7 +5054,10 @@
       "topics": [
         "speculative-decoding"
       ],
-      "snapshot": "2402.13720"
+      "snapshot": "2402.13720",
+      "paper_id": "2402.13720",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2402-15220",
@@ -4463,7 +5073,10 @@
         "prefix-cache",
         "attention"
       ],
-      "snapshot": "2402.15220"
+      "snapshot": "2402.15220",
+      "paper_id": "2402.15220",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2402-17764",
@@ -4479,7 +5092,10 @@
         "bitnet",
         "quantization"
       ],
-      "snapshot": "2402.17764"
+      "snapshot": "2402.17764",
+      "paper_id": "2402.17764",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2402-19427",
@@ -4495,7 +5111,10 @@
         "recurrent",
         "hybrid"
       ],
-      "snapshot": "2402.19427"
+      "snapshot": "2402.19427",
+      "paper_id": "2402.19427",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2403-03206",
@@ -4512,7 +5131,10 @@
         "flow",
         "transformer"
       ],
-      "snapshot": "2403.03206"
+      "snapshot": "2403.03206",
+      "paper_id": "2403.03206",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2403-08295",
@@ -4527,7 +5149,10 @@
       "topics": [
         "decoder-transformer"
       ],
-      "snapshot": "2403.08295"
+      "snapshot": "2403.08295",
+      "paper_id": "2403.08295",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2403-09919",
@@ -4544,7 +5169,10 @@
         "speculative-decoding",
         "mlx"
       ],
-      "snapshot": "2403.09919"
+      "snapshot": "2403.09919",
+      "paper_id": "2403.09919",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2403-15388",
@@ -4561,7 +5189,10 @@
         "visual-token-pruning",
         "llava"
       ],
-      "snapshot": "2403.15388"
+      "snapshot": "2403.15388",
+      "paper_id": "2403.15388",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2403-19887",
@@ -4579,7 +5210,10 @@
         "attention",
         "moe"
       ],
-      "snapshot": "2403.19887"
+      "snapshot": "2403.19887",
+      "paper_id": "2403.19887",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2404-00456",
@@ -4596,7 +5230,10 @@
         "rotation",
         "kv"
       ],
-      "snapshot": "2404.00456"
+      "snapshot": "2404.00456",
+      "paper_id": "2404.00456",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2404-02781",
@@ -4612,7 +5249,10 @@
         "tts",
         "codec-lm"
       ],
-      "snapshot": "2404.02781"
+      "snapshot": "2404.02781",
+      "paper_id": "2404.02781",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2404-07839",
@@ -4628,7 +5268,10 @@
         "recurrent",
         "griffin"
       ],
-      "snapshot": "2404.07839"
+      "snapshot": "2404.07839",
+      "paper_id": "2404.07839",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2404-14219",
@@ -4644,7 +5287,10 @@
         "decoder-transformer",
         "on-device"
       ],
-      "snapshot": "2404.14219"
+      "snapshot": "2404.14219",
+      "paper_id": "2404.14219",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2404-14469",
@@ -4659,7 +5305,10 @@
       "topics": [
         "kv-pruning"
       ],
-      "snapshot": "2404.14469"
+      "snapshot": "2404.14469",
+      "paper_id": "2404.14469",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2404-19124",
@@ -4675,7 +5324,10 @@
         "speculative-decoding",
         "multi-token"
       ],
-      "snapshot": "2404.19124"
+      "snapshot": "2404.19124",
+      "paper_id": "2404.19124",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2405-04434",
@@ -4692,7 +5344,10 @@
         "mla",
         "attention"
       ],
-      "snapshot": "2405.04434"
+      "snapshot": "2405.04434",
+      "paper_id": "2405.04434",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2405-04437",
@@ -4708,7 +5363,10 @@
         "serving",
         "virtual-memory"
       ],
-      "snapshot": "2405.04437"
+      "snapshot": "2405.04437",
+      "paper_id": "2405.04437",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2405-04532",
@@ -4724,7 +5382,10 @@
         "quantization",
         "serving"
       ],
-      "snapshot": "2405.04532"
+      "snapshot": "2405.04532",
+      "paper_id": "2405.04532",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2405-16406",
@@ -4740,7 +5401,10 @@
         "quantization",
         "rotation"
       ],
-      "snapshot": "2405.16406"
+      "snapshot": "2405.16406",
+      "paper_id": "2405.16406",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2405-21060",
@@ -4756,7 +5420,10 @@
         "mamba2",
         "ssm"
       ],
-      "snapshot": "2405.21060"
+      "snapshot": "2405.21060",
+      "paper_id": "2405.21060",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2406-02069",
@@ -4771,7 +5438,10 @@
       "topics": [
         "kv-compression"
       ],
-      "snapshot": "2406.02069"
+      "snapshot": "2406.02069",
+      "paper_id": "2406.02069",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2406-03482",
@@ -4786,7 +5456,10 @@
       "topics": [
         "kv-quantization"
       ],
-      "snapshot": "2406.03482"
+      "snapshot": "2406.03482",
+      "paper_id": "2406.03482",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2406-16858",
@@ -4802,7 +5475,10 @@
         "eagle2",
         "speculative-decoding"
       ],
-      "snapshot": "2406.16858"
+      "snapshot": "2406.16858",
+      "paper_id": "2406.16858",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2406-18009",
@@ -4818,7 +5494,10 @@
         "tts",
         "flow-matching"
       ],
-      "snapshot": "2406.18009"
+      "snapshot": "2406.18009",
+      "paper_id": "2406.18009",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2407-00088",
@@ -4834,7 +5513,10 @@
         "low-bit",
         "edge"
       ],
-      "snapshot": "2407.00088"
+      "snapshot": "2407.00088",
+      "paper_id": "2407.00088",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2407-01955",
@@ -4849,7 +5531,10 @@
       "topics": [
         "speculative-decoding"
       ],
-      "snapshot": "2407.01955"
+      "snapshot": "2407.01955",
+      "paper_id": "2407.01955",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2407-08608",
@@ -4865,7 +5550,10 @@
         "attention",
         "kernel"
       ],
-      "snapshot": "2407.08608"
+      "snapshot": "2407.08608",
+      "paper_id": "2407.08608",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2407-10671",
@@ -4881,7 +5569,10 @@
         "decoder-transformer",
         "moe"
       ],
-      "snapshot": "2407.10671"
+      "snapshot": "2407.10671",
+      "paper_id": "2407.10671",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2407-10759",
@@ -4897,7 +5588,10 @@
         "audio-language",
         "multimodal"
       ],
-      "snapshot": "2407.10759"
+      "snapshot": "2407.10759",
+      "paper_id": "2407.10759",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2407-17678",
@@ -4913,7 +5607,10 @@
         "sparse-attention",
         "context-sharding"
       ],
-      "snapshot": "2407.17678"
+      "snapshot": "2407.17678",
+      "paper_id": "2407.17678",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2407-21783",
@@ -4928,7 +5625,10 @@
       "topics": [
         "decoder-transformer"
       ],
-      "snapshot": "2407.21783"
+      "snapshot": "2407.21783",
+      "paper_id": "2407.21783",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2408-00118",
@@ -4943,7 +5643,10 @@
       "topics": [
         "decoder-transformer"
       ],
-      "snapshot": "2408.00118"
+      "snapshot": "2408.00118",
+      "paper_id": "2408.00118",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2408-05646",
@@ -4959,7 +5662,10 @@
         "low-rank",
         "kv-compression"
       ],
-      "snapshot": "2408.05646"
+      "snapshot": "2408.05646",
+      "paper_id": "2408.05646",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2408-08554",
@@ -4974,7 +5680,10 @@
       "topics": [
         "quantization"
       ],
-      "snapshot": "2408.08554"
+      "snapshot": "2408.08554",
+      "paper_id": "2408.08554",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2408-08696",
@@ -4990,7 +5699,10 @@
         "token-recycling",
         "speculative-decoding"
       ],
-      "snapshot": "2408.08696"
+      "snapshot": "2408.08696",
+      "paper_id": "2408.08696",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2408-16532",
@@ -5006,7 +5718,10 @@
         "audio-codec",
         "low-token-rate"
       ],
-      "snapshot": "2408.16532"
+      "snapshot": "2408.16532",
+      "paper_id": "2408.16532",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2409-00142",
@@ -5021,7 +5736,10 @@
       "topics": [
         "speculative-decoding"
       ],
-      "snapshot": "2409.00142"
+      "snapshot": "2409.00142",
+      "paper_id": "2409.00142",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2409-12191",
@@ -5037,7 +5755,10 @@
         "vision-language",
         "video"
       ],
-      "snapshot": "2409.12191"
+      "snapshot": "2409.12191",
+      "paper_id": "2409.12191",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2410-00037",
@@ -5054,7 +5775,10 @@
         "streaming",
         "mimi"
       ],
-      "snapshot": "2410.00037"
+      "snapshot": "2410.00037",
+      "paper_id": "2410.00037",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2410-03804",
@@ -5070,7 +5794,10 @@
         "speculative-decoding",
         "attention"
       ],
-      "snapshot": "2410.03804"
+      "snapshot": "2410.03804",
+      "paper_id": "2410.03804",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2410-06885",
@@ -5086,7 +5813,10 @@
         "tts",
         "flow-matching"
       ],
-      "snapshot": "2410.06885"
+      "snapshot": "2410.06885",
+      "paper_id": "2410.06885",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2410-07505",
@@ -5101,7 +5831,10 @@
       "topics": [
         "activation-quantization"
       ],
-      "snapshot": "2410.07505"
+      "snapshot": "2410.07505",
+      "paper_id": "2410.07505",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2410-12168",
@@ -5117,7 +5850,10 @@
         "quantization",
         "serving"
       ],
-      "snapshot": "2410.12168"
+      "snapshot": "2410.12168",
+      "paper_id": "2410.12168",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2411-04965",
@@ -5133,7 +5869,10 @@
         "bitnet",
         "activation-quantization"
       ],
-      "snapshot": "2411.04965"
+      "snapshot": "2411.04965",
+      "paper_id": "2411.04965",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2411-18803",
@@ -5149,7 +5888,10 @@
         "audio-codec",
         "streaming"
       ],
-      "snapshot": "2411.18803"
+      "snapshot": "2411.18803",
+      "paper_id": "2411.18803",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2411-19842",
@@ -5165,7 +5907,10 @@
         "audio-codec",
         "fsq"
       ],
-      "snapshot": "2411.19842"
+      "snapshot": "2411.19842",
+      "paper_id": "2411.19842",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2412-03594",
@@ -5181,7 +5926,10 @@
         "batching",
         "prefix-sharing"
       ],
-      "snapshot": "2412.03594"
+      "snapshot": "2412.03594",
+      "paper_id": "2412.03594",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2412-04467",
@@ -5197,7 +5945,10 @@
         "vision-language",
         "visual-token-pruning"
       ],
-      "snapshot": "2412.04467"
+      "snapshot": "2412.04467",
+      "paper_id": "2412.04467",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2412-10319",
@@ -5214,7 +5965,10 @@
         "kv-cache",
         "long-context"
       ],
-      "snapshot": "2412.10319"
+      "snapshot": "2412.10319",
+      "paper_id": "2412.10319",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2412-12639",
@@ -5229,7 +5983,10 @@
       "topics": [
         "speculative-decoding"
       ],
-      "snapshot": "2412.12639"
+      "snapshot": "2412.12639",
+      "paper_id": "2412.12639",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2412-13303",
@@ -5246,7 +6003,10 @@
         "visual-token-reduction",
         "encoder"
       ],
-      "snapshot": "2412.13303"
+      "snapshot": "2412.13303",
+      "paper_id": "2412.13303",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2412-14363",
@@ -5262,7 +6022,10 @@
         "mixed-precision",
         "quantization"
       ],
-      "snapshot": "2412.14363"
+      "snapshot": "2412.14363",
+      "paper_id": "2412.14363",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2412-19437",
@@ -5279,7 +6042,10 @@
         "mtp",
         "attention"
       ],
-      "snapshot": "2412.19437"
+      "snapshot": "2412.19437",
+      "paper_id": "2412.19437",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2501-01005",
@@ -5296,7 +6062,10 @@
         "serving",
         "kernels"
       ],
-      "snapshot": "2501.01005"
+      "snapshot": "2501.01005",
+      "paper_id": "2501.01005",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2501-16383",
@@ -5312,7 +6081,10 @@
         "kv-quantization",
         "rotation"
       ],
-      "snapshot": "2501.16383"
+      "snapshot": "2501.16383",
+      "paper_id": "2501.16383",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2502-04077",
@@ -5328,7 +6100,10 @@
         "kv-compression",
         "attention"
       ],
-      "snapshot": "2502.04077"
+      "snapshot": "2502.04077",
+      "paper_id": "2502.04077",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2502-04420",
@@ -5344,7 +6119,10 @@
         "kv-quantization",
         "mixed-precision"
       ],
-      "snapshot": "2502.04420"
+      "snapshot": "2502.04420",
+      "paper_id": "2502.04420",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2502-13923",
@@ -5362,7 +6140,10 @@
         "qwen",
         "mrope"
       ],
-      "snapshot": "2502.13923"
+      "snapshot": "2502.13923",
+      "paper_id": "2502.13923",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2502-15075",
@@ -5378,7 +6159,10 @@
         "kv-quantization",
         "mixed-precision"
       ],
-      "snapshot": "2502.15075"
+      "snapshot": "2502.15075",
+      "paper_id": "2502.15075",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2503-01710",
@@ -5394,7 +6178,10 @@
         "tts",
         "codec-lm"
       ],
-      "snapshot": "2503.01710"
+      "snapshot": "2503.01710",
+      "paper_id": "2503.01710",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2503-14376",
@@ -5410,7 +6197,10 @@
         "linear-attention",
         "kernel"
       ],
-      "snapshot": "2503.14376"
+      "snapshot": "2503.14376",
+      "paper_id": "2503.14376",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2503-16257",
@@ -5426,7 +6216,10 @@
         "vlm",
         "kv-quantization"
       ],
-      "snapshot": "2503.16257"
+      "snapshot": "2503.16257",
+      "paper_id": "2503.16257",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2503-19950",
@@ -5441,7 +6234,10 @@
       "topics": [
         "kv-quantization"
       ],
-      "snapshot": "2503.19950"
+      "snapshot": "2503.19950",
+      "paper_id": "2503.19950",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2503-20215",
@@ -5458,7 +6254,10 @@
         "speech",
         "streaming"
       ],
-      "snapshot": "2503.20215"
+      "snapshot": "2503.20215",
+      "paper_id": "2503.20215",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2504-10344",
@@ -5474,7 +6273,10 @@
         "audio-codec",
         "semantic-tokens"
       ],
-      "snapshot": "2504.10344"
+      "snapshot": "2504.10344",
+      "paper_id": "2504.10344",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2504-12339",
@@ -5490,7 +6292,10 @@
         "tts",
         "multi-token"
       ],
-      "snapshot": "2504.12339"
+      "snapshot": "2504.12339",
+      "paper_id": "2504.12339",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2504-19874",
@@ -5508,7 +6313,10 @@
         "long-context",
         "mlx-vlm"
       ],
-      "snapshot": "2504.19874"
+      "snapshot": "2504.19874",
+      "paper_id": "2504.19874",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2505-03745",
@@ -5524,7 +6332,10 @@
         "long-context",
         "quantization"
       ],
-      "snapshot": "2505.03745"
+      "snapshot": "2505.03745",
+      "paper_id": "2505.03745",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2505-07858",
@@ -5540,7 +6351,10 @@
         "speculative-decoding",
         "scaling-laws"
       ],
-      "snapshot": "2505.07858"
+      "snapshot": "2505.07858",
+      "paper_id": "2505.07858",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2505-15380",
@@ -5556,7 +6370,10 @@
         "speech",
         "speculative-decoding"
       ],
-      "snapshot": "2505.15380"
+      "snapshot": "2505.15380",
+      "paper_id": "2505.15380",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2505-19201",
@@ -5572,7 +6389,10 @@
         "multimodal",
         "speculative-decoding"
       ],
-      "snapshot": "2505.19201"
+      "snapshot": "2505.19201",
+      "paper_id": "2505.19201",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2505-19645",
@@ -5588,7 +6408,10 @@
         "moe",
         "speculative-decoding"
       ],
-      "snapshot": "2505.19645"
+      "snapshot": "2505.19645",
+      "paper_id": "2505.19645",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2505-22179",
@@ -5604,7 +6427,10 @@
         "speculative-decoding",
         "quantization"
       ],
-      "snapshot": "2505.22179"
+      "snapshot": "2505.22179",
+      "paper_id": "2505.22179",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2505-22913",
@@ -5620,7 +6446,10 @@
         "kv-pruning",
         "sparse-attention"
       ],
-      "snapshot": "2505.22913"
+      "snapshot": "2505.22913",
+      "paper_id": "2505.22913",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2505-24544",
@@ -5636,7 +6465,10 @@
         "speculative-decoding",
         "cross-attention"
       ],
-      "snapshot": "2505.24544"
+      "snapshot": "2505.24544",
+      "paper_id": "2505.24544",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2506-01979",
@@ -5651,7 +6483,10 @@
       "topics": [
         "speculative-decoding"
       ],
-      "snapshot": "2506.01979"
+      "snapshot": "2506.01979",
+      "paper_id": "2506.01979",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2506-10274",
@@ -5668,7 +6503,10 @@
         "benchmark",
         "survey"
       ],
-      "snapshot": "2506.10274"
+      "snapshot": "2506.10274",
+      "paper_id": "2506.10274",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2507-12197",
@@ -5685,7 +6523,10 @@
         "audio-codec",
         "parallel-codebooks"
       ],
-      "snapshot": "2507.12197"
+      "snapshot": "2507.12197",
+      "paper_id": "2507.12197",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2507-18897",
@@ -5700,7 +6541,10 @@
       "topics": [
         "audio-codec"
       ],
-      "snapshot": "2507.18897"
+      "snapshot": "2507.18897",
+      "paper_id": "2507.18897",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2508-02558",
@@ -5716,7 +6560,10 @@
         "diffusion-lm",
         "sparse-attention"
       ],
-      "snapshot": "2508.02558"
+      "snapshot": "2508.02558",
+      "paper_id": "2508.02558",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2508-15601",
@@ -5732,7 +6579,10 @@
         "mixed-precision",
         "serving"
       ],
-      "snapshot": "2508.15601"
+      "snapshot": "2508.15601",
+      "paper_id": "2508.15601",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2508-18224",
@@ -5748,7 +6598,10 @@
         "sparse-attention",
         "kernel"
       ],
-      "snapshot": "2508.18224"
+      "snapshot": "2508.18224",
+      "paper_id": "2508.18224",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2509-02020",
@@ -5765,7 +6618,10 @@
         "dialogue",
         "streaming"
       ],
-      "snapshot": "2509.02020"
+      "snapshot": "2509.02020",
+      "paper_id": "2509.02020",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2509-04377",
@@ -5781,7 +6637,10 @@
         "kv-pruning",
         "paged-cache"
       ],
-      "snapshot": "2509.04377"
+      "snapshot": "2509.04377",
+      "paper_id": "2509.04377",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2509-05165",
@@ -5796,7 +6655,10 @@
       "topics": [
         "kv-compression"
       ],
-      "snapshot": "2509.05165"
+      "snapshot": "2509.05165",
+      "paper_id": "2509.05165",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2509-11815",
@@ -5812,7 +6674,10 @@
         "vlm",
         "speculative-decoding"
       ],
-      "snapshot": "2509.11815"
+      "snapshot": "2509.11815",
+      "paper_id": "2509.11815",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2510-00636",
@@ -5827,7 +6692,10 @@
       "topics": [
         "kv-compression"
       ],
-      "snapshot": "2510.00636"
+      "snapshot": "2510.00636",
+      "paper_id": "2510.00636",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2510-16841",
@@ -5843,7 +6711,10 @@
         "audio-codec",
         "semantic-acoustic"
       ],
-      "snapshot": "2510.16841"
+      "snapshot": "2510.16841",
+      "paper_id": "2510.16841",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2512-12087",
@@ -5858,7 +6729,10 @@
       "topics": [
         "sparse-attention"
       ],
-      "snapshot": "2512.12087"
+      "snapshot": "2512.12087",
+      "paper_id": "2512.12087",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2601-11580",
@@ -5875,7 +6749,10 @@
         "serving",
         "benchmark"
       ],
-      "snapshot": "2601.11580"
+      "snapshot": "2601.11580",
+      "paper_id": "2601.11580",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2601-15621",
@@ -5892,7 +6769,10 @@
         "dual-track",
         "streaming"
       ],
-      "snapshot": "2601.15621"
+      "snapshot": "2601.15621",
+      "paper_id": "2601.15621",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2601-17702",
@@ -5908,7 +6788,10 @@
         "retrieval-attention",
         "long-context"
       ],
-      "snapshot": "2601.17702"
+      "snapshot": "2601.17702",
+      "paper_id": "2601.17702",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2601-19139",
@@ -5927,7 +6810,10 @@
         "prefix-cache",
         "vlm"
       ],
-      "snapshot": "2601.19139"
+      "snapshot": "2601.19139",
+      "paper_id": "2601.19139",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2601-19278",
@@ -5943,7 +6829,10 @@
         "speculative-decoding",
         "diffusion-drafter"
       ],
-      "snapshot": "2601.19278"
+      "snapshot": "2601.19278",
+      "paper_id": "2601.19278",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2601-20094",
@@ -5960,7 +6849,10 @@
         "on-device",
         "quantization"
       ],
-      "snapshot": "2601.20094"
+      "snapshot": "2601.20094",
+      "paper_id": "2601.20094",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2601-23174",
@@ -5976,7 +6868,10 @@
         "speech-tokenizer",
         "variable-rate"
       ],
-      "snapshot": "2601.23174"
+      "snapshot": "2601.23174",
+      "paper_id": "2601.23174",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2602-04683",
@@ -5992,7 +6887,10 @@
         "audio-language",
         "audio-codec"
       ],
-      "snapshot": "2602.04683"
+      "snapshot": "2602.04683",
+      "paper_id": "2602.04683",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2602-06036",
@@ -6008,7 +6906,10 @@
         "dflash",
         "speculative-decoding"
       ],
-      "snapshot": "2602.06036"
+      "snapshot": "2602.06036",
+      "paper_id": "2602.06036",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2602-06072",
@@ -6025,7 +6926,10 @@
         "batching",
         "kernel"
       ],
-      "snapshot": "2602.06072"
+      "snapshot": "2602.06072",
+      "paper_id": "2602.06072",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2602-10934",
@@ -6041,7 +6945,10 @@
         "audio-codec",
         "transformer"
       ],
-      "snapshot": "2602.10934"
+      "snapshot": "2602.10934",
+      "paper_id": "2602.10934",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2602-23200",
@@ -6057,7 +6964,10 @@
         "kv-quantization",
         "hardware-aware"
       ],
-      "snapshot": "2602.23200"
+      "snapshot": "2602.23200",
+      "paper_id": "2602.23200",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2603-08899",
@@ -6072,7 +6982,10 @@
       "topics": [
         "speculative-decoding"
       ],
-      "snapshot": "2603.08899"
+      "snapshot": "2603.08899",
+      "paper_id": "2603.08899",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2603-11053",
@@ -6088,7 +7001,10 @@
         "speculative-decoding",
         "scaling-laws"
       ],
-      "snapshot": "2603.11053"
+      "snapshot": "2603.11053",
+      "paper_id": "2603.11053",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2604-04722",
@@ -6104,7 +7020,10 @@
         "on-device",
         "kv-quantization"
       ],
-      "snapshot": "2604.04722"
+      "snapshot": "2604.04722",
+      "paper_id": "2604.04722",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2604-07815",
@@ -6120,7 +7039,10 @@
         "sparse-attention",
         "offload"
       ],
-      "snapshot": "2604.07815"
+      "snapshot": "2604.07815",
+      "paper_id": "2604.07815",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2604-12438",
@@ -6137,7 +7059,10 @@
         "streaming",
         "low-latency"
       ],
-      "snapshot": "2604.12438"
+      "snapshot": "2604.12438",
+      "paper_id": "2604.12438",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2604-14493",
@@ -6154,7 +7079,10 @@
         "on-device",
         "quantization"
       ],
-      "snapshot": "2604.14493"
+      "snapshot": "2604.14493",
+      "paper_id": "2604.14493",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2604-17852",
@@ -6171,7 +7099,10 @@
         "multi-token",
         "semantic"
       ],
-      "snapshot": "2604.17852"
+      "snapshot": "2604.17852",
+      "paper_id": "2604.17852",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2604-19157",
@@ -6187,7 +7118,10 @@
         "kv-quantization",
         "serving"
       ],
-      "snapshot": "2604.19157"
+      "snapshot": "2604.19157",
+      "paper_id": "2604.19157",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2605-17757",
@@ -6203,7 +7137,10 @@
         "kv-quantization",
         "rotation"
       ],
-      "snapshot": "2605.17757"
+      "snapshot": "2605.17757",
+      "paper_id": "2605.17757",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2605-18226",
@@ -6219,7 +7156,10 @@
         "long-context",
         "memory"
       ],
-      "snapshot": "2605.18226"
+      "snapshot": "2605.18226",
+      "paper_id": "2605.18226",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2605-30852",
@@ -6235,7 +7175,10 @@
         "speculative-decoding",
         "pipeline"
       ],
-      "snapshot": "2605.30852"
+      "snapshot": "2605.30852",
+      "paper_id": "2605.30852",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2606-09079",
@@ -6251,7 +7194,10 @@
         "long-context",
         "sparse-attention"
       ],
-      "snapshot": "2606.09079"
+      "snapshot": "2606.09079",
+      "paper_id": "2606.09079",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2606-20474",
@@ -6267,7 +7213,10 @@
         "kv-quantization",
         "agent-serving"
       ],
-      "snapshot": "2606.20474"
+      "snapshot": "2606.20474",
+      "paper_id": "2606.20474",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2606-21842",
@@ -6284,7 +7233,10 @@
         "side-channel",
         "rag"
       ],
-      "snapshot": "2606.21842"
+      "snapshot": "2606.21842",
+      "paper_id": "2606.21842",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:paper-2606-24033",
@@ -6300,7 +7252,10 @@
         "kv-quantization",
         "rope"
       ],
-      "snapshot": "2606.24033"
+      "snapshot": "2606.24033",
+      "paper_id": "2606.24033",
+      "revision": "",
+      "immutable_locator": ""
     },
     {
       "id": "source:prompt-lookup-decoding-repo",
@@ -6648,23 +7603,6 @@
       "snapshot": ""
     },
     {
-      "id": "source:sankalp-prompt-cache-blog",
-      "kind": "source",
-      "source_id": "sankalp-prompt-cache-blog",
-      "label": "How prompt caching works - Paged Attention and Automatic Prefix Caching",
-      "locator": "https://sankalp.bearblog.dev/how-prompt-caching-works",
-      "read_state": "already_read",
-      "review_depth": "screened",
-      "source_kind": "technical-blog",
-      "owner": "Sankalp Mukim",
-      "topics": [
-        "prompt-cache",
-        "paged-attention",
-        "serving"
-      ],
-      "snapshot": "2026-06-24"
-    },
-    {
       "id": "source:skills-ref-repo",
       "kind": "source",
       "source_id": "skills-ref-repo",
@@ -6795,7 +7733,7 @@
       "kind": "source",
       "source_id": "vllm-mlx-continuous-batching-guide",
       "label": "vLLM-MLX continuous batching guide",
-      "locator": "https://github.com/waybarrios/vllm-mlx/blob/main/docs/guides/continuous-batching.md",
+      "locator": "https://github.com/waybarrios/vllm-mlx/blob/a48c86c1a41900f7d26658471b5f67e5fdd35445/docs/guides/continuous-batching.md",
       "read_state": "already_read",
       "review_depth": "synthesized",
       "source_kind": "source-code",
@@ -6848,7 +7786,7 @@
       "kind": "source",
       "source_id": "vllm-mlx-multimodal-guide",
       "label": "vLLM-MLX multimodal serving guide",
-      "locator": "https://github.com/waybarrios/vllm-mlx/blob/main/docs/guides/multimodal.md",
+      "locator": "https://github.com/waybarrios/vllm-mlx/blob/a48c86c1a41900f7d26658471b5f67e5fdd35445/docs/guides/multimodal.md",
       "read_state": "already_read",
       "review_depth": "synthesized",
       "source_kind": "source-code",
@@ -6985,7 +7923,13 @@
     {
       "source": "candidate:paper:agent-assisted-side-channel-attacks-on-non-prefix-kv-cache-in-rag",
       "target": "source:paper-2606-21842",
-      "relation": "already_read_as"
+      "relation": "candidate_version_of",
+      "revision_comparison": {
+        "before": null,
+        "after": "v1",
+        "status": "comparison_unpinned",
+        "basis": "source_registry"
+      }
     },
     {
       "source": "candidate:paper:attention-based-on-device-streaming-speech-recognition-with-large-speech-corpus",
@@ -7230,6 +8174,52 @@
       ]
     },
     {
+      "source": "candidate:paper:fractal-kv-cache-archives-lossless-symbolic-storage-with-in-place-retrieval-for-long-context-llm-inference",
+      "target": "approach:adaptive-kv-quantization",
+      "relation": "candidate_relevant_to",
+      "score": 7,
+      "matched_terms": [
+        "cache",
+        "context",
+        "key",
+        "long",
+        "memory",
+        "quantization",
+        "value"
+      ]
+    },
+    {
+      "source": "candidate:paper:fractal-kv-cache-archives-lossless-symbolic-storage-with-in-place-retrieval-for-long-context-llm-inference",
+      "target": "backlog:structured-timeseries-recsys",
+      "relation": "candidate_relevant_to",
+      "score": 7,
+      "matched_terms": [
+        "context",
+        "family",
+        "has",
+        "map",
+        "retrieval",
+        "time",
+        "value"
+      ]
+    },
+    {
+      "source": "candidate:paper:fractal-kv-cache-archives-lossless-symbolic-storage-with-in-place-retrieval-for-long-context-llm-inference",
+      "target": "backlog:top1000-contributor-long-tail-rescreening",
+      "relation": "candidate_relevant_to",
+      "score": 8,
+      "matched_terms": [
+        "codes",
+        "family",
+        "following",
+        "format",
+        "has",
+        "long",
+        "runs",
+        "state"
+      ]
+    },
+    {
       "source": "candidate:paper:hybridcodec-fast-dual-stream-semantically-enhanced-neural-audio-codec",
       "target": "approach:audio-streaming-and-cache",
       "relation": "candidate_relevant_to",
@@ -7356,14 +8346,13 @@
     },
     {
       "source": "candidate:paper:native-llm-and-mllm-inference-at-scale-on-apple-silicon",
-      "target": "approach:content-prefix-cache-vlm",
+      "target": "approach:continuous-batching-serving",
       "relation": "candidate_relevant_to",
-      "score": 6,
+      "score": 5,
       "matched_terms": [
-        "based",
-        "content",
-        "multimodal",
-        "prefix",
+        "batching",
+        "concurrent",
+        "continuous",
         "throughput",
         "vision"
       ]
@@ -7385,22 +8374,28 @@
     },
     {
       "source": "candidate:paper:native-llm-and-mllm-inference-at-scale-on-apple-silicon",
-      "target": "approach:vision-feature-cache",
+      "target": "outcome:vlm-mlx-vlm-working-route",
       "relation": "candidate_relevant_to",
       "score": 6,
       "matched_terms": [
-        "content",
-        "identical",
-        "memory",
+        "has",
         "multimodal",
-        "throughput",
-        "vision"
+        "prefix",
+        "text",
+        "vision",
+        "vllm"
       ]
     },
     {
       "source": "candidate:paper:native-llm-and-mllm-inference-at-scale-on-apple-silicon",
       "target": "source:paper-2601-19139",
-      "relation": "already_read_as"
+      "relation": "candidate_version_of",
+      "revision_comparison": {
+        "before": null,
+        "after": "v2",
+        "status": "comparison_unpinned",
+        "basis": "source_registry"
+      }
     },
     {
       "source": "candidate:paper:probing-neural-audio-codecs-for-distinctions-among-english-nuclear-tunes",
@@ -7533,7 +8528,13 @@
     {
       "source": "candidate:paper:pushing-the-limits-of-on-device-streaming-asr-a-compact-high-accuracy-english-model-for-low-latency-inference",
       "target": "source:paper-2604-14493",
-      "relation": "already_read_as"
+      "relation": "candidate_version_of",
+      "revision_comparison": {
+        "before": null,
+        "after": "v2",
+        "status": "comparison_unpinned",
+        "basis": "source_registry"
+      }
     },
     {
       "source": "candidate:paper:quantization-for-openai-s-whisper-models-a-comparative-analysis",
@@ -7660,51 +8661,13 @@
     {
       "source": "candidate:paper:rope-aware-bit-allocation-for-kv-cache-quantization",
       "target": "source:paper-2606-24033",
-      "relation": "already_read_as"
-    },
-    {
-      "source": "candidate:paper:spherical-kv-angle-domain-attention-and-rate-distortion-retention-for-efficient-long-context-inference",
-      "target": "approach:adaptive-kv-quantization",
-      "relation": "candidate_relevant_to",
-      "score": 8,
-      "matched_terms": [
-        "allocation",
-        "cache",
-        "context",
-        "dense",
-        "long",
-        "memory",
-        "precision",
-        "quantization"
-      ]
-    },
-    {
-      "source": "candidate:paper:spherical-kv-angle-domain-attention-and-rate-distortion-retention-for-efficient-long-context-inference",
-      "target": "approach:uniform-kv-quantization",
-      "relation": "candidate_relevant_to",
-      "score": 6,
-      "matched_terms": [
-        "cache",
-        "context",
-        "dense",
-        "long",
-        "memory",
-        "quantization"
-      ]
-    },
-    {
-      "source": "candidate:paper:spherical-kv-angle-domain-attention-and-rate-distortion-retention-for-efficient-long-context-inference",
-      "target": "learning:block-weight-streaming",
-      "relation": "candidate_relevant_to",
-      "score": 6,
-      "matched_terms": [
-        "eviction",
-        "memory",
-        "method",
-        "path",
-        "repeated",
-        "streaming"
-      ]
+      "relation": "candidate_version_of",
+      "revision_comparison": {
+        "before": null,
+        "after": "v1",
+        "status": "comparison_unpinned",
+        "basis": "source_registry"
+      }
     },
     {
       "source": "candidate:paper:streamvoiceanon-emotion-preserving-streaming-speaker-anonymization-via-frame-level-acoustic-distillation",
@@ -7741,49 +8704,6 @@
         "codec",
         "speech",
         "streaming"
-      ]
-    },
-    {
-      "source": "candidate:paper:sub-token-routing-for-kv-cache-compression",
-      "target": "approach:adaptive-kv-quantization",
-      "relation": "candidate_relevant_to",
-      "score": 8,
-      "matched_terms": [
-        "cache",
-        "context",
-        "experiments",
-        "key",
-        "long",
-        "quantization",
-        "transformer",
-        "value"
-      ]
-    },
-    {
-      "source": "candidate:paper:sub-token-routing-for-kv-cache-compression",
-      "target": "approach:multimodal-content-prefix-cache",
-      "relation": "candidate_relevant_to",
-      "score": 5,
-      "matched_terms": [
-        "cache",
-        "context",
-        "language",
-        "long",
-        "multimodal"
-      ]
-    },
-    {
-      "source": "candidate:paper:sub-token-routing-for-kv-cache-compression",
-      "target": "backlog:structured-timeseries-recsys",
-      "relation": "candidate_relevant_to",
-      "score": 6,
-      "matched_terms": [
-        "context",
-        "first",
-        "routing",
-        "then",
-        "transformer",
-        "value"
       ]
     },
     {
@@ -7833,7 +8753,64 @@
     {
       "source": "candidate:paper:ultraquant-4-bit-kv-caching-for-context-heavy-agents",
       "target": "source:paper-2606-20474",
-      "relation": "already_read_as"
+      "relation": "candidate_version_of",
+      "revision_comparison": {
+        "before": null,
+        "after": "v2",
+        "status": "comparison_unpinned",
+        "basis": "source_registry"
+      }
+    },
+    {
+      "source": "candidate:paper:what-to-keep-what-to-forget-a-rate-distortion-view-of-memory-compaction-in-llms-and-agents",
+      "target": "approach:adaptive-kv-quantization",
+      "relation": "candidate_relevant_to",
+      "score": 5,
+      "matched_terms": [
+        "cache",
+        "context",
+        "long",
+        "memory",
+        "quantization"
+      ]
+    },
+    {
+      "source": "candidate:paper:what-to-keep-what-to-forget-a-rate-distortion-view-of-memory-compaction-in-llms-and-agents",
+      "target": "approach:prompt-prefix-cache",
+      "relation": "candidate_relevant_to",
+      "score": 5,
+      "matched_terms": [
+        "agents",
+        "cache",
+        "language",
+        "quantization",
+        "state"
+      ]
+    },
+    {
+      "source": "candidate:paper:what-to-keep-what-to-forget-a-rate-distortion-view-of-memory-compaction-in-llms-and-agents",
+      "target": "backlog:structured-timeseries-recsys",
+      "relation": "candidate_relevant_to",
+      "score": 6,
+      "matched_terms": [
+        "context",
+        "keep",
+        "research",
+        "separate",
+        "task",
+        "versus"
+      ]
+    },
+    {
+      "source": "candidate:repository:anthropics-skills",
+      "target": "source:agent-skills-repo",
+      "relation": "candidate_version_of",
+      "revision_comparison": {
+        "before": "57546260929473d4e0d1c1bb75297be2fdfa1949",
+        "after": "9d2f1ae187231d8199c64b5b762e1bdf2244733d",
+        "status": "changed",
+        "basis": "source_registry"
+      }
     },
     {
       "source": "candidate:repository:blaizzy-mlx-audio",
@@ -7848,6 +8825,52 @@
     },
     {
       "source": "candidate:repository:blaizzy-mlx-audio",
+      "target": "approach:audio-streaming-and-cache",
+      "relation": "candidate_relevant_to",
+      "score": 3,
+      "matched_terms": [
+        "audio",
+        "codec",
+        "tts"
+      ]
+    },
+    {
+      "source": "candidate:repository:blaizzy-mlx-audio",
+      "target": "learning:audio-flow-tts-duration-vocoder-gates",
+      "relation": "candidate_relevant_to",
+      "score": 4,
+      "matched_terms": [
+        "audio",
+        "codec",
+        "lucasnewman",
+        "tts"
+      ]
+    },
+    {
+      "source": "candidate:repository:blaizzy-mlx-audio",
+      "target": "source:mlx-audio-repo",
+      "relation": "candidate_version_of",
+      "revision_comparison": {
+        "before": "412cf7cd381c2a3f6a8189af04a95af24cb415b6",
+        "after": "64e8416c303fb3b3463dab8eb4ebd78c55a87c1a",
+        "status": "changed",
+        "basis": "source_registry"
+      }
+    },
+    {
+      "source": "candidate:repository:blaizzy-mlx-vlm",
+      "target": "approach:multimodal-content-prefix-cache",
+      "relation": "candidate_relevant_to",
+      "score": 4,
+      "matched_terms": [
+        "multimodal",
+        "omni",
+        "serving",
+        "vlm"
+      ]
+    },
+    {
+      "source": "candidate:repository:blaizzy-mlx-vlm",
       "target": "approach:qwen3-tts-batch-generation",
       "relation": "candidate_relevant_to",
       "score": 4,
@@ -7855,42 +8878,7 @@
         "audio",
         "qwen3",
         "request",
-        "tts"
-      ]
-    },
-    {
-      "source": "candidate:repository:blaizzy-mlx-audio",
-      "target": "outcome:audio-tts-qwen3-and-vocoder-routes",
-      "relation": "candidate_relevant_to",
-      "score": 5,
-      "matched_terms": [
-        "asr",
-        "audio",
-        "codec",
-        "qwen3",
-        "tts"
-      ]
-    },
-    {
-      "source": "candidate:repository:blaizzy-mlx-vlm",
-      "target": "approach:content-prefix-cache-vlm",
-      "relation": "candidate_relevant_to",
-      "score": 3,
-      "matched_terms": [
-        "multimodal",
-        "serving",
-        "vlm"
-      ]
-    },
-    {
-      "source": "candidate:repository:blaizzy-mlx-vlm",
-      "target": "approach:multimodal-content-prefix-cache",
-      "relation": "candidate_relevant_to",
-      "score": 3,
-      "matched_terms": [
-        "multimodal",
-        "serving",
-        "vlm"
+        "serving"
       ]
     },
     {
@@ -7899,9 +8887,30 @@
       "relation": "candidate_relevant_to",
       "score": 3,
       "matched_terms": [
-        "mode",
         "multimodal",
+        "omni",
         "vlm"
+      ]
+    },
+    {
+      "source": "candidate:repository:blaizzy-mlx-vlm",
+      "target": "source:mlx-vlm-repo",
+      "relation": "candidate_version_of",
+      "revision_comparison": {
+        "before": "6a8cdff6a1f53f46a15d4adb997c3b2d5f621263",
+        "after": "05440cc57c62799fe8d4d79079fb8d281f149b4b",
+        "status": "changed",
+        "basis": "source_registry"
+      }
+    },
+    {
+      "source": "candidate:repository:ml-explore-mlx",
+      "target": "approach:prompt-prefix-cache",
+      "relation": "candidate_relevant_to",
+      "score": 2,
+      "matched_terms": [
+        "quantization",
+        "when"
       ]
     },
     {
@@ -7911,18 +8920,29 @@
       "score": 2,
       "matched_terms": [
         "kernels",
-        "metal"
+        "when"
       ]
     },
     {
       "source": "candidate:repository:ml-explore-mlx",
-      "target": "learning:grid-sample-spatial-kernel",
+      "target": "learning:rwkv-ssm-conformer-prototypes",
       "relation": "candidate_relevant_to",
       "score": 2,
       "matched_terms": [
         "kernels",
-        "metal"
+        "time"
       ]
+    },
+    {
+      "source": "candidate:repository:ml-explore-mlx",
+      "target": "source:mlx-repo",
+      "relation": "candidate_version_of",
+      "revision_comparison": {
+        "before": "96296e9c3075a2389bc5c0f078bf01b5aa377cd9",
+        "after": "4367c73b60541ddd5a266ce4644fd93d20223b6e",
+        "status": "changed",
+        "basis": "source_registry"
+      }
     },
     {
       "source": "candidate:repository:ml-explore-mlx-examples",
@@ -7956,34 +8976,60 @@
       ]
     },
     {
-      "source": "candidate:repository:ml-explore-mlx-lm",
-      "target": "approach:adaptive-kv-quantization",
-      "relation": "candidate_relevant_to",
-      "score": 2,
-      "matched_terms": [
-        "cache",
-        "rope"
-      ]
+      "source": "candidate:repository:ml-explore-mlx-examples",
+      "target": "source:mlx-examples-repo",
+      "relation": "candidate_version_of",
+      "revision_comparison": {
+        "before": "796f5b53cab69a3d48a44233ce21aae889e94a08",
+        "after": "796f5b53cab69a3d48a44233ce21aae889e94a08",
+        "status": "same",
+        "basis": "source_registry"
+      }
     },
     {
       "source": "candidate:repository:ml-explore-mlx-lm",
       "target": "approach:cache-privacy-and-isolation",
       "relation": "candidate_relevant_to",
-      "score": 2,
+      "score": 3,
       "matched_terms": [
         "cache",
-        "language"
+        "language",
+        "padding"
       ]
     },
     {
       "source": "candidate:repository:ml-explore-mlx-lm",
-      "target": "approach:content-prefix-cache-vlm",
+      "target": "approach:fast-sdpa",
       "relation": "candidate_relevant_to",
-      "score": 2,
+      "score": 4,
       "matched_terms": [
-        "cache",
-        "language"
+        "gqa",
+        "language",
+        "mask",
+        "sdpa"
       ]
+    },
+    {
+      "source": "candidate:repository:ml-explore-mlx-lm",
+      "target": "learning:rwkv-ssm-conformer-prototypes",
+      "relation": "candidate_relevant_to",
+      "score": 3,
+      "matched_terms": [
+        "conversion",
+        "mask",
+        "padding"
+      ]
+    },
+    {
+      "source": "candidate:repository:ml-explore-mlx-lm",
+      "target": "source:mlx-lm-repo",
+      "relation": "candidate_version_of",
+      "revision_comparison": {
+        "before": "2c008fd0252b2c569227d12568356ab88ab0560a",
+        "after": "a790972f0f844d81067ed45c28b524220a10c019",
+        "status": "changed",
+        "basis": "source_registry"
+      }
     },
     {
       "source": "candidate:repository:waybarrios-vllm-mlx",
@@ -8016,6 +9062,17 @@
         "serving",
         "vllm"
       ]
+    },
+    {
+      "source": "candidate:repository:waybarrios-vllm-mlx",
+      "target": "source:vllm-mlx-repo",
+      "relation": "candidate_version_of",
+      "revision_comparison": {
+        "before": "a48c86c1a41900f7d26658471b5f67e5fdd35445",
+        "after": "0dd115769ef1196a715b96b181353edacd2a4f69",
+        "status": "changed",
+        "basis": "source_registry"
+      }
     },
     {
       "source": "source:apple-mlx-m5-blog",
@@ -8613,16 +9670,6 @@
       "relation": "evidence_for_outcome"
     },
     {
-      "source": "source:sankalp-prompt-cache-blog",
-      "target": "approach:cache-privacy-and-isolation",
-      "relation": "evidence_for"
-    },
-    {
-      "source": "source:sankalp-prompt-cache-blog",
-      "target": "approach:prompt-prefix-cache",
-      "relation": "evidence_for"
-    },
-    {
       "source": "source:spheron-nvfp4-mxfp4-guide",
       "target": "approach:native-low-bit-weight-quantization",
       "relation": "evidence_for"
@@ -8715,147 +9762,692 @@
   ],
   "latest_delta": {
     "schema_version": 1,
-    "run_id": "2026-07-07-nightly-knowledge-curator",
-    "generated_at": "2026-07-07T22:03:01+00:00",
-    "previous_graph_generated_at": "2026-06-29T18:50:51+00:00",
+    "run_id": "2026-07-10-source-health-reconciliation",
+    "generated_at": "2026-07-10T07:59:59+00:00",
+    "previous_graph_generated_at": "2026-07-10T06:03:53+00:00",
     "already_read_sources": [
-      {
-        "id": "candidate:paper:native-llm-and-mllm-inference-at-scale-on-apple-silicon",
-        "label": "Native LLM and MLLM Inference at Scale on Apple Silicon",
-        "locator": "https://arxiv.org/abs/2601.19139",
-        "read_state": "already_read",
-        "kind": "paper",
-        "known_source_id": "source:paper-2601-19139"
-      },
-      {
-        "id": "candidate:paper:rope-aware-bit-allocation-for-kv-cache-quantization",
-        "label": "RoPE-Aware Bit Allocation for KV-Cache Quantization",
-        "locator": "https://arxiv.org/abs/2606.24033",
-        "read_state": "already_read",
-        "kind": "paper",
-        "known_source_id": "source:paper-2606-24033"
-      },
-      {
-        "id": "candidate:paper:agent-assisted-side-channel-attacks-on-non-prefix-kv-cache-in-rag",
-        "label": "Agent-Assisted Side-Channel Attacks on Non-Prefix KV Cache in RAG",
-        "locator": "https://arxiv.org/abs/2606.21842",
-        "read_state": "already_read",
-        "kind": "paper",
-        "known_source_id": "source:paper-2606-21842"
-      },
-      {
-        "id": "candidate:paper:ultraquant-4-bit-kv-caching-for-context-heavy-agents",
-        "label": "UltraQuant: 4-bit KV Caching for Context-Heavy Agents",
-        "locator": "https://arxiv.org/abs/2606.20474",
-        "read_state": "already_read",
-        "kind": "paper",
-        "known_source_id": "source:paper-2606-20474"
-      },
-      {
-        "id": "candidate:paper:pushing-the-limits-of-on-device-streaming-asr-a-compact-high-accuracy-english-model-for-low-latency-inference",
-        "label": "Pushing the Limits of On-Device Streaming ASR: A Compact, High-Accuracy English Model for Low-Latency Inference",
-        "locator": "https://arxiv.org/abs/2604.14493",
-        "read_state": "already_read",
-        "kind": "paper",
-        "known_source_id": "source:paper-2604-14493"
-      },
-      {
-        "id": "candidate:repository:ml-explore-mlx",
-        "label": "ml-explore/mlx",
-        "locator": "https://github.com/ml-explore/mlx",
-        "read_state": "already_read",
-        "kind": "repository",
-        "known_source_id": "source:mlx-repo"
-      },
-      {
-        "id": "candidate:repository:ml-explore-mlx-lm",
-        "label": "ml-explore/mlx-lm",
-        "locator": "https://github.com/ml-explore/mlx-lm",
-        "read_state": "already_read",
-        "kind": "repository",
-        "known_source_id": "source:mlx-lm-repo"
-      },
       {
         "id": "candidate:repository:ml-explore-mlx-examples",
         "label": "ml-explore/mlx-examples",
         "locator": "https://github.com/ml-explore/mlx-examples",
         "read_state": "already_read",
         "kind": "repository",
-        "known_source_id": "source:mlx-examples-repo"
-      },
-      {
-        "id": "candidate:repository:blaizzy-mlx-vlm",
-        "label": "Blaizzy/mlx-vlm",
-        "locator": "https://github.com/Blaizzy/mlx-vlm",
-        "read_state": "already_read",
-        "kind": "repository",
-        "known_source_id": "source:mlx-vlm-repo"
-      },
-      {
-        "id": "candidate:repository:blaizzy-mlx-audio",
-        "label": "Blaizzy/mlx-audio",
-        "locator": "https://github.com/Blaizzy/mlx-audio",
-        "read_state": "already_read",
-        "kind": "repository",
-        "known_source_id": "source:mlx-audio-repo"
-      },
-      {
-        "id": "candidate:repository:waybarrios-vllm-mlx",
-        "label": "waybarrios/vllm-mlx",
-        "locator": "https://github.com/waybarrios/vllm-mlx",
-        "read_state": "already_read",
-        "kind": "repository",
-        "known_source_id": "source:vllm-mlx-repo"
-      },
-      {
-        "id": "candidate:repository:anthropics-skills",
-        "label": "anthropics/skills",
-        "locator": "https://github.com/anthropics/skills",
-        "read_state": "already_read",
-        "kind": "repository",
-        "known_source_id": "source:agent-skills-repo"
+        "known_source_id": "source:mlx-examples-repo",
+        "revision_comparison": {
+          "before": "796f5b53cab69a3d48a44233ce21aae889e94a08",
+          "after": "796f5b53cab69a3d48a44233ce21aae889e94a08",
+          "status": "same",
+          "basis": "source_registry"
+        }
       }
     ],
-    "new_unread_sources": [
+    "new_unread_sources": [],
+    "updated_sources": [
+      {
+        "id": "candidate:paper:native-llm-and-mllm-inference-at-scale-on-apple-silicon",
+        "label": "Native LLM and MLLM Inference at Scale on Apple Silicon",
+        "locator": "https://arxiv.org/abs/2601.19139",
+        "read_state": "updated_candidate",
+        "kind": "paper",
+        "known_source_id": "source:paper-2601-19139",
+        "immutable_locator": "https://arxiv.org/abs/2601.19139v2",
+        "revision": "v2",
+        "revision_comparison": {
+          "before": null,
+          "after": "v2",
+          "status": "comparison_unpinned",
+          "basis": "source_registry"
+        }
+      },
+      {
+        "id": "candidate:paper:benchmarking-on-device-machine-learning-on-apple-silicon-with-mlx",
+        "label": "Benchmarking On-Device Machine Learning on Apple Silicon with MLX",
+        "locator": "https://arxiv.org/abs/2510.18921",
+        "read_state": "updated_candidate",
+        "kind": "paper",
+        "immutable_locator": "https://arxiv.org/abs/2510.18921v1",
+        "revision": "v1",
+        "revision_comparison": {
+          "before": null,
+          "after": "v1",
+          "status": "comparison_unpinned",
+          "basis": "previous_graph"
+        }
+      },
+      {
+        "id": "candidate:paper:what-to-keep-what-to-forget-a-rate-distortion-view-of-memory-compaction-in-llms-and-agents",
+        "label": "What to Keep, What to Forget: A Rate--Distortion View of Memory Compaction in LLMs and Agents",
+        "locator": "https://arxiv.org/abs/2607.08032",
+        "read_state": "updated_candidate",
+        "kind": "paper",
+        "immutable_locator": "https://arxiv.org/abs/2607.08032v1",
+        "revision": "v1",
+        "revision_comparison": {
+          "before": null,
+          "after": "v1",
+          "status": "comparison_unpinned",
+          "basis": "previous_graph"
+        }
+      },
+      {
+        "id": "candidate:paper:fractal-kv-cache-archives-lossless-symbolic-storage-with-in-place-retrieval-for-long-context-llm-inference",
+        "label": "Fractal KV-Cache Archives: Lossless Symbolic Storage with In-Place Retrieval for Long-Context LLM Inference",
+        "locator": "https://arxiv.org/abs/2607.07144",
+        "read_state": "updated_candidate",
+        "kind": "paper",
+        "immutable_locator": "https://arxiv.org/abs/2607.07144v1",
+        "revision": "v1",
+        "revision_comparison": {
+          "before": null,
+          "after": "v1",
+          "status": "comparison_unpinned",
+          "basis": "previous_graph"
+        }
+      },
       {
         "id": "candidate:paper:eliteformer-an-efficient-transformer-for-fpgas",
         "label": "ELiTeFormer: An Efficient Transformer for FPGAs",
         "locator": "https://arxiv.org/abs/2607.03652",
-        "read_state": "unread_candidate",
-        "kind": "paper"
+        "read_state": "updated_candidate",
+        "kind": "paper",
+        "immutable_locator": "https://arxiv.org/abs/2607.03652v1",
+        "revision": "v1",
+        "revision_comparison": {
+          "before": null,
+          "after": "v1",
+          "status": "comparison_unpinned",
+          "basis": "previous_graph"
+        }
       },
       {
         "id": "candidate:paper:lynx-progressive-speculative-quantization-for-accelerating-kv-transfer-in-long-context-inference",
         "label": "Lynx: Progressive Speculative Quantization for accelerating KV Transfer in Long-Context Inference",
         "locator": "https://arxiv.org/abs/2607.01831",
-        "read_state": "unread_candidate",
-        "kind": "paper"
+        "read_state": "updated_candidate",
+        "kind": "paper",
+        "immutable_locator": "https://arxiv.org/abs/2607.01831v1",
+        "revision": "v1",
+        "revision_comparison": {
+          "before": null,
+          "after": "v1",
+          "status": "comparison_unpinned",
+          "basis": "previous_graph"
+        }
       },
       {
         "id": "candidate:paper:rabitqcache-rotated-binary-quantization-for-kvcache-in-long-context-llm-inference",
         "label": "RaBitQCache: Rotated Binary Quantization for KVCache in Long Context LLM Inference",
         "locator": "https://arxiv.org/abs/2606.31519",
-        "read_state": "unread_candidate",
-        "kind": "paper"
-      }
-    ],
-    "updated_sources": [
+        "read_state": "updated_candidate",
+        "kind": "paper",
+        "immutable_locator": "https://arxiv.org/abs/2606.31519v1",
+        "revision": "v1",
+        "revision_comparison": {
+          "before": null,
+          "after": "v1",
+          "status": "comparison_unpinned",
+          "basis": "previous_graph"
+        }
+      },
+      {
+        "id": "candidate:paper:rope-aware-bit-allocation-for-kv-cache-quantization",
+        "label": "RoPE-Aware Bit Allocation for KV-Cache Quantization",
+        "locator": "https://arxiv.org/abs/2606.24033",
+        "read_state": "updated_candidate",
+        "kind": "paper",
+        "known_source_id": "source:paper-2606-24033",
+        "immutable_locator": "https://arxiv.org/abs/2606.24033v1",
+        "revision": "v1",
+        "revision_comparison": {
+          "before": null,
+          "after": "v1",
+          "status": "comparison_unpinned",
+          "basis": "source_registry"
+        }
+      },
+      {
+        "id": "candidate:paper:agent-assisted-side-channel-attacks-on-non-prefix-kv-cache-in-rag",
+        "label": "Agent-Assisted Side-Channel Attacks on Non-Prefix KV Cache in RAG",
+        "locator": "https://arxiv.org/abs/2606.21842",
+        "read_state": "updated_candidate",
+        "kind": "paper",
+        "known_source_id": "source:paper-2606-21842",
+        "immutable_locator": "https://arxiv.org/abs/2606.21842v1",
+        "revision": "v1",
+        "revision_comparison": {
+          "before": null,
+          "after": "v1",
+          "status": "comparison_unpinned",
+          "basis": "source_registry"
+        }
+      },
+      {
+        "id": "candidate:paper:ultraquant-4-bit-kv-caching-for-context-heavy-agents",
+        "label": "UltraQuant: 4-bit KV Caching for Context-Heavy Agents",
+        "locator": "https://arxiv.org/abs/2606.20474",
+        "read_state": "updated_candidate",
+        "kind": "paper",
+        "known_source_id": "source:paper-2606-20474",
+        "immutable_locator": "https://arxiv.org/abs/2606.20474v2",
+        "revision": "v2",
+        "revision_comparison": {
+          "before": null,
+          "after": "v2",
+          "status": "comparison_unpinned",
+          "basis": "source_registry"
+        }
+      },
+      {
+        "id": "candidate:paper:augcodec-a-low-bitrate-disentangled-neural-speech-codec-via-data-augmentation",
+        "label": "AugCodec: A Low-Bitrate Disentangled Neural Speech Codec via Data Augmentation",
+        "locator": "https://arxiv.org/abs/2606.21893",
+        "read_state": "updated_candidate",
+        "kind": "paper",
+        "immutable_locator": "https://arxiv.org/abs/2606.21893v1",
+        "revision": "v1",
+        "revision_comparison": {
+          "before": null,
+          "after": "v1",
+          "status": "comparison_unpinned",
+          "basis": "previous_graph"
+        }
+      },
+      {
+        "id": "candidate:paper:prosocodec-prosody-oriented-speech-codec-for-voice-conversion",
+        "label": "ProsoCodec: Prosody-Oriented Speech Codec for Voice Conversion",
+        "locator": "https://arxiv.org/abs/2606.21888",
+        "read_state": "updated_candidate",
+        "kind": "paper",
+        "immutable_locator": "https://arxiv.org/abs/2606.21888v1",
+        "revision": "v1",
+        "revision_comparison": {
+          "before": null,
+          "after": "v1",
+          "status": "comparison_unpinned",
+          "basis": "previous_graph"
+        }
+      },
+      {
+        "id": "candidate:paper:hybridcodec-fast-dual-stream-semantically-enhanced-neural-audio-codec",
+        "label": "HybridCodec: Fast Dual-Stream, Semantically Enhanced Neural Audio Codec",
+        "locator": "https://arxiv.org/abs/2606.06743",
+        "read_state": "updated_candidate",
+        "kind": "paper",
+        "immutable_locator": "https://arxiv.org/abs/2606.06743v1",
+        "revision": "v1",
+        "revision_comparison": {
+          "before": null,
+          "after": "v1",
+          "status": "comparison_unpinned",
+          "basis": "previous_graph"
+        }
+      },
+      {
+        "id": "candidate:paper:affectcodec-emotion-preserving-neural-speech-codec-with-block-diagonal-residual-fsq",
+        "label": "AffectCodec: Emotion-Preserving Neural Speech Codec with Block-Diagonal Residual FSQ",
+        "locator": "https://arxiv.org/abs/2605.23373",
+        "read_state": "updated_candidate",
+        "kind": "paper",
+        "immutable_locator": "https://arxiv.org/abs/2605.23373v1",
+        "revision": "v1",
+        "revision_comparison": {
+          "before": null,
+          "after": "v1",
+          "status": "comparison_unpinned",
+          "basis": "previous_graph"
+        }
+      },
+      {
+        "id": "candidate:paper:probing-neural-audio-codecs-for-distinctions-among-english-nuclear-tunes",
+        "label": "Probing neural audio codecs for distinctions among English nuclear tunes",
+        "locator": "https://arxiv.org/abs/2603.14035",
+        "read_state": "updated_candidate",
+        "kind": "paper",
+        "immutable_locator": "https://arxiv.org/abs/2603.14035v1",
+        "revision": "v1",
+        "revision_comparison": {
+          "before": null,
+          "after": "v1",
+          "status": "comparison_unpinned",
+          "basis": "previous_graph"
+        }
+      },
+      {
+        "id": "candidate:paper:streamvoiceanon-emotion-preserving-streaming-speaker-anonymization-via-frame-level-acoustic-distillation",
+        "label": "StreamVoiceAnon+: Emotion-Preserving Streaming Speaker Anonymization via Frame-Level Acoustic Distillation",
+        "locator": "https://arxiv.org/abs/2603.06079",
+        "read_state": "updated_candidate",
+        "kind": "paper",
+        "immutable_locator": "https://arxiv.org/abs/2603.06079v1",
+        "revision": "v1",
+        "revision_comparison": {
+          "before": null,
+          "after": "v1",
+          "status": "comparison_unpinned",
+          "basis": "previous_graph"
+        }
+      },
+      {
+        "id": "candidate:paper:flexicodec-a-dynamic-neural-audio-codec-for-low-frame-rates",
+        "label": "FlexiCodec: A Dynamic Neural Audio Codec for Low Frame Rates",
+        "locator": "https://arxiv.org/abs/2510.00981",
+        "read_state": "updated_candidate",
+        "kind": "paper",
+        "immutable_locator": "https://arxiv.org/abs/2510.00981v3",
+        "revision": "v3",
+        "revision_comparison": {
+          "before": null,
+          "after": "v3",
+          "status": "comparison_unpinned",
+          "basis": "previous_graph"
+        }
+      },
+      {
+        "id": "candidate:paper:flashlabs-chroma-1-0-a-real-time-end-to-end-spoken-dialogue-model-with-personalized-voice-cloning",
+        "label": "FlashLabs Chroma 1.0: A Real-Time End-to-End Spoken Dialogue Model with Personalized Voice Cloning",
+        "locator": "https://arxiv.org/abs/2601.11141",
+        "read_state": "updated_candidate",
+        "kind": "paper",
+        "immutable_locator": "https://arxiv.org/abs/2601.11141v1",
+        "revision": "v1",
+        "revision_comparison": {
+          "before": null,
+          "after": "v1",
+          "status": "comparison_unpinned",
+          "basis": "previous_graph"
+        }
+      },
+      {
+        "id": "candidate:paper:pushing-the-limits-of-on-device-streaming-asr-a-compact-high-accuracy-english-model-for-low-latency-inference",
+        "label": "Pushing the Limits of On-Device Streaming ASR: A Compact, High-Accuracy English Model for Low-Latency Inference",
+        "locator": "https://arxiv.org/abs/2604.14493",
+        "read_state": "updated_candidate",
+        "kind": "paper",
+        "known_source_id": "source:paper-2604-14493",
+        "immutable_locator": "https://arxiv.org/abs/2604.14493v2",
+        "revision": "v2",
+        "revision_comparison": {
+          "before": null,
+          "after": "v2",
+          "status": "comparison_unpinned",
+          "basis": "source_registry"
+        }
+      },
+      {
+        "id": "candidate:paper:quantization-for-openai-s-whisper-models-a-comparative-analysis",
+        "label": "Quantization for OpenAI's Whisper Models: A Comparative Analysis",
+        "locator": "https://arxiv.org/abs/2503.09905",
+        "read_state": "updated_candidate",
+        "kind": "paper",
+        "immutable_locator": "https://arxiv.org/abs/2503.09905v1",
+        "revision": "v1",
+        "revision_comparison": {
+          "before": null,
+          "after": "v1",
+          "status": "comparison_unpinned",
+          "basis": "previous_graph"
+        }
+      },
+      {
+        "id": "candidate:paper:attention-based-on-device-streaming-speech-recognition-with-large-speech-corpus",
+        "label": "Attention based on-device streaming speech recognition with large speech corpus",
+        "locator": "https://arxiv.org/abs/2001.00577",
+        "read_state": "updated_candidate",
+        "kind": "paper",
+        "immutable_locator": "https://arxiv.org/abs/2001.00577v1",
+        "revision": "v1",
+        "revision_comparison": {
+          "before": null,
+          "after": "v1",
+          "status": "comparison_unpinned",
+          "basis": "previous_graph"
+        }
+      },
+      {
+        "id": "candidate:paper:kernelcraft-benchmarking-for-agentic-close-to-metal-kernel-generation-on-emerging-hardware",
+        "label": "KernelCraft: Benchmarking for Agentic Close-to-Metal Kernel Generation on Emerging Hardware",
+        "locator": "https://arxiv.org/abs/2603.08721",
+        "read_state": "updated_candidate",
+        "kind": "paper",
+        "immutable_locator": "https://arxiv.org/abs/2603.08721v2",
+        "revision": "v2",
+        "revision_comparison": {
+          "before": null,
+          "after": "v2",
+          "status": "comparison_unpinned",
+          "basis": "previous_graph"
+        }
+      },
+      {
+        "id": "candidate:repository:ml-explore-mlx",
+        "label": "ml-explore/mlx",
+        "locator": "https://github.com/ml-explore/mlx",
+        "read_state": "updated_candidate",
+        "kind": "repository",
+        "known_source_id": "source:mlx-repo",
+        "revision_comparison": {
+          "before": "96296e9c3075a2389bc5c0f078bf01b5aa377cd9",
+          "after": "4367c73b60541ddd5a266ce4644fd93d20223b6e",
+          "status": "changed",
+          "basis": "source_registry"
+        },
+        "head_sha": "4367c73b60541ddd5a266ce4644fd93d20223b6e"
+      },
+      {
+        "id": "candidate:repository:ml-explore-mlx-lm",
+        "label": "ml-explore/mlx-lm",
+        "locator": "https://github.com/ml-explore/mlx-lm",
+        "read_state": "updated_candidate",
+        "kind": "repository",
+        "known_source_id": "source:mlx-lm-repo",
+        "revision_comparison": {
+          "before": "2c008fd0252b2c569227d12568356ab88ab0560a",
+          "after": "a790972f0f844d81067ed45c28b524220a10c019",
+          "status": "changed",
+          "basis": "source_registry"
+        },
+        "head_sha": "a790972f0f844d81067ed45c28b524220a10c019"
+      },
+      {
+        "id": "candidate:repository:blaizzy-mlx-vlm",
+        "label": "Blaizzy/mlx-vlm",
+        "locator": "https://github.com/Blaizzy/mlx-vlm",
+        "read_state": "updated_candidate",
+        "kind": "repository",
+        "known_source_id": "source:mlx-vlm-repo",
+        "revision_comparison": {
+          "before": "6a8cdff6a1f53f46a15d4adb997c3b2d5f621263",
+          "after": "05440cc57c62799fe8d4d79079fb8d281f149b4b",
+          "status": "changed",
+          "basis": "source_registry"
+        },
+        "head_sha": "05440cc57c62799fe8d4d79079fb8d281f149b4b"
+      },
+      {
+        "id": "candidate:repository:blaizzy-mlx-audio",
+        "label": "Blaizzy/mlx-audio",
+        "locator": "https://github.com/Blaizzy/mlx-audio",
+        "read_state": "updated_candidate",
+        "kind": "repository",
+        "known_source_id": "source:mlx-audio-repo",
+        "revision_comparison": {
+          "before": "412cf7cd381c2a3f6a8189af04a95af24cb415b6",
+          "after": "64e8416c303fb3b3463dab8eb4ebd78c55a87c1a",
+          "status": "changed",
+          "basis": "source_registry"
+        },
+        "head_sha": "64e8416c303fb3b3463dab8eb4ebd78c55a87c1a"
+      },
+      {
+        "id": "candidate:repository:waybarrios-vllm-mlx",
+        "label": "waybarrios/vllm-mlx",
+        "locator": "https://github.com/waybarrios/vllm-mlx",
+        "read_state": "updated_candidate",
+        "kind": "repository",
+        "known_source_id": "source:vllm-mlx-repo",
+        "revision_comparison": {
+          "before": "a48c86c1a41900f7d26658471b5f67e5fdd35445",
+          "after": "0dd115769ef1196a715b96b181353edacd2a4f69",
+          "status": "changed",
+          "basis": "source_registry"
+        },
+        "head_sha": "0dd115769ef1196a715b96b181353edacd2a4f69"
+      },
+      {
+        "id": "candidate:repository:anthropics-skills",
+        "label": "anthropics/skills",
+        "locator": "https://github.com/anthropics/skills",
+        "read_state": "updated_candidate",
+        "kind": "repository",
+        "known_source_id": "source:agent-skills-repo",
+        "revision_comparison": {
+          "before": "57546260929473d4e0d1c1bb75297be2fdfa1949",
+          "after": "9d2f1ae187231d8199c64b5b762e1bdf2244733d",
+          "status": "changed",
+          "basis": "source_registry"
+        },
+        "head_sha": "9d2f1ae187231d8199c64b5b762e1bdf2244733d"
+      },
       {
         "id": "candidate:repository:openai-codex",
         "label": "openai/codex",
         "locator": "https://github.com/openai/codex",
         "read_state": "updated_candidate",
         "kind": "repository",
-        "head_sha": "2589f7a52df8f65905d47e603f65ec458464d45e"
+        "revision_comparison": {
+          "before": "1f0566d3f59298d1bb88820a0d35294f1eeb07ea",
+          "after": "1f0566d3f59298d1bb88820a0d35294f1eeb07ea",
+          "status": "same",
+          "basis": "previous_graph"
+        },
+        "head_sha": "1f0566d3f59298d1bb88820a0d35294f1eeb07ea"
       }
     ],
     "new_approach_leads": [
       {
+        "id": "candidate:paper:native-llm-and-mllm-inference-at-scale-on-apple-silicon",
+        "label": "Native LLM and MLLM Inference at Scale on Apple Silicon",
+        "locator": "https://arxiv.org/abs/2601.19139",
+        "read_state": "updated_candidate",
+        "kind": "paper",
+        "known_source_id": "source:paper-2601-19139",
+        "immutable_locator": "https://arxiv.org/abs/2601.19139v2",
+        "revision": "v2",
+        "revision_comparison": {
+          "before": null,
+          "after": "v2",
+          "status": "comparison_unpinned",
+          "basis": "source_registry"
+        },
+        "matches": [
+          {
+            "target": "approach:multimodal-content-prefix-cache",
+            "score": 7,
+            "matched_terms": [
+              "concurrent",
+              "content",
+              "mllm",
+              "multimodal",
+              "prefix",
+              "throughput",
+              "vision"
+            ]
+          },
+          {
+            "target": "outcome:vlm-mlx-vlm-working-route",
+            "score": 6,
+            "matched_terms": [
+              "has",
+              "multimodal",
+              "prefix",
+              "text",
+              "vision",
+              "vllm"
+            ]
+          },
+          {
+            "target": "approach:continuous-batching-serving",
+            "score": 5,
+            "matched_terms": [
+              "batching",
+              "concurrent",
+              "continuous",
+              "throughput",
+              "vision"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "candidate:paper:benchmarking-on-device-machine-learning-on-apple-silicon-with-mlx",
+        "label": "Benchmarking On-Device Machine Learning on Apple Silicon with MLX",
+        "locator": "https://arxiv.org/abs/2510.18921",
+        "read_state": "updated_candidate",
+        "kind": "paper",
+        "immutable_locator": "https://arxiv.org/abs/2510.18921v1",
+        "revision": "v1",
+        "revision_comparison": {
+          "before": null,
+          "after": "v1",
+          "status": "comparison_unpinned",
+          "basis": "previous_graph"
+        },
+        "matches": [
+          {
+            "target": "outcome:asr-whisper-working-adjacent-route",
+            "score": 5,
+            "matched_terms": [
+              "apple",
+              "has",
+              "language",
+              "need",
+              "optimization"
+            ]
+          },
+          {
+            "target": "approach:eagle-medusa-mtp-drafters",
+            "score": 4,
+            "matched_terms": [
+              "architecture",
+              "language",
+              "latency",
+              "transformer"
+            ]
+          },
+          {
+            "target": "approach:moe-gather-and-expert-batching",
+            "score": 4,
+            "matched_terms": [
+              "creates",
+              "large",
+              "latency",
+              "transformer"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "candidate:paper:what-to-keep-what-to-forget-a-rate-distortion-view-of-memory-compaction-in-llms-and-agents",
+        "label": "What to Keep, What to Forget: A Rate--Distortion View of Memory Compaction in LLMs and Agents",
+        "locator": "https://arxiv.org/abs/2607.08032",
+        "read_state": "updated_candidate",
+        "kind": "paper",
+        "immutable_locator": "https://arxiv.org/abs/2607.08032v1",
+        "revision": "v1",
+        "revision_comparison": {
+          "before": null,
+          "after": "v1",
+          "status": "comparison_unpinned",
+          "basis": "previous_graph"
+        },
+        "matches": [
+          {
+            "target": "backlog:structured-timeseries-recsys",
+            "score": 6,
+            "matched_terms": [
+              "context",
+              "keep",
+              "research",
+              "separate",
+              "task",
+              "versus"
+            ]
+          },
+          {
+            "target": "approach:adaptive-kv-quantization",
+            "score": 5,
+            "matched_terms": [
+              "cache",
+              "context",
+              "long",
+              "memory",
+              "quantization"
+            ]
+          },
+          {
+            "target": "approach:prompt-prefix-cache",
+            "score": 5,
+            "matched_terms": [
+              "agents",
+              "cache",
+              "language",
+              "quantization",
+              "state"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "candidate:paper:fractal-kv-cache-archives-lossless-symbolic-storage-with-in-place-retrieval-for-long-context-llm-inference",
+        "label": "Fractal KV-Cache Archives: Lossless Symbolic Storage with In-Place Retrieval for Long-Context LLM Inference",
+        "locator": "https://arxiv.org/abs/2607.07144",
+        "read_state": "updated_candidate",
+        "kind": "paper",
+        "immutable_locator": "https://arxiv.org/abs/2607.07144v1",
+        "revision": "v1",
+        "revision_comparison": {
+          "before": null,
+          "after": "v1",
+          "status": "comparison_unpinned",
+          "basis": "previous_graph"
+        },
+        "matches": [
+          {
+            "target": "backlog:top1000-contributor-long-tail-rescreening",
+            "score": 8,
+            "matched_terms": [
+              "codes",
+              "family",
+              "following",
+              "format",
+              "has",
+              "long",
+              "runs",
+              "state"
+            ]
+          },
+          {
+            "target": "approach:adaptive-kv-quantization",
+            "score": 7,
+            "matched_terms": [
+              "cache",
+              "context",
+              "key",
+              "long",
+              "memory",
+              "quantization",
+              "value"
+            ]
+          },
+          {
+            "target": "backlog:structured-timeseries-recsys",
+            "score": 7,
+            "matched_terms": [
+              "context",
+              "family",
+              "has",
+              "map",
+              "retrieval",
+              "time",
+              "value"
+            ]
+          }
+        ]
+      },
+      {
         "id": "candidate:paper:eliteformer-an-efficient-transformer-for-fpgas",
         "label": "ELiTeFormer: An Efficient Transformer for FPGAs",
         "locator": "https://arxiv.org/abs/2607.03652",
-        "read_state": "unread_candidate",
+        "read_state": "updated_candidate",
         "kind": "paper",
+        "immutable_locator": "https://arxiv.org/abs/2607.03652v1",
+        "revision": "v1",
+        "revision_comparison": {
+          "before": null,
+          "after": "v1",
+          "status": "comparison_unpinned",
+          "basis": "previous_graph"
+        },
         "matches": [
           {
             "target": "approach:adaptive-kv-quantization",
@@ -8902,8 +10494,16 @@
         "id": "candidate:paper:lynx-progressive-speculative-quantization-for-accelerating-kv-transfer-in-long-context-inference",
         "label": "Lynx: Progressive Speculative Quantization for accelerating KV Transfer in Long-Context Inference",
         "locator": "https://arxiv.org/abs/2607.01831",
-        "read_state": "unread_candidate",
+        "read_state": "updated_candidate",
         "kind": "paper",
+        "immutable_locator": "https://arxiv.org/abs/2607.01831v1",
+        "revision": "v1",
+        "revision_comparison": {
+          "before": null,
+          "after": "v1",
+          "status": "comparison_unpinned",
+          "basis": "previous_graph"
+        },
         "matches": [
           {
             "target": "approach:adaptive-kv-quantization",
@@ -8949,8 +10549,16 @@
         "id": "candidate:paper:rabitqcache-rotated-binary-quantization-for-kvcache-in-long-context-llm-inference",
         "label": "RaBitQCache: Rotated Binary Quantization for KVCache in Long Context LLM Inference",
         "locator": "https://arxiv.org/abs/2606.31519",
-        "read_state": "unread_candidate",
+        "read_state": "updated_candidate",
         "kind": "paper",
+        "immutable_locator": "https://arxiv.org/abs/2606.31519v1",
+        "revision": "v1",
+        "revision_comparison": {
+          "before": null,
+          "after": "v1",
+          "status": "comparison_unpinned",
+          "basis": "previous_graph"
+        },
         "matches": [
           {
             "target": "approach:adaptive-kv-quantization",
@@ -8994,21 +10602,1013 @@
             ]
           }
         ]
+      },
+      {
+        "id": "candidate:paper:rope-aware-bit-allocation-for-kv-cache-quantization",
+        "label": "RoPE-Aware Bit Allocation for KV-Cache Quantization",
+        "locator": "https://arxiv.org/abs/2606.24033",
+        "read_state": "updated_candidate",
+        "kind": "paper",
+        "known_source_id": "source:paper-2606-24033",
+        "immutable_locator": "https://arxiv.org/abs/2606.24033v1",
+        "revision": "v1",
+        "revision_comparison": {
+          "before": null,
+          "after": "v1",
+          "status": "comparison_unpinned",
+          "basis": "source_registry"
+        },
+        "matches": [
+          {
+            "target": "approach:adaptive-kv-quantization",
+            "score": 10,
+            "matched_terms": [
+              "allocation",
+              "aware",
+              "bit",
+              "cache",
+              "context",
+              "key",
+              "long",
+              "quantization"
+            ]
+          },
+          {
+            "target": "approach:multimodal-content-prefix-cache",
+            "score": 5,
+            "matched_terms": [
+              "aware",
+              "block",
+              "cache",
+              "context",
+              "long"
+            ]
+          },
+          {
+            "target": "approach:uniform-kv-quantization",
+            "score": 4,
+            "matched_terms": [
+              "cache",
+              "context",
+              "long",
+              "quantization"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "candidate:paper:agent-assisted-side-channel-attacks-on-non-prefix-kv-cache-in-rag",
+        "label": "Agent-Assisted Side-Channel Attacks on Non-Prefix KV Cache in RAG",
+        "locator": "https://arxiv.org/abs/2606.21842",
+        "read_state": "updated_candidate",
+        "kind": "paper",
+        "known_source_id": "source:paper-2606-21842",
+        "immutable_locator": "https://arxiv.org/abs/2606.21842v1",
+        "revision": "v1",
+        "revision_comparison": {
+          "before": null,
+          "after": "v1",
+          "status": "comparison_unpinned",
+          "basis": "source_registry"
+        },
+        "matches": [
+          {
+            "target": "approach:adaptive-kv-quantization",
+            "score": 8,
+            "matched_terms": [
+              "aware",
+              "cache",
+              "context",
+              "key",
+              "long",
+              "memory",
+              "quantization",
+              "value"
+            ]
+          },
+          {
+            "target": "approach:multimodal-content-prefix-cache",
+            "score": 7,
+            "matched_terms": [
+              "aware",
+              "cache",
+              "context",
+              "language",
+              "long",
+              "prefix",
+              "serving"
+            ]
+          },
+          {
+            "target": "outcome:vlm-mlx-vlm-working-route",
+            "score": 7,
+            "matched_terms": [
+              "alignment",
+              "cache",
+              "generation",
+              "prefix",
+              "serving",
+              "specific",
+              "tenant"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "candidate:paper:ultraquant-4-bit-kv-caching-for-context-heavy-agents",
+        "label": "UltraQuant: 4-bit KV Caching for Context-Heavy Agents",
+        "locator": "https://arxiv.org/abs/2606.20474",
+        "read_state": "updated_candidate",
+        "kind": "paper",
+        "known_source_id": "source:paper-2606-20474",
+        "immutable_locator": "https://arxiv.org/abs/2606.20474v2",
+        "revision": "v2",
+        "revision_comparison": {
+          "before": null,
+          "after": "v2",
+          "status": "comparison_unpinned",
+          "basis": "source_registry"
+        },
+        "matches": [
+          {
+            "target": "approach:adaptive-kv-quantization",
+            "score": 7,
+            "matched_terms": [
+              "bit",
+              "cache",
+              "context",
+              "key",
+              "long",
+              "quantization",
+              "value"
+            ]
+          },
+          {
+            "target": "backlog:structured-timeseries-recsys",
+            "score": 7,
+            "matched_terms": [
+              "context",
+              "first",
+              "keep",
+              "must",
+              "style",
+              "task",
+              "value"
+            ]
+          },
+          {
+            "target": "approach:multimodal-content-prefix-cache",
+            "score": 6,
+            "matched_terms": [
+              "block",
+              "cache",
+              "context",
+              "long",
+              "serving",
+              "throughput"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "candidate:paper:augcodec-a-low-bitrate-disentangled-neural-speech-codec-via-data-augmentation",
+        "label": "AugCodec: A Low-Bitrate Disentangled Neural Speech Codec via Data Augmentation",
+        "locator": "https://arxiv.org/abs/2606.21893",
+        "read_state": "updated_candidate",
+        "kind": "paper",
+        "immutable_locator": "https://arxiv.org/abs/2606.21893v1",
+        "revision": "v1",
+        "revision_comparison": {
+          "before": null,
+          "after": "v1",
+          "status": "comparison_unpinned",
+          "basis": "previous_graph"
+        },
+        "matches": [
+          {
+            "target": "approach:audio-streaming-and-cache",
+            "score": 5,
+            "matched_terms": [
+              "audio",
+              "codec",
+              "preserve",
+              "speech",
+              "streaming"
+            ]
+          },
+          {
+            "target": "outcome:audio-tts-qwen3-and-vocoder-routes",
+            "score": 5,
+            "matched_terms": [
+              "audio",
+              "codec",
+              "each",
+              "rate",
+              "speaker"
+            ]
+          },
+          {
+            "target": "approach:audio-reference-conditioning-cache",
+            "score": 4,
+            "matched_terms": [
+              "audio",
+              "codec",
+              "speaker",
+              "voice"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "candidate:paper:prosocodec-prosody-oriented-speech-codec-for-voice-conversion",
+        "label": "ProsoCodec: Prosody-Oriented Speech Codec for Voice Conversion",
+        "locator": "https://arxiv.org/abs/2606.21888",
+        "read_state": "updated_candidate",
+        "kind": "paper",
+        "immutable_locator": "https://arxiv.org/abs/2606.21888v1",
+        "revision": "v1",
+        "revision_comparison": {
+          "before": null,
+          "after": "v1",
+          "status": "comparison_unpinned",
+          "basis": "previous_graph"
+        },
+        "matches": [
+          {
+            "target": "outcome:audio-tts-qwen3-and-vocoder-routes",
+            "score": 8,
+            "matched_terms": [
+              "audio",
+              "but",
+              "codec",
+              "generation",
+              "not",
+              "speaker",
+              "text",
+              "transfer"
+            ]
+          },
+          {
+            "target": "approach:audio-reference-conditioning-cache",
+            "score": 6,
+            "matched_terms": [
+              "audio",
+              "cloning",
+              "codec",
+              "conditioning",
+              "speaker",
+              "voice"
+            ]
+          },
+          {
+            "target": "approach:audio-streaming-and-cache",
+            "score": 6,
+            "matched_terms": [
+              "audio",
+              "codec",
+              "preserve",
+              "speech",
+              "streaming",
+              "use"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "candidate:paper:hybridcodec-fast-dual-stream-semantically-enhanced-neural-audio-codec",
+        "label": "HybridCodec: Fast Dual-Stream, Semantically Enhanced Neural Audio Codec",
+        "locator": "https://arxiv.org/abs/2606.06743",
+        "read_state": "updated_candidate",
+        "kind": "paper",
+        "immutable_locator": "https://arxiv.org/abs/2606.06743v1",
+        "revision": "v1",
+        "revision_comparison": {
+          "before": null,
+          "after": "v1",
+          "status": "comparison_unpinned",
+          "basis": "previous_graph"
+        },
+        "matches": [
+          {
+            "target": "approach:audio-streaming-and-cache",
+            "score": 5,
+            "matched_terms": [
+              "audio",
+              "codec",
+              "first",
+              "speech",
+              "streaming"
+            ]
+          },
+          {
+            "target": "approach:block-weight-streaming",
+            "score": 4,
+            "matched_terms": [
+              "language",
+              "stream",
+              "streaming",
+              "unified"
+            ]
+          },
+          {
+            "target": "backlog:graph-geometric-scientific",
+            "score": 4,
+            "matched_terms": [
+              "architectures",
+              "first",
+              "has",
+              "one"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "candidate:paper:affectcodec-emotion-preserving-neural-speech-codec-with-block-diagonal-residual-fsq",
+        "label": "AffectCodec: Emotion-Preserving Neural Speech Codec with Block-Diagonal Residual FSQ",
+        "locator": "https://arxiv.org/abs/2605.23373",
+        "read_state": "updated_candidate",
+        "kind": "paper",
+        "immutable_locator": "https://arxiv.org/abs/2605.23373v1",
+        "revision": "v1",
+        "revision_comparison": {
+          "before": null,
+          "after": "v1",
+          "status": "comparison_unpinned",
+          "basis": "previous_graph"
+        },
+        "matches": [
+          {
+            "target": "approach:native-low-bit-weight-quantization",
+            "score": 5,
+            "matched_terms": [
+              "audio",
+              "bit",
+              "language",
+              "quantization",
+              "where"
+            ]
+          },
+          {
+            "target": "approach:audio-streaming-and-cache",
+            "score": 4,
+            "matched_terms": [
+              "audio",
+              "codec",
+              "speech",
+              "streaming"
+            ]
+          },
+          {
+            "target": "approach:block-weight-streaming",
+            "score": 4,
+            "matched_terms": [
+              "block",
+              "language",
+              "stream",
+              "streaming"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "candidate:paper:probing-neural-audio-codecs-for-distinctions-among-english-nuclear-tunes",
+        "label": "Probing neural audio codecs for distinctions among English nuclear tunes",
+        "locator": "https://arxiv.org/abs/2603.14035",
+        "read_state": "updated_candidate",
+        "kind": "paper",
+        "immutable_locator": "https://arxiv.org/abs/2603.14035v1",
+        "revision": "v1",
+        "revision_comparison": {
+          "before": null,
+          "after": "v1",
+          "status": "comparison_unpinned",
+          "basis": "previous_graph"
+        },
+        "matches": [
+          {
+            "target": "learning:audio-flow-tts-duration-vocoder-gates",
+            "score": 7,
+            "matched_terms": [
+              "audio",
+              "codec",
+              "dependent",
+              "quantized",
+              "speech",
+              "streaming",
+              "these"
+            ]
+          },
+          {
+            "target": "approach:audio-streaming-and-cache",
+            "score": 5,
+            "matched_terms": [
+              "audio",
+              "codec",
+              "speech",
+              "streaming",
+              "use"
+            ]
+          },
+          {
+            "target": "backlog:top1000-contributor-long-tail-rescreening",
+            "score": 5,
+            "matched_terms": [
+              "each",
+              "results",
+              "state",
+              "test",
+              "top"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "candidate:paper:streamvoiceanon-emotion-preserving-streaming-speaker-anonymization-via-frame-level-acoustic-distillation",
+        "label": "StreamVoiceAnon+: Emotion-Preserving Streaming Speaker Anonymization via Frame-Level Acoustic Distillation",
+        "locator": "https://arxiv.org/abs/2603.06079",
+        "read_state": "updated_candidate",
+        "kind": "paper",
+        "immutable_locator": "https://arxiv.org/abs/2603.06079v1",
+        "revision": "v1",
+        "revision_comparison": {
+          "before": null,
+          "after": "v1",
+          "status": "comparison_unpinned",
+          "basis": "previous_graph"
+        },
+        "matches": [
+          {
+            "target": "approach:audio-streaming-and-cache",
+            "score": 5,
+            "matched_terms": [
+              "audio",
+              "codec",
+              "latency",
+              "speech",
+              "streaming"
+            ]
+          },
+          {
+            "target": "approach:audio-reference-conditioning-cache",
+            "score": 4,
+            "matched_terms": [
+              "audio",
+              "codec",
+              "latency",
+              "speaker"
+            ]
+          },
+          {
+            "target": "learning:audio-flow-tts-duration-vocoder-gates",
+            "score": 4,
+            "matched_terms": [
+              "audio",
+              "codec",
+              "speech",
+              "streaming"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "candidate:paper:flexicodec-a-dynamic-neural-audio-codec-for-low-frame-rates",
+        "label": "FlexiCodec: A Dynamic Neural Audio Codec for Low Frame Rates",
+        "locator": "https://arxiv.org/abs/2510.00981",
+        "read_state": "updated_candidate",
+        "kind": "paper",
+        "immutable_locator": "https://arxiv.org/abs/2510.00981v3",
+        "revision": "v3",
+        "revision_comparison": {
+          "before": null,
+          "after": "v3",
+          "status": "comparison_unpinned",
+          "basis": "previous_graph"
+        },
+        "matches": [
+          {
+            "target": "outcome:asr-whisper-working-adjacent-route",
+            "score": 6,
+            "matched_terms": [
+              "asr",
+              "but",
+              "can",
+              "feature",
+              "language",
+              "streaming"
+            ]
+          },
+          {
+            "target": "outcome:audio-tts-qwen3-and-vocoder-routes",
+            "score": 6,
+            "matched_terms": [
+              "asr",
+              "audio",
+              "but",
+              "can",
+              "codec",
+              "rate"
+            ]
+          },
+          {
+            "target": "learning:audio-flow-tts-duration-vocoder-gates",
+            "score": 5,
+            "matched_terms": [
+              "audio",
+              "codec",
+              "length",
+              "speech",
+              "streaming"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "candidate:paper:flashlabs-chroma-1-0-a-real-time-end-to-end-spoken-dialogue-model-with-personalized-voice-cloning",
+        "label": "FlashLabs Chroma 1.0: A Real-Time End-to-End Spoken Dialogue Model with Personalized Voice Cloning",
+        "locator": "https://arxiv.org/abs/2601.11141",
+        "read_state": "updated_candidate",
+        "kind": "paper",
+        "immutable_locator": "https://arxiv.org/abs/2601.11141v1",
+        "revision": "v1",
+        "revision_comparison": {
+          "before": null,
+          "after": "v1",
+          "status": "comparison_unpinned",
+          "basis": "previous_graph"
+        },
+        "matches": [
+          {
+            "target": "approach:audio-reference-conditioning-cache",
+            "score": 7,
+            "matched_terms": [
+              "audio",
+              "cloning",
+              "codec",
+              "first",
+              "latency",
+              "speaker",
+              "voice"
+            ]
+          },
+          {
+            "target": "approach:audio-streaming-and-cache",
+            "score": 7,
+            "matched_terms": [
+              "audio",
+              "codec",
+              "first",
+              "latency",
+              "quality",
+              "speech",
+              "streaming"
+            ]
+          },
+          {
+            "target": "outcome:audio-tts-qwen3-and-vocoder-routes",
+            "score": 7,
+            "matched_terms": [
+              "audio",
+              "codec",
+              "generation",
+              "latency",
+              "quality",
+              "speaker",
+              "text"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "candidate:paper:pushing-the-limits-of-on-device-streaming-asr-a-compact-high-accuracy-english-model-for-low-latency-inference",
+        "label": "Pushing the Limits of On-Device Streaming ASR: A Compact, High-Accuracy English Model for Low-Latency Inference",
+        "locator": "https://arxiv.org/abs/2604.14493",
+        "read_state": "updated_candidate",
+        "kind": "paper",
+        "known_source_id": "source:paper-2604-14493",
+        "immutable_locator": "https://arxiv.org/abs/2604.14493v2",
+        "revision": "v2",
+        "revision_comparison": {
+          "before": null,
+          "after": "v2",
+          "status": "comparison_unpinned",
+          "basis": "source_registry"
+        },
+        "matches": [
+          {
+            "target": "outcome:asr-whisper-working-adjacent-route",
+            "score": 8,
+            "matched_terms": [
+              "asr",
+              "decoder",
+              "quality",
+              "real",
+              "state",
+              "streaming",
+              "time",
+              "whisper"
+            ]
+          },
+          {
+            "target": "outcome:diffusion-and-flow-partial-routes",
+            "score": 6,
+            "matched_terms": [
+              "encoder",
+              "memory",
+              "quality",
+              "streaming",
+              "time",
+              "without"
+            ]
+          },
+          {
+            "target": "approach:audio-streaming-and-cache",
+            "score": 5,
+            "matched_terms": [
+              "chunked",
+              "latency",
+              "quality",
+              "speech",
+              "streaming"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "candidate:paper:quantization-for-openai-s-whisper-models-a-comparative-analysis",
+        "label": "Quantization for OpenAI's Whisper Models: A Comparative Analysis",
+        "locator": "https://arxiv.org/abs/2503.09905",
+        "read_state": "updated_candidate",
+        "kind": "paper",
+        "immutable_locator": "https://arxiv.org/abs/2503.09905v1",
+        "revision": "v1",
+        "revision_comparison": {
+          "before": null,
+          "after": "v1",
+          "status": "comparison_unpinned",
+          "basis": "previous_graph"
+        },
+        "matches": [
+          {
+            "target": "backlog:top1000-contributor-long-tail-rescreening",
+            "score": 4,
+            "matched_terms": [
+              "live",
+              "next",
+              "offline",
+              "open"
+            ]
+          },
+          {
+            "target": "approach:audio-streaming-and-cache",
+            "score": 3,
+            "matched_terms": [
+              "latency",
+              "speech",
+              "streaming"
+            ]
+          },
+          {
+            "target": "backlog:graph-geometric-scientific",
+            "score": 3,
+            "matched_terms": [
+              "offline",
+              "one",
+              "such"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "candidate:paper:attention-based-on-device-streaming-speech-recognition-with-large-speech-corpus",
+        "label": "Attention based on-device streaming speech recognition with large speech corpus",
+        "locator": "https://arxiv.org/abs/2001.00577",
+        "read_state": "updated_candidate",
+        "kind": "paper",
+        "immutable_locator": "https://arxiv.org/abs/2001.00577v1",
+        "revision": "v1",
+        "revision_comparison": {
+          "before": null,
+          "after": "v1",
+          "status": "comparison_unpinned",
+          "basis": "previous_graph"
+        },
+        "matches": [
+          {
+            "target": "approach:native-low-bit-weight-quantization",
+            "score": 5,
+            "matched_terms": [
+              "bit",
+              "low",
+              "memory",
+              "quantization",
+              "size"
+            ]
+          },
+          {
+            "target": "learning:block-weight-streaming",
+            "score": 4,
+            "matched_terms": [
+              "low",
+              "memory",
+              "method",
+              "streaming"
+            ]
+          },
+          {
+            "target": "approach:adaptive-kv-quantization",
+            "score": 3,
+            "matched_terms": [
+              "bit",
+              "memory",
+              "quantization"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "candidate:paper:kernelcraft-benchmarking-for-agentic-close-to-metal-kernel-generation-on-emerging-hardware",
+        "label": "KernelCraft: Benchmarking for Agentic Close-to-Metal Kernel Generation on Emerging Hardware",
+        "locator": "https://arxiv.org/abs/2603.08721",
+        "read_state": "updated_candidate",
+        "kind": "paper",
+        "immutable_locator": "https://arxiv.org/abs/2603.08721v2",
+        "revision": "v2",
+        "revision_comparison": {
+          "before": null,
+          "after": "v2",
+          "status": "comparison_unpinned",
+          "basis": "previous_graph"
+        },
+        "matches": [
+          {
+            "target": "backlog:structured-timeseries-recsys",
+            "score": 7,
+            "matched_terms": [
+              "architectures",
+              "based",
+              "code",
+              "error",
+              "first",
+              "has",
+              "time"
+            ]
+          },
+          {
+            "target": "outcome:decoder-mlx-lm-working-route",
+            "score": 7,
+            "matched_terms": [
+              "architectures",
+              "code",
+              "custom",
+              "generation",
+              "llm",
+              "not",
+              "through"
+            ]
+          },
+          {
+            "target": "learning:grid-sample-spatial-kernel",
+            "score": 6,
+            "matched_terms": [
+              "benchmark",
+              "custom",
+              "kernel",
+              "kernels",
+              "level",
+              "metal"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "candidate:repository:ml-explore-mlx",
+        "label": "ml-explore/mlx",
+        "locator": "https://github.com/ml-explore/mlx",
+        "read_state": "updated_candidate",
+        "kind": "repository",
+        "known_source_id": "source:mlx-repo",
+        "revision_comparison": {
+          "before": "96296e9c3075a2389bc5c0f078bf01b5aa377cd9",
+          "after": "4367c73b60541ddd5a266ce4644fd93d20223b6e",
+          "status": "changed",
+          "basis": "source_registry"
+        },
+        "matches": [
+          {
+            "target": "approach:prompt-prefix-cache",
+            "score": 2,
+            "matched_terms": [
+              "quantization",
+              "when"
+            ]
+          },
+          {
+            "target": "approach:spatial-grid-sample-kernel",
+            "score": 2,
+            "matched_terms": [
+              "kernels",
+              "when"
+            ]
+          },
+          {
+            "target": "learning:rwkv-ssm-conformer-prototypes",
+            "score": 2,
+            "matched_terms": [
+              "kernels",
+              "time"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "candidate:repository:ml-explore-mlx-lm",
+        "label": "ml-explore/mlx-lm",
+        "locator": "https://github.com/ml-explore/mlx-lm",
+        "read_state": "updated_candidate",
+        "kind": "repository",
+        "known_source_id": "source:mlx-lm-repo",
+        "revision_comparison": {
+          "before": "2c008fd0252b2c569227d12568356ab88ab0560a",
+          "after": "a790972f0f844d81067ed45c28b524220a10c019",
+          "status": "changed",
+          "basis": "source_registry"
+        },
+        "matches": [
+          {
+            "target": "approach:fast-sdpa",
+            "score": 4,
+            "matched_terms": [
+              "gqa",
+              "language",
+              "mask",
+              "sdpa"
+            ]
+          },
+          {
+            "target": "approach:cache-privacy-and-isolation",
+            "score": 3,
+            "matched_terms": [
+              "cache",
+              "language",
+              "padding"
+            ]
+          },
+          {
+            "target": "learning:rwkv-ssm-conformer-prototypes",
+            "score": 3,
+            "matched_terms": [
+              "conversion",
+              "mask",
+              "padding"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "candidate:repository:blaizzy-mlx-vlm",
+        "label": "Blaizzy/mlx-vlm",
+        "locator": "https://github.com/Blaizzy/mlx-vlm",
+        "read_state": "updated_candidate",
+        "kind": "repository",
+        "known_source_id": "source:mlx-vlm-repo",
+        "revision_comparison": {
+          "before": "6a8cdff6a1f53f46a15d4adb997c3b2d5f621263",
+          "after": "05440cc57c62799fe8d4d79079fb8d281f149b4b",
+          "status": "changed",
+          "basis": "source_registry"
+        },
+        "matches": [
+          {
+            "target": "approach:multimodal-content-prefix-cache",
+            "score": 4,
+            "matched_terms": [
+              "multimodal",
+              "omni",
+              "serving",
+              "vlm"
+            ]
+          },
+          {
+            "target": "approach:qwen3-tts-batch-generation",
+            "score": 4,
+            "matched_terms": [
+              "audio",
+              "qwen3",
+              "request",
+              "serving"
+            ]
+          },
+          {
+            "target": "approach:video-input-budgeting",
+            "score": 3,
+            "matched_terms": [
+              "multimodal",
+              "omni",
+              "vlm"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "candidate:repository:blaizzy-mlx-audio",
+        "label": "Blaizzy/mlx-audio",
+        "locator": "https://github.com/Blaizzy/mlx-audio",
+        "read_state": "updated_candidate",
+        "kind": "repository",
+        "known_source_id": "source:mlx-audio-repo",
+        "revision_comparison": {
+          "before": "412cf7cd381c2a3f6a8189af04a95af24cb415b6",
+          "after": "64e8416c303fb3b3463dab8eb4ebd78c55a87c1a",
+          "status": "changed",
+          "basis": "source_registry"
+        },
+        "matches": [
+          {
+            "target": "learning:audio-flow-tts-duration-vocoder-gates",
+            "score": 4,
+            "matched_terms": [
+              "audio",
+              "codec",
+              "lucasnewman",
+              "tts"
+            ]
+          },
+          {
+            "target": "approach:audio-reference-conditioning-cache",
+            "score": 3,
+            "matched_terms": [
+              "audio",
+              "codec",
+              "tts"
+            ]
+          },
+          {
+            "target": "approach:audio-streaming-and-cache",
+            "score": 3,
+            "matched_terms": [
+              "audio",
+              "codec",
+              "tts"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "candidate:repository:waybarrios-vllm-mlx",
+        "label": "waybarrios/vllm-mlx",
+        "locator": "https://github.com/waybarrios/vllm-mlx",
+        "read_state": "updated_candidate",
+        "kind": "repository",
+        "known_source_id": "source:vllm-mlx-repo",
+        "revision_comparison": {
+          "before": "a48c86c1a41900f7d26658471b5f67e5fdd35445",
+          "after": "0dd115769ef1196a715b96b181353edacd2a4f69",
+          "status": "changed",
+          "basis": "source_registry"
+        },
+        "matches": [
+          {
+            "target": "approach:prompt-prefix-cache",
+            "score": 3,
+            "matched_terms": [
+              "cache",
+              "serving",
+              "version"
+            ]
+          },
+          {
+            "target": "outcome:vlm-mlx-vlm-working-route",
+            "score": 3,
+            "matched_terms": [
+              "cache",
+              "serving",
+              "vllm"
+            ]
+          },
+          {
+            "target": "approach:cache-privacy-and-isolation",
+            "score": 2,
+            "matched_terms": [
+              "cache",
+              "serving"
+            ]
+          }
+        ]
       }
     ],
     "gap_hints": [
-      "quantization",
-      "adaptive",
       "cache",
-      "content",
-      "context",
-      "inference",
-      "long",
-      "multimodal",
+      "audio",
+      "quantization",
+      "streaming",
       "prefix",
-      "accelerating",
-      "binary",
-      "bit"
+      "adaptive",
+      "tts",
+      "route",
+      "vocoder",
+      "working",
+      "content",
+      "multimodal"
     ],
     "policy": {
       "review_only": true,

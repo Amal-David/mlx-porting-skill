@@ -322,7 +322,7 @@
         },
         {
           "title": "maintenance-and-provenance.md review-only update pipeline",
-          "url": "file:/Users/amal/Downloads/mlx-porting-skill/mlx-model-porting/references/maintenance-and-provenance.md",
+          "url": "file:<repo-root>/mlx-model-porting/references/maintenance-and-provenance.md",
           "accessed": "2026-06-27",
           "kind": "repo-local-reference"
         }
@@ -447,13 +447,13 @@
       "sources": [
         {
           "title": "tests/test_scenarios.py expected coverage",
-          "url": "file:/Users/amal/Downloads/mlx-porting-skill/tests/test_scenarios.py",
+          "url": "file:<repo-root>/tests/test_scenarios.py",
           "accessed": "2026-06-27",
           "kind": "repo-local-test"
         },
         {
           "title": "architectures.yaml declared families",
-          "url": "file:/Users/amal/Downloads/mlx-porting-skill/mlx-model-porting/assets/architectures.yaml",
+          "url": "file:<repo-root>/mlx-model-porting/assets/architectures.yaml",
           "accessed": "2026-06-27",
           "kind": "repo-local-asset"
         }
@@ -480,13 +480,13 @@
       "sources": [
         {
           "title": "SKILL.md source scope",
-          "url": "file:/Users/amal/Downloads/mlx-porting-skill/mlx-model-porting/SKILL.md",
+          "url": "file:<repo-root>/mlx-model-porting/SKILL.md",
           "accessed": "2026-06-27",
           "kind": "repo-local-skill"
         },
         {
           "title": "intake-and-routing.md",
-          "url": "file:/Users/amal/Downloads/mlx-porting-skill/mlx-model-porting/references/intake-and-routing.md",
+          "url": "file:<repo-root>/mlx-model-porting/references/intake-and-routing.md",
           "accessed": "2026-06-27",
           "kind": "repo-local-reference"
         }

@@ -4,13 +4,13 @@
 Look for blind spots, unsupported architecture families, missing validation gates, and overclaimed optimizations.
 
 ## Sources sampled
-- tests/test_scenarios.py expected coverage (file:/Users/amal/Downloads/mlx-porting-skill/tests/test_scenarios.py, accessed 2026-06-27)
-- architectures.yaml declared families (file:/Users/amal/Downloads/mlx-porting-skill/mlx-model-porting/assets/architectures.yaml, accessed 2026-06-27)
-- SKILL.md source scope (file:/Users/amal/Downloads/mlx-porting-skill/mlx-model-porting/SKILL.md, accessed 2026-06-27)
-- intake-and-routing.md (file:/Users/amal/Downloads/mlx-porting-skill/mlx-model-porting/references/intake-and-routing.md, accessed 2026-06-27)
+- tests/test_scenarios.py expected coverage (file:<repo-root>/tests/test_scenarios.py, accessed 2026-06-27)
+- architectures.yaml declared families (file:<repo-root>/mlx-model-porting/assets/architectures.yaml, accessed 2026-06-27)
+- SKILL.md source scope (file:<repo-root>/mlx-model-porting/SKILL.md, accessed 2026-06-27)
+- intake-and-routing.md (file:<repo-root>/mlx-model-porting/references/intake-and-routing.md, accessed 2026-06-27)
 - Subagent coverage audit for MLX porting skill (codex-subagent://019f08a0-1e40-7b31-ad73-4328676b9018, accessed 2026-06-27)
 - Subagent harness architecture audit (codex-subagent://019f08a0-03eb-7861-a33a-6927175c9b7b, accessed 2026-06-27)
-- maintenance-and-provenance.md review-only update pipeline (file:/Users/amal/Downloads/mlx-porting-skill/mlx-model-porting/references/maintenance-and-provenance.md, accessed 2026-06-27)
+- maintenance-and-provenance.md review-only update pipeline (file:<repo-root>/mlx-model-porting/references/maintenance-and-provenance.md, accessed 2026-06-27)
 
 ## Candidate findings
 - golden-scenario-family-coverage-gap: Golden scenarios cover only 3 of 14 declared architecture families [needs-validation] - The skill declares 14 architecture families, but the golden scenario harness covers dense decoder, MoE decoder, and neural audio codec only; comprehensive MLX porting needs scenario gates for every declared family.

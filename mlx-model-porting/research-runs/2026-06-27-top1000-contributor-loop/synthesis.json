@@ -330,7 +330,7 @@
         },
         {
           "title": "Top-1000 contributor learnings artifact",
-          "url": "file:///Users/amal/Downloads/mlx-porting-skill/mlx-model-porting/assets/contributor_learnings.json",
+          "url": "file://<repo-root>/mlx-model-porting/assets/contributor_learnings.json",
           "accessed": "2026-06-27",
           "kind": "repo-local-audit"
         }
