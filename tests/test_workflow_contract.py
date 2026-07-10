@@ -34,6 +34,7 @@ class DailyResearchWorkflowContractTests(unittest.TestCase):
         )
         collect = self.job_block("collect")
         self.assertIn("permissions:\n      contents: read", collect)
+        self.assertIn("timeout-minutes: 15", collect)
         self.assertIn("persist-credentials: false", collect)
         self.assertIn("--fail-on-network-error", collect)
         self.assertIn('candidate_path="$RUNNER_TEMP/update-candidates.json"', collect)
@@ -55,10 +56,12 @@ class DailyResearchWorkflowContractTests(unittest.TestCase):
         )
         self.assertNotIn("git add", collect)
         self.assertNotIn("git push", collect)
+        self.assertNotIn('branch="automation/daily-mlx-research"', collect)
 
     def test_publish_job_is_the_only_writer(self) -> None:
         publish = self.job_block("publish")
         self.assertIn("needs: collect", publish)
+        self.assertIn("timeout-minutes: 15", publish)
         self.assertIn("contents: write", publish)
         self.assertIn("pull-requests: write", publish)
         self.assertIn("actions/download-artifact@", publish)

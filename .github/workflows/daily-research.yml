@@ -17,6 +17,7 @@ jobs:
     permissions:
       contents: read
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
@@ -40,7 +41,6 @@ jobs:
           set -euo pipefail
           candidate_path="$RUNNER_TEMP/update-candidates.json"
           previous_candidate_path="$RUNNER_TEMP/automation-update-candidates.json"
-          branch="automation/daily-mlx-research"
           if gh api \
             -H "Accept: application/vnd.github.raw+json" \
             "repos/${GITHUB_REPOSITORY}/contents/mlx-model-porting/assets/update-candidates.json?ref=automation%2Fdaily-mlx-research" \
@@ -82,6 +82,7 @@ jobs:
       contents: write
       pull-requests: write
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:

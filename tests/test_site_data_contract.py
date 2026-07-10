@@ -158,6 +158,55 @@ class SiteDataContractTests(unittest.TestCase):
             "runbooks": sum(path.name.startswith("runbook-") for path in references),
         })
 
+    def test_site_summary_counts_match_live_asset_counts(self) -> None:
+        data = parse_site_data(SITE_DATA)
+        architectures = load_json(ASSETS / "architectures.yaml")
+        sources = load_json(ASSETS / "sources.yaml")
+        techniques = load_json(ASSETS / "techniques.yaml")
+        guidance = load_json(ASSETS / "optimization_guidance.yaml")
+        receipts = load_json(ASSETS / "benchmarks" / "receipts_index.json")
+        claims = load_json(ASSETS / "effective_claims.json")
+
+        live_counts = {
+            "architecture_families": len(architectures["families"]),
+            "sources": len(sources["sources"]),
+            "techniques": len(techniques["techniques"]),
+            "optimization_guidance_methods": len(guidance["methods"]),
+            "benchmark_receipts": len(receipts["receipts"]),
+            "withheld_effective_claims": sum(
+                claim.get("promotion_state") == "withheld"
+                for claim in claims["claims"]
+            ),
+        }
+        published_counts = {
+            "architecture_families": nested_value(data, "architectures.total"),
+            "sources": nested_value(data, "sources.total"),
+            "techniques": nested_value(data, "techniques.total"),
+            "optimization_guidance_methods": nested_value(data, "guidance.total"),
+            "benchmark_receipts": nested_value(data, "benchmarks.total"),
+            "withheld_effective_claims": nested_value(
+                data,
+                "effective_claims.by_state.withheld",
+            ),
+        }
+        self.assertEqual(published_counts, live_counts)
+
+    def test_knowledge_graph_counts_and_edge_endpoints_are_current(self) -> None:
+        graph = load_json(ASSETS / "knowledge_graph.json")
+        nodes = graph["nodes"]
+        edges = graph["edges"]
+
+        self.assertEqual(graph["node_count"], len(nodes))
+        self.assertEqual(graph["edge_count"], len(edges))
+        node_ids = {node["id"] for node in nodes}
+        dangling = [
+            (index, endpoint, edge.get(endpoint))
+            for index, edge in enumerate(edges)
+            for endpoint in ("source", "target")
+            if edge.get(endpoint) not in node_ids
+        ]
+        self.assertEqual(dangling, [])
+
     def test_html_fallback_values_match_generated_data(self) -> None:
         data = parse_site_data(SITE_DATA)
         pattern = re.compile(

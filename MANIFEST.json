@@ -2,7 +2,7 @@
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
   "version": "0.4.0",
-  "generated_at": "2026-07-10T11:15:07.682091+00:00",
+  "generated_at": "2026-07-10T11:32:11.618867+00:00",
   "file_count": 345,
   "files": [
     {
@@ -27,8 +27,8 @@
     },
     {
       "path": ".github/workflows/daily-research.yml",
-      "size_bytes": 7498,
-      "sha256": "fb2d1fc2c8573f9a066fcce68dd657a29081ca3f66efdf0effb3b1d6b81afa25",
+      "size_bytes": 7497,
+      "sha256": "075861cf671f0c92763d1afe5da61ede66651f34b4df65808e5fe5037f3850e9",
       "executable": false
     },
     {
@@ -2043,8 +2043,8 @@
     },
     {
       "path": "tests/test_site_data_contract.py",
-      "size_bytes": 8650,
-      "sha256": "f126c4c9fe362c5af9af0023dc33a3bc5bc78b05ba066fc0b42ea7216397ec2b",
+      "size_bytes": 10896,
+      "sha256": "d14bacdf6397201323e9efbbf2c06f5fcfa77bb6d18e92efff1a917f04b184a9",
       "executable": false
     },
     {
@@ -2067,14 +2067,14 @@
     },
     {
       "path": "tests/test_worker_retirement.py",
-      "size_bytes": 2234,
-      "sha256": "a4bec2133426a9a643555d391459c7ad0b66d9c89502ba443c4747712c9fea07",
+      "size_bytes": 2849,
+      "sha256": "8d76fd0bc2b10e05cb207a21c833f7a3172775130e15d201c698a598073a2a7d",
       "executable": false
     },
     {
       "path": "tests/test_workflow_contract.py",
-      "size_bytes": 5315,
-      "sha256": "9b3de56237a24df196352544cfaad1bf8b01db803aab9cd89bfe32be59aa7d49",
+      "size_bytes": 5499,
+      "sha256": "2db3ebceece6583f2276b048df1427d6a00e7492e19b95aafe9080215fd9a9a9",
       "executable": false
     }
   ]

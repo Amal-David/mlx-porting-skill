@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import os
+import re
 import unittest
 from pathlib import Path
 
@@ -17,37 +19,50 @@ class WorkerRetirementTests(unittest.TestCase):
 
         forbidden_fragments = (
             "apps/model-advisor-" + "worker",
-            ".wrangler/",
-            "dist-pages/",
+            ".wrangler" + "/",
+            "dist-" + "pages/",
             "wrangler." + "toml",
-            "workers_" + "dev",
             "npm run " + "smoke:local",
             "127.0.0.1:" + "8787",
-            "mlx-model-advisor." + "pages.dev",
             "_worker." + "js",
         )
-        surfaces = [
-            ROOT / ".gitignore",
-            ROOT / "AGENTS.md",
-            ROOT / "CHANGELOG.md",
-            ROOT / "CLAUDE.md",
-            ROOT / "CONTRIBUTING.md",
-            ROOT / "EVIDENCE_INDEX.md",
-            ROOT / "README.md",
-            ROOT / "RESEARCH_REPORT.md",
-            ROOT / "VALIDATION.md",
-            ROOT / ".github",
-            ROOT / "adapters",
-            ROOT / "mlx-model-porting" / "SKILL.md",
-            ROOT / "mlx-model-porting" / "examples",
-            ROOT / "mlx-model-porting" / "references",
-            ROOT / "site",
-            ROOT / "tasks",
-        ]
+        forbidden_host_patterns = (
+            (
+                re.compile(
+                    r"\b(?:[a-z0-9-]+\.)*" + "workers" + r"\." + "dev" + r"\b",
+                    re.IGNORECASE,
+                ),
+                "retired Worker host",
+            ),
+            (
+                re.compile(
+                    r"\b"
+                    + "mlx-model-advisor"
+                    + r"[a-z0-9-]*\."
+                    + "pages"
+                    + r"\."
+                    + "dev"
+                    + r"\b",
+                    re.IGNORECASE,
+                ),
+                "retired advisor Pages host",
+            ),
+        )
+        ignored_directories = {
+            ".git",
+            ".superplan",
+            ".wrangler",
+            "__pycache__",
+            "node_modules",
+            "research-runs",
+        }
         offenders: list[str] = []
-        for surface in surfaces:
-            paths = [surface] if surface.is_file() else surface.rglob("*")
-            for path in paths:
+        for directory, directory_names, file_names in os.walk(ROOT):
+            directory_names[:] = sorted(
+                name for name in directory_names if name not in ignored_directories
+            )
+            for file_name in sorted(file_names):
+                path = Path(directory) / file_name
                 if not path.is_file():
                     continue
                 try:
@@ -57,6 +72,11 @@ class WorkerRetirementTests(unittest.TestCase):
                 for fragment in forbidden_fragments:
                     if fragment in text:
                         offenders.append(f"{path.relative_to(ROOT)}: {fragment}")
+                for pattern, label in forbidden_host_patterns:
+                    for match in pattern.finditer(text):
+                        offenders.append(
+                            f"{path.relative_to(ROOT)}: {label} ({match.group(0)})"
+                        )
 
         self.assertEqual(
             offenders,
