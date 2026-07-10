@@ -245,7 +245,7 @@ class NetworkProcessHardeningContractTests(unittest.TestCase):
             collect_top_models.fetch_models("https://metadata.example", 1)
         opener.open.assert_not_called()
 
-    def test_top_model_collector_revalidates_redirects_and_final_destination(self) -> None:
+    def test_top_model_collector_revalidates_redirects_and_uses_pinned_transport(self) -> None:
         handler = collect_top_models.PublicHTTPSRedirectHandler()
         private_resolution = [
             (socket.AF_INET, socket.SOCK_STREAM, 6, "", ("169.254.169.254", 443))
@@ -268,36 +268,38 @@ class NetworkProcessHardeningContractTests(unittest.TestCase):
             )
 
         response = mock.MagicMock()
-        response.geturl.return_value = "https://metadata.example/final"
+        response.geturl.return_value = "https://huggingface.co/final"
         response.read.return_value = b"[]"
+        response.__enter__.return_value = response
         opener = mock.Mock()
-        response_context = mock.MagicMock()
-        response_context.__enter__.return_value = response
-        opener.open.return_value = response_context
-
-        def validate_destination(url: str) -> None:
-            if url == response.geturl.return_value:
-                raise collect_top_models.urllib.error.URLError("non-public final destination")
+        opener.open.return_value = response
 
         with (
             mock.patch.object(
-                collect_top_models,
-                "require_public_https_url",
-                side_effect=validate_destination,
+                validate_sources.socket,
+                "getaddrinfo",
+                return_value=[
+                    (socket.AF_INET, socket.SOCK_STREAM, 6, "", ("93.184.216.34", 443))
+                ],
             ),
             mock.patch.object(
                 collect_top_models.urllib.request,
                 "build_opener",
                 return_value=opener,
             ) as build_opener,
-            self.assertRaisesRegex(SystemExit, "non-public final destination"),
         ):
-            collect_top_models.fetch_models("https://huggingface.co", 1)
+            self.assertEqual(collect_top_models.fetch_models("https://huggingface.co", 1), [])
         self.assertIsInstance(
             build_opener.call_args.args[0],
             collect_top_models.PublicHTTPSRedirectHandler,
         )
-        response.read.assert_not_called()
+        self.assertTrue(
+            any(
+                isinstance(handler, validate_sources.PublicHTTPSHandler)
+                for handler in build_opener.call_args.args
+            )
+        )
+        response.read.assert_called_once_with(collect_top_models.MAX_NETWORK_RESPONSE_BYTES + 1)
 
     def test_contributor_http_error_redacts_reflected_token_and_headers(self) -> None:
         token = "top-secret-token"
@@ -319,7 +321,13 @@ class NetworkProcessHardeningContractTests(unittest.TestCase):
         self.addCleanup(error.close)
         client.opener.open = mock.Mock(side_effect=error)
 
-        with self.assertRaises(common.SkillError) as raised:
+        with mock.patch.object(
+            validate_sources.socket,
+            "getaddrinfo",
+            return_value=[
+                (socket.AF_INET, socket.SOCK_STREAM, 6, "", ("93.184.216.34", 443))
+            ],
+        ), self.assertRaises(common.SkillError) as raised:
             client.fetch_json(url)
 
         message = str(raised.exception)

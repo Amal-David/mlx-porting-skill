@@ -96,6 +96,67 @@ class SourceURLSecurityTests(unittest.TestCase):
         self.assertIn("non-public", result["error"])
         opener.open.assert_not_called()
 
+    def test_request_fails_closed_when_connected_peer_was_not_vetted(self) -> None:
+        raw_socket = mock.Mock()
+        raw_socket.getpeername.return_value = ("127.0.0.1", 443)
+
+        with mock.patch.object(
+            validate_sources.socket,
+            "getaddrinfo",
+            return_value=resolution("93.184.216.34"),
+        ) as resolver, mock.patch.object(
+            validate_sources.socket,
+            "socket",
+            return_value=raw_socket,
+        ):
+            result = validate_sources.check_url(
+                {"id": "rebind", "url": "https://original.example/source"},
+                1.0,
+            )
+
+        self.assertFalse(result["ok"])
+        self.assertIn("outside vetted address set", result["error"])
+        resolver.assert_called_once_with(
+            "original.example",
+            443,
+            type=socket.SOCK_STREAM,
+        )
+        raw_socket.connect.assert_called_once_with(("93.184.216.34", 443))
+
+    def test_pinned_connection_keeps_tls_hostname_on_original_host(self) -> None:
+        raw_socket = mock.Mock()
+        raw_socket.getpeername.return_value = ("93.184.216.34", 443)
+        tls_socket = mock.Mock()
+        tls_context = mock.Mock()
+        tls_context.wrap_socket.return_value = tls_socket
+        with mock.patch.object(
+            validate_sources.socket,
+            "getaddrinfo",
+            return_value=resolution("93.184.216.34"),
+        ), mock.patch.object(
+            validate_sources.socket,
+            "socket",
+            return_value=raw_socket,
+        ):
+            destination = validate_sources.require_public_https_url(
+                "https://original.example/source"
+            )
+            connection = validate_sources.PinnedHTTPSConnection(
+                "original.example",
+                destination=destination,
+                context=tls_context,
+                timeout=1.0,
+            )
+            connection.connect()
+
+        self.assertEqual(connection.server_hostname, "original.example")
+        raw_socket.connect.assert_called_once_with(("93.184.216.34", 443))
+        tls_context.wrap_socket.assert_called_once_with(
+            raw_socket,
+            server_hostname="original.example",
+        )
+        self.assertIs(connection.sock, tls_socket)
+
     def test_synthesized_github_sources_require_full_matching_commit_refs(self) -> None:
         with tempfile.TemporaryDirectory() as raw_tmp:
             skill = Path(raw_tmp) / "skill"

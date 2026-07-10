@@ -15,7 +15,12 @@ from pathlib import Path
 from typing import Any
 
 from _common import SkillError, dump_json, load_structured, redact_secret_text
-from validate_sources import PublicHTTPSRedirectHandler, require_public_https_url
+from validate_sources import (
+    PublicHTTPSRedirectHandler,
+    build_public_https_opener,
+    open_public_https,
+    require_public_https_url,
+)
 
 SCRIPT_DIR = Path(__file__).resolve().parent
 SKILL_ROOT = SCRIPT_DIR.parent
@@ -142,7 +147,7 @@ class GitHubClient:
             raise SkillError("Refusing to send a contributor API token without HTTPS")
         self.token = token if self.token_origin == CANONICAL_GITHUB_API_ORIGIN else None
         self.redirect_handler = SameOriginTokenRedirectHandler(self.token_origin)
-        self.opener = urllib.request.build_opener(self.redirect_handler)
+        self.opener = build_public_https_opener(self.redirect_handler)
 
     def request_headers(self, url: str) -> dict[str, str]:
         headers = {
@@ -157,7 +162,7 @@ class GitHubClient:
     def fetch_json(self, url: str) -> tuple[list[Any], dict[str, str], int, str]:
         request = urllib.request.Request(url, headers=self.request_headers(url))
         try:
-            with self.opener.open(request, timeout=self.timeout) as response:
+            with open_public_https(self.opener, request, self.timeout) as response:
                 payload = response.read(MAX_NETWORK_RESPONSE_BYTES + 1)
                 if len(payload) > MAX_NETWORK_RESPONSE_BYTES:
                     raise SkillError(

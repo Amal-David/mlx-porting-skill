@@ -4,7 +4,9 @@ from __future__ import annotations
 
 import argparse
 import concurrent.futures
+import errno
 import hashlib
+import http.client
 import ipaddress
 import json
 import re
@@ -13,6 +15,7 @@ import sys
 import urllib.error
 import urllib.parse
 import urllib.request
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
@@ -184,7 +187,24 @@ def https_url_structure_error(url: str) -> str | None:
     return None
 
 
-def require_public_https_url(url: str) -> None:
+@dataclass(frozen=True)
+class PublicHTTPSAddress:
+    family: int
+    socktype: int
+    proto: int
+    sockaddr: tuple[Any, ...]
+    address: str
+
+
+@dataclass(frozen=True)
+class PublicHTTPSDestination:
+    hostname: str
+    port: int
+    addresses: tuple[PublicHTTPSAddress, ...]
+    address_set: frozenset[str]
+
+
+def require_public_https_url(url: str) -> PublicHTTPSDestination:
     structure_error = https_url_structure_error(url)
     if structure_error:
         raise urllib.error.URLError(structure_error)
@@ -195,25 +215,186 @@ def require_public_https_url(url: str) -> None:
         resolved = socket.getaddrinfo(hostname, port, type=socket.SOCK_STREAM)
     except OSError as exc:
         raise urllib.error.URLError(f"could not resolve URL hostname: {exc}") from exc
-    addresses = {
-        str(item[4][0]).split("%", 1)[0]
-        for item in resolved
-        if isinstance(item[4], tuple) and item[4]
-    }
-    if not addresses:
-        raise urllib.error.URLError("URL hostname resolved to no addresses")
-    unsafe = []
-    for address in sorted(addresses):
+    addresses: list[PublicHTTPSAddress] = []
+    seen: set[tuple[int, int, int, tuple[Any, ...]]] = set()
+    unsafe: set[str] = set()
+    for item in resolved:
+        if not isinstance(item, tuple) or len(item) < 5:
+            raise urllib.error.URLError("resolver returned malformed address record")
+        family, socktype, proto, _, sockaddr = item[:5]
+        if family not in {socket.AF_INET, socket.AF_INET6}:
+            raise urllib.error.URLError(f"resolver returned unsupported address family {family!r}")
+        if socktype != socket.SOCK_STREAM:
+            raise urllib.error.URLError(f"resolver returned unsupported socket type {socktype!r}")
+        if not isinstance(sockaddr, tuple) or len(sockaddr) < 2:
+            raise urllib.error.URLError("resolver returned malformed socket address")
+        if sockaddr[1] != port:
+            raise urllib.error.URLError("resolver returned an address for an unexpected port")
+        address = str(sockaddr[0]).split("%", 1)[0]
         try:
             parsed_address = ipaddress.ip_address(address)
         except ValueError as exc:
             raise urllib.error.URLError(f"resolver returned malformed address {address!r}") from exc
+        normalized_address = str(parsed_address)
         if not parsed_address.is_global:
-            unsafe.append(address)
+            unsafe.add(normalized_address)
+        key = (int(family), int(socktype), int(proto), sockaddr)
+        if key not in seen:
+            seen.add(key)
+            addresses.append(
+                PublicHTTPSAddress(
+                    family=int(family),
+                    socktype=int(socktype),
+                    proto=int(proto),
+                    sockaddr=sockaddr,
+                    address=normalized_address,
+                )
+            )
+    if not addresses:
+        raise urllib.error.URLError("URL hostname resolved to no addresses")
     if unsafe:
         raise urllib.error.URLError(
-            "URL hostname resolves to non-public address(es): " + ", ".join(unsafe)
+            "URL hostname resolves to non-public address(es): " + ", ".join(sorted(unsafe))
         )
+    return PublicHTTPSDestination(
+        hostname=hostname,
+        port=port,
+        addresses=tuple(addresses),
+        address_set=frozenset(address.address for address in addresses),
+    )
+
+
+class _PeerAddressMismatch(OSError):
+    pass
+
+
+class PinnedHTTPSConnection(http.client.HTTPSConnection):
+    """Connect to vetted numeric addresses while verifying TLS for the URL host."""
+
+    def __init__(
+        self,
+        host: str,
+        *,
+        destination: PublicHTTPSDestination,
+        timeout: Any = socket._GLOBAL_DEFAULT_TIMEOUT,
+        source_address: tuple[str, int] | None = None,
+        context: Any = None,
+        blocksize: int = 8192,
+    ) -> None:
+        super().__init__(
+            host,
+            timeout=timeout,
+            source_address=source_address,
+            context=context,
+            blocksize=blocksize,
+        )
+        if self.host.rstrip(".").lower() != destination.hostname.rstrip(".").lower():
+            raise ValueError("HTTPS connection host does not match vetted URL hostname")
+        if self.port != destination.port:
+            raise ValueError("HTTPS connection port does not match vetted URL port")
+        self.destination = destination
+        self.server_hostname = destination.hostname
+
+    def _connect_pinned_socket(self) -> Any:
+        last_error: OSError | None = None
+        for endpoint in self.destination.addresses:
+            sock = None
+            try:
+                sock = socket.socket(endpoint.family, endpoint.socktype, endpoint.proto)
+                if self.timeout is not socket._GLOBAL_DEFAULT_TIMEOUT:
+                    sock.settimeout(self.timeout)
+                if self.source_address:
+                    sock.bind(self.source_address)
+                sock.connect(endpoint.sockaddr)
+                peer = sock.getpeername()
+                if not isinstance(peer, tuple) or not peer:
+                    raise _PeerAddressMismatch("connected peer has no verifiable IP address")
+                try:
+                    peer_address = str(
+                        ipaddress.ip_address(str(peer[0]).split("%", 1)[0])
+                    )
+                except ValueError as exc:
+                    raise _PeerAddressMismatch(
+                        f"connected peer returned malformed address {peer[0]!r}"
+                    ) from exc
+                if peer_address not in self.destination.address_set:
+                    raise _PeerAddressMismatch(
+                        f"connected peer {peer_address} is outside vetted address set"
+                    )
+                try:
+                    sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
+                except OSError as exc:
+                    if exc.errno != errno.ENOPROTOOPT:
+                        raise
+                return sock
+            except _PeerAddressMismatch:
+                if sock is not None:
+                    sock.close()
+                raise
+            except OSError as exc:
+                last_error = exc
+                if sock is not None:
+                    sock.close()
+        if last_error is not None:
+            raise last_error
+        raise OSError("no vetted HTTPS address was available for connection")
+
+    def connect(self) -> None:
+        if self._tunnel_host:
+            raise OSError("HTTPS proxies are unsupported by the pinned public HTTPS transport")
+        sys.audit("http.client.connect", self, self.server_hostname, self.port)
+        raw_socket = self._connect_pinned_socket()
+        try:
+            self.sock = self._context.wrap_socket(
+                raw_socket,
+                server_hostname=self.server_hostname,
+            )
+        except BaseException:
+            raw_socket.close()
+            self.sock = None
+            raise
+
+
+_PINNED_DESTINATION_ATTRIBUTE = "_mlx_public_https_destination"
+
+
+def _destination_matches_url(destination: PublicHTTPSDestination, url: str) -> bool:
+    try:
+        parsed = urllib.parse.urlsplit(url)
+        port = parsed.port or 443
+    except ValueError:
+        return False
+    return (
+        parsed.scheme.lower() == "https"
+        and parsed.hostname is not None
+        and parsed.hostname.rstrip(".").lower() == destination.hostname.rstrip(".").lower()
+        and port == destination.port
+    )
+
+
+def _pin_request_destination(
+    request: urllib.request.Request,
+    destination: PublicHTTPSDestination,
+) -> None:
+    setattr(request, _PINNED_DESTINATION_ATTRIBUTE, destination)
+
+
+class PublicHTTPSHandler(urllib.request.HTTPSHandler):
+    def https_open(self, req: urllib.request.Request) -> Any:
+        destination = getattr(req, _PINNED_DESTINATION_ATTRIBUTE, None)
+        if not isinstance(destination, PublicHTTPSDestination) or not _destination_matches_url(
+            destination,
+            req.full_url,
+        ):
+            destination = require_public_https_url(req.full_url)
+            _pin_request_destination(req, destination)
+
+        def connection_factory(host: str, **kwargs: Any) -> PinnedHTTPSConnection:
+            return PinnedHTTPSConnection(host, destination=destination, **kwargs)
+
+        return self.do_open(connection_factory, req, context=self._context)
+
+    https_request = urllib.request.AbstractHTTPHandler.do_request_
 
 
 class PublicHTTPSRedirectHandler(urllib.request.HTTPRedirectHandler):
@@ -226,19 +407,35 @@ class PublicHTTPSRedirectHandler(urllib.request.HTTPRedirectHandler):
         headers: Any,
         newurl: str,
     ) -> urllib.request.Request | None:
-        require_public_https_url(newurl)
-        return super().redirect_request(req, fp, code, msg, headers, newurl)
+        redirected = super().redirect_request(req, fp, code, msg, headers, newurl)
+        if redirected is not None:
+            destination = require_public_https_url(newurl)
+            _pin_request_destination(redirected, destination)
+        return redirected
 
 
-def _checked_open(
+def build_public_https_opener(
+    redirect_handler: PublicHTTPSRedirectHandler | None = None,
+) -> urllib.request.OpenerDirector:
+    return urllib.request.build_opener(
+        redirect_handler or PublicHTTPSRedirectHandler(),
+        urllib.request.ProxyHandler({}),
+        PublicHTTPSHandler(),
+    )
+
+
+def open_public_https(
     opener: urllib.request.OpenerDirector,
     request: urllib.request.Request,
     timeout: float,
 ) -> Any:
-    require_public_https_url(request.full_url)
+    destination = require_public_https_url(request.full_url)
+    _pin_request_destination(request, destination)
     response = opener.open(request, timeout=timeout)
     try:
-        require_public_https_url(response.geturl())
+        structure_error = https_url_structure_error(response.geturl())
+        if structure_error:
+            raise urllib.error.URLError(structure_error)
         return response
     except BaseException:
         response.close()
@@ -249,10 +446,10 @@ def check_url(source: dict[str, Any], timeout: float) -> dict[str, Any]:
     url = str(source.get("url", ""))
     headers = {"User-Agent": "mlx-model-porting-skill/0.4.0"}
     result: dict[str, Any] = {"id": source.get("id"), "url": url, "ok": False}
-    opener = urllib.request.build_opener(PublicHTTPSRedirectHandler())
+    opener = build_public_https_opener()
     try:
         request = urllib.request.Request(url, method="HEAD", headers=headers)
-        with _checked_open(opener, request, timeout) as response:
+        with open_public_https(opener, request, timeout) as response:
             result.update({"ok": 200 <= response.status < 400, "status": response.status})
     except urllib.error.HTTPError as exc:
         if exc.code not in {403, 405, 429}:
@@ -260,7 +457,7 @@ def check_url(source: dict[str, Any], timeout: float) -> dict[str, Any]:
             return result
         try:
             request = urllib.request.Request(url, headers=headers)
-            with _checked_open(opener, request, timeout) as response:
+            with open_public_https(opener, request, timeout) as response:
                 response.read(1024)
                 result.update({"ok": 200 <= response.status < 400, "status": response.status})
         except Exception as retry_exc:  # noqa: BLE001 - report external check failure precisely

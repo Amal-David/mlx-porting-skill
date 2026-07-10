@@ -19,7 +19,12 @@ from pathlib import Path
 from typing import Any
 
 from _common import SkillError, dump_json, load_structured
-from validate_sources import PublicHTTPSRedirectHandler, require_public_https_url
+from validate_sources import (
+    PublicHTTPSRedirectHandler,
+    build_public_https_opener,
+    open_public_https,
+    require_public_https_url,
+)
 
 
 OPEN_LICENSE_HINTS = {
@@ -81,11 +86,9 @@ def fetch_models(base: str, limit: int) -> list[dict[str, Any]]:
     query = urllib.parse.urlencode({"sort": "downloads", "direction": "-1", "limit": str(limit), "full": "true"})
     url = f"{base.rstrip('/')}/api/models?{query}"
     request = urllib.request.Request(url, headers={"accept": "application/json", "user-agent": "mlx-porting-skill-top-model-collector/0.1"})
-    opener = urllib.request.build_opener(PublicHTTPSRedirectHandler())
+    opener = build_public_https_opener()
     try:
-        require_public_https_url(url)
-        with opener.open(request, timeout=60) as response:
-            require_public_https_url(response.geturl())
+        with open_public_https(opener, request, 60) as response:
             raw = response.read(MAX_NETWORK_RESPONSE_BYTES + 1)
             if len(raw) > MAX_NETWORK_RESPONSE_BYTES:
                 raise SystemExit(
