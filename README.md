@@ -98,6 +98,7 @@ idempotent for an unchanged target. See
 |---|---|
 | Static intake, routing, planning, registries, and validation | Python 3.10+ standard library |
 | Tensor parity with `compare_tensors.py` | NumPy |
+| Local source-oracle capture with `capture_oracle.py` | PyTorch, Transformers, and NumPy |
 | Explicit `--allow-network` Hugging Face intake | `huggingface-hub` |
 | Model execution | Apple Silicon plus the exact MLX/framework packages required by the chosen port |
 
@@ -150,6 +151,22 @@ embedding advice, so an edited intermediate report is not trusted.
 Inspection reports use portable basename-only local references by default.
 Pass `--include-local-paths` only when an absolute path is deliberately needed
 for local debugging; do not publish that form.
+
+After inspection pins the local source artifacts, capture the executable source
+oracle before implementing or optimizing the MLX graph. Use token IDs when the
+fixture should not depend on tokenizer behavior:
+
+```bash
+python3 mlx-model-porting/scripts/capture_oracle.py MODEL \
+  --token-ids 1 42 17 9 \
+  --generate-steps 4 \
+  --output source-oracle.npz
+```
+
+The command stays offline, refuses Hugging Face remote code, and writes
+`source-oracle.manifest.json` beside the NPZ. The manifest binds config and
+weight digests, capture inputs, library versions, and every tensor's shape,
+dtype, and raw-byte SHA-256.
 
 For a local synthetic smoke path that does not download a model:
 

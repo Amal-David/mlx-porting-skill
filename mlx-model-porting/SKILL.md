@@ -79,7 +79,7 @@ Consult [model support map](references/model-support-map.md) and `assets/archite
 
 ### 3. Establish the source oracle
 
-Follow [parity and testing](references/parity-and-testing.md): oracle, fixtures, tolerances, core cases, and captures across frontends, blocks, state/cache, logits/latents, decoders.
+Run `scripts/capture_oracle.py` against the pinned local Hugging Face model before implementing the MLX graph, then follow [parity and testing](references/parity-and-testing.md) for fixtures, tolerances, core cases, and additional state/cache or modality-specific captures. The tool records input IDs, embeddings, every decoder block, final norm, logits, hookable attention/MLP branches, and deterministic greedy continuation IDs in a bounded NPZ plus a content-addressed manifest.
 
 ### 4. Implement the minimal eager MLX graph
 

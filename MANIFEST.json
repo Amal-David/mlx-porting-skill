@@ -2,8 +2,8 @@
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
   "version": "0.4.0",
-  "generated_at": "2026-07-10T11:32:11.618867+00:00",
-  "file_count": 345,
+  "generated_at": "2026-07-10T11:54:16.027590+00:00",
+  "file_count": 348,
   "files": [
     {
       "path": ".agents/skills/mlx-model-porting",
@@ -87,8 +87,8 @@
     },
     {
       "path": "README.md",
-      "size_bytes": 16097,
-      "sha256": "c1e4806bc6e76715a39b023381ad0623409ec12871ec6f879bab56bb9aad34a5",
+      "size_bytes": 16803,
+      "sha256": "7e32bf1a811ea352429190f8be091fb05d9af7ab40a71ccfa6d52a9631d98d61",
       "executable": false
     },
     {
@@ -165,8 +165,8 @@
     },
     {
       "path": "mlx-model-porting/SKILL.md",
-      "size_bytes": 12826,
-      "sha256": "ca403ea1e4f8296075cb50baf7d324ba002a9bf95a2a4b00b3ce61131c0f9e70",
+      "size_bytes": 13125,
+      "sha256": "3cc13612f9fe04f58d5172deac8a01d85d003389438b1d7201176c62bd1e78b8",
       "executable": false
     },
     {
@@ -483,8 +483,8 @@
     },
     {
       "path": "mlx-model-porting/references/parity-and-testing.md",
-      "size_bytes": 5057,
-      "sha256": "9b8089838fa24ba55b4cd2f9efd9f0f8fa351571b7671123903fa5de68ff7319",
+      "size_bytes": 6729,
+      "sha256": "5f5513259369f239ef39808f1c88b52b0a79958fb223593b26e94ea2310403da",
       "executable": false
     },
     {
@@ -1184,6 +1184,12 @@
       "executable": false
     },
     {
+      "path": "mlx-model-porting/scripts/capture_oracle.py",
+      "size_bytes": 45152,
+      "sha256": "b89d491c70b7202ae79ace5466e648243765b8f0c397b5e735577520faf5818e",
+      "executable": true
+    },
+    {
       "path": "mlx-model-porting/scripts/collect_contributors.py",
       "size_bytes": 16187,
       "sha256": "a412bb4305137e3eb412bb2c01b8c9d87484d5df324c7c05dde55b2202c0a237",
@@ -1367,6 +1373,12 @@
       "path": "tests/fixtures/manifests/map.json",
       "size_bytes": 410,
       "sha256": "a27b025275ee8842486777f5d0b904c8834fe639d49317fadca366d4f0df642b",
+      "executable": false
+    },
+    {
+      "path": "tests/fixtures/manifests/oracle.json",
+      "size_bytes": 1407,
+      "sha256": "b9d727cd1276de9f72c0dedab7f94bba89d504ebd883b44d946e0b0b88ed6272",
       "executable": false
     },
     {
@@ -1883,6 +1895,12 @@
       "path": "tests/test_benchmark_evidence_contract.py",
       "size_bytes": 73495,
       "sha256": "a101e2d15f7d266c539e7397e4d388ea8cc3bded0eeae55a27fdcaa1449744dd",
+      "executable": false
+    },
+    {
+      "path": "tests/test_capture_oracle_contract.py",
+      "size_bytes": 15931,
+      "sha256": "5702df71c7e5bd8fb04a47d2b600c326344aa2fa33a3ea94e0cc2d6d64076927",
       "executable": false
     },
     {

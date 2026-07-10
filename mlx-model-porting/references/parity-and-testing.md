@@ -1,5 +1,41 @@
 # Parity and testing
 
+## Capture the source oracle
+
+Use `scripts/capture_oracle.py` instead of assembling decoder captures by hand.
+It executes only a local Hugging Face model directory, keeps Transformers in
+offline mode, refuses remote model/tokenizer code, and writes a bounded NPZ plus
+a deterministic JSON manifest. A tokenizer-free fixture is the most portable
+starting point:
+
+```bash
+python3 mlx-model-porting/scripts/capture_oracle.py MODEL \
+  --token-ids 1 42 17 9 \
+  --generate-steps 4 \
+  --output source-oracle.npz
+```
+
+Use one or more `--prompt` values, or line-oriented `--prompts-file`, when the
+local tokenizer behavior is itself part of the oracle. The NPZ keys are a
+stable cross-framework contract:
+
+| Key | Meaning |
+|---|---|
+| `input_ids` | Rank-2 source token IDs. |
+| `attention_mask` | Integer mask paired with `input_ids`. |
+| `embed` | Decoder embedding-stage hidden state before layer 0. |
+| `layer.{i}.hidden` | Post-block hidden state for every zero-based decoder layer. |
+| `layer.{i}.attention` | Optional attention branch output when a standard attention submodule is hookable. |
+| `layer.{i}.mlp` | Optional MLP branch output before the residual when a standard MLP submodule is hookable. |
+| `final_norm` | Final decoder normalization output. |
+| `logits` | Full prompt logits. |
+| `generated_token_ids` | Exactly N greedy continuation IDs; prompt IDs are not repeated. |
+
+Floating captures are saved as float32 unless `--keep-dtype` is explicit.
+Integer IDs and masks retain their integer dtype. Future target-side capture
+tools should mirror these names exactly; model-specific extra checkpoints may
+use additional keys without renaming the stable set.
+
 ## The parity ladder
 
 ### 1. Artifact parity
