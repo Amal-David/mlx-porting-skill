@@ -2,7 +2,7 @@
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
   "version": "0.4.0",
-  "generated_at": "2026-07-10T10:38:37.811299+00:00",
+  "generated_at": "2026-07-10T10:52:44.927761+00:00",
   "file_count": 345,
   "files": [
     {
@@ -1203,8 +1203,8 @@
     },
     {
       "path": "mlx-model-porting/scripts/generate_claim_catalog.py",
-      "size_bytes": 41088,
-      "sha256": "c28295803e749b47bda30cdaed6e8f4db5ec24c8e470acc8062d732da9b350d8",
+      "size_bytes": 44613,
+      "sha256": "dd27c2c44bf2296a2fc5c593018227b110edb7f69badf27731610e6b02f7fd80",
       "executable": true
     },
     {
@@ -1887,8 +1887,8 @@
     },
     {
       "path": "tests/test_claim_catalog_contract.py",
-      "size_bytes": 30226,
-      "sha256": "06054091f34e015550f7d62ca5e75c4b16b7ca688d41ff7fd5b418b315a7cba1",
+      "size_bytes": 33040,
+      "sha256": "2d67e8a79e776ed4b434adce3db1b4f10b0f76591f8cc7e40888f34244451ff4",
       "executable": false
     },
     {

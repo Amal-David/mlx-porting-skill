@@ -260,6 +260,24 @@ def assessment(
     }
 
 
+def raw_ratio_receipt(*, candidate: bool) -> dict[str, object]:
+    metrics = {
+        "prompt_tokens": 32,
+        "prompt_tps": 100.0,
+        "generation_tokens": 64,
+        "generation_tps": 48.0,
+        "peak_memory_gb": 1.0,
+        "ttft_proxy_s": 0.336,
+    }
+    if candidate:
+        metrics.update({
+            "prompt_tps": 110.0,
+            "generation_tps": 60.0,
+            "ttft_proxy_s": 0.32,
+        })
+    return {"runs": [{"run": 1, **metrics}]}
+
+
 class ClaimCatalogContractTests(unittest.TestCase):
     def test_committed_catalog_has_one_conservative_record_per_improvement_band(self) -> None:
         run_script("generate_claim_catalog.py", "--check")
@@ -401,6 +419,58 @@ class ClaimCatalogContractTests(unittest.TestCase):
         )["claims"][0]
         self.assertIsNone(held["effective_range"])
         self.assertIn("unrelated-receipt-observation:unrelated.json", held["withheld_reasons"])
+
+    def test_tampered_recomputed_median_ratios_fail_with_intact_fingerprint(self) -> None:
+        with tempfile.TemporaryDirectory() as raw_tmp:
+            root = Path(raw_tmp)
+            baseline_path = root / "baseline.json"
+            candidate_path = root / "candidate.json"
+            baseline_path.write_text(
+                json.dumps(raw_ratio_receipt(candidate=False)) + "\n",
+                encoding="utf-8",
+            )
+            candidate_path.write_text(
+                json.dumps(raw_ratio_receipt(candidate=True)) + "\n",
+                encoding="utf-8",
+            )
+            baseline_sha256 = hashlib.sha256(baseline_path.read_bytes()).hexdigest()
+            candidate_sha256 = hashlib.sha256(candidate_path.read_bytes()).hexdigest()
+            original = {
+                "schema_version": 1,
+                "assessments": [
+                    assessment(
+                        "baseline.json",
+                        role="baseline",
+                        receipt_sha256=baseline_sha256,
+                    ),
+                    assessment(
+                        "candidate.json",
+                        receipt_sha256=candidate_sha256,
+                        baseline_sha256=baseline_sha256,
+                    ),
+                ],
+            }
+            tampered = copy.deepcopy(original)
+            intact_fingerprint = copy.deepcopy(
+                tampered["assessments"][1]["experiment_fingerprint"]
+            )
+            tampered["assessments"][1]["recomputed_median_ratios"]["decode_tps"] = 99.0
+            self.assertEqual(
+                tampered["assessments"][1]["experiment_fingerprint"],
+                intact_fingerprint,
+            )
+
+            with self.assertRaisesRegex(
+                SkillError,
+                "recomputed_median_ratios do not match receipt raw runs",
+            ):
+                generate_claim_catalog.build_claim_catalog(
+                    {"schema_version": 1, "methods": [local_method()]},
+                    source_registry("source-a"),
+                    tampered,
+                    assessments_available=True,
+                    receipt_root=root,
+                )
 
     def test_local_promotion_withholds_unsupported_metric_instead_of_trusting_stored_range(self) -> None:
         method = local_method()
@@ -666,8 +736,14 @@ class ClaimCatalogContractTests(unittest.TestCase):
             sources_path.write_text(json.dumps(source_registry("source-a")), encoding="utf-8")
             baseline_path = tmp / "baseline.json"
             candidate_path = tmp / "candidate.json"
-            baseline_path.write_text('{"fixture":"baseline"}\n', encoding="utf-8")
-            candidate_path.write_text('{"fixture":"candidate"}\n', encoding="utf-8")
+            baseline_path.write_text(
+                json.dumps(raw_ratio_receipt(candidate=False)) + "\n",
+                encoding="utf-8",
+            )
+            candidate_path.write_text(
+                json.dumps(raw_ratio_receipt(candidate=True)) + "\n",
+                encoding="utf-8",
+            )
             baseline_sha256 = hashlib.sha256(baseline_path.read_bytes()).hexdigest()
             candidate_sha256 = hashlib.sha256(candidate_path.read_bytes()).hexdigest()
             assessments_path.write_text(

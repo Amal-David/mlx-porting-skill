@@ -18,6 +18,7 @@ from _common import (
     experiment_identity_from_fingerprint,
     load_structured,
 )
+from validate_benchmarks import recomputed_median_ratios
 
 
 SCRIPT_DIR = Path(__file__).resolve().parent
@@ -73,6 +74,10 @@ EXTERNAL_BENCHMARK_METRICS = ("wall_seconds",)
 BENCHMARK_METRIC_SETS = {
     frozenset(MLX_BENCHMARK_METRICS),
     frozenset(EXTERNAL_BENCHMARK_METRICS),
+}
+RECOMPUTED_RATIO_KEY_SETS = {
+    frozenset({"decode_tps", "prefill_tps", "ttft_proxy_inverse", "peak_memory_inverse"}),
+    frozenset({"wall_seconds_inverse"}),
 }
 
 
@@ -339,6 +344,33 @@ def _file_sha256(path: Path) -> str:
     return digest.hexdigest()
 
 
+def _validated_recomputed_ratios(value: Any, *, receipt: str) -> dict[str, Any] | None:
+    if value is None:
+        return None
+    if not isinstance(value, dict) or frozenset(value) not in RECOMPUTED_RATIO_KEY_SETS:
+        raise SkillError(
+            f"receipt assessment {receipt} recomputed_median_ratios has invalid structure"
+        )
+    if any(
+        isinstance(ratio, bool)
+        or not isinstance(ratio, (int, float))
+        or not math.isfinite(float(ratio))
+        or float(ratio) <= 0
+        for ratio in value.values()
+    ):
+        raise SkillError(
+            f"receipt assessment {receipt} recomputed_median_ratios must contain finite positive numbers"
+        )
+    return dict(value)
+
+
+def _ratios_match(actual: dict[str, Any], expected: dict[str, float]) -> bool:
+    return set(actual) == set(expected) and all(
+        math.isclose(float(actual[key]), value, rel_tol=1e-12, abs_tol=1e-12)
+        for key, value in expected.items()
+    )
+
+
 def validate_assessments(
     report: dict[str, Any],
     *,
@@ -350,6 +382,7 @@ def validate_assessments(
     if not isinstance(rows, list):
         raise SkillError("receipt assessments must contain an assessments list")
     by_receipt: dict[str, dict[str, Any]] = {}
+    receipt_payloads: dict[str, dict[str, Any]] = {}
     for row in rows:
         if not isinstance(row, dict):
             raise SkillError("every receipt assessment must be an object")
@@ -377,6 +410,13 @@ def validate_assessments(
                 raise SkillError(
                     f"receipt assessment {receipt} receipt_sha256 does not match the receipt artifact"
                 )
+            try:
+                receipt_payload = json.loads(receipt_path.read_text(encoding="utf-8"))
+            except json.JSONDecodeError as exc:
+                raise SkillError(f"receipt assessment {receipt} receipt artifact is invalid JSON") from exc
+            if not isinstance(receipt_payload, dict):
+                raise SkillError(f"receipt assessment {receipt} receipt artifact must be an object")
+            receipt_payloads[receipt] = receipt_payload
         if classification not in ASSESSMENT_CLASSIFICATIONS:
             raise SkillError(f"receipt assessment {receipt} has invalid classification {classification!r}")
         enabled_methods = _string_list(
@@ -402,6 +442,12 @@ def validate_assessments(
         promotion_ready = row.get("promotion_ready")
         if not isinstance(promotion_ready, bool):
             raise SkillError(f"receipt assessment {receipt} promotion_ready must be boolean")
+        if "recomputed_median_ratios" not in row:
+            raise SkillError(f"receipt assessment {receipt} is missing recomputed_median_ratios")
+        recomputed_ratios = _validated_recomputed_ratios(
+            row.get("recomputed_median_ratios"),
+            receipt=receipt,
+        )
         fingerprint = row.get("experiment_fingerprint")
         if fingerprint is not None and not experiment_fingerprint_valid(fingerprint):
             raise SkillError(f"receipt assessment {receipt} has invalid experiment_fingerprint")
@@ -439,7 +485,35 @@ def validate_assessments(
             "receipt": receipt,
             "enabled_methods": enabled_methods,
             "reasons": reasons,
+            "recomputed_median_ratios": recomputed_ratios,
         }
+    if receipt_root is not None:
+        for receipt, row in by_receipt.items():
+            stored_ratios = row["recomputed_median_ratios"]
+            if stored_ratios is None:
+                continue
+            baseline = row.get("baseline")
+            baseline_receipt = baseline.get("file") if isinstance(baseline, dict) else None
+            if not isinstance(baseline_receipt, str) or baseline_receipt not in receipt_payloads:
+                baseline_label = baseline.get("label") if isinstance(baseline, dict) else None
+                matching_receipts = [
+                    candidate_receipt
+                    for candidate_receipt, candidate_row in by_receipt.items()
+                    if candidate_row.get("label") == baseline_label
+                ]
+                baseline_receipt = matching_receipts[0] if len(matching_receipts) == 1 else None
+            expected_ratios = (
+                recomputed_median_ratios(
+                    receipt_payloads[receipt],
+                    receipt_payloads[baseline_receipt],
+                )
+                if isinstance(baseline_receipt, str) and baseline_receipt in receipt_payloads
+                else None
+            )
+            if expected_ratios is None or not _ratios_match(stored_ratios, expected_ratios):
+                raise SkillError(
+                    f"receipt assessment {receipt} recomputed_median_ratios do not match receipt raw runs"
+                )
     return by_receipt
 
 
