@@ -2,8 +2,8 @@
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
   "version": "0.4.0",
-  "generated_at": "2026-07-10T13:49:12.949052+00:00",
-  "file_count": 352,
+  "generated_at": "2026-07-10T14:28:53.621290+00:00",
+  "file_count": 356,
   "files": [
     {
       "path": ".agents/skills/mlx-model-porting",
@@ -165,8 +165,8 @@
     },
     {
       "path": "mlx-model-porting/SKILL.md",
-      "size_bytes": 13462,
-      "sha256": "11604e2c6c38a8eb027f8f8140885dd9237f52164041234c22ffa24bbe01466e",
+      "size_bytes": 13461,
+      "sha256": "3883ca57000b33cd4256ca77a143c9c3e7ef1abcf6cf389fc9e0858d1c67cb2e",
       "executable": false
     },
     {
@@ -483,8 +483,8 @@
     },
     {
       "path": "mlx-model-porting/references/parity-and-testing.md",
-      "size_bytes": 6729,
-      "sha256": "5f5513259369f239ef39808f1c88b52b0a79958fb223593b26e94ea2310403da",
+      "size_bytes": 8148,
+      "sha256": "165ed03a6ddfbbe1ef993e4e25cf454bf040fb95d5a1319c1fcb7513401a5a09",
       "executable": false
     },
     {
@@ -519,8 +519,8 @@
     },
     {
       "path": "mlx-model-porting/references/runbook-decoder-transformer.md",
-      "size_bytes": 5687,
-      "sha256": "ae6b4d9fa8ba848da070d661ee3f71ff566763d485bdc6151acd54fba3a43956",
+      "size_bytes": 5980,
+      "sha256": "7c0837c42ead269b32d70a36cfa47408436844fd19d178a56caf8e03984fbbf9",
       "executable": false
     },
     {
@@ -1160,9 +1160,15 @@
       "executable": false
     },
     {
+      "path": "mlx-model-porting/scripts/_capture_common.py",
+      "size_bytes": 21620,
+      "sha256": "a98daed4875301d7b68ae76ecb08549390ac377d03a282a40d15a0dc08a99a2b",
+      "executable": false
+    },
+    {
       "path": "mlx-model-porting/scripts/_common.py",
-      "size_bytes": 55353,
-      "sha256": "4075971df7feaf5f770c9953d40f9bcdd10b68625043427734eeaa262e44c0da",
+      "size_bytes": 55867,
+      "sha256": "512e389c4b8ba195dd09d767c4e634abcd2d8af177815c70a7f9af16e90b36c9",
       "executable": true
     },
     {
@@ -1184,10 +1190,16 @@
       "executable": false
     },
     {
+      "path": "mlx-model-porting/scripts/capture_mlx.py",
+      "size_bytes": 23423,
+      "sha256": "09060d85e0d9570a268b271161f86a2ae2462ca86b77ae2f6dbef638c45fc129",
+      "executable": false
+    },
+    {
       "path": "mlx-model-porting/scripts/capture_oracle.py",
-      "size_bytes": 45152,
-      "sha256": "b89d491c70b7202ae79ace5466e648243765b8f0c397b5e735577520faf5818e",
-      "executable": true
+      "size_bytes": 29041,
+      "sha256": "969648e8f82d60d42c4198c84d7824cf394c4c2d7994ddf51fd0b7e08e87b57e",
+      "executable": false
     },
     {
       "path": "mlx-model-porting/scripts/collect_contributors.py",
@@ -1203,8 +1215,8 @@
     },
     {
       "path": "mlx-model-porting/scripts/compare_tensors.py",
-      "size_bytes": 28974,
-      "sha256": "bfdf52cd3535ea5beac837355499a8c1977f57551fdde5412601e15ba8cf9b8f",
+      "size_bytes": 28708,
+      "sha256": "f7e5c2c0e7162a9fd6a462054c063d3c2723eb35250917853df5bdfc2876adc0",
       "executable": true
     },
     {
@@ -1286,6 +1298,12 @@
       "executable": false
     },
     {
+      "path": "mlx-model-porting/scripts/run_parity.py",
+      "size_bytes": 20634,
+      "sha256": "537769bafeac9eaa4b65639b3aa6e51730f3e793bd801e395e87e04aef65e3fd",
+      "executable": false
+    },
+    {
       "path": "mlx-model-porting/scripts/run_research_campaign.py",
       "size_bytes": 45490,
       "sha256": "c0fd867d0cee172e01d08645a942bd67e8df1d1b1b921541a51fba463c256960",
@@ -1293,8 +1311,8 @@
     },
     {
       "path": "mlx-model-porting/scripts/scaffold_port.py",
-      "size_bytes": 39234,
-      "sha256": "8e51cbec58c62a9835f556ef176ebf61689939f8a73387599a6b001bb821cef5",
+      "size_bytes": 42743,
+      "sha256": "2eb7028df95bcc91370bf242cc850cdfe1a7b7c72faaf68550559592044237c0",
       "executable": true
     },
     {
@@ -2036,6 +2054,12 @@
       "executable": false
     },
     {
+      "path": "tests/test_parity_runner_contract.py",
+      "size_bytes": 20600,
+      "sha256": "0f5341e0fcd59d3f73edde896c6e8a119539498d0c715b6cd3c4b0f448661f02",
+      "executable": false
+    },
+    {
       "path": "tests/test_promotion_validation_contract.py",
       "size_bytes": 4765,
       "sha256": "310282adbbb0688c6be5b60f49ffddc2275291287da2744cac73ec55a9b8019e",
@@ -2067,8 +2091,8 @@
     },
     {
       "path": "tests/test_scaffold_port_contract.py",
-      "size_bytes": 17499,
-      "sha256": "007e42ed606e041bb75d6ed25eff6de7c7f4121e54fd276963f5c4e0c768fb84",
+      "size_bytes": 17985,
+      "sha256": "5ae8f08c4268dbd64208638c98f20fafa5326cfb5a85d097decaac6937399710",
       "executable": false
     },
     {

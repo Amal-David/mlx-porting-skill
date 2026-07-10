@@ -244,6 +244,15 @@ def dump_json(data: Any, path: str | Path | None = None) -> str:
     return text
 
 
+def validate_comparison_tolerances(atol: float, rtol: float, cosine_min: float) -> None:
+    """Apply the shared fail-closed safety policy for tensor comparison thresholds."""
+    for name, value in (("--atol", atol), ("--rtol", rtol)):
+        if not math.isfinite(value) or value < 0:
+            raise SkillError(f"{name} must be a finite non-negative number")
+    if not math.isfinite(cosine_min) or not -1.0 <= cosine_min <= 1.0:
+        raise SkillError("--cosine-min must be finite and between -1 and 1")
+
+
 def terminate_process_tree(process: subprocess.Popen[Any]) -> None:
     """Terminate a subprocess and its descendants without invoking a shell."""
     if os.name != "nt":

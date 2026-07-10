@@ -103,7 +103,9 @@ and unresolved gaps. Validate manifest with
 
 ### 6. Pass the parity ladder
 
-Use `scripts/compare_tensors.py`: config/preprocess, weights/shapes, primitive/block, intermediates, end-to-end, quality, cache/state, boundary/long/streaming/batch.
+Use `scripts/run_parity.py` for MLX capture and first-failing
+input/embed/layer/norm/logit/exact-ID localization. Use
+`scripts/compare_tensors.py` for extra checks.
 
 When parity fails, use [failure atlas](references/failure-atlas.md); do not optimize a failing graph.
 

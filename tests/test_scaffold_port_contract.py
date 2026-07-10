@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import ast
+import hashlib
 import importlib.util
 import json
 import py_compile
@@ -241,6 +242,7 @@ class ScaffoldPortDependencyFreeContractTests(unittest.TestCase):
                 "config.py",
                 "generate.py",
                 "model.py",
+                "scaffold-manifest.json",
             }
             self.assertEqual({path.name for path in first.iterdir()}, expected)
             self.assertEqual({path.name for path in second.iterdir()}, expected)
@@ -259,6 +261,15 @@ class ScaffoldPortDependencyFreeContractTests(unittest.TestCase):
             self.assertIn("model.layers.{i}.self_attn.q_proj.weight", readme)
             self.assertIn("starting implementation", readme)
             self.assertIn("parity validation", readme)
+            manifest = json.loads((first / "scaffold-manifest.json").read_text(encoding="utf-8"))
+            self.assertEqual(
+                manifest["config_sha256"],
+                hashlib.sha256((first / "config.json").read_bytes()).hexdigest(),
+            )
+            self.assertIn(
+                {"key": "model.layers.0.self_attn.q_proj.weight", "shape": [8, 8]},
+                manifest["tensors"],
+            )
 
 
 @unittest.skipUnless(HAS_MLX, "mlx is required for generated-model execution tests")

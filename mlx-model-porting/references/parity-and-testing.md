@@ -36,6 +36,34 @@ Integer IDs and masks retain their integer dtype. Future target-side capture
 tools should mirror these names exactly; model-specific extra checkpoints may
 use additional keys without renaming the stable set.
 
+## Run the cross-framework ladder
+
+After scaffolding the MLX package and converting its weights, use the bounded
+one-command runner instead of manually pairing archives:
+
+```bash
+python3 mlx-model-porting/scripts/run_parity.py \
+  --source-model MODEL \
+  --package mlx_port \
+  --weights converted \
+  --token-ids 1 42 17 9 \
+  --generate-steps 4 \
+  --output parity-report.json
+```
+
+Prompt mode accepts the same repeatable `--prompt` and `--prompts-file`
+fixtures as `capture_oracle.py`; the runner passes the pinned local source
+tokenizer to `capture_mlx.py`. Token-ID mode never loads a tokenizer. The
+strict-JSON report compares same-name keys in this order and stops immediately
+after the first failure: `input_ids`, `embed`, every `layer.{i}.hidden` in
+ascending order, `final_norm`, `logits`, and exact `generated_token_ids`.
+
+`capture_mlx.py` validates the scaffold generator header, config digest,
+execution-file digests, and converted target parameter contract before running
+the package. The package remains user-owned Python code executed with the
+current user's authority; this validation detects drift but is not a sandbox.
+Use `--allow-modified` only after reviewing intentional package edits.
+
 ## The parity ladder
 
 ### 1. Artifact parity
@@ -136,6 +164,10 @@ When a final output fails:
 6. inspect shape, axis order, masks, positions, and state update;
 7. test the isolated primitive;
 8. fix the first divergence only, then rerun the ladder.
+
+The `run_parity.py` summary makes step 3 executable: a failure at
+`layer.7.hidden` reports `layer 7` as the debug target and does not compare
+final norm, logits, or generation downstream of that divergence.
 
 ## Required regression matrix
 

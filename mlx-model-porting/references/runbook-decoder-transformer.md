@@ -57,8 +57,8 @@ Never infer QKV split sizes from equal thirds when GQA/MQA makes K/V smaller. De
 5. Validate attention without cache, including exact causal/padding mask behavior, and test one complete block.
 6. Validate the generated full/growing KV cache against full-context logits.
 7. Declare every rename, transpose, QKV split, merge, target shape, and dtype policy in `WEIGHT_MAP.json`; run `scripts/convert_checkpoint.py --source MODEL --mapping WEIGHT_MAP.json --output converted`, then validate `converted/target-manifest.json` with `scripts/validate_weight_map.py` before checking the assembled stack, final norm, tied or untied head, and logits. The converter refuses draft or unresolved maps and unexplained source tensors.
-8. Run generated `capture.py` and compare its stable tensor keys to the source oracle with `scripts/compare_tensors.py`.
-9. Validate deterministic greedy generation, save/reload, boundary context, and cache reset/reuse.
+8. Run `scripts/run_parity.py --source-model MODEL --package mlx_port --weights converted` with the shared prompt or token-ID fixture. It drives source and MLX capture, maps the stable keys, and stops at the first failing embedding/layer/final-norm/logit/generation rung. Debug only that first divergence before rerunning.
+9. Use `scripts/compare_tensors.py` directly for optional attention/MLP branch captures, then validate deterministic greedy generation, save/reload, boundary context, and cache reset/reuse.
 
 `scaffold_port.py` is a starting implementation, not a guaranteed port. It currently covers only the explicit dense-decoder feature allowlist and rejects sliding-window attention, QK normalization, MoE, quantization metadata, unknown RoPE scaling, soft caps, and unrecognized computation-bearing config keys. A generated package must still pass source parity and task-quality gates; edit it when inspection-backed source semantics differ.
 

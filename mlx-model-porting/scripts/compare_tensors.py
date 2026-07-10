@@ -17,7 +17,7 @@ from ast import literal_eval as parse_python_literal
 from pathlib import Path, PurePosixPath
 from typing import Any, BinaryIO, Iterator
 
-from _common import SkillError, dump_json, load_structured
+from _common import SkillError, dump_json, load_structured, validate_comparison_tolerances
 
 
 NPY_MAGIC = b"\x93NUMPY"
@@ -554,11 +554,7 @@ def main() -> int:
             import numpy as np
         except ImportError as exc:
             raise SkillError("numpy is required for compare_tensors.py") from exc
-        for name, value in (("--atol", args.atol), ("--rtol", args.rtol)):
-            if not math.isfinite(value) or value < 0:
-                raise SkillError(f"{name} must be a finite non-negative number")
-        if not math.isfinite(args.cosine_min) or not -1.0 <= args.cosine_min <= 1.0:
-            raise SkillError("--cosine-min must be finite and between -1 and 1")
+        validate_comparison_tolerances(args.atol, args.rtol, args.cosine_min)
         mapping: dict[str, str] = {}
         if args.mapping:
             raw = load_structured(args.mapping)
