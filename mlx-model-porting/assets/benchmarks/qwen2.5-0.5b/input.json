@@ -1,0 +1,5 @@
+{
+  "max_new_tokens": 6,
+  "prompt": "Explain why the sky is blue in one sentence.",
+  "token_ids": [840, 20772, 3170, 279, 12884, 374, 6303, 304, 825, 11652, 13]
+}

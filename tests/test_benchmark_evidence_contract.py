@@ -472,7 +472,7 @@ class BenchmarkEvidenceContractTests(unittest.TestCase):
         second = validate_benchmarks.build_assessment_report(BENCHMARKS)
         self.assertEqual(first, second)
         summary = validate_benchmarks.assessment_summary(first)
-        self.assertEqual(summary["receipt_count"], 11)
+        self.assertEqual(summary["receipt_count"], 13)
         self.assertEqual(summary["promotion_ready_count"], 0)
         self.assertEqual(summary["rejected_count"], 1)
         by_label = {row["label"]: row for row in first["assessments"]}

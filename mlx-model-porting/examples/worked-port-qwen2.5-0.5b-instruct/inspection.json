@@ -1,0 +1,3596 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-07-10T14:48:55.052766+00:00",
+  "inspection_mode": "static-no-model-import",
+  "source": {
+    "kind": "local",
+    "input": "source",
+    "revision": "7ae557604adf67be50417f59c2c2f167def9a775"
+  },
+  "artifact_identity": {
+    "schema_version": 1,
+    "algorithm": "sha256-tree-v1",
+    "status": "verified",
+    "immutable": true,
+    "fingerprint": "sha256:2607205aab4b7ec45982916b028479d9926b5d7027c8a9aafc5acd2d2ef15517",
+    "file_count": 8,
+    "total_bytes": 999586385,
+    "manifest": [
+      {
+        "path": "README.md",
+        "size_bytes": 38,
+        "sha256": "d220c62172647f1f6577db67896ef80b44dbae644f77768e8873b684f947175c"
+      },
+      {
+        "path": "config.json",
+        "size_bytes": 659,
+        "sha256": "18e18afcaccafade98daf13a54092927904649e1dd4eba8299ab717d5d94ff45"
+      },
+      {
+        "path": "generation_config.json",
+        "size_bytes": 242,
+        "sha256": "e558847a8b4402616f1273797b015104dc266fe4b520056fca88823ba8f8ebe6"
+      },
+      {
+        "path": "merges.txt",
+        "size_bytes": 1671839,
+        "sha256": "599bab54075088774b1733fde865d5bd747cbcc7a547c5bc12610e874e26f5e3"
+      },
+      {
+        "path": "model.safetensors",
+        "size_bytes": 988097824,
+        "sha256": "fdf756fa7fcbe7404d5c60e26bff1a0c8b8aa1f72ced49e7dd0210fe288fb7fe"
+      },
+      {
+        "path": "tokenizer.json",
+        "size_bytes": 7031645,
+        "sha256": "c0382117ea329cdf097041132f6d735924b697924d6f6fc3945713e96ce87539"
+      },
+      {
+        "path": "tokenizer_config.json",
+        "size_bytes": 7305,
+        "sha256": "5b5d4f65d0acd3b2d56a35b56d374a36cbc1c8fa5cf3b3febbbfabf22f359583"
+      },
+      {
+        "path": "vocab.json",
+        "size_bytes": 2776833,
+        "sha256": "ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910"
+      }
+    ],
+    "errors": []
+  },
+  "local_path": "source",
+  "configs": {
+    "config.json": {
+      "architectures": [
+        "Qwen2ForCausalLM"
+      ],
+      "attention_dropout": 0.0,
+      "bos_token_id": "[REDACTED]",
+      "eos_token_id": "[REDACTED]",
+      "hidden_act": "silu",
+      "hidden_size": 896,
+      "initializer_range": 0.02,
+      "intermediate_size": 4864,
+      "max_position_embeddings": 32768,
+      "max_window_layers": 21,
+      "model_type": "qwen2",
+      "num_attention_heads": 14,
+      "num_hidden_layers": 24,
+      "num_key_value_heads": 2,
+      "rms_norm_eps": 1e-06,
+      "rope_theta": 1000000.0,
+      "sliding_window": 32768,
+      "tie_word_embeddings": true,
+      "torch_dtype": "bfloat16",
+      "transformers_version": "4.43.1",
+      "use_cache": true,
+      "use_sliding_window": false,
+      "vocab_size": 151936
+    },
+    "generation_config.json": {
+      "bos_token_id": "[REDACTED]",
+      "pad_token_id": "[REDACTED]",
+      "do_sample": true,
+      "eos_token_id": "[REDACTED]",
+      "repetition_penalty": 1.1,
+      "temperature": 0.7,
+      "top_p": 0.8,
+      "top_k": 20,
+      "transformers_version": "4.37.0"
+    },
+    "tokenizer_config.json": {
+      "add_bos_token": "[REDACTED]",
+      "add_prefix_space": false,
+      "added_tokens_decoder": {
+        "151643": {
+          "content": "<|endoftext|>",
+          "lstrip": false,
+          "normalized": false,
+          "rstrip": false,
+          "single_word": false,
+          "special": true
+        },
+        "151644": {
+          "content": "<|im_start|>",
+          "lstrip": false,
+          "normalized": false,
+          "rstrip": false,
+          "single_word": false,
+          "special": true
+        },
+        "151645": {
+          "content": "<|im_end|>",
+          "lstrip": false,
+          "normalized": false,
+          "rstrip": false,
+          "single_word": false,
+          "special": true
+        },
+        "151646": {
+          "content": "<|object_ref_start|>",
+          "lstrip": false,
+          "normalized": false,
+          "rstrip": false,
+          "single_word": false,
+          "special": true
+        },
+        "151647": {
+          "content": "<|object_ref_end|>",
+          "lstrip": false,
+          "normalized": false,
+          "rstrip": false,
+          "single_word": false,
+          "special": true
+        },
+        "151648": {
+          "content": "<|box_start|>",
+          "lstrip": false,
+          "normalized": false,
+          "rstrip": false,
+          "single_word": false,
+          "special": true
+        },
+        "151649": {
+          "content": "<|box_end|>",
+          "lstrip": false,
+          "normalized": false,
+          "rstrip": false,
+          "single_word": false,
+          "special": true
+        },
+        "151650": {
+          "content": "<|quad_start|>",
+          "lstrip": false,
+          "normalized": false,
+          "rstrip": false,
+          "single_word": false,
+          "special": true
+        },
+        "151651": {
+          "content": "<|quad_end|>",
+          "lstrip": false,
+          "normalized": false,
+          "rstrip": false,
+          "single_word": false,
+          "special": true
+        },
+        "151652": {
+          "content": "<|vision_start|>",
+          "lstrip": false,
+          "normalized": false,
+          "rstrip": false,
+          "single_word": false,
+          "special": true
+        },
+        "151653": {
+          "content": "<|vision_end|>",
+          "lstrip": false,
+          "normalized": false,
+          "rstrip": false,
+          "single_word": false,
+          "special": true
+        },
+        "151654": {
+          "content": "<|vision_pad|>",
+          "lstrip": false,
+          "normalized": false,
+          "rstrip": false,
+          "single_word": false,
+          "special": true
+        },
+        "151655": {
+          "content": "<|image_pad|>",
+          "lstrip": false,
+          "normalized": false,
+          "rstrip": false,
+          "single_word": false,
+          "special": true
+        },
+        "151656": {
+          "content": "<|video_pad|>",
+          "lstrip": false,
+          "normalized": false,
+          "rstrip": false,
+          "single_word": false,
+          "special": true
+        },
+        "151657": {
+          "content": "<tool_call>",
+          "lstrip": false,
+          "normalized": false,
+          "rstrip": false,
+          "single_word": false,
+          "special": false
+        },
+        "151658": {
+          "content": "</tool_call>",
+          "lstrip": false,
+          "normalized": false,
+          "rstrip": false,
+          "single_word": false,
+          "special": false
+        },
+        "151659": {
+          "content": "<|fim_prefix|>",
+          "lstrip": false,
+          "normalized": false,
+          "rstrip": false,
+          "single_word": false,
+          "special": false
+        },
+        "151660": {
+          "content": "<|fim_middle|>",
+          "lstrip": false,
+          "normalized": false,
+          "rstrip": false,
+          "single_word": false,
+          "special": false
+        },
+        "151661": {
+          "content": "<|fim_suffix|>",
+          "lstrip": false,
+          "normalized": false,
+          "rstrip": false,
+          "single_word": false,
+          "special": false
+        },
+        "151662": {
+          "content": "<|fim_pad|>",
+          "lstrip": false,
+          "normalized": false,
+          "rstrip": false,
+          "single_word": false,
+          "special": false
+        },
+        "151663": {
+          "content": "<|repo_name|>",
+          "lstrip": false,
+          "normalized": false,
+          "rstrip": false,
+          "single_word": false,
+          "special": false
+        },
+        "151664": {
+          "content": "<|file_sep|>",
+          "lstrip": false,
+          "normalized": false,
+          "rstrip": false,
+          "single_word": false,
+          "special": false
+        }
+      },
+      "additional_special_tokens": [
+        "<|im_start|>",
+        "<|im_end|>",
+        "<|object_ref_start|>",
+        "<|object_ref_end|>",
+        "<|box_start|>",
+        "<|box_end|>",
+        "<|quad_start|>",
+        "<|quad_end|>",
+        "<|vision_start|>",
+        "<|vision_end|>",
+        "<|vision_pad|>",
+        "<|image_pad|>",
+        "<|video_pad|>"
+      ],
+      "bos_token": "[REDACTED]",
+      "chat_template": "{%- if tools %}\n    {{- '<|im_start|>system\\n' }}\n    {%- if messages[0]['role'] == 'system' %}\n        {{- messages[0]['content'] }}\n    {%- else %}\n        {{- 'You are Qwen, created by Alibaba Cloud. You are a helpful assistant.' }}\n    {%- endif %}\n    {{- \"\\n\\n# Tools\\n\\nYou may call one or more functions to assist with the user query.\\n\\nYou are provided with function signatures within <tools></tools> XML tags:\\n<tools>\" }}\n    {%- for tool in tools %}\n        {{- \"\\n\" }}\n        {{- tool | tojson }}\n    {%- endfor %}\n    {{- \"\\n</tools>\\n\\nFor each function call, return a json object with function name and arguments within <tool_call></tool_call> XML tags:\\n<tool_call>\\n{\\\"name\\\": <function-name>, \\\"arguments\\\": <args-json-object>}\\n</tool_call><|im_end|>\\n\" }}\n{%- else %}\n    {%- if messages[0]['role'] == 'system' %}\n        {{- '<|im_start|>system\\n' + messages[0]['content'] + '<|im_end|>\\n' }}\n    {%- else %}\n        {{- '<|im_start|>system\\nYou are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>\\n' }}\n    {%- endif %}\n{%- endif %}\n{%- for message in messages %}\n    {%- if (message.role == \"user\") or (message.role == \"system\" and not loop.first) or (message.role == \"assistant\" and not message.tool_calls) %}\n        {{- '<|im_start|>' + message.role + '\\n' + message.content + '<|im_end|>' + '\\n' }}\n    {%- elif message.role == \"assistant\" %}\n        {{- '<|im_start|>' + message.role }}\n        {%- if message.content %}\n            {{- '\\n' + message.content }}\n        {%- endif %}\n        {%- for tool_call in message.tool_calls %}\n            {%- if tool_call.function is defined %}\n                {%- set tool_call = tool_call.function %}\n            {%- endif %}\n            {{- '\\n<tool_call>\\n{\"name\": \"' }}\n            {{- tool_call.name }}\n            {{- '\", \"arguments\": ' }}\n            {{- tool_call.arguments | tojson }}\n            {{- '}\\n</tool_call>' }}\n        {%- endfor %}\n        {{- '<|im_end|>\\n' }}\n    {%- elif message.role == \"tool\" %}\n        {%- if (loop.index0 == 0) or (messages[loop.index0 - 1].role != \"tool\") %}\n            {{- '<|im_start|>user' }}\n        {%- endif %}\n        {{- '\\n<tool_response>\\n' }}\n        {{- message.content }}\n        {{- '\\n</tool_response>' }}\n        {%- if loop.last or (messages[loop.index0 + 1].role != \"tool\") %}\n            {{- '<|im_end|>\\n' }}\n        {%- endif %}\n    {%- endif %}\n{%- endfor %}\n{%- if add_generation_prompt %}\n    {{- '<|im_start|>assistant\\n' }}\n{%- endif %}\n",
+      "clean_up_tokenization_spaces": false,
+      "eos_token": "[REDACTED]",
+      "errors": "replace",
+      "model_max_length": 131072,
+      "pad_token": "[REDACTED]",
+      "split_special_tokens": false,
+      "tokenizer_class": "Qwen2Tokenizer",
+      "unk_token": "[REDACTED]"
+    }
+  },
+  "file_summary": {
+    "count": 8,
+    "truncated": false,
+    "extensions": {
+      ".json": 5,
+      ".md": 1,
+      ".safetensors": 1,
+      ".txt": 1
+    },
+    "files": [
+      {
+        "path": "README.md",
+        "size_bytes": 38,
+        "suffix": ".md"
+      },
+      {
+        "path": "config.json",
+        "size_bytes": 659,
+        "suffix": ".json"
+      },
+      {
+        "path": "generation_config.json",
+        "size_bytes": 242,
+        "suffix": ".json"
+      },
+      {
+        "path": "merges.txt",
+        "size_bytes": 1671839,
+        "suffix": ".txt"
+      },
+      {
+        "path": "model.safetensors",
+        "size_bytes": 988097824,
+        "suffix": ".safetensors"
+      },
+      {
+        "path": "tokenizer.json",
+        "size_bytes": 7031645,
+        "suffix": ".json"
+      },
+      {
+        "path": "tokenizer_config.json",
+        "size_bytes": 7305,
+        "suffix": ".json"
+      },
+      {
+        "path": "vocab.json",
+        "size_bytes": 2776833,
+        "suffix": ".json"
+      }
+    ]
+  },
+  "tensor_summary": {
+    "count": 290,
+    "parameters": 494032768,
+    "estimated_bytes": 988065536,
+    "dtypes": {
+      "BF16": 290
+    },
+    "files": {
+      "model.safetensors": 290
+    },
+    "metadata": {
+      "model.safetensors": {
+        "format": "pt"
+      }
+    },
+    "errors": [],
+    "integrity_ok": true
+  },
+  "tensors": [
+    {
+      "key": "model.embed_tokens.weight",
+      "shape": [
+        151936,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 136134656,
+      "estimated_bytes": 272269312,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.0.input_layernorm.weight",
+      "shape": [
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 896,
+      "estimated_bytes": 1792,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.0.mlp.down_proj.weight",
+      "shape": [
+        896,
+        4864
+      ],
+      "dtype": "BF16",
+      "parameters": 4358144,
+      "estimated_bytes": 8716288,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.0.mlp.gate_proj.weight",
+      "shape": [
+        4864,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 4358144,
+      "estimated_bytes": 8716288,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.0.mlp.up_proj.weight",
+      "shape": [
+        4864,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 4358144,
+      "estimated_bytes": 8716288,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.0.post_attention_layernorm.weight",
+      "shape": [
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 896,
+      "estimated_bytes": 1792,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.0.self_attn.k_proj.bias",
+      "shape": [
+        128
+      ],
+      "dtype": "BF16",
+      "parameters": 128,
+      "estimated_bytes": 256,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.0.self_attn.k_proj.weight",
+      "shape": [
+        128,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 114688,
+      "estimated_bytes": 229376,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.0.self_attn.o_proj.weight",
+      "shape": [
+        896,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 802816,
+      "estimated_bytes": 1605632,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.0.self_attn.q_proj.bias",
+      "shape": [
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 896,
+      "estimated_bytes": 1792,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.0.self_attn.q_proj.weight",
+      "shape": [
+        896,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 802816,
+      "estimated_bytes": 1605632,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.0.self_attn.v_proj.bias",
+      "shape": [
+        128
+      ],
+      "dtype": "BF16",
+      "parameters": 128,
+      "estimated_bytes": 256,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.0.self_attn.v_proj.weight",
+      "shape": [
+        128,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 114688,
+      "estimated_bytes": 229376,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.1.input_layernorm.weight",
+      "shape": [
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 896,
+      "estimated_bytes": 1792,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.1.mlp.down_proj.weight",
+      "shape": [
+        896,
+        4864
+      ],
+      "dtype": "BF16",
+      "parameters": 4358144,
+      "estimated_bytes": 8716288,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.1.mlp.gate_proj.weight",
+      "shape": [
+        4864,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 4358144,
+      "estimated_bytes": 8716288,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.1.mlp.up_proj.weight",
+      "shape": [
+        4864,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 4358144,
+      "estimated_bytes": 8716288,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.1.post_attention_layernorm.weight",
+      "shape": [
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 896,
+      "estimated_bytes": 1792,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.1.self_attn.k_proj.bias",
+      "shape": [
+        128
+      ],
+      "dtype": "BF16",
+      "parameters": 128,
+      "estimated_bytes": 256,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.1.self_attn.k_proj.weight",
+      "shape": [
+        128,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 114688,
+      "estimated_bytes": 229376,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.1.self_attn.o_proj.weight",
+      "shape": [
+        896,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 802816,
+      "estimated_bytes": 1605632,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.1.self_attn.q_proj.bias",
+      "shape": [
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 896,
+      "estimated_bytes": 1792,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.1.self_attn.q_proj.weight",
+      "shape": [
+        896,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 802816,
+      "estimated_bytes": 1605632,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.1.self_attn.v_proj.bias",
+      "shape": [
+        128
+      ],
+      "dtype": "BF16",
+      "parameters": 128,
+      "estimated_bytes": 256,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.1.self_attn.v_proj.weight",
+      "shape": [
+        128,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 114688,
+      "estimated_bytes": 229376,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.10.input_layernorm.weight",
+      "shape": [
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 896,
+      "estimated_bytes": 1792,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.10.mlp.down_proj.weight",
+      "shape": [
+        896,
+        4864
+      ],
+      "dtype": "BF16",
+      "parameters": 4358144,
+      "estimated_bytes": 8716288,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.10.mlp.gate_proj.weight",
+      "shape": [
+        4864,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 4358144,
+      "estimated_bytes": 8716288,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.10.mlp.up_proj.weight",
+      "shape": [
+        4864,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 4358144,
+      "estimated_bytes": 8716288,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.10.post_attention_layernorm.weight",
+      "shape": [
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 896,
+      "estimated_bytes": 1792,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.10.self_attn.k_proj.bias",
+      "shape": [
+        128
+      ],
+      "dtype": "BF16",
+      "parameters": 128,
+      "estimated_bytes": 256,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.10.self_attn.k_proj.weight",
+      "shape": [
+        128,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 114688,
+      "estimated_bytes": 229376,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.10.self_attn.o_proj.weight",
+      "shape": [
+        896,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 802816,
+      "estimated_bytes": 1605632,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.10.self_attn.q_proj.bias",
+      "shape": [
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 896,
+      "estimated_bytes": 1792,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.10.self_attn.q_proj.weight",
+      "shape": [
+        896,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 802816,
+      "estimated_bytes": 1605632,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.10.self_attn.v_proj.bias",
+      "shape": [
+        128
+      ],
+      "dtype": "BF16",
+      "parameters": 128,
+      "estimated_bytes": 256,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.10.self_attn.v_proj.weight",
+      "shape": [
+        128,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 114688,
+      "estimated_bytes": 229376,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.11.input_layernorm.weight",
+      "shape": [
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 896,
+      "estimated_bytes": 1792,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.11.mlp.down_proj.weight",
+      "shape": [
+        896,
+        4864
+      ],
+      "dtype": "BF16",
+      "parameters": 4358144,
+      "estimated_bytes": 8716288,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.11.mlp.gate_proj.weight",
+      "shape": [
+        4864,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 4358144,
+      "estimated_bytes": 8716288,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.11.mlp.up_proj.weight",
+      "shape": [
+        4864,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 4358144,
+      "estimated_bytes": 8716288,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.11.post_attention_layernorm.weight",
+      "shape": [
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 896,
+      "estimated_bytes": 1792,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.11.self_attn.k_proj.bias",
+      "shape": [
+        128
+      ],
+      "dtype": "BF16",
+      "parameters": 128,
+      "estimated_bytes": 256,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.11.self_attn.k_proj.weight",
+      "shape": [
+        128,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 114688,
+      "estimated_bytes": 229376,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.11.self_attn.o_proj.weight",
+      "shape": [
+        896,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 802816,
+      "estimated_bytes": 1605632,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.11.self_attn.q_proj.bias",
+      "shape": [
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 896,
+      "estimated_bytes": 1792,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.11.self_attn.q_proj.weight",
+      "shape": [
+        896,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 802816,
+      "estimated_bytes": 1605632,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.11.self_attn.v_proj.bias",
+      "shape": [
+        128
+      ],
+      "dtype": "BF16",
+      "parameters": 128,
+      "estimated_bytes": 256,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.11.self_attn.v_proj.weight",
+      "shape": [
+        128,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 114688,
+      "estimated_bytes": 229376,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.12.input_layernorm.weight",
+      "shape": [
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 896,
+      "estimated_bytes": 1792,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.12.mlp.down_proj.weight",
+      "shape": [
+        896,
+        4864
+      ],
+      "dtype": "BF16",
+      "parameters": 4358144,
+      "estimated_bytes": 8716288,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.12.mlp.gate_proj.weight",
+      "shape": [
+        4864,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 4358144,
+      "estimated_bytes": 8716288,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.12.mlp.up_proj.weight",
+      "shape": [
+        4864,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 4358144,
+      "estimated_bytes": 8716288,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.12.post_attention_layernorm.weight",
+      "shape": [
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 896,
+      "estimated_bytes": 1792,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.12.self_attn.k_proj.bias",
+      "shape": [
+        128
+      ],
+      "dtype": "BF16",
+      "parameters": 128,
+      "estimated_bytes": 256,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.12.self_attn.k_proj.weight",
+      "shape": [
+        128,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 114688,
+      "estimated_bytes": 229376,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.12.self_attn.o_proj.weight",
+      "shape": [
+        896,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 802816,
+      "estimated_bytes": 1605632,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.12.self_attn.q_proj.bias",
+      "shape": [
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 896,
+      "estimated_bytes": 1792,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.12.self_attn.q_proj.weight",
+      "shape": [
+        896,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 802816,
+      "estimated_bytes": 1605632,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.12.self_attn.v_proj.bias",
+      "shape": [
+        128
+      ],
+      "dtype": "BF16",
+      "parameters": 128,
+      "estimated_bytes": 256,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.12.self_attn.v_proj.weight",
+      "shape": [
+        128,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 114688,
+      "estimated_bytes": 229376,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.13.input_layernorm.weight",
+      "shape": [
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 896,
+      "estimated_bytes": 1792,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.13.mlp.down_proj.weight",
+      "shape": [
+        896,
+        4864
+      ],
+      "dtype": "BF16",
+      "parameters": 4358144,
+      "estimated_bytes": 8716288,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.13.mlp.gate_proj.weight",
+      "shape": [
+        4864,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 4358144,
+      "estimated_bytes": 8716288,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.13.mlp.up_proj.weight",
+      "shape": [
+        4864,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 4358144,
+      "estimated_bytes": 8716288,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.13.post_attention_layernorm.weight",
+      "shape": [
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 896,
+      "estimated_bytes": 1792,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.13.self_attn.k_proj.bias",
+      "shape": [
+        128
+      ],
+      "dtype": "BF16",
+      "parameters": 128,
+      "estimated_bytes": 256,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.13.self_attn.k_proj.weight",
+      "shape": [
+        128,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 114688,
+      "estimated_bytes": 229376,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.13.self_attn.o_proj.weight",
+      "shape": [
+        896,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 802816,
+      "estimated_bytes": 1605632,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.13.self_attn.q_proj.bias",
+      "shape": [
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 896,
+      "estimated_bytes": 1792,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.13.self_attn.q_proj.weight",
+      "shape": [
+        896,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 802816,
+      "estimated_bytes": 1605632,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.13.self_attn.v_proj.bias",
+      "shape": [
+        128
+      ],
+      "dtype": "BF16",
+      "parameters": 128,
+      "estimated_bytes": 256,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.13.self_attn.v_proj.weight",
+      "shape": [
+        128,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 114688,
+      "estimated_bytes": 229376,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.14.input_layernorm.weight",
+      "shape": [
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 896,
+      "estimated_bytes": 1792,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.14.mlp.down_proj.weight",
+      "shape": [
+        896,
+        4864
+      ],
+      "dtype": "BF16",
+      "parameters": 4358144,
+      "estimated_bytes": 8716288,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.14.mlp.gate_proj.weight",
+      "shape": [
+        4864,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 4358144,
+      "estimated_bytes": 8716288,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.14.mlp.up_proj.weight",
+      "shape": [
+        4864,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 4358144,
+      "estimated_bytes": 8716288,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.14.post_attention_layernorm.weight",
+      "shape": [
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 896,
+      "estimated_bytes": 1792,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.14.self_attn.k_proj.bias",
+      "shape": [
+        128
+      ],
+      "dtype": "BF16",
+      "parameters": 128,
+      "estimated_bytes": 256,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.14.self_attn.k_proj.weight",
+      "shape": [
+        128,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 114688,
+      "estimated_bytes": 229376,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.14.self_attn.o_proj.weight",
+      "shape": [
+        896,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 802816,
+      "estimated_bytes": 1605632,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.14.self_attn.q_proj.bias",
+      "shape": [
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 896,
+      "estimated_bytes": 1792,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.14.self_attn.q_proj.weight",
+      "shape": [
+        896,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 802816,
+      "estimated_bytes": 1605632,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.14.self_attn.v_proj.bias",
+      "shape": [
+        128
+      ],
+      "dtype": "BF16",
+      "parameters": 128,
+      "estimated_bytes": 256,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.14.self_attn.v_proj.weight",
+      "shape": [
+        128,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 114688,
+      "estimated_bytes": 229376,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.15.input_layernorm.weight",
+      "shape": [
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 896,
+      "estimated_bytes": 1792,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.15.mlp.down_proj.weight",
+      "shape": [
+        896,
+        4864
+      ],
+      "dtype": "BF16",
+      "parameters": 4358144,
+      "estimated_bytes": 8716288,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.15.mlp.gate_proj.weight",
+      "shape": [
+        4864,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 4358144,
+      "estimated_bytes": 8716288,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.15.mlp.up_proj.weight",
+      "shape": [
+        4864,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 4358144,
+      "estimated_bytes": 8716288,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.15.post_attention_layernorm.weight",
+      "shape": [
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 896,
+      "estimated_bytes": 1792,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.15.self_attn.k_proj.bias",
+      "shape": [
+        128
+      ],
+      "dtype": "BF16",
+      "parameters": 128,
+      "estimated_bytes": 256,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.15.self_attn.k_proj.weight",
+      "shape": [
+        128,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 114688,
+      "estimated_bytes": 229376,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.15.self_attn.o_proj.weight",
+      "shape": [
+        896,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 802816,
+      "estimated_bytes": 1605632,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.15.self_attn.q_proj.bias",
+      "shape": [
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 896,
+      "estimated_bytes": 1792,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.15.self_attn.q_proj.weight",
+      "shape": [
+        896,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 802816,
+      "estimated_bytes": 1605632,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.15.self_attn.v_proj.bias",
+      "shape": [
+        128
+      ],
+      "dtype": "BF16",
+      "parameters": 128,
+      "estimated_bytes": 256,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.15.self_attn.v_proj.weight",
+      "shape": [
+        128,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 114688,
+      "estimated_bytes": 229376,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.16.input_layernorm.weight",
+      "shape": [
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 896,
+      "estimated_bytes": 1792,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.16.mlp.down_proj.weight",
+      "shape": [
+        896,
+        4864
+      ],
+      "dtype": "BF16",
+      "parameters": 4358144,
+      "estimated_bytes": 8716288,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.16.mlp.gate_proj.weight",
+      "shape": [
+        4864,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 4358144,
+      "estimated_bytes": 8716288,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.16.mlp.up_proj.weight",
+      "shape": [
+        4864,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 4358144,
+      "estimated_bytes": 8716288,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.16.post_attention_layernorm.weight",
+      "shape": [
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 896,
+      "estimated_bytes": 1792,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.16.self_attn.k_proj.bias",
+      "shape": [
+        128
+      ],
+      "dtype": "BF16",
+      "parameters": 128,
+      "estimated_bytes": 256,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.16.self_attn.k_proj.weight",
+      "shape": [
+        128,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 114688,
+      "estimated_bytes": 229376,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.16.self_attn.o_proj.weight",
+      "shape": [
+        896,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 802816,
+      "estimated_bytes": 1605632,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.16.self_attn.q_proj.bias",
+      "shape": [
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 896,
+      "estimated_bytes": 1792,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.16.self_attn.q_proj.weight",
+      "shape": [
+        896,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 802816,
+      "estimated_bytes": 1605632,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.16.self_attn.v_proj.bias",
+      "shape": [
+        128
+      ],
+      "dtype": "BF16",
+      "parameters": 128,
+      "estimated_bytes": 256,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.16.self_attn.v_proj.weight",
+      "shape": [
+        128,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 114688,
+      "estimated_bytes": 229376,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.17.input_layernorm.weight",
+      "shape": [
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 896,
+      "estimated_bytes": 1792,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.17.mlp.down_proj.weight",
+      "shape": [
+        896,
+        4864
+      ],
+      "dtype": "BF16",
+      "parameters": 4358144,
+      "estimated_bytes": 8716288,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.17.mlp.gate_proj.weight",
+      "shape": [
+        4864,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 4358144,
+      "estimated_bytes": 8716288,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.17.mlp.up_proj.weight",
+      "shape": [
+        4864,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 4358144,
+      "estimated_bytes": 8716288,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.17.post_attention_layernorm.weight",
+      "shape": [
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 896,
+      "estimated_bytes": 1792,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.17.self_attn.k_proj.bias",
+      "shape": [
+        128
+      ],
+      "dtype": "BF16",
+      "parameters": 128,
+      "estimated_bytes": 256,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.17.self_attn.k_proj.weight",
+      "shape": [
+        128,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 114688,
+      "estimated_bytes": 229376,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.17.self_attn.o_proj.weight",
+      "shape": [
+        896,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 802816,
+      "estimated_bytes": 1605632,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.17.self_attn.q_proj.bias",
+      "shape": [
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 896,
+      "estimated_bytes": 1792,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.17.self_attn.q_proj.weight",
+      "shape": [
+        896,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 802816,
+      "estimated_bytes": 1605632,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.17.self_attn.v_proj.bias",
+      "shape": [
+        128
+      ],
+      "dtype": "BF16",
+      "parameters": 128,
+      "estimated_bytes": 256,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.17.self_attn.v_proj.weight",
+      "shape": [
+        128,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 114688,
+      "estimated_bytes": 229376,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.18.input_layernorm.weight",
+      "shape": [
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 896,
+      "estimated_bytes": 1792,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.18.mlp.down_proj.weight",
+      "shape": [
+        896,
+        4864
+      ],
+      "dtype": "BF16",
+      "parameters": 4358144,
+      "estimated_bytes": 8716288,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.18.mlp.gate_proj.weight",
+      "shape": [
+        4864,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 4358144,
+      "estimated_bytes": 8716288,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.18.mlp.up_proj.weight",
+      "shape": [
+        4864,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 4358144,
+      "estimated_bytes": 8716288,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.18.post_attention_layernorm.weight",
+      "shape": [
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 896,
+      "estimated_bytes": 1792,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.18.self_attn.k_proj.bias",
+      "shape": [
+        128
+      ],
+      "dtype": "BF16",
+      "parameters": 128,
+      "estimated_bytes": 256,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.18.self_attn.k_proj.weight",
+      "shape": [
+        128,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 114688,
+      "estimated_bytes": 229376,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.18.self_attn.o_proj.weight",
+      "shape": [
+        896,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 802816,
+      "estimated_bytes": 1605632,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.18.self_attn.q_proj.bias",
+      "shape": [
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 896,
+      "estimated_bytes": 1792,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.18.self_attn.q_proj.weight",
+      "shape": [
+        896,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 802816,
+      "estimated_bytes": 1605632,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.18.self_attn.v_proj.bias",
+      "shape": [
+        128
+      ],
+      "dtype": "BF16",
+      "parameters": 128,
+      "estimated_bytes": 256,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.18.self_attn.v_proj.weight",
+      "shape": [
+        128,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 114688,
+      "estimated_bytes": 229376,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.19.input_layernorm.weight",
+      "shape": [
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 896,
+      "estimated_bytes": 1792,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.19.mlp.down_proj.weight",
+      "shape": [
+        896,
+        4864
+      ],
+      "dtype": "BF16",
+      "parameters": 4358144,
+      "estimated_bytes": 8716288,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.19.mlp.gate_proj.weight",
+      "shape": [
+        4864,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 4358144,
+      "estimated_bytes": 8716288,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.19.mlp.up_proj.weight",
+      "shape": [
+        4864,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 4358144,
+      "estimated_bytes": 8716288,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.19.post_attention_layernorm.weight",
+      "shape": [
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 896,
+      "estimated_bytes": 1792,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.19.self_attn.k_proj.bias",
+      "shape": [
+        128
+      ],
+      "dtype": "BF16",
+      "parameters": 128,
+      "estimated_bytes": 256,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.19.self_attn.k_proj.weight",
+      "shape": [
+        128,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 114688,
+      "estimated_bytes": 229376,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.19.self_attn.o_proj.weight",
+      "shape": [
+        896,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 802816,
+      "estimated_bytes": 1605632,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.19.self_attn.q_proj.bias",
+      "shape": [
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 896,
+      "estimated_bytes": 1792,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.19.self_attn.q_proj.weight",
+      "shape": [
+        896,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 802816,
+      "estimated_bytes": 1605632,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.19.self_attn.v_proj.bias",
+      "shape": [
+        128
+      ],
+      "dtype": "BF16",
+      "parameters": 128,
+      "estimated_bytes": 256,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.19.self_attn.v_proj.weight",
+      "shape": [
+        128,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 114688,
+      "estimated_bytes": 229376,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.2.input_layernorm.weight",
+      "shape": [
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 896,
+      "estimated_bytes": 1792,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.2.mlp.down_proj.weight",
+      "shape": [
+        896,
+        4864
+      ],
+      "dtype": "BF16",
+      "parameters": 4358144,
+      "estimated_bytes": 8716288,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.2.mlp.gate_proj.weight",
+      "shape": [
+        4864,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 4358144,
+      "estimated_bytes": 8716288,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.2.mlp.up_proj.weight",
+      "shape": [
+        4864,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 4358144,
+      "estimated_bytes": 8716288,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.2.post_attention_layernorm.weight",
+      "shape": [
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 896,
+      "estimated_bytes": 1792,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.2.self_attn.k_proj.bias",
+      "shape": [
+        128
+      ],
+      "dtype": "BF16",
+      "parameters": 128,
+      "estimated_bytes": 256,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.2.self_attn.k_proj.weight",
+      "shape": [
+        128,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 114688,
+      "estimated_bytes": 229376,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.2.self_attn.o_proj.weight",
+      "shape": [
+        896,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 802816,
+      "estimated_bytes": 1605632,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.2.self_attn.q_proj.bias",
+      "shape": [
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 896,
+      "estimated_bytes": 1792,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.2.self_attn.q_proj.weight",
+      "shape": [
+        896,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 802816,
+      "estimated_bytes": 1605632,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.2.self_attn.v_proj.bias",
+      "shape": [
+        128
+      ],
+      "dtype": "BF16",
+      "parameters": 128,
+      "estimated_bytes": 256,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.2.self_attn.v_proj.weight",
+      "shape": [
+        128,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 114688,
+      "estimated_bytes": 229376,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.20.input_layernorm.weight",
+      "shape": [
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 896,
+      "estimated_bytes": 1792,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.20.mlp.down_proj.weight",
+      "shape": [
+        896,
+        4864
+      ],
+      "dtype": "BF16",
+      "parameters": 4358144,
+      "estimated_bytes": 8716288,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.20.mlp.gate_proj.weight",
+      "shape": [
+        4864,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 4358144,
+      "estimated_bytes": 8716288,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.20.mlp.up_proj.weight",
+      "shape": [
+        4864,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 4358144,
+      "estimated_bytes": 8716288,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.20.post_attention_layernorm.weight",
+      "shape": [
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 896,
+      "estimated_bytes": 1792,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.20.self_attn.k_proj.bias",
+      "shape": [
+        128
+      ],
+      "dtype": "BF16",
+      "parameters": 128,
+      "estimated_bytes": 256,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.20.self_attn.k_proj.weight",
+      "shape": [
+        128,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 114688,
+      "estimated_bytes": 229376,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.20.self_attn.o_proj.weight",
+      "shape": [
+        896,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 802816,
+      "estimated_bytes": 1605632,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.20.self_attn.q_proj.bias",
+      "shape": [
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 896,
+      "estimated_bytes": 1792,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.20.self_attn.q_proj.weight",
+      "shape": [
+        896,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 802816,
+      "estimated_bytes": 1605632,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.20.self_attn.v_proj.bias",
+      "shape": [
+        128
+      ],
+      "dtype": "BF16",
+      "parameters": 128,
+      "estimated_bytes": 256,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.20.self_attn.v_proj.weight",
+      "shape": [
+        128,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 114688,
+      "estimated_bytes": 229376,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.21.input_layernorm.weight",
+      "shape": [
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 896,
+      "estimated_bytes": 1792,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.21.mlp.down_proj.weight",
+      "shape": [
+        896,
+        4864
+      ],
+      "dtype": "BF16",
+      "parameters": 4358144,
+      "estimated_bytes": 8716288,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.21.mlp.gate_proj.weight",
+      "shape": [
+        4864,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 4358144,
+      "estimated_bytes": 8716288,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.21.mlp.up_proj.weight",
+      "shape": [
+        4864,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 4358144,
+      "estimated_bytes": 8716288,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.21.post_attention_layernorm.weight",
+      "shape": [
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 896,
+      "estimated_bytes": 1792,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.21.self_attn.k_proj.bias",
+      "shape": [
+        128
+      ],
+      "dtype": "BF16",
+      "parameters": 128,
+      "estimated_bytes": 256,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.21.self_attn.k_proj.weight",
+      "shape": [
+        128,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 114688,
+      "estimated_bytes": 229376,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.21.self_attn.o_proj.weight",
+      "shape": [
+        896,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 802816,
+      "estimated_bytes": 1605632,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.21.self_attn.q_proj.bias",
+      "shape": [
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 896,
+      "estimated_bytes": 1792,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.21.self_attn.q_proj.weight",
+      "shape": [
+        896,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 802816,
+      "estimated_bytes": 1605632,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.21.self_attn.v_proj.bias",
+      "shape": [
+        128
+      ],
+      "dtype": "BF16",
+      "parameters": 128,
+      "estimated_bytes": 256,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.21.self_attn.v_proj.weight",
+      "shape": [
+        128,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 114688,
+      "estimated_bytes": 229376,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.22.input_layernorm.weight",
+      "shape": [
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 896,
+      "estimated_bytes": 1792,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.22.mlp.down_proj.weight",
+      "shape": [
+        896,
+        4864
+      ],
+      "dtype": "BF16",
+      "parameters": 4358144,
+      "estimated_bytes": 8716288,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.22.mlp.gate_proj.weight",
+      "shape": [
+        4864,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 4358144,
+      "estimated_bytes": 8716288,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.22.mlp.up_proj.weight",
+      "shape": [
+        4864,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 4358144,
+      "estimated_bytes": 8716288,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.22.post_attention_layernorm.weight",
+      "shape": [
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 896,
+      "estimated_bytes": 1792,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.22.self_attn.k_proj.bias",
+      "shape": [
+        128
+      ],
+      "dtype": "BF16",
+      "parameters": 128,
+      "estimated_bytes": 256,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.22.self_attn.k_proj.weight",
+      "shape": [
+        128,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 114688,
+      "estimated_bytes": 229376,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.22.self_attn.o_proj.weight",
+      "shape": [
+        896,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 802816,
+      "estimated_bytes": 1605632,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.22.self_attn.q_proj.bias",
+      "shape": [
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 896,
+      "estimated_bytes": 1792,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.22.self_attn.q_proj.weight",
+      "shape": [
+        896,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 802816,
+      "estimated_bytes": 1605632,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.22.self_attn.v_proj.bias",
+      "shape": [
+        128
+      ],
+      "dtype": "BF16",
+      "parameters": 128,
+      "estimated_bytes": 256,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.22.self_attn.v_proj.weight",
+      "shape": [
+        128,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 114688,
+      "estimated_bytes": 229376,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.23.input_layernorm.weight",
+      "shape": [
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 896,
+      "estimated_bytes": 1792,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.23.mlp.down_proj.weight",
+      "shape": [
+        896,
+        4864
+      ],
+      "dtype": "BF16",
+      "parameters": 4358144,
+      "estimated_bytes": 8716288,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.23.mlp.gate_proj.weight",
+      "shape": [
+        4864,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 4358144,
+      "estimated_bytes": 8716288,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.23.mlp.up_proj.weight",
+      "shape": [
+        4864,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 4358144,
+      "estimated_bytes": 8716288,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.23.post_attention_layernorm.weight",
+      "shape": [
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 896,
+      "estimated_bytes": 1792,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.23.self_attn.k_proj.bias",
+      "shape": [
+        128
+      ],
+      "dtype": "BF16",
+      "parameters": 128,
+      "estimated_bytes": 256,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.23.self_attn.k_proj.weight",
+      "shape": [
+        128,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 114688,
+      "estimated_bytes": 229376,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.23.self_attn.o_proj.weight",
+      "shape": [
+        896,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 802816,
+      "estimated_bytes": 1605632,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.23.self_attn.q_proj.bias",
+      "shape": [
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 896,
+      "estimated_bytes": 1792,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.23.self_attn.q_proj.weight",
+      "shape": [
+        896,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 802816,
+      "estimated_bytes": 1605632,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.23.self_attn.v_proj.bias",
+      "shape": [
+        128
+      ],
+      "dtype": "BF16",
+      "parameters": 128,
+      "estimated_bytes": 256,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.23.self_attn.v_proj.weight",
+      "shape": [
+        128,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 114688,
+      "estimated_bytes": 229376,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.3.input_layernorm.weight",
+      "shape": [
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 896,
+      "estimated_bytes": 1792,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.3.mlp.down_proj.weight",
+      "shape": [
+        896,
+        4864
+      ],
+      "dtype": "BF16",
+      "parameters": 4358144,
+      "estimated_bytes": 8716288,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.3.mlp.gate_proj.weight",
+      "shape": [
+        4864,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 4358144,
+      "estimated_bytes": 8716288,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.3.mlp.up_proj.weight",
+      "shape": [
+        4864,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 4358144,
+      "estimated_bytes": 8716288,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.3.post_attention_layernorm.weight",
+      "shape": [
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 896,
+      "estimated_bytes": 1792,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.3.self_attn.k_proj.bias",
+      "shape": [
+        128
+      ],
+      "dtype": "BF16",
+      "parameters": 128,
+      "estimated_bytes": 256,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.3.self_attn.k_proj.weight",
+      "shape": [
+        128,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 114688,
+      "estimated_bytes": 229376,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.3.self_attn.o_proj.weight",
+      "shape": [
+        896,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 802816,
+      "estimated_bytes": 1605632,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.3.self_attn.q_proj.bias",
+      "shape": [
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 896,
+      "estimated_bytes": 1792,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.3.self_attn.q_proj.weight",
+      "shape": [
+        896,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 802816,
+      "estimated_bytes": 1605632,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.3.self_attn.v_proj.bias",
+      "shape": [
+        128
+      ],
+      "dtype": "BF16",
+      "parameters": 128,
+      "estimated_bytes": 256,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.3.self_attn.v_proj.weight",
+      "shape": [
+        128,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 114688,
+      "estimated_bytes": 229376,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.4.input_layernorm.weight",
+      "shape": [
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 896,
+      "estimated_bytes": 1792,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.4.mlp.down_proj.weight",
+      "shape": [
+        896,
+        4864
+      ],
+      "dtype": "BF16",
+      "parameters": 4358144,
+      "estimated_bytes": 8716288,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.4.mlp.gate_proj.weight",
+      "shape": [
+        4864,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 4358144,
+      "estimated_bytes": 8716288,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.4.mlp.up_proj.weight",
+      "shape": [
+        4864,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 4358144,
+      "estimated_bytes": 8716288,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.4.post_attention_layernorm.weight",
+      "shape": [
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 896,
+      "estimated_bytes": 1792,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.4.self_attn.k_proj.bias",
+      "shape": [
+        128
+      ],
+      "dtype": "BF16",
+      "parameters": 128,
+      "estimated_bytes": 256,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.4.self_attn.k_proj.weight",
+      "shape": [
+        128,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 114688,
+      "estimated_bytes": 229376,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.4.self_attn.o_proj.weight",
+      "shape": [
+        896,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 802816,
+      "estimated_bytes": 1605632,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.4.self_attn.q_proj.bias",
+      "shape": [
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 896,
+      "estimated_bytes": 1792,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.4.self_attn.q_proj.weight",
+      "shape": [
+        896,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 802816,
+      "estimated_bytes": 1605632,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.4.self_attn.v_proj.bias",
+      "shape": [
+        128
+      ],
+      "dtype": "BF16",
+      "parameters": 128,
+      "estimated_bytes": 256,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.4.self_attn.v_proj.weight",
+      "shape": [
+        128,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 114688,
+      "estimated_bytes": 229376,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.5.input_layernorm.weight",
+      "shape": [
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 896,
+      "estimated_bytes": 1792,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.5.mlp.down_proj.weight",
+      "shape": [
+        896,
+        4864
+      ],
+      "dtype": "BF16",
+      "parameters": 4358144,
+      "estimated_bytes": 8716288,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.5.mlp.gate_proj.weight",
+      "shape": [
+        4864,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 4358144,
+      "estimated_bytes": 8716288,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.5.mlp.up_proj.weight",
+      "shape": [
+        4864,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 4358144,
+      "estimated_bytes": 8716288,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.5.post_attention_layernorm.weight",
+      "shape": [
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 896,
+      "estimated_bytes": 1792,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.5.self_attn.k_proj.bias",
+      "shape": [
+        128
+      ],
+      "dtype": "BF16",
+      "parameters": 128,
+      "estimated_bytes": 256,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.5.self_attn.k_proj.weight",
+      "shape": [
+        128,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 114688,
+      "estimated_bytes": 229376,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.5.self_attn.o_proj.weight",
+      "shape": [
+        896,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 802816,
+      "estimated_bytes": 1605632,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.5.self_attn.q_proj.bias",
+      "shape": [
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 896,
+      "estimated_bytes": 1792,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.5.self_attn.q_proj.weight",
+      "shape": [
+        896,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 802816,
+      "estimated_bytes": 1605632,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.5.self_attn.v_proj.bias",
+      "shape": [
+        128
+      ],
+      "dtype": "BF16",
+      "parameters": 128,
+      "estimated_bytes": 256,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.5.self_attn.v_proj.weight",
+      "shape": [
+        128,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 114688,
+      "estimated_bytes": 229376,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.6.input_layernorm.weight",
+      "shape": [
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 896,
+      "estimated_bytes": 1792,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.6.mlp.down_proj.weight",
+      "shape": [
+        896,
+        4864
+      ],
+      "dtype": "BF16",
+      "parameters": 4358144,
+      "estimated_bytes": 8716288,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.6.mlp.gate_proj.weight",
+      "shape": [
+        4864,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 4358144,
+      "estimated_bytes": 8716288,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.6.mlp.up_proj.weight",
+      "shape": [
+        4864,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 4358144,
+      "estimated_bytes": 8716288,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.6.post_attention_layernorm.weight",
+      "shape": [
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 896,
+      "estimated_bytes": 1792,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.6.self_attn.k_proj.bias",
+      "shape": [
+        128
+      ],
+      "dtype": "BF16",
+      "parameters": 128,
+      "estimated_bytes": 256,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.6.self_attn.k_proj.weight",
+      "shape": [
+        128,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 114688,
+      "estimated_bytes": 229376,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.6.self_attn.o_proj.weight",
+      "shape": [
+        896,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 802816,
+      "estimated_bytes": 1605632,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.6.self_attn.q_proj.bias",
+      "shape": [
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 896,
+      "estimated_bytes": 1792,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.6.self_attn.q_proj.weight",
+      "shape": [
+        896,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 802816,
+      "estimated_bytes": 1605632,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.6.self_attn.v_proj.bias",
+      "shape": [
+        128
+      ],
+      "dtype": "BF16",
+      "parameters": 128,
+      "estimated_bytes": 256,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.6.self_attn.v_proj.weight",
+      "shape": [
+        128,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 114688,
+      "estimated_bytes": 229376,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.7.input_layernorm.weight",
+      "shape": [
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 896,
+      "estimated_bytes": 1792,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.7.mlp.down_proj.weight",
+      "shape": [
+        896,
+        4864
+      ],
+      "dtype": "BF16",
+      "parameters": 4358144,
+      "estimated_bytes": 8716288,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.7.mlp.gate_proj.weight",
+      "shape": [
+        4864,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 4358144,
+      "estimated_bytes": 8716288,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.7.mlp.up_proj.weight",
+      "shape": [
+        4864,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 4358144,
+      "estimated_bytes": 8716288,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.7.post_attention_layernorm.weight",
+      "shape": [
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 896,
+      "estimated_bytes": 1792,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.7.self_attn.k_proj.bias",
+      "shape": [
+        128
+      ],
+      "dtype": "BF16",
+      "parameters": 128,
+      "estimated_bytes": 256,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.7.self_attn.k_proj.weight",
+      "shape": [
+        128,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 114688,
+      "estimated_bytes": 229376,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.7.self_attn.o_proj.weight",
+      "shape": [
+        896,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 802816,
+      "estimated_bytes": 1605632,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.7.self_attn.q_proj.bias",
+      "shape": [
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 896,
+      "estimated_bytes": 1792,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.7.self_attn.q_proj.weight",
+      "shape": [
+        896,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 802816,
+      "estimated_bytes": 1605632,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.7.self_attn.v_proj.bias",
+      "shape": [
+        128
+      ],
+      "dtype": "BF16",
+      "parameters": 128,
+      "estimated_bytes": 256,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.7.self_attn.v_proj.weight",
+      "shape": [
+        128,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 114688,
+      "estimated_bytes": 229376,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.8.input_layernorm.weight",
+      "shape": [
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 896,
+      "estimated_bytes": 1792,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.8.mlp.down_proj.weight",
+      "shape": [
+        896,
+        4864
+      ],
+      "dtype": "BF16",
+      "parameters": 4358144,
+      "estimated_bytes": 8716288,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.8.mlp.gate_proj.weight",
+      "shape": [
+        4864,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 4358144,
+      "estimated_bytes": 8716288,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.8.mlp.up_proj.weight",
+      "shape": [
+        4864,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 4358144,
+      "estimated_bytes": 8716288,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.8.post_attention_layernorm.weight",
+      "shape": [
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 896,
+      "estimated_bytes": 1792,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.8.self_attn.k_proj.bias",
+      "shape": [
+        128
+      ],
+      "dtype": "BF16",
+      "parameters": 128,
+      "estimated_bytes": 256,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.8.self_attn.k_proj.weight",
+      "shape": [
+        128,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 114688,
+      "estimated_bytes": 229376,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.8.self_attn.o_proj.weight",
+      "shape": [
+        896,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 802816,
+      "estimated_bytes": 1605632,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.8.self_attn.q_proj.bias",
+      "shape": [
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 896,
+      "estimated_bytes": 1792,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.8.self_attn.q_proj.weight",
+      "shape": [
+        896,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 802816,
+      "estimated_bytes": 1605632,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.8.self_attn.v_proj.bias",
+      "shape": [
+        128
+      ],
+      "dtype": "BF16",
+      "parameters": 128,
+      "estimated_bytes": 256,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.8.self_attn.v_proj.weight",
+      "shape": [
+        128,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 114688,
+      "estimated_bytes": 229376,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.9.input_layernorm.weight",
+      "shape": [
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 896,
+      "estimated_bytes": 1792,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.9.mlp.down_proj.weight",
+      "shape": [
+        896,
+        4864
+      ],
+      "dtype": "BF16",
+      "parameters": 4358144,
+      "estimated_bytes": 8716288,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.9.mlp.gate_proj.weight",
+      "shape": [
+        4864,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 4358144,
+      "estimated_bytes": 8716288,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.9.mlp.up_proj.weight",
+      "shape": [
+        4864,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 4358144,
+      "estimated_bytes": 8716288,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.9.post_attention_layernorm.weight",
+      "shape": [
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 896,
+      "estimated_bytes": 1792,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.9.self_attn.k_proj.bias",
+      "shape": [
+        128
+      ],
+      "dtype": "BF16",
+      "parameters": 128,
+      "estimated_bytes": 256,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.9.self_attn.k_proj.weight",
+      "shape": [
+        128,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 114688,
+      "estimated_bytes": 229376,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.9.self_attn.o_proj.weight",
+      "shape": [
+        896,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 802816,
+      "estimated_bytes": 1605632,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.9.self_attn.q_proj.bias",
+      "shape": [
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 896,
+      "estimated_bytes": 1792,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.9.self_attn.q_proj.weight",
+      "shape": [
+        896,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 802816,
+      "estimated_bytes": 1605632,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.9.self_attn.v_proj.bias",
+      "shape": [
+        128
+      ],
+      "dtype": "BF16",
+      "parameters": 128,
+      "estimated_bytes": 256,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.layers.9.self_attn.v_proj.weight",
+      "shape": [
+        128,
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 114688,
+      "estimated_bytes": 229376,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "model.norm.weight",
+      "shape": [
+        896
+      ],
+      "dtype": "BF16",
+      "parameters": 896,
+      "estimated_bytes": 1792,
+      "file": "model.safetensors"
+    }
+  ],
+  "source_format_summary": {
+    "count": 0,
+    "formats": [],
+    "errors": [],
+    "integrity_ok": true,
+    "aggregate": {
+      "artifact_count": 0,
+      "inspected_bytes": 0,
+      "artifact_limit": 256,
+      "byte_limit": 536870912
+    },
+    "manifests": []
+  },
+  "architecture_candidates": [
+    {
+      "family": "dense-decoder-transformer",
+      "score": 20.2,
+      "runbook": "references/runbook-decoder-transformer.md",
+      "targets": [
+        "mlx-lm",
+        "mlx-vlm",
+        "standalone-mlx"
+      ],
+      "state": "per-layer KV cache",
+      "evidence": [
+        "exact model_type=qwen2",
+        "architecture class patterns: ForCausalLM, CausalLM",
+        "config keys: num_hidden_layers, num_attention_heads, hidden_size, vocab_size",
+        "weight signals: self_attn.q_proj.weight, mlp.down_proj.weight"
+      ],
+      "notes": "Route models with routed experts, recurrent state, or multimodal projectors to a more specific family.",
+      "confidence": 0.673
+    },
+    {
+      "family": "automatic-speech-recognition",
+      "score": 5.0,
+      "runbook": "references/runbook-asr.md",
+      "targets": [
+        "mlx-audio",
+        "standalone-mlx"
+      ],
+      "state": "encoder/cache plus decoder/search state",
+      "evidence": [
+        "partial model_type=qwen2"
+      ],
+      "notes": "Streaming variants should also use the streaming-speech runbook.",
+      "confidence": 0.167
+    },
+    {
+      "family": "moe-decoder-transformer",
+      "score": 5.0,
+      "runbook": "references/runbook-moe-transformer.md",
+      "targets": [
+        "mlx-lm",
+        "standalone-mlx"
+      ],
+      "state": "KV cache plus dynamic expert routing",
+      "evidence": [
+        "partial model_type=qwen2"
+      ],
+      "notes": "DeepSeek V2/V3 may also require MLA-specific attention handling.",
+      "confidence": 0.167
+    },
+    {
+      "family": "vision-language-omni",
+      "score": 5.0,
+      "runbook": "references/runbook-multimodal-omni.md",
+      "targets": [
+        "mlx-vlm",
+        "mlx-audio",
+        "standalone-mlx"
+      ],
+      "state": "modality features plus language cache and optional output-track state",
+      "evidence": [
+        "partial model_type=qwen2"
+      ],
+      "notes": "Route each component through its native family as well.",
+      "confidence": 0.167
+    },
+    {
+      "family": "encoder-transformer",
+      "score": 2.4,
+      "runbook": "references/runbook-encoder-transformer.md",
+      "targets": [
+        "standalone-mlx",
+        "mlx-vlm",
+        "mlx-audio"
+      ],
+      "state": "usually stateless full-sequence encoder",
+      "evidence": [
+        "config keys: hidden_size, num_hidden_layers, num_attention_heads"
+      ],
+      "notes": "Modality-specific frontends may require additional runbooks.",
+      "confidence": 0.08
+    }
+  ],
+  "architecture_profile": null,
+  "architecture_traits": [],
+  "routing_decision": {
+    "status": "recommended",
+    "minimum_score": 8.0,
+    "minimum_margin": 2.0,
+    "winner_family": "dense-decoder-transformer",
+    "winner_score": 20.2,
+    "runner_up_family": "automatic-speech-recognition",
+    "runner_up_score": 5.0,
+    "winner_margin": 15.2,
+    "reasons": []
+  },
+  "recommended_family": "dense-decoder-transformer",
+  "recommended_runbook": "references/runbook-decoder-transformer.md",
+  "recommended_families": [
+    "dense-decoder-transformer"
+  ],
+  "recommended_runbooks": [
+    "references/runbook-decoder-transformer.md"
+  ],
+  "recommendation_blockers": [],
+  "license": {
+    "declared": [
+      {
+        "source": "README.md",
+        "value": "apache-2.0"
+      }
+    ],
+    "license_files": [],
+    "file_evidence": [],
+    "accepted_evidence": [
+      {
+        "kind": "declaration",
+        "source": "README.md",
+        "value": "apache-2.0"
+      }
+    ],
+    "status": "acceptable-evidence",
+    "requires_review": false,
+    "compatibility_assessed": false,
+    "reasons": []
+  },
+  "risks": [],
+  "limitations": [
+    "Static inspection does not prove model behavior or license compatibility.",
+    "Parameter totals may double-count tied tensors and omit non-safetensors weights.",
+    "Remote metadata-only inspection cannot see tensor keys without downloading weights."
+  ]
+}

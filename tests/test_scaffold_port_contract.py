@@ -196,6 +196,7 @@ class ScaffoldPortDependencyFreeContractTests(unittest.TestCase):
                 hidden_act="mish",
                 rope_scaling={"rope_type": "yarn", "factor": 4.0},
                 sliding_window=4096,
+                use_sliding_window=True,
                 num_local_experts=8,
                 quantization_config={"bits": 4},
                 qk_norm=True,
@@ -215,10 +216,80 @@ class ScaffoldPortDependencyFreeContractTests(unittest.TestCase):
             "- qk_norm=True is not supported\n"
             "- quantization_config is set\n"
             "- rope_scaling type 'yarn' is not supported; supported types: default, dynamic, linear\n"
-            "- sliding_window=4096 is not supported\n"
+            "- use_sliding_window=True is not supported\n"
             "- unrecognized computation-relevant config key 'mystery_attention_scale'\n",
         )
         self.assertFalse(output.exists())
+
+    def test_explicitly_disabled_sliding_window_metadata_uses_full_attention(self) -> None:
+        with tempfile.TemporaryDirectory() as raw_tmp:
+            root = Path(raw_tmp)
+            model = root / "model"
+            inspection = root / "inspection.json"
+            output = root / "generated"
+            write_model(model, tiny_config(
+                sliding_window=4096,
+                use_sliding_window=False,
+                max_window_layers=2,
+            ))
+            inspect_model(model, inspection, no_site=True)
+
+            result = scaffold(model, inspection, output, no_site=True)
+            readme = (output / "README.md").read_text(encoding="utf-8")
+
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("`use_sliding_window=false` explicitly selects full attention", readme)
+
+    def test_attention_bias_contract_is_inferred_per_projection(self) -> None:
+        import scaffold_port
+
+        config = tiny_config()
+        config.pop("attention_bias")
+        tensors = []
+        for layer in range(2):
+            for projection in ("q_proj", "k_proj", "v_proj"):
+                tensors.append({
+                    "key": f"model.layers.{layer}.self_attn.{projection}.bias",
+                })
+
+        biases = scaffold_port.dense_attention_biases({"tensors": tensors}, config)
+        targets = scaffold_port.dense_target_tensors(config, biases)
+        target_keys = {item["key"] for item in targets}
+
+        self.assertEqual(
+            biases,
+            {"q_proj": True, "k_proj": True, "v_proj": True, "o_proj": False},
+        )
+        self.assertIn("model.layers.0.self_attn.q_proj.bias", target_keys)
+        self.assertNotIn("model.layers.0.self_attn.o_proj.bias", target_keys)
+
+    def test_partial_attention_bias_coverage_fails_closed(self) -> None:
+        import scaffold_port
+
+        config = tiny_config()
+        config.pop("attention_bias")
+        with self.assertRaisesRegex(scaffold_port.SkillError, "inconsistent q_proj bias coverage"):
+            scaffold_port.dense_attention_biases(
+                {"tensors": [{"key": "model.layers.0.self_attn.q_proj.bias"}]},
+                config,
+            )
+
+    def test_declared_attention_bias_requires_every_projection(self) -> None:
+        import scaffold_port
+
+        config = tiny_config(attention_bias=True)
+        tensors = []
+        for layer in range(2):
+            for projection in ("q_proj", "k_proj", "v_proj"):
+                tensors.append({
+                    "key": f"model.layers.{layer}.self_attn.{projection}.bias",
+                })
+
+        with self.assertRaisesRegex(
+            scaffold_port.SkillError,
+            "attention_bias=true conflicts with incomplete",
+        ):
+            scaffold_port.dense_attention_biases({"tensors": tensors}, config)
 
     def test_generated_package_is_clean_complete_and_deterministic(self) -> None:
         with tempfile.TemporaryDirectory() as raw_tmp:

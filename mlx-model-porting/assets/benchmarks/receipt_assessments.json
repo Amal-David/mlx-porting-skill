@@ -389,6 +389,129 @@
       "chip": "Apple M4 Pro"
     },
     {
+      "label": "qwen2.5-0.5b-port-bf16",
+      "receipt": "qwen2.5-0.5b-port-bf16.json",
+      "receipt_sha256": "4710976c8c5df13e87ab3186168364487e0309e7f93896c847327a12a9692f86",
+      "schema_version": 2,
+      "timestamp": "2026-07-10T15:04:08.350001+00:00",
+      "classification": "performance_observation",
+      "promotion_ready": false,
+      "experiment_fingerprint": null,
+      "enabled_methods": [
+        "bf16-weight-cast"
+      ],
+      "reasons": [
+        "execution-semantics-unattested"
+      ],
+      "gates": {
+        "aggregates_recomputed": true,
+        "model_lineage_pinned": true,
+        "target_hash_valid": true,
+        "workload_hash_valid": true,
+        "raw_outputs_valid": true,
+        "quality_valid": true,
+        "stability_passed": true,
+        "stability_threshold_valid": true,
+        "rollback_defined": true,
+        "baseline_compatible": true,
+        "enabled_methods_valid": true,
+        "source_identity_pinned": true,
+        "baseline_source_identity_match": true,
+        "improvement_beyond_noise": true,
+        "runner_valid": true,
+        "quality_binding_valid": true,
+        "experiment_descriptor_valid": true,
+        "experiment_compatible": true,
+        "execution_attested": false
+      },
+      "stability": {
+        "primary_metric": "wall_seconds",
+        "run_count": 5,
+        "min_runs": 5,
+        "mean": 0.24317001659073867,
+        "median": 0.24909129098523408,
+        "stdev": 0.01776546779887306,
+        "cv": 0.07305780559604434,
+        "max_cv": 0.1,
+        "passes": true
+      },
+      "baseline": {
+        "label": "qwen2.5-0.5b-port-f32",
+        "file": "qwen2.5-0.5b-port-f32.json",
+        "expected_sha256": "47e573066f0537fd92bd9f31925c36bee645a93ce332b929bdddd719b0774902",
+        "actual_sha256": "47e573066f0537fd92bd9f31925c36bee645a93ce332b929bdddd719b0774902",
+        "compatible": true,
+        "experiment_invariant_sha256": "d30ff62bebd03bfe52fc085c11a093941d697d8b3c33bfa59253aef9367a6130"
+      },
+      "recomputed_median_ratios": {
+        "wall_seconds_inverse": 1.3037288406405405
+      },
+      "improvement": {
+        "primary_metric": "wall_seconds",
+        "ratio_key": "wall_seconds_inverse",
+        "observed_ratio": 1.3037288406405405,
+        "candidate_cv": 0.07305780559604434,
+        "baseline_cv": 0.025081176462794768,
+        "noise_margin": 0.14611561119208868,
+        "required_ratio": 1.1461156111920887,
+        "passes": true
+      },
+      "primary_metric": "wall_seconds",
+      "chip": "Apple M4 Pro"
+    },
+    {
+      "label": "qwen2.5-0.5b-port-f32",
+      "receipt": "qwen2.5-0.5b-port-f32.json",
+      "receipt_sha256": "47e573066f0537fd92bd9f31925c36bee645a93ce332b929bdddd719b0774902",
+      "schema_version": 2,
+      "timestamp": "2026-07-10T15:03:59.306111+00:00",
+      "classification": "performance_observation",
+      "promotion_ready": false,
+      "experiment_fingerprint": null,
+      "enabled_methods": [],
+      "reasons": [
+        "baseline-role-not-promotable",
+        "execution-semantics-unattested"
+      ],
+      "gates": {
+        "aggregates_recomputed": true,
+        "model_lineage_pinned": true,
+        "target_hash_valid": true,
+        "workload_hash_valid": true,
+        "raw_outputs_valid": true,
+        "quality_valid": true,
+        "stability_passed": true,
+        "stability_threshold_valid": true,
+        "rollback_defined": true,
+        "baseline_compatible": false,
+        "enabled_methods_valid": true,
+        "source_identity_pinned": true,
+        "baseline_source_identity_match": false,
+        "improvement_beyond_noise": false,
+        "runner_valid": true,
+        "quality_binding_valid": true,
+        "experiment_descriptor_valid": true,
+        "experiment_compatible": false,
+        "execution_attested": false
+      },
+      "stability": {
+        "primary_metric": "wall_seconds",
+        "run_count": 5,
+        "min_runs": 5,
+        "mean": 0.3213672249985393,
+        "median": 0.32474750000983477,
+        "stdev": 0.008060268079547035,
+        "cv": 0.025081176462794768,
+        "max_cv": 0.1,
+        "passes": true
+      },
+      "baseline": null,
+      "recomputed_median_ratios": null,
+      "improvement": null,
+      "primary_metric": "wall_seconds",
+      "chip": "Apple M4 Pro"
+    },
+    {
       "label": "spec-baseline",
       "receipt": "spec-baseline.json",
       "receipt_sha256": "81d21b1e1849418f97b59e622fdb91fc50f335f706612eac973dbceb62566a9f",

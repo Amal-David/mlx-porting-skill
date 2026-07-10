@@ -91,7 +91,9 @@ For an unblocked `dense-decoder-transformer` inspection, scaffold implementation
 python3 scripts/scaffold_port.py inspection.json --artifact-root MODEL --output mlx_port
 ```
 
-This re-inspects the artifact and fails closed on unsupported semantics. Treat output as a parity starting point; revise every source-oracle mismatch.
+It re-inspects the artifact and fails closed; revise every oracle mismatch.
+
+[Example](examples/worked-port-qwen2.5-0.5b-instruct/README.md) (no weights).
 
 Start eager: FP, batch one unless intrinsic, no compile/kernels, state/cache, assertions, reversible map.
 

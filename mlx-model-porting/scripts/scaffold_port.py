@@ -39,6 +39,7 @@ DENSE_CONFIG_FEATURE_ALLOWLIST = frozenset({
     "hidden_size",
     "head_dim",
     "intermediate_size",
+    "max_window_layers",
     "max_position_embeddings",
     "mlp_bias",
     "num_attention_heads",
@@ -49,7 +50,9 @@ DENSE_CONFIG_FEATURE_ALLOWLIST = frozenset({
     "rope_scaling",
     "rope_theta",
     "rope_traditional",
+    "sliding_window",
     "tie_word_embeddings",
+    "use_sliding_window",
     "vocab_size",
 })
 FEATURE_ALLOWLIST = DENSE_CONFIG_FEATURE_ALLOWLIST
@@ -213,7 +216,7 @@ def unsupported_dense_features(config: dict[str, Any]) -> list[str]:
         if key in config and _meaningfully_set(config[key]):
             errors.append(f"MoE config key {key!r} is set")
 
-    for key in sorted(ATTENTION_VARIANT_KEYS - {"sliding_window"}):
+    for key in sorted(ATTENTION_VARIANT_KEYS - {"sliding_window", "use_sliding_window"}):
         if key not in config or not _meaningfully_set(config[key]):
             continue
         value = config[key]
@@ -253,8 +256,26 @@ def unsupported_dense_features(config: dict[str, Any]) -> list[str]:
                     if isinstance(factor, bool) or not isinstance(factor, (int, float)) or factor <= 1.0:
                         errors.append(f"rope_scaling factor must be a number greater than 1 for type {rope_type!r}")
 
-    if "sliding_window" in config and _meaningfully_set(config["sliding_window"]):
-        errors.append(f"sliding_window={config['sliding_window']!r} is not supported")
+    use_sliding_window = config.get("use_sliding_window")
+    if "use_sliding_window" in config and not isinstance(use_sliding_window, bool):
+        errors.append("use_sliding_window must be boolean when present")
+    sliding_window = config.get("sliding_window")
+    if "sliding_window" in config and (
+        type(sliding_window) is not int or sliding_window <= 0
+    ):
+        errors.append("sliding_window must be a positive integer when present")
+    max_window_layers = config.get("max_window_layers")
+    if "max_window_layers" in config and (
+        type(max_window_layers) is not int or max_window_layers <= 0
+    ):
+        errors.append("max_window_layers must be a positive integer when present")
+    if use_sliding_window is True:
+        errors.append("use_sliding_window=True is not supported")
+    elif _meaningfully_set(sliding_window) and use_sliding_window is not False:
+        errors.append(
+            f"sliding_window={sliding_window!r} requires explicit "
+            "use_sliding_window=false for full attention"
+        )
 
     classified = (
         DENSE_CONFIG_FEATURE_ALLOWLIST
@@ -438,10 +459,10 @@ def build_model(config: ModelConfig):
             super().__init__()
             query_dims = config.num_attention_heads * config.head_dim
             kv_dims = config.num_key_value_heads * config.head_dim
-            self.q_proj = nn.Linear(config.hidden_size, query_dims, bias=config.attention_bias)
-            self.k_proj = nn.Linear(config.hidden_size, kv_dims, bias=config.attention_bias)
-            self.v_proj = nn.Linear(config.hidden_size, kv_dims, bias=config.attention_bias)
-            self.o_proj = nn.Linear(query_dims, config.hidden_size, bias=config.attention_bias)
+            self.q_proj = nn.Linear(config.hidden_size, query_dims, bias=__Q_PROJ_BIAS__)
+            self.k_proj = nn.Linear(config.hidden_size, kv_dims, bias=__K_PROJ_BIAS__)
+            self.v_proj = nn.Linear(config.hidden_size, kv_dims, bias=__V_PROJ_BIAS__)
+            self.o_proj = nn.Linear(query_dims, config.hidden_size, bias=__O_PROJ_BIAS__)
 
         def _apply_rope(self, value, offset: int, total_length: int):
             scaling = config.rope_scaling or {}
@@ -829,9 +850,11 @@ Linear weights use MLX/Hugging Face layout `[output_dims, input_dims]`.
 - `model.norm.weight` — `[hidden_size]`
 - `lm_head.weight` — `[vocab_size, hidden_size]`, untied configs only
 
-When `attention_bias` or `mlp_bias` is true, append `.bias` to the corresponding
-projection name. A tied LM head has no separate parameter: conversion must map
-the source tie owner to `model.embed_tokens.weight` and omit `lm_head.weight`.
+Attention projection biases are derived independently from the inspected source
+tensor inventory: __ATTENTION_BIAS_SUMMARY__. When `mlp_bias` is true, append
+`.bias` to each MLP projection name. A tied LM head has no separate parameter:
+conversion must map the source tie owner to `model.embed_tokens.weight` and omit
+`lm_head.weight`.
 
 ## Implemented assumptions
 
@@ -839,7 +862,8 @@ the source tie owner to `model.embed_tokens.weight` and omit `lm_head.weight`.
 - causal attention, optional padding mask, MHA or GQA with a growing cache;
 - standard, linear, or dynamic-NTK RoPE selected from the inspected config;
 - gated SiLU/SwiGLU, GELU/GeGLU, or ReLU/ReGLU MLP;
-- no dropout, sliding window, QK normalization, MoE, quantization, soft caps, or custom attention variants.
+- no dropout, active sliding window, QK normalization, MoE, quantization, soft caps, or custom attention variants;
+- `use_sliding_window=false` explicitly selects full attention even when inert sliding-window metadata remains in the source config.
 
 ## Run and verify
 
@@ -858,7 +882,52 @@ def _header(digest: str) -> str:
     return f"# Generated by scaffold_port.py {GENERATOR_VERSION} from inspection sha256:{digest}."
 
 
-def dense_target_tensors(config: dict[str, Any]) -> list[dict[str, Any]]:
+ATTENTION_PROJECTIONS = ("q_proj", "k_proj", "v_proj", "o_proj")
+
+
+def dense_attention_biases(
+    inspection: dict[str, Any],
+    config: dict[str, Any],
+) -> dict[str, bool]:
+    """Derive a complete per-projection bias contract from inspected source keys."""
+    layers = _config_int(config, "num_hidden_layers")
+    tensor_keys = {
+        str(tensor.get("key"))
+        for tensor in inspection.get("tensors", [])
+        if isinstance(tensor, dict) and isinstance(tensor.get("key"), str)
+    }
+    biases: dict[str, bool] = {}
+    for projection in ATTENTION_PROJECTIONS:
+        expected = {
+            f"model.layers.{index}.self_attn.{projection}.bias"
+            for index in range(layers)
+        }
+        present = expected & tensor_keys
+        if present and present != expected:
+            missing = sorted(expected - present)
+            raise SkillError(
+                f"inconsistent {projection} bias coverage across decoder layers; "
+                f"missing {', '.join(missing[:5])}"
+            )
+        biases[projection] = bool(present)
+
+    declared = config.get("attention_bias")
+    has_any_bias = any(biases.values())
+    if declared is False and has_any_bias:
+        raise SkillError(
+            "config.json attention_bias=false conflicts with inspected attention bias tensors"
+        )
+    if declared is True and not all(biases.values()):
+        raise SkillError(
+            "config.json attention_bias=true conflicts with incomplete inspected attention bias tensors"
+        )
+    return biases
+
+
+def dense_target_tensors(
+    config: dict[str, Any],
+    attention_biases: dict[str, bool] | None = None,
+) -> list[dict[str, Any]]:
     """Return the deterministic parameter contract implemented by the generated graph."""
     hidden = _config_int(config, "hidden_size")
     heads = _config_int(config, "num_attention_heads")
@@ -867,6 +936,11 @@ def dense_target_tensors(config: dict[str, Any]) -> list[dict[str, Any]]:
     intermediate = _config_int(config, "intermediate_size")
     layers = _config_int(config, "num_hidden_layers")
     vocab = _config_int(config, "vocab_size")
+    if attention_biases is None:
+        attention_biases = {
+            projection: bool(config.get("attention_bias", False))
+            for projection in ATTENTION_PROJECTIONS
+        }
     tensors: dict[str, list[int]] = {
         "model.embed_tokens.weight": [vocab, hidden],
         "model.norm.weight": [hidden],
@@ -886,13 +960,15 @@ def dense_target_tensors(config: dict[str, Any]) -> list[dict[str, Any]]:
             f"{prefix}.mlp.up_proj.weight": [intermediate, hidden],
             f"{prefix}.mlp.down_proj.weight": [hidden, intermediate],
         })
-        if bool(config.get("attention_bias", False)):
-            tensors.update({
-                f"{prefix}.self_attn.q_proj.bias": [heads * head_dim],
-                f"{prefix}.self_attn.k_proj.bias": [kv_heads * head_dim],
-                f"{prefix}.self_attn.v_proj.bias": [kv_heads * head_dim],
-                f"{prefix}.self_attn.o_proj.bias": [hidden],
-            })
+        attention_bias_shapes = {
+            "q_proj": [heads * head_dim],
+            "k_proj": [kv_heads * head_dim],
+            "v_proj": [kv_heads * head_dim],
+            "o_proj": [hidden],
+        }
+        for projection in ATTENTION_PROJECTIONS:
+            if attention_biases.get(projection):
+                tensors[f"{prefix}.self_attn.{projection}.bias"] = attention_bias_shapes[projection]
         if bool(config.get("mlp_bias", False)):
             tensors.update({
                 f"{prefix}.mlp.gate_proj.bias": [intermediate],
@@ -906,6 +982,7 @@ def _scaffold_manifest(
     files: dict[str, str],
     config: dict[str, Any],
     inspection_digest: str,
+    attention_biases: dict[str, bool],
 ) -> str:
     execution_files = ("capture.py", "config.json", "config.py", "model.py")
     records = []
@@ -922,7 +999,7 @@ def _scaffold_manifest(
         "inspection_sha256": inspection_digest,
         "config_sha256": hashlib.sha256(files["config.json"].encode("utf-8")).hexdigest(),
         "files": records,
-        "tensors": dense_target_tensors(config),
+        "tensors": dense_target_tensors(config, attention_biases),
     }
     return json.dumps(
         payload,
@@ -938,17 +1015,34 @@ def generate_dense_decoder(
     config: dict[str, Any],
 ) -> dict[str, str]:
     validate_dense_config(config)
+    attention_biases = dense_attention_biases(inspection, config)
     digest = trusted_inspection_sha256(inspection)
     header = _header(digest)
+    model_source = MODEL_TEMPLATE.replace("__HEADER__", header)
+    for projection in ATTENTION_PROJECTIONS:
+        placeholder = f"__{projection.upper()}_BIAS__"
+        model_source = model_source.replace(
+            placeholder,
+            "True" if attention_biases[projection] else "False",
+        )
+    bias_summary = ", ".join(
+        f"`{projection}`={'present' if attention_biases[projection] else 'absent'}"
+        for projection in ATTENTION_PROJECTIONS
+    )
     files = {
         "config.json": json.dumps(config, indent=2, sort_keys=True, ensure_ascii=False) + "\n",
         "config.py": CONFIG_TEMPLATE.replace("__HEADER__", header),
-        "model.py": MODEL_TEMPLATE.replace("__HEADER__", header),
+        "model.py": model_source,
         "generate.py": GENERATE_TEMPLATE.replace("__HEADER__", header),
         "capture.py": CAPTURE_TEMPLATE.replace("__HEADER__", header),
-        "README.md": README_TEMPLATE.replace("__VERSION__", GENERATOR_VERSION).replace("__DIGEST__", digest),
+        "README.md": (
+            README_TEMPLATE
+            .replace("__VERSION__", GENERATOR_VERSION)
+            .replace("__DIGEST__", digest)
+            .replace("__ATTENTION_BIAS_SUMMARY__", bias_summary)
+        ),
     }
-    files[SCAFFOLD_MANIFEST] = _scaffold_manifest(files, config, digest)
+    files[SCAFFOLD_MANIFEST] = _scaffold_manifest(files, config, digest, attention_biases)
     return files
 
 

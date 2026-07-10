@@ -91,11 +91,11 @@ window.MLX_PORTING_SITE_DATA = {
   },
   "benchmarks": {
     "by_classification": {
-      "performance_observation": 10,
+      "performance_observation": 12,
       "rejected": 1
     },
     "promotion_ready": 0,
-    "total": 11
+    "total": 13
   },
   "effective_claims": {
     "by_state": {

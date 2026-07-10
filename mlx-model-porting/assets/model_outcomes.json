@@ -25,6 +25,86 @@
   },
   "records": [
     {
+      "id": "qwen25-05b-instruct-local-worked-port",
+      "label": "Qwen2.5-0.5B-Instruct local worked port",
+      "status": "local_reproduced",
+      "summary": "Revision 7ae557604adf67be50417f59c2c2f167def9a775 completed the offline static-intake, Torch-oracle, standalone MLX scaffold, schema-2 weight conversion, 29-rung parity, exact greedy-generation, MLX-LM cross-check, and schema-2 receipt flow on Apple M4 Pro.",
+      "worked": [
+        "All 290 source tensors mapped to 290 targets with explicit same-name/same-shape entries and F32 parity casts.",
+        "The scaffold preserves Q/K/V-only attention biases, tied embeddings, GQA, RoPE theta 1e6, and explicit full attention when use_sliding_window=false.",
+        "All 29 parity rungs passed and Torch, standalone MLX cache decode, and local MLX-LM 0.31.1 matched the same eight greedy token IDs."
+      ],
+      "did_not_work": [
+        "The original scaffold rejected inert sliding-window metadata and could not express Q/K/V-only bias; both defects required generator fixes before conversion.",
+        "Default FP32-style tensor tolerances were not valid for BF16 source arithmetic versus the F32 target graph; the worked report records the symmetric model-specific gate and its observed extrema.",
+        "The BF16 benchmark variant diverged after the six-token exact-quality window, and its timing receipt remains execution-unattested rather than a promoted quality or speed claim."
+      ],
+      "claim_boundary": "Claim one pinned local real-model port, exact eight-token greedy agreement for the F32 artifact, and one held F32-versus-BF16 wall-time observation. Do not generalize the tolerance, BF16 quality window, performance ratio, longer-context behavior, batching, or publication readiness.",
+      "potential_speedup": {
+        "overall": {
+          "range": null,
+          "provenance": "performance_observation",
+          "evidence_lineage_ids": [
+            "local-qwen25-05b-f32-bf16-walltime-2026-07-10"
+          ],
+          "observed_source_range": "1.3037x-1.3037x",
+          "claim_status": "held",
+          "hold_reasons": [
+            "The generic external-command runner records execution_attested=false even though model, workload, interpreter, quality, and raw-output gates pass.",
+            "The workload is separate-process load plus six greedy tokens on one Apple M4 Pro, not steady-state decode or a portable product workload.",
+            "The BF16 continuation diverges after the exact six-token quality window."
+          ],
+          "confidence": "performance_observation",
+          "basis": "Schema-2 receipts observed 0.3247475000 s F32 versus 0.2490912910 s BF16 median wall time, a recomputed 1.3037288406x inverse ratio. The measurement is retained as an observation only.",
+          "applies_when": [
+            "The exact pinned source, standalone scaffold, conversion maps, and Apple M4 Pro workload are reproduced.",
+            "The six-token exact-output contract passes for both variants.",
+            "The receipt remains labeled performance_observation until independent execution attestation exists."
+          ],
+          "measure": [
+            "separate-process load-plus-generation wall time",
+            "stability CV",
+            "exact greedy token IDs",
+            "artifact bytes",
+            "longer-prompt and longer-generation quality"
+          ]
+        },
+        "speculative_decoding": {
+          "range": null,
+          "provenance": "profile_required",
+          "confidence": "low",
+          "basis": "This worked port did not execute a draft model or speculative decoding. No speculative result transfers from the generic decoder outcome.",
+          "applies_when": [
+            "A tokenizer-compatible pinned drafter is available and independently converted.",
+            "Acceptance, cache, exactness or task-quality, memory, and baseline timing gates are captured."
+          ],
+          "measure": [
+            "accepted tokens per verification step",
+            "decode tokens per second",
+            "peak memory",
+            "cache parity",
+            "task quality"
+          ]
+        }
+      },
+      "match": {
+        "families": [
+          "dense-decoder-transformer"
+        ],
+        "pipeline_tags": [
+          "text-generation"
+        ],
+        "id_patterns": [
+          "qwen2.5-0.5b-instruct"
+        ]
+      },
+      "source_ids": [
+        "mlx-lm-repo",
+        "mlx-lm-models"
+      ],
+      "next_validation": "Add multiple prompts and boundary lengths, full-versus-incremental logit/cache parity, batch coverage, an independently attested runner, and a longer BF16 task-quality evaluation before widening the claim."
+    },
+    {
       "id": "decoder-mlx-lm-working-route",
       "label": "MLX-LM decoder route",
       "status": "source_backed_working",

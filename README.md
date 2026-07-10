@@ -9,7 +9,8 @@ gates, profiling tools, and conservative optimization advice.
 This repository is an engineering workflow, **not a generic converter that can
 turn any checkpoint into a working MLX model**. The 17 architecture routes are
 covered by synthetic golden scenarios; they are routing and guard fixtures, not
-17 completed real-model ports.
+17 completed real-model ports. One pinned Qwen2.5-0.5B-Instruct worked example
+now exercises the dense-decoder chain on real weights.
 
 The public runbook is available at
 [mlx-porter.pages.dev](https://mlx-porter.pages.dev/), and its offline source is
@@ -23,6 +24,7 @@ in [`site/`](site/).
 | [`mlx-model-porting/references/`](mlx-model-porting/references/) | Porting method, failure atlas, optimization guides, and 17 family runbooks. |
 | [`mlx-model-porting/assets/`](mlx-model-porting/assets/) | Canonical architecture, technique, guidance, stack, source, benchmark, and claim data. |
 | [`mlx-model-porting/scripts/`](mlx-model-porting/scripts/) | Non-destructive inspection, planning, parity, benchmarking, evidence, and packaging tools. |
+| [`mlx-model-porting/examples/`](mlx-model-porting/examples/) | Porting patterns and no-weights worked examples. |
 | [`tests/`](tests/) | Synthetic scenarios and contract, security, determinism, and portability tests. |
 
 Current 0.4.0 corpus snapshot:
@@ -32,7 +34,7 @@ Current 0.4.0 corpus snapshot:
   support scope and claim types, while 327 remain intentionally unclassified;
 - 65 technique records, 27 optimization-guidance methods, and 4 stack
   definitions;
-- 11 checked-in benchmark receipts: 10 `performance_observation`, 0
+- 13 checked-in benchmark receipts: 12 `performance_observation`, 0
   `promotion_ready`, and 1 `rejected`.
 
 ## How the workflow fits together
@@ -185,6 +187,14 @@ The fixture is expected to route to `dense-decoder-transformer`. That result
 demonstrates the router and guard path only; it does not demonstrate an
 end-to-end checkpoint conversion.
 
+### Real worked port
+
+[`worked-port-qwen2.5-0.5b-instruct`](mlx-model-porting/examples/worked-port-qwen2.5-0.5b-instruct/README.md)
+records a complete offline run over the pinned local Qwen2.5-0.5B-Instruct
+checkpoint. It includes the portable inspection and capture manifests, complete
+weight map, per-rung parity report, exact Torch/standalone-MLX/MLX-LM transcript,
+and schema-2 benchmark receipt pointers. Weights and NPZ tensors are excluded.
+
 ## Start from an existing MLX project
 
 Use inspector mode for local MLX code, an already-converted checkpoint, or a
@@ -320,7 +330,7 @@ locally reproduced implementation reference.
 
 The benchmark truth is generated in
 [`BENCHMARK_REPORT.md`](mlx-model-porting/assets/BENCHMARK_REPORT.md). The current
-11-receipt set contains useful historical measurements, but **zero local speed
+13-receipt set contains useful historical and worked-port measurements, but **zero local speed
 or memory claims are promotion-ready**. Do not describe individual ratios as
 reliable or portable wins.
 

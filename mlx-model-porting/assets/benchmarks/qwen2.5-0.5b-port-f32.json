@@ -1,0 +1,769 @@
+{
+  "schema_version": 2,
+  "label": "qwen2.5-0.5b-port-f32",
+  "timestamp": "2026-07-10T15:03:59.306111+00:00",
+  "environment": {
+    "platform": "macOS-26.3-arm64-arm-64bit-Mach-O",
+    "machine": "arm64",
+    "processor": "arm",
+    "python": "3.14.4 (main, Apr  7 2026, 13:13:20) [Clang 21.0.0 (clang-2100.0.123.102)]",
+    "cpu_count": 14,
+    "mac_model": "Mac16,8",
+    "cpu_brand": "Apple M4 Pro",
+    "memory_bytes": 51539607552,
+    "macos_version": "26.3",
+    "mlx_version": "0.30.4"
+  },
+  "versions": {
+    "mlx": "0.30.4"
+  },
+  "command": [
+    "python3.13",
+    "qwen2.5-0.5b/runner.py",
+    "--model",
+    "local/Qwen2.5-0.5B-Instruct-standalone-mlx",
+    "--revision",
+    "7df68182b704fb0933625cdb44cc4e89e8f4cfdb5cb75b3e2251f608807f65f0",
+    "--input",
+    "qwen2.5-0.5b/input.json",
+    "--steps",
+    "6",
+    "--mode",
+    "f32",
+    "--output",
+    "quality/outputs/qwen2.5-0.5b-port-f32/result.json"
+  ],
+  "command_display": "python3.13 qwen2.5-0.5b/runner.py --model local/Qwen2.5-0.5B-Instruct-standalone-mlx --revision 7df68182b704fb0933625cdb44cc4e89e8f4cfdb5cb75b3e2251f608807f65f0 --input qwen2.5-0.5b/input.json --steps 6 --mode f32 --output quality/outputs/qwen2.5-0.5b-port-f32/result.json",
+  "cwd": ".",
+  "config_notes": {
+    "dtype_policy": "f32",
+    "mode": "f32",
+    "quality_output_path": "quality/outputs/qwen2.5-0.5b-port-f32/result.json",
+    "weights_bytes": 1976163149,
+    "weights_sha256": "7df68182b704fb0933625cdb44cc4e89e8f4cfdb5cb75b3e2251f608807f65f0"
+  },
+  "variant_config": {
+    "dtype_policy": "f32",
+    "mode": "f32",
+    "quality_output_path": "quality/outputs/qwen2.5-0.5b-port-f32/result.json",
+    "weights_bytes": 1976163149,
+    "weights_sha256": "7df68182b704fb0933625cdb44cc4e89e8f4cfdb5cb75b3e2251f608807f65f0"
+  },
+  "enabled_methods": [],
+  "models": {
+    "target": {
+      "id": "local/Qwen2.5-0.5B-Instruct-standalone-mlx",
+      "revision": "7df68182b704fb0933625cdb44cc4e89e8f4cfdb5cb75b3e2251f608807f65f0",
+      "lineage_id": "qwen2.5-0.5b-instruct-worked-port",
+      "source_id": "Qwen/Qwen2.5-0.5B-Instruct",
+      "source_revision": "7ae557604adf67be50417f59c2c2f167def9a775"
+    }
+  },
+  "target": {
+    "descriptor": {
+      "hardware": {
+        "chip": "Apple M4 Pro",
+        "model": "Mac16,8",
+        "memory_bytes": 51539607552
+      },
+      "software": {
+        "python": "3.14.4 (main, Apr  7 2026, 13:13:20) [Clang 21.0.0 (clang-2100.0.123.102)]",
+        "mlx": "0.30.4"
+      },
+      "benchmark_system": {
+        "platform": "macOS-26.3-arm64-arm-64bit-Mach-O",
+        "machine": "arm64",
+        "processor": "arm",
+        "python": "3.14.4 (main, Apr  7 2026, 13:13:20) [Clang 21.0.0 (clang-2100.0.123.102)]",
+        "cpu_count": 14,
+        "mac_model": "Mac16,8",
+        "cpu_brand": "Apple M4 Pro",
+        "memory_bytes": 51539607552,
+        "macos_version": "26.3",
+        "mlx_version": "0.30.4"
+      },
+      "execution_environment_sha256": "0f3ef71a0e6547142f588ff49c9c31c2e5c5d2ddd68aa332d9263936a859c26d",
+      "interpreter": {
+        "name": "python3.13",
+        "sha256": "98ebb7c41c86d099dc16c02320f3634b5665bbe2bdf064e642fefc923262fbb1",
+        "size_bytes": 52640,
+        "version": "Python 3.13.11",
+        "flags": [
+          "-I",
+          "-B"
+        ],
+        "environment": {
+          "distributions": [
+            {
+              "direct_url_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "location_sha256": "65320a52f72cb374240443f9da3a13a01df7eac83271b67fe954861705c57431",
+              "metadata_sha256": "4ed6ffe9ccbed05046ab7bff2024cd3ca717295b368bed1fe20a73e365bc415a",
+              "name": "certifi",
+              "record_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "version": "2026.4.22"
+            },
+            {
+              "direct_url_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "location_sha256": "65320a52f72cb374240443f9da3a13a01df7eac83271b67fe954861705c57431",
+              "metadata_sha256": "bba9eebcffea3c92aedb3bc86e2db3906cd5bbb2a39e744861417222b398de3e",
+              "name": "cffi",
+              "record_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "version": "1.17.1"
+            },
+            {
+              "direct_url_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "location_sha256": "65320a52f72cb374240443f9da3a13a01df7eac83271b67fe954861705c57431",
+              "metadata_sha256": "2e799ad48699e5b88f3919e564ab285e99509740325f01f330cd9840bac75a78",
+              "name": "cryptography",
+              "record_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "version": "45.0.3"
+            },
+            {
+              "direct_url_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "location_sha256": "65320a52f72cb374240443f9da3a13a01df7eac83271b67fe954861705c57431",
+              "metadata_sha256": "07ac0176a2ff124e90aa61efbb2526dab50129f8883790f065f037e8c5185a89",
+              "name": "mlx",
+              "record_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "version": "0.24.0"
+            },
+            {
+              "direct_url_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "location_sha256": "65320a52f72cb374240443f9da3a13a01df7eac83271b67fe954861705c57431",
+              "metadata_sha256": "a211fceacea4e6621f4316364d2d0b7127c00de3856b8062082f9bc5957ea4db",
+              "name": "packaging",
+              "record_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "version": "24.2"
+            },
+            {
+              "direct_url_sha256": "f487ce8626fb0edc890c38b6e4e888e5fdbba9522032395e036fe19b634da59b",
+              "location_sha256": "65320a52f72cb374240443f9da3a13a01df7eac83271b67fe954861705c57431",
+              "metadata_sha256": "d33a92c75037c8959bf67d939e857070fff6567ac3f64293e728600d095bc6f0",
+              "name": "pip",
+              "record_sha256": "3400fc87f8351c4067f3a8c09fe7ecd20c6e376ab8899660f18fa5a3a99006dd",
+              "version": "25.0"
+            },
+            {
+              "direct_url_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "location_sha256": "65320a52f72cb374240443f9da3a13a01df7eac83271b67fe954861705c57431",
+              "metadata_sha256": "2a1ba0725e7d236fbe2d5c50a4fff9c9e3fe34ca494f2cebde5c45c3791379d3",
+              "name": "pip",
+              "record_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "version": "25.3"
+            },
+            {
+              "direct_url_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "location_sha256": "65320a52f72cb374240443f9da3a13a01df7eac83271b67fe954861705c57431",
+              "metadata_sha256": "a2f9de903084179394e6e6aa87d6fafe01429906abf64c459d6b54c532dff6c0",
+              "name": "pycparser",
+              "record_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "version": "2.22"
+            },
+            {
+              "direct_url_sha256": "5ca4ff6c319236191029d9a9e43844cc1bcddd04503b80153eef9a889bfa0684",
+              "location_sha256": "65320a52f72cb374240443f9da3a13a01df7eac83271b67fe954861705c57431",
+              "metadata_sha256": "0907ed7511969025fe59acae50e2eaf8c65f554ae66ae2f0109d2af70d0c698c",
+              "name": "wheel",
+              "record_sha256": "8ad5649326df20a8de99b15b0419184e11d3e6409b71d8f4f602b823e557c051",
+              "version": "0.45.1"
+            }
+          ],
+          "schema_version": 1,
+          "startup_files": [
+            {
+              "path_sha256": "346b8013f39b136c907c5213996e65a3e8c959bab519e465da0b20424f84f209",
+              "sha256": "7767e083377ba3a97a42bd199dac51f5ea3a71669f2dbebec011bd696f79ebb4",
+              "size_bytes": 3773
+            }
+          ],
+          "sys_path_sha256": "9be0e1aef189c04363b3e8d5071b278558056de21bb3d1895b1934dc8334721c",
+          "sha256": "641d814093f34a97ffbc7010ce4469ce656a05d8072cb998cd0c2d7b7383e194"
+        }
+      }
+    },
+    "sha256": "d020c43378c8135d3756319ed460e8acba7714d585708c0207e07d111b8b589e"
+  },
+  "workload": {
+    "id": "qwen2.5-0.5b-load-plus-six-token-greedy-decode",
+    "artifacts": [
+      {
+        "role": "runner",
+        "path": "qwen2.5-0.5b/runner.py",
+        "sha256": "9ab4d84254089530549f74f574fb4d60bd0704dca33698f7afdc67b3a2734908",
+        "size_bytes": 2956
+      },
+      {
+        "role": "input",
+        "path": "qwen2.5-0.5b/input.json",
+        "sha256": "8e911fbfaba3da99dd167de55602eea203a0e19fd9a09786daf4ccd55421abfe",
+        "size_bytes": 165
+      }
+    ],
+    "parameters": {
+      "batch": 1,
+      "cache": "growing-kv",
+      "compile": false,
+      "generate_steps": 6,
+      "prompt_tokens": 11,
+      "timing_scope": "separate-process-load-plus-greedy-decode"
+    },
+    "sha256": "9ac0ea6cfaf9db183c7aba486803c7815da416fd198a3df4576f59d90cc483ba"
+  },
+  "comparison": {
+    "role": "baseline",
+    "primary_metric": "wall_seconds"
+  },
+  "warmup_runs": 1,
+  "measured_runs": 5,
+  "timeout_seconds": 120.0,
+  "runs": [
+    {
+      "run": 1,
+      "wall_seconds": 0.32688966699060984,
+      "raw_output": {
+        "path": "raw/qwen2.5-0.5b-port-f32/benchmark-command.json",
+        "sha256": "883ff3cde97a5b1830abd6ea33f5f0c2b92d2023f8d2cba77b3b9efc2a6675c9",
+        "size_bytes": 9337,
+        "truncated": false
+      }
+    },
+    {
+      "run": 2,
+      "wall_seconds": 0.30799587501678616,
+      "raw_output": {
+        "path": "raw/qwen2.5-0.5b-port-f32/benchmark-command.json",
+        "sha256": "883ff3cde97a5b1830abd6ea33f5f0c2b92d2023f8d2cba77b3b9efc2a6675c9",
+        "size_bytes": 9337,
+        "truncated": false
+      }
+    },
+    {
+      "run": 3,
+      "wall_seconds": 0.32474750000983477,
+      "raw_output": {
+        "path": "raw/qwen2.5-0.5b-port-f32/benchmark-command.json",
+        "sha256": "883ff3cde97a5b1830abd6ea33f5f0c2b92d2023f8d2cba77b3b9efc2a6675c9",
+        "size_bytes": 9337,
+        "truncated": false
+      }
+    },
+    {
+      "run": 4,
+      "wall_seconds": 0.3304622499854304,
+      "raw_output": {
+        "path": "raw/qwen2.5-0.5b-port-f32/benchmark-command.json",
+        "sha256": "883ff3cde97a5b1830abd6ea33f5f0c2b92d2023f8d2cba77b3b9efc2a6675c9",
+        "size_bytes": 9337,
+        "truncated": false
+      }
+    },
+    {
+      "run": 5,
+      "wall_seconds": 0.3167408329900354,
+      "raw_output": {
+        "path": "raw/qwen2.5-0.5b-port-f32/benchmark-command.json",
+        "sha256": "883ff3cde97a5b1830abd6ea33f5f0c2b92d2023f8d2cba77b3b9efc2a6675c9",
+        "size_bytes": 9337,
+        "truncated": false
+      }
+    }
+  ],
+  "aggregate": {
+    "wall_seconds": {
+      "median": 0.32474750000983477,
+      "min": 0.30799587501678616,
+      "max": 0.3304622499854304
+    }
+  },
+  "stability": {
+    "primary_metric": "wall_seconds",
+    "max_cv": 0.1,
+    "min_runs": 5
+  },
+  "quality": {
+    "status": "pass",
+    "artifact": {
+      "path": "quality/qwen2.5-0.5b-port-f32.bound.json",
+      "sha256": "9aa52a091e43d8f796ccf7a71b15248be6c09adf76e02ef696e3144a9e3281c4",
+      "size_bytes": 1232
+    }
+  },
+  "rollback_condition": "Keep F32 as the correctness baseline; reject any candidate whose exact output differs or whose wall-time change is within measurement noise.",
+  "runner": {
+    "id": "external-command-wall-time",
+    "version": 1,
+    "shape": "direct-argv-template-v1",
+    "command_sha256": "fac30d1515d55e71edcb65f4d2e900af73bf3cb9240d97c8337c5e641dab9703",
+    "argv_template": [
+      {
+        "literal": "python3.13"
+      },
+      {
+        "source": [
+          "workload",
+          "artifacts",
+          0,
+          "path"
+        ]
+      },
+      {
+        "literal": "--model"
+      },
+      {
+        "source": [
+          "models",
+          "target",
+          "id"
+        ]
+      },
+      {
+        "literal": "--revision"
+      },
+      {
+        "source": [
+          "models",
+          "target",
+          "revision"
+        ]
+      },
+      {
+        "literal": "--input"
+      },
+      {
+        "source": [
+          "workload",
+          "artifacts",
+          1,
+          "path"
+        ]
+      },
+      {
+        "literal": "--steps"
+      },
+      {
+        "source": [
+          "workload",
+          "parameters",
+          "generate_steps"
+        ]
+      },
+      {
+        "literal": "--mode"
+      },
+      {
+        "source": [
+          "variant_config",
+          "mode"
+        ]
+      },
+      {
+        "literal": "--output"
+      },
+      {
+        "source": [
+          "variant_config",
+          "quality_output_path"
+        ]
+      }
+    ],
+    "bindings": [
+      {
+        "index": 1,
+        "source": [
+          "workload",
+          "artifacts",
+          0,
+          "path"
+        ],
+        "value_sha256": "ec00c3cbcc960c8040e0316980a779e6e389619dbe99be0fe4e44617485b32e4"
+      },
+      {
+        "index": 3,
+        "source": [
+          "models",
+          "target",
+          "id"
+        ],
+        "value_sha256": "950faf8c34b6860999501105b65c24e744650ed4e560a9d6b4cf579324d0462b"
+      },
+      {
+        "index": 5,
+        "source": [
+          "models",
+          "target",
+          "revision"
+        ],
+        "value_sha256": "d8121cee85f23a6a6be5cf118eea2659e2c2b3faeac59f47683281f4b5c49167"
+      },
+      {
+        "index": 7,
+        "source": [
+          "workload",
+          "artifacts",
+          1,
+          "path"
+        ],
+        "value_sha256": "172b7d8005a97ff601f759eef3a7f4248ebc9ef2d786d9841a4a61a6908b7454"
+      },
+      {
+        "index": 9,
+        "source": [
+          "workload",
+          "parameters",
+          "generate_steps"
+        ],
+        "value_sha256": "92e9e7e5922d26e17e48f0869ab25cc99499fdab722c065de8e0965c96c68e86"
+      },
+      {
+        "index": 11,
+        "source": [
+          "variant_config",
+          "mode"
+        ],
+        "value_sha256": "35a93e947a0847478818f0cce323f8d7a761468cef63c0b6af80c7aca1c458f3"
+      },
+      {
+        "index": 13,
+        "source": [
+          "variant_config",
+          "quality_output_path"
+        ],
+        "value_sha256": "b34c874a6fdb8e2e9521653c16979a924feee199eb34351726782945c3ed9017"
+      }
+    ],
+    "implementation": {
+      "path": "qwen2.5-0.5b/runner.py",
+      "sha256": "9ab4d84254089530549f74f574fb4d60bd0704dca33698f7afdc67b3a2734908",
+      "size_bytes": 2956
+    },
+    "interpreter": {
+      "name": "python3.13",
+      "sha256": "98ebb7c41c86d099dc16c02320f3634b5665bbe2bdf064e642fefc923262fbb1",
+      "size_bytes": 52640,
+      "version": "Python 3.13.11",
+      "flags": [
+        "-I",
+        "-B"
+      ],
+      "environment": {
+        "distributions": [
+          {
+            "direct_url_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "location_sha256": "65320a52f72cb374240443f9da3a13a01df7eac83271b67fe954861705c57431",
+            "metadata_sha256": "4ed6ffe9ccbed05046ab7bff2024cd3ca717295b368bed1fe20a73e365bc415a",
+            "name": "certifi",
+            "record_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "version": "2026.4.22"
+          },
+          {
+            "direct_url_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "location_sha256": "65320a52f72cb374240443f9da3a13a01df7eac83271b67fe954861705c57431",
+            "metadata_sha256": "bba9eebcffea3c92aedb3bc86e2db3906cd5bbb2a39e744861417222b398de3e",
+            "name": "cffi",
+            "record_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "version": "1.17.1"
+          },
+          {
+            "direct_url_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "location_sha256": "65320a52f72cb374240443f9da3a13a01df7eac83271b67fe954861705c57431",
+            "metadata_sha256": "2e799ad48699e5b88f3919e564ab285e99509740325f01f330cd9840bac75a78",
+            "name": "cryptography",
+            "record_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "version": "45.0.3"
+          },
+          {
+            "direct_url_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "location_sha256": "65320a52f72cb374240443f9da3a13a01df7eac83271b67fe954861705c57431",
+            "metadata_sha256": "07ac0176a2ff124e90aa61efbb2526dab50129f8883790f065f037e8c5185a89",
+            "name": "mlx",
+            "record_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "version": "0.24.0"
+          },
+          {
+            "direct_url_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "location_sha256": "65320a52f72cb374240443f9da3a13a01df7eac83271b67fe954861705c57431",
+            "metadata_sha256": "a211fceacea4e6621f4316364d2d0b7127c00de3856b8062082f9bc5957ea4db",
+            "name": "packaging",
+            "record_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "version": "24.2"
+          },
+          {
+            "direct_url_sha256": "f487ce8626fb0edc890c38b6e4e888e5fdbba9522032395e036fe19b634da59b",
+            "location_sha256": "65320a52f72cb374240443f9da3a13a01df7eac83271b67fe954861705c57431",
+            "metadata_sha256": "d33a92c75037c8959bf67d939e857070fff6567ac3f64293e728600d095bc6f0",
+            "name": "pip",
+            "record_sha256": "3400fc87f8351c4067f3a8c09fe7ecd20c6e376ab8899660f18fa5a3a99006dd",
+            "version": "25.0"
+          },
+          {
+            "direct_url_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "location_sha256": "65320a52f72cb374240443f9da3a13a01df7eac83271b67fe954861705c57431",
+            "metadata_sha256": "2a1ba0725e7d236fbe2d5c50a4fff9c9e3fe34ca494f2cebde5c45c3791379d3",
+            "name": "pip",
+            "record_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "version": "25.3"
+          },
+          {
+            "direct_url_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "location_sha256": "65320a52f72cb374240443f9da3a13a01df7eac83271b67fe954861705c57431",
+            "metadata_sha256": "a2f9de903084179394e6e6aa87d6fafe01429906abf64c459d6b54c532dff6c0",
+            "name": "pycparser",
+            "record_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "version": "2.22"
+          },
+          {
+            "direct_url_sha256": "5ca4ff6c319236191029d9a9e43844cc1bcddd04503b80153eef9a889bfa0684",
+            "location_sha256": "65320a52f72cb374240443f9da3a13a01df7eac83271b67fe954861705c57431",
+            "metadata_sha256": "0907ed7511969025fe59acae50e2eaf8c65f554ae66ae2f0109d2af70d0c698c",
+            "name": "wheel",
+            "record_sha256": "8ad5649326df20a8de99b15b0419184e11d3e6409b71d8f4f602b823e557c051",
+            "version": "0.45.1"
+          }
+        ],
+        "schema_version": 1,
+        "startup_files": [
+          {
+            "path_sha256": "346b8013f39b136c907c5213996e65a3e8c959bab519e465da0b20424f84f209",
+            "sha256": "7767e083377ba3a97a42bd199dac51f5ea3a71669f2dbebec011bd696f79ebb4",
+            "size_bytes": 3773
+          }
+        ],
+        "sys_path_sha256": "9be0e1aef189c04363b3e8d5071b278558056de21bb3d1895b1934dc8334721c",
+        "sha256": "641d814093f34a97ffbc7010ce4469ce656a05d8072cb998cd0c2d7b7383e194"
+      }
+    }
+  },
+  "experiment": {
+    "invariant": {
+      "runner": {
+        "id": "external-command-wall-time",
+        "version": 1,
+        "shape": "direct-argv-template-v1",
+        "argv_template": [
+          {
+            "literal": "python3.13"
+          },
+          {
+            "source": [
+              "workload",
+              "artifacts",
+              0,
+              "path"
+            ]
+          },
+          {
+            "literal": "--model"
+          },
+          {
+            "source": [
+              "models",
+              "target",
+              "id"
+            ]
+          },
+          {
+            "literal": "--revision"
+          },
+          {
+            "source": [
+              "models",
+              "target",
+              "revision"
+            ]
+          },
+          {
+            "literal": "--input"
+          },
+          {
+            "source": [
+              "workload",
+              "artifacts",
+              1,
+              "path"
+            ]
+          },
+          {
+            "literal": "--steps"
+          },
+          {
+            "source": [
+              "workload",
+              "parameters",
+              "generate_steps"
+            ]
+          },
+          {
+            "literal": "--mode"
+          },
+          {
+            "source": [
+              "variant_config",
+              "mode"
+            ]
+          },
+          {
+            "literal": "--output"
+          },
+          {
+            "source": [
+              "variant_config",
+              "quality_output_path"
+            ]
+          }
+        ]
+      },
+      "source": {
+        "id": "Qwen/Qwen2.5-0.5B-Instruct",
+        "revision": "7ae557604adf67be50417f59c2c2f167def9a775"
+      },
+      "invocation": {
+        "argv_template": [
+          {
+            "literal": "python3.13"
+          },
+          {
+            "source": [
+              "workload",
+              "artifacts",
+              0,
+              "path"
+            ]
+          },
+          {
+            "literal": "--model"
+          },
+          {
+            "source": [
+              "models",
+              "target",
+              "id"
+            ]
+          },
+          {
+            "literal": "--revision"
+          },
+          {
+            "source": [
+              "models",
+              "target",
+              "revision"
+            ]
+          },
+          {
+            "literal": "--input"
+          },
+          {
+            "source": [
+              "workload",
+              "artifacts",
+              1,
+              "path"
+            ]
+          },
+          {
+            "literal": "--steps"
+          },
+          {
+            "source": [
+              "workload",
+              "parameters",
+              "generate_steps"
+            ]
+          },
+          {
+            "literal": "--mode"
+          },
+          {
+            "source": [
+              "variant_config",
+              "mode"
+            ]
+          },
+          {
+            "literal": "--output"
+          },
+          {
+            "source": [
+              "variant_config",
+              "quality_output_path"
+            ]
+          }
+        ],
+        "bindings": [
+          {
+            "index": 1,
+            "source": [
+              "workload",
+              "artifacts",
+              0,
+              "path"
+            ]
+          },
+          {
+            "index": 3,
+            "source": [
+              "models",
+              "target",
+              "id"
+            ]
+          },
+          {
+            "index": 5,
+            "source": [
+              "models",
+              "target",
+              "revision"
+            ]
+          },
+          {
+            "index": 7,
+            "source": [
+              "workload",
+              "artifacts",
+              1,
+              "path"
+            ]
+          },
+          {
+            "index": 9,
+            "source": [
+              "workload",
+              "parameters",
+              "generate_steps"
+            ]
+          }
+        ]
+      },
+      "target_sha256": "d020c43378c8135d3756319ed460e8acba7714d585708c0207e07d111b8b589e",
+      "workload_sha256": "9ac0ea6cfaf9db183c7aba486803c7815da416fd198a3df4576f59d90cc483ba",
+      "primary_metric": "wall_seconds",
+      "operating_system": {
+        "platform": "macOS-26.3-arm64-arm-64bit-Mach-O",
+        "macos_version": "26.3"
+      },
+      "sample_shape": {
+        "run_count": 5,
+        "warmup_count": 1,
+        "timeout_seconds": 120.0
+      }
+    },
+    "invariant_sha256": "d30ff62bebd03bfe52fc085c11a093941d697d8b3c33bfa59253aef9367a6130",
+    "variant": {
+      "target_id": "local/Qwen2.5-0.5B-Instruct-standalone-mlx",
+      "target_revision": "7df68182b704fb0933625cdb44cc4e89e8f4cfdb5cb75b3e2251f608807f65f0",
+      "enabled_methods": [],
+      "config": {
+        "dtype_policy": "f32",
+        "mode": "f32",
+        "quality_output_path": "quality/outputs/qwen2.5-0.5b-port-f32/result.json",
+        "weights_bytes": 1976163149,
+        "weights_sha256": "7df68182b704fb0933625cdb44cc4e89e8f4cfdb5cb75b3e2251f608807f65f0"
+      },
+      "invocation_arguments": {
+        "models.target.id": "950faf8c34b6860999501105b65c24e744650ed4e560a9d6b4cf579324d0462b",
+        "models.target.revision": "d8121cee85f23a6a6be5cf118eea2659e2c2b3faeac59f47683281f4b5c49167",
+        "variant_config.mode": "35a93e947a0847478818f0cce323f8d7a761468cef63c0b6af80c7aca1c458f3"
+      }
+    },
+    "variant_sha256": "222cb53538821fabb1a7532bdff1cae8e42bef4a5eb6424f6e5e8212c0e06129"
+  }
+}

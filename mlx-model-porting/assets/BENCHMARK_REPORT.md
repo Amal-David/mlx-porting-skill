@@ -6,14 +6,14 @@ MLX-LM 0.31.1 speculative-decoding observations are held because v0.31.2 fixed s
 
 ## Summary
 
-- Receipts: 11
-- Performance observations: 10
+- Receipts: 13
+- Performance observations: 12
 - Promotion-ready: 0
 - Rejected: 1
 
 ## Assessments
 
-| Receipt | Classification | Enabled methods | CV | Recomputed decode ratio | Reasons |
+| Receipt | Classification | Enabled methods | CV | Recomputed primary ratio | Reasons |
 |---|---|---|---:|---:|---|
 | `kv-4bit-8k.json` | `performance_observation` | uniform-kv-quantization | 0.081 | 1.1144x | legacy-schema-1<br>missing-baseline-digest<br>missing-model-lineage<br>missing-output-digests<br>missing-quality-artifact<br>missing-rollback-condition<br>missing-target-hash<br>missing-workload-hash |
 | `kv-baseline-8k.json` | `performance_observation` | none | 0.121 | n/a | legacy-schema-1<br>missing-model-lineage<br>missing-output-digests<br>missing-quality-artifact<br>missing-rollback-condition<br>missing-target-hash<br>missing-workload-hash<br>unstable-primary-metric |
@@ -21,6 +21,8 @@ MLX-LM 0.31.1 speculative-decoding observations are held because v0.31.2 fixed s
 | `pcache-warm.json` | `performance_observation` | prompt-prefix-cache | 0.006 | 0.9178x | baseline-workload-incompatible<br>legacy-schema-1<br>missing-baseline-digest<br>missing-checked-in-input<br>missing-model-lineage<br>missing-output-digests<br>missing-quality-artifact<br>missing-rollback-condition<br>missing-target-hash<br>missing-workload-hash<br>nonportable-ephemeral-path |
 | `quant-4bit.json` | `performance_observation` | native-low-bit-weight-quantization | 0.109 | 2.3966x | incompatible-quant-baseline<br>legacy-schema-1<br>missing-baseline-digest<br>missing-checked-in-input<br>missing-model-lineage<br>missing-output-digests<br>missing-quality-artifact<br>missing-rollback-condition<br>missing-target-hash<br>missing-workload-hash<br>nonportable-ephemeral-path<br>unstable-primary-metric |
 | `quant-baseline-bf16.json` | `performance_observation` | none | 0.012 | n/a | legacy-schema-1<br>missing-checked-in-input<br>missing-model-lineage<br>missing-output-digests<br>missing-quality-artifact<br>missing-rollback-condition<br>missing-target-hash<br>missing-workload-hash<br>nonportable-ephemeral-path |
+| `qwen2.5-0.5b-port-bf16.json` | `performance_observation` | bf16-weight-cast | 0.073 | 1.3037x | execution-semantics-unattested |
+| `qwen2.5-0.5b-port-f32.json` | `performance_observation` | none | 0.025 | n/a | baseline-role-not-promotable<br>execution-semantics-unattested |
 | `spec-baseline.json` | `performance_observation` | none | 0.005 | n/a | legacy-schema-1<br>missing-model-lineage<br>missing-output-digests<br>missing-quality-artifact<br>missing-rollback-condition<br>missing-target-hash<br>missing-workload-hash |
 | `spec-draft-k2.json` | `performance_observation` | draft-model-speculation | 0.021 | 1.2540x | legacy-schema-1<br>missing-baseline-digest<br>missing-model-lineage<br>missing-output-digests<br>missing-quality-artifact<br>missing-rollback-condition<br>missing-target-hash<br>missing-workload-hash<br>mlx-lm-0.31.1-speculative-correctness-fix |
 | `spec-draft-k3.json` | `performance_observation` | draft-model-speculation | 0.443 | 0.6728x | legacy-schema-1<br>missing-baseline-digest<br>missing-model-lineage<br>missing-output-digests<br>missing-quality-artifact<br>missing-rollback-condition<br>missing-target-hash<br>missing-workload-hash<br>mlx-lm-0.31.1-speculative-correctness-fix<br>unstable-primary-metric |
