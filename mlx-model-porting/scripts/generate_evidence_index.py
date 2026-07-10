@@ -15,7 +15,7 @@ import re
 import sys
 from pathlib import Path
 from typing import Any, Iterable
-from urllib.parse import urlsplit
+from urllib.parse import quote, urlsplit
 
 from _common import SkillError, atomic_write_text, load_structured
 
@@ -26,6 +26,7 @@ REPO_ROOT = SKILL_ROOT.parent
 DEFAULT_SOURCES = SKILL_ROOT / "assets" / "sources.yaml"
 DEFAULT_OUTPUT = REPO_ROOT / "EVIDENCE_INDEX.md"
 GITHUB_REF_KINDS = {"blob", "tree"}
+MARKDOWN_LINK_SAFE = ":/?#@!$&'*+,;=%"
 
 
 def parse_args() -> argparse.Namespace:
@@ -40,7 +41,31 @@ def markdown_cell(value: object) -> str:
     text = str(value).strip()
     if not text:
         return "—"
-    return text.replace("\\", "\\\\").replace("|", "\\|").replace("\r\n", "<br>").replace("\n", "<br>")
+    return (
+        text.replace("\\", "\\\\")
+        .replace("<", "&lt;")
+        .replace("|", "\\|")
+        .replace("\r\n", "<br>")
+        .replace("\n", "<br>")
+    )
+
+
+def markdown_link_destination(
+    value: object,
+    *,
+    allow_relative: bool = False,
+    label: str,
+) -> str:
+    url = str(value).strip()
+    try:
+        parsed = urlsplit(url)
+    except ValueError as exc:
+        raise SkillError(f"{label} is not a valid URL: {url}") from exc
+    if parsed.scheme.lower() != "https" or not parsed.netloc:
+        is_relative = not parsed.scheme and not parsed.netloc and not url.startswith(("/", "\\"))
+        if not allow_relative or not is_relative:
+            raise SkillError(f"{label} must use https: {url}")
+    return quote(url, safe=MARKDOWN_LINK_SAFE)
 
 
 def code_list(values: Iterable[object]) -> str:
@@ -139,6 +164,11 @@ def render_index(registry: dict[str, Any]) -> str:
         raise SkillError("claim_boundary_policy must be a non-empty list")
     if not benchmark_assessment:
         raise SkillError("benchmark_assessment must link the benchmark assessment")
+    benchmark_assessment = markdown_link_destination(
+        benchmark_assessment,
+        allow_relative=True,
+        label="benchmark_assessment",
+    )
 
     kind_counts = collections.Counter(str(source.get("kind", "unclassified")) for source in sources)
     depth_counts = collections.Counter(str(source.get("review_depth", "unclassified")) for source in sources)
@@ -224,7 +254,10 @@ def render_index(registry: dict[str, Any]) -> str:
     for source in sorted(sources, key=lambda item: str(item["id"])):
         title = markdown_cell(source.get("title", source["id"]))
         url = str(source.get("url", "")).strip()
-        link = f"[{title}]({url})" if url else title
+        link = title
+        if url:
+            destination = markdown_link_destination(url, label=f"source {source['id']} URL")
+            link = f"[{title}]({destination})"
         lines.append(
             "| "
             + " | ".join(

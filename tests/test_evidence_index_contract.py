@@ -88,6 +88,80 @@ class EvidenceIndexContractTests(unittest.TestCase):
             text,
         )
 
+    def test_generated_index_escapes_hostile_links_and_html_cells(self) -> None:
+        registry = json.loads(SOURCES.read_text(encoding="utf-8"))
+        registry["benchmark_assessment"] = "mlx-model-porting/assets/report](javascript:alert(3)).md"
+        registry["sources"] = [
+            {
+                "id": "hostile-close",
+                "title": "Hostile <script>alert(1)</script> title",
+                "url": "https://example.com/already%20encoded/close)break",
+                "kind": "official-doc",
+                "owner": "example",
+                "topics": ["test"],
+                "review_depth": "indexed",
+                "snapshot": "2026-07-10",
+                "note": "safe",
+            },
+            {
+                "id": "hostile-breakout",
+                "title": "Hostile breakout",
+                "url": "https://example.com/report](javascript:alert(1))",
+                "kind": "official-doc",
+                "owner": "example",
+                "topics": ["test"],
+                "review_depth": "indexed",
+                "snapshot": "2026-07-10",
+                "note": "Hostile <script>alert(2)</script> note",
+            },
+        ]
+        registry["count"] = len(registry["sources"])
+
+        with tempfile.TemporaryDirectory() as tmp:
+            source_path = Path(tmp) / "sources.json"
+            output = Path(tmp) / "index.md"
+            source_path.write_text(json.dumps(registry), encoding="utf-8")
+            run_generator("--sources", source_path, "--output", output)
+            rendered = output.read_text(encoding="utf-8")
+
+        self.assertNotIn("<script>", rendered)
+        self.assertIn("&lt;script>", rendered)
+        self.assertIn("already%20encoded/close%29break", rendered)
+        self.assertNotIn("%2520", rendered)
+        self.assertIn("report%5D%28javascript:alert%281%29%29", rendered)
+        self.assertNotIn("](javascript:", rendered)
+
+    def test_generated_index_rejects_non_https_source_links(self) -> None:
+        registry = json.loads(SOURCES.read_text(encoding="utf-8"))
+        registry["sources"] = [
+            {
+                "id": "non-https",
+                "title": "Non-HTTPS source",
+                "kind": "official-doc",
+                "owner": "example",
+                "topics": ["test"],
+                "review_depth": "indexed",
+                "snapshot": "2026-07-10",
+                "note": "",
+            }
+        ]
+        registry["count"] = len(registry["sources"])
+
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp = Path(tmp)
+            for index, url in enumerate(("http://example.com/source", "javascript:alert(1)")):
+                registry["sources"][0]["url"] = url
+                source_path = tmp / f"sources-{index}.json"
+                output = tmp / f"index-{index}.md"
+                source_path.write_text(json.dumps(registry), encoding="utf-8")
+                result = run_generator(
+                    "--sources", source_path,
+                    "--output", output,
+                    expected=2,
+                )
+                self.assertIn("must use https", result.stderr.lower())
+                self.assertFalse(output.exists())
+
     def test_check_rejects_synthesized_moving_github_urls(self) -> None:
         moving_urls = (
             "https://github.com/example/project",

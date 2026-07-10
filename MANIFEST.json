@@ -2,7 +2,7 @@
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
   "version": "0.4.0",
-  "generated_at": "2026-07-10T10:52:44.927761+00:00",
+  "generated_at": "2026-07-10T11:03:41.227248+00:00",
   "file_count": 345,
   "files": [
     {
@@ -1209,8 +1209,8 @@
     },
     {
       "path": "mlx-model-porting/scripts/generate_evidence_index.py",
-      "size_bytes": 11927,
-      "sha256": "d33ff7e92f76a59b2da7d0a5d76316f62d6a547545ff1506b6539f0c34db8cb2",
+      "size_bytes": 12937,
+      "sha256": "5677da414c041b21fd62a85255d5ee19178cae3fc3876b63253e6662256121ce",
       "executable": false
     },
     {
@@ -1917,8 +1917,8 @@
     },
     {
       "path": "tests/test_evidence_index_contract.py",
-      "size_bytes": 6342,
-      "sha256": "2f0f8ce069fe3b21764232baad17efed41bed12b89b678d705509ef0cf28e406",
+      "size_bytes": 9554,
+      "sha256": "7abba37ffb0c18aa00b1547a035d423745f1f3fbc9efa227ec4b3a617622d68b",
       "executable": false
     },
     {
