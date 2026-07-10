@@ -128,6 +128,86 @@ class InstallerManifestContractTests(unittest.TestCase):
             self.assertEqual((installed / "scripts" / "tool.py").stat().st_mode & 0o777, 0o755)
             self.assertEqual((installed / "SKILL.md").stat().st_mode & 0o777, 0o644)
 
+    def test_force_copy_install_replaces_drift_and_remains_idempotent(self) -> None:
+        with tempfile.TemporaryDirectory() as raw_tmp:
+            repository, skill = self.make_fixture(Path(raw_tmp))
+            self.write_manifest(repository, skill)
+            destination = Path(raw_tmp) / "agent-skills"
+            first, _, first_stderr = self.run_main(skill, destination)
+            self.assertEqual(first, 0, first_stderr)
+            installed = destination / skill.name
+            (installed / "SKILL.md").write_text("stale install\n", encoding="utf-8")
+
+            forced, forced_stdout, forced_stderr = self.run_main(skill, destination, "--force")
+            repeated, repeated_stdout, repeated_stderr = self.run_main(skill, destination)
+
+            self.assertEqual(forced, 0, forced_stdout + forced_stderr)
+            self.assertIn("installed", forced_stdout)
+            self.assertEqual(repeated, 0, repeated_stdout + repeated_stderr)
+            self.assertIn("already installed", repeated_stdout)
+            entries = install_skill.load_distribution_manifest(source=skill)
+            self.assertEqual(
+                install_skill.tree_signature(installed),
+                install_skill.expected_tree_signature(entries),
+            )
+            self.assertFalse((destination / f".{skill.name}.backup").exists())
+
+    def test_force_copy_install_recovers_missing_target_from_deterministic_backup(self) -> None:
+        with tempfile.TemporaryDirectory() as raw_tmp:
+            repository, skill = self.make_fixture(Path(raw_tmp))
+            self.write_manifest(repository, skill)
+            destination = Path(raw_tmp) / "agent-skills"
+            destination.mkdir()
+            target = destination / skill.name
+            target.mkdir()
+            (target / "old-install.txt").write_text("old install\n", encoding="utf-8")
+            backup = destination / f".{skill.name}.backup"
+            os.replace(target, backup)
+
+            result, stdout, stderr = self.run_main(skill, destination, "--force")
+
+            self.assertEqual(result, 0, stdout + stderr)
+            self.assertIn("restored interrupted force install", stderr)
+            entries = install_skill.load_distribution_manifest(source=skill)
+            self.assertEqual(
+                install_skill.tree_signature(target),
+                install_skill.expected_tree_signature(entries),
+            )
+            self.assertFalse(backup.exists())
+
+    def test_copy_install_finishes_cleanup_after_replacement_landed(self) -> None:
+        with tempfile.TemporaryDirectory() as raw_tmp:
+            repository, skill = self.make_fixture(Path(raw_tmp))
+            self.write_manifest(repository, skill)
+            destination = Path(raw_tmp) / "agent-skills"
+            first, _, first_stderr = self.run_main(skill, destination)
+            self.assertEqual(first, 0, first_stderr)
+            backup = destination / f".{skill.name}.backup"
+            backup.mkdir()
+            (backup / "old-install.txt").write_text("old install\n", encoding="utf-8")
+
+            result, stdout, stderr = self.run_main(skill, destination)
+
+            self.assertEqual(result, 0, stdout + stderr)
+            self.assertIn("completed cleanup for interrupted force install", stderr)
+            self.assertIn("already installed", stdout)
+            self.assertFalse(backup.exists())
+
+    def test_copy_install_warns_about_legacy_random_backup(self) -> None:
+        with tempfile.TemporaryDirectory() as raw_tmp:
+            repository, skill = self.make_fixture(Path(raw_tmp))
+            self.write_manifest(repository, skill)
+            destination = Path(raw_tmp) / "agent-skills"
+            destination.mkdir()
+            legacy_backup = destination / f".{skill.name}.backup-oldcrash"
+            legacy_backup.mkdir()
+
+            result, stdout, stderr = self.run_main(skill, destination)
+
+            self.assertEqual(result, 0, stdout + stderr)
+            self.assertIn("legacy stranded force-install backup left untouched", stderr)
+            self.assertTrue(legacy_backup.is_dir())
+
     def test_copy_install_rejects_unlisted_dirty_source_before_idempotence_check(self) -> None:
         with tempfile.TemporaryDirectory() as raw_tmp:
             repository, skill = self.make_fixture(Path(raw_tmp))

@@ -2,7 +2,7 @@
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
   "version": "0.4.0",
-  "generated_at": "2026-07-10T11:03:41.227248+00:00",
+  "generated_at": "2026-07-10T11:15:07.682091+00:00",
   "file_count": 345,
   "files": [
     {
@@ -1233,8 +1233,8 @@
     },
     {
       "path": "mlx-model-porting/scripts/install_skill.py",
-      "size_bytes": 22227,
-      "sha256": "5786adc91499ec913821a8b912c6ae6a758ddcdaa52a71aae70cc8207b13847e",
+      "size_bytes": 23930,
+      "sha256": "09db9839ec5a9b69399e3b08fd55bec64055e2cf6119959f678daf82120878be",
       "executable": true
     },
     {
@@ -1977,8 +1977,8 @@
     },
     {
       "path": "tests/test_installer_manifest_contract.py",
-      "size_bytes": 9702,
-      "sha256": "354e5988949318770036ba81ea6d387048ebade4a6fddf20f8d9105ba7d23d14",
+      "size_bytes": 13804,
+      "sha256": "39d5f629cf69d6c2d0a031483a1524cdf6d4d4443a85de365edfe0093db6da44",
       "executable": false
     },
     {

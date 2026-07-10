@@ -1,5 +1,11 @@
 #!/usr/bin/env python3
-"""Install the manifest-attested ``mlx-model-porting`` skill payload."""
+"""Install the manifest-attested ``mlx-model-porting`` skill payload.
+
+Interrupted force replacements use a deterministic ``.<name>.backup`` path.
+The next non-dry run restores it when the target is absent or removes it when
+the replacement already landed. Older random ``.<name>.backup-*`` directories
+are reported as warnings and left untouched for manual inspection.
+"""
 from __future__ import annotations
 
 import argparse
@@ -450,6 +456,47 @@ def remove_path(path: Path) -> None:
             pass
 
 
+def _path_present(path: Path) -> bool:
+    return path.exists() or path.is_symlink()
+
+
+def _force_backup_path(target: Path) -> Path:
+    return target.parent / f".{target.name}.backup"
+
+
+def _warn_legacy_force_backups(target: Path) -> None:
+    if not target.parent.is_dir():
+        return
+    prefix = f".{target.name}.backup-"
+    backups = sorted(
+        Path(entry.path)
+        for entry in os.scandir(target.parent)
+        if entry.name.startswith(prefix)
+    )
+    for backup in backups:
+        print(
+            f"warning: legacy stranded force-install backup left untouched: {backup}",
+            file=sys.stderr,
+        )
+
+
+def recover_interrupted_install(target: Path) -> None:
+    """Repair the discoverable states left by an interrupted force replacement."""
+    backup = _force_backup_path(target)
+    if _path_present(backup):
+        if _path_present(target):
+            remove_path(backup)
+            action = "completed cleanup for"
+        else:
+            os.replace(backup, target)
+            action = "restored"
+        print(
+            f"warning: {action} interrupted force install: {target}",
+            file=sys.stderr,
+        )
+    _warn_legacy_force_backups(target)
+
+
 def _stage_copy(
     dest_root: Path,
     entries: dict[str, dict[str, object]],
@@ -512,13 +559,14 @@ def stage_install(
 
 
 def install_atomically(target: Path, stage: Path, force: bool) -> None:
-    if not (target.exists() or target.is_symlink()):
+    if not _path_present(target):
         os.replace(stage, target)
         return
     if not force:
         raise SkillError(f"Target already exists: {target}; use --force to replace")
-    backup = Path(tempfile.mkdtemp(prefix=f".{target.name}.backup-", dir=target.parent))
-    remove_path(backup)
+    backup = _force_backup_path(target)
+    if _path_present(backup):
+        raise SkillError(f"Force-install recovery backup already exists: {backup}")
     os.replace(target, backup)
     try:
         os.replace(stage, target)
@@ -547,6 +595,11 @@ def main() -> int:
             raise SkillError("Target escapes destination root") from exc
         reject_symlink_cycle(target)
 
+        if not args.dry_run:
+            dest_root.mkdir(parents=True, exist_ok=True)
+            recover_interrupted_install(target)
+            reject_symlink_cycle(target)
+
         manifest_entries = None
         if mode == "copy":
             manifest_entries = load_distribution_manifest()
@@ -557,8 +610,8 @@ def main() -> int:
         print(f"target: {target}")
         print(f"mode: {mode}")
         if args.dry_run:
+            _warn_legacy_force_backups(target)
             return 0
-        dest_root.mkdir(parents=True, exist_ok=True)
         if already_installed(target, mode, manifest_entries):
             print("already installed")
             return 0
