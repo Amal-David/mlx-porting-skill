@@ -128,6 +128,52 @@ class InstallerManifestContractTests(unittest.TestCase):
             self.assertEqual((installed / "scripts" / "tool.py").stat().st_mode & 0o777, 0o755)
             self.assertEqual((installed / "SKILL.md").stat().st_mode & 0o777, 0o644)
 
+    def test_normal_copy_install_preserves_unrelated_deterministic_backup(self) -> None:
+        with tempfile.TemporaryDirectory() as raw_tmp:
+            repository, skill = self.make_fixture(Path(raw_tmp))
+            self.write_manifest(repository, skill)
+            destination = Path(raw_tmp) / "agent-skills"
+            destination.mkdir()
+            unrelated = destination / f".{skill.name}.backup"
+            unrelated.mkdir()
+            sentinel = unrelated / "sentinel.txt"
+            sentinel.write_text("user data\n", encoding="utf-8")
+            unrelated_identity = install_skill._node_identity(unrelated)
+            sentinel_identity = install_skill._node_identity(sentinel)
+
+            result, stdout, stderr = self.run_main(skill, destination)
+
+            self.assertEqual(result, 0, stdout + stderr)
+            self.assertIn("installed", stdout)
+            self.assertIn("legacy stranded force-install backup left untouched", stderr)
+            self.assertEqual(install_skill._node_identity(unrelated), unrelated_identity)
+            self.assertEqual(install_skill._node_identity(sentinel), sentinel_identity)
+            self.assertEqual(sentinel.read_text(encoding="utf-8"), "user data\n")
+            self.assertEqual([path.name for path in unrelated.iterdir()], ["sentinel.txt"])
+
+    def test_normal_copy_install_preserves_unrelated_random_backup(self) -> None:
+        with tempfile.TemporaryDirectory() as raw_tmp:
+            repository, skill = self.make_fixture(Path(raw_tmp))
+            self.write_manifest(repository, skill)
+            destination = Path(raw_tmp) / "agent-skills"
+            destination.mkdir()
+            unrelated = destination / f".{skill.name}.backup-user-random-8f31"
+            unrelated.mkdir()
+            sentinel = unrelated / "sentinel.txt"
+            sentinel.write_text("user data\n", encoding="utf-8")
+            unrelated_identity = install_skill._node_identity(unrelated)
+            sentinel_identity = install_skill._node_identity(sentinel)
+
+            result, stdout, stderr = self.run_main(skill, destination)
+
+            self.assertEqual(result, 0, stdout + stderr)
+            self.assertIn("installed", stdout)
+            self.assertIn("legacy stranded force-install backup left untouched", stderr)
+            self.assertEqual(install_skill._node_identity(unrelated), unrelated_identity)
+            self.assertEqual(install_skill._node_identity(sentinel), sentinel_identity)
+            self.assertEqual(sentinel.read_text(encoding="utf-8"), "user data\n")
+            self.assertEqual([path.name for path in unrelated.iterdir()], ["sentinel.txt"])
+
     def test_force_copy_install_replaces_drift_and_remains_idempotent(self) -> None:
         with tempfile.TemporaryDirectory() as raw_tmp:
             repository, skill = self.make_fixture(Path(raw_tmp))
@@ -150,19 +196,64 @@ class InstallerManifestContractTests(unittest.TestCase):
                 install_skill.tree_signature(installed),
                 install_skill.expected_tree_signature(entries),
             )
-            self.assertFalse((destination / f".{skill.name}.backup").exists())
+            self.assertFalse(
+                any(
+                    path.name.startswith(f".{skill.name}.backup-")
+                    for path in destination.iterdir()
+                )
+            )
+            self.assertFalse((destination / f".{skill.name}.install-journal.json").exists())
 
-    def test_force_copy_install_recovers_missing_target_from_deterministic_backup(self) -> None:
+    def test_force_copy_install_recovers_missing_target_from_owned_journal(self) -> None:
         with tempfile.TemporaryDirectory() as raw_tmp:
             repository, skill = self.make_fixture(Path(raw_tmp))
             self.write_manifest(repository, skill)
-            destination = Path(raw_tmp) / "agent-skills"
+            destination = (Path(raw_tmp) / "agent-skills").resolve()
             destination.mkdir()
             target = destination / skill.name
             target.mkdir()
             (target / "old-install.txt").write_text("old install\n", encoding="utf-8")
-            backup = destination / f".{skill.name}.backup"
-            os.replace(target, backup)
+            entries = install_skill.load_distribution_manifest(source=skill)
+            real_fsync_directory = install_skill._fsync_directory
+            sync_count = 0
+
+            def interrupt_after_first_rename(path: Path) -> None:
+                nonlocal sync_count
+                sync_count += 1
+                real_fsync_directory(path)
+                if sync_count == 2:
+                    raise RuntimeError("simulated interruption after target backup rename")
+
+            with mock.patch.object(install_skill, "SOURCE", skill):
+                stage = install_skill.stage_install(destination, "copy", entries)
+                with mock.patch.object(
+                    install_skill,
+                    "_fsync_directory",
+                    side_effect=interrupt_after_first_rename,
+                ):
+                    with self.assertRaisesRegex(RuntimeError, "simulated interruption"):
+                        install_skill.install_atomically(target, stage, True)
+
+            backups = list(destination.glob(f".{skill.name}.backup-*"))
+            self.assertEqual(len(backups), 1)
+            backup = backups[0]
+            journal = destination / f".{skill.name}.install-journal.json"
+            self.assertFalse(target.exists())
+            self.assertTrue((backup / "old-install.txt").is_file())
+            self.assertTrue(journal.is_file())
+            journal_payload = json.loads(journal.read_text(encoding="utf-8"))
+            self.assertEqual(journal_payload["target"], str(target))
+            self.assertEqual(journal_payload["backup"], str(backup))
+            self.assertEqual(journal_payload["stage"], str(stage))
+            self.assertRegex(journal_payload["nonce"], r"^[0-9a-f]{32}$")
+            self.assertEqual(
+                journal_payload["original_identity"],
+                install_skill._node_identity(backup),
+            )
+            self.assertEqual(
+                journal_payload["stage_identity"],
+                install_skill._node_identity(stage),
+            )
 
             result, stdout, stderr = self.run_main(skill, destination, "--force")
 
@@ -174,17 +265,43 @@ class InstallerManifestContractTests(unittest.TestCase):
                 install_skill.expected_tree_signature(entries),
             )
             self.assertFalse(backup.exists())
+            self.assertFalse(journal.exists())
 
-    def test_copy_install_finishes_cleanup_after_replacement_landed(self) -> None:
+    def test_copy_install_finishes_journaled_cleanup_after_replacement_landed(self) -> None:
         with tempfile.TemporaryDirectory() as raw_tmp:
             repository, skill = self.make_fixture(Path(raw_tmp))
             self.write_manifest(repository, skill)
-            destination = Path(raw_tmp) / "agent-skills"
+            destination = (Path(raw_tmp) / "agent-skills").resolve()
             first, _, first_stderr = self.run_main(skill, destination)
             self.assertEqual(first, 0, first_stderr)
-            backup = destination / f".{skill.name}.backup"
-            backup.mkdir()
-            (backup / "old-install.txt").write_text("old install\n", encoding="utf-8")
+            target = destination / skill.name
+            (target / "SKILL.md").write_text("stale install\n", encoding="utf-8")
+            entries = install_skill.load_distribution_manifest(source=skill)
+            real_fsync_directory = install_skill._fsync_directory
+            sync_count = 0
+
+            def interrupt_after_second_rename(path: Path) -> None:
+                nonlocal sync_count
+                sync_count += 1
+                real_fsync_directory(path)
+                if sync_count == 3:
+                    raise RuntimeError("simulated interruption after stage target rename")
+
+            with mock.patch.object(install_skill, "SOURCE", skill):
+                stage = install_skill.stage_install(destination, "copy", entries)
+                with mock.patch.object(
+                    install_skill,
+                    "_fsync_directory",
+                    side_effect=interrupt_after_second_rename,
+                ):
+                    with self.assertRaisesRegex(RuntimeError, "simulated interruption"):
+                        install_skill.install_atomically(target, stage, True)
+
+            backups = list(destination.glob(f".{skill.name}.backup-*"))
+            self.assertEqual(len(backups), 1)
+            backup = backups[0]
+            journal = destination / f".{skill.name}.install-journal.json"
+            self.assertTrue(journal.is_file())
 
             result, stdout, stderr = self.run_main(skill, destination)
 
@@ -192,6 +309,30 @@ class InstallerManifestContractTests(unittest.TestCase):
             self.assertIn("completed cleanup for interrupted force install", stderr)
             self.assertIn("already installed", stdout)
             self.assertFalse(backup.exists())
+            self.assertFalse(journal.exists())
+
+    def test_copy_install_leaves_unrecognized_journal_and_recorded_backup_untouched(self) -> None:
+        with tempfile.TemporaryDirectory() as raw_tmp:
+            repository, skill = self.make_fixture(Path(raw_tmp))
+            self.write_manifest(repository, skill)
+            destination = Path(raw_tmp) / "agent-skills"
+            destination.mkdir()
+            backup = destination / f".{skill.name}.backup-user-owned"
+            backup.mkdir()
+            sentinel = backup / "sentinel.txt"
+            sentinel.write_text("user data\n", encoding="utf-8")
+            journal = destination / f".{skill.name}.install-journal.json"
+            journal.write_text(
+                json.dumps({"backup": str(backup), "target": str(destination / skill.name)}),
+                encoding="utf-8",
+            )
+
+            result, stdout, stderr = self.run_main(skill, destination)
+
+            self.assertEqual(result, 0, stdout + stderr)
+            self.assertIn("unrecognized force-install recovery journal left untouched", stderr)
+            self.assertEqual(sentinel.read_text(encoding="utf-8"), "user data\n")
+            self.assertTrue(journal.is_file())
 
     def test_copy_install_warns_about_legacy_random_backup(self) -> None:
         with tempfile.TemporaryDirectory() as raw_tmp:

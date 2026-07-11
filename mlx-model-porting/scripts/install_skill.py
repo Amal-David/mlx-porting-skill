@@ -1,10 +1,8 @@
 #!/usr/bin/env python3
 """Install the manifest-attested ``mlx-model-porting`` skill payload.
 
-Interrupted force replacements use a deterministic ``.<name>.backup`` path.
-The next non-dry run restores it when the target is absent or removes it when
-the replacement already landed. Older random ``.<name>.backup-*`` directories
-are reported as warnings and left untouched for manual inspection.
+Interrupted force replacements are recovered only through a fsynced ownership
+journal. Unjournaled backup-looking siblings are reported and left untouched.
 """
 from __future__ import annotations
 
@@ -14,6 +12,7 @@ import hashlib
 import json
 import os
 import re
+import secrets
 import shutil
 import stat
 import sys
@@ -35,6 +34,8 @@ MANIFEST_NAME = "MANIFEST.json"
 READ_CHUNK_BYTES = 1024 * 1024
 NOFOLLOW_FLAG = getattr(os, "O_NOFOLLOW", 0)
 DIRECTORY_FLAG = getattr(os, "O_DIRECTORY", 0)
+INSTALL_JOURNAL_SCHEMA_VERSION = 1
+MAX_INSTALL_JOURNAL_BYTES = 64 * 1024
 
 CLIENT_PRESETS = {
     "claude-code": (".claude/skills", "symlink"),
@@ -460,18 +461,169 @@ def _path_present(path: Path) -> bool:
     return path.exists() or path.is_symlink()
 
 
-def _force_backup_path(target: Path) -> Path:
-    return target.parent / f".{target.name}.backup"
+def _fsync_directory(path: Path) -> None:
+    descriptor = os.open(path, os.O_RDONLY | DIRECTORY_FLAG | NOFOLLOW_FLAG)
+    try:
+        os.fsync(descriptor)
+    finally:
+        os.close(descriptor)
+
+
+def _node_identity(path: Path) -> dict[str, int]:
+    metadata = os.lstat(path)
+    return {
+        "device": metadata.st_dev,
+        "inode": metadata.st_ino,
+        "type": stat.S_IFMT(metadata.st_mode),
+    }
+
+
+def _valid_identity(value: object) -> bool:
+    return (
+        isinstance(value, dict)
+        and set(value) == {"device", "inode", "type"}
+        and all(type(value[key]) is int and value[key] >= 0 for key in value)
+    )
+
+
+def _identity_matches(path: Path, expected: object) -> bool:
+    if not _valid_identity(expected):
+        return False
+    try:
+        return _node_identity(path) == expected
+    except FileNotFoundError:
+        return False
+
+
+def _install_journal_path(target: Path) -> Path:
+    return target.parent / f".{target.name}.install-journal.json"
+
+
+def _create_force_backup_placeholder(target: Path, nonce: str) -> Path:
+    prefix = f".{target.name}.backup-{nonce}-"
+    if target.is_dir() and not target.is_symlink():
+        return Path(tempfile.mkdtemp(prefix=prefix, dir=target.parent))
+    descriptor, raw_path = tempfile.mkstemp(prefix=prefix, dir=target.parent)
+    os.close(descriptor)
+    return Path(raw_path)
+
+
+def _write_all(descriptor: int, content: bytes) -> None:
+    remaining = memoryview(content)
+    while remaining:
+        written = os.write(descriptor, remaining)
+        if written <= 0:
+            raise OSError("could not write force-install recovery journal")
+        remaining = remaining[written:]
+
+
+def _write_recovery_journal(journal: Path, payload: dict[str, object]) -> None:
+    encoded = (json.dumps(payload, sort_keys=True, indent=2) + "\n").encode("utf-8")
+    descriptor = -1
+    created = False
+    try:
+        descriptor = os.open(
+            journal,
+            os.O_WRONLY | os.O_CREAT | os.O_EXCL | NOFOLLOW_FLAG,
+            0o600,
+        )
+        created = True
+        _write_all(descriptor, encoded)
+        os.fsync(descriptor)
+        os.close(descriptor)
+        descriptor = -1
+        _fsync_directory(journal.parent)
+    except BaseException:
+        if descriptor >= 0:
+            os.close(descriptor)
+        if created:
+            try:
+                journal.unlink()
+                _fsync_directory(journal.parent)
+            except OSError:
+                pass
+        raise
+
+
+def _remove_recovery_journal(journal: Path) -> None:
+    journal.unlink()
+    _fsync_directory(journal.parent)
+
+
+def _read_recovery_journal(journal: Path) -> object | None:
+    if not _path_present(journal):
+        return None
+    descriptor = -1
+    try:
+        descriptor = os.open(journal, os.O_RDONLY | NOFOLLOW_FLAG)
+        metadata = os.fstat(descriptor)
+        if not stat.S_ISREG(metadata.st_mode) or metadata.st_size > MAX_INSTALL_JOURNAL_BYTES:
+            raise ValueError("journal is not a bounded regular file")
+        chunks: list[bytes] = []
+        remaining = MAX_INSTALL_JOURNAL_BYTES + 1
+        while remaining:
+            chunk = os.read(descriptor, min(READ_CHUNK_BYTES, remaining))
+            if not chunk:
+                break
+            chunks.append(chunk)
+            remaining -= len(chunk)
+        if remaining == 0:
+            raise ValueError("journal exceeds the size limit")
+        return json.loads(b"".join(chunks).decode("utf-8"))
+    except (OSError, UnicodeError, ValueError, RecursionError):
+        print(
+            f"warning: unrecognized force-install recovery journal left untouched: {journal}",
+            file=sys.stderr,
+        )
+        return None
+    finally:
+        if descriptor >= 0:
+            os.close(descriptor)
+
+
+def _validated_recovery_paths(
+    target: Path,
+    payload: object,
+) -> tuple[Path, Path] | None:
+    if not isinstance(payload, dict):
+        return None
+    nonce = payload.get("nonce")
+    if (
+        payload.get("schema_version") != INSTALL_JOURNAL_SCHEMA_VERSION
+        or payload.get("operation") != "force-replace"
+        or not isinstance(nonce, str)
+        or re.fullmatch(r"[0-9a-f]{32}", nonce) is None
+        or payload.get("target") != str(target)
+        or not _valid_identity(payload.get("original_identity"))
+        or not _valid_identity(payload.get("stage_identity"))
+        or not _valid_identity(payload.get("placeholder_identity"))
+    ):
+        return None
+    raw_backup = payload.get("backup")
+    raw_stage = payload.get("stage")
+    if not isinstance(raw_backup, str) or not isinstance(raw_stage, str):
+        return None
+    backup = Path(raw_backup)
+    stage = Path(raw_stage)
+    if (
+        backup.parent != target.parent
+        or stage.parent != target.parent
+        or not backup.name.startswith(f".{target.name}.backup-{nonce}-")
+        or not stage.name.startswith(f".{SOURCE.name}.install-")
+    ):
+        return None
+    return backup, stage
 
 
 def _warn_legacy_force_backups(target: Path) -> None:
     if not target.parent.is_dir():
         return
+    deterministic_name = f".{target.name}.backup"
     prefix = f".{target.name}.backup-"
     backups = sorted(
         Path(entry.path)
         for entry in os.scandir(target.parent)
-        if entry.name.startswith(prefix)
+        if entry.name == deterministic_name or entry.name.startswith(prefix)
     )
     for backup in backups:
         print(
@@ -480,20 +632,77 @@ def _warn_legacy_force_backups(target: Path) -> None:
         )
 
 
-def recover_interrupted_install(target: Path) -> None:
-    """Repair the discoverable states left by an interrupted force replacement."""
-    backup = _force_backup_path(target)
-    if _path_present(backup):
-        if _path_present(target):
-            remove_path(backup)
-            action = "completed cleanup for"
-        else:
-            os.replace(backup, target)
-            action = "restored"
+def _warn_recovery_journal(target: Path) -> None:
+    journal = _install_journal_path(target)
+    if _path_present(journal):
         print(
-            f"warning: {action} interrupted force install: {target}",
+            f"warning: force-install recovery journal left untouched: {journal}",
             file=sys.stderr,
         )
+
+
+def recover_interrupted_install(target: Path) -> None:
+    """Recover only states proven by this target's ownership journal."""
+    journal = _install_journal_path(target)
+    payload = _read_recovery_journal(journal)
+    paths = _validated_recovery_paths(target, payload)
+    if payload is not None and paths is None:
+        print(
+            f"warning: unrecognized force-install recovery journal left untouched: {journal}",
+            file=sys.stderr,
+        )
+    elif paths is not None:
+        backup, stage = paths
+        original_identity = payload["original_identity"]
+        stage_identity = payload["stage_identity"]
+        placeholder_identity = payload["placeholder_identity"]
+        target_is_original = _identity_matches(target, original_identity)
+        target_is_stage = _identity_matches(target, stage_identity)
+        backup_is_original = _identity_matches(backup, original_identity)
+        backup_is_placeholder = _identity_matches(backup, placeholder_identity)
+        stage_is_owned = _identity_matches(stage, stage_identity)
+
+        action = None
+        if not _path_present(target) and backup_is_original:
+            os.replace(backup, target)
+            _fsync_directory(target.parent)
+            if stage_is_owned:
+                remove_path(stage)
+                _fsync_directory(target.parent)
+            action = "restored"
+        elif target_is_stage and backup_is_original:
+            remove_path(backup)
+            _fsync_directory(target.parent)
+            action = "completed cleanup for"
+        elif (
+            target_is_original
+            and backup_is_placeholder
+            and (stage_is_owned or not _path_present(stage))
+        ):
+            if stage_is_owned:
+                remove_path(stage)
+            remove_path(backup)
+            _fsync_directory(target.parent)
+            action = "discarded prepared"
+        elif target_is_original and not _path_present(backup):
+            if stage_is_owned:
+                remove_path(stage)
+                _fsync_directory(target.parent)
+            action = "rolled back"
+        elif target_is_stage and not _path_present(backup):
+            action = "completed cleanup for"
+
+        if action is None:
+            print(
+                f"warning: force-install recovery journal state mismatch left untouched: {journal}",
+                file=sys.stderr,
+            )
+        else:
+            _remove_recovery_journal(journal)
+            print(
+                f"warning: {action} interrupted force install: {target}",
+                file=sys.stderr,
+            )
     _warn_legacy_force_backups(target)
 
 
@@ -564,16 +773,47 @@ def install_atomically(target: Path, stage: Path, force: bool) -> None:
         return
     if not force:
         raise SkillError(f"Target already exists: {target}; use --force to replace")
-    backup = _force_backup_path(target)
-    if _path_present(backup):
-        raise SkillError(f"Force-install recovery backup already exists: {backup}")
-    os.replace(target, backup)
+    nonce = secrets.token_hex(16)
+    backup = _create_force_backup_placeholder(target, nonce)
+    journal = _install_journal_path(target)
+    payload: dict[str, object] = {
+        "schema_version": INSTALL_JOURNAL_SCHEMA_VERSION,
+        "operation": "force-replace",
+        "nonce": nonce,
+        "target": str(target),
+        "backup": str(backup),
+        "stage": str(stage),
+        "original_identity": _node_identity(target),
+        "stage_identity": _node_identity(stage),
+        "placeholder_identity": _node_identity(backup),
+    }
+    try:
+        _write_recovery_journal(journal, payload)
+    except BaseException:
+        if _identity_matches(backup, payload["placeholder_identity"]):
+            remove_path(backup)
+            _fsync_directory(target.parent)
+        raise
+    try:
+        os.replace(target, backup)
+    except BaseException:
+        if _identity_matches(backup, payload["placeholder_identity"]):
+            remove_path(backup)
+            _fsync_directory(target.parent)
+        _remove_recovery_journal(journal)
+        raise
+    _fsync_directory(target.parent)
     try:
         os.replace(stage, target)
     except BaseException:
         os.replace(backup, target)
+        _fsync_directory(target.parent)
+        _remove_recovery_journal(journal)
         raise
+    _fsync_directory(target.parent)
     remove_path(backup)
+    _fsync_directory(target.parent)
+    _remove_recovery_journal(journal)
 
 
 def main() -> int:
@@ -610,6 +850,7 @@ def main() -> int:
         print(f"target: {target}")
         print(f"mode: {mode}")
         if args.dry_run:
+            _warn_recovery_journal(target)
             _warn_legacy_force_backups(target)
             return 0
         if already_installed(target, mode, manifest_entries):
