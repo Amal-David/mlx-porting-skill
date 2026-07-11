@@ -24,10 +24,12 @@ from recommend_optimizations import (
 )
 
 
-GENERATOR_VERSION = "1.0.1"
+GENERATOR_VERSION = "1.1.0"
 SCAFFOLD_MANIFEST = "scaffold-manifest.json"
 DENSE_FAMILY = "dense-decoder-transformer"
 DENSE_RUNBOOK = "references/runbook-decoder-transformer.md"
+ENCDEC_FAMILY = "encoder-decoder-transformer"
+ENCDEC_RUNBOOK = "references/runbook-encoder-decoder.md"
 
 # Computation-bearing keys whose semantics this generator implements. Keys that
 # are not here must be known non-computational metadata or they fail closed.
@@ -56,6 +58,26 @@ DENSE_CONFIG_FEATURE_ALLOWLIST = frozenset({
     "vocab_size",
 })
 FEATURE_ALLOWLIST = DENSE_CONFIG_FEATURE_ALLOWLIST
+T5_CONFIG_FEATURE_ALLOWLIST = frozenset({
+    "d_model",
+    "num_layers",
+    "num_heads",
+    "d_ff",
+    "d_kv",
+    "relative_attention_num_buckets",
+    "relative_attention_max_distance",
+    "dense_act_fn",
+    "feed_forward_proj",
+    "layer_norm_epsilon",
+    "vocab_size",
+    "tie_word_embeddings",
+})
+T5_INFERENCE_METADATA_KEYS = frozenset({
+    "dropout_rate",
+    "initializer_factor",
+    "n_positions",
+    "output_past",
+})
 
 KNOWN_METADATA_KEYS = frozenset({
     "_commit_hash",
@@ -327,6 +349,165 @@ def validate_dense_config(config: Any) -> dict[str, Any]:
     if isinstance(rope_scaling, dict) and _rope_type(rope_scaling) == "dynamic" and head_dim <= 2:
         raise SkillError("config.json dynamic RoPE requires head_dim greater than 2")
     return config
+
+
+def unsupported_t5_features(config: dict[str, Any]) -> list[str]:
+    """Return every T5 computation feature the encoder-decoder graph cannot implement."""
+    errors: list[str] = []
+    if config.get("model_type") != "t5":
+        errors.append("only model_type='t5' is implemented for this family")
+    if config.get("is_encoder_decoder") is not True:
+        errors.append("is_encoder_decoder must be true")
+    activation = config.get("dense_act_fn", config.get("feed_forward_proj", "relu"))
+    if not isinstance(activation, str) or activation.lower() != "relu":
+        errors.append(
+            f"dense_act_fn/feed_forward_proj={activation!r} is not supported; "
+            "only the non-gated relu T5 feed-forward path is implemented"
+        )
+    projection = config.get("feed_forward_proj", "relu")
+    if not isinstance(projection, str) or projection.lower() != "relu":
+        errors.append(
+            f"feed_forward_proj={projection!r} is not supported; gated T5 variants fail closed"
+        )
+    dropout = config.get("dropout_rate", 0.0)
+    if isinstance(dropout, bool) or not isinstance(dropout, (int, float)) or not 0 <= dropout < 1:
+        errors.append("dropout_rate must be a number in [0, 1); it is disabled in eval inference")
+    classified = (
+        T5_CONFIG_FEATURE_ALLOWLIST
+        | T5_INFERENCE_METADATA_KEYS
+        | KNOWN_METADATA_KEYS
+    )
+    for key in sorted(set(config) - classified):
+        errors.append(f"unrecognized computation-relevant config key {key!r}")
+    return errors
+
+
+def validate_t5_config(config: Any) -> dict[str, Any]:
+    if not isinstance(config, dict):
+        raise SkillError("config.json must contain an object")
+    errors = unsupported_t5_features(config)
+    if errors:
+        raise SkillError(
+            "Unsupported T5 config features; no code was generated. "
+            f"Consult {ENCDEC_RUNBOOK}:\n- " + "\n- ".join(errors)
+        )
+    d_model = _config_int(config, "d_model")
+    heads = _config_int(config, "num_heads")
+    d_kv = _config_int(config, "d_kv")
+    _config_int(config, "num_layers")
+    _config_int(config, "d_ff")
+    buckets = _config_int(config, "relative_attention_num_buckets")
+    max_distance = _config_int(config, "relative_attention_max_distance", default=128)
+    _config_int(config, "vocab_size")
+    _config_float(config, "layer_norm_epsilon", default=1e-6)
+    if d_model != heads * d_kv:
+        raise SkillError("config.json d_model must equal num_heads * d_kv")
+    if buckets < 4 or buckets % 2 != 0:
+        raise SkillError(
+            "config.json relative_attention_num_buckets must be an even integer >= 4"
+        )
+    max_exact = (buckets // 2) // 2
+    if max_distance <= max_exact:
+        raise SkillError(
+            "config.json relative_attention_max_distance must exceed the "
+            "bidirectional max_exact bucket boundary"
+        )
+    if config.get("tie_word_embeddings") is not True:
+        raise SkillError("T5 scaffold currently requires tie_word_embeddings=true")
+    for key in ("decoder_start_token_id", "pad_token_id"):
+        value = config.get(key)
+        if type(value) is not int or value < 0:
+            raise SkillError(f"config.json {key} must be a non-negative integer")
+    return config
+
+
+T5_CONFIG_TEMPLATE = r'''__HEADER__
+"""Validated config.json parser for the generated T5 encoder-decoder."""
+from __future__ import annotations
+
+import json
+from dataclasses import dataclass
+from pathlib import Path
+from typing import Any
+
+
+def _positive_int(data: dict[str, Any], key: str, default: int | None = None) -> int:
+    value = data.get(key, default)
+    if type(value) is not int or value <= 0:
+        raise ValueError(f"{key} must be a positive integer")
+    return value
+
+
+@dataclass(frozen=True)
+class ModelConfig:
+    d_model: int
+    num_layers: int
+    num_heads: int
+    d_ff: int
+    d_kv: int
+    relative_attention_num_buckets: int
+    relative_attention_max_distance: int
+    layer_norm_epsilon: float
+    vocab_size: int
+    tie_word_embeddings: bool
+    decoder_start_token_id: int
+    pad_token_id: int
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> "ModelConfig":
+        activation = data.get("dense_act_fn", data.get("feed_forward_proj", "relu"))
+        projection = data.get("feed_forward_proj", "relu")
+        if not isinstance(activation, str) or activation.lower() != "relu":
+            raise ValueError("only dense_act_fn=relu is supported")
+        if not isinstance(projection, str) or projection.lower() != "relu":
+            raise ValueError("gated feed_forward_proj variants are not supported")
+        d_model = _positive_int(data, "d_model")
+        heads = _positive_int(data, "num_heads")
+        d_kv = _positive_int(data, "d_kv")
+        if d_model != heads * d_kv:
+            raise ValueError("d_model must equal num_heads * d_kv")
+        epsilon = data.get("layer_norm_epsilon", 1e-6)
+        if isinstance(epsilon, bool) or not isinstance(epsilon, (int, float)) or epsilon <= 0:
+            raise ValueError("layer_norm_epsilon must be positive")
+        start = data.get("decoder_start_token_id")
+        pad = data.get("pad_token_id")
+        if type(start) is not int or start < 0 or type(pad) is not int or pad < 0:
+            raise ValueError("decoder_start_token_id and pad_token_id must be non-negative integers")
+        if data.get("tie_word_embeddings") is not True:
+            raise ValueError("T5 scaffold requires tie_word_embeddings=true")
+        buckets = _positive_int(data, "relative_attention_num_buckets")
+        max_distance = _positive_int(data, "relative_attention_max_distance", 128)
+        if buckets < 4 or buckets % 2 != 0:
+            raise ValueError("relative_attention_num_buckets must be an even integer >= 4")
+        max_exact = (buckets // 2) // 2
+        if max_distance <= max_exact:
+            raise ValueError(
+                "relative_attention_max_distance must exceed the bidirectional "
+                "max_exact bucket boundary"
+            )
+        return cls(
+            d_model=d_model,
+            num_layers=_positive_int(data, "num_layers"),
+            num_heads=heads,
+            d_ff=_positive_int(data, "d_ff"),
+            d_kv=d_kv,
+            relative_attention_num_buckets=buckets,
+            relative_attention_max_distance=max_distance,
+            layer_norm_epsilon=float(epsilon),
+            vocab_size=_positive_int(data, "vocab_size"),
+            tie_word_embeddings=True,
+            decoder_start_token_id=start,
+            pad_token_id=pad,
+        )
+
+    @classmethod
+    def from_file(cls, path: str | Path) -> "ModelConfig":
+        with Path(path).open("r", encoding="utf-8") as handle:
+            data = json.load(handle)
+        if not isinstance(data, dict):
+            raise ValueError("config.json must contain an object")
+        return cls.from_dict(data)
+'''
 
 
 CONFIG_TEMPLATE = r'''__HEADER__
@@ -670,6 +851,385 @@ def greedy_generate(model, input_ids, max_new_tokens: int):
             else:
                 logits, cache = model(next_token[:, None], cache=cache)
             next_token = mx.argmax(logits[:, -1, :], axis=-1).astype(input_ids.dtype)
+    result = mx.stack(generated, axis=1)
+    getattr(mx, "eval")(result)
+    return result
+'''
+
+
+T5_MODEL_TEMPLATE = r'''__HEADER__
+"""Minimal eager MLX T5 encoder-decoder with relative bias and decode caches."""
+from __future__ import annotations
+
+import math
+from pathlib import Path
+
+from config import ModelConfig
+
+
+def _require_mlx():
+    try:
+        import mlx.core as mx
+        import mlx.nn as nn
+    except ImportError as exc:
+        raise RuntimeError("generated model requires MLX: python3 -m pip install mlx") from exc
+    return mx, nn
+
+
+def build_model(config: ModelConfig):
+    mx, nn = _require_mlx()
+
+    class T5LayerNorm(nn.Module):
+        def __init__(self):
+            super().__init__()
+            self.weight = mx.ones((config.d_model,))
+
+        def __call__(self, hidden):
+            variance = mx.mean(hidden.astype(mx.float32) ** 2, axis=-1, keepdims=True)
+            normalized = hidden * mx.rsqrt(variance + config.layer_norm_epsilon)
+            return self.weight * normalized.astype(self.weight.dtype)
+
+    class RelativeAttentionBias(nn.Module):
+        def __init__(self, bidirectional: bool):
+            super().__init__()
+            self.bidirectional = bidirectional
+            self.weight = mx.zeros(
+                (config.relative_attention_num_buckets, config.num_heads)
+            )
+
+        def _bucket(self, relative_position):
+            buckets = config.relative_attention_num_buckets
+            result = mx.zeros_like(relative_position).astype(mx.int32)
+            if self.bidirectional:
+                buckets //= 2
+                result = result + (relative_position > 0).astype(mx.int32) * buckets
+                distance = mx.abs(relative_position)
+            else:
+                distance = mx.maximum(-relative_position, 0)
+            max_exact = buckets // 2
+            small = distance < max_exact
+            safe_distance = mx.maximum(distance, 1).astype(mx.float32)
+            large = max_exact + (
+                mx.log(safe_distance / max_exact)
+                / math.log(config.relative_attention_max_distance / max_exact)
+                * (buckets - max_exact)
+            ).astype(mx.int32)
+            large = mx.minimum(large, buckets - 1)
+            return result + mx.where(small, distance.astype(mx.int32), large)
+
+        def __call__(self, query_length: int, key_length: int, offset: int = 0):
+            query = mx.arange(offset, offset + query_length)[:, None]
+            key = mx.arange(key_length)[None, :]
+            values = self.weight[self._bucket(key - query)]
+            return values.transpose(2, 0, 1)[None, :, :, :]
+
+    class Attention(nn.Module):
+        def __init__(self, *, relative_bias: bool, bidirectional: bool):
+            super().__init__()
+            inner = config.num_heads * config.d_kv
+            self.q = nn.Linear(config.d_model, inner, bias=False)
+            self.k = nn.Linear(config.d_model, inner, bias=False)
+            self.v = nn.Linear(config.d_model, inner, bias=False)
+            self.o = nn.Linear(inner, config.d_model, bias=False)
+            if relative_bias:
+                self.relative_attention_bias = RelativeAttentionBias(bidirectional)
+
+        def position_bias(self, query_length: int, key_length: int, offset: int = 0):
+            return self.relative_attention_bias(query_length, key_length, offset)
+
+        def __call__(
+            self,
+            hidden,
+            *,
+            context=None,
+            position_bias=None,
+            attention_mask=None,
+            causal=False,
+            cache=None,
+        ):
+            context = hidden if context is None else context
+            batch, query_length, _ = hidden.shape
+            q = self.q(hidden).reshape(batch, query_length, config.num_heads, config.d_kv)
+            q = q.transpose(0, 2, 1, 3)
+            if cache is None:
+                key_length = context.shape[1]
+                k = self.k(context).reshape(batch, key_length, config.num_heads, config.d_kv)
+                v = self.v(context).reshape(batch, key_length, config.num_heads, config.d_kv)
+                k = k.transpose(0, 2, 1, 3)
+                v = v.transpose(0, 2, 1, 3)
+            elif context is hidden:
+                new_k = self.k(hidden).reshape(batch, query_length, config.num_heads, config.d_kv)
+                new_v = self.v(hidden).reshape(batch, query_length, config.num_heads, config.d_kv)
+                new_k = new_k.transpose(0, 2, 1, 3)
+                new_v = new_v.transpose(0, 2, 1, 3)
+                k = mx.concatenate((cache[0], new_k), axis=2)
+                v = mx.concatenate((cache[1], new_v), axis=2)
+                key_length = k.shape[2]
+            else:
+                k, v = cache
+                key_length = k.shape[2]
+            scores = q.astype(mx.float32) @ k.astype(mx.float32).transpose(0, 1, 3, 2)
+            if position_bias is not None:
+                scores = scores + position_bias.astype(mx.float32)
+            mask_value = mx.array(-3.4028234663852886e38, dtype=mx.float32)
+            offset = key_length - query_length if context is hidden else 0
+            if causal:
+                query_positions = mx.arange(offset, offset + query_length)[:, None]
+                key_positions = mx.arange(key_length)[None, :]
+                scores = mx.where(
+                    (key_positions <= query_positions)[None, None, :, :], scores, mask_value
+                )
+            if attention_mask is not None:
+                scores = mx.where(
+                    attention_mask[:, None, None, :].astype(mx.bool_), scores, mask_value
+                )
+            probabilities = mx.softmax(scores, axis=-1).astype(q.dtype)
+            attended = probabilities @ v
+            attended = attended.transpose(0, 2, 1, 3).reshape(
+                batch, query_length, config.d_model
+            )
+            return self.o(attended), (k, v)
+
+    class DenseReluDense(nn.Module):
+        def __init__(self):
+            super().__init__()
+            self.wi = nn.Linear(config.d_model, config.d_ff, bias=False)
+            self.wo = nn.Linear(config.d_ff, config.d_model, bias=False)
+
+        def __call__(self, hidden):
+            return self.wo(nn.relu(self.wi(hidden)))
+
+    class SelfAttentionLayer(nn.Module):
+        def __init__(self, *, relative_bias: bool, bidirectional: bool):
+            super().__init__()
+            self.SelfAttention = Attention(
+                relative_bias=relative_bias, bidirectional=bidirectional
+            )
+            self.layer_norm = T5LayerNorm()
+
+        def __call__(self, hidden, **kwargs):
+            attention, cache = self.SelfAttention(self.layer_norm(hidden), **kwargs)
+            return hidden + attention, cache
+
+    class CrossAttentionLayer(nn.Module):
+        def __init__(self):
+            super().__init__()
+            self.EncDecAttention = Attention(relative_bias=False, bidirectional=True)
+            self.layer_norm = T5LayerNorm()
+
+        def __call__(self, hidden, memory, *, attention_mask=None, cache=None):
+            attention, cache = self.EncDecAttention(
+                self.layer_norm(hidden),
+                context=memory,
+                attention_mask=attention_mask,
+                cache=cache,
+            )
+            return hidden + attention, cache
+
+    class FeedForwardLayer(nn.Module):
+        def __init__(self):
+            super().__init__()
+            self.DenseReluDense = DenseReluDense()
+            self.layer_norm = T5LayerNorm()
+
+        def __call__(self, hidden):
+            return hidden + self.DenseReluDense(self.layer_norm(hidden))
+
+    class EncoderBlock(nn.Module):
+        def __init__(self, index: int):
+            super().__init__()
+            self.layer = [
+                SelfAttentionLayer(relative_bias=index == 0, bidirectional=True),
+                FeedForwardLayer(),
+            ]
+
+        def __call__(self, hidden, *, position_bias, attention_mask):
+            hidden, _ = self.layer[0](
+                hidden, position_bias=position_bias, attention_mask=attention_mask
+            )
+            return self.layer[1](hidden)
+
+    class DecoderBlock(nn.Module):
+        def __init__(self, index: int):
+            super().__init__()
+            self.layer = [
+                SelfAttentionLayer(relative_bias=index == 0, bidirectional=False),
+                CrossAttentionLayer(),
+                FeedForwardLayer(),
+            ]
+
+        def __call__(self, hidden, memory, *, position_bias, encoder_mask, cache=None):
+            self_cache = None if cache is None else cache[:2]
+            cross_cache = None if cache is None else cache[2:]
+            hidden, self_cache = self.layer[0](
+                hidden,
+                position_bias=position_bias,
+                causal=True,
+                cache=self_cache,
+            )
+            hidden, cross_cache = self.layer[1](
+                hidden, memory, attention_mask=encoder_mask, cache=cross_cache
+            )
+            cross_hidden = hidden
+            hidden = self.layer[2](hidden)
+            return hidden, (*self_cache, *cross_cache), cross_hidden
+
+    class Encoder(nn.Module):
+        def __init__(self):
+            super().__init__()
+            self.block = [EncoderBlock(index) for index in range(config.num_layers)]
+            self.final_layer_norm = T5LayerNorm()
+
+        def __call__(self, hidden, *, attention_mask=None, capture=False):
+            length = hidden.shape[1]
+            position_bias = self.block[0].layer[0].SelfAttention.position_bias(length, length)
+            captures = {"encoder.embed": hidden} if capture else {}
+            for index, block in enumerate(self.block):
+                hidden = block(
+                    hidden, position_bias=position_bias, attention_mask=attention_mask
+                )
+                if capture:
+                    captures[f"encoder.layer.{index}.hidden"] = hidden
+            hidden = self.final_layer_norm(hidden)
+            if capture:
+                captures["encoder.final_norm"] = hidden
+            return hidden, captures
+
+    class Decoder(nn.Module):
+        def __init__(self):
+            super().__init__()
+            self.block = [DecoderBlock(index) for index in range(config.num_layers)]
+            self.final_layer_norm = T5LayerNorm()
+
+        def __call__(self, hidden, memory, *, encoder_mask=None, cache=None, capture=False):
+            if cache is not None and len(cache) != len(self.block):
+                raise ValueError("decoder cache must contain one self/cross KV tuple per layer")
+            offset = 0 if cache is None else int(cache[0][0].shape[2])
+            key_length = offset + hidden.shape[1]
+            position_bias = self.block[0].layer[0].SelfAttention.position_bias(
+                hidden.shape[1], key_length, offset
+            )
+            captures = {"decoder.embed": hidden} if capture else {}
+            updated = []
+            for index, block in enumerate(self.block):
+                layer_cache = None if cache is None else cache[index]
+                hidden, layer_cache, cross_hidden = block(
+                    hidden,
+                    memory,
+                    position_bias=position_bias,
+                    encoder_mask=encoder_mask,
+                    cache=layer_cache,
+                )
+                updated.append(layer_cache)
+                if capture:
+                    captures[f"decoder.layer.{index}.cross_attention"] = cross_hidden
+                    captures[f"decoder.layer.{index}.hidden"] = hidden
+            hidden = self.final_layer_norm(hidden)
+            if capture:
+                captures["decoder.final_norm"] = hidden
+            return hidden, updated, captures
+
+    class T5ForConditionalGeneration(nn.Module):
+        def __init__(self):
+            super().__init__()
+            self.config = config
+            self.shared = nn.Embedding(config.vocab_size, config.d_model)
+            self.encoder = Encoder()
+            self.decoder = Decoder()
+
+        def encode(self, input_ids, *, attention_mask=None, capture=False):
+            return self.encoder(
+                self.shared(input_ids), attention_mask=attention_mask, capture=capture
+            )
+
+        def decode(self, decoder_input_ids, memory, *, encoder_mask=None, cache=None, capture=False):
+            hidden, updated, captures = self.decoder(
+                self.shared(decoder_input_ids),
+                memory,
+                encoder_mask=encoder_mask,
+                cache=cache,
+                capture=capture,
+            )
+            hidden = hidden * (config.d_model ** -0.5)
+            return self.shared.as_linear(hidden), updated, captures
+
+        def __call__(
+            self,
+            input_ids,
+            *,
+            attention_mask=None,
+            cache=None,
+            capture=False,
+            decoder_input_ids=None,
+            encoder_hidden_states=None,
+        ):
+            if encoder_hidden_states is None:
+                memory, encoder_captures = self.encode(
+                    input_ids, attention_mask=attention_mask, capture=capture
+                )
+            else:
+                memory, encoder_captures = encoder_hidden_states, {}
+            if decoder_input_ids is None:
+                decoder_input_ids = mx.full(
+                    (input_ids.shape[0], 1),
+                    config.decoder_start_token_id,
+                    dtype=input_ids.dtype,
+                )
+            logits, updated, decoder_captures = self.decode(
+                decoder_input_ids,
+                memory,
+                encoder_mask=attention_mask,
+                cache=cache,
+                capture=capture,
+            )
+            if capture:
+                captures = {
+                    **encoder_captures,
+                    "decoder_input_ids": decoder_input_ids,
+                    **decoder_captures,
+                    "logits": logits,
+                }
+                return logits, updated, captures
+            return logits, updated
+
+    return T5ForConditionalGeneration()
+
+
+def load_model(config_path: str | Path, weights_path: str | Path):
+    mx, _ = _require_mlx()
+    config = ModelConfig.from_file(config_path)
+    model = build_model(config)
+    weights = mx.load(str(weights_path))
+    if not isinstance(weights, dict):
+        raise ValueError("converted weights must load as a name-to-array mapping")
+    model.load_weights(list(weights.items()), strict=True)
+    getattr(mx, "eval")(model.parameters())
+    return model
+
+
+def greedy_generate(model, input_ids, max_new_tokens: int, attention_mask=None):
+    mx, _ = _require_mlx()
+    if max_new_tokens < 0:
+        raise ValueError("max_new_tokens must be non-negative")
+    batch = input_ids.shape[0]
+    if max_new_tokens == 0:
+        return mx.zeros((batch, 0), dtype=input_ids.dtype)
+    if attention_mask is None:
+        attention_mask = mx.ones(input_ids.shape, dtype=mx.int32)
+    memory, _ = model.encode(input_ids, attention_mask=attention_mask)
+    decoder_ids = mx.full(
+        (batch, 1), model.config.decoder_start_token_id, dtype=input_ids.dtype
+    )
+    generated = []
+    cache = None
+    current = decoder_ids
+    for _ in range(max_new_tokens):
+        logits, cache, _ = model.decode(
+            current, memory, encoder_mask=attention_mask, cache=cache
+        )
+        next_token = mx.argmax(logits[:, -1, :], axis=-1).astype(input_ids.dtype)
+        generated.append(next_token)
+        current = next_token[:, None]
     result = mx.stack(generated, axis=1)
     getattr(mx, "eval")(result)
     return result
@@ -1021,11 +1581,55 @@ def dense_target_tensors(
     return [{"key": key, "shape": tensors[key]} for key in sorted(tensors)]
 
 
+def t5_target_tensors(config: dict[str, Any]) -> list[dict[str, Any]]:
+    """Return the exact T5 parameter contract, preserving the shared tie owner."""
+    hidden = _config_int(config, "d_model")
+    inner = _config_int(config, "num_heads") * _config_int(config, "d_kv")
+    intermediate = _config_int(config, "d_ff")
+    layers = _config_int(config, "num_layers")
+    buckets = _config_int(config, "relative_attention_num_buckets")
+    heads = _config_int(config, "num_heads")
+    vocab = _config_int(config, "vocab_size")
+    tensors: dict[str, list[int]] = {
+        "shared.weight": [vocab, hidden],
+        "encoder.final_layer_norm.weight": [hidden],
+        "decoder.final_layer_norm.weight": [hidden],
+        "encoder.block.0.layer.0.SelfAttention.relative_attention_bias.weight": [buckets, heads],
+        "decoder.block.0.layer.0.SelfAttention.relative_attention_bias.weight": [buckets, heads],
+    }
+    for index in range(layers):
+        encoder = f"encoder.block.{index}"
+        tensors[f"{encoder}.layer.0.layer_norm.weight"] = [hidden]
+        for projection in ("q", "k", "v", "o"):
+            tensors[f"{encoder}.layer.0.SelfAttention.{projection}.weight"] = [
+                hidden if projection == "o" else inner,
+                inner if projection == "o" else hidden,
+            ]
+        tensors[f"{encoder}.layer.1.layer_norm.weight"] = [hidden]
+        tensors[f"{encoder}.layer.1.DenseReluDense.wi.weight"] = [intermediate, hidden]
+        tensors[f"{encoder}.layer.1.DenseReluDense.wo.weight"] = [hidden, intermediate]
+
+        decoder = f"decoder.block.{index}"
+        for layer_index, attention in ((0, "SelfAttention"), (1, "EncDecAttention")):
+            tensors[f"{decoder}.layer.{layer_index}.layer_norm.weight"] = [hidden]
+            for projection in ("q", "k", "v", "o"):
+                tensors[f"{decoder}.layer.{layer_index}.{attention}.{projection}.weight"] = [
+                    hidden if projection == "o" else inner,
+                    inner if projection == "o" else hidden,
+                ]
+        tensors[f"{decoder}.layer.2.layer_norm.weight"] = [hidden]
+        tensors[f"{decoder}.layer.2.DenseReluDense.wi.weight"] = [intermediate, hidden]
+        tensors[f"{decoder}.layer.2.DenseReluDense.wo.weight"] = [hidden, intermediate]
+    return [{"key": key, "shape": tensors[key]} for key in sorted(tensors)]
+
+
 def _scaffold_manifest(
     files: dict[str, str],
     config: dict[str, Any],
     inspection_digest: str,
-    attention_biases: dict[str, bool],
+    attention_biases: dict[str, bool] | None = None,
+    *,
+    target_tensors: list[dict[str, Any]] | None = None,
 ) -> str:
     execution_files = ("capture.py", "config.json", "config.py", "model.py")
     records = []
@@ -1042,7 +1646,7 @@ def _scaffold_manifest(
         "inspection_sha256": inspection_digest,
         "config_sha256": hashlib.sha256(files["config.json"].encode("utf-8")).hexdigest(),
         "files": records,
-        "tensors": dense_target_tensors(config, attention_biases),
+        "tensors": target_tensors or dense_target_tensors(config, attention_biases),
     }
     return json.dumps(
         payload,
@@ -1089,9 +1693,47 @@ def generate_dense_decoder(
     return files
 
 
+def generate_t5_encoder_decoder(
+    inspection: dict[str, Any],
+    config: dict[str, Any],
+) -> dict[str, str]:
+    validate_t5_config(config)
+    digest = trusted_inspection_sha256(inspection)
+    header = _header(digest)
+    files = {
+        "config.json": json.dumps(config, indent=2, sort_keys=True, ensure_ascii=False) + "\n",
+        "config.py": T5_CONFIG_TEMPLATE.replace("__HEADER__", header),
+        "model.py": T5_MODEL_TEMPLATE.replace("__HEADER__", header),
+        "generate.py": GENERATE_TEMPLATE.replace("__HEADER__", header),
+        "capture.py": CAPTURE_TEMPLATE.replace("__HEADER__", header),
+        "README.md": (
+            "# Generated MLX T5 encoder-decoder\n\n"
+            f"Generated by `scaffold_port.py` {GENERATOR_VERSION} from trusted inspection "
+            f"`sha256:{digest}`.\n\n"
+            "The graph implements shared token embeddings and tied scaled logits, T5 "
+            "RMS-style LayerNorm, shared bucketed relative position bias for encoder and "
+            "decoder self-attention, bidirectional encoder attention, causal decoder "
+            "self-attention with growing KV cache, cached encoder cross-attention K/V, "
+            "non-gated ReLU feed-forward blocks, and deterministic greedy decoding.\n\n"
+            "The target parameter names intentionally mirror Hugging Face T5. Only "
+            "`shared.weight` owns the tied embedding/head tensor. Cross-attention has no "
+            "relative bias; a source checkpoint key claiming otherwise must be explicitly "
+            "ignored as unused source state rather than mapped.\n"
+        ),
+    }
+    files[SCAFFOLD_MANIFEST] = _scaffold_manifest(
+        files,
+        config,
+        digest,
+        target_tensors=t5_target_tensors(config),
+    )
+    return files
+
+
 Generator = Callable[[dict[str, Any], dict[str, Any]], dict[str, str]]
 FAMILY_GENERATORS: dict[str, Generator] = {
     DENSE_FAMILY: generate_dense_decoder,
+    ENCDEC_FAMILY: generate_t5_encoder_decoder,
 }
 
 

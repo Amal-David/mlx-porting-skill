@@ -301,7 +301,7 @@ class ParityRunnerDependencyFreeContractTests(unittest.TestCase):
         }
         ladder = run_parity.build_parity_ladder(keys, keys)
         expected = [
-            "input_ids", "embed", "layer.0.hidden", "layer.1.hidden",
+            "input_ids", "attention_mask", "embed", "layer.0.hidden", "layer.1.hidden",
             "final_norm", "logits", "generated_token_ids",
         ]
         self.assertEqual([rung["name"] for rung in ladder], expected)
@@ -485,7 +485,7 @@ class ParityRunnerEndToEndContractTests(unittest.TestCase):
             self.assertEqual(failing["summary"]["debug_target"], "layer 0")
             self.assertEqual(
                 [rung["name"] for rung in failing["rungs"]],
-                ["input_ids", "embed", "layer.0.hidden"],
+                ["input_ids", "attention_mask", "embed", "layer.0.hidden"],
             )
             self.assertFalse(failing["rungs"][-1]["pass"])
 

@@ -1,0 +1,87 @@
+{
+  "schema_version": 1,
+  "ok": false,
+  "inputs": {
+    "source_model": "$WORK/t5-small",
+    "package": "$WORK/t5-small-mlx",
+    "weights": "$WORK/t5-small-converted",
+    "mode": "token_ids",
+    "prompts": null,
+    "token_ids": [
+      13959,
+      1566,
+      12,
+      2968,
+      10,
+      37,
+      629,
+      19,
+      1627,
+      5,
+      1
+    ],
+    "generate_steps": 8,
+    "seed": 0,
+    "dtype_policy": "float32",
+    "allow_modified": false
+  },
+  "tolerances": {
+    "atol": 0.00001,
+    "rtol": 0.0001,
+    "cosine_min": -1.0
+  },
+  "rungs": [
+    {
+      "position": 0,
+      "name": "input_ids",
+      "source_key": "input_ids",
+      "target_key": "input_ids",
+      "exact": true,
+      "pass": true,
+      "max_abs": 0.0,
+      "max_rel": 0.0,
+      "cosine": 1.0
+    },
+    {
+      "position": 1,
+      "name": "attention_mask",
+      "source_key": "attention_mask",
+      "target_key": "attention_mask",
+      "exact": true,
+      "pass": true,
+      "max_abs": 0.0,
+      "max_rel": 0.0,
+      "cosine": 1.0
+    },
+    {
+      "position": 2,
+      "name": "encoder.embed",
+      "source_key": "encoder.embed",
+      "target_key": "encoder.embed",
+      "exact": false,
+      "pass": true,
+      "max_abs": 0.0,
+      "max_rel": 0.0,
+      "cosine": 1.0
+    },
+    {
+      "position": 3,
+      "name": "encoder.layer.0.hidden",
+      "source_key": "encoder.layer.0.hidden",
+      "target_key": "encoder.layer.0.hidden",
+      "exact": false,
+      "pass": false,
+      "max_abs": 0.00048828125,
+      "max_rel": 0.0036957950065703024,
+      "cosine": 0.99999999999999
+    }
+  ],
+  "summary": {
+    "status": "fail",
+    "evaluated_rungs": 4,
+    "total_rungs": 27,
+    "stopped_at": "encoder.layer.0.hidden",
+    "debug_target": "encoder layer 0",
+    "message": "First divergence is encoder layer 0."
+  }
+}

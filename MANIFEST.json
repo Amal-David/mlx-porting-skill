@@ -2,8 +2,8 @@
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
   "version": "0.5.0",
-  "generated_at": "2026-07-11T07:06:02.505293+00:00",
-  "file_count": 461,
+  "generated_at": "2026-07-11T16:52:00.897143+00:00",
+  "file_count": 471,
   "files": [
     {
       "path": ".agents/skills/mlx-model-porting",
@@ -105,8 +105,8 @@
     },
     {
       "path": "VALIDATION.md",
-      "size_bytes": 17814,
-      "sha256": "e3f7fdec87a88e77e5994e5eef75ff3137cf7dbff0f73df3082dcde52d13203e",
+      "size_bytes": 18185,
+      "sha256": "8bd8536f16241ba4835db9903d08f7a8fdef630d15b858370c308506f20d1a88",
       "executable": false
     },
     {
@@ -171,8 +171,8 @@
     },
     {
       "path": "mlx-model-porting/SKILL.md",
-      "size_bytes": 13463,
-      "sha256": "05b749003a1e73189412e0c174236e782a24639fbf80c13704093feebf1d0c69",
+      "size_bytes": 13350,
+      "sha256": "3b8a24eab68f667740690fc57d108cb3490707164dcb2a0fb61fee647ae7e43e",
       "executable": false
     },
     {
@@ -1010,6 +1010,60 @@
       "executable": false
     },
     {
+      "path": "mlx-model-porting/examples/worked-port-t5-small/PORT_PLAN.md",
+      "size_bytes": 1413,
+      "sha256": "77152ad6bcc7b970788d5bcb795820e676be7903e67bb19ed786bc390f72b5d3",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/examples/worked-port-t5-small/README.md",
+      "size_bytes": 4322,
+      "sha256": "fa5b22032ae26b1ae89333e4eeb1ad2001a6d3b45450dac5e79a7471bf468b57",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/examples/worked-port-t5-small/SOURCE_PROVENANCE.json",
+      "size_bytes": 1237,
+      "sha256": "cf9a6adbab9e9a167bdffbc2ea3ef27aa486c107d622bc823f4fe5102efc5a27",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/examples/worked-port-t5-small/WEIGHT_MAP.json",
+      "size_bytes": 43404,
+      "sha256": "80a8484883492ab2d43d83afae622c992afaa2277406a231cb2854aa955f97b1",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/examples/worked-port-t5-small/inspection.json",
+      "size_bytes": 43597,
+      "sha256": "e79397d86dd41d415fde432288e6860355eb8ab63ebb90e146f7a38aa270dc01",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/examples/worked-port-t5-small/parity-report-tight.json",
+      "size_bytes": 1836,
+      "sha256": "7b22cad207bc41d7cab1694853ff286841663a152233a20ff22a1baa9347b1a3",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/examples/worked-port-t5-small/parity-report.json",
+      "size_bytes": 9042,
+      "sha256": "cc475bdadeb91cae2d53f4c8d32393fea476486ca511c768f6acdc2b3cfd9e11",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/examples/worked-port-t5-small/source-oracle.manifest.json",
+      "size_bytes": 7049,
+      "sha256": "2bc85f8a2889fe491115accc7d92ae0a2a4df39cadac246d44a48647bb40267a",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/examples/worked-port-t5-small/target-f32.manifest.json",
+      "size_bytes": 7059,
+      "sha256": "34f513a25d4658cd11d0efa746103f53cdec15c761c78d3207711be4cec49c84",
+      "executable": false
+    },
+    {
       "path": "mlx-model-porting/references/attention-and-kv.md",
       "size_bytes": 5481,
       "sha256": "e7d87f2921d994397a0e11c1dd69e55b3a1faf14c7758a6e2f649e1c6fe51645",
@@ -1095,8 +1149,8 @@
     },
     {
       "path": "mlx-model-porting/references/parity-and-testing.md",
-      "size_bytes": 8148,
-      "sha256": "165ed03a6ddfbbe1ef993e4e25cf454bf040fb95d5a1319c1fcb7513401a5a09",
+      "size_bytes": 8700,
+      "sha256": "42bee58dbd4dded1fb8399e5626ddeb45e690b39ad749ef7526cac1e609c0ac9",
       "executable": false
     },
     {
@@ -1143,8 +1197,8 @@
     },
     {
       "path": "mlx-model-porting/references/runbook-encoder-decoder.md",
-      "size_bytes": 3077,
-      "sha256": "07465443ec96895c48a714593e60e4f9ec9d764ce1839ff58bf3a1aad491993f",
+      "size_bytes": 3941,
+      "sha256": "2eb1650680fdf6938598ec82ee702692ddaadeb6c5ae98c2164f2d1bea059308",
       "executable": false
     },
     {
@@ -1809,14 +1863,14 @@
     },
     {
       "path": "mlx-model-porting/scripts/capture_mlx.py",
-      "size_bytes": 23956,
-      "sha256": "fd6ee51fbbe2d4134a789510e3d5cab71a2ebcfdf7f1f6f8d0c6b5916441422e",
+      "size_bytes": 24316,
+      "sha256": "e6f9531c3ba6e9f41c1ca070a63266beedbd7ab168eb7cc378fd76341e25a54a",
       "executable": false
     },
     {
       "path": "mlx-model-porting/scripts/capture_oracle.py",
-      "size_bytes": 29599,
-      "sha256": "a8243149d5d1a6b796f61e568d84d3f5f7ae66ee794d1197b59484447e142290",
+      "size_bytes": 34966,
+      "sha256": "b976f30526a9c8cc0053c124358fc3604a7cdc7d62986dae8146ffcd82816f4a",
       "executable": false
     },
     {
@@ -1911,8 +1965,8 @@
     },
     {
       "path": "mlx-model-porting/scripts/run_parity.py",
-      "size_bytes": 20634,
-      "sha256": "537769bafeac9eaa4b65639b3aa6e51730f3e793bd801e395e87e04aef65e3fd",
+      "size_bytes": 23668,
+      "sha256": "bc22894dbcfbac92517516e54346ec8bc5e48c86b03cc702e95d9a364e69a497",
       "executable": false
     },
     {
@@ -1923,8 +1977,8 @@
     },
     {
       "path": "mlx-model-porting/scripts/scaffold_port.py",
-      "size_bytes": 48404,
-      "sha256": "e6c6b3b81dc8bfccda956e6f529d3815a20f9242f5bc06d82d6cbd4aba094a0f",
+      "size_bytes": 75680,
+      "sha256": "75ec6540ea027ee8ccbedf96c225f4c5f218937dacb71a995e7dda1edc2ee5af",
       "executable": true
     },
     {
@@ -2594,6 +2648,12 @@
       "executable": false
     },
     {
+      "path": "tests/test_encoder_decoder_contract.py",
+      "size_bytes": 15548,
+      "sha256": "5198a1657dd1bbc680f8d0a855c04b45a31f3b37f1ef0d1ff0a1a02bdd6c5b29",
+      "executable": false
+    },
+    {
       "path": "tests/test_evidence_index_contract.py",
       "size_bytes": 12183,
       "sha256": "084709f8d5695d58539e87573ee8f48729376d43b89d6847d878243f44c7ab5e",
@@ -2685,8 +2745,8 @@
     },
     {
       "path": "tests/test_parity_runner_contract.py",
-      "size_bytes": 20777,
-      "sha256": "15fbc18dad7e5f3e0ecd4f9366d9adcf811bc2f7bc4c659e65990bb72f73d95d",
+      "size_bytes": 20813,
+      "sha256": "57c0b4c0c41d405c12fd28bccfcbff72533d58bee0fd1df4e342a9fb059f4aa9",
       "executable": false
     },
     {
@@ -2721,8 +2781,8 @@
     },
     {
       "path": "tests/test_scaffold_port_contract.py",
-      "size_bytes": 29925,
-      "sha256": "1d7dd77b3f8e8f059a0883db1544be49a6a56573510be9cfde8c3aef94de7b99",
+      "size_bytes": 29952,
+      "sha256": "63530335d03120132ec78160f38744c78f0e45f11fb647b6acd6a7cf974e2338",
       "executable": false
     },
     {

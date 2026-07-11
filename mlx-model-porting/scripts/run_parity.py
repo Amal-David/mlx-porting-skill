@@ -29,6 +29,8 @@ SCHEMA_VERSION = 1
 DEFAULT_TIMEOUT_SECONDS = 300.0
 MAX_TIMEOUT_SECONDS = 3600.0
 LAYER_KEY_RE = re.compile(r"layer\.([0-9]+)\.hidden\Z")
+ENCODER_LAYER_KEY_RE = re.compile(r"encoder\.layer\.([0-9]+)\.hidden\Z")
+DECODER_LAYER_KEY_RE = re.compile(r"decoder\.layer\.([0-9]+)\.hidden\Z")
 REPORT_FIELDS = {"schema_version", "ok", "inputs", "tolerances", "rungs", "summary"}
 RUNG_FIELDS = {
     "position",
@@ -91,20 +93,69 @@ def build_parity_ladder(
     """Map the stable same-name tensor contract into runbook ladder order."""
     source = set(source_keys)
     target = set(target_keys)
-    required = {"input_ids", "embed", "final_norm", "logits", "generated_token_ids"}
+    encoder_decoder = "encoder.embed" in source
+    required = (
+        {
+            "input_ids",
+            "attention_mask",
+            "encoder.embed",
+            "encoder.final_norm",
+            "decoder_input_ids",
+            "decoder.embed",
+            "decoder.final_norm",
+            "logits",
+            "generated_token_ids",
+        }
+        if encoder_decoder
+        else {
+            "input_ids",
+            "attention_mask",
+            "embed",
+            "final_norm",
+            "logits",
+            "generated_token_ids",
+        }
+    )
     missing_source = sorted(required - source)
     if missing_source:
         raise SkillError("source capture is missing parity keys: " + ", ".join(missing_source))
-    layer_indices = sorted(
-        int(match.group(1))
-        for key in source
-        if (match := LAYER_KEY_RE.fullmatch(key)) is not None
-    )
-    if not layer_indices or layer_indices != list(range(layer_indices[-1] + 1)):
-        raise SkillError("source layer.{i}.hidden keys must be contiguous from layer 0")
-    ordered = ["input_ids", "embed"]
-    ordered.extend(f"layer.{index}.hidden" for index in layer_indices)
-    ordered.extend(("final_norm", "logits", "generated_token_ids"))
+    if encoder_decoder:
+        encoder_indices = sorted(
+            int(match.group(1))
+            for key in source
+            if (match := ENCODER_LAYER_KEY_RE.fullmatch(key)) is not None
+        )
+        decoder_indices = sorted(
+            int(match.group(1))
+            for key in source
+            if (match := DECODER_LAYER_KEY_RE.fullmatch(key)) is not None
+        )
+        if (
+            not encoder_indices
+            or encoder_indices != list(range(encoder_indices[-1] + 1))
+            or decoder_indices != encoder_indices
+        ):
+            raise SkillError("source encoder/decoder layer hidden keys must be matching and contiguous")
+        ordered = ["input_ids", "attention_mask", "encoder.embed"]
+        ordered.extend(f"encoder.layer.{index}.hidden" for index in encoder_indices)
+        ordered.extend(("encoder.final_norm", "decoder_input_ids", "decoder.embed"))
+        for index in decoder_indices:
+            cross = f"decoder.layer.{index}.cross_attention"
+            if cross not in source:
+                raise SkillError(f"source capture is missing parity key: {cross}")
+            ordered.extend((cross, f"decoder.layer.{index}.hidden"))
+        ordered.extend(("decoder.final_norm", "logits", "generated_token_ids"))
+    else:
+        layer_indices = sorted(
+            int(match.group(1))
+            for key in source
+            if (match := LAYER_KEY_RE.fullmatch(key)) is not None
+        )
+        if not layer_indices or layer_indices != list(range(layer_indices[-1] + 1)):
+            raise SkillError("source layer.{i}.hidden keys must be contiguous from layer 0")
+        ordered = ["input_ids", "attention_mask", "embed"]
+        ordered.extend(f"layer.{index}.hidden" for index in layer_indices)
+        ordered.extend(("final_norm", "logits", "generated_token_ids"))
     rungs = []
     for position, key in enumerate(ordered):
         rungs.append({
@@ -113,7 +164,8 @@ def build_parity_ladder(
             "source_key": key,
             "target_key": key,
             "target_present": key in target,
-            "exact": key in {"input_ids", "generated_token_ids"},
+            "exact": key
+            in {"input_ids", "attention_mask", "decoder_input_ids", "generated_token_ids"},
         })
     return rungs
 
@@ -269,12 +321,25 @@ def _run_tool(command: list[str], *, timeout: float, label: str) -> None:
 
 
 def _debug_target(key: str) -> tuple[str, str]:
+    if key.startswith("encoder.layer."):
+        layer = key.split(".")[2]
+        return f"encoder layer {layer}", f"First divergence is encoder layer {layer}."
+    if key.startswith("decoder.layer."):
+        layer = key.split(".")[2]
+        branch = " cross-attention" if key.endswith("cross_attention") else ""
+        return f"decoder layer {layer}{branch}", f"First divergence is decoder layer {layer}{branch}."
     match = LAYER_KEY_RE.fullmatch(key)
     if match is not None:
         layer = match.group(1)
         return f"layer {layer}", f"First divergence is layer {layer}; debug that decoder block."
     messages = {
         "input_ids": ("input preparation", "Input IDs differ; debug tokenization or fixture plumbing."),
+        "attention_mask": ("input preparation", "Attention masks differ; debug padding or fixture plumbing."),
+        "encoder.embed": ("encoder embedding", "First divergence is the encoder embedding stage."),
+        "encoder.final_norm": ("encoder final norm", "Encoder layers passed; debug its final norm."),
+        "decoder_input_ids": ("decoder start", "Decoder start IDs differ."),
+        "decoder.embed": ("decoder embedding", "First divergence is the decoder embedding stage."),
+        "decoder.final_norm": ("decoder final norm", "Decoder layers passed; debug its final norm."),
         "embed": ("embedding stage", "First divergence is the embedding stage; debug embedding weights and lookup."),
         "final_norm": ("final norm", "Decoder layers passed; debug the final normalization stage."),
         "logits": ("LM head", "Hidden states passed; debug the LM head or output scaling."),

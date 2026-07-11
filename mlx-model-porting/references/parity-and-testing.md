@@ -31,6 +31,13 @@ stable cross-framework contract:
 | `logits` | Full prompt logits. |
 | `generated_token_ids` | Exactly N greedy continuation IDs; prompt IDs are not repeated. |
 
+Encoder-decoder captures use architecture-specific stable keys:
+`encoder.embed`, every `encoder.layer.{i}.hidden`, `encoder.final_norm`,
+`decoder_input_ids`, `decoder.embed`, every
+`decoder.layer.{i}.cross_attention` and `decoder.layer.{i}.hidden`,
+`decoder.final_norm`, first-step `logits`, and `generated_token_ids`. Source
+input IDs and the attention mask always describe the encoder input.
+
 Floating captures are saved as float32 unless `--keep-dtype` is explicit.
 Integer IDs and masks retain their integer dtype. Future target-side capture
 tools should mirror these names exactly; model-specific extra checkpoints may
@@ -54,9 +61,12 @@ python3 mlx-model-porting/scripts/run_parity.py \
 Prompt mode accepts the same repeatable `--prompt` and `--prompts-file`
 fixtures as `capture_oracle.py`; the runner passes the pinned local source
 tokenizer to `capture_mlx.py`. Token-ID mode never loads a tokenizer. The
-strict-JSON report compares same-name keys in this order and stops immediately
-after the first failure: `input_ids`, `embed`, every `layer.{i}.hidden` in
-ascending order, `final_norm`, `logits`, and exact `generated_token_ids`.
+strict-JSON report compares same-name keys in runbook order and stops
+immediately after the first failure. Decoder-only order remains `input_ids`,
+`embed`, every `layer.{i}.hidden`, `final_norm`, `logits`, and exact generated
+IDs. Encoder-decoder order follows the encoder stack, then decoder start,
+cross-attention and block boundaries, decoder norm, logits, and exact generated
+IDs.
 
 `capture_mlx.py` validates the scaffold generator header, config digest,
 execution-file digests, and converted target parameter contract before running

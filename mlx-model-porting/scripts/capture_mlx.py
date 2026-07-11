@@ -38,7 +38,7 @@ from _common import SkillError, sha256_file
 
 
 SCAFFOLD_MANIFEST = "scaffold-manifest.json"
-SUPPORTED_GENERATOR_VERSION = "1.0.1"
+SUPPORTED_GENERATOR_VERSIONS = frozenset({"1.0.1", "1.1.0"})
 MAX_SCAFFOLD_MANIFEST_BYTES = 16 * 1024 * 1024
 MAX_CONFIG_BYTES = 16 * 1024 * 1024
 MAX_TOKENIZER_CONFIG_BYTES = 16 * 1024 * 1024
@@ -149,9 +149,12 @@ def _validate_scaffold_manifest(payload: Any) -> dict[str, Any]:
         {"name", "version"},
         label="scaffold manifest generator",
     )
-    if generator != {"name": "scaffold_port.py", "version": SUPPORTED_GENERATOR_VERSION}:
+    if (
+        generator.get("name") != "scaffold_port.py"
+        or generator.get("version") not in SUPPORTED_GENERATOR_VERSIONS
+    ):
         raise SkillError(
-            f"scaffold manifest must come from scaffold_port.py {SUPPORTED_GENERATOR_VERSION}"
+            "scaffold manifest must come from a supported scaffold_port.py version"
         )
     for field in ("inspection_sha256", "config_sha256"):
         if not isinstance(manifest[field], str) or SHA256_RE.fullmatch(manifest[field]) is None:
@@ -240,7 +243,7 @@ def validate_package(package: Path, *, allow_modified: bool) -> dict[str, Any]:
         identities = {identity for identity in header_identities.values() if identity is not None}
         if len(identities) != 1 or any(identity is None for identity in header_identities.values()):
             modified.extend(name for name, identity in header_identities.items() if identity is None)
-        elif next(iter(identities))[0] != SUPPORTED_GENERATOR_VERSION:
+        elif next(iter(identities))[0] not in SUPPORTED_GENERATOR_VERSIONS:
             modified.extend(header_identities)
 
     modified = sorted(set(modified))
@@ -408,20 +411,25 @@ def _capture(
             attention_mask=attention_mask,
             capture=True,
         )
-        sequence = input_ids
-        mask = attention_mask
-        generated = []
-        for _ in range(generate_steps):
-            step_logits, _ = model(sequence, attention_mask=mask)
-            next_token = mx.argmax(step_logits[:, -1, :], axis=-1).astype(mx.int32)
-            generated.append(next_token)
-            sequence = mx.concatenate((sequence, next_token[:, None]), axis=1)
-            mask = mx.concatenate((mask, mx.ones((mask.shape[0], 1), dtype=mx.int32)), axis=1)
-        generated_ids = (
-            mx.stack(generated, axis=1)
-            if generated
-            else mx.zeros((input_ids.shape[0], 0), dtype=mx.int32)
-        )
+        if _load_config(package).get("is_encoder_decoder") is True:
+            generated_ids = generated_model.greedy_generate(
+                model, input_ids, generate_steps, attention_mask=attention_mask
+            )
+        else:
+            sequence = input_ids
+            mask = attention_mask
+            generated = []
+            for _ in range(generate_steps):
+                step_logits, _ = model(sequence, attention_mask=mask)
+                next_token = mx.argmax(step_logits[:, -1, :], axis=-1).astype(mx.int32)
+                generated.append(next_token)
+                sequence = mx.concatenate((sequence, next_token[:, None]), axis=1)
+                mask = mx.concatenate((mask, mx.ones((mask.shape[0], 1), dtype=mx.int32)), axis=1)
+            generated_ids = (
+                mx.stack(generated, axis=1)
+                if generated
+                else mx.zeros((input_ids.shape[0], 0), dtype=mx.int32)
+            )
         tensors = {
             "input_ids": input_ids,
             "attention_mask": attention_mask,

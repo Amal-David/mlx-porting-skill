@@ -15,11 +15,10 @@ metadata:
 
 Produce or inspect a **correct, reproducible, architecture-aware MLX implementation**. Correctness comes before speed. Every speed or memory claim must name the hardware, software versions, workload, baseline, and quality gate.
 
-Dense decoders have an executable capture/scaffold/schema-2 conversion/parity
-chain proven by one [Qwen2.5 port](examples/worked-port-qwen2.5-0.5b-instruct/README.md).
-The other 16 families have tooled routing/planning/generic validation but
-runbook-guided module implementation. Exact output is the only built-in task
-metric; domain evaluators remain future work.
+Executable chains cover dense decoders and non-gated ReLU T5, proven by the
+[Qwen2.5](examples/worked-port-qwen2.5-0.5b-instruct/README.md) and
+[t5-small](examples/worked-port-t5-small/README.md) ports. The other 15 families
+remain runbook-guided. Exact output is the only built-in task metric.
 
 ## When to use this skill
 
@@ -87,7 +86,7 @@ Run `scripts/capture_oracle.py` against the pinned local Hugging Face model befo
 
 Read [core porting method](references/porting-core.md); choose via the trigger map and the controlled family records in `assets/architectures.yaml`. Load every runbook returned by a hybrid route. The registry is the complete runbook inventory; do not substitute an abbreviated parallel list.
 
-For an unblocked `dense-decoder-transformer` inspection, scaffold implementation:
+For an unblocked dense decoder or supported T5 inspection, scaffold:
 
 ```bash
 python3 scripts/scaffold_port.py inspection.json --artifact-root MODEL --output mlx_port
@@ -96,7 +95,7 @@ python3 scripts/scaffold_port.py inspection.json --artifact-root MODEL --output 
 It re-inspects the artifact and fails closed. Review unsupported config before
 continuing; never patch around a generator blocker.
 
-[Example](examples/worked-port-qwen2.5-0.5b-instruct/README.md) (no weights).
+See the linked worked ports above (no weights).
 
 Start eager: FP, batch one unless intrinsic, no compile/kernels, state/cache, assertions, reversible map.
 
