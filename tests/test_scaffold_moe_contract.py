@@ -138,6 +138,7 @@ class MoeScaffoldDependencyFreeContractTests(unittest.TestCase):
         self.assertEqual(
             set(scaffold_port.FAMILY_GENERATORS),
             {
+                "automatic-speech-recognition",
                 "dense-decoder-transformer",
                 "encoder-decoder-transformer",
                 "encoder-transformer",

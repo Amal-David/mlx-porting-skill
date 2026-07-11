@@ -87,7 +87,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("model", nargs="?", help="Local model directory; hub IDs are not accepted")
     parser.add_argument(
         "--mode",
-        choices=("dense-decoder", "encoder", "encoder-decoder"),
+        choices=("dense-decoder", "encoder", "encoder-decoder", "ssm", "asr"),
         default="dense-decoder",
         help="Capture contract (default: dense-decoder)",
     )
@@ -115,6 +115,12 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         "--attention-mask",
         nargs="+",
         help="Encoder modes only: one 0/1 value per tokenizer-free token ID",
+    )
+    parser.add_argument(
+        "--waveform-samples",
+        type=int,
+        default=16000,
+        help="ASR waveform fixture length (default: 16000)",
     )
     parser.add_argument(
         "--generate-steps",
@@ -795,6 +801,100 @@ def capture_encoder_decoder_tensors(
     }
 
 
+def capture_asr_tensors(
+    model: Any,
+    waveform_samples: int,
+    seed: int,
+    torch: Any,
+) -> dict[str, Any]:
+    """Capture the real source frontend output and every acoustic encoder rung."""
+    if waveform_samples < 400:
+        raise SkillError("--waveform-samples must be at least 400 for HuBERT/Wav2Vec2")
+    generator = torch.Generator(device="cpu").manual_seed(seed)
+    waveform = torch.randn((1, waveform_samples), generator=generator, dtype=torch.float32)
+    waveform = torch.clamp(waveform * 0.1, -1.0, 1.0)
+    required_modules = ("feature_extractor", "feature_projection", "encoder")
+    missing = [name for name in required_modules if not callable(getattr(model, name, None))]
+    layers = getattr(getattr(model, "encoder", None), "layers", None)
+    layer_count = len(layers) if layers is not None and hasattr(layers, "__len__") else 0
+    if (
+        missing
+        or layers is None
+        or layer_count <= 0
+        or layer_count != int(model.config.num_hidden_layers)
+    ):
+        detail = ", ".join(missing) if missing else "encoder.layers"
+        raise SkillError(
+            "--mode asr requires a built-in HuBERT/Wav2Vec2 base-model interface "
+            f"with feature_extractor, feature_projection, and encoder.layers; invalid: {detail}"
+        )
+    architectures = getattr(model.config, "architectures", None) or []
+    if any(isinstance(name, str) and name.endswith("ForCTC") for name in architectures):
+        raise SkillError(
+            "--mode asr rejects *ForCTC checkpoints; provide an encoder-only "
+            "HuBERTModel or Wav2Vec2Model checkpoint"
+        )
+
+    embed: list[Any] = []
+    layer_hidden: list[Any | None] = [None] * len(layers)
+
+    def capture_embed(_module: Any, inputs: tuple[Any, ...]) -> None:
+        if not inputs or not torch.is_tensor(inputs[0]):
+            raise SkillError("ASR encoder layer 0 did not receive a tensor hidden state")
+        embed.append(inputs[0].detach())
+
+    def capture_layer(index: int) -> Any:
+        def hook(_module: Any, _inputs: tuple[Any, ...], output: Any) -> None:
+            hidden = output[0] if isinstance(output, tuple) and output else None
+            if not torch.is_tensor(hidden):
+                raise SkillError(f"ASR encoder layer {index} did not return a tensor hidden state")
+            layer_hidden[index] = hidden.detach()
+        return hook
+
+    handles = [layers[0].register_forward_pre_hook(capture_embed)]
+    handles.extend(layer.register_forward_hook(capture_layer(index)) for index, layer in enumerate(layers))
+    with torch.inference_mode():
+        try:
+            input_features = model.feature_extractor(waveform).transpose(1, 2)
+            projection_output = model.feature_projection(input_features)
+            if torch.is_tensor(projection_output):
+                projected = projection_output
+            elif (
+                isinstance(projection_output, tuple)
+                and len(projection_output) == 2
+                and torch.is_tensor(projection_output[0])
+            ):
+                projected = projection_output[0]
+            else:
+                raise SkillError(
+                    "ASR feature_projection must return a tensor or the Wav2Vec2 "
+                    "(projected_hidden_state, normalized_features) tuple"
+                )
+            encoder_outputs = model.encoder(
+                projected,
+                attention_mask=None,
+                output_attentions=False,
+                output_hidden_states=False,
+                return_dict=True,
+            )
+        finally:
+            for handle in handles:
+                handle.remove()
+    if len(embed) != 1 or any(value is None for value in layer_hidden):
+        raise SkillError(
+            "ASR encoder hooks did not capture exactly one input and every source layer output"
+        )
+    captures: dict[str, Any] = {
+        "waveform": waveform.detach(),
+        "input_features": input_features.detach(),
+        "embed": embed[0],
+        "final_hidden": encoder_outputs.last_hidden_state.detach(),
+    }
+    for index, value in enumerate(layer_hidden):
+        captures[f"layer.{index}.hidden"] = value
+    return captures
+
+
 def to_numpy_tensors(tensors: dict[str, Any], *, keep_dtype: bool, np: Any) -> dict[str, Any]:
     arrays: dict[str, Any] = {}
     for key in sorted(tensors):
@@ -820,6 +920,16 @@ def _validate_capture_args(args: argparse.Namespace) -> tuple[list[str], list[in
         raise SkillError("model directory is required unless --validate-manifest is used")
     if args.output is None:
         raise SkillError("--output is required for oracle capture")
+    if args.mode == "asr":
+        if args.prompt or args.prompts_file or args.token_ids or args.attention_mask:
+            raise SkillError("--mode asr cannot be combined with text/token inputs")
+        if args.generate_steps != DEFAULT_GENERATE_STEPS:
+            raise SkillError("--generate-steps is not valid with --mode asr")
+        if type(args.waveform_samples) is not int or args.waveform_samples < 400:
+            raise SkillError("--waveform-samples must be an integer of at least 400")
+        return [], None
+    if args.waveform_samples != 16000:
+        raise SkillError("--waveform-samples is only valid with --mode asr")
     prompts, token_ids = validate_input_mode(args.token_ids, args.prompt, args.prompts_file)
     if args.attention_mask and args.mode not in {"encoder", "encoder-decoder"}:
         raise SkillError("--attention-mask is supported only with an encoder mode")
@@ -856,6 +966,7 @@ def main(argv: list[str] | None = None) -> int:
                 args.max_output_mb != DEFAULT_MAX_OUTPUT_MB,
                 args.mode != "dense-decoder",
                 bool(args.attention_mask),
+                args.waveform_samples != 16000,
             ))
             if conflicting:
                 raise SkillError("--validate-manifest cannot be combined with capture arguments")
@@ -936,6 +1047,8 @@ def main(argv: list[str] | None = None) -> int:
                 "dense-decoder": AutoModelForCausalLM,
                 "encoder": AutoModel,
                 "encoder-decoder": AutoModelForSeq2SeqLM,
+                "ssm": AutoModelForCausalLM,
+                "asr": AutoModel,
             }[args.mode]
             model = model_class.from_pretrained(
                 str(model_dir),
@@ -954,49 +1067,60 @@ def main(argv: list[str] | None = None) -> int:
                 "dense-decoder": "causal language model",
                 "encoder": "encoder",
                 "encoder-decoder": "encoder-decoder language model",
+                "ssm": "state-space language model",
+                "asr": "ASR acoustic encoder",
             }[args.mode]
             raise SkillError(f"could not load built-in local {model_kind}: {exc}") from exc
         model.train(False)
 
-        explicit_attention_mask = (
-            parse_attention_mask(args.attention_mask, len(token_ids))
-            if token_ids is not None
-            else None
-        )
-        input_ids, attention_mask = build_inputs(
-            model_dir,
-            prompts,
-            token_ids,
-            config,
-            torch,
-            AutoTokenizer,
-            explicit_attention_mask,
-            args.mode in {"encoder", "encoder-decoder"},
-        )
-        if args.mode == "encoder":
-            if args.generate_steps != 0:
-                raise SkillError("--mode encoder requires --generate-steps 0")
-            captured = capture_encoder_tensors(
-                model, input_ids, attention_mask, config, torch
-            )
-        elif args.mode == "encoder-decoder":
-            captured = capture_encoder_decoder_tensors(
+        if args.mode == "asr":
+            model.config._attn_implementation = "eager"
+            captured = capture_asr_tensors(
                 model,
-                input_ids,
-                attention_mask,
-                config,
-                args.generate_steps,
+                args.waveform_samples,
+                args.seed,
                 torch,
             )
         else:
-            captured = capture_tensors(
-                model,
-                input_ids,
-                attention_mask,
-                config,
-                args.generate_steps,
-                torch,
+            explicit_attention_mask = (
+                parse_attention_mask(args.attention_mask, len(token_ids))
+                if token_ids is not None
+                else None
             )
+            input_ids, attention_mask = build_inputs(
+                model_dir,
+                prompts,
+                token_ids,
+                config,
+                torch,
+                AutoTokenizer,
+                explicit_attention_mask,
+                args.mode in {"encoder", "encoder-decoder"},
+            )
+            if args.mode == "encoder":
+                if args.generate_steps != 0:
+                    raise SkillError("--mode encoder requires --generate-steps 0")
+                captured = capture_encoder_tensors(
+                    model, input_ids, attention_mask, config, torch
+                )
+            elif args.mode == "encoder-decoder":
+                captured = capture_encoder_decoder_tensors(
+                    model,
+                    input_ids,
+                    attention_mask,
+                    config,
+                    args.generate_steps,
+                    torch,
+                )
+            else:
+                captured = capture_tensors(
+                    model,
+                    input_ids,
+                    attention_mask,
+                    config,
+                    args.generate_steps,
+                    torch,
+                )
         arrays = to_numpy_tensors(captured, keep_dtype=args.keep_dtype, np=np)
         cap_bytes = int(args.max_output_mb * 1024 * 1024)
         bounded_size = raw_npz_bound(arrays)
@@ -1009,7 +1133,12 @@ def main(argv: list[str] | None = None) -> int:
         manifest_payload = {
             "schema_version": SCHEMA_VERSION,
             "model": model_record,
-            "capture": {
+            "capture": ({
+                "mode": "asr",
+                "waveform_samples": args.waveform_samples,
+                "seed": args.seed,
+                "dtype_policy": "keep" if args.keep_dtype else "float32",
+            } if args.mode == "asr" else {
                 "mode": args.mode,
                 "input_mode": "token_ids" if token_ids is not None else "prompt",
                 "prompts": prompts if token_ids is None else None,
@@ -1018,7 +1147,7 @@ def main(argv: list[str] | None = None) -> int:
                 "generate_steps": args.generate_steps,
                 "seed": args.seed,
                 "dtype_policy": "keep" if args.keep_dtype else "float32",
-            },
+            }),
             "tensors": tensor_inventory(arrays),
             "libraries": {
                 "python": platform.python_version(),

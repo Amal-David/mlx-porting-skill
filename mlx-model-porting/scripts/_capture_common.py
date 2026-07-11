@@ -362,63 +362,80 @@ def validate_capture_manifest(payload: Any) -> dict[str, Any]:
         raise SkillError("oracle manifest model.weights.total_bytes is inconsistent")
 
     capture_value = manifest["capture"]
-    legacy_capture_fields = {
-        "prompts", "token_ids", "generate_steps", "seed", "dtype_policy",
-    }
-    reproducible_capture_fields = legacy_capture_fields | {
-        "mode", "input_mode", "attention_mask",
-    }
-    if not isinstance(capture_value, dict) or set(capture_value) not in {
-        frozenset(legacy_capture_fields),
-        frozenset(reproducible_capture_fields),
-    }:
-        raise SkillError("oracle manifest capture has an invalid field set")
-    capture = capture_value
-    prompts = capture["prompts"]
-    token_ids = capture["token_ids"]
-    if prompts is not None and (
-        not isinstance(prompts, list)
-        or not prompts
-        or not all(isinstance(item, str) for item in prompts)
-    ):
-        raise SkillError("oracle manifest capture.prompts must be null or an array of strings")
-    if token_ids is not None and (
-        not isinstance(token_ids, list)
-        or not token_ids
-        or not all(type(item) is int and item >= 0 for item in token_ids)
-    ):
-        raise SkillError("oracle manifest capture.token_ids must be null or non-negative integers")
-    if (prompts is None) == (token_ids is None):
-        raise SkillError("oracle manifest capture must record exactly one input mode")
-    if set(capture) == reproducible_capture_fields:
-        expected_input_mode = "token_ids" if token_ids is not None else "prompt"
-        if capture["mode"] not in {
-            "dense-decoder",
-            "encoder",
-            "encoder-decoder",
-        }:
-            raise SkillError("oracle manifest capture.mode is invalid")
-        if capture["input_mode"] != expected_input_mode:
-            raise SkillError("oracle manifest capture.input_mode is inconsistent")
-        attention_mask = capture["attention_mask"]
-        if (
-            not isinstance(attention_mask, list)
-            or not attention_mask
-            or not all(
-                isinstance(row, list)
-                and row
-                and all(type(value) is int and value in (0, 1) for value in row)
-                for row in attention_mask
+    if isinstance(capture_value, dict) and capture_value.get("mode") == "asr":
+        capture = _require_exact_fields(
+            capture_value,
+            {"mode", "waveform_samples", "seed", "dtype_policy"},
+            label="oracle manifest capture",
+        )
+        if type(capture["waveform_samples"]) is not int or capture["waveform_samples"] < 400:
+            raise SkillError(
+                "oracle manifest capture.waveform_samples must be at least 400"
             )
-            or len({len(row) for row in attention_mask}) != 1
+        if type(capture["seed"]) is not int:
+            raise SkillError("oracle manifest capture.seed must be an integer")
+        if capture["dtype_policy"] not in {"float32", "keep"}:
+            raise SkillError(
+                "oracle manifest capture.dtype_policy must be 'float32' or 'keep'"
+            )
+    else:
+        legacy_capture_fields = {
+            "prompts", "token_ids", "generate_steps", "seed", "dtype_policy",
+        }
+        reproducible_capture_fields = legacy_capture_fields | {
+            "mode", "input_mode", "attention_mask",
+        }
+        if not isinstance(capture_value, dict) or set(capture_value) not in {
+            frozenset(legacy_capture_fields),
+            frozenset(reproducible_capture_fields),
+        }:
+            raise SkillError("oracle manifest capture has an invalid field set")
+        capture = capture_value
+        prompts = capture["prompts"]
+        token_ids = capture["token_ids"]
+        if prompts is not None and (
+            not isinstance(prompts, list)
+            or not prompts
+            or not all(isinstance(item, str) for item in prompts)
         ):
-            raise SkillError("oracle manifest capture.attention_mask must be a non-empty 0/1 matrix")
-    if type(capture["generate_steps"]) is not int or capture["generate_steps"] < 0:
-        raise SkillError("oracle manifest capture.generate_steps must be a non-negative integer")
-    if type(capture["seed"]) is not int:
-        raise SkillError("oracle manifest capture.seed must be an integer")
-    if capture["dtype_policy"] not in {"float32", "keep"}:
-        raise SkillError("oracle manifest capture.dtype_policy must be 'float32' or 'keep'")
+            raise SkillError("oracle manifest capture.prompts must be null or an array of strings")
+        if token_ids is not None and (
+            not isinstance(token_ids, list)
+            or not token_ids
+            or not all(type(item) is int and item >= 0 for item in token_ids)
+        ):
+            raise SkillError("oracle manifest capture.token_ids must be null or non-negative integers")
+        if (prompts is None) == (token_ids is None):
+            raise SkillError("oracle manifest capture must record exactly one input mode")
+        if set(capture) == reproducible_capture_fields:
+            expected_input_mode = "token_ids" if token_ids is not None else "prompt"
+            if capture["mode"] not in {
+                "dense-decoder",
+                "encoder",
+                "encoder-decoder",
+            }:
+                raise SkillError("oracle manifest capture.mode is invalid")
+            if capture["input_mode"] != expected_input_mode:
+                raise SkillError("oracle manifest capture.input_mode is inconsistent")
+            attention_mask = capture["attention_mask"]
+            if (
+                not isinstance(attention_mask, list)
+                or not attention_mask
+                or not all(
+                    isinstance(row, list)
+                    and row
+                    and all(type(value) is int and value in (0, 1) for value in row)
+                    for row in attention_mask
+                )
+                or len({len(row) for row in attention_mask}) != 1
+            ):
+                raise SkillError("oracle manifest capture.attention_mask must be a non-empty 0/1 matrix")
+        if type(capture["generate_steps"]) is not int or capture["generate_steps"] < 0:
+            raise SkillError("oracle manifest capture.generate_steps must be a non-negative integer")
+        if type(capture["seed"]) is not int:
+            raise SkillError("oracle manifest capture.seed must be an integer")
+        if capture["dtype_policy"] not in {"float32", "keep"}:
+            raise SkillError("oracle manifest capture.dtype_policy must be 'float32' or 'keep'")
 
     tensors = manifest["tensors"]
     if not isinstance(tensors, list) or not tensors:

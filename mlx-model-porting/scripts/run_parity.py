@@ -60,7 +60,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--source-model", help="Pinned local Hugging Face model directory")
     parser.add_argument(
         "--mode",
-        choices=("dense-decoder", "encoder", "encoder-decoder"),
+        choices=("dense-decoder", "encoder", "encoder-decoder", "ssm", "asr"),
         default="dense-decoder",
         help="Parity contract (default: dense-decoder)",
     )
@@ -74,6 +74,12 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         "--attention-mask",
         nargs="+",
         help="Encoder modes only: one 0/1 value per tokenizer-free token ID",
+    )
+    parser.add_argument(
+        "--waveform-samples",
+        type=int,
+        default=16000,
+        help="ASR waveform fixture length (default: 16000)",
     )
     parser.add_argument("--generate-steps", type=int, default=DEFAULT_GENERATE_STEPS)
     parser.add_argument("--seed", type=int, default=0)
@@ -126,7 +132,9 @@ def build_parity_ladder(
             "logits",
             "generated_token_ids",
         }
-    elif mode == "dense-decoder":
+    elif mode == "asr":
+        required = {"input_features", "embed", "final_hidden"}
+    elif mode in {"dense-decoder", "ssm"}:
         required = {"input_ids", "embed", "final_norm", "logits", "generated_token_ids"}
     else:
         raise SkillError(f"unsupported parity mode {mode!r}")
@@ -171,17 +179,19 @@ def build_parity_ladder(
         )
         if not layer_indices or layer_indices != list(range(layer_indices[-1] + 1)):
             raise SkillError("source layer.{i}.hidden keys must be contiguous from layer 0")
-        ordered = ["input_ids"]
+        ordered = ["input_features"] if mode == "asr" else ["input_ids"]
         if mode == "encoder":
             ordered.append("attention_mask")
         ordered.append("embed")
         ordered.extend(f"layer.{index}.hidden" for index in layer_indices)
         if mode == "encoder":
             ordered.extend(("final_hidden", "pooled"))
+        elif mode == "asr":
+            ordered.append("final_hidden")
         else:
             ordered.extend(("final_norm", "logits", "generated_token_ids"))
 
-    exact_keys = {"input_ids", "attention_mask", "decoder_input_ids", "generated_token_ids"}
+    exact_keys = {"input_features", "input_ids", "attention_mask", "decoder_input_ids", "generated_token_ids"}
     return [
         {
             "position": position,
@@ -209,62 +219,78 @@ def validate_parity_report(payload: Any) -> dict[str, Any]:
     if not isinstance(report["ok"], bool):
         raise SkillError("parity report ok must be boolean")
     legacy_input_fields = {
-            "source_model",
-            "package",
-            "weights",
-            "mode",
-            "prompts",
-            "token_ids",
-            "generate_steps",
-            "seed",
-            "dtype_policy",
-            "allow_modified",
+        "source_model", "package", "weights", "mode", "prompts", "token_ids",
+        "generate_steps", "seed", "dtype_policy", "allow_modified",
     }
     reproducible_input_fields = legacy_input_fields | {
         "input_mode", "attention_mask", "fault_inject_target",
     }
+    asr_input_fields = {
+        "source_model", "package", "weights", "mode", "waveform_samples",
+        "seed", "dtype_policy", "allow_modified", "fault_inject_target",
+    }
     inputs_value = report["inputs"]
-    if not isinstance(inputs_value, dict) or set(inputs_value) not in {
-        frozenset(legacy_input_fields), frozenset(reproducible_input_fields),
-    }:
+    if not isinstance(inputs_value, dict):
         raise SkillError("parity report inputs has an invalid field set")
-    inputs = inputs_value
-    reproducible = set(inputs) == reproducible_input_fields
-    input_mode = inputs["input_mode"] if reproducible else inputs["mode"]
-    if reproducible:
-        if inputs["mode"] not in {"dense-decoder", "encoder", "encoder-decoder"}:
+    if set(inputs_value) == asr_input_fields:
+        inputs = inputs_value
+        reproducible = True
+        input_mode = "asr"
+        if inputs["mode"] != "asr":
             raise SkillError("parity report contract mode is invalid")
+        if type(inputs["waveform_samples"]) is not int or inputs["waveform_samples"] < 400:
+            raise SkillError("parity report waveform_samples is invalid")
         if inputs["fault_inject_target"] is not None and not isinstance(
             inputs["fault_inject_target"], str
         ):
             raise SkillError("parity report fault injection target is invalid")
-        attention_mask = inputs["attention_mask"]
-        if (
-            not isinstance(attention_mask, list)
-            or not attention_mask
-            or not all(
-                isinstance(row, list)
-                and row
-                and all(type(value) is int and value in (0, 1) for value in row)
-                for row in attention_mask
-            )
-            or len({len(row) for row in attention_mask}) != 1
-        ):
-            raise SkillError("parity report attention_mask must be a non-empty 0/1 matrix")
-    if input_mode not in {"prompt", "token_ids"}:
-        raise SkillError("parity report input mode is invalid")
+    else:
+        if set(inputs_value) not in {
+            frozenset(legacy_input_fields), frozenset(reproducible_input_fields),
+        }:
+            raise SkillError("parity report inputs has an invalid field set")
+        inputs = inputs_value
+        reproducible = set(inputs) == reproducible_input_fields
+        input_mode = inputs["input_mode"] if reproducible else inputs["mode"]
+        if reproducible:
+            if inputs["mode"] not in {
+                "dense-decoder", "encoder", "encoder-decoder", "ssm",
+            }:
+                raise SkillError("parity report contract mode is invalid")
+            if inputs["fault_inject_target"] is not None and not isinstance(
+                inputs["fault_inject_target"], str
+            ):
+                raise SkillError("parity report fault injection target is invalid")
+            attention_mask = inputs["attention_mask"]
+            if (
+                not isinstance(attention_mask, list)
+                or not attention_mask
+                or not all(
+                    isinstance(row, list)
+                    and row
+                    and all(type(value) is int and value in (0, 1) for value in row)
+                    for row in attention_mask
+                )
+                or len({len(row) for row in attention_mask}) != 1
+            ):
+                raise SkillError(
+                    "parity report attention_mask must be a non-empty 0/1 matrix"
+                )
+        if input_mode not in {"prompt", "token_ids"}:
+            raise SkillError("parity report input mode is invalid")
+        if input_mode == "token_ids":
+            if inputs["prompts"] is not None or not isinstance(inputs["token_ids"], list):
+                raise SkillError("parity report token-ID input is invalid")
+        elif inputs["token_ids"] is not None or not isinstance(inputs["prompts"], list):
+            raise SkillError("parity report prompt input is invalid")
+        if type(inputs["generate_steps"]) is not int or inputs["generate_steps"] < 0:
+            raise SkillError("parity report generate_steps is invalid")
+
     if not all(
         isinstance(inputs[field], str) and inputs[field]
         for field in ("source_model", "package", "weights")
     ):
         raise SkillError("parity report input paths must be non-empty strings")
-    if input_mode == "token_ids":
-        if inputs["prompts"] is not None or not isinstance(inputs["token_ids"], list):
-            raise SkillError("parity report token-ID input is invalid")
-    elif inputs["token_ids"] is not None or not isinstance(inputs["prompts"], list):
-        raise SkillError("parity report prompt input is invalid")
-    if type(inputs["generate_steps"]) is not int or inputs["generate_steps"] < 0:
-        raise SkillError("parity report generate_steps is invalid")
     if type(inputs["seed"]) is not int:
         raise SkillError("parity report seed is invalid")
     if inputs["dtype_policy"] not in {"float32", "keep"}:
@@ -347,6 +373,13 @@ def _python_script(script: Path) -> list[str]:
 
 
 def _input_arguments(args: argparse.Namespace) -> list[str]:
+    if args.mode == "asr":
+        return [
+            "--waveform-samples", str(args.waveform_samples),
+            "--seed", str(args.seed),
+            "--max-output-mb", str(args.max_output_mb),
+            *(["--keep-dtype"] if args.keep_dtype else []),
+        ]
     values: list[str] = []
     for prompt in args.prompt or []:
         values.extend(("--prompt", prompt))
@@ -392,6 +425,10 @@ def _debug_target(key: str, mode: str = "dense-decoder") -> tuple[str, str]:
         block = "encoder" if mode == "encoder" else "decoder"
         return f"layer {layer}", f"First divergence is layer {layer}; debug that {block} block."
     messages = {
+        "input_features": (
+            "feature input",
+            "Extracted frontend features differ; debug the frozen ASR fixture plumbing.",
+        ),
         "input_ids": ("input preparation", "Input IDs differ; debug tokenization or fixture plumbing."),
         "attention_mask": ("attention mask", "Attention masks differ; debug padding-mask plumbing."),
         "encoder.embed": ("encoder embedding", "First divergence is the encoder embedding stage."),
@@ -432,13 +469,26 @@ def main(argv: list[str] | None = None) -> int:
             )
         if args.source_model is None or args.package is None or args.weights is None:
             raise SkillError("--source-model, --package, and --weights are required")
-        prompts, token_ids = validate_input_mode(args.token_ids, args.prompt, args.prompts_file)
-        if args.mode == "encoder" and args.generate_steps != 0:
-            raise SkillError("--mode encoder requires --generate-steps 0")
-        if args.attention_mask and args.mode not in {"encoder", "encoder-decoder"}:
-            raise SkillError("--attention-mask is supported only with an encoder mode")
-        if args.attention_mask and token_ids is None:
-            raise SkillError("--attention-mask requires --token-ids")
+        if args.mode == "asr":
+            if args.prompt or args.prompts_file or args.token_ids or args.attention_mask:
+                raise SkillError("--mode asr cannot be combined with text/token inputs")
+            if args.generate_steps != DEFAULT_GENERATE_STEPS:
+                raise SkillError("--generate-steps is not valid with --mode asr")
+            if type(args.waveform_samples) is not int or args.waveform_samples < 400:
+                raise SkillError("--waveform-samples must be an integer of at least 400")
+            prompts, token_ids = [], None
+        else:
+            if args.waveform_samples != 16000:
+                raise SkillError("--waveform-samples is only valid with --mode asr")
+            prompts, token_ids = validate_input_mode(
+                args.token_ids, args.prompt, args.prompts_file
+            )
+            if args.mode == "encoder" and args.generate_steps != 0:
+                raise SkillError("--mode encoder requires --generate-steps 0")
+            if args.attention_mask and args.mode not in {"encoder", "encoder-decoder"}:
+                raise SkillError("--attention-mask is supported only with an encoder mode")
+            if args.attention_mask and token_ids is None:
+                raise SkillError("--attention-mask requires --token-ids")
         source_model = _regular_directory(args.source_model, label="source model")
         package = _regular_directory(args.package, label="package")
         weights = _regular_directory(args.weights, label="weights")
@@ -476,12 +526,13 @@ def main(argv: list[str] | None = None) -> int:
                 "--weights",
                 str(weights),
                 *common_input,
+                *(["--features-npz", str(source_npz)] if args.mode == "asr" else []),
                 "--output",
                 str(target_npz),
                 "--manifest",
                 str(target_manifest_path),
             ]
-            if prompts:
+            if prompts and args.mode != "asr":
                 mlx_command.extend(("--tokenizer", str(source_model)))
             if args.allow_modified:
                 mlx_command.append("--allow-modified")
@@ -532,9 +583,9 @@ def main(argv: list[str] | None = None) -> int:
                     "--include",
                     include,
                     "--atol",
-                    str(0.0 if args.mode == "encoder" and rung["exact"] else args.atol),
+                    str(0.0 if rung["exact"] else args.atol),
                     "--rtol",
-                    str(0.0 if args.mode == "encoder" and rung["exact"] else args.rtol),
+                    str(0.0 if rung["exact"] else args.rtol),
                     "--cosine-min",
                     str(args.cosine_min),
                     "--output",
@@ -588,7 +639,17 @@ def main(argv: list[str] | None = None) -> int:
         report = {
             "schema_version": SCHEMA_VERSION,
             "ok": ok,
-            "inputs": {
+            "inputs": ({
+                "source_model": str(source_model),
+                "package": str(package),
+                "weights": str(weights),
+                "mode": "asr",
+                "waveform_samples": args.waveform_samples,
+                "seed": args.seed,
+                "dtype_policy": "keep" if args.keep_dtype else "float32",
+                "allow_modified": args.allow_modified,
+                "fault_inject_target": args.fault_inject_target,
+            } if args.mode == "asr" else {
                 "source_model": str(source_model),
                 "package": str(package),
                 "weights": str(weights),
@@ -602,7 +663,7 @@ def main(argv: list[str] | None = None) -> int:
                 "dtype_policy": "keep" if args.keep_dtype else "float32",
                 "allow_modified": args.allow_modified,
                 "fault_inject_target": args.fault_inject_target,
-            },
+            }),
             "tolerances": {
                 "atol": args.atol,
                 "rtol": args.rtol,
