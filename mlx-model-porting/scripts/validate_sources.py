@@ -9,9 +9,12 @@ import hashlib
 import http.client
 import ipaddress
 import json
+import queue
 import re
 import socket
 import sys
+import threading
+import time
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -87,6 +90,7 @@ KNOWN_ARXIV_TITLES = {
     "paper-2309-15531": "Rethinking Channel Dimensions to Isolate Outliers for Low-bit Weight Quantization of Large Language Models",
     "paper-2404-19124": "Accelerating Production LLMs with Combined Token/Embedding Speculators",
 }
+MAX_HTTPS_ADDRESS_ATTEMPTS = 4
 
 
 def parse_args() -> argparse.Namespace:
@@ -204,7 +208,71 @@ class PublicHTTPSDestination:
     address_set: frozenset[str]
 
 
-def require_public_https_url(url: str) -> PublicHTTPSDestination:
+class NetworkDeadlineExceeded(TimeoutError):
+    pass
+
+
+@dataclass(frozen=True)
+class NetworkDeadline:
+    timeout: float
+    expires_at: float
+
+    @classmethod
+    def start(cls, timeout: float) -> "NetworkDeadline":
+        bounded_timeout = max(0.0, float(timeout))
+        return cls(timeout=bounded_timeout, expires_at=time.monotonic() + bounded_timeout)
+
+    def remaining(self) -> float:
+        remaining = self.expires_at - time.monotonic()
+        if remaining <= 0:
+            raise NetworkDeadlineExceeded(
+                f"overall network deadline exceeded after {self.timeout:.3f}s"
+            )
+        return remaining
+
+
+def call_with_network_deadline(
+    deadline: NetworkDeadline,
+    function: Any,
+    /,
+    *args: Any,
+    **kwargs: Any,
+) -> Any:
+    """Bound a blocking resolver or transport call without extending its deadline."""
+    outcomes: queue.Queue[tuple[bool, Any]] = queue.Queue(maxsize=1)
+
+    def invoke() -> None:
+        try:
+            outcomes.put((True, function(*args, **kwargs)))
+        except BaseException as exc:  # noqa: BLE001 - re-raise on the checking thread
+            outcomes.put((False, exc))
+
+    worker = threading.Thread(target=invoke, daemon=True)
+    worker.start()
+    try:
+        succeeded, value = outcomes.get(timeout=deadline.remaining())
+    except queue.Empty as exc:
+        raise NetworkDeadlineExceeded(
+            f"overall network deadline exceeded after {deadline.timeout:.3f}s"
+        ) from exc
+    if not succeeded:
+        raise value
+    try:
+        deadline.remaining()
+    except NetworkDeadlineExceeded:
+        close = getattr(value, "close", None)
+        if callable(close):
+            close()
+        raise
+    return value
+
+
+def require_public_https_url(
+    url: str,
+    *,
+    deadline: NetworkDeadline | None = None,
+    max_addresses: int = MAX_HTTPS_ADDRESS_ATTEMPTS,
+) -> PublicHTTPSDestination:
     structure_error = https_url_structure_error(url)
     if structure_error:
         raise urllib.error.URLError(structure_error)
@@ -212,7 +280,16 @@ def require_public_https_url(url: str) -> PublicHTTPSDestination:
     hostname = str(parsed.hostname)
     port = parsed.port or 443
     try:
-        resolved = socket.getaddrinfo(hostname, port, type=socket.SOCK_STREAM)
+        if deadline is None:
+            resolved = socket.getaddrinfo(hostname, port, type=socket.SOCK_STREAM)
+        else:
+            resolved = call_with_network_deadline(
+                deadline,
+                socket.getaddrinfo,
+                hostname,
+                port,
+                type=socket.SOCK_STREAM,
+            )
     except OSError as exc:
         raise urllib.error.URLError(f"could not resolve URL hostname: {exc}") from exc
     addresses: list[PublicHTTPSAddress] = []
@@ -256,6 +333,9 @@ def require_public_https_url(url: str) -> PublicHTTPSDestination:
         raise urllib.error.URLError(
             "URL hostname resolves to non-public address(es): " + ", ".join(sorted(unsafe))
         )
+    if max_addresses < 1:
+        raise urllib.error.URLError("HTTPS address-attempt cap must be at least one")
+    addresses = addresses[:max_addresses]
     return PublicHTTPSDestination(
         hostname=hostname,
         port=port,
@@ -280,6 +360,7 @@ class PinnedHTTPSConnection(http.client.HTTPSConnection):
         source_address: tuple[str, int] | None = None,
         context: Any = None,
         blocksize: int = 8192,
+        deadline: NetworkDeadline | None = None,
     ) -> None:
         super().__init__(
             host,
@@ -294,6 +375,7 @@ class PinnedHTTPSConnection(http.client.HTTPSConnection):
             raise ValueError("HTTPS connection port does not match vetted URL port")
         self.destination = destination
         self.server_hostname = destination.hostname
+        self.deadline = deadline
 
     def _connect_pinned_socket(self) -> Any:
         last_error: OSError | None = None
@@ -301,7 +383,9 @@ class PinnedHTTPSConnection(http.client.HTTPSConnection):
             sock = None
             try:
                 sock = socket.socket(endpoint.family, endpoint.socktype, endpoint.proto)
-                if self.timeout is not socket._GLOBAL_DEFAULT_TIMEOUT:
+                if self.deadline is not None:
+                    sock.settimeout(self.deadline.remaining())
+                elif self.timeout is not socket._GLOBAL_DEFAULT_TIMEOUT:
                     sock.settimeout(self.timeout)
                 if self.source_address:
                     sock.bind(self.source_address)
@@ -345,6 +429,8 @@ class PinnedHTTPSConnection(http.client.HTTPSConnection):
         sys.audit("http.client.connect", self, self.server_hostname, self.port)
         raw_socket = self._connect_pinned_socket()
         try:
+            if self.deadline is not None:
+                raw_socket.settimeout(self.deadline.remaining())
             self.sock = self._context.wrap_socket(
                 raw_socket,
                 server_hostname=self.server_hostname,
@@ -356,6 +442,7 @@ class PinnedHTTPSConnection(http.client.HTTPSConnection):
 
 
 _PINNED_DESTINATION_ATTRIBUTE = "_mlx_public_https_destination"
+_NETWORK_DEADLINE_ATTRIBUTE = "_mlx_public_https_deadline"
 
 
 def _destination_matches_url(destination: PublicHTTPSDestination, url: str) -> bool:
@@ -379,18 +466,33 @@ def _pin_request_destination(
     setattr(request, _PINNED_DESTINATION_ATTRIBUTE, destination)
 
 
+def _pin_request_deadline(
+    request: urllib.request.Request,
+    deadline: NetworkDeadline,
+) -> None:
+    setattr(request, _NETWORK_DEADLINE_ATTRIBUTE, deadline)
+
+
 class PublicHTTPSHandler(urllib.request.HTTPSHandler):
     def https_open(self, req: urllib.request.Request) -> Any:
+        deadline = getattr(req, _NETWORK_DEADLINE_ATTRIBUTE, None)
         destination = getattr(req, _PINNED_DESTINATION_ATTRIBUTE, None)
         if not isinstance(destination, PublicHTTPSDestination) or not _destination_matches_url(
             destination,
             req.full_url,
         ):
-            destination = require_public_https_url(req.full_url)
+            destination = require_public_https_url(req.full_url, deadline=deadline)
             _pin_request_destination(req, destination)
 
         def connection_factory(host: str, **kwargs: Any) -> PinnedHTTPSConnection:
-            return PinnedHTTPSConnection(host, destination=destination, **kwargs)
+            if isinstance(deadline, NetworkDeadline):
+                kwargs["timeout"] = deadline.remaining()
+            return PinnedHTTPSConnection(
+                host,
+                destination=destination,
+                deadline=deadline,
+                **kwargs,
+            )
 
         return self.do_open(connection_factory, req, context=self._context)
 
@@ -409,8 +511,11 @@ class PublicHTTPSRedirectHandler(urllib.request.HTTPRedirectHandler):
     ) -> urllib.request.Request | None:
         redirected = super().redirect_request(req, fp, code, msg, headers, newurl)
         if redirected is not None:
-            destination = require_public_https_url(newurl)
+            deadline = getattr(req, _NETWORK_DEADLINE_ATTRIBUTE, None)
+            destination = require_public_https_url(newurl, deadline=deadline)
             _pin_request_destination(redirected, destination)
+            if isinstance(deadline, NetworkDeadline):
+                _pin_request_deadline(redirected, deadline)
         return redirected
 
 
@@ -428,10 +533,19 @@ def open_public_https(
     opener: urllib.request.OpenerDirector,
     request: urllib.request.Request,
     timeout: float,
+    *,
+    deadline: NetworkDeadline | None = None,
 ) -> Any:
-    destination = require_public_https_url(request.full_url)
+    active_deadline = deadline or NetworkDeadline.start(timeout)
+    destination = require_public_https_url(request.full_url, deadline=active_deadline)
     _pin_request_destination(request, destination)
-    response = opener.open(request, timeout=timeout)
+    _pin_request_deadline(request, active_deadline)
+    response = call_with_network_deadline(
+        active_deadline,
+        opener.open,
+        request,
+        timeout=active_deadline.remaining(),
+    )
     try:
         structure_error = https_url_structure_error(response.geturl())
         if structure_error:
@@ -447,9 +561,10 @@ def check_url(source: dict[str, Any], timeout: float) -> dict[str, Any]:
     headers = {"User-Agent": "mlx-model-porting-skill/0.4.0"}
     result: dict[str, Any] = {"id": source.get("id"), "url": url, "ok": False}
     opener = build_public_https_opener()
+    deadline = NetworkDeadline.start(timeout)
     try:
         request = urllib.request.Request(url, method="HEAD", headers=headers)
-        with open_public_https(opener, request, timeout) as response:
+        with open_public_https(opener, request, timeout, deadline=deadline) as response:
             result.update({"ok": 200 <= response.status < 400, "status": response.status})
     except urllib.error.HTTPError as exc:
         if exc.code not in {403, 405, 429}:
@@ -457,8 +572,8 @@ def check_url(source: dict[str, Any], timeout: float) -> dict[str, Any]:
             return result
         try:
             request = urllib.request.Request(url, headers=headers)
-            with open_public_https(opener, request, timeout) as response:
-                response.read(1024)
+            with open_public_https(opener, request, timeout, deadline=deadline) as response:
+                call_with_network_deadline(deadline, response.read, 1024)
                 result.update({"ok": 200 <= response.status < 400, "status": response.status})
         except Exception as retry_exc:  # noqa: BLE001 - report external check failure precisely
             result.update({"status": getattr(retry_exc, "code", None), "error": str(retry_exc)})

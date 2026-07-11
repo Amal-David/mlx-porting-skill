@@ -396,6 +396,17 @@ class ReleaseContractTests(unittest.TestCase):
         self.assertIn("--check-urls", source_runs)
         self.assertNotIn("generate_evidence_index.py", source_runs)
 
+    def test_ubuntu_jobs_explicitly_acknowledge_missing_mlx_keystone_coverage(self) -> None:
+        workflow = WORKFLOW.read_text(encoding="utf-8")
+        acknowledgement = "Acknowledge Ubuntu MLX keystone coverage gap"
+        self.assertEqual(workflow.count(acknowledgement), 2)
+        self.assertEqual(workflow.count('run: test "$RUNNER_OS" = "Linux"'), 2)
+        self.assertEqual(workflow.count("MLX_KEYSTONE_REQUIRED=1"), 2)
+        for job_name in ("release-validation", "supported-python"):
+            block = job_block(workflow, job_name)
+            self.assertIn(acknowledgement, block)
+            self.assertIn("MLX_KEYSTONE_REQUIRED=1", block)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -22,6 +22,11 @@ SCRIPT = SCRIPTS / "convert_checkpoint.py"
 VALIDATOR = SCRIPTS / "validate_weight_map.py"
 if str(SCRIPTS) not in sys.path:
     sys.path.insert(0, str(SCRIPTS))
+if str(ROOT / "tests") not in sys.path:
+    sys.path.insert(0, str(ROOT / "tests"))
+
+# Consume the required-keystone control flag before any MLX runtime probe.
+import mlx_keystone  # noqa: E402,F401
 
 import convert_checkpoint as converter
 

@@ -22,6 +22,8 @@ if str(SCRIPTS) not in sys.path:
 if str(ROOT / "tests") not in sys.path:
     sys.path.insert(0, str(ROOT / "tests"))
 
+from mlx_keystone import require_mlx_keystone  # noqa: E402
+
 
 def mlx_runtime_available() -> bool:
     if importlib.util.find_spec("mlx") is None:
@@ -360,7 +362,10 @@ class ScaffoldPortDependencyFreeContractTests(unittest.TestCase):
             )
 
 
-@unittest.skipUnless(HAS_MLX, "a usable MLX runtime is required for generated-model execution tests")
+@require_mlx_keystone(
+    HAS_MLX,
+    "a usable MLX runtime is required for generated-model execution tests",
+)
 class ScaffoldPortMLXContractTests(unittest.TestCase):
     @staticmethod
     def _weights(mx: object, *, dtype: object, scale: float = 1.0) -> dict[str, object]:

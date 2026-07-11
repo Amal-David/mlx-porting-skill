@@ -33,6 +33,36 @@ def run_generator(*args: object, expected: int = 0) -> subprocess.CompletedProce
     return result
 
 
+def markdown_links(text: str) -> list[tuple[str, str]]:
+    return re.findall(r"(?<!\\)\[((?:\\.|[^\]])*)\]\(([^)\s]+)\)", text)
+
+
+def markdown_code_spans(text: str) -> tuple[list[str], str]:
+    spans: list[str] = []
+    remainder: list[str] = []
+    index = 0
+    while index < len(text):
+        if text[index] != "`":
+            remainder.append(text[index])
+            index += 1
+            continue
+        fence_end = index
+        while fence_end < len(text) and text[fence_end] == "`":
+            fence_end += 1
+        fence = text[index:fence_end]
+        close = text.find(fence, fence_end)
+        if close == -1:
+            remainder.append(fence)
+            index = fence_end
+            continue
+        content = text[fence_end:close]
+        if content.startswith(" ") and content.endswith(" ") and content.strip(" "):
+            content = content[1:-1]
+        spans.append(content)
+        index = close + len(fence)
+    return spans, "".join(remainder)
+
+
 class EvidenceIndexContractTests(unittest.TestCase):
     def test_generated_index_is_deterministic_complete_and_registry_order_is_unchanged(self) -> None:
         registry_before = json.loads(SOURCES.read_text(encoding="utf-8"))
@@ -130,6 +160,40 @@ class EvidenceIndexContractTests(unittest.TestCase):
         self.assertNotIn("%2520", rendered)
         self.assertIn("report%5D%28javascript:alert%281%29%29", rendered)
         self.assertNotIn("](javascript:", rendered)
+
+    def test_rendered_link_label_cannot_hijack_destination_and_code_list_stays_one_span(self) -> None:
+        registry = json.loads(SOURCES.read_text(encoding="utf-8"))
+        intended_url = "https://example.com/intended-source"
+        hostile_topic = "safe` fake `escape"
+        registry["sources"] = [
+            {
+                "id": "hostile-label",
+                "title": "x](https://attacker.example) [disguise",
+                "url": intended_url,
+                "kind": "official-doc",
+                "owner": "example",
+                "topics": [hostile_topic],
+                "review_depth": "indexed",
+                "snapshot": "2026-07-10",
+                "note": "literal `code` and *emphasis* must stay inert",
+            }
+        ]
+        registry["count"] = 1
+
+        with tempfile.TemporaryDirectory() as tmp:
+            source_path = Path(tmp) / "sources.json"
+            output = Path(tmp) / "index.md"
+            source_path.write_text(json.dumps(registry), encoding="utf-8")
+            run_generator("--sources", source_path, "--output", output)
+            rendered = output.read_text(encoding="utf-8")
+
+        destinations = [destination for _, destination in markdown_links(rendered)]
+        self.assertIn(intended_url, destinations)
+        self.assertNotIn("https://attacker.example", destinations)
+        source_row = next(line for line in rendered.splitlines() if "hostile-label" in line)
+        spans, outside = markdown_code_spans(source_row)
+        self.assertIn(hostile_topic, spans)
+        self.assertNotIn("`", outside, "hostile list backticks escaped their enclosing code span")
 
     def test_generated_index_rejects_non_https_source_links(self) -> None:
         registry = json.loads(SOURCES.read_text(encoding="utf-8"))

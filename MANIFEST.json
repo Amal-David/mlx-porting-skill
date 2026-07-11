@@ -2,8 +2,8 @@
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
   "version": "0.5.0",
-  "generated_at": "2026-07-11T06:45:01.864555+00:00",
-  "file_count": 459,
+  "generated_at": "2026-07-11T07:06:02.505293+00:00",
+  "file_count": 461,
   "files": [
     {
       "path": ".agents/skills/mlx-model-porting",
@@ -45,8 +45,8 @@
     },
     {
       "path": ".github/workflows/validate.yml",
-      "size_bytes": 4668,
-      "sha256": "1871e604492ac760367eba4755d5bf6ae56bbf84e66a347cd04b9785ebc2477c",
+      "size_bytes": 5152,
+      "sha256": "75a7c47f37e722f211c28d3fd0fec0957424ae5a0268f1e85fc020c6a5d9bacc",
       "executable": false
     },
     {
@@ -105,8 +105,8 @@
     },
     {
       "path": "VALIDATION.md",
-      "size_bytes": 17220,
-      "sha256": "59c360e6e8c758a814fd2790f47895cb596daa3c3a38cfacc3b92694a6796c78",
+      "size_bytes": 17814,
+      "sha256": "e3f7fdec87a88e77e5994e5eef75ff3137cf7dbff0f73df3082dcde52d13203e",
       "executable": false
     },
     {
@@ -1845,8 +1845,8 @@
     },
     {
       "path": "mlx-model-porting/scripts/generate_evidence_index.py",
-      "size_bytes": 12937,
-      "sha256": "5677da414c041b21fd62a85255d5ee19178cae3fc3876b63253e6662256121ce",
+      "size_bytes": 14242,
+      "sha256": "68f6d98034c0a1539931198adc46250445da650f0bcd6e5ccb31ca85111e7e73",
       "executable": false
     },
     {
@@ -1941,8 +1941,8 @@
     },
     {
       "path": "mlx-model-porting/scripts/validate_sources.py",
-      "size_bytes": 63947,
-      "sha256": "87ecb15b94c63e53ee681d10eef5f0abb47b3856c5882dd98a8b040c5424e92d",
+      "size_bytes": 67720,
+      "sha256": "1c9f9459af41e75060d37c449363c7b5f5483d12028d72da16a7896be0536371",
       "executable": true
     },
     {
@@ -2534,6 +2534,12 @@
       "executable": false
     },
     {
+      "path": "tests/mlx_keystone.py",
+      "size_bytes": 1669,
+      "sha256": "f7ff0b61dfbfc8122bc7f582c6a6dc1957e1236ff553407a13092fb883abef54",
+      "executable": false
+    },
+    {
       "path": "tests/test_asset_consumer_contract.py",
       "size_bytes": 3987,
       "sha256": "0fc9f7eaee50a6ed17e060d9f35785669b07853121a896060673978338c2fb84",
@@ -2565,8 +2571,8 @@
     },
     {
       "path": "tests/test_convert_checkpoint_contract.py",
-      "size_bytes": 40462,
-      "sha256": "ba895f0480b1dd48a1e4b4cd9484eed1ee37bd2e27768c318b6238a51c9ef039",
+      "size_bytes": 40661,
+      "sha256": "441a8f6dc1e665ea5ed1ee38cd19701396f09763c3f3e114e71c38a055f59997",
       "executable": false
     },
     {
@@ -2583,14 +2589,14 @@
     },
     {
       "path": "tests/test_documentation_contract.py",
-      "size_bytes": 13104,
-      "sha256": "bc4229620e04409563f302311059e6115b00b1172d1cfb2f3011ee5c75f16071",
+      "size_bytes": 13608,
+      "sha256": "ee4d29c9fe42f6f7b5a3252038a08e8f19146f0bcdaf6618def22282dd74397e",
       "executable": false
     },
     {
       "path": "tests/test_evidence_index_contract.py",
-      "size_bytes": 9554,
-      "sha256": "7abba37ffb0c18aa00b1547a035d423745f1f3fbc9efa227ec4b3a617622d68b",
+      "size_bytes": 12183,
+      "sha256": "084709f8d5695d58539e87573ee8f48729376d43b89d6847d878243f44c7ab5e",
       "executable": false
     },
     {
@@ -2660,6 +2666,12 @@
       "executable": false
     },
     {
+      "path": "tests/test_mlx_keystone_guard.py",
+      "size_bytes": 1846,
+      "sha256": "138cc00c170c17fa944c04bc1856b62c80dd2b427621cffeef24590d9b4ac72b",
+      "executable": false
+    },
+    {
       "path": "tests/test_model_intake_hardening.py",
       "size_bytes": 14433,
       "sha256": "5757f8f37f7989b26b5b15ec2412027119172c8649bbc526e02c77b164d82340",
@@ -2673,8 +2685,8 @@
     },
     {
       "path": "tests/test_parity_runner_contract.py",
-      "size_bytes": 20600,
-      "sha256": "0f5341e0fcd59d3f73edde896c6e8a119539498d0c715b6cd3c4b0f448661f02",
+      "size_bytes": 20777,
+      "sha256": "15fbc18dad7e5f3e0ecd4f9366d9adcf811bc2f7bc4c659e65990bb72f73d95d",
       "executable": false
     },
     {
@@ -2697,8 +2709,8 @@
     },
     {
       "path": "tests/test_release_contract.py",
-      "size_bytes": 19692,
-      "sha256": "870c4346d5b2df2abe8b44199f38c136ea81a20695068c6b5b7d6d5331a95c71",
+      "size_bytes": 20355,
+      "sha256": "6733f2ba055d67af89d7f5cc71d5afe3cb53be7b0fc035c1a1644c6592915f93",
       "executable": false
     },
     {
@@ -2709,8 +2721,8 @@
     },
     {
       "path": "tests/test_scaffold_port_contract.py",
-      "size_bytes": 29852,
-      "sha256": "7d391d969fa119f8685ea998147bd19d8b428bcd076a1d1006ad57abf3966aa0",
+      "size_bytes": 29925,
+      "sha256": "1d7dd77b3f8e8f059a0883db1544be49a6a56573510be9cfde8c3aef94de7b99",
       "executable": false
     },
     {
@@ -2733,8 +2745,8 @@
     },
     {
       "path": "tests/test_source_url_security.py",
-      "size_bytes": 6911,
-      "sha256": "390c54c2b931b2bc47b5616e0d57fdeffb47191e59e3ce22d75e33cd92c56a0c",
+      "size_bytes": 10562,
+      "sha256": "64cfe1266e6983d6a42020c5dd070c576ceffc12e35d46b695e8b6cee92b3b98",
       "executable": false
     },
     {

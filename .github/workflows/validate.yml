@@ -72,6 +72,10 @@ jobs:
           python3 mlx-model-porting/scripts/install_skill.py --dest "$install_root" --mode copy
           python3 mlx-model-porting/scripts/audit_skill.py --strict "$install_root/mlx-model-porting"
           python3 mlx-model-porting/scripts/install_skill.py --dest "$install_root" --mode copy
+      # Ubuntu cannot execute MLX keystone math. The Apple-Silicon release path must
+      # run the full suite with MLX_KEYSTONE_REQUIRED=1.
+      - name: Acknowledge Ubuntu MLX keystone coverage gap
+        run: test "$RUNNER_OS" = "Linux"
       - name: Run the full deterministic test suite
         run: python3 -m unittest discover -s tests -v
       - name: Check patch whitespace
@@ -112,5 +116,9 @@ jobs:
           -r .github/requirements-ci.txt
       - name: Compile shipped Python at the supported boundaries
         run: python3 -m compileall -q mlx-model-porting/scripts tests
+      # Ubuntu cannot execute MLX keystone math. The Apple-Silicon release path must
+      # run the full suite with MLX_KEYSTONE_REQUIRED=1.
+      - name: Acknowledge Ubuntu MLX keystone coverage gap
+        run: test "$RUNNER_OS" = "Linux"
       - name: Run the complete deterministic test suite
         run: python3 -m unittest discover -s tests -v

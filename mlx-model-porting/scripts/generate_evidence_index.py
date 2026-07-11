@@ -37,7 +37,7 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
-def markdown_cell(value: object) -> str:
+def _markdown_cell_text(value: object) -> str:
     text = str(value).strip()
     if not text:
         return "—"
@@ -48,6 +48,42 @@ def markdown_cell(value: object) -> str:
         .replace("\r\n", "<br>")
         .replace("\n", "<br>")
     )
+
+
+def _escape_emphasis_underscores(text: str) -> str:
+    escaped: list[str] = []
+    for index, character in enumerate(text):
+        if character != "_":
+            escaped.append(character)
+            continue
+        previous = text[index - 1] if index else ""
+        following = text[index + 1] if index + 1 < len(text) else ""
+        escaped.append("_" if previous.isalnum() and following.isalnum() else "\\_")
+    return "".join(escaped)
+
+
+def markdown_cell(value: object) -> str:
+    """Escape untrusted inline Markdown while preserving ordinary identifiers."""
+    text = _markdown_cell_text(value)
+    text = _escape_emphasis_underscores(text)
+    for delimiter in ("`", "[", "]", "*", "~"):
+        text = text.replace(delimiter, f"\\{delimiter}")
+    return text
+
+
+def markdown_link_label(value: object) -> str:
+    """Escape link-label delimiters independently from URL destinations."""
+    return markdown_cell(value)
+
+
+def markdown_code_span(value: object) -> str:
+    """Render one code span whose fence cannot be closed by its value."""
+    text = _markdown_cell_text(value)
+    runs = [len(match.group(0)) for match in re.finditer(r"`+", text)]
+    fence = "`" * (max(runs, default=0) + 1)
+    if runs:
+        return f"{fence} {text} {fence}"
+    return f"{fence}{text}{fence}"
 
 
 def markdown_link_destination(
@@ -70,11 +106,11 @@ def markdown_link_destination(
 
 def code_list(values: Iterable[object]) -> str:
     normalized = sorted({str(value).strip() for value in values if str(value).strip()})
-    return ", ".join(f"`{markdown_cell(value)}`" for value in normalized) or "—"
+    return ", ".join(markdown_code_span(value) for value in normalized) or "—"
 
 
 def count_rows(counter: collections.Counter[str]) -> list[str]:
-    return [f"| `{markdown_cell(label)}` | {count} |" for label, count in sorted(counter.items(), key=lambda item: (-item[1], item[0]))]
+    return [f"| {markdown_code_span(label)} | {count} |" for label, count in sorted(counter.items(), key=lambda item: (-item[1], item[0]))]
 
 
 def github_pin_error(source: dict[str, Any]) -> str | None:
@@ -139,7 +175,7 @@ def definitions_table(
     rows = [f"| {label} | Records | Meaning |", "|---|---:|---|"]
     for identifier in sorted(definitions):
         rows.append(
-            f"| `{markdown_cell(identifier)}` | {counts.get(identifier, 0)} | "
+            f"| {markdown_code_span(identifier)} | {counts.get(identifier, 0)} | "
             f"{markdown_cell(definitions[identifier])} |"
         )
     return rows
@@ -252,7 +288,7 @@ def render_index(registry: dict[str, Any]) -> str:
     ]
 
     for source in sorted(sources, key=lambda item: str(item["id"])):
-        title = markdown_cell(source.get("title", source["id"]))
+        title = markdown_link_label(source.get("title", source["id"]))
         url = str(source.get("url", "")).strip()
         link = title
         if url:
@@ -262,15 +298,15 @@ def render_index(registry: dict[str, Any]) -> str:
             "| "
             + " | ".join(
                 [
-                    f"`{markdown_cell(source['id'])}`",
-                    f"`{markdown_cell(source.get('review_depth', 'not-classified'))}`",
-                    f"`{markdown_cell(source.get('kind', 'not-classified'))}`",
-                    f"`{markdown_cell(source.get('evidence_class', 'not-classified'))}`",
-                    f"`{markdown_cell(source.get('support_scope', 'not-classified'))}`",
+                    markdown_code_span(source["id"]),
+                    markdown_code_span(source.get("review_depth", "not-classified")),
+                    markdown_code_span(source.get("kind", "not-classified")),
+                    markdown_code_span(source.get("evidence_class", "not-classified")),
+                    markdown_code_span(source.get("support_scope", "not-classified")),
                     code_list(source.get("claim_types", [])),
                     markdown_cell(source.get("owner", "")),
                     code_list(source.get("topics", [])),
-                    f"`{markdown_cell(source.get('snapshot', ''))}`",
+                    markdown_code_span(source.get("snapshot", "")),
                     link,
                     markdown_cell(source.get("note", "")),
                 ]

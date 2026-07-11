@@ -6,6 +6,7 @@ import shutil
 import socket
 import sys
 import tempfile
+import time
 import unittest
 import urllib.error
 import urllib.request
@@ -156,6 +157,97 @@ class SourceURLSecurityTests(unittest.TestCase):
             server_hostname="original.example",
         )
         self.assertIs(connection.sock, tls_socket)
+
+    def test_url_check_deadline_bounds_dns_and_connections_and_caps_address_attempts(self) -> None:
+        many_answers = [
+            item
+            for suffix in range(1, 13)
+            for item in resolution(f"93.184.216.{suffix}")
+        ]
+
+        with self.subTest("synchronous resolver is inside the overall deadline"):
+            opener = mock.Mock()
+
+            def blocking_resolver(*args: object, **kwargs: object) -> list[tuple[object, ...]]:
+                time.sleep(0.2)
+                return many_answers
+
+            started = time.monotonic()
+            with mock.patch.object(
+                validate_sources.urllib.request,
+                "build_opener",
+                return_value=opener,
+            ), mock.patch.object(
+                validate_sources.socket,
+                "getaddrinfo",
+                side_effect=blocking_resolver,
+            ):
+                result = validate_sources.check_url(
+                    {"id": "slow-dns", "url": "https://example.com/source"},
+                    0.04,
+                )
+            elapsed = time.monotonic() - started
+            self.assertLess(elapsed, 0.15)
+            self.assertIn("overall network deadline exceeded", result["error"])
+            opener.open.assert_not_called()
+
+        with self.subTest("connection attempts are capped after a large DNS answer"):
+            attempts: list[tuple[object, ...]] = []
+
+            class RefusingSocket:
+                def settimeout(self, timeout: float) -> None:
+                    self.timeout = timeout
+
+                def connect(self, sockaddr: tuple[object, ...]) -> None:
+                    attempts.append(sockaddr)
+                    raise socket.timeout("black hole")
+
+                def close(self) -> None:
+                    return None
+
+            with mock.patch.object(
+                validate_sources.socket,
+                "getaddrinfo",
+                return_value=many_answers,
+            ), mock.patch.object(
+                validate_sources.socket,
+                "socket",
+                side_effect=lambda *args: RefusingSocket(),
+            ):
+                result = validate_sources.check_url(
+                    {"id": "many-addresses", "url": "https://example.com/source"},
+                    1.0,
+                )
+            self.assertFalse(result["ok"])
+            self.assertEqual(len(attempts), validate_sources.MAX_HTTPS_ADDRESS_ATTEMPTS)
+
+        with self.subTest("one blocking connection cannot overrun the overall deadline"):
+            attempts = []
+
+            class BlockingSocket(RefusingSocket):
+                def connect(self, sockaddr: tuple[object, ...]) -> None:
+                    attempts.append(sockaddr)
+                    time.sleep(0.2)
+                    raise socket.timeout("black hole")
+
+            started = time.monotonic()
+            with mock.patch.object(
+                validate_sources.socket,
+                "getaddrinfo",
+                return_value=many_answers,
+            ), mock.patch.object(
+                validate_sources.socket,
+                "socket",
+                side_effect=lambda *args: BlockingSocket(),
+            ):
+                result = validate_sources.check_url(
+                    {"id": "slow-connect", "url": "https://example.com/source"},
+                    0.04,
+                )
+            elapsed = time.monotonic() - started
+            self.assertLess(elapsed, 0.15)
+            self.assertIn("overall network deadline exceeded", result["error"])
+            self.assertLessEqual(len(attempts), validate_sources.MAX_HTTPS_ADDRESS_ATTEMPTS)
 
     def test_synthesized_github_sources_require_full_matching_commit_refs(self) -> None:
         with tempfile.TemporaryDirectory() as raw_tmp:

@@ -194,6 +194,19 @@ enough.
 
 ## What still requires real Apple Silicon execution
 
+The generated-model math in `ScaffoldPortMLXContractTests` (including the
+dynamic-cache and padding cases) and the source-to-target tool chain in
+`ParityRunnerEndToEndContractTests` are keystone MLX tests. Ordinary Ubuntu
+validation cannot execute them and records that coverage gap explicitly. The
+maintainer-controlled Apple-Silicon release path must make them required:
+
+```bash
+MLX_KEYSTONE_REQUIRED=1 python3 -m unittest discover -s tests -v
+```
+
+With that flag, an unavailable MLX runtime fails the designated keystone tests
+instead of reporting successful validation with silent skips.
+
 - The checked-in Qwen2.5-0.5B-Instruct packet proves one real model in one
   family: `dense-decoder-transformer`. It passed 29 source-to-MLX parity rungs,
   exact greedy-token comparison, and an independent offline MLX-LM cross-check.

@@ -271,6 +271,16 @@ class DocumentationContractTests(unittest.TestCase):
         self.assertIsNotNone(network_match, "VALIDATION.md needs a separate network validation section")
         self.assertIn("--check-urls", network_match.group(1))
 
+    def test_validation_document_requires_mlx_keystones_on_apple_silicon(self) -> None:
+        validation = (ROOT / "VALIDATION.md").read_text(encoding="utf-8")
+        self.assertIn(
+            "MLX_KEYSTONE_REQUIRED=1 python3 -m unittest discover -s tests -v",
+            validation,
+        )
+        self.assertIn("ScaffoldPortMLXContractTests", validation)
+        self.assertIn("ParityRunnerEndToEndContractTests", validation)
+        self.assertIn("unavailable MLX runtime fails", validation)
+
 
 if __name__ == "__main__":
     unittest.main()

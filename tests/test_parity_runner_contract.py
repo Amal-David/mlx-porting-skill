@@ -18,9 +18,12 @@ RUN_PARITY = SCRIPTS / "run_parity.py"
 DECODER_FIXTURE = ROOT / "tests" / "fixtures" / "models" / "decoder"
 if str(SCRIPTS) not in sys.path:
     sys.path.insert(0, str(SCRIPTS))
+if str(ROOT / "tests") not in sys.path:
+    sys.path.insert(0, str(ROOT / "tests"))
 
 import capture_mlx  # noqa: E402
 import run_parity  # noqa: E402
+from mlx_keystone import require_mlx_keystone  # noqa: E402
 
 
 HAS_TORCH_STACK = all(
@@ -399,9 +402,10 @@ class ParityRunnerTorchPreparationContractTests(unittest.TestCase):
 
 
 @unittest.skipUnless(
-    HAS_TORCH_STACK and HAS_MLX_RUNTIME,
-    "torch, transformers, safetensors, NumPy, and a usable MLX runtime are required",
+    HAS_TORCH_STACK,
+    "torch, transformers, safetensors, and NumPy are required",
 )
+@require_mlx_keystone(HAS_MLX_RUNTIME, "a usable MLX runtime is required")
 class ParityRunnerEndToEndContractTests(unittest.TestCase):
     def test_real_tool_chain_passes_then_seeded_layer_zero_weight_bug_stops_at_layer_zero(self) -> None:
         from safetensors.numpy import load_file, save_file
