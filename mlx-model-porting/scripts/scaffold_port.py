@@ -22,9 +22,15 @@ from recommend_optimizations import (
     trusted_inspection_sha256,
     validate_trusted_inspection,
 )
+from _scaffold_asr import (
+    ASR_FAMILY,
+    asr_target_tensors,
+    generate_asr_encoder as render_asr_encoder,
+    validate_asr_config,
+)
 
 
-GENERATOR_VERSION = "1.0.1"
+GENERATOR_VERSION = "1.1.0"
 SCAFFOLD_MANIFEST = "scaffold-manifest.json"
 DENSE_FAMILY = "dense-decoder-transformer"
 DENSE_RUNBOOK = "references/runbook-decoder-transformer.md"
@@ -159,7 +165,7 @@ SUPPORTED_ROPE_TYPES = frozenset({"default", "dynamic", "linear"})
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Generate a runnable parity-first MLX dense-decoder package",
+        description="Generate a runnable parity-first MLX model package",
     )
     parser.add_argument("inspection", help="Trusted inspection.json produced by inspect_model.py")
     parser.add_argument(
@@ -1025,7 +1031,7 @@ def _scaffold_manifest(
     files: dict[str, str],
     config: dict[str, Any],
     inspection_digest: str,
-    attention_biases: dict[str, bool],
+    target_tensors: list[dict[str, Any]],
 ) -> str:
     execution_files = ("capture.py", "config.json", "config.py", "model.py")
     records = []
@@ -1042,7 +1048,7 @@ def _scaffold_manifest(
         "inspection_sha256": inspection_digest,
         "config_sha256": hashlib.sha256(files["config.json"].encode("utf-8")).hexdigest(),
         "files": records,
-        "tensors": dense_target_tensors(config, attention_biases),
+        "tensors": target_tensors,
     }
     return json.dumps(
         payload,
@@ -1085,13 +1091,40 @@ def generate_dense_decoder(
             .replace("__ATTENTION_BIAS_SUMMARY__", bias_summary)
         ),
     }
-    files[SCAFFOLD_MANIFEST] = _scaffold_manifest(files, config, digest, attention_biases)
+    files[SCAFFOLD_MANIFEST] = _scaffold_manifest(
+        files,
+        config,
+        digest,
+        dense_target_tensors(config, attention_biases),
+    )
+    return files
+
+
+def generate_asr_encoder(
+    inspection: dict[str, Any],
+    config: dict[str, Any],
+) -> dict[str, str]:
+    validate_asr_config(config)
+    digest = trusted_inspection_sha256(inspection)
+    files = render_asr_encoder(
+        config,
+        header=_header(digest),
+        digest=digest,
+        version=GENERATOR_VERSION,
+    )
+    files[SCAFFOLD_MANIFEST] = _scaffold_manifest(
+        files,
+        config,
+        digest,
+        asr_target_tensors(config),
+    )
     return files
 
 
 Generator = Callable[[dict[str, Any], dict[str, Any]], dict[str, str]]
 FAMILY_GENERATORS: dict[str, Generator] = {
     DENSE_FAMILY: generate_dense_decoder,
+    ASR_FAMILY: generate_asr_encoder,
 }
 
 
@@ -1104,6 +1137,17 @@ def _candidate_runbook(inspection: dict[str, Any], family: str | None) -> str:
                     return runbook
     runbook = inspection.get("recommended_runbook")
     return str(runbook) if isinstance(runbook, str) and runbook else "manual selection required"
+
+
+def _is_whisper_config(config: Any) -> bool:
+    if not isinstance(config, dict):
+        return False
+    if str(config.get("model_type", "")).lower() == "whisper":
+        return True
+    architectures = config.get("architectures", [])
+    return isinstance(architectures, list) and any(
+        isinstance(name, str) and "whisper" in name.lower() for name in architectures
+    )
 
 
 def _blocked_error(inspection: dict[str, Any]) -> SkillError:
@@ -1162,6 +1206,14 @@ def main(argv: list[str] | None = None) -> int:
                 "No detected family; no code was generated. Complete manual architecture review first"
             )
         verify_inspection_against_artifact(inspection, args.artifact_root)
+        artifact_root = Path(args.artifact_root).expanduser().resolve()
+        config = load_structured(artifact_root / "config.json")
+        if _is_whisper_config(config):
+            raise SkillError(
+                "Whisper/full sequence-to-sequence ASR is out of scope; no code was generated. "
+                "This scaffold supports only the HuBERT/Wav2Vec2 acoustic encoder and does "
+                "not implement autoregressive decoding or cross-attention"
+            )
         unsupported = [family for family in families if family not in FAMILY_GENERATORS]
         if unsupported:
             raise _unsupported_route_error(inspection, unsupported[0])
@@ -1169,8 +1221,6 @@ def main(argv: list[str] | None = None) -> int:
             raise SkillError(
                 "Hybrid architecture routes require a composition-specific generator; no code was generated"
             )
-        artifact_root = Path(args.artifact_root).expanduser().resolve()
-        config = load_structured(artifact_root / "config.json")
         files = FAMILY_GENERATORS[families[0]](inspection, config)
         _write_new_directory(Path(args.output).expanduser(), files)
         print(json.dumps({

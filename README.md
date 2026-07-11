@@ -8,8 +8,10 @@ improving it.
 
 This repository is an engineering workflow, **not an arbitrary-checkpoint
 conversion system**. Its `dense-decoder-transformer` route is tooled end to end
-and has been proven on one real model: pinned Qwen2.5-0.5B-Instruct. The other
-16 architecture families have executable intake, routing, planning, generic
+and has been proven on pinned Qwen2.5-0.5B-Instruct. The additive
+`automatic-speech-recognition` route now generates the HuBERT/Wav2Vec2 acoustic
+encoder from extracted frontend features and has passed real HuBERT-base
+block parity. The other 15 architecture families have executable intake, routing, planning, generic
 weight/parity validation, and evidence gates, but their architecture-module
 implementation remains runbook-guided. All 17 routes have synthetic golden
 scenarios; those fixtures are not 17 completed real-model ports. Controlled
@@ -37,7 +39,7 @@ Current 0.5.0 corpus snapshot:
   support scope and claim types, while 327 remain intentionally unclassified;
 - 66 technique records, 28 optimization-guidance methods, and 4 stack
   definitions;
-- 29 inspectable Python scripts and 425 offline tests;
+- 31 inspectable Python scripts and 447 offline tests;
 - a 697-node, 499-edge research graph plus a deterministically reconciled
   backlog;
 - 13 checked-in benchmark receipts: 12 `performance_observation`, 0
@@ -51,7 +53,8 @@ The tooled path is deliberately narrower than the routing catalogue:
 | Scope | What is executable now | What remains runbook-guided or future work |
 |---|---|---|
 | `dense-decoder-transformer` | Static inspection, Torch oracle capture, eager MLX scaffold generation, schema-2 weight-map conversion, MLX capture, first-divergence parity, benchmarking, and claim gating. | Additional configs still fail closed until their semantics are implemented; only one real checkpoint has completed the full path. |
-| Other 16 families | Static inspection, family/hybrid routing, port planning, explicit weight-map validation, generic tensor comparison, benchmarking, and evidence/claim gates. | Architecture-specific MLX module implementation and model-specific capture wiring are described by the runbooks but are not generated. |
+| `automatic-speech-recognition` | HuBERT/Wav2Vec2 feature projection, convolutional positional embedding, transformer-encoder scaffolding, shared extracted-feature capture, conversion, and per-layer parity. | Raw-waveform convolutional frontend, CTC/transducer/seq2seq decoding, Whisper, transcripts, WER, and timestamps. |
+| Other 15 families | Static inspection, family/hybrid routing, port planning, explicit weight-map validation, generic tensor comparison, benchmarking, and evidence/claim gates. | Architecture-specific MLX module implementation and model-specific capture wiring are described by the runbooks but are not generated. |
 | Quality evaluation | Exact tensor/ID comparison and controlled exact-output benchmark parity. | Domain evaluators for language quality, vision, audio, speech, diffusion, streaming, scientific tasks, and lossy changes. |
 
 ## How the workflow fits together
@@ -64,13 +67,14 @@ The tooled path is deliberately narrower than the routing catalogue:
    weak route; hybrid models can require more than one runbook.
 3. **Build a source oracle and the smallest eager MLX graph.** Freeze fixtures
    and intermediate tensors before changing performance behavior. Dense
-   decoders can use the checked-in capture and scaffold tools; other families
-   follow their runbooks.
+   decoders and HuBERT/Wav2Vec2 acoustic encoders can use the checked-in capture
+   and scaffold tools; other families follow their runbooks.
 4. **Convert weights deterministically.** Every rename, transpose, reshape,
    split, merge, and tie belongs in an inspectable weight map.
-5. **Pass staged parity.** The dense-decoder runner captures both sides and
+5. **Pass staged parity.** The parity runner captures both sides and
    stops at the first input, embedding, layer, norm, logit, or exact-token
-   divergence. Other families use the generic validation primitives until a
+   divergence; ASR encoder mode compares extracted features, encoder input,
+   every layer, and final hidden state. Other families use generic primitives until a
    family-specific runner exists.
 6. **Profile, then advise.** Recommendations match controlled family,
    capability, workload, objective, and software identifiers exactly. A local
@@ -175,9 +179,9 @@ Inspection reports use portable basename-only local references by default.
 Pass `--include-local-paths` only when an absolute path is deliberately needed
 for local debugging; do not publish that form.
 
-### Dense-decoder execution toolchain
+### Generated execution toolchain
 
-For an unblocked `dense-decoder-transformer` inspection, the executable chain
+For an unblocked dense-decoder or supported HuBERT/Wav2Vec2 inspection, the executable chain
 runs in this order:
 
 1. `capture_oracle.py` loads only a pinned local Hugging Face model with remote
@@ -200,6 +204,12 @@ runs in this order:
 6. `_capture_common.py` is the shared non-CLI contract for bounded inputs,
    manifests, tensor inventories, and strict artifact writing used by all three
    capture/parity commands.
+
+For ASR acoustic encoders, add `--asr-encoder --waveform-samples 16000` to
+`capture_oracle.py` or `run_parity.py`. The source capture freezes real
+Torch-extracted frontend features and the MLX capture consumes that same NPZ
+tensor. See
+[`worked-port-hubert-base-ls960`](mlx-model-porting/examples/worked-port-hubert-base-ls960/README.md).
 
 After inspection pins the local source artifacts, capture the executable source
 oracle before implementing or optimizing the MLX graph. Use token IDs when the

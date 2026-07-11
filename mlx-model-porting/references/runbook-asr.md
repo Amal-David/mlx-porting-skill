@@ -51,6 +51,21 @@ Capture:
 6. Add batching/long-audio chunking.
 7. Add streaming state and endpointing.
 
+## Generated HuBERT/Wav2Vec2 encoder path
+
+`scaffold_port.py` supports the inference-time acoustic encoder for built-in
+HuBERT and Wav2Vec2 configs. The generated graph begins at extracted convolutional
+features and includes feature projection, the weight-normalized convolutional
+positional embedding, bidirectional self-attention, GELU feed-forward blocks,
+and post-norm or stable-layer-norm ordering.
+
+Use `capture_oracle.py --asr-encoder` or `run_parity.py --asr-encoder`. A seeded
+waveform is passed through the real Torch convolutional feature extractor; its
+output is frozen as `input_features` and supplied to both source and MLX encoder
+graphs. This validates the transformer encoder without claiming raw-waveform
+frontend parity. Whisper/seq2seq, CTC/RNNT decoding, transcripts, WER, and
+timestamps fail closed until separately implemented and gated.
+
 ## Parity traps
 
 - resampler or log-mel convention;

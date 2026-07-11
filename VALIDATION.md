@@ -19,7 +19,7 @@ optimization improves a particular Mac workload.
 | Technique records | 66 | `mlx-model-porting/assets/techniques.yaml` |
 | Optimization-guidance methods | 28 | `mlx-model-porting/assets/optimization_guidance.yaml` |
 | Optimization stacks | 4 | `mlx-model-porting/assets/optimization_stacks.yaml` |
-| Python scripts | 29 | `mlx-model-porting/scripts/*.py` |
+| Python scripts | 31 | `mlx-model-porting/scripts/*.py` |
 | Benchmark receipts | 13 | `mlx-model-porting/assets/benchmarks/receipt_assessments.json` |
 | Performance observations | 12 | generated benchmark assessment |
 | Promotion-ready receipts | 0 | generated benchmark assessment |
@@ -27,7 +27,7 @@ optimization improves a particular Mac workload.
 | Effective claims | 10 | `mlx-model-porting/assets/effective_claims.json` |
 | Promoted / withheld claims | 0 / 10 | generated effective-claim catalogue |
 | Knowledge-graph nodes / edges | 697 / 499 | `mlx-model-porting/assets/knowledge_graph.json` |
-| Offline tests | 425 | `python3 -m unittest discover -s tests` |
+| Offline tests | 452 | `python3 -m unittest discover -s tests` |
 
 The 17 routes are synthetic golden scenarios. They prove that every declared
 family has a fixture exercising route selection, expected weight coverage, a
@@ -42,6 +42,7 @@ represent 17 completed real-model ports.
 | Intake is static by default, remote code is not executed, hostile model artifacts are read through bounded no-follow paths, partial shards block recommendations, local paths are portable by default, and truncation blocks clean conclusions. | `tests/test_model_intake_hardening.py`, `tests/test_tooling.py`, `tests/test_hardening_filesystem_contract.py`, `tests/test_hardening_project_inspection_contract.py` |
 | Weight-map transforms are explicit and tensor comparison fails on NaN/Inf, shape drift, tolerance failure, or cosine drift. | `tests/test_tooling.py`, `tests/test_scenarios.py` |
 | Dense-decoder source capture, fail-closed scaffold generation, schema-2 conversion, MLX capture, and first-divergence parity have dependency-free contracts plus gated Torch/MLX execution tests. | `tests/test_capture_oracle_contract.py`, `tests/test_scaffold_port_contract.py`, `tests/test_convert_checkpoint_contract.py`, `tests/test_parity_runner_contract.py` |
+| HuBERT/Wav2Vec2 acoustic-encoder config, target weights, exact extracted-feature capture, tuple projection, stable-LN layer boundaries, fail-closed decoder/CTC scope, seeded input/weight negatives, synthetic Wav2Vec2 parity, and real cached HuBERT per-layer parity are gated. | `tests/test_asr_encoder_contract.py` |
 | Recommendations match controlled family, capability, workload, objective, and version identifiers exactly. | `tests/test_recommendation_contract.py` |
 | The five advisor buckets are enforced, experimental approaches require opt-in, blocked intake forbids execution, and rejected methods stay rejected. | `tests/test_recommendation_contract.py`, `tests/test_tooling.py` |
 | Compound numbers require compatible measured-together coverage and unique evidence lineage; regressions and duplicate composition are not promoted. | `tests/test_recommendation_contract.py`, `tests/test_claim_catalog_contract.py` |
@@ -210,8 +211,12 @@ instead of reporting successful validation with silent skips.
 - The checked-in Qwen2.5-0.5B-Instruct packet proves one real model in one
   family: `dense-decoder-transformer`. It passed 29 source-to-MLX parity rungs,
   exact greedy-token comparison, and an independent offline MLX-LM cross-check.
-- That run does not prove another dense-decoder config or any of the other 16
-  routed families. Each still needs its own source oracle, architecture-module
+- The checked-in HuBERT-base-LS960 packet proves feature-projection,
+  convolutional-positional-embedding, and 12-layer encoder parity from shared
+  real frontend features. It does not prove raw-waveform, CTC, transcript, WER,
+  timestamp, or Whisper behavior.
+- These runs do not prove another config or any of the other 15 routed
+  families. Each still needs its own source oracle, architecture-module
   implementation, complete checkpoint conversion, and parity packet.
 - Exact-output parity is the only controlled built-in task quality gate. Domain
   evaluation remains required for language quality, vision, audio, speech,

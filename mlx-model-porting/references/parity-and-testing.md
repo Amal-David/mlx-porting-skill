@@ -36,6 +36,19 @@ Integer IDs and masks retain their integer dtype. Future target-side capture
 tools should mirror these names exactly; model-specific extra checkpoints may
 use additional keys without renaming the stable set.
 
+ASR acoustic-encoder mode is explicit and separate:
+
+```bash
+python3 mlx-model-porting/scripts/capture_oracle.py MODEL \
+  --asr-encoder --waveform-samples 16000 --seed 7006 \
+  --output source-oracle.npz
+```
+
+It records `waveform`, `input_features`, `embed`, every
+`layer.{i}.hidden`, and `final_hidden`. The MLX side receives
+`input_features` from the source archive, so this mode proves the generated
+feature projection and transformer encoder but not the raw-waveform frontend.
+
 ## Run the cross-framework ladder
 
 After scaffolding the MLX package and converting its weights, use the bounded
@@ -57,6 +70,10 @@ tokenizer to `capture_mlx.py`. Token-ID mode never loads a tokenizer. The
 strict-JSON report compares same-name keys in this order and stops immediately
 after the first failure: `input_ids`, `embed`, every `layer.{i}.hidden` in
 ascending order, `final_norm`, `logits`, and exact `generated_token_ids`.
+
+With `--asr-encoder`, the ordered ladder is `input_features`, `embed`, every
+encoder layer, and `final_hidden`. Text prompts, token IDs, generation steps,
+and tokenizer loading are rejected in this mode.
 
 `capture_mlx.py` validates the scaffold generator header, config digest,
 execution-file digests, and converted target parameter contract before running

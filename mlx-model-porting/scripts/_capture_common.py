@@ -361,33 +361,48 @@ def validate_capture_manifest(payload: Any) -> dict[str, Any]:
     ):
         raise SkillError("oracle manifest model.weights.total_bytes is inconsistent")
 
-    capture = _require_exact_fields(
-        manifest["capture"],
-        {"prompts", "token_ids", "generate_steps", "seed", "dtype_policy"},
-        label="oracle manifest capture",
-    )
-    prompts = capture["prompts"]
-    token_ids = capture["token_ids"]
-    if prompts is not None and (
-        not isinstance(prompts, list)
-        or not prompts
-        or not all(isinstance(item, str) for item in prompts)
-    ):
-        raise SkillError("oracle manifest capture.prompts must be null or an array of strings")
-    if token_ids is not None and (
-        not isinstance(token_ids, list)
-        or not token_ids
-        or not all(type(item) is int and item >= 0 for item in token_ids)
-    ):
-        raise SkillError("oracle manifest capture.token_ids must be null or non-negative integers")
-    if (prompts is None) == (token_ids is None):
-        raise SkillError("oracle manifest capture must record exactly one input mode")
-    if type(capture["generate_steps"]) is not int or capture["generate_steps"] < 0:
-        raise SkillError("oracle manifest capture.generate_steps must be a non-negative integer")
-    if type(capture["seed"]) is not int:
-        raise SkillError("oracle manifest capture.seed must be an integer")
-    if capture["dtype_policy"] not in {"float32", "keep"}:
-        raise SkillError("oracle manifest capture.dtype_policy must be 'float32' or 'keep'")
+    capture_value = manifest["capture"]
+    if isinstance(capture_value, dict) and capture_value.get("mode") == "asr_encoder":
+        capture = _require_exact_fields(
+            capture_value,
+            {"mode", "waveform_samples", "seed", "dtype_policy"},
+            label="oracle manifest capture",
+        )
+        if type(capture["waveform_samples"]) is not int or capture["waveform_samples"] < 400:
+            raise SkillError("oracle manifest capture.waveform_samples must be at least 400")
+        if type(capture["seed"]) is not int:
+            raise SkillError("oracle manifest capture.seed must be an integer")
+        if capture["dtype_policy"] not in {"float32", "keep"}:
+            raise SkillError("oracle manifest capture.dtype_policy must be 'float32' or 'keep'")
+        prompts = token_ids = None
+    else:
+        capture = _require_exact_fields(
+            capture_value,
+            {"prompts", "token_ids", "generate_steps", "seed", "dtype_policy"},
+            label="oracle manifest capture",
+        )
+        prompts = capture["prompts"]
+        token_ids = capture["token_ids"]
+        if prompts is not None and (
+            not isinstance(prompts, list)
+            or not prompts
+            or not all(isinstance(item, str) for item in prompts)
+        ):
+            raise SkillError("oracle manifest capture.prompts must be null or an array of strings")
+        if token_ids is not None and (
+            not isinstance(token_ids, list)
+            or not token_ids
+            or not all(type(item) is int and item >= 0 for item in token_ids)
+        ):
+            raise SkillError("oracle manifest capture.token_ids must be null or non-negative integers")
+        if (prompts is None) == (token_ids is None):
+            raise SkillError("oracle manifest capture must record exactly one input mode")
+        if type(capture["generate_steps"]) is not int or capture["generate_steps"] < 0:
+            raise SkillError("oracle manifest capture.generate_steps must be a non-negative integer")
+        if type(capture["seed"]) is not int:
+            raise SkillError("oracle manifest capture.seed must be an integer")
+        if capture["dtype_policy"] not in {"float32", "keep"}:
+            raise SkillError("oracle manifest capture.dtype_policy must be 'float32' or 'keep'")
 
     tensors = manifest["tensors"]
     if not isinstance(tensors, list) or not tensors:

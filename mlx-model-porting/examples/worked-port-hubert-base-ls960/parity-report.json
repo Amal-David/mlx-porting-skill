@@ -1,0 +1,194 @@
+{
+  "schema_version": 1,
+  "ok": true,
+  "inputs": {
+    "source_model": "$WORK/hubert-base-ls960",
+    "package": "$WORK/hubert-base-ls960-mlx",
+    "weights": "$WORK/hubert-base-ls960-converted",
+    "mode": "asr_encoder",
+    "waveform_samples": 16000,
+    "seed": 7006,
+    "dtype_policy": "float32",
+    "allow_modified": false
+  },
+  "tolerances": {
+    "atol": 0.0001,
+    "rtol": 0.0001,
+    "cosine_min": 0.99999
+  },
+  "rungs": [
+    {
+      "position": 0,
+      "name": "input_features",
+      "source_key": "input_features",
+      "target_key": "input_features",
+      "exact": false,
+      "pass": true,
+      "max_abs": 0.0,
+      "max_rel": 0.0,
+      "cosine": 1.0
+    },
+    {
+      "position": 1,
+      "name": "embed",
+      "source_key": "embed",
+      "target_key": "embed",
+      "exact": false,
+      "pass": true,
+      "max_abs": 4.0531158447265625e-06,
+      "max_rel": 0.03490192062483387,
+      "cosine": 0.9999999999990105
+    },
+    {
+      "position": 2,
+      "name": "layer.0.hidden",
+      "source_key": "layer.0.hidden",
+      "target_key": "layer.0.hidden",
+      "exact": false,
+      "pass": true,
+      "max_abs": 2.0563602447509766e-06,
+      "max_rel": 0.10534679725120386,
+      "cosine": 0.9999999999975671
+    },
+    {
+      "position": 3,
+      "name": "layer.1.hidden",
+      "source_key": "layer.1.hidden",
+      "target_key": "layer.1.hidden",
+      "exact": false,
+      "pass": true,
+      "max_abs": 3.337860107421875e-06,
+      "max_rel": 0.024902463671715103,
+      "cosine": 0.9999999999960184
+    },
+    {
+      "position": 4,
+      "name": "layer.2.hidden",
+      "source_key": "layer.2.hidden",
+      "target_key": "layer.2.hidden",
+      "exact": false,
+      "pass": true,
+      "max_abs": 4.6510249376297e-06,
+      "max_rel": 0.11256865948726735,
+      "cosine": 0.9999999999927712
+    },
+    {
+      "position": 5,
+      "name": "layer.3.hidden",
+      "source_key": "layer.3.hidden",
+      "target_key": "layer.3.hidden",
+      "exact": false,
+      "pass": true,
+      "max_abs": 6.4373016357421875e-06,
+      "max_rel": 0.36459432611130255,
+      "cosine": 0.9999999999916553
+    },
+    {
+      "position": 6,
+      "name": "layer.4.hidden",
+      "source_key": "layer.4.hidden",
+      "target_key": "layer.4.hidden",
+      "exact": false,
+      "pass": true,
+      "max_abs": 8.344650268554688e-06,
+      "max_rel": 0.03802367909449533,
+      "cosine": 0.9999999999908938
+    },
+    {
+      "position": 7,
+      "name": "layer.5.hidden",
+      "source_key": "layer.5.hidden",
+      "target_key": "layer.5.hidden",
+      "exact": false,
+      "pass": true,
+      "max_abs": 8.58306884765625e-06,
+      "max_rel": 0.11027409785435631,
+      "cosine": 0.9999999999867462
+    },
+    {
+      "position": 8,
+      "name": "layer.6.hidden",
+      "source_key": "layer.6.hidden",
+      "target_key": "layer.6.hidden",
+      "exact": false,
+      "pass": true,
+      "max_abs": 1.239776611328125e-05,
+      "max_rel": 0.40691622631195334,
+      "cosine": 0.9999999999673506
+    },
+    {
+      "position": 9,
+      "name": "layer.7.hidden",
+      "source_key": "layer.7.hidden",
+      "target_key": "layer.7.hidden",
+      "exact": false,
+      "pass": true,
+      "max_abs": 1.8596649169921875e-05,
+      "max_rel": 0.4621760670731707,
+      "cosine": 0.9999999999016745
+    },
+    {
+      "position": 10,
+      "name": "layer.8.hidden",
+      "source_key": "layer.8.hidden",
+      "target_key": "layer.8.hidden",
+      "exact": false,
+      "pass": true,
+      "max_abs": 1.93621963262558e-05,
+      "max_rel": 3.102619327910959,
+      "cosine": 0.9999999997587147
+    },
+    {
+      "position": 11,
+      "name": "layer.9.hidden",
+      "source_key": "layer.9.hidden",
+      "target_key": "layer.9.hidden",
+      "exact": false,
+      "pass": true,
+      "max_abs": 3.446638584136963e-05,
+      "max_rel": 0.3650733274411026,
+      "cosine": 0.9999999991997812
+    },
+    {
+      "position": 12,
+      "name": "layer.10.hidden",
+      "source_key": "layer.10.hidden",
+      "target_key": "layer.10.hidden",
+      "exact": false,
+      "pass": true,
+      "max_abs": 3.9264559745788574e-05,
+      "max_rel": 2.1614068711997194,
+      "cosine": 0.9999999991710676
+    },
+    {
+      "position": 13,
+      "name": "layer.11.hidden",
+      "source_key": "layer.11.hidden",
+      "target_key": "layer.11.hidden",
+      "exact": false,
+      "pass": true,
+      "max_abs": 6.467103958129883e-05,
+      "max_rel": 10.49178157944277,
+      "cosine": 0.9999999993744736
+    },
+    {
+      "position": 14,
+      "name": "final_hidden",
+      "source_key": "final_hidden",
+      "target_key": "final_hidden",
+      "exact": false,
+      "pass": true,
+      "max_abs": 6.467103958129883e-05,
+      "max_rel": 10.49178157944277,
+      "cosine": 0.9999999993744736
+    }
+  ],
+  "summary": {
+    "status": "pass",
+    "evaluated_rungs": 15,
+    "total_rungs": 15,
+    "stopped_at": null,
+    "debug_target": null,
+    "message": "All parity rungs passed in runbook order."
+  }
+}

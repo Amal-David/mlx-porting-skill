@@ -62,6 +62,12 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--prompt", action="append", help="Prompt to tokenize locally; repeatable")
     parser.add_argument("--prompts-file", action="append", help="One prompt per non-empty line")
     parser.add_argument("--token-ids", nargs="+", help="Tokenizer-free token IDs")
+    parser.add_argument(
+        "--asr-encoder",
+        action="store_true",
+        help="Compare a HuBERT/Wav2Vec2 encoder using shared source-extracted features",
+    )
+    parser.add_argument("--waveform-samples", type=int, default=16000)
     parser.add_argument("--generate-steps", type=int, default=DEFAULT_GENERATE_STEPS)
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument("--keep-dtype", action="store_true")
@@ -87,11 +93,18 @@ def _strict_fields(value: Any, fields: set[str], *, label: str) -> dict[str, Any
 def build_parity_ladder(
     source_keys: list[str] | set[str],
     target_keys: list[str] | set[str],
+    *,
+    mode: str = "decoder",
 ) -> list[dict[str, Any]]:
     """Map the stable same-name tensor contract into runbook ladder order."""
     source = set(source_keys)
     target = set(target_keys)
-    required = {"input_ids", "embed", "final_norm", "logits", "generated_token_ids"}
+    if mode == "asr_encoder":
+        required = {"input_features", "embed", "final_hidden"}
+    elif mode == "decoder":
+        required = {"input_ids", "embed", "final_norm", "logits", "generated_token_ids"}
+    else:
+        raise SkillError(f"unsupported parity ladder mode: {mode}")
     missing_source = sorted(required - source)
     if missing_source:
         raise SkillError("source capture is missing parity keys: " + ", ".join(missing_source))
@@ -102,9 +115,12 @@ def build_parity_ladder(
     )
     if not layer_indices or layer_indices != list(range(layer_indices[-1] + 1)):
         raise SkillError("source layer.{i}.hidden keys must be contiguous from layer 0")
-    ordered = ["input_ids", "embed"]
+    ordered = ["input_features", "embed"] if mode == "asr_encoder" else ["input_ids", "embed"]
     ordered.extend(f"layer.{index}.hidden" for index in layer_indices)
-    ordered.extend(("final_norm", "logits", "generated_token_ids"))
+    if mode == "asr_encoder":
+        ordered.append("final_hidden")
+    else:
+        ordered.extend(("final_norm", "logits", "generated_token_ids"))
     rungs = []
     for position, key in enumerate(ordered):
         rungs.append({
@@ -113,7 +129,7 @@ def build_parity_ladder(
             "source_key": key,
             "target_key": key,
             "target_present": key in target,
-            "exact": key in {"input_ids", "generated_token_ids"},
+            "exact": key in {"input_features", "input_ids", "generated_token_ids"},
         })
     return rungs
 
@@ -131,9 +147,22 @@ def validate_parity_report(payload: Any) -> dict[str, Any]:
         raise SkillError("parity report schema_version must be integer 1")
     if not isinstance(report["ok"], bool):
         raise SkillError("parity report ok must be boolean")
-    inputs = _strict_fields(
-        report["inputs"],
-        {
+    input_value = report["inputs"]
+    if isinstance(input_value, dict) and input_value.get("mode") == "asr_encoder":
+        inputs = _strict_fields(
+            input_value,
+            {
+                "source_model", "package", "weights", "mode", "waveform_samples",
+                "seed", "dtype_policy", "allow_modified",
+            },
+            label="parity report inputs",
+        )
+        if type(inputs["waveform_samples"]) is not int or inputs["waveform_samples"] < 400:
+            raise SkillError("parity report waveform_samples is invalid")
+    else:
+        inputs = _strict_fields(
+            input_value,
+            {
             "source_model",
             "package",
             "weights",
@@ -144,22 +173,25 @@ def validate_parity_report(payload: Any) -> dict[str, Any]:
             "seed",
             "dtype_policy",
             "allow_modified",
-        },
-        label="parity report inputs",
-    )
-    if inputs["mode"] not in {"prompt", "token_ids"}:
-        raise SkillError("parity report input mode is invalid")
+            },
+            label="parity report inputs",
+        )
+        if inputs["mode"] not in {"prompt", "token_ids"}:
+            raise SkillError("parity report input mode is invalid")
     if not all(
         isinstance(inputs[field], str) and inputs[field]
         for field in ("source_model", "package", "weights")
     ):
         raise SkillError("parity report input paths must be non-empty strings")
-    if inputs["mode"] == "token_ids":
-        if inputs["prompts"] is not None or not isinstance(inputs["token_ids"], list):
-            raise SkillError("parity report token-ID input is invalid")
-    elif inputs["token_ids"] is not None or not isinstance(inputs["prompts"], list):
-        raise SkillError("parity report prompt input is invalid")
-    if type(inputs["generate_steps"]) is not int or inputs["generate_steps"] < 0:
+    if inputs["mode"] != "asr_encoder":
+        if inputs["mode"] == "token_ids":
+            if inputs["prompts"] is not None or not isinstance(inputs["token_ids"], list):
+                raise SkillError("parity report token-ID input is invalid")
+        elif inputs["token_ids"] is not None or not isinstance(inputs["prompts"], list):
+            raise SkillError("parity report prompt input is invalid")
+    if inputs["mode"] != "asr_encoder" and (
+        type(inputs["generate_steps"]) is not int or inputs["generate_steps"] < 0
+    ):
         raise SkillError("parity report generate_steps is invalid")
     if type(inputs["seed"]) is not int:
         raise SkillError("parity report seed is invalid")
@@ -243,6 +275,14 @@ def _python_script(script: Path) -> list[str]:
 
 
 def _input_arguments(args: argparse.Namespace) -> list[str]:
+    if args.asr_encoder:
+        return [
+            "--asr-encoder",
+            "--waveform-samples", str(args.waveform_samples),
+            "--seed", str(args.seed),
+            "--max-output-mb", str(args.max_output_mb),
+            *(["--keep-dtype"] if args.keep_dtype else []),
+        ]
     values: list[str] = []
     for prompt in args.prompt or []:
         values.extend(("--prompt", prompt))
@@ -274,6 +314,10 @@ def _debug_target(key: str) -> tuple[str, str]:
         layer = match.group(1)
         return f"layer {layer}", f"First divergence is layer {layer}; debug that decoder block."
     messages = {
+        "input_features": (
+            "feature input",
+            "Extracted frontend features differ; debug the frozen ASR fixture plumbing.",
+        ),
         "input_ids": ("input preparation", "Input IDs differ; debug tokenization or fixture plumbing."),
         "embed": ("embedding stage", "First divergence is the embedding stage; debug embedding weights and lookup."),
         "final_norm": ("final norm", "Decoder layers passed; debug the final normalization stage."),
@@ -281,6 +325,10 @@ def _debug_target(key: str) -> tuple[str, str]:
         "generated_token_ids": (
             "greedy decoding",
             "Logits passed tolerance but greedy IDs differ; debug exact argmax/decode behavior.",
+        ),
+        "final_hidden": (
+            "final hidden state",
+            "Encoder layers passed; debug the stable final normalization or output plumbing.",
         ),
     }
     return messages[key]
@@ -306,7 +354,18 @@ def main(argv: list[str] | None = None) -> int:
             )
         if args.source_model is None or args.package is None or args.weights is None:
             raise SkillError("--source-model, --package, and --weights are required")
-        prompts, token_ids = validate_input_mode(args.token_ids, args.prompt, args.prompts_file)
+        if args.asr_encoder:
+            if args.prompt or args.prompts_file or args.token_ids:
+                raise SkillError("--asr-encoder cannot be combined with text/token inputs")
+            if args.generate_steps != DEFAULT_GENERATE_STEPS:
+                raise SkillError("--generate-steps is not valid with --asr-encoder")
+            if type(args.waveform_samples) is not int or args.waveform_samples < 400:
+                raise SkillError("--waveform-samples must be an integer of at least 400")
+            prompts, token_ids = [], None
+        else:
+            if args.waveform_samples != 16000:
+                raise SkillError("--waveform-samples is only valid with --asr-encoder")
+            prompts, token_ids = validate_input_mode(args.token_ids, args.prompt, args.prompts_file)
         source_model = _regular_directory(args.source_model, label="source model")
         package = _regular_directory(args.package, label="package")
         weights = _regular_directory(args.weights, label="weights")
@@ -340,12 +399,13 @@ def main(argv: list[str] | None = None) -> int:
                 "--weights",
                 str(weights),
                 *common_input,
+                *(["--features-npz", str(source_npz)] if args.asr_encoder else []),
                 "--output",
                 str(target_npz),
                 "--manifest",
                 str(target_manifest_path),
             ]
-            if prompts:
+            if prompts and not args.asr_encoder:
                 mlx_command.extend(("--tokenizer", str(source_model)))
             if args.allow_modified:
                 mlx_command.append("--allow-modified")
@@ -373,7 +433,11 @@ def main(argv: list[str] | None = None) -> int:
                 raise SkillError("source and target capture configurations differ")
             source_keys = [item["name"] for item in source_manifest["tensors"]]
             target_keys = [item["name"] for item in target_manifest["tensors"]]
-            ladder = build_parity_ladder(source_keys, target_keys)
+            ladder = build_parity_ladder(
+                source_keys,
+                target_keys,
+                mode="asr_encoder" if args.asr_encoder else "decoder",
+            )
             mapping_path = work / "mapping.json"
             write_strict_json(
                 mapping_path,
@@ -394,9 +458,9 @@ def main(argv: list[str] | None = None) -> int:
                     "--include",
                     include,
                     "--atol",
-                    str(args.atol),
+                    "0" if rung["exact"] else str(args.atol),
                     "--rtol",
-                    str(args.rtol),
+                    "0" if rung["exact"] else str(args.rtol),
                     "--cosine-min",
                     str(args.cosine_min),
                     "--output",
@@ -450,7 +514,16 @@ def main(argv: list[str] | None = None) -> int:
         report = {
             "schema_version": SCHEMA_VERSION,
             "ok": ok,
-            "inputs": {
+            "inputs": ({
+                "source_model": str(source_model),
+                "package": str(package),
+                "weights": str(weights),
+                "mode": "asr_encoder",
+                "waveform_samples": args.waveform_samples,
+                "seed": args.seed,
+                "dtype_policy": "keep" if args.keep_dtype else "float32",
+                "allow_modified": args.allow_modified,
+            } if args.asr_encoder else {
                 "source_model": str(source_model),
                 "package": str(package),
                 "weights": str(weights),
@@ -461,7 +534,7 @@ def main(argv: list[str] | None = None) -> int:
                 "seed": args.seed,
                 "dtype_policy": "keep" if args.keep_dtype else "float32",
                 "allow_modified": args.allow_modified,
-            },
+            }),
             "tolerances": {
                 "atol": args.atol,
                 "rtol": args.rtol,

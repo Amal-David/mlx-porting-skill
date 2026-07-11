@@ -17,9 +17,10 @@ Produce or inspect a **correct, reproducible, architecture-aware MLX implementat
 
 Dense decoders have an executable capture/scaffold/schema-2 conversion/parity
 chain proven by one [Qwen2.5 port](examples/worked-port-qwen2.5-0.5b-instruct/README.md).
-The other 16 families have tooled routing/planning/generic validation but
-runbook-guided module implementation. Exact output is the only built-in task
-metric; domain evaluators remain future work.
+HuBERT/Wav2Vec2 have an acoustic-encoder chain proven on
+[HuBERT base LS960](examples/worked-port-hubert-base-ls960/README.md), using
+shared Torch-extracted features. Other families remain runbook-guided; domain
+evaluators remain future work.
 
 ## When to use this skill
 
@@ -32,7 +33,7 @@ metric; domain evaluators remain future work.
 
 | Signal | Load |
 | --- | --- |
-| Port/convert/run request, `config.json`, safetensors index, model directory, or Hub id. | [intake](references/intake-and-routing.md), then Workflow 1-6; use the [worked chain](examples/worked-port-qwen2.5-0.5b-instruct/README.md) for dense decoders and every routed runbook otherwise. |
+| Port/convert/run request, `config.json`, safetensors index, model directory, or Hub id. | [intake](references/intake-and-routing.md), Workflow 1-6, then the [dense example](examples/worked-port-qwen2.5-0.5b-instruct/README.md), [HuBERT example](examples/worked-port-hubert-base-ls960/README.md), or routed runbook. |
 | User points at an existing local MLX project, running MLX app, or completed MLX port. | [inspector mode](references/inspector-mode.md) plus [inspect_mlx_project.py](scripts/inspect_mlx_project.py) |
 | User asks "what can I do with this model?", asks for capability fit, or wants model-specific advice. | [model advisor playbook](references/model-advisor-playbook.md) |
 | A known architecture family needs the right runbook. | [model support map](references/model-support-map.md), then the architecture table in Workflow step 4 below |
@@ -81,13 +82,13 @@ Consult [model support map](references/model-support-map.md) and `assets/archite
 
 ### 3. Establish the source oracle
 
-Run `scripts/capture_oracle.py` against the pinned local Hugging Face model before implementing the MLX graph, then follow [parity and testing](references/parity-and-testing.md). It records inputs, embeddings, decoder blocks, final norm, logits, hookable branches, and greedy IDs in a bounded NPZ plus content-addressed manifest.
+Run `scripts/capture_oracle.py` against the pinned local model, then follow [parity and testing](references/parity-and-testing.md). Decoder mode records tokens through greedy IDs; `--asr-encoder` records waveform, features, layers, and final hidden state.
 
 ### 4. Implement the minimal eager MLX graph
 
 Read [core porting method](references/porting-core.md); choose via the trigger map and the controlled family records in `assets/architectures.yaml`. Load every runbook returned by a hybrid route. The registry is the complete runbook inventory; do not substitute an abbreviated parallel list.
 
-For an unblocked `dense-decoder-transformer` inspection, scaffold implementation:
+For an unblocked dense decoder or supported HuBERT/Wav2Vec2 inspection:
 
 ```bash
 python3 scripts/scaffold_port.py inspection.json --artifact-root MODEL --output mlx_port
@@ -96,7 +97,8 @@ python3 scripts/scaffold_port.py inspection.json --artifact-root MODEL --output 
 It re-inspects the artifact and fails closed. Review unsupported config before
 continuing; never patch around a generator blocker.
 
-[Example](examples/worked-port-qwen2.5-0.5b-instruct/README.md) (no weights).
+[Dense](examples/worked-port-qwen2.5-0.5b-instruct/README.md) and
+[HuBERT](examples/worked-port-hubert-base-ls960/README.md) examples contain no weights.
 
 Start eager: FP, batch one unless intrinsic, no compile/kernels, state/cache, assertions, reversible map.
 
@@ -111,7 +113,8 @@ gaps; never mask exceptions.
 
 After conversion, `scripts/run_parity.py` is the one-command flow: it invokes
 `capture_oracle.py` and `capture_mlx.py`, then stops at the first failing
-input/embed/layer/norm/logit/exact-ID rung. Use `capture_mlx.py` for retained
+input/embed/layer/norm/logit/exact-ID rung. ASR encoder mode uses
+input-features/embed/layer/final-hidden rungs. Use `capture_mlx.py` for retained
 target captures and `compare_tensors.py` for extra checks; `_capture_common.py`
 holds shared bounded capture rules.
 
@@ -143,5 +146,5 @@ Stop when license, remote code, unresolved parity, regressions, missing kernel f
 
 ## Maintenance
 
-For maintenance, read [mnt](references/maintenance-and-provenance.md), [hyp](references/hypothesis-led-learning.md), [deep](references/deep-research-loop.md). The 0.5.0 payload has 29 scripts, 66 techniques, and 13 benchmark receipts: 12 observations, 0 promotion-ready, and 1 rejected. Use `scripts/nightly_knowledge_curator.py` for receipts, delta, packets; use hypothesis-led for 50-100/learn-flow/public-port/kernel/2x/5x targets. Keep flags/receipts/gates/matrices/dossiers/ledger in [deep](references/deep-research-loop.md); run `scripts/audit_skill.py --strict` and `scripts/validate_sources.py` before distribution.
+For maintenance, read [mnt](references/maintenance-and-provenance.md), [hyp](references/hypothesis-led-learning.md), and [deep](references/deep-research-loop.md). The 0.5.0 payload has 31 scripts, 66 techniques, and 13 receipts. Use `scripts/nightly_knowledge_curator.py`; run `scripts/audit_skill.py --strict` and `scripts/validate_sources.py` before distribution.
 When `assets/architectures.yaml` changes, keep the golden scenario gate in `tests/test_scenarios.py` at full family coverage.

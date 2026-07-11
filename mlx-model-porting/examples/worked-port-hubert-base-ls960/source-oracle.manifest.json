@@ -1,0 +1,200 @@
+{
+  "schema_version": 1,
+  "model": {
+    "directory": "hubert-base-ls960",
+    "fingerprint": "sha256:9585f93c1cbefbdb0fab28fde820184d3de0f7f2cddc5e9f69b4062147c2555b",
+    "config": {
+      "name": "config.json",
+      "size_bytes": 1385,
+      "sha256": "56be398848bbd9cbc720172b0d45b2f01cac7652f2968f0f31f5faf9f2986acc"
+    },
+    "weights": {
+      "algorithm": "sha256",
+      "file_count": 1,
+      "total_bytes": 377510580,
+      "max_listed_files": 256,
+      "truncated": false,
+      "omitted_file_count": 0,
+      "files": [
+        {
+          "name": "model.safetensors",
+          "size_bytes": 377510580,
+          "sha256": "ec18ca2453e7cf3de5e4fc5b79e7484b27506ed0ad684282ddd10ecb9492f37f"
+        }
+      ]
+    }
+  },
+  "capture": {
+    "mode": "asr_encoder",
+    "waveform_samples": 16000,
+    "seed": 7006,
+    "dtype_policy": "float32"
+  },
+  "tensors": [
+    {
+      "name": "embed",
+      "shape": [
+        1,
+        49,
+        768
+      ],
+      "dtype": "float32",
+      "sha256": "765adc5e4c6d8b9e8447e392b1c8ec199561f06acff885e40ff13aa2eee1c05f"
+    },
+    {
+      "name": "final_hidden",
+      "shape": [
+        1,
+        49,
+        768
+      ],
+      "dtype": "float32",
+      "sha256": "aa881935f0e02462380479b760adc3949e1d6f21d067ab96b18b9827c3957b54"
+    },
+    {
+      "name": "input_features",
+      "shape": [
+        1,
+        49,
+        512
+      ],
+      "dtype": "float32",
+      "sha256": "db84d2459c154f93c63d9bcac7ad1f7d1ec6e76c131d6c2df7f54342d3193e56"
+    },
+    {
+      "name": "layer.0.hidden",
+      "shape": [
+        1,
+        49,
+        768
+      ],
+      "dtype": "float32",
+      "sha256": "0e2f98639e030fdbd9b2d6eb8210846e9a336a7e31c0df10d314e53b243dcf72"
+    },
+    {
+      "name": "layer.1.hidden",
+      "shape": [
+        1,
+        49,
+        768
+      ],
+      "dtype": "float32",
+      "sha256": "a6260fee9de637d11524e73d572737228b30089c540e507908d17b3d284e5611"
+    },
+    {
+      "name": "layer.10.hidden",
+      "shape": [
+        1,
+        49,
+        768
+      ],
+      "dtype": "float32",
+      "sha256": "c2d034d5acfa314802fbb61764f6afcbd0e87fb26cfb712f4ff0cf6f9908a37f"
+    },
+    {
+      "name": "layer.11.hidden",
+      "shape": [
+        1,
+        49,
+        768
+      ],
+      "dtype": "float32",
+      "sha256": "aa881935f0e02462380479b760adc3949e1d6f21d067ab96b18b9827c3957b54"
+    },
+    {
+      "name": "layer.2.hidden",
+      "shape": [
+        1,
+        49,
+        768
+      ],
+      "dtype": "float32",
+      "sha256": "a2b60215d266944c579beab3aada7b066a9aa8d4f267da109ec42d272c0bf62e"
+    },
+    {
+      "name": "layer.3.hidden",
+      "shape": [
+        1,
+        49,
+        768
+      ],
+      "dtype": "float32",
+      "sha256": "e783b3b775f6aceeb873e185afd023e3180d8a0b56854af43b22deec271553ab"
+    },
+    {
+      "name": "layer.4.hidden",
+      "shape": [
+        1,
+        49,
+        768
+      ],
+      "dtype": "float32",
+      "sha256": "15ecc6b27ac02e19b75c15b3466597de05748d25bfcdb2d466e67a44cbfb8010"
+    },
+    {
+      "name": "layer.5.hidden",
+      "shape": [
+        1,
+        49,
+        768
+      ],
+      "dtype": "float32",
+      "sha256": "2e173c318e2888f83b10bb05300f98e73b7a87cc9da042d5ef9868d624a5ec43"
+    },
+    {
+      "name": "layer.6.hidden",
+      "shape": [
+        1,
+        49,
+        768
+      ],
+      "dtype": "float32",
+      "sha256": "94dc8af6b8aaee3d89030351906f00ce4c32e9c65ab89ffd4ae81d6aeb104d83"
+    },
+    {
+      "name": "layer.7.hidden",
+      "shape": [
+        1,
+        49,
+        768
+      ],
+      "dtype": "float32",
+      "sha256": "044af9cad2f7310c84fb436d46840c91518a06ba3ea13d5b29ab54c049dbf0d1"
+    },
+    {
+      "name": "layer.8.hidden",
+      "shape": [
+        1,
+        49,
+        768
+      ],
+      "dtype": "float32",
+      "sha256": "12bb269f720e4e978fd675ff17f769822e74c03c8ed4ec81361fd4b1bdb0eb04"
+    },
+    {
+      "name": "layer.9.hidden",
+      "shape": [
+        1,
+        49,
+        768
+      ],
+      "dtype": "float32",
+      "sha256": "69ce570377cb37388829e4cf20bcfa573acf2afd52a4ebb2c16654fb24f247aa"
+    },
+    {
+      "name": "waveform",
+      "shape": [
+        1,
+        16000
+      ],
+      "dtype": "float32",
+      "sha256": "82054b0e4e9b83a405348d56b1717c4560f46fdb052864e6b1b2b642313e4ebe"
+    }
+  ],
+  "libraries": {
+    "python": "3.14.4",
+    "numpy": "2.3.5",
+    "torch": "2.9.1",
+    "transformers": "5.3.0"
+  }
+}
