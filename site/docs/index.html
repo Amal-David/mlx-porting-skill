@@ -79,9 +79,9 @@
 
       <article class="docs-article">
         <header class="docs-hero">
-          <p class="docs-breadcrumb">Documentation / executable porting standard / v<span data-value="version">0.5.0</span></p>
+          <p class="docs-breadcrumb">Documentation / executable porting standard / v<span data-value="version">0.6.0</span></p>
           <h1>Make the port <em>explain itself.</em></h1>
-          <p class="docs-lead">MLX Porter supplies an executable capture, scaffold, schema-2 conversion, and parity chain for dense-decoder Transformers, proven by one real Qwen2.5 port. The other 16 families have executable routing, planning, generic validation, and evidence gates, while architecture-module implementation remains runbook-guided.</p>
+          <p class="docs-lead">MLX Porter supplies executable scaffold, conversion, capture, and parity chains for six families. Real packets prove Qwen2.5, BGE, t5-small, and HuBERT-base; MoE and SSM are synthetic-only; the other 11 routes remain runbook-guided.</p>
           <div class="docs-summary" aria-label="Generated documentation summary">
             <div><strong data-value="architectures.total">17</strong><span>declared routes with golden scenarios</span></div>
             <div><strong data-value="local_docs.runbooks">17</strong><span>architecture runbooks</span></div>
@@ -139,7 +139,7 @@ python3 mlx-model-porting/scripts/make_port_plan.py inspection.json \
             <div class="route-node"><strong>Parity ladder</strong><span>Tensor → block → output → state → task.</span></div>
             <div class="route-node"><strong>Profile → publish</strong><span>One change, quality gate, benchmark receipt, rollback.</span></div>
           </div>
-          <div class="callout"><strong>Tooled scope</strong><p>For an unblocked dense decoder, <span class="inline-code">capture_oracle.py</span>, <span class="inline-code">scaffold_port.py</span>, <span class="inline-code">convert_checkpoint.py</span>, <span class="inline-code">capture_mlx.py</span>, and <span class="inline-code">run_parity.py</span> implement the rail above. Other routed families still require the runbook-defined MLX module and model-specific capture wiring. Exact output is the only controlled built-in task metric.</p></div>
+          <div class="callout"><strong>Tooled scope</strong><p><span class="inline-code">scaffold_port.py</span> supports dense decoder, BERT encoder, T5 encoder-decoder, HuBERT/Wav2Vec2 acoustic encoder, sparse MoE, and selective SSM. Capture/parity modes are dense-decoder, encoder, encoder-decoder, ASR, and SSM. Exact output is the only controlled built-in task metric.</p></div>
         </section>
 
         <section class="doc-section" id="routes" data-search="families runbook transformer moe vision language audio diffusion flow speech graph time series cv">
@@ -424,7 +424,7 @@ python3 -m unittest discover -s tests -v</code></pre>
         <section class="doc-section" id="limitations" data-search="limitations offline real models conversion formats cv graph forecasting network apple silicon">
           <span class="label">15 / boundary</span>
           <h2>Limitations</h2>
-          <div class="callout warning"><strong>One real port is still one scope</strong><p>The Qwen2.5 packet proves one dense-decoder checkpoint, 29 parity rungs, and exact greedy-token output. Golden scenarios prove routing and guards for all 17 families; they do not prove end-to-end conversion across every family, and exact output does not replace domain evaluation.</p></div>
+          <div class="callout warning"><strong>Four real ports are still four scopes</strong><p>Qwen2.5, BGE, t5-small, and HuBERT-base prove their supported subsets only. MoE and SSM remain synthetic-only. Golden scenarios prove routing and guards for all 17 families; exact output does not replace domain evaluation.</p></div>
           <ul>
             <li>Forecasting coverage does not imply tabular, ranking, or recommender support.</li>
             <li>Current CV route coverage centers on backbone/classifier patterns; dense vision, promptable masks, OCR, depth, and pose remain candidate tracks.</li>
@@ -437,7 +437,7 @@ python3 -m unittest discover -s tests -v</code></pre>
         </section>
 
         <footer class="doc-footer">
-          <p>MLX Porter v<span data-value="version">0.5.0</span> · generated site facts come from the checked-in registries and receipts · © <span data-year></span></p>
+          <p>MLX Porter v<span data-value="version">0.6.0</span> · generated site facts come from the checked-in registries and receipts · © <span data-year></span></p>
         </footer>
       </article>
     </main>

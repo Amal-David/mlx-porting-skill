@@ -3,7 +3,7 @@
   "files": [
     {
       "path": "capture.py",
-      "sha256": "8c894237b6d4846516ccbcead42a792ea4beb81895d08f92f3c789f0dbf9b405",
+      "sha256": "4a2c1a04939dd1ae540a5a83f82cc4ded52b1b8dc53da8fccd90f2e7c43a2293",
       "size_bytes": 1492
     },
     {
@@ -13,18 +13,18 @@
     },
     {
       "path": "config.py",
-      "sha256": "0e942e93972b2373cda99ea2761a9c761a90255415100c4de64c8db9a973b7c0",
+      "sha256": "46f0745e059d98cc3515136cce00d4892edd463eb406470cb73a5f1100b85a19",
       "size_bytes": 2709
     },
     {
       "path": "model.py",
-      "sha256": "cd8b48825936c1fc27539a8061bfebf2abb4ddcdb38c808cc00ce66bcb09112e",
+      "sha256": "fb08d492374f1e413199acb08fbd1d4f4d65248f6ac7beb2eb1a0282c4c8d20e",
       "size_bytes": 7342
     }
   ],
   "generator": {
     "name": "scaffold_port.py",
-    "version": "1.0.2"
+    "version": "1.1.0"
   },
   "inspection_sha256": "fdc4248d773db137943049225bec0d9c947b06a0e966c7f7513f6cf483093686",
   "schema_version": 1,

@@ -2,7 +2,7 @@
 
 **Review date:** 2026-07-11
 
-**Artifact version:** 0.5.0
+**Artifact version:** 0.6.0
 
 ## Executive finding
 

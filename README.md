@@ -7,15 +7,13 @@ evidence-gated optimization. It can also inspect an existing MLX project before
 improving it.
 
 This repository is an engineering workflow, **not an arbitrary-checkpoint
-conversion system**. Its `dense-decoder-transformer` route is tooled end to end
-and has been proven on pinned Qwen2.5-0.5B-Instruct. The additive
-`automatic-speech-recognition` route now generates the HuBERT/Wav2Vec2 acoustic
-encoder from extracted frontend features and has passed real HuBERT-base
-block parity. The other 15 architecture families have executable intake, routing, planning, generic
-weight/parity validation, and evidence gates, but their architecture-module
-implementation remains runbook-guided. All 17 routes have synthetic golden
-scenarios; those fixtures are not 17 completed real-model ports. Controlled
-domain evaluators beyond exact-output parity remain future work.
+conversion system**. Six families have executable scaffolds. Four real packets
+prove Qwen2.5 dense decoder, BGE BERT encoder, t5-small encoder-decoder, and
+HuBERT-base acoustic encoder. Sparse MoE and selective SSM have synthetic
+correctness gates only. The other 11 architecture families remain
+runbook-guided. All 17 routes have golden routing scenarios; those fixtures are
+not 17 completed real-model ports. Exact output is the only built-in task
+metric, and no performance claim is promoted.
 
 The public runbook is available at
 [mlx-porter.pages.dev](https://mlx-porter.pages.dev/), and its offline source is
@@ -32,14 +30,14 @@ in [`site/`](site/).
 | [`mlx-model-porting/examples/`](mlx-model-porting/examples/) | Porting patterns and no-weights worked examples. |
 | [`tests/`](tests/) | Synthetic scenarios and contract, security, determinism, and portability tests. |
 
-Current 0.5.0 corpus snapshot:
+Current 0.6.0 corpus snapshot:
 
 - 17 architecture-family routes with synthetic golden coverage;
 - 350 evidence sources with explicit review depth; 23 currently carry classified
   support scope and claim types, while 327 remain intentionally unclassified;
 - 66 technique records, 28 optimization-guidance methods, and 4 stack
   definitions;
-- 31 inspectable Python scripts and 447 offline tests;
+- 31 inspectable Python scripts and 486 offline tests;
 - a 697-node, 499-edge research graph plus a deterministically reconciled
   backlog;
 - 13 checked-in benchmark receipts: 12 `performance_observation`, 0
@@ -53,8 +51,12 @@ The tooled path is deliberately narrower than the routing catalogue:
 | Scope | What is executable now | What remains runbook-guided or future work |
 |---|---|---|
 | `dense-decoder-transformer` | Static inspection, Torch oracle capture, eager MLX scaffold generation, schema-2 weight-map conversion, MLX capture, first-divergence parity, benchmarking, and claim gating. | Additional configs still fail closed until their semantics are implemented; only one real checkpoint has completed the full path. |
+| `encoder-transformer` | Absolute-position BERT scaffold, conversion, padded encoder capture, pooler handling, and per-layer parity; proven on BGE base. | RoBERTa and other position schemes, non-BERT encoders, and task-quality evaluation. |
+| `encoder-decoder-transformer` | Non-gated ReLU T5 scaffold with encoder/decoder/cross-attention capture and cache checks; proven on t5-small. | BART, NLLB, Whisper, gated T5, beam search, and task-quality evaluation. |
 | `automatic-speech-recognition` | HuBERT/Wav2Vec2 feature projection, convolutional positional embedding, transformer-encoder scaffolding, shared extracted-feature capture, conversion, and per-layer parity. | Raw-waveform convolutional frontend, CTC/transducer/seq2seq decoding, Whisper, transcripts, WER, and timestamps. |
-| Other 15 families | Static inspection, family/hybrid routing, port planning, explicit weight-map validation, generic tensor comparison, benchmarking, and evidence/claim gates. | Architecture-specific MLX module implementation and model-specific capture wiring are described by the runbooks but are not generated. |
+| `moe-decoder-transformer` | Synthetic sparse router/expert scaffold and parity for supported profiles. | A checked-in real checkpoint, unsupported router profiles, shared experts, grouped routing, and expert parallelism. |
+| `ssm-recurrent-hybrid` | Synthetic opt-in `minimal_selective` recurrence with carried-state and NumPy checks. | Real Mamba/Mamba2 checkpoints and attention-mixed hybrids. |
+| Other 11 families | Static inspection, routing, planning, generic tensor comparison, benchmarking, and evidence gates. | Architecture-specific MLX modules and capture wiring remain runbook-guided. |
 | Quality evaluation | Exact tensor/ID comparison and controlled exact-output benchmark parity. | Domain evaluators for language quality, vision, audio, speech, diffusion, streaming, scientific tasks, and lossy changes. |
 
 ## How the workflow fits together
@@ -66,9 +68,9 @@ The tooled path is deliberately narrower than the routing catalogue:
 2. **Route to a family runbook.** Confidence and ambiguity gates can stop a
    weak route; hybrid models can require more than one runbook.
 3. **Build a source oracle and the smallest eager MLX graph.** Freeze fixtures
-   and intermediate tensors before changing performance behavior. Dense
-   decoders and HuBERT/Wav2Vec2 acoustic encoders can use the checked-in capture
-   and scaffold tools; other families follow their runbooks.
+   and intermediate tensors before changing performance behavior. The six
+   executable families use the checked-in scaffold and mode-dispatched capture
+   tools; other families follow their runbooks.
 4. **Convert weights deterministically.** Every rename, transpose, reshape,
    split, merge, and tie belongs in an inspectable weight map.
 5. **Pass staged parity.** The parity runner captures both sides and
@@ -181,17 +183,15 @@ for local debugging; do not publish that form.
 
 ### Generated execution toolchain
 
-For an unblocked dense-decoder or supported HuBERT/Wav2Vec2 inspection, the executable chain
-runs in this order:
+For any of the six executable families, the chain runs in this order:
 
 1. `capture_oracle.py` loads only a pinned local Hugging Face model with remote
    code disabled and records deterministic inputs, embeddings, every decoder
    layer, final norm, logits, and greedy token IDs in a bounded NPZ plus a
    content-addressed manifest.
 2. `scaffold_port.py` re-inspects the same artifact and generates the minimal
-   eager MLX package. It supports only declared dense-decoder semantics,
-   including inactive sliding-window metadata and independently detected
-   Q/K/V/O projection biases; unsupported or ambiguous config fails closed.
+   eager MLX package. Family-specific config identity and tensor topology fail
+   closed before code generation.
 3. `convert_checkpoint.py` drafts or applies a complete `WEIGHT_MAP` schema 2,
    rejects unresolved coverage and shape drift, and writes deterministic
    safetensors for the generated package.
@@ -205,10 +205,10 @@ runs in this order:
    manifests, tensor inventories, and strict artifact writing used by all three
    capture/parity commands.
 
-For ASR acoustic encoders, add `--mode asr --waveform-samples 16000` to
-`capture_oracle.py` or `run_parity.py`. The source capture freezes real
-Torch-extracted frontend features and the MLX capture consumes that same NPZ
-tensor. See
+Capture/parity modes are `dense-decoder` (default), `encoder`,
+`encoder-decoder`, `ssm`, and `asr`. ASR additionally accepts
+`--waveform-samples 16000`; its source capture freezes real Torch-extracted
+frontend features and the MLX capture consumes that same NPZ tensor. See
 [`worked-port-hubert-base-ls960`](mlx-model-porting/examples/worked-port-hubert-base-ls960/README.md).
 
 After inspection pins the local source artifacts, capture the executable source
@@ -484,6 +484,6 @@ recommendations.
 
 ## Versioning
 
-The 0.5.0 release snapshot is dated 2026-07-11. The package version is recorded
+The 0.6.0 release snapshot is dated 2026-07-11. The package version is recorded
 in [`VERSION`](VERSION) and the skill frontmatter; release changes are recorded
 in [`CHANGELOG.md`](CHANGELOG.md).

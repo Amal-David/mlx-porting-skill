@@ -87,6 +87,10 @@ class ASREncoderContractTests(unittest.TestCase):
             validate_asr_config(tiny_asr_config(feat_extract_activation="relu"))
         with self.assertRaisesRegex(scaffold_port.SkillError, r"rejects \*ForCTC"):
             validate_asr_config(tiny_asr_config(architectures=["HubertForCTC"]))
+        for key in ("is_decoder", "is_encoder_decoder"):
+            with self.subTest(key=key):
+                with self.assertRaisesRegex(scaffold_port.SkillError, f"{key}=false"):
+                    validate_asr_config(tiny_asr_config(**{key: True}))
 
     def test_asr_capture_manifest_mode_is_explicit(self) -> None:
         fixture = json.loads(

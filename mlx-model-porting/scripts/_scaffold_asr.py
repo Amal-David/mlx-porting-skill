@@ -96,6 +96,13 @@ def validate_asr_config(config: Any) -> dict[str, Any]:
             "ASR acoustic-encoder scaffolding rejects *ForCTC checkpoints; provide an "
             "encoder-only HubertModel or Wav2Vec2Model checkpoint"
         )
+    for key in ("is_decoder", "is_encoder_decoder"):
+        if key in config and not isinstance(config[key], bool):
+            raise SkillError(f"config.json {key} must be boolean when present")
+        if config.get(key) is True:
+            raise SkillError(
+                f"ASR acoustic-encoder scaffolding requires {key}=false when present"
+            )
     hidden = _positive_int(config, "hidden_size")
     heads = _positive_int(config, "num_attention_heads")
     _positive_int(config, "num_hidden_layers")

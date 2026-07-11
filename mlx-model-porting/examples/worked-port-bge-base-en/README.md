@@ -55,7 +55,7 @@ python3 mlx-model-porting/scripts/scaffold_port.py \
   --output "$WORK/mlx_port"
 ```
 
-The version-locked `scaffold_port.py` 1.0.2 generator validates both config
+The version-locked `scaffold_port.py` 1.1.0 generator validates both config
 semantics and inspected tensors. It accepts only `model_type="bert"` with a
 supported BERT architecture identity, and rejects RoBERTa (whose padding-aware
 position offset is not implemented), decoder/cross-attention flags,

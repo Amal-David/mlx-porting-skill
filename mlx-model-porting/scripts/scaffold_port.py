@@ -373,7 +373,13 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
 
 
 def _meaningfully_set(value: Any) -> bool:
-    return value not in (None, False, 0, 0.0, "", [], {})
+    if value is None or value is False:
+        return False
+    if isinstance(value, str):
+        return bool(value)
+    if isinstance(value, (list, dict)):
+        return bool(value)
+    return True
 
 
 def _config_int(config: dict[str, Any], key: str, *, default: int | None = None) -> int:
@@ -1029,6 +1035,17 @@ def unsupported_t5_features(config: dict[str, Any]) -> list[str]:
         errors.append("only model_type='t5' is implemented for this family")
     if config.get("is_encoder_decoder") is not True:
         errors.append("is_encoder_decoder must be true")
+    if "is_decoder" in config and config["is_decoder"] is not False:
+        errors.append("is_decoder must be false when set on the T5 encoder-decoder config")
+    architectures = config.get("architectures")
+    if architectures is not None and (
+        not isinstance(architectures, list)
+        or not architectures
+        or any(value != "T5ForConditionalGeneration" for value in architectures)
+    ):
+        errors.append(
+            "architectures must be exactly ['T5ForConditionalGeneration'] when present"
+        )
     activation = config.get("dense_act_fn", config.get("feed_forward_proj", "relu"))
     if not isinstance(activation, str) or activation.lower() != "relu":
         errors.append(
@@ -3477,33 +3494,6 @@ ViT/CLIP frontends is deliberately excluded.
 '''
 
 
-def _encoder_scaffold_manifest(
-    files: dict[str, str],
-    config: dict[str, Any],
-    inspection_digest: str,
-    *,
-    pooler: bool,
-) -> str:
-    records = []
-    for name in ("capture.py", "config.json", "config.py", "model.py"):
-        raw = files[name].encode("utf-8")
-        records.append({
-            "path": name,
-            "size_bytes": len(raw),
-            "sha256": hashlib.sha256(raw).hexdigest(),
-        })
-    target = encoder_target_tensor_dict(config, pooler=pooler)
-    payload = {
-        "schema_version": 1,
-        "generator": {"name": "scaffold_port.py", "version": GENERATOR_VERSION},
-        "inspection_sha256": inspection_digest,
-        "config_sha256": hashlib.sha256(files["config.json"].encode("utf-8")).hexdigest(),
-        "files": records,
-        "tensors": [{"key": key, "shape": target[key]} for key in sorted(target)],
-    }
-    return json.dumps(payload, indent=2, sort_keys=True, ensure_ascii=False) + "\n"
-
-
 def generate_encoder_transformer(
     inspection: dict[str, Any],
     config: dict[str, Any],
@@ -3527,8 +3517,11 @@ def generate_encoder_transformer(
             .replace("__POOLER__", "a dense+tanh CLS pooler" if pooler else "CLS pooling")
         ),
     }
-    files[SCAFFOLD_MANIFEST] = _encoder_scaffold_manifest(
-        files, config, digest, pooler=pooler
+    target = encoder_target_tensor_dict(config, pooler=pooler)
+    files[SCAFFOLD_MANIFEST] = _scaffold_manifest(
+        files,
+        digest,
+        [{"key": key, "shape": target[key]} for key in sorted(target)],
     )
     return files
 

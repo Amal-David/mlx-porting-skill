@@ -103,6 +103,19 @@ class EncoderDecoderDependencyFreeContractTests(unittest.TestCase):
             "unrecognized computation-relevant config key 'unknown_attention_mode'",
             errors,
         )
+        valid = dict(config)
+        valid.pop("unknown_attention_mode")
+        valid.update({
+            "architectures": ["T5ForConditionalGeneration"],
+            "feed_forward_proj": "relu",
+        })
+        for override, message in (
+            ({"architectures": "T5ForConditionalGeneration"}, "architectures must be exactly"),
+            ({"is_decoder": True}, "is_decoder must be false"),
+        ):
+            with self.subTest(override=override):
+                with self.assertRaisesRegex(scaffold_port.SkillError, message):
+                    scaffold_port.validate_t5_config({**valid, **override})
 
     def test_encoder_decoder_parity_ladder_orders_cross_attention(self) -> None:
         import run_parity

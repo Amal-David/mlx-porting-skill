@@ -172,6 +172,14 @@ def scaffold(model: Path, inspection: Path, output: Path, *, no_site: bool = Fal
 
 
 class ScaffoldPortDependencyFreeContractTests(unittest.TestCase):
+    def test_meaningfully_set_treats_numeric_zero_as_explicit(self) -> None:
+        import scaffold_port
+
+        self.assertTrue(scaffold_port._meaningfully_set(0))
+        self.assertTrue(scaffold_port._meaningfully_set(0.0))
+        for value in (None, False, "", [], {}):
+            self.assertFalse(scaffold_port._meaningfully_set(value))
+
     def test_generator_registry_is_explicit_and_imports_no_ml_framework(self) -> None:
         import scaffold_port
 
@@ -185,6 +193,10 @@ class ScaffoldPortDependencyFreeContractTests(unittest.TestCase):
                 "moe-decoder-transformer",
                 "ssm-recurrent-hybrid",
             },
+        )
+        self.assertEqual(
+            set(scaffold_port.FAMILY_FEATURE_ALLOWLISTS),
+            set(scaffold_port.FAMILY_GENERATORS),
         )
         self.assertIs(scaffold_port.FEATURE_ALLOWLIST, scaffold_port.DENSE_CONFIG_FEATURE_ALLOWLIST)
         self.assertNotIn("mlx", scaffold_port.__dict__)
