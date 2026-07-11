@@ -2,8 +2,8 @@
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
   "version": "0.5.0",
-  "generated_at": "2026-07-11T06:19:33.201683+00:00",
-  "file_count": 458,
+  "generated_at": "2026-07-11T06:45:01.864555+00:00",
+  "file_count": 459,
   "files": [
     {
       "path": ".agents/skills/mlx-model-porting",
@@ -1784,6 +1784,12 @@
       "executable": true
     },
     {
+      "path": "mlx-model-porting/scripts/_weight_map_common.py",
+      "size_bytes": 20984,
+      "sha256": "771347be77ff4352ae24671de719f358e77d6f40ab23f07e5fac1f16b268792f",
+      "executable": false
+    },
+    {
       "path": "mlx-model-porting/scripts/audit_skill.py",
       "size_bytes": 9340,
       "sha256": "f2e50d4a90b7597abab0d08e58b1285f83b1b437d407d121c1804ab634d33d18",
@@ -1827,8 +1833,8 @@
     },
     {
       "path": "mlx-model-porting/scripts/convert_checkpoint.py",
-      "size_bytes": 57468,
-      "sha256": "77831a625f9524a816d02d51ada697c2fe0f260380a78766a3418b1f54429e54",
+      "size_bytes": 44136,
+      "sha256": "451266ac8af8962a35dbd9f42291ca4aa95f006e717d85f686b03f9fd0075823",
       "executable": true
     },
     {
@@ -1941,8 +1947,8 @@
     },
     {
       "path": "mlx-model-porting/scripts/validate_weight_map.py",
-      "size_bytes": 17627,
-      "sha256": "bb50707dba40c8e5fb7115a2023a2d51ef98096e5faa24bd30c41a5608b02f54",
+      "size_bytes": 9052,
+      "sha256": "8aa6d04934bf8bac67cfd16b62e8d4268d4243822d9bfdd83c856d6518676d66",
       "executable": true
     },
     {
@@ -2007,8 +2013,8 @@
     },
     {
       "path": "tests/fixtures/manifests/map.json",
-      "size_bytes": 410,
-      "sha256": "a27b025275ee8842486777f5d0b904c8834fe639d49317fadca366d4f0df642b",
+      "size_bytes": 616,
+      "sha256": "111cbeaf6709005567f124b702e66bfe7b02a1570317f1ebb338db54fc5c7bf4",
       "executable": false
     },
     {
@@ -2559,8 +2565,8 @@
     },
     {
       "path": "tests/test_convert_checkpoint_contract.py",
-      "size_bytes": 23047,
-      "sha256": "6e03f90b0703e10cf87fda56849686f954171f3797c55fa1f51a86a810f6bde8",
+      "size_bytes": 40462,
+      "sha256": "ba895f0480b1dd48a1e4b4cd9484eed1ee37bd2e27768c318b6238a51c9ef039",
       "executable": false
     },
     {
@@ -2733,8 +2739,8 @@
     },
     {
       "path": "tests/test_tooling.py",
-      "size_bytes": 192913,
-      "sha256": "376798546bd2c88592d1dd5c971334bfdfb3655949a0b08d73092ad458e1b00a",
+      "size_bytes": 196002,
+      "sha256": "d19912900ed728995d7d78cbf8c76e286e03a1b4000b7bc3b1c2eb4b33404b5d",
       "executable": true
     },
     {

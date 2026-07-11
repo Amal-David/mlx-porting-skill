@@ -1,9 +1,18 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
+  "dtype_policy": "keep",
   "entries": [
     {
       "source": "linear.weight",
+      "source_shape": [
+        3,
+        2
+      ],
       "target": "layer.weight",
+      "target_shape": [
+        2,
+        3
+      ],
       "transforms": [
         {
           "op": "transpose",
@@ -16,10 +25,16 @@
     },
     {
       "source": "linear.bias",
+      "source_shape": [
+        3
+      ],
       "target": "layer.bias",
+      "target_shape": [
+        3
+      ],
       "transforms": []
     }
   ],
-  "ignored_source": [],
-  "generated_target": []
+  "ignore": [],
+  "unresolved": []
 }

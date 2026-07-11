@@ -1068,9 +1068,20 @@ class ToolingTests(unittest.TestCase):
             # inspection.json is itself a valid --source manifest for validate_weight_map.
             target = {"tensors": [{"key": t["key"], "shape": t["shape"]} for t in data["tensors"]]}
             mapping = {
-                "entries": [{"source": t["key"], "target": t["key"], "transforms": []} for t in data["tensors"]],
-                "ignored_source": [],
-                "generated_target": [],
+                "schema_version": 2,
+                "dtype_policy": "keep",
+                "entries": [
+                    {
+                        "source": t["key"],
+                        "source_shape": t["shape"],
+                        "target": t["key"],
+                        "target_shape": t["shape"],
+                        "transforms": [],
+                    }
+                    for t in data["tensors"]
+                ],
+                "ignore": [],
+                "unresolved": [],
             }
             target_path, map_path, report_path = tmp / "target.json", tmp / "map.json", tmp / "wm.json"
             target_path.write_text(json.dumps(target))
@@ -1184,9 +1195,17 @@ class ToolingTests(unittest.TestCase):
             run_script("inspect_model.py", model_dir, "--output", source)
             target.write_text(json.dumps({"tensors": [{"key": "linear.weight", "shape": [2, 3]}]}))
             mapping.write_text(json.dumps({
-                "entries": [{"source": "weight", "target": "linear.weight", "transforms": []}],
-                "ignored_source": [],
-                "generated_target": [],
+                "schema_version": 2,
+                "dtype_policy": "keep",
+                "entries": [{
+                    "source": "weight",
+                    "source_shape": [2, 3],
+                    "target": "linear.weight",
+                    "target_shape": [2, 3],
+                    "transforms": [],
+                }],
+                "ignore": [],
+                "unresolved": [],
             }))
             run_script("validate_weight_map.py", "--source", source, "--target", target, "--mapping", mapping, "--output", output)
             report = json.loads(output.read_text())
@@ -1208,9 +1227,17 @@ class ToolingTests(unittest.TestCase):
             run_script("inspect_model.py", model_dir, "--output", source)
             target.write_text(json.dumps({"tensors": [{"key": "q_proj.weight", "shape": [2, 3]}]}))
             mapping.write_text(json.dumps({
-                "entries": [{"source": "blk.0.attn_q.weight", "target": "q_proj.weight", "transforms": []}],
-                "ignored_source": [],
-                "generated_target": [],
+                "schema_version": 2,
+                "dtype_policy": "keep",
+                "entries": [{
+                    "source": "blk.0.attn_q.weight",
+                    "source_shape": [2, 3],
+                    "target": "q_proj.weight",
+                    "target_shape": [2, 3],
+                    "transforms": [],
+                }],
+                "ignore": [],
+                "unresolved": [],
             }))
             run_script("validate_weight_map.py", "--source", source, "--target", target, "--mapping", mapping, "--output", output)
             report = json.loads(output.read_text())
@@ -1227,7 +1254,13 @@ class ToolingTests(unittest.TestCase):
             mapping = tmp / "map.json"
             run_script("inspect_model.py", FIXTURES / "source_formats" / "keras_archive", "--output", source)
             target.write_text(json.dumps({"tensors": []}))
-            mapping.write_text(json.dumps({"entries": [], "ignored_source": [], "generated_target": []}))
+            mapping.write_text(json.dumps({
+                "schema_version": 2,
+                "dtype_policy": "keep",
+                "entries": [],
+                "ignore": [],
+                "unresolved": [],
+            }))
             result = run_script(
                 "validate_weight_map.py",
                 "--source", source,
@@ -1241,12 +1274,57 @@ class ToolingTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             mapping = Path(tmp) / "bad-map.json"
             mapping.write_text(json.dumps({
+                "schema_version": 2,
+                "dtype_policy": "keep",
                 "entries": [
-                    {"source": "linear.weight", "target": "layer.weight", "transforms": [{"op": "transpose", "axes": [1, 0]}]},
-                    {"source": "linear.weight", "target": "layer.bias", "transforms": []},
+                    {
+                        "source": "linear.weight",
+                        "source_shape": [3, 2],
+                        "target": "layer.weight",
+                        "target_shape": [2, 3],
+                        "transforms": [{"op": "transpose", "axes": [1, 0]}],
+                    },
+                    {
+                        "source": "linear.weight",
+                        "source_shape": [3, 2],
+                        "target": "layer.bias",
+                        "target_shape": [3],
+                        "transforms": [],
+                    },
                 ],
-                "ignored_source": ["missing.source"],
-                "generated_target": ["missing.target"],
+                "ignore": [],
+                "unresolved": [],
+            }))
+            result = run_script(
+                "validate_weight_map.py",
+                "--source", FIXTURES / "manifests" / "source.json",
+                "--target", FIXTURES / "manifests" / "target.json",
+                "--mapping", mapping,
+                expected=2,
+            )
+            self.assertIn("source tensor mapped more than once", result.stderr)
+
+            mapping.write_text(json.dumps({
+                "schema_version": 2,
+                "dtype_policy": "keep",
+                "entries": [
+                    {
+                        "source": "linear.weight",
+                        "source_shape": [3, 2],
+                        "target": "layer.weight",
+                        "target_shape": [2, 3],
+                        "transforms": [{"op": "transpose", "axes": [1, 0]}],
+                    },
+                    {
+                        "source": "linear.bias",
+                        "source_shape": [3],
+                        "target": "layer.bias",
+                        "target_shape": [3],
+                        "transforms": [],
+                    },
+                ],
+                "ignore": [{"source": "missing.source", "reason": "invalid fixture"}],
+                "unresolved": [],
             }))
             output = Path(tmp) / "bad-weight-report.json"
             run_script(
@@ -1258,9 +1336,7 @@ class ToolingTests(unittest.TestCase):
                 expected=1,
             )
             report = json.loads(output.read_text())
-            self.assertFalse(report["ok"])
-            self.assertTrue(any("source mapped more than once" in error for error in report["errors"]))
-            self.assertTrue(any("ignored_source keys not found" in error for error in report["errors"]))
+            self.assertTrue(any("ignored source tensors are missing" in error for error in report["errors"]))
 
     def test_tensor_comparison_success_and_failure(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -1326,13 +1402,19 @@ class ToolingTests(unittest.TestCase):
                 {"key": "slice.t", "shape": [3]},
                 {"key": "permute.t", "shape": [4, 2, 3]},
             ]}
-            mapping = {"entries": [
-                {"source": "reshape.w", "target": "reshape.t", "transforms": [{"op": "reshape", "shape": [-1, 6]}]},
-                {"source": "squeeze.w", "target": "squeeze.t", "transforms": [{"op": "squeeze", "axis": 0}]},
-                {"source": "unsqueeze.w", "target": "unsqueeze.t", "transforms": [{"op": "unsqueeze", "axis": 0}]},
-                {"source": "slice.w", "target": "slice.t", "transforms": [{"op": "slice", "axis": 0, "start": 2, "end": 8, "step": 2}]},
-                {"source": "permute.w", "target": "permute.t", "transforms": [{"op": "permute", "axes": [2, 0, 1]}]},
-            ], "ignored_source": [], "generated_target": []}
+            mapping = {
+                "schema_version": 2,
+                "dtype_policy": "keep",
+                "entries": [
+                    {"source": "reshape.w", "source_shape": [4, 3], "target": "reshape.t", "target_shape": [2, 6], "transforms": [{"op": "reshape", "shape": [-1, 6]}]},
+                    {"source": "squeeze.w", "source_shape": [1, 5], "target": "squeeze.t", "target_shape": [5], "transforms": [{"op": "squeeze", "axis": 0}]},
+                    {"source": "unsqueeze.w", "source_shape": [5], "target": "unsqueeze.t", "target_shape": [1, 5], "transforms": [{"op": "unsqueeze", "axis": 0}]},
+                    {"source": "slice.w", "source_shape": [10], "target": "slice.t", "target_shape": [3], "transforms": [{"op": "slice", "axis": 0, "start": 2, "end": 8, "step": 2}]},
+                    {"source": "permute.w", "source_shape": [2, 3, 4], "target": "permute.t", "target_shape": [4, 2, 3], "transforms": [{"op": "permute", "axes": [2, 0, 1]}]},
+                ],
+                "ignore": [],
+                "unresolved": [],
+            }
             sp, tp, mp, out = tmp / "s.json", tmp / "t.json", tmp / "m.json", tmp / "r.json"
             sp.write_text(json.dumps(source))
             tp.write_text(json.dumps(target))
@@ -1352,9 +1434,19 @@ class ToolingTests(unittest.TestCase):
             tmp = Path(tmp)
             source = {"tensors": [{"key": "x", "shape": [2, 3]}]}
             target = {"tensors": [{"key": "y", "shape": [3]}]}
-            mapping = {"entries": [
-                {"source": "x", "target": "y", "transforms": [{"op": "squeeze", "axis": 0}]},
-            ], "ignored_source": [], "generated_target": []}
+            mapping = {
+                "schema_version": 2,
+                "dtype_policy": "keep",
+                "entries": [{
+                    "source": "x",
+                    "source_shape": [2, 3],
+                    "target": "y",
+                    "target_shape": [3],
+                    "transforms": [{"op": "squeeze", "axis": 0}],
+                }],
+                "ignore": [],
+                "unresolved": [],
+            }
             sp, tp, mp, out = tmp / "s.json", tmp / "t.json", tmp / "m.json", tmp / "r.json"
             sp.write_text(json.dumps(source))
             tp.write_text(json.dumps(target))
