@@ -38,7 +38,7 @@ from _common import SkillError, sha256_file
 
 
 SCAFFOLD_MANIFEST = "scaffold-manifest.json"
-SUPPORTED_GENERATOR_VERSION = "1.0.1"
+SUPPORTED_GENERATOR_VERSION = "1.0.2"
 MAX_SCAFFOLD_MANIFEST_BYTES = 16 * 1024 * 1024
 MAX_CONFIG_BYTES = 16 * 1024 * 1024
 MAX_TOKENIZER_CONFIG_BYTES = 16 * 1024 * 1024
@@ -59,6 +59,12 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         ),
     )
     parser.add_argument("--package", help="Directory produced by scaffold_port.py")
+    parser.add_argument(
+        "--mode",
+        choices=("dense-decoder", "encoder"),
+        default="dense-decoder",
+        help="Capture contract (default: dense-decoder)",
+    )
     parser.add_argument("--weights", help="Directory produced by convert_checkpoint.py")
     parser.add_argument("--output", help="Destination .npz archive")
     parser.add_argument("--manifest", help="Default: <output stem>.manifest.json")
@@ -74,6 +80,11 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         help="One tokenizer-free token sequence as space- or comma-separated integers",
     )
     parser.add_argument(
+        "--attention-mask",
+        nargs="+",
+        help="Encoder mode only: one 0/1 value per tokenizer-free token ID",
+    )
+    parser.add_argument(
         "--tokenizer",
         help="Local built-in Transformers tokenizer directory required for prompt mode",
     )
@@ -85,6 +96,10 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         "--allow-modified",
         action="store_true",
         help="Execute a drifted user-owned scaffold after surfacing modified files",
+    )
+    parser.add_argument(
+        "--fault-inject-target",
+        help="Validation-only: add a deterministic error to one floating target capture",
     )
     parser.add_argument(
         "--validate-manifest",
@@ -285,15 +300,114 @@ def validate_weights(weights: Path, scaffold: dict[str, Any] | None) -> Path:
             {"key", "shape", "dtype"},
             label=f"target manifest tensors[{index}]",
         )
-        if not isinstance(record["key"], str) or not isinstance(record["shape"], list):
+        if (
+            not isinstance(record["key"], str)
+            or not record["key"]
+            or record["key"] in target_shapes
+            or not isinstance(record["shape"], list)
+            or not all(type(value) is int and value >= 0 for value in record["shape"])
+            or not isinstance(record["dtype"], str)
+            or not record["dtype"]
+        ):
             raise SkillError("target manifest tensor entry is invalid")
         target_shapes[record["key"]] = record["shape"]
     if scaffold is not None:
         expected = {item["key"]: item["shape"] for item in scaffold["tensors"]}
         if target_shapes != expected:
             raise SkillError("converted target manifest does not match the scaffold parameter contract")
-    read_bounded_json(report_path, MAX_MANIFEST_JSON_BYTES, label="conversion report")
+    report = _strict_fields(
+        read_bounded_json(report_path, MAX_MANIFEST_JSON_BYTES, label="conversion report"),
+        {
+            "schema_version", "counts", "transforms_applied", "dtype_policy",
+            "memory_budget", "inputs", "outputs",
+        },
+        label="conversion report",
+    )
+    if report["schema_version"] != 1:
+        raise SkillError("conversion report schema_version must be integer 1")
+    counts = _strict_fields(
+        report["counts"],
+        {
+            "ignored_source_tensors", "mapped_source_tensors", "mapping_entries",
+            "source_tensors", "target_tensors",
+        },
+        label="conversion report counts",
+    )
+    if not all(type(value) is int and value >= 0 for value in counts.values()):
+        raise SkillError("conversion report counts must be non-negative integers")
+    if counts["target_tensors"] != len(target_shapes):
+        raise SkillError("conversion report target tensor count is inconsistent")
+    transforms = report["transforms_applied"]
+    if not isinstance(transforms, dict) or not all(
+        isinstance(key, str) and key and type(value) is int and value >= 0
+        for key, value in transforms.items()
+    ):
+        raise SkillError("conversion report transforms_applied is invalid")
+    dtype_policy = _strict_fields(
+        report["dtype_policy"], {"global", "targets"}, label="conversion report dtype_policy"
+    )
+    if not isinstance(dtype_policy["global"], str) or not isinstance(dtype_policy["targets"], dict):
+        raise SkillError("conversion report dtype_policy is invalid")
+    memory_budget = _strict_fields(
+        report["memory_budget"],
+        {
+            "limit_bytes", "aggregate_materialized_bytes", "estimated_peak_bytes",
+            "source_materialized_bytes", "target_materialized_bytes", "target_encoded_bytes",
+        },
+        label="conversion report memory_budget",
+    )
+    if not all(type(value) is int and value >= 0 for value in memory_budget.values()):
+        raise SkillError("conversion report memory_budget must contain non-negative integers")
+    inputs = _strict_fields(
+        report["inputs"], {"mapping", "source_files"}, label="conversion report inputs"
+    )
+    _validate_conversion_file_record(inputs["mapping"], label="conversion report mapping")
+    if not isinstance(inputs["source_files"], list) or not inputs["source_files"]:
+        raise SkillError("conversion report source_files must be a non-empty list")
+    for index, record in enumerate(inputs["source_files"]):
+        _validate_conversion_file_record(record, label=f"conversion report source_files[{index}]")
+    outputs = _strict_fields(
+        report["outputs"], {"weights", "target_manifest"}, label="conversion report outputs"
+    )
+    _validate_conversion_file_record(
+        outputs["weights"], label="conversion report weights", writer=True
+    )
+    _validate_conversion_file_record(
+        outputs["target_manifest"], label="conversion report target_manifest"
+    )
+    _enforce_conversion_digest(outputs["weights"], weights_path, label="converted weights")
+    _enforce_conversion_digest(
+        outputs["target_manifest"], target_path, label="converted target manifest"
+    )
     return weights_path
+
+
+def _validate_conversion_file_record(
+    value: Any,
+    *,
+    label: str,
+    writer: bool = False,
+) -> None:
+    fields = {"name", "size_bytes", "sha256"} | ({"writer"} if writer else set())
+    record = _strict_fields(value, fields, label=label)
+    if not isinstance(record["name"], str) or not record["name"] or "/" in record["name"]:
+        raise SkillError(f"{label} name must be a basename")
+    if type(record["size_bytes"]) is not int or record["size_bytes"] < 0:
+        raise SkillError(f"{label} size_bytes must be a non-negative integer")
+    if not isinstance(record["sha256"], str) or SHA256_RE.fullmatch(record["sha256"]) is None:
+        raise SkillError(f"{label} sha256 must be a lowercase SHA-256 digest")
+    if writer and (not isinstance(record["writer"], str) or not record["writer"]):
+        raise SkillError(f"{label} writer must be non-empty")
+
+
+def _enforce_conversion_digest(record: dict[str, Any], path: Path, *, label: str) -> None:
+    metadata = path.stat()
+    if (
+        record["name"] != path.name
+        or record["size_bytes"] != metadata.st_size
+        or record["sha256"] != sha256_file(path)
+    ):
+        raise SkillError(f"{label} does not match conversion-report.json attestation")
 
 
 def _load_config(package: Path) -> dict[str, Any]:
@@ -309,13 +423,17 @@ def _build_numpy_inputs(
     tokenizer_value: str | None,
     config: dict[str, Any],
     np: Any,
+    explicit_attention_mask: list[int] | None = None,
+    encoder_mode: bool = False,
 ) -> tuple[Any, Any]:
     if token_ids is not None:
         vocab_size = config.get("vocab_size")
         if type(vocab_size) is int and any(value >= vocab_size for value in token_ids):
             raise SkillError(f"--token-ids values must be below config vocab_size={vocab_size}")
         values = np.asarray([token_ids], dtype=np.int32)
-        return values, np.ones_like(values, dtype=np.int32)
+        if explicit_attention_mask is None:
+            return values, np.ones_like(values, dtype=np.int32)
+        return values, np.asarray([explicit_attention_mask], dtype=np.int32)
     if tokenizer_value is None:
         raise SkillError("prompt mode requires --tokenizer pointing at the local source model")
     tokenizer_dir = _regular_directory(tokenizer_value, label="tokenizer")
@@ -348,7 +466,7 @@ def _build_numpy_inputs(
     if len(prompts) > 1:
         if tokenizer.pad_token_id is None:
             raise SkillError("tokenizer has no pad token; use one prompt or --token-ids")
-        tokenizer.padding_side = "left"
+        tokenizer.padding_side = "right" if encoder_mode else "left"
     encoded = tokenizer(
         prompts,
         return_tensors="np",
@@ -397,17 +515,43 @@ def _capture(
     keep_dtype: bool,
     np: Any,
     mx: Any,
+    mode: str = "dense-decoder",
+    fault_inject_target: str | None = None,
 ) -> dict[str, Any]:
     generated_model = _import_generated_model(package)
     try:
         model = generated_model.load_model(package / "config.json", weights_path)
         input_ids = mx.array(input_ids_np, dtype=mx.int32)
         attention_mask = mx.array(attention_mask_np, dtype=mx.int32)
-        logits, _, captures = model(
-            input_ids,
-            attention_mask=attention_mask,
-            capture=True,
-        )
+        if mode == "encoder":
+            if generate_steps != 0:
+                raise SkillError("--mode encoder requires --generate-steps 0")
+            _, _, captures = model(
+                input_ids,
+                attention_mask=attention_mask,
+                capture=True,
+            )
+            tensors = {
+                "input_ids": input_ids,
+                "attention_mask": attention_mask,
+                **{
+                    name: _zero_padded_query_rows(value, attention_mask, mx)
+                    for name, value in captures.items()
+                },
+            }
+            _inject_capture_fault(tensors, fault_inject_target, mx)
+            getattr(mx, "eval")(*tensors.values())
+            arrays: dict[str, Any] = {}
+            for name, value in sorted(tensors.items()):
+                array = np.asarray(value)
+                if np.issubdtype(array.dtype, np.floating) and not keep_dtype:
+                    array = array.astype(np.float32, copy=False)
+                if array.dtype.hasobject:
+                    raise SkillError(f"tensor {name} produced an unsafe object dtype")
+                arrays[name] = np.ascontiguousarray(array)
+            return arrays
+
+        logits, _, captures = model(input_ids, attention_mask=attention_mask, capture=True)
         sequence = input_ids
         mask = attention_mask
         generated = []
@@ -432,6 +576,7 @@ def _capture(
             "logits": _zero_padded_query_rows(logits, attention_mask, mx),
             "generated_token_ids": generated_ids,
         }
+        _inject_capture_fault(tensors, fault_inject_target, mx)
         getattr(mx, "eval")(*tensors.values())
         arrays: dict[str, Any] = {}
         for name, value in sorted(tensors.items()):
@@ -447,6 +592,17 @@ def _capture(
             sys.path.pop(0)
         for name in ("config", "model"):
             sys.modules.pop(name, None)
+
+
+def _inject_capture_fault(tensors: dict[str, Any], target: str | None, mx: Any) -> None:
+    if target is None:
+        return
+    if target not in tensors:
+        raise SkillError(f"--fault-inject-target is not a captured tensor: {target}")
+    value = tensors[target]
+    if target in {"input_ids", "attention_mask", "generated_token_ids"}:
+        raise SkillError("--fault-inject-target requires a floating capture")
+    tensors[target] = value + mx.array(0.5, dtype=value.dtype)
 
 
 def _run_manifest_validation(path_value: str) -> int:
@@ -475,9 +631,12 @@ def main(argv: list[str] | None = None) -> int:
                 args.tokenizer is not None,
                 args.keep_dtype,
                 args.allow_modified,
+                args.fault_inject_target is not None,
                 args.generate_steps != DEFAULT_GENERATE_STEPS,
                 args.seed != 0,
                 args.max_output_mb != DEFAULT_MAX_OUTPUT_MB,
+                args.mode != "dense-decoder",
+                bool(args.attention_mask),
             ))
             if conflicting:
                 raise SkillError("--validate-manifest cannot be combined with capture arguments")
@@ -487,6 +646,10 @@ def main(argv: list[str] | None = None) -> int:
         if args.package is None or args.weights is None or args.output is None:
             raise SkillError("--package, --weights, and --output are required for MLX capture")
         prompts, token_ids = validate_input_mode(args.token_ids, args.prompt, args.prompts_file)
+        if args.attention_mask and args.mode != "encoder":
+            raise SkillError("--attention-mask is supported only with --mode encoder")
+        if args.attention_mask and token_ids is None:
+            raise SkillError("--attention-mask requires --token-ids")
         if token_ids is not None and args.tokenizer is not None:
             raise SkillError("--tokenizer is only valid with --prompt or --prompts-file")
         package = _regular_directory(args.package, label="package")
@@ -527,12 +690,31 @@ def main(argv: list[str] | None = None) -> int:
             ) from exc
 
         np.random.seed(args.seed % (2**32))
+        explicit_attention_mask = None
+        if args.attention_mask is not None:
+            pieces = [
+                piece.strip()
+                for value in args.attention_mask
+                for piece in value.split(",")
+            ]
+            try:
+                explicit_attention_mask = [int(piece, 10) for piece in pieces]
+            except ValueError as exc:
+                raise SkillError("--attention-mask must contain only 0/1 integers") from exc
+            if (
+                token_ids is None
+                or len(explicit_attention_mask) != len(token_ids)
+                or any(value not in (0, 1) for value in explicit_attention_mask)
+            ):
+                raise SkillError("--attention-mask must contain one 0/1 value per token ID")
         input_ids_np, attention_mask_np = _build_numpy_inputs(
             prompts,
             token_ids,
             args.tokenizer,
             config,
             np,
+            explicit_attention_mask,
+            args.mode == "encoder",
         )
         arrays = _capture(
             package,
@@ -543,13 +725,18 @@ def main(argv: list[str] | None = None) -> int:
             args.keep_dtype,
             np,
             mx,
+            args.mode,
+            args.fault_inject_target,
         )
         manifest_payload = {
             "schema_version": SCHEMA_VERSION,
             "model": build_model_record(package, package / "config.json", [weights_path]),
             "capture": {
+                "mode": args.mode,
+                "input_mode": "token_ids" if token_ids is not None else "prompt",
                 "prompts": prompts if token_ids is None else None,
                 "token_ids": token_ids,
+                "attention_mask": attention_mask_np.astype(np.int64).tolist(),
                 "generate_steps": args.generate_steps,
                 "seed": args.seed,
                 "dtype_policy": "keep" if args.keep_dtype else "float32",

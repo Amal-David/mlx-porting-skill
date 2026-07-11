@@ -31,6 +31,11 @@ stable cross-framework contract:
 | `logits` | Full prompt logits. |
 | `generated_token_ids` | Exactly N greedy continuation IDs; prompt IDs are not repeated. |
 
+Encoder mode uses `--mode encoder --generate-steps 0` and retains `input_ids`,
+`attention_mask`, `embed`, every `layer.{i}.hidden`, `final_hidden`, and
+`pooled`. It has no logits or generated-token rung. A tokenizer-free padded
+fixture may provide `--attention-mask` with one 0/1 value per token ID.
+
 Floating captures are saved as float32 unless `--keep-dtype` is explicit.
 Integer IDs and masks retain their integer dtype. Future target-side capture
 tools should mirror these names exactly; model-specific extra checkpoints may
@@ -57,6 +62,8 @@ tokenizer to `capture_mlx.py`. Token-ID mode never loads a tokenizer. The
 strict-JSON report compares same-name keys in this order and stops immediately
 after the first failure: `input_ids`, `embed`, every `layer.{i}.hidden` in
 ascending order, `final_norm`, `logits`, and exact `generated_token_ids`.
+Encoder mode instead orders exact IDs, exact attention mask, embedding, every
+encoder layer, final hidden state, and pooled/CLS output.
 
 `capture_mlx.py` validates the scaffold generator header, config digest,
 execution-file digests, and converted target parameter contract before running

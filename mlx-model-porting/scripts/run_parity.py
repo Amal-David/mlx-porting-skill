@@ -56,12 +56,23 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         description="Run the executable source-to-MLX first-divergence parity ladder",
     )
     parser.add_argument("--source-model", help="Pinned local Hugging Face model directory")
+    parser.add_argument(
+        "--mode",
+        choices=("dense-decoder", "encoder"),
+        default="dense-decoder",
+        help="Parity contract (default: dense-decoder)",
+    )
     parser.add_argument("--package", help="Directory produced by scaffold_port.py")
     parser.add_argument("--weights", help="Directory produced by convert_checkpoint.py")
     parser.add_argument("--output", help="Strict-JSON parity report; default: stdout")
     parser.add_argument("--prompt", action="append", help="Prompt to tokenize locally; repeatable")
     parser.add_argument("--prompts-file", action="append", help="One prompt per non-empty line")
     parser.add_argument("--token-ids", nargs="+", help="Tokenizer-free token IDs")
+    parser.add_argument(
+        "--attention-mask",
+        nargs="+",
+        help="Encoder mode only: one 0/1 value per tokenizer-free token ID",
+    )
     parser.add_argument("--generate-steps", type=int, default=DEFAULT_GENERATE_STEPS)
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument("--keep-dtype", action="store_true")
@@ -75,6 +86,10 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         action="store_true",
         help="Acknowledge drift in the user-owned scaffold package",
     )
+    parser.add_argument(
+        "--fault-inject-target",
+        help="Validation-only: inject a deterministic error into one floating target capture",
+    )
     return parser.parse_args(argv)
 
 
@@ -87,11 +102,17 @@ def _strict_fields(value: Any, fields: set[str], *, label: str) -> dict[str, Any
 def build_parity_ladder(
     source_keys: list[str] | set[str],
     target_keys: list[str] | set[str],
+    mode: str = "dense-decoder",
 ) -> list[dict[str, Any]]:
     """Map the stable same-name tensor contract into runbook ladder order."""
     source = set(source_keys)
     target = set(target_keys)
-    required = {"input_ids", "embed", "final_norm", "logits", "generated_token_ids"}
+    if mode == "encoder":
+        required = {"input_ids", "attention_mask", "embed", "final_hidden", "pooled"}
+    elif mode == "dense-decoder":
+        required = {"input_ids", "embed", "final_norm", "logits", "generated_token_ids"}
+    else:
+        raise SkillError(f"unsupported parity mode {mode!r}")
     missing_source = sorted(required - source)
     if missing_source:
         raise SkillError("source capture is missing parity keys: " + ", ".join(missing_source))
@@ -102,9 +123,15 @@ def build_parity_ladder(
     )
     if not layer_indices or layer_indices != list(range(layer_indices[-1] + 1)):
         raise SkillError("source layer.{i}.hidden keys must be contiguous from layer 0")
-    ordered = ["input_ids", "embed"]
+    ordered = ["input_ids"]
+    if mode == "encoder":
+        ordered.append("attention_mask")
+    ordered.append("embed")
     ordered.extend(f"layer.{index}.hidden" for index in layer_indices)
-    ordered.extend(("final_norm", "logits", "generated_token_ids"))
+    if mode == "encoder":
+        ordered.extend(("final_hidden", "pooled"))
+    else:
+        ordered.extend(("final_norm", "logits", "generated_token_ids"))
     rungs = []
     for position, key in enumerate(ordered):
         rungs.append({
@@ -113,7 +140,7 @@ def build_parity_ladder(
             "source_key": key,
             "target_key": key,
             "target_present": key in target,
-            "exact": key in {"input_ids", "generated_token_ids"},
+            "exact": key in {"input_ids", "attention_mask", "generated_token_ids"},
         })
     return rungs
 
@@ -131,9 +158,7 @@ def validate_parity_report(payload: Any) -> dict[str, Any]:
         raise SkillError("parity report schema_version must be integer 1")
     if not isinstance(report["ok"], bool):
         raise SkillError("parity report ok must be boolean")
-    inputs = _strict_fields(
-        report["inputs"],
-        {
+    legacy_input_fields = {
             "source_model",
             "package",
             "weights",
@@ -144,17 +169,46 @@ def validate_parity_report(payload: Any) -> dict[str, Any]:
             "seed",
             "dtype_policy",
             "allow_modified",
-        },
-        label="parity report inputs",
-    )
-    if inputs["mode"] not in {"prompt", "token_ids"}:
+    }
+    reproducible_input_fields = legacy_input_fields | {
+        "input_mode", "attention_mask", "fault_inject_target",
+    }
+    inputs_value = report["inputs"]
+    if not isinstance(inputs_value, dict) or set(inputs_value) not in {
+        frozenset(legacy_input_fields), frozenset(reproducible_input_fields),
+    }:
+        raise SkillError("parity report inputs has an invalid field set")
+    inputs = inputs_value
+    reproducible = set(inputs) == reproducible_input_fields
+    input_mode = inputs["input_mode"] if reproducible else inputs["mode"]
+    if reproducible:
+        if inputs["mode"] not in {"dense-decoder", "encoder"}:
+            raise SkillError("parity report contract mode is invalid")
+        if inputs["fault_inject_target"] is not None and not isinstance(
+            inputs["fault_inject_target"], str
+        ):
+            raise SkillError("parity report fault injection target is invalid")
+        attention_mask = inputs["attention_mask"]
+        if (
+            not isinstance(attention_mask, list)
+            or not attention_mask
+            or not all(
+                isinstance(row, list)
+                and row
+                and all(type(value) is int and value in (0, 1) for value in row)
+                for row in attention_mask
+            )
+            or len({len(row) for row in attention_mask}) != 1
+        ):
+            raise SkillError("parity report attention_mask must be a non-empty 0/1 matrix")
+    if input_mode not in {"prompt", "token_ids"}:
         raise SkillError("parity report input mode is invalid")
     if not all(
         isinstance(inputs[field], str) and inputs[field]
         for field in ("source_model", "package", "weights")
     ):
         raise SkillError("parity report input paths must be non-empty strings")
-    if inputs["mode"] == "token_ids":
+    if input_mode == "token_ids":
         if inputs["prompts"] is not None or not isinstance(inputs["token_ids"], list):
             raise SkillError("parity report token-ID input is invalid")
     elif inputs["token_ids"] is not None or not isinstance(inputs["prompts"], list):
@@ -251,6 +305,9 @@ def _input_arguments(args: argparse.Namespace) -> list[str]:
     if args.token_ids:
         values.append("--token-ids")
         values.extend(args.token_ids)
+    if args.attention_mask:
+        values.append("--attention-mask")
+        values.extend(args.attention_mask)
     values.extend(("--generate-steps", str(args.generate_steps)))
     values.extend(("--seed", str(args.seed)))
     values.extend(("--max-output-mb", str(args.max_output_mb)))
@@ -268,14 +325,18 @@ def _run_tool(command: list[str], *, timeout: float, label: str) -> None:
         raise SkillError(f"{label} failed with exit {completed.returncode}: {detail}")
 
 
-def _debug_target(key: str) -> tuple[str, str]:
+def _debug_target(key: str, mode: str = "dense-decoder") -> tuple[str, str]:
     match = LAYER_KEY_RE.fullmatch(key)
     if match is not None:
         layer = match.group(1)
-        return f"layer {layer}", f"First divergence is layer {layer}; debug that decoder block."
+        block = "encoder" if mode == "encoder" else "decoder"
+        return f"layer {layer}", f"First divergence is layer {layer}; debug that {block} block."
     messages = {
         "input_ids": ("input preparation", "Input IDs differ; debug tokenization or fixture plumbing."),
+        "attention_mask": ("attention mask", "Attention masks differ; debug padding-mask plumbing."),
         "embed": ("embedding stage", "First divergence is the embedding stage; debug embedding weights and lookup."),
+        "final_hidden": ("final hidden", "Encoder layers passed; debug final hidden-state capture."),
+        "pooled": ("pooler", "Hidden states passed; debug CLS pooling or the dense+tanh pooler."),
         "final_norm": ("final norm", "Decoder layers passed; debug the final normalization stage."),
         "logits": ("LM head", "Hidden states passed; debug the LM head or output scaling."),
         "generated_token_ids": (
@@ -307,6 +368,12 @@ def main(argv: list[str] | None = None) -> int:
         if args.source_model is None or args.package is None or args.weights is None:
             raise SkillError("--source-model, --package, and --weights are required")
         prompts, token_ids = validate_input_mode(args.token_ids, args.prompt, args.prompts_file)
+        if args.mode == "encoder" and args.generate_steps != 0:
+            raise SkillError("--mode encoder requires --generate-steps 0")
+        if args.attention_mask and args.mode != "encoder":
+            raise SkillError("--attention-mask is supported only with --mode encoder")
+        if args.attention_mask and token_ids is None:
+            raise SkillError("--attention-mask requires --token-ids")
         source_model = _regular_directory(args.source_model, label="source model")
         package = _regular_directory(args.package, label="package")
         weights = _regular_directory(args.weights, label="weights")
@@ -322,6 +389,8 @@ def main(argv: list[str] | None = None) -> int:
             oracle_command = [
                 *_python_script(scripts / "capture_oracle.py"),
                 str(source_model),
+                "--mode",
+                args.mode,
                 *common_input,
                 "--output",
                 str(source_npz),
@@ -335,6 +404,8 @@ def main(argv: list[str] | None = None) -> int:
             )
             mlx_command = [
                 *_python_script(scripts / "capture_mlx.py"),
+                "--mode",
+                args.mode,
                 "--package",
                 str(package),
                 "--weights",
@@ -349,6 +420,8 @@ def main(argv: list[str] | None = None) -> int:
                 mlx_command.extend(("--tokenizer", str(source_model)))
             if args.allow_modified:
                 mlx_command.append("--allow-modified")
+            if args.fault_inject_target:
+                mlx_command.extend(("--fault-inject-target", args.fault_inject_target))
             _run_tool(
                 mlx_command,
                 timeout=args.timeout_seconds,
@@ -373,7 +446,7 @@ def main(argv: list[str] | None = None) -> int:
                 raise SkillError("source and target capture configurations differ")
             source_keys = [item["name"] for item in source_manifest["tensors"]]
             target_keys = [item["name"] for item in target_manifest["tensors"]]
-            ladder = build_parity_ladder(source_keys, target_keys)
+            ladder = build_parity_ladder(source_keys, target_keys, args.mode)
             mapping_path = work / "mapping.json"
             write_strict_json(
                 mapping_path,
@@ -394,9 +467,9 @@ def main(argv: list[str] | None = None) -> int:
                     "--include",
                     include,
                     "--atol",
-                    str(args.atol),
+                    str(0.0 if args.mode == "encoder" and rung["exact"] else args.atol),
                     "--rtol",
-                    str(args.rtol),
+                    str(0.0 if args.mode == "encoder" and rung["exact"] else args.rtol),
                     "--cosine-min",
                     str(args.cosine_min),
                     "--output",
@@ -445,7 +518,7 @@ def main(argv: list[str] | None = None) -> int:
             message = "All parity rungs passed in runbook order."
             status = "pass"
         else:
-            debug_target, message = _debug_target(stopped_at)
+            debug_target, message = _debug_target(stopped_at, args.mode)
             status = "fail"
         report = {
             "schema_version": SCHEMA_VERSION,
@@ -454,13 +527,16 @@ def main(argv: list[str] | None = None) -> int:
                 "source_model": str(source_model),
                 "package": str(package),
                 "weights": str(weights),
-                "mode": "token_ids" if token_ids is not None else "prompt",
+                "mode": args.mode,
+                "input_mode": "token_ids" if token_ids is not None else "prompt",
                 "prompts": prompts if token_ids is None else None,
                 "token_ids": token_ids,
+                "attention_mask": target_manifest["capture"]["attention_mask"],
                 "generate_steps": args.generate_steps,
                 "seed": args.seed,
                 "dtype_policy": "keep" if args.keep_dtype else "float32",
                 "allow_modified": args.allow_modified,
+                "fault_inject_target": args.fault_inject_target,
             },
             "tolerances": {
                 "atol": args.atol,

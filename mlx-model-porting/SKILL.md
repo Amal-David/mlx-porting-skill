@@ -15,11 +15,10 @@ metadata:
 
 Produce or inspect a **correct, reproducible, architecture-aware MLX implementation**. Correctness comes before speed. Every speed or memory claim must name the hardware, software versions, workload, baseline, and quality gate.
 
-Dense decoders have an executable capture/scaffold/schema-2 conversion/parity
-chain proven by one [Qwen2.5 port](examples/worked-port-qwen2.5-0.5b-instruct/README.md).
-The other 16 families have tooled routing/planning/generic validation but
-runbook-guided module implementation. Exact output is the only built-in task
-metric; domain evaluators remain future work.
+Dense decoders and BERT text encoders have executable capture, scaffold,
+conversion, and parity chains proven by [Qwen2.5](examples/worked-port-qwen2.5-0.5b-instruct/README.md)
+and [BGE](examples/worked-port-bge-base-en/README.md). Other families remain
+runbook-guided. Domain evaluators remain future work.
 
 ## When to use this skill
 
@@ -87,7 +86,8 @@ Run `scripts/capture_oracle.py` against the pinned local Hugging Face model befo
 
 Read [core porting method](references/porting-core.md); choose via the trigger map and the controlled family records in `assets/architectures.yaml`. Load every runbook returned by a hybrid route. The registry is the complete runbook inventory; do not substitute an abbreviated parallel list.
 
-For an unblocked `dense-decoder-transformer` inspection, scaffold implementation:
+For an unblocked `dense-decoder-transformer` or supported BERT
+`encoder-transformer` inspection, scaffold implementation:
 
 ```bash
 python3 scripts/scaffold_port.py inspection.json --artifact-root MODEL --output mlx_port

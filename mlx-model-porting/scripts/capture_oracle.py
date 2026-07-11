@@ -85,6 +85,12 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         ),
     )
     parser.add_argument("model", nargs="?", help="Local model directory; hub IDs are not accepted")
+    parser.add_argument(
+        "--mode",
+        choices=("dense-decoder", "encoder"),
+        default="dense-decoder",
+        help="Capture contract (default: dense-decoder)",
+    )
     parser.add_argument("--output", help="Destination .npz archive")
     parser.add_argument(
         "--manifest",
@@ -104,6 +110,11 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         "--token-ids",
         nargs="+",
         help="One tokenizer-free token sequence as space- or comma-separated integers",
+    )
+    parser.add_argument(
+        "--attention-mask",
+        nargs="+",
+        help="Encoder mode only: one 0/1 value per tokenizer-free token ID",
     )
     parser.add_argument(
         "--generate-steps",
@@ -267,6 +278,19 @@ def parse_token_ids(values: list[str]) -> list[int]:
     return parse_shared_token_ids(values)
 
 
+def parse_attention_mask(values: list[str] | None, token_count: int) -> list[int] | None:
+    if values is None:
+        return None
+    pieces = [piece.strip() for value in values for piece in value.split(",")]
+    try:
+        mask = [int(piece, 10) for piece in pieces]
+    except ValueError as exc:
+        raise SkillError("--attention-mask must contain only 0/1 integers") from exc
+    if len(mask) != token_count or any(value not in (0, 1) for value in mask):
+        raise SkillError("--attention-mask must contain one 0/1 value per token ID")
+    return mask
+
+
 def collect_prompts(inline: list[str] | None, files: list[str] | None) -> list[str]:
     return collect_shared_prompts(inline, files)
 
@@ -419,13 +443,17 @@ def build_inputs(
     config: dict[str, Any],
     torch: Any,
     AutoTokenizer: Any,
+    explicit_attention_mask: list[int] | None = None,
+    encoder_mode: bool = False,
 ) -> tuple[Any, Any]:
     if token_ids is not None:
         vocab_size = config.get("vocab_size")
         if type(vocab_size) is int and any(value >= vocab_size for value in token_ids):
             raise SkillError(f"--token-ids values must be below config vocab_size={vocab_size}")
         input_ids = torch.tensor([token_ids], dtype=torch.long)
-        return input_ids, torch.ones_like(input_ids)
+        if explicit_attention_mask is None:
+            return input_ids, torch.ones_like(input_ids)
+        return input_ids, torch.tensor([explicit_attention_mask], dtype=torch.long)
 
     validate_tokenizer_json_files(model_dir)
     try:
@@ -442,7 +470,7 @@ def build_inputs(
     if len(prompts) > 1:
         if tokenizer.pad_token_id is None:
             raise SkillError("tokenizer has no pad token; use one prompt or --token-ids")
-        tokenizer.padding_side = "left"
+        tokenizer.padding_side = "right" if encoder_mode else "left"
     try:
         encoded = tokenizer(
             prompts,
@@ -463,8 +491,61 @@ def build_inputs(
     return input_ids, attention_mask
 
 
+def capture_encoder_tensors(
+    model: Any,
+    input_ids: Any,
+    attention_mask: Any,
+    config: dict[str, Any],
+    torch: Any,
+) -> dict[str, Any]:
+    with torch.inference_mode():
+        outputs = model(
+            input_ids=input_ids,
+            attention_mask=attention_mask,
+            output_hidden_states=True,
+            return_dict=True,
+        )
+    hidden_states = getattr(outputs, "hidden_states", None)
+    expected_layers = _expected_layer_count(config)
+    if (
+        not isinstance(hidden_states, (tuple, list))
+        or expected_layers is None
+        or len(hidden_states) != expected_layers + 1
+        or not all(torch.is_tensor(value) for value in hidden_states)
+    ):
+        raise SkillError("encoder forward did not return the complete hidden-state ladder")
+    final_hidden = getattr(outputs, "last_hidden_state", None)
+    if not torch.is_tensor(final_hidden):
+        raise SkillError("encoder forward did not return last_hidden_state")
+    pooled = getattr(outputs, "pooler_output", None)
+    if pooled is None:
+        pooled = final_hidden[:, 0]
+    if not torch.is_tensor(pooled) or pooled.ndim != 2:
+        raise SkillError("encoder forward did not return a rank-2 pooled/CLS tensor")
+    captures: dict[str, Any] = {
+        "input_ids": input_ids.detach(),
+        "attention_mask": attention_mask.detach(),
+        "embed": hidden_states[0].detach(),
+        "final_hidden": final_hidden.detach(),
+        "pooled": pooled.detach(),
+    }
+    captures.update({
+        f"layer.{index}.hidden": hidden_states[index + 1].detach()
+        for index in range(expected_layers)
+    })
+    return {
+        name: _zero_padded_query_rows(value, attention_mask, torch)
+        for name, value in captures.items()
+    }
+
+
 def _zero_padded_query_rows(value: Any, attention_mask: Any, torch: Any) -> Any:
-    if not torch.is_tensor(value) or value.ndim < 2 or value.shape[:2] != attention_mask.shape:
+    if (
+        not torch.is_tensor(value)
+        or not value.is_floating_point()
+        or value.ndim < 2
+        or value.shape[:2] != attention_mask.shape
+    ):
         return value
     query_mask = attention_mask.to(device=value.device, dtype=torch.bool)
     for _ in range(value.ndim - 2):
@@ -612,7 +693,12 @@ def _validate_capture_args(args: argparse.Namespace) -> tuple[list[str], list[in
         raise SkillError("model directory is required unless --validate-manifest is used")
     if args.output is None:
         raise SkillError("--output is required for oracle capture")
-    return validate_input_mode(args.token_ids, args.prompt, args.prompts_file)
+    prompts, token_ids = validate_input_mode(args.token_ids, args.prompt, args.prompts_file)
+    if args.attention_mask and args.mode != "encoder":
+        raise SkillError("--attention-mask is supported only with --mode encoder")
+    if args.attention_mask and token_ids is None:
+        raise SkillError("--attention-mask requires --token-ids")
+    return prompts, token_ids
 
 
 def _run_manifest_validation(path_value: str) -> int:
@@ -641,6 +727,8 @@ def main(argv: list[str] | None = None) -> int:
                 args.generate_steps != DEFAULT_GENERATE_STEPS,
                 args.seed != 0,
                 args.max_output_mb != DEFAULT_MAX_OUTPUT_MB,
+                args.mode != "dense-decoder",
+                bool(args.attention_mask),
             ))
             if conflicting:
                 raise SkillError("--validate-manifest cannot be combined with capture arguments")
@@ -687,7 +775,7 @@ def main(argv: list[str] | None = None) -> int:
             ) from exc
         try:
             import transformers
-            from transformers import AutoConfig, AutoModelForCausalLM, AutoTokenizer
+            from transformers import AutoConfig, AutoModel, AutoModelForCausalLM, AutoTokenizer
         except ImportError as exc:
             raise SkillError(
                 "capture_oracle.py requires optional package 'transformers'; "
@@ -708,7 +796,8 @@ def main(argv: list[str] | None = None) -> int:
                 "capture_oracle.py refuses remote code"
             ) from exc
         try:
-            model = AutoModelForCausalLM.from_pretrained(
+            model_class = AutoModel if args.mode == "encoder" else AutoModelForCausalLM
+            model = model_class.from_pretrained(
                 str(model_dir),
                 config=hf_config,
                 local_files_only=True,
@@ -721,9 +810,15 @@ def main(argv: list[str] | None = None) -> int:
                     "model architecture requires remote code; capture_oracle.py supports only "
                     "built-in Transformers architectures"
                 ) from exc
-            raise SkillError(f"could not load built-in local causal language model: {exc}") from exc
+            model_kind = "encoder" if args.mode == "encoder" else "causal language model"
+            raise SkillError(f"could not load built-in local {model_kind}: {exc}") from exc
         model.train(False)
 
+        explicit_attention_mask = (
+            parse_attention_mask(args.attention_mask, len(token_ids))
+            if token_ids is not None
+            else None
+        )
         input_ids, attention_mask = build_inputs(
             model_dir,
             prompts,
@@ -731,15 +826,24 @@ def main(argv: list[str] | None = None) -> int:
             config,
             torch,
             AutoTokenizer,
+            explicit_attention_mask,
+            args.mode == "encoder",
         )
-        captured = capture_tensors(
-            model,
-            input_ids,
-            attention_mask,
-            config,
-            args.generate_steps,
-            torch,
-        )
+        if args.mode == "encoder":
+            if args.generate_steps != 0:
+                raise SkillError("--mode encoder requires --generate-steps 0")
+            captured = capture_encoder_tensors(
+                model, input_ids, attention_mask, config, torch
+            )
+        else:
+            captured = capture_tensors(
+                model,
+                input_ids,
+                attention_mask,
+                config,
+                args.generate_steps,
+                torch,
+            )
         arrays = to_numpy_tensors(captured, keep_dtype=args.keep_dtype, np=np)
         cap_bytes = int(args.max_output_mb * 1024 * 1024)
         bounded_size = raw_npz_bound(arrays)
@@ -753,8 +857,11 @@ def main(argv: list[str] | None = None) -> int:
             "schema_version": SCHEMA_VERSION,
             "model": model_record,
             "capture": {
+                "mode": args.mode,
+                "input_mode": "token_ids" if token_ids is not None else "prompt",
                 "prompts": prompts if token_ids is None else None,
                 "token_ids": token_ids,
+                "attention_mask": arrays["attention_mask"].astype(np.int64).tolist(),
                 "generate_steps": args.generate_steps,
                 "seed": args.seed,
                 "dtype_policy": "keep" if args.keep_dtype else "float32",
