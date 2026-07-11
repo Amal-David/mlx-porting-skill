@@ -28,6 +28,8 @@ GENERATOR_VERSION = "1.0.1"
 SCAFFOLD_MANIFEST = "scaffold-manifest.json"
 DENSE_FAMILY = "dense-decoder-transformer"
 DENSE_RUNBOOK = "references/runbook-decoder-transformer.md"
+SSM_FAMILY = "ssm-recurrent-hybrid"
+SSM_RUNBOOK = "references/runbook-ssm-hybrid.md"
 
 # Computation-bearing keys whose semantics this generator implements. Keys that
 # are not here must be known non-computational metadata or they fail closed.
@@ -56,6 +58,41 @@ DENSE_CONFIG_FEATURE_ALLOWLIST = frozenset({
     "vocab_size",
 })
 FEATURE_ALLOWLIST = DENSE_CONFIG_FEATURE_ALLOWLIST
+
+SSM_CONFIG_FEATURE_ALLOWLIST = frozenset({
+    "conv_bias",
+    "d_conv",
+    "d_model",
+    "d_state",
+    "expand",
+    "n_layer",
+    "rms_norm_eps",
+    "ssm_variant",
+    "tie_word_embeddings",
+    "vocab_size",
+})
+
+MIXED_SSM_MODEL_TYPES = frozenset({
+    "griffin",
+    "jamba",
+    "recurrent_gemma",
+    "recurrentgemma",
+    "zamba",
+    "zamba2",
+})
+
+PURE_SSM_ARCHITECTURES = {
+    "mamba": "MambaForCausalLM",
+    "mamba2": "Mamba2ForCausalLM",
+}
+
+SSM_FORBIDDEN_TENSOR_SEGMENTS = frozenset({
+    "experts",
+    "k_proj",
+    "q_proj",
+    "router",
+    "self_attn",
+})
 
 KNOWN_METADATA_KEYS = frozenset({
     "_commit_hash",
@@ -326,6 +363,101 @@ def validate_dense_config(config: Any) -> dict[str, Any]:
     rope_scaling = config.get("rope_scaling")
     if isinstance(rope_scaling, dict) and _rope_type(rope_scaling) == "dynamic" and head_dim <= 2:
         raise SkillError("config.json dynamic RoPE requires head_dim greater than 2")
+    return config
+
+
+def unsupported_ssm_features(config: dict[str, Any]) -> list[str]:
+    """Return config features outside the synthetic minimal selective-SSM contract."""
+    errors: list[str] = []
+    model_type = str(config.get("model_type", "")).lower()
+    architectures = config.get("architectures")
+    architecture_names = (
+        [value.lower() for value in architectures]
+        if isinstance(architectures, list)
+        and all(isinstance(value, str) for value in architectures)
+        else []
+    )
+    mixed_identity = model_type in MIXED_SSM_MODEL_TYPES or any(
+        any(alias in name for alias in MIXED_SSM_MODEL_TYPES)
+        for name in architecture_names
+    )
+    mixed_keys = sorted(
+        key
+        for key in ("attention_every_n_layers", "attention_layer_indices", "layer_types")
+        if key in config and _meaningfully_set(config[key])
+    )
+    if mixed_identity or mixed_keys:
+        details = []
+        if mixed_identity:
+            details.append(f"model identity {model_type or architecture_names!r}")
+        if mixed_keys:
+            details.append("config keys " + ", ".join(repr(key) for key in mixed_keys))
+        errors.append(
+            "hybrid/attention-mixed SSM config is not supported by the pure-SSM generator ("
+            + "; ".join(details)
+            + ")"
+        )
+    if config.get("ssm_variant") != "minimal_selective":
+        errors.append("ssm_variant must be exactly 'minimal_selective'")
+    if model_type not in {"mamba", "mamba2"}:
+        errors.append("model_type must be 'mamba' or 'mamba2' for this minimal selective-SSM path")
+    if not isinstance(architectures, list) or not all(
+        isinstance(value, str) for value in architectures
+    ):
+        errors.append("architectures must be a list of strings for the pure-SSM generator")
+    elif model_type in PURE_SSM_ARCHITECTURES:
+        expected_architectures = [PURE_SSM_ARCHITECTURES[model_type]]
+        if architectures != expected_architectures:
+            errors.append(
+                f"architectures must be exactly {expected_architectures!r} "
+                f"for model_type {model_type!r}"
+            )
+    if "is_decoder" in config and config["is_decoder"] is not True:
+        errors.append("is_decoder must be true when set for the decoder-only SSM generator")
+    if "is_encoder_decoder" in config and config["is_encoder_decoder"] is not False:
+        errors.append(
+            "is_encoder_decoder must be false when set for the decoder-only SSM generator"
+        )
+    for key in ("conv_bias", "tie_word_embeddings"):
+        if key in config and not isinstance(config[key], bool):
+            errors.append(f"{key} must be boolean")
+    classified = SSM_CONFIG_FEATURE_ALLOWLIST | KNOWN_METADATA_KEYS
+    for key in sorted(set(config) - classified):
+        if key not in mixed_keys:
+            errors.append(f"unrecognized computation-relevant config key {key!r}")
+    return errors
+
+
+def validate_ssm_inspection(inspection: dict[str, Any]) -> None:
+    """Reject attention/MoE tensor namespaces before generating a pure SSM graph."""
+    forbidden: list[str] = []
+    for tensor in inspection.get("tensors", []):
+        if not isinstance(tensor, dict) or not isinstance(tensor.get("key"), str):
+            continue
+        key = tensor["key"]
+        segments = {segment.lower() for segment in key.split(".")}
+        if segments & SSM_FORBIDDEN_TENSOR_SEGMENTS:
+            forbidden.append(key)
+    if forbidden:
+        raise SkillError(
+            "Unsupported SSM tensor inventory; no code was generated. "
+            "Pure-SSM generation rejects attention or MoE tensor namespaces: "
+            + ", ".join(sorted(forbidden)[:5])
+        )
+
+
+def validate_ssm_config(config: Any) -> dict[str, Any]:
+    if not isinstance(config, dict):
+        raise SkillError("config.json must contain an object")
+    errors = unsupported_ssm_features(config)
+    if errors:
+        raise SkillError(
+            "Unsupported SSM config features; no code was generated. "
+            f"Consult {SSM_RUNBOOK}:\n- " + "\n- ".join(errors)
+        )
+    for key in ("d_model", "d_state", "d_conv", "expand", "n_layer", "vocab_size"):
+        _config_int(config, key)
+    _config_float(config, "rms_norm_eps", default=1e-5)
     return config
 
 
@@ -921,6 +1053,336 @@ prefill-plus-step KV-cache logits match full-context logits at declared toleranc
 '''
 
 
+SSM_CONFIG_TEMPLATE = r'''__HEADER__
+"""Validated config parser for the generated minimal selective SSM."""
+from __future__ import annotations
+
+import json
+from dataclasses import dataclass
+from pathlib import Path
+from typing import Any
+
+
+def _positive_int(data: dict[str, Any], key: str) -> int:
+    value = data.get(key)
+    if type(value) is not int or value <= 0:
+        raise ValueError(f"{key} must be a positive integer")
+    return value
+
+
+@dataclass(frozen=True)
+class ModelConfig:
+    d_model: int
+    d_state: int
+    d_conv: int
+    expand: int
+    n_layer: int
+    vocab_size: int
+    rms_norm_eps: float
+    conv_bias: bool
+    tie_word_embeddings: bool
+
+    @property
+    def d_inner(self) -> int:
+        return self.d_model * self.expand
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> "ModelConfig":
+        if data.get("ssm_variant") != "minimal_selective":
+            raise ValueError("ssm_variant must be exactly 'minimal_selective'")
+        epsilon = data.get("rms_norm_eps", 1e-5)
+        if isinstance(epsilon, bool) or not isinstance(epsilon, (int, float)) or epsilon <= 0:
+            raise ValueError("rms_norm_eps must be a positive number")
+        for key in ("conv_bias", "tie_word_embeddings"):
+            if key in data and not isinstance(data[key], bool):
+                raise ValueError(f"{key} must be boolean")
+        return cls(
+            d_model=_positive_int(data, "d_model"),
+            d_state=_positive_int(data, "d_state"),
+            d_conv=_positive_int(data, "d_conv"),
+            expand=_positive_int(data, "expand"),
+            n_layer=_positive_int(data, "n_layer"),
+            vocab_size=_positive_int(data, "vocab_size"),
+            rms_norm_eps=float(epsilon),
+            conv_bias=bool(data.get("conv_bias", True)),
+            tie_word_embeddings=bool(data.get("tie_word_embeddings", True)),
+        )
+
+    @classmethod
+    def from_file(cls, path: str | Path) -> "ModelConfig":
+        with Path(path).open("r", encoding="utf-8") as handle:
+            data = json.load(handle)
+        if not isinstance(data, dict):
+            raise ValueError("config.json must contain an object")
+        return cls.from_dict(data)
+'''
+
+
+SSM_MODEL_TEMPLATE = r'''__HEADER__
+"""Readable eager MLX minimal selective SSM with explicit recurrent state."""
+from __future__ import annotations
+
+from pathlib import Path
+
+from config import ModelConfig
+
+
+def _require_mlx():
+    try:
+        import mlx.core as mx
+        import mlx.nn as nn
+    except ImportError as exc:
+        raise RuntimeError("generated model requires MLX: python3 -m pip install mlx") from exc
+    return mx, nn
+
+
+def _exprel(mx, value):
+    """Stable expm1(x) / x with its analytic value at x=0."""
+    small = mx.abs(value) < 1e-4
+    square = value * value
+    series = 1.0 + value * 0.5 + square / 6.0 + square * value / 24.0
+    safe_value = mx.where(small, mx.ones_like(value), value)
+    quotient = mx.expm1(value) / safe_value
+    return mx.where(small, series, quotient)
+
+
+def build_model(config: ModelConfig):
+    """Build the correctness-first loop recurrence; no fused scan is used."""
+    mx, nn = _require_mlx()
+
+    class DepthwiseConv1d(nn.Module):
+        def __init__(self):
+            super().__init__()
+            self.weight = mx.zeros((config.d_inner, config.d_conv))
+            if config.conv_bias:
+                self.bias = mx.zeros((config.d_inner,))
+
+        def __call__(self, window):
+            # Weight index 0 is the oldest sample and index d_conv-1 is current.
+            value = mx.sum(window * self.weight.T[None, :, :], axis=1)
+            return value + self.bias if config.conv_bias else value
+
+    class SelectiveMixer(nn.Module):
+        def __init__(self):
+            super().__init__()
+            self.in_proj = nn.Linear(config.d_model, 2 * config.d_inner, bias=False)
+            self.conv1d = DepthwiseConv1d()
+            # Direct per-channel dt plus token-dependent B and C.
+            self.x_proj = nn.Linear(
+                config.d_inner,
+                config.d_inner + 2 * config.d_state,
+                bias=False,
+            )
+            self.dt_bias = mx.zeros((config.d_inner,))
+            self.A_log = mx.zeros((config.d_inner, config.d_state))
+            self.D = mx.ones((config.d_inner,))
+            self.out_proj = nn.Linear(config.d_inner, config.d_model, bias=False)
+
+        def initial_state(self, batch: int, dtype):
+            return (
+                mx.zeros((batch, config.d_conv - 1, config.d_inner), dtype=dtype),
+                mx.zeros((batch, config.d_inner, config.d_state), dtype=mx.float32),
+            )
+
+        def step(self, value, state=None):
+            projected, gate = mx.split(self.in_proj(value), 2, axis=-1)
+            projected = projected.astype(mx.float32)
+            gate = gate.astype(mx.float32)
+            if state is None:
+                state = self.initial_state(value.shape[0], projected.dtype)
+            conv_state, ssm_state = state
+            if conv_state.shape != (value.shape[0], config.d_conv - 1, config.d_inner):
+                raise ValueError("convolution state shape does not match batch/config")
+            if ssm_state.shape != (value.shape[0], config.d_inner, config.d_state):
+                raise ValueError("SSM state shape does not match batch/config")
+            window = mx.concatenate((conv_state, projected[:, None, :]), axis=1)
+            convolved = self.conv1d(window)
+            activated = convolved * mx.sigmoid(convolved)
+            parameters = self.x_proj(activated.astype(mx.float32))
+            dt_raw = parameters[:, : config.d_inner]
+            B = parameters[:, config.d_inner : config.d_inner + config.d_state]
+            C = parameters[:, config.d_inner + config.d_state :]
+            dt_input = dt_raw + self.dt_bias.astype(mx.float32)
+            dt = mx.logaddexp(dt_input, mx.zeros_like(dt_input))
+            A = -mx.exp(self.A_log.astype(mx.float32))
+            scaled_A = dt[:, :, None] * A[None, :, :]
+            decay = mx.exp(scaled_A)
+            # Exact zero-order-hold input coefficient for constant B*x over dt:
+            # integral_0^dt exp(A*(dt-tau)) d tau = dt * exprel(dt*A).
+            input_coefficient = dt[:, :, None] * _exprel(mx, scaled_A)
+            driven = (
+                input_coefficient
+                * B[:, None, :]
+                * activated.astype(mx.float32)[:, :, None]
+            )
+            next_ssm = decay * ssm_state.astype(mx.float32) + driven
+            y = mx.sum(next_ssm * C[:, None, :], axis=-1)
+            y = y + self.D.astype(mx.float32)[None, :] * activated.astype(mx.float32)
+            gated = y * (gate * mx.sigmoid(gate))
+            output = self.out_proj(gated)
+            next_conv = window[:, 1:, :]
+            return output, (next_conv, next_ssm)
+
+        def __call__(self, values, state=None):
+            outputs = []
+            current = state
+            for index in range(values.shape[1]):
+                output, current = self.step(values[:, index, :], current)
+                outputs.append(output)
+            if not outputs:
+                raise ValueError("SSM input sequence must contain at least one token")
+            return mx.stack(outputs, axis=1), current
+
+    class SSMBlock(nn.Module):
+        def __init__(self):
+            super().__init__()
+            self.norm = nn.RMSNorm(config.d_model, eps=config.rms_norm_eps)
+            self.mixer = SelectiveMixer()
+
+        def __call__(self, values, state=None):
+            branch, updated = self.mixer(self.norm(values), state=state)
+            return values + branch, updated, branch
+
+    class Backbone(nn.Module):
+        def __init__(self):
+            super().__init__()
+            self.embed_tokens = nn.Embedding(config.vocab_size, config.d_model)
+            self.layers = [SSMBlock() for _ in range(config.n_layer)]
+            self.norm = nn.RMSNorm(config.d_model, eps=config.rms_norm_eps)
+
+        def __call__(self, input_ids, state=None, attention_mask=None, capture=False):
+            if input_ids.ndim != 2 or input_ids.shape[1] == 0:
+                raise ValueError("input_ids must have shape [batch, nonzero_length]")
+            if attention_mask is not None and attention_mask.shape != input_ids.shape:
+                raise ValueError("attention_mask shape must equal input_ids shape")
+            if attention_mask is not None and not bool(mx.all(attention_mask).item()):
+                raise ValueError(
+                    "minimal selective SSM scaffold supports unpadded fixtures only"
+                )
+            if state is not None and len(state) != len(self.layers):
+                raise ValueError("state must contain one (conv, SSM) pair per layer")
+            hidden = self.embed_tokens(input_ids)
+            captures = {"embed": hidden} if capture else {}
+            updated = []
+            for index, layer in enumerate(self.layers):
+                layer_state = None if state is None else state[index]
+                hidden, layer_state, branch = layer(hidden, state=layer_state)
+                updated.append(layer_state)
+                if capture:
+                    captures[f"layer.{index}.ssm"] = branch
+                    captures[f"layer.{index}.hidden"] = hidden
+            hidden = self.norm(hidden)
+            if capture:
+                captures["final_norm"] = hidden
+            return hidden, updated, captures
+
+    class CausalLM(nn.Module):
+        def __init__(self):
+            super().__init__()
+            self.config = config
+            self.model = Backbone()
+            if not config.tie_word_embeddings:
+                self.lm_head = nn.Linear(config.d_model, config.vocab_size, bias=False)
+
+        def __call__(self, input_ids, *, attention_mask=None, state=None, cache=None, capture=False):
+            if state is not None and cache is not None:
+                raise ValueError("pass recurrent state as state or cache, not both")
+            recurrent_state = state if state is not None else cache
+            hidden, updated, captures = self.model(
+                input_ids,
+                state=recurrent_state,
+                attention_mask=attention_mask,
+                capture=capture,
+            )
+            logits = (
+                self.model.embed_tokens.as_linear(hidden)
+                if config.tie_word_embeddings
+                else self.lm_head(hidden)
+            )
+            if capture:
+                captures["logits"] = logits
+                return logits, updated, captures
+            return logits, updated
+
+    return CausalLM()
+
+
+def load_model(config_path: str | Path, weights_path: str | Path):
+    mx, _ = _require_mlx()
+    config = ModelConfig.from_file(config_path)
+    model = build_model(config)
+    weights = mx.load(str(weights_path))
+    if not isinstance(weights, dict):
+        raise ValueError("converted weights must load as a name-to-array mapping")
+    model.load_weights(list(weights.items()), strict=True)
+    getattr(mx, "eval")(model.parameters())
+    return model
+
+
+def greedy_generate(model, input_ids, max_new_tokens: int):
+    mx, _ = _require_mlx()
+    if max_new_tokens < 0:
+        raise ValueError("max_new_tokens must be non-negative")
+    if max_new_tokens == 0:
+        return mx.zeros((input_ids.shape[0], 0), dtype=input_ids.dtype)
+    logits, state = model(input_ids)
+    generated = []
+    next_token = mx.argmax(logits[:, -1, :], axis=-1).astype(input_ids.dtype)
+    for index in range(max_new_tokens):
+        generated.append(next_token)
+        if index + 1 < max_new_tokens:
+            logits, state = model(next_token[:, None], state=state)
+            next_token = mx.argmax(logits[:, -1, :], axis=-1).astype(input_ids.dtype)
+    result = mx.stack(generated, axis=1)
+    getattr(mx, "eval")(result)
+    return result
+'''
+
+
+SSM_README_TEMPLATE = r'''# Generated MLX minimal selective SSM
+
+Generated by `scaffold_port.py` version __VERSION__ from trusted inspection
+`sha256:__DIGEST__` for family `ssm-recurrent-hybrid`.
+
+This is a correctness-first **synthetic minimal-selective variant**, not a
+checkpoint-compatible implementation of upstream Mamba, Mamba2, RWKV, Jamba,
+Zamba, Griffin, or RecurrentGemma. Generation is allowed only when config.json
+opts in with `ssm_variant: minimal_selective`. Attention-mixed/hybrid configs
+fail closed.
+
+Each pre-RMSNorm block implements an input/gate projection, causal depthwise
+convolution, token-dependent dt/B/C, stable A=-exp(A_log), exact zero-order-hold
+discretization, D skip, SiLU gate, output projection, and residual. The eager
+full-sequence path deliberately calls the same one-token recurrence used by
+decode, keeping explicit `(convolution_state, ssm_state)` per layer. MLX 0.30.4
+provides `mx.conv1d` but no `mx.scan` in the validated environment; this
+scaffold keeps the readable per-step loop required by the SSM runbook.
+
+## Parameter contract
+
+- `model.embed_tokens.weight` -- `[vocab_size, d_model]`
+- `model.layers.{i}.norm.weight` -- `[d_model]`
+- `model.layers.{i}.mixer.in_proj.weight` -- `[2 * d_inner, d_model]`
+- `model.layers.{i}.mixer.conv1d.weight` -- `[d_inner, d_conv]`, oldest to current
+- `model.layers.{i}.mixer.conv1d.bias` -- `[d_inner]` when `conv_bias=true`
+- `model.layers.{i}.mixer.x_proj.weight` -- `[d_inner + 2 * d_state, d_inner]`
+- `model.layers.{i}.mixer.dt_bias` -- `[d_inner]`
+- `model.layers.{i}.mixer.A_log` -- `[d_inner, d_state]`
+- `model.layers.{i}.mixer.D` -- `[d_inner]`
+- `model.layers.{i}.mixer.out_proj.weight` -- `[d_model, d_inner]`
+- `model.norm.weight` -- `[d_model]`
+- `lm_head.weight` -- `[vocab_size, d_model]` only when embeddings are untied
+
+## Proof boundary
+
+The repository synthetic gate checks this recurrence against an independent
+NumPy implementation and checks full recomputation against carried-state token
+decoding on deterministic FP32 fixtures. Real-checkpoint weight conversion and parity against an
+upstream torch-mamba/Mamba2 implementation remain required before claiming
+checkpoint support. No tolerance is relaxed for this scaffold.
+'''
+
+
 def _header(digest: str) -> str:
     return f"# Generated by scaffold_port.py {GENERATOR_VERSION} from inspection sha256:{digest}."
 
@@ -1023,9 +1485,8 @@ def dense_target_tensors(
 
 def _scaffold_manifest(
     files: dict[str, str],
-    config: dict[str, Any],
     inspection_digest: str,
-    attention_biases: dict[str, bool],
+    target_tensors: list[dict[str, Any]],
 ) -> str:
     execution_files = ("capture.py", "config.json", "config.py", "model.py")
     records = []
@@ -1042,7 +1503,7 @@ def _scaffold_manifest(
         "inspection_sha256": inspection_digest,
         "config_sha256": hashlib.sha256(files["config.json"].encode("utf-8")).hexdigest(),
         "files": records,
-        "tensors": dense_target_tensors(config, attention_biases),
+        "tensors": target_tensors,
     }
     return json.dumps(
         payload,
@@ -1085,13 +1546,76 @@ def generate_dense_decoder(
             .replace("__ATTENTION_BIAS_SUMMARY__", bias_summary)
         ),
     }
-    files[SCAFFOLD_MANIFEST] = _scaffold_manifest(files, config, digest, attention_biases)
+    files[SCAFFOLD_MANIFEST] = _scaffold_manifest(
+        files,
+        digest,
+        dense_target_tensors(config, attention_biases),
+    )
+    return files
+
+
+def ssm_target_tensors(config: dict[str, Any]) -> list[dict[str, Any]]:
+    d_model = _config_int(config, "d_model")
+    d_state = _config_int(config, "d_state")
+    d_conv = _config_int(config, "d_conv")
+    d_inner = d_model * _config_int(config, "expand")
+    layers = _config_int(config, "n_layer")
+    vocab = _config_int(config, "vocab_size")
+    tensors: dict[str, list[int]] = {
+        "model.embed_tokens.weight": [vocab, d_model],
+        "model.norm.weight": [d_model],
+    }
+    for index in range(layers):
+        prefix = f"model.layers.{index}"
+        tensors.update({
+            f"{prefix}.norm.weight": [d_model],
+            f"{prefix}.mixer.in_proj.weight": [2 * d_inner, d_model],
+            f"{prefix}.mixer.conv1d.weight": [d_inner, d_conv],
+            f"{prefix}.mixer.x_proj.weight": [d_inner + 2 * d_state, d_inner],
+            f"{prefix}.mixer.dt_bias": [d_inner],
+            f"{prefix}.mixer.A_log": [d_inner, d_state],
+            f"{prefix}.mixer.D": [d_inner],
+            f"{prefix}.mixer.out_proj.weight": [d_model, d_inner],
+        })
+        if bool(config.get("conv_bias", True)):
+            tensors[f"{prefix}.mixer.conv1d.bias"] = [d_inner]
+    if not bool(config.get("tie_word_embeddings", True)):
+        tensors["lm_head.weight"] = [vocab, d_model]
+    return [{"key": key, "shape": tensors[key]} for key in sorted(tensors)]
+
+
+def generate_selective_ssm(
+    inspection: dict[str, Any],
+    config: dict[str, Any],
+) -> dict[str, str]:
+    validate_ssm_config(config)
+    validate_ssm_inspection(inspection)
+    digest = trusted_inspection_sha256(inspection)
+    header = _header(digest)
+    files = {
+        "config.json": json.dumps(config, indent=2, sort_keys=True, ensure_ascii=False) + "\n",
+        "config.py": SSM_CONFIG_TEMPLATE.replace("__HEADER__", header),
+        "model.py": SSM_MODEL_TEMPLATE.replace("__HEADER__", header),
+        "generate.py": GENERATE_TEMPLATE.replace("__HEADER__", header),
+        "capture.py": CAPTURE_TEMPLATE.replace("__HEADER__", header),
+        "README.md": (
+            SSM_README_TEMPLATE
+            .replace("__VERSION__", GENERATOR_VERSION)
+            .replace("__DIGEST__", digest)
+        ),
+    }
+    files[SCAFFOLD_MANIFEST] = _scaffold_manifest(
+        files,
+        digest,
+        ssm_target_tensors(config),
+    )
     return files
 
 
 Generator = Callable[[dict[str, Any], dict[str, Any]], dict[str, str]]
 FAMILY_GENERATORS: dict[str, Generator] = {
     DENSE_FAMILY: generate_dense_decoder,
+    SSM_FAMILY: generate_selective_ssm,
 }
 
 

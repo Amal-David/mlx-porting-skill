@@ -50,6 +50,23 @@ For a single layer capture:
 6. Add generation/reset/save/reload.
 7. Only then implement vectorized scan or custom kernel.
 
+## Scaffolder support boundary
+
+`scripts/scaffold_port.py` supports one deliberately narrow, synthetic-only
+`minimal_selective` variant for pure SSM recurrence tests. Its config must opt
+in explicitly and is limited to `d_model`, `d_state`, `d_conv`, `expand`,
+`n_layer`, `vocab_size`, `rms_norm_eps`, convolution bias, and embedding tying.
+The block uses a direct per-channel dt, token-dependent B/C, `A=-exp(A_log)`,
+and exact zero-order-hold input discretization `dt * exprel(dt*A)` with a
+guarded analytic limit at zero.
+
+This support does not imply Mamba, Mamba2, RWKV, RecurrentGemma, Griffin,
+Jamba, or Zamba checkpoint compatibility. Attention-mixed layer schedules fail
+closed. The checked-in tests compare MLX with an independent NumPy recurrence
+and check full-sequence versus carried-state equivalence on deterministic FP32
+fixtures. Upstream torch-mamba or
+checkpoint parity remains a separate completion gate.
+
 ## Parity traps
 
 - off-by-one state update;

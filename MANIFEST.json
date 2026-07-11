@@ -2,7 +2,7 @@
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
   "version": "0.5.0",
-  "generated_at": "2026-07-11T07:06:02.505293+00:00",
+  "generated_at": "2026-07-11T16:44:38.736412+00:00",
   "file_count": 461,
   "files": [
     {
@@ -105,8 +105,8 @@
     },
     {
       "path": "VALIDATION.md",
-      "size_bytes": 17814,
-      "sha256": "e3f7fdec87a88e77e5994e5eef75ff3137cf7dbff0f73df3082dcde52d13203e",
+      "size_bytes": 18069,
+      "sha256": "9889cd29cbb0b81ec4422757f56ded074b4c5b447abf096f6697fe65e7b6017b",
       "executable": false
     },
     {
@@ -171,8 +171,8 @@
     },
     {
       "path": "mlx-model-porting/SKILL.md",
-      "size_bytes": 13463,
-      "sha256": "05b749003a1e73189412e0c174236e782a24639fbf80c13704093feebf1d0c69",
+      "size_bytes": 13348,
+      "sha256": "f555b269e1bb09a4b883f124c50fca7c87d4c776e9b97f9bab63988fe13cc174",
       "executable": false
     },
     {
@@ -207,8 +207,8 @@
     },
     {
       "path": "mlx-model-porting/assets/architectures.yaml",
-      "size_bytes": 27394,
-      "sha256": "64445d61bda45f0f1d453a0a8d510dfb525a3e88bfc5d0a82cd056202b933a26",
+      "size_bytes": 27548,
+      "sha256": "18bd09a783ed074f7abaee8ee09aae7fbb95af568bf665be21ad49bc6edf844a",
       "executable": false
     },
     {
@@ -1191,8 +1191,8 @@
     },
     {
       "path": "mlx-model-porting/references/runbook-ssm-hybrid.md",
-      "size_bytes": 3079,
-      "sha256": "065416e3a66142396f71d5911a2b2caa1dc8651a2e1f4283e64ba9eb6cafcad4",
+      "size_bytes": 4004,
+      "sha256": "0b6bd9b9dc1d7062f5367f1c58fc54f969861a38c6eba4071099588cff0f2ea8",
       "executable": false
     },
     {
@@ -1923,8 +1923,8 @@
     },
     {
       "path": "mlx-model-porting/scripts/scaffold_port.py",
-      "size_bytes": 48404,
-      "sha256": "e6c6b3b81dc8bfccda956e6f529d3815a20f9242f5bc06d82d6cbd4aba094a0f",
+      "size_bytes": 69854,
+      "sha256": "4864b56d39e1fade328ee3ae8e0c35e30c30c76f4341af1f7bd0614d77ca8a18",
       "executable": true
     },
     {
@@ -2721,8 +2721,8 @@
     },
     {
       "path": "tests/test_scaffold_port_contract.py",
-      "size_bytes": 29925,
-      "sha256": "1d7dd77b3f8e8f059a0883db1544be49a6a56573510be9cfde8c3aef94de7b99",
+      "size_bytes": 51026,
+      "sha256": "7d9a55c652b1a6305ab66549bcce1599f8ce76636a050060fb395d88da095c68",
       "executable": false
     },
     {
