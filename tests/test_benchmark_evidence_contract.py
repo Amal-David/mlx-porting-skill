@@ -5,7 +5,6 @@ import hashlib
 import json
 import os
 import shlex
-import statistics
 import subprocess
 import sys
 import tempfile
@@ -407,8 +406,8 @@ def external_receipt(
         "summary": {
             "successful_runs": len(wall_values),
             "wall_seconds_min": min(wall_values),
-            "wall_seconds_median": statistics.median(wall_values),
-            "wall_seconds_mean": statistics.mean(wall_values),
+            "wall_seconds_median": _common.stable_median(wall_values),
+            "wall_seconds_mean": _common.stable_mean(wall_values),
             "wall_seconds_p95": benchmark_command.percentile(list(wall_values), 0.95),
             "wall_seconds_max": max(wall_values),
             "peak_rss_bytes_max": None,
@@ -766,8 +765,8 @@ def attested_receipt(
         "summary": {
             "successful_runs": len(wall_values),
             "wall_seconds_min": min(wall_values),
-            "wall_seconds_median": statistics.median(wall_values),
-            "wall_seconds_mean": statistics.mean(wall_values),
+            "wall_seconds_median": _common.stable_median(wall_values),
+            "wall_seconds_mean": _common.stable_mean(wall_values),
             "wall_seconds_p95": benchmark_command.percentile(list(wall_values), 0.95),
             "wall_seconds_max": max(wall_values),
             "peak_rss_bytes_max": None,
@@ -884,6 +883,23 @@ def rewrite_attested_report(root: Path, receipt: dict[str, object]) -> None:
 
 
 class BenchmarkEvidenceContractTests(unittest.TestCase):
+    def test_stored_aggregate_helpers_pin_known_f32_receipt_values(self) -> None:
+        values = [
+            1.6512163750012405,
+            1.6591140410164371,
+            1.6550946249917615,
+            1.6427383339905646,
+            1.673295207991032,
+        ]
+
+        mean = _common.stable_mean(values)
+        stdev = _common.stable_pstdev(values)
+
+        self.assertEqual(mean, 1.6562917165982072)
+        self.assertEqual(_common.stable_median(values), 1.6550946249917615)
+        self.assertEqual(stdev, 0.01007939021386586)
+        self.assertEqual(stdev / mean, 0.006085516284877355)
+
     def test_historical_receipts_remain_immutable_observations(self) -> None:
         for name, expected in HISTORICAL_HASHES.items():
             self.assertEqual(hashlib.sha256((BENCHMARKS / name).read_bytes()).hexdigest(), expected, name)

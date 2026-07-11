@@ -7,7 +7,6 @@ import hashlib
 import json
 import math
 import re
-import statistics
 import sys
 from pathlib import Path
 from typing import Any
@@ -17,6 +16,7 @@ from _common import (
     atomic_write_text,
     experiment_identity_from_fingerprint,
     load_structured,
+    stable_median,
 )
 from validate_benchmarks import recomputed_median_ratios
 
@@ -220,7 +220,7 @@ def experiment_fingerprint_valid(value: Any) -> bool:
             metric_values[metric].append(metric_value)
     for metric, values in metric_values.items():
         summary = aggregate.get(metric)
-        expected = {"median": statistics.median(values), "min": min(values), "max": max(values)}
+        expected = {"median": stable_median(values), "min": min(values), "max": max(values)}
         if not isinstance(summary, dict) or set(summary) != set(expected):
             return False
         if any(

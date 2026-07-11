@@ -9,10 +9,10 @@ import os
 import re
 import signal
 import stat
-import statistics
 import subprocess
 import tempfile
 import threading
+from collections.abc import Sequence
 from pathlib import Path
 from typing import Any, BinaryIO
 
@@ -42,6 +42,33 @@ DEFAULT_IGNORED_TREES = frozenset({
 MAX_CAPTURE_BYTES = 1024 * 1024
 CAPTURE_CHUNK_BYTES = 64 * 1024
 MAX_STRUCTURED_BYTES = 16 * 1024 * 1024
+
+
+def stable_mean(values: Sequence[float | int]) -> float:
+    """Return an IEEE-float mean without version-dependent statistics internals."""
+    if not values:
+        raise ValueError("mean requires at least one data point")
+    return math.fsum(values) / len(values)
+
+
+def stable_median(values: Sequence[float | int]) -> float | int:
+    """Return the conventional median using only stable float operations."""
+    if not values:
+        raise ValueError("median requires at least one data point")
+    ordered = sorted(values)
+    midpoint = len(ordered) // 2
+    if len(ordered) % 2:
+        return ordered[midpoint]
+    return (ordered[midpoint - 1] + ordered[midpoint]) / 2
+
+
+def stable_pstdev(values: Sequence[float | int]) -> float:
+    """Return the population standard deviation with stable IEEE operations."""
+    if not values:
+        raise ValueError("pstdev requires at least one data point")
+    mean = stable_mean(values)
+    variance = math.fsum((value - mean) ** 2 for value in values) / len(values)
+    return math.sqrt(variance)
 
 
 def bounded_files(
@@ -726,7 +753,7 @@ def _experiment_fingerprint_valid(value: Any) -> bool:
             metric_values[metric].append(metric_value)
     for metric, values in metric_values.items():
         summary = aggregate.get(metric)
-        expected = {"median": statistics.median(values), "min": min(values), "max": max(values)}
+        expected = {"median": stable_median(values), "min": min(values), "max": max(values)}
         if not isinstance(summary, dict) or set(summary) != set(expected):
             return False
         if any(

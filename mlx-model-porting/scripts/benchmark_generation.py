@@ -10,14 +10,13 @@ import json
 import math
 import re
 import shlex
-import statistics
 import subprocess
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-from _common import atomic_write_text, dump_json, redact_secret_text, run_process_capture
+from _common import atomic_write_text, dump_json, redact_secret_text, run_process_capture, stable_median
 from benchmark_command import environment_metadata
 from validate_benchmarks import (
     DECLARATIVE_QUALITY_VALIDATOR,
@@ -323,7 +322,7 @@ def summarize(values: list[float | int]) -> dict[str, float | int | None]:
     if not values:
         return {"median": None, "min": None, "max": None}
     return {
-        "median": statistics.median(values),
+        "median": stable_median(values),
         "min": min(values),
         "max": max(values),
     }

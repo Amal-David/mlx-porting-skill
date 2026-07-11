@@ -8,12 +8,20 @@ import json
 import math
 import re
 import shlex
-import statistics
 import sys
 from pathlib import Path
 from typing import Any
 
-from _common import SkillError, atomic_write_text, dump_json, redact_secret_text, redact_secrets
+from _common import (
+    SkillError,
+    atomic_write_text,
+    dump_json,
+    redact_secret_text,
+    redact_secrets,
+    stable_mean,
+    stable_median,
+    stable_pstdev,
+)
 
 
 SCRIPT_DIR = Path(__file__).resolve().parent
@@ -751,7 +759,7 @@ def file_sha256(path: Path) -> str:
 
 
 def summarize(values: list[float | int]) -> dict[str, float | int]:
-    return {"median": statistics.median(values), "min": min(values), "max": max(values)}
+    return {"median": stable_median(values), "min": min(values), "max": max(values)}
 
 
 def recompute_aggregates(
@@ -823,15 +831,15 @@ def recomputed_median_ratios(candidate: dict[str, Any], baseline: dict[str, Any]
 
 def stability_report(runs: list[dict[str, Any]], primary_metric: str, max_cv: float, min_runs: int) -> dict[str, Any]:
     values = [float(run[primary_metric]) for run in runs]
-    mean = statistics.mean(values)
-    stdev = statistics.pstdev(values)
+    mean = stable_mean(values)
+    stdev = stable_pstdev(values)
     cv = stdev / mean if mean else math.inf
     return {
         "primary_metric": primary_metric,
         "run_count": len(values),
         "min_runs": min_runs,
         "mean": mean,
-        "median": statistics.median(values),
+        "median": stable_median(values),
         "stdev": stdev,
         "cv": cv,
         "max_cv": max_cv,
@@ -1043,8 +1051,8 @@ def _external_report_matches(root: Path, receipt: dict[str, Any], run: dict[str,
     expected = {
         "successful_runs": len(values),
         "wall_seconds_min": min(values),
-        "wall_seconds_median": statistics.median(values),
-        "wall_seconds_mean": statistics.mean(values),
+        "wall_seconds_median": stable_median(values),
+        "wall_seconds_mean": stable_mean(values),
         "wall_seconds_p95": sorted(values)[0] if len(values) == 1 else (
             lambda ordered, position: ordered[int(position)] * (1 - (position - int(position)))
             + ordered[min(int(position) + 1, len(ordered) - 1)] * (position - int(position))

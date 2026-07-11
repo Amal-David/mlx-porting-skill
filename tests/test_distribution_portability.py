@@ -33,6 +33,13 @@ def shipped_utf8_text() -> tuple[tuple[Path, str], ...]:
 
 
 class DistributionPortabilityTests(unittest.TestCase):
+    def test_byte_exact_attestations_are_opaque_to_git_diff_and_merge(self) -> None:
+        attributes = (ROOT / ".gitattributes").read_text(encoding="utf-8").splitlines()
+        self.assertIn(
+            "mlx-model-porting/assets/benchmarks/attestations/** -diff -merge",
+            attributes,
+        )
+
     def test_contributor_instructions_are_checkout_and_home_agnostic(self) -> None:
         for name in ("AGENTS.md", "CLAUDE.md"):
             with self.subTest(file=name):

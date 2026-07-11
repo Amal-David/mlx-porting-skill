@@ -2,8 +2,8 @@
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
   "version": "0.5.0",
-  "generated_at": "2026-07-11T01:33:19.160027+00:00",
-  "file_count": 457,
+  "generated_at": "2026-07-11T01:56:27.528973+00:00",
+  "file_count": 458,
   "files": [
     {
       "path": ".agents/skills/mlx-model-porting",
@@ -18,6 +18,12 @@
       "target": "../../mlx-model-porting",
       "size_bytes": 23,
       "sha256": "5be9c0128ae6b100a817f049167fb446f61906b33881096b9708618cbd4c0d80"
+    },
+    {
+      "path": ".gitattributes",
+      "size_bytes": 65,
+      "sha256": "b9fcdf1e7d25b69fadebd583e51e276064d240cd640b54ca077dbf51039f867b",
+      "executable": false
     },
     {
       "path": ".github/requirements-ci.txt",
@@ -789,8 +795,8 @@
     },
     {
       "path": "mlx-model-porting/assets/benchmarks/receipt_assessments.json",
-      "size_bytes": 49816,
-      "sha256": "8be48454e444cca702fc4897015b92a96a425e47a4de8927de86d9f90756db80",
+      "size_bytes": 49837,
+      "sha256": "a9ed9b8c19c290c96067accc8c815e87aacf9ca6d03954ea79fc2e344e67c090",
       "executable": false
     },
     {
@@ -1773,8 +1779,8 @@
     },
     {
       "path": "mlx-model-porting/scripts/_common.py",
-      "size_bytes": 56092,
-      "sha256": "76e352b8dfae2fc3a8d9b43af07582327ce8ac67c7567359f6dc9a2fa3319834",
+      "size_bytes": 57158,
+      "sha256": "e000676d47cea19e207825e4d028b3d340ef2c7b76983acff5c277b37244c423",
       "executable": true
     },
     {
@@ -1785,14 +1791,14 @@
     },
     {
       "path": "mlx-model-porting/scripts/benchmark_command.py",
-      "size_bytes": 65428,
-      "sha256": "e61f6c728a78a90a44ef238807c421ed8670124f0c78ed67739f775b26e479dc",
+      "size_bytes": 65459,
+      "sha256": "cc5066b033aacddfc51bc89c4ac6079ded47886e53ded22fff2b247d7888eaef",
       "executable": true
     },
     {
       "path": "mlx-model-porting/scripts/benchmark_generation.py",
-      "size_bytes": 24670,
-      "sha256": "30a45906fb8783b02f0fd019d80dffa08da9ac13a27ec83723fc05e54f58b8a6",
+      "size_bytes": 24663,
+      "sha256": "c8dedbda55c9da680ce8c6332a6d792b3f3bea38a913ffd4fa5a6a24dfc16c5e",
       "executable": false
     },
     {
@@ -1827,8 +1833,8 @@
     },
     {
       "path": "mlx-model-porting/scripts/generate_claim_catalog.py",
-      "size_bytes": 44613,
-      "sha256": "dd27c2c44bf2296a2fc5c593018227b110edb7f69badf27731610e6b02f7fd80",
+      "size_bytes": 44610,
+      "sha256": "6914c6d6c0de98d319d9a6f1ca4145c5b8f5dcf0cdf4059ba8ae71ff0215dd35",
       "executable": true
     },
     {
@@ -1923,8 +1929,8 @@
     },
     {
       "path": "mlx-model-porting/scripts/validate_benchmarks.py",
-      "size_bytes": 112955,
-      "sha256": "3ff2d5138bdcddc2af4759a0cb0482ed82b402ef164e7024067ff6b7b39bf46b",
+      "size_bytes": 112993,
+      "sha256": "980cbaa8a553425802622ac4b2b6682831d1b527ac90ff0a84f9dc6730315671",
       "executable": false
     },
     {
@@ -2529,8 +2535,8 @@
     },
     {
       "path": "tests/test_benchmark_evidence_contract.py",
-      "size_bytes": 95175,
-      "sha256": "c4b65a4d8493ecd96fea35aea6e6a6f03a941b3469501512fa2c5a4950266925",
+      "size_bytes": 95776,
+      "sha256": "2b69147d36179773fafb1a51c7cc6b96bcb2eeeb89bc822f6fcd961005a232e6",
       "executable": false
     },
     {
@@ -2565,8 +2571,8 @@
     },
     {
       "path": "tests/test_distribution_portability.py",
-      "size_bytes": 4179,
-      "sha256": "d867e005e9e1255e18fb3951f6eb64eedbc08e2ea6d4902fe0deef5af34056e3",
+      "size_bytes": 4490,
+      "sha256": "4c41b678824e36b02f50729775d5171aeb21f7f98ea3dec3a8da8d2480be62cc",
       "executable": false
     },
     {

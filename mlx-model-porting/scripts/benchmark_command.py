@@ -14,7 +14,6 @@ import secrets
 import shutil
 import signal
 import shlex
-import statistics
 import subprocess
 import sys
 import threading
@@ -23,7 +22,14 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, BinaryIO
 
-from _common import SkillError, atomic_write_text, dump_json, redact_secret_text
+from _common import (
+    SkillError,
+    atomic_write_text,
+    dump_json,
+    redact_secret_text,
+    stable_mean,
+    stable_median,
+)
 
 
 ENVIRONMENT_KEY_RE = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*$")
@@ -1527,8 +1533,8 @@ def main() -> int:
             "summary": {
                 "successful_runs": len(times),
                 "wall_seconds_min": min(times) if times else None,
-                "wall_seconds_median": statistics.median(times) if times else None,
-                "wall_seconds_mean": statistics.mean(times) if times else None,
+                "wall_seconds_median": stable_median(times) if times else None,
+                "wall_seconds_mean": stable_mean(times) if times else None,
                 "wall_seconds_p95": percentile(times, 0.95) if times else None,
                 "wall_seconds_max": max(times) if times else None,
                 "peak_rss_bytes_max": max(rss) if rss else None,
