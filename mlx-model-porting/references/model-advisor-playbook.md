@@ -68,8 +68,8 @@ and what not to use.
 4. **Sweep research assets.** Read the evidence sources listed in the next
    section before finalizing advice. Do not skip a relevant lead just because
    it is not ready for supported guidance.
-5. **Check observed outcomes.** Match the model id, task, library, family, and
-   top-model snapshot entry against `assets/model_outcomes.json`. Report:
+5. **Check observed outcomes.** Match the model id, task, library, and family
+   against `assets/model_outcomes.json`. Report:
    what worked elsewhere, what did not work or remains blocked, the claim
    boundary, any eligible potential range, withheld source observations and
    their hold reasons, and the next validation gate. Do not turn a
@@ -119,9 +119,9 @@ Always check these assets when producing model-specific advice:
   validation-backlog guidance.
 - `assets/model_outcomes.json`: source-backed outcome records that say what
   worked, what did not, claim boundaries, source ids, and next validation.
-- `assets/top_models_snapshot.json`: current top Hugging Face model coverage
-  snapshot. Use it to understand demand and coverage gaps, not as proof that a
-  model is permissively licensed or supported.
+- `assets/knowledge_graph.json`: bounded, review-only provenance memory. The
+  advisor may show family-relevant edges only in its separate unreviewed
+  research-signal section; graph content never supplies numeric claims.
 - `references/deep-research-loop.md`: promotion-review rules and research
   receipt semantics.
 - The selected runbook and relevant optimization references such as

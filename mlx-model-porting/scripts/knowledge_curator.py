@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import re
 import sys
@@ -24,6 +25,27 @@ STOP_TERMS = {
     "outcome", "paper", "source", "that", "the", "this", "with",
 }
 KNOWN_READ_STATES = {"already_read", "indexed_only", "source_record"}
+BACKLOG_OBJECTIVE = (
+    "Track deep-research gaps needed before the MLX porting skill can credibly claim "
+    "comprehensive coverage."
+)
+BACKLOG_ADVISOR_STATUS_MAPPING = {
+    "validated": {
+        "advisor_bucket": "validated-locally",
+        "description": (
+            "May be described as validated skill guidance when the referenced gates remain green."
+        ),
+    },
+    "needs-validation": {
+        "advisor_bucket": "experimental-approach",
+        "description": (
+            "May be shown as an experimental approach or validation backlog item, but not as "
+            "supported guidance until the required gate passes."
+        ),
+        "requires_user_opt_in": True,
+        "prompt": "This is an experimental approach. Do you want to try it?",
+    },
+}
 
 
 def parse_args() -> argparse.Namespace:
@@ -32,6 +54,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--update-candidates", default=str(SKILL_ROOT / "assets" / "update-candidates.json"))
     parser.add_argument("--optimization-guidance", default=str(SKILL_ROOT / "assets" / "optimization_guidance.yaml"))
     parser.add_argument("--contributor-learnings", default=str(SKILL_ROOT / "assets" / "contributor_learnings.json"))
+    parser.add_argument("--contributor-refresh", default=str(SKILL_ROOT / "assets" / "contributor-refresh.json"))
     parser.add_argument("--research-backlog", default=str(SKILL_ROOT / "assets" / "research_backlog.json"))
     parser.add_argument("--model-outcomes", default=str(SKILL_ROOT / "assets" / "model_outcomes.json"))
     parser.add_argument("--previous-graph", default=str(SKILL_ROOT / "assets" / "knowledge_graph.json"))
@@ -39,6 +62,16 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--delta-output", default=None)
     parser.add_argument("--markdown-output", default=None)
     parser.add_argument("--run-id", default=None)
+    parser.add_argument(
+        "--reconcile-backlog",
+        action="store_true",
+        help="Offline: regenerate research_backlog.json from the current graph and update candidates",
+    )
+    parser.add_argument(
+        "--check-backlog",
+        action="store_true",
+        help="Offline: fail when research_backlog.json drifts from the current graph and update candidates",
+    )
     return parser.parse_args()
 
 
@@ -171,6 +204,78 @@ def add_edge(edges: list[dict[str, Any]], source: str, target: str, relation: st
     edges.append(record)
 
 
+def _nonnegative_int(value: Any, label: str) -> int:
+    if isinstance(value, bool) or not isinstance(value, int) or value < 0:
+        raise SkillError(f"{label} must be a non-negative integer")
+    return value
+
+
+def validate_contributor_refresh(payload: Any) -> dict[str, Any]:
+    if not isinstance(payload, dict) or payload.get("schema_version") != 1:
+        raise SkillError("contributor refresh must be a schema_version 1 object")
+    if payload.get("review_only") is not True:
+        raise SkillError("contributor refresh must remain review_only=true")
+    for field in ("generated_at", "repo", "source", "retrieved"):
+        if not isinstance(payload.get(field), str) or not payload[field]:
+            raise SkillError(f"contributor refresh {field} must be a non-empty string")
+    if not payload["source"].startswith("https://"):
+        raise SkillError("contributor refresh source must be HTTPS")
+    requested_count = _nonnegative_int(payload.get("requested_count"), "contributor requested_count")
+    linked_count = _nonnegative_int(payload.get("linked_user_count"), "contributor linked_user_count")
+    _nonnegative_int(payload.get("anonymous_author_count"), "contributor anonymous_author_count")
+    if linked_count > requested_count:
+        raise SkillError("contributor linked_user_count exceeds requested_count")
+    logins = payload.get("top_logins")
+    if not isinstance(logins, list) or not all(isinstance(login, str) and login for login in logins):
+        raise SkillError("contributor refresh top_logins must be a list of non-empty strings")
+    normalized = [login.lower() for login in logins]
+    if len(normalized) != len(set(normalized)):
+        raise SkillError("contributor refresh top_logins contains duplicates")
+    if len(logins) > linked_count:
+        raise SkillError("contributor refresh top_logins exceeds linked_user_count")
+    if not isinstance(payload.get("api_receipt"), dict):
+        raise SkillError("contributor refresh api_receipt must be an object")
+    return payload
+
+
+def ingest_contributor_refresh(
+    nodes: dict[str, dict[str, Any]],
+    edges: list[dict[str, Any]],
+    refresh: dict[str, Any],
+) -> None:
+    collection_id = f"review-queue:contributors:{slugify(refresh['repo'])}"
+    add_node(nodes, {
+        "id": collection_id,
+        "kind": "contributor_refresh",
+        "label": f"Contributor refresh for {refresh['repo']}",
+        "locator": refresh["source"],
+        "review_status": "review-only-source-selection",
+        "decision_state": "review_queue",
+        "review_only": True,
+        "repo": refresh["repo"],
+        "generated_at": refresh["generated_at"],
+        "retrieved": refresh["retrieved"],
+        "requested_count": refresh["requested_count"],
+        "linked_user_count": refresh["linked_user_count"],
+        "anonymous_author_count": refresh["anonymous_author_count"],
+    })
+    for login in refresh["top_logins"]:
+        node_id = f"candidate:contributor:{slugify(login.lower())}"
+        if node_id in nodes:
+            raise SkillError(f"contributor refresh node collides with existing graph node {node_id}")
+        add_node(nodes, {
+            "id": node_id,
+            "kind": "contributor_candidate",
+            "label": login,
+            "locator": f"https://github.com/{login}",
+            "read_state": "review_queue",
+            "review_status": "unreviewed-source-selection",
+            "decision_state": "source-selection-only",
+            "source_collection_node": collection_id,
+        })
+        add_edge(edges, collection_id, node_id, "contributor_in_refresh")
+
+
 def build_approaches(
     nodes: dict[str, dict[str, Any]],
     edges: list[dict[str, Any]],
@@ -181,11 +286,15 @@ def build_approaches(
     source_by_id: dict[str, dict[str, Any]],
 ) -> dict[str, set[str]]:
     approach_terms: dict[str, set[str]] = {}
+    method_families: dict[str, list[str]] = {}
     for method in guidance.get("methods", []):
         method_id = str(method.get("id") or "")
         if not method_id:
             continue
         node_id = f"approach:{method_id}"
+        method_families[method_id] = [
+            str(value) for value in method.get("applies_to", []) if isinstance(value, str)
+        ]
         add_node(nodes, {
             "id": node_id,
             "kind": "approach",
@@ -196,6 +305,10 @@ def build_approaches(
             "summary": method.get("recommendation") or "",
             "validation_gate": first(method.get("validation_gates")),
             "rollback": first(method.get("rollback_conditions")),
+            "applies_to": method_families[method_id],
+            "objectives": [
+                str(value) for value in method.get("objectives", []) if isinstance(value, str)
+            ],
         })
         # Retain superseded methods in the graph for provenance, but never
         # surface them as fresh approach leads. A curator match is a review
@@ -228,6 +341,7 @@ def build_approaches(
             "summary": learning.get("porting_skill_change") or learning.get("reason_held") or "",
             "validation_gate": learning.get("validation_gate") or "",
             "rollback": learning.get("rollback_condition") or "",
+            "applies_to": method_families.get(learning_id, []),
         })
         approach_terms[node_id] = token_set(learning_id, learning.get("evidence"), learning.get("porting_skill_change"), learning.get("reason_held"))
 
@@ -245,6 +359,9 @@ def build_approaches(
             "decision_state": "needs-review" if item.get("status") != "validated" else "validated",
             "summary": item.get("summary") or "",
             "validation_gate": item.get("required_gate") or "",
+            "source": item.get("source") or "",
+            "affected": item.get("affected") or [],
+            "families": item.get("families") or [],
         })
         approach_terms[node_id] = token_set(backlog_id, item.get("summary"), item.get("affected"), item.get("required_gate"))
 
@@ -261,12 +378,42 @@ def build_approaches(
             "decision_state": "outcome_registry",
             "summary": outcome.get("summary") or "",
             "validation_gate": outcome.get("next_validation") or "",
+            "families": (
+                outcome.get("match", {}).get("families", [])
+                if isinstance(outcome.get("match"), dict)
+                else []
+            ),
+            "source_ids": outcome.get("source_ids") or [],
         })
         approach_terms[node_id] = token_set(outcome_id, outcome.get("summary"), outcome.get("worked"), outcome.get("did_not_work"))
         for source_id in outcome.get("source_ids", []):
             if source_id in source_by_id:
                 add_edge(edges, f"source:{source_id}", node_id, "evidence_for_outcome")
     return approach_terms
+
+
+def apply_contributor_backlog_state(
+    nodes: dict[str, dict[str, Any]],
+    refresh: dict[str, Any],
+) -> None:
+    node = nodes.get("backlog:top1000-contributor-long-tail-rescreening")
+    if node is None:
+        return
+    node["summary"] = (
+        f"The current MLX contributor refresh requested {refresh['requested_count']} contributors, "
+        f"captured {refresh['linked_user_count']} linked contributors and "
+        f"{refresh['anonymous_author_count']} anon=true author buckets through "
+        f"{refresh['retrieved']}. Collection remains source-selection evidence only; "
+        "repository/code-search rescreening and implementation review remain open."
+    )
+    node["current_state"] = {
+        "source_node": f"review-queue:contributors:{slugify(refresh['repo'])}",
+        "retrieved": refresh["retrieved"],
+        "requested_count": refresh["requested_count"],
+        "linked_user_count": refresh["linked_user_count"],
+        "anonymous_author_count": refresh["anonymous_author_count"],
+        "review_only": True,
+    }
 
 
 def first(values: Any) -> str:
@@ -382,6 +529,7 @@ def candidate_node_from_paper(
         "published": paper.get("published") or "",
         "authors": paper.get("authors") or [],
         "summary": paper.get("summary") or "",
+        "review_status": paper.get("review_status") or "candidate-unreviewed",
     }, read_state
 
 
@@ -440,6 +588,7 @@ def candidate_node_from_repo(
         "head_message": repo.get("head_message") or "",
         "topics": repo.get("topics") or [],
         "summary": repo.get("metadata_warning") or repo.get("head_message") or "",
+        "review_status": repo.get("review_status") or "candidate-unreviewed",
     }, read_state
 
 
@@ -562,15 +711,157 @@ def derive_gap_hints(delta: dict[str, Any]) -> list[str]:
     return [term for term, _score in sorted(hints.items(), key=lambda item: (-item[1], item[0]))[:12]]
 
 
+def _canonical_sha256(value: Any) -> str:
+    payload = json.dumps(
+        value,
+        ensure_ascii=False,
+        separators=(",", ":"),
+        sort_keys=True,
+    ).encode("utf-8")
+    return hashlib.sha256(payload).hexdigest()
+
+
+def _timestamp_date(value: Any) -> str:
+    text = str(value or "")
+    match = re.match(r"^(\d{4}-\d{2}-\d{2})", text)
+    return match.group(1) if match else ""
+
+
+def build_reconciled_backlog(graph: Any, candidates: Any) -> dict[str, Any]:
+    if not isinstance(graph, dict) or graph.get("schema_version") != 1:
+        raise SkillError("backlog reconciliation requires a schema_version 1 knowledge graph")
+    nodes = graph.get("nodes")
+    edges = graph.get("edges")
+    if not isinstance(nodes, list) or not isinstance(edges, list):
+        raise SkillError("backlog reconciliation requires graph nodes and edges")
+    if graph.get("node_count") != len(nodes) or graph.get("edge_count") != len(edges):
+        raise SkillError("backlog reconciliation refuses inconsistent graph counts")
+    if not isinstance(candidates, dict) or candidates.get("schema_version") != 1:
+        raise SkillError("backlog reconciliation requires schema_version 1 update candidates")
+    papers = candidates.get("papers")
+    repositories = candidates.get("repositories")
+    if not isinstance(papers, list) or not isinstance(repositories, list):
+        raise SkillError("backlog reconciliation requires paper and repository candidate lists")
+
+    items: list[dict[str, Any]] = []
+    read_states: dict[str, int] = {}
+    for index, node in enumerate(nodes):
+        if not isinstance(node, dict):
+            raise SkillError(f"backlog reconciliation graph node[{index}] is invalid")
+        if node.get("kind") == "source_candidate":
+            state = str(node.get("read_state") or "unspecified")
+            read_states[state] = read_states.get(state, 0) + 1
+        if node.get("kind") != "backlog_item":
+            continue
+        node_id = str(node.get("id") or "")
+        item_id = node_id.removeprefix("backlog:")
+        status = str(node.get("status") or "")
+        priority = str(node.get("priority") or "")
+        summary = str(node.get("summary") or "")
+        required_gate = str(node.get("validation_gate") or "")
+        source = str(node.get("source") or "")
+        affected = node.get("affected")
+        families = node.get("families")
+        if (
+            not item_id
+            or status not in BACKLOG_ADVISOR_STATUS_MAPPING
+            or not re.fullmatch(r"P\d+", priority)
+            or not summary
+            or not required_gate
+            or not source
+            or not isinstance(affected, list)
+            or not all(isinstance(value, str) and value for value in affected)
+            or not isinstance(families, list)
+            or not all(isinstance(value, str) and value for value in families)
+        ):
+            raise SkillError(f"backlog reconciliation graph node {node_id!r} is incomplete")
+        item: dict[str, Any] = {
+            "id": item_id,
+            "priority": priority,
+            "status": status,
+            "summary": summary,
+            "required_gate": required_gate,
+            "source": source,
+            "affected": affected,
+        }
+        if families:
+            item["families"] = families
+        if isinstance(node.get("current_state"), dict):
+            item["current_state"] = node["current_state"]
+        items.append(item)
+    if not items:
+        raise SkillError("backlog reconciliation found no backlog_item nodes")
+    items.sort(key=lambda item: (int(item["priority"][1:]), item["id"]))
+    reviewed = max(
+        filter(
+            None,
+            (
+                _timestamp_date(graph.get("generated_at")),
+                _timestamp_date(candidates.get("generated_at")),
+            ),
+        ),
+        default="",
+    )
+    if not reviewed:
+        raise SkillError("backlog reconciliation inputs lack generated dates")
+    return {
+        "schema_version": 1,
+        "reviewed": reviewed,
+        "objective": BACKLOG_OBJECTIVE,
+        "generated_from": {
+            "knowledge_graph_run_id": graph.get("run_id") or "",
+            "knowledge_graph_generated_at": graph.get("generated_at") or "",
+            "knowledge_graph_sha256": _canonical_sha256(graph),
+            "knowledge_graph_node_count": len(nodes),
+            "knowledge_graph_edge_count": len(edges),
+            "update_candidates_generated_at": candidates.get("generated_at") or "",
+            "update_candidates_sha256": _canonical_sha256(candidates),
+            "paper_candidate_count": len(papers),
+            "repository_candidate_count": len(repositories),
+            "candidate_read_states": dict(sorted(read_states.items())),
+        },
+        "advisor_status_mapping": BACKLOG_ADVISOR_STATUS_MAPPING,
+        "items": items,
+    }
+
+
+def reconcile_or_check_backlog(args: argparse.Namespace) -> int:
+    graph = load_structured(args.previous_graph)
+    candidates = load_structured(args.update_candidates)
+    expected = build_reconciled_backlog(graph, candidates)
+    backlog_path = Path(args.research_backlog)
+    if args.check_backlog:
+        actual = load_structured(backlog_path)
+        if actual != expected:
+            print(
+                "research backlog drift: run knowledge_curator.py --reconcile-backlog",
+                file=sys.stderr,
+            )
+            return 1
+        print(f"research backlog is current: {backlog_path}")
+        return 0
+    dump_json(expected, backlog_path)
+    print(
+        f"wrote {backlog_path}: {len(expected['items'])} items from graph "
+        f"{expected['generated_from']['knowledge_graph_run_id']}"
+    )
+    return 0
+
+
 def main() -> int:
     args = parse_args()
     try:
+        if args.reconcile_backlog and args.check_backlog:
+            raise SkillError("--reconcile-backlog and --check-backlog are mutually exclusive")
+        if args.reconcile_backlog or args.check_backlog:
+            return reconcile_or_check_backlog(args)
         run_id = args.run_id or default_run_id()
         previous_graph, previous_locators, previous_nodes = previous_index(Path(args.previous_graph))
         sources = load_structured(args.sources)
         candidates = load_structured(args.update_candidates)
         guidance = load_structured(args.optimization_guidance)
         learnings = load_structured(args.contributor_learnings)
+        contributor_refresh = validate_contributor_refresh(load_structured(args.contributor_refresh))
         backlog = load_structured(args.research_backlog)
         outcomes = load_structured(args.model_outcomes)
 
@@ -591,7 +882,9 @@ def main() -> int:
             if node["source_kind"] == "repository" and repository_identity:
                 source_by_repository.setdefault(repository_identity, node)
 
+        ingest_contributor_refresh(nodes, edges, contributor_refresh)
         approach_terms = build_approaches(nodes, edges, guidance, learnings, backlog, outcomes, source_by_id)
+        apply_contributor_backlog_state(nodes, contributor_refresh)
         delta: dict[str, Any] = {
             "schema_version": 1,
             "run_id": run_id,

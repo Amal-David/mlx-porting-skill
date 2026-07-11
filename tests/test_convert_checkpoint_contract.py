@@ -24,7 +24,24 @@ if str(SCRIPTS) not in sys.path:
 import convert_checkpoint as converter
 
 
-HAS_MLX = importlib.util.find_spec("mlx") is not None
+def mlx_runtime_available() -> bool:
+    if importlib.util.find_spec("mlx") is None:
+        return False
+    probe = subprocess.run(
+        [
+            sys.executable,
+            "-c",
+            "import mlx.core as mx; value=mx.array([1], dtype=mx.int32); mx.eval(value)",
+        ],
+        cwd=ROOT,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    return probe.returncode == 0
+
+
+HAS_MLX = mlx_runtime_available()
 
 
 def resolved_temp() -> tempfile.TemporaryDirectory[str]:
@@ -490,7 +507,7 @@ class ConvertCheckpointDependencyFreeContractTests(unittest.TestCase):
             self.assertIn("output path contains symlink component", output_result.stderr)
 
 
-@unittest.skipUnless(HAS_MLX, "MLX is not installed")
+@unittest.skipUnless(HAS_MLX, "a usable MLX runtime is required")
 class ConvertCheckpointMLXContractTests(unittest.TestCase):
     def test_mlx_core_load_reads_converted_safetensors(self) -> None:
         import mlx.core as mx

@@ -23,7 +23,6 @@ if str(SCRIPTS) not in sys.path:
 
 import _common as common  # noqa: E402
 import collect_contributors  # noqa: E402
-import collect_top_models  # noqa: E402
 import update_sources  # noqa: E402
 import validate_sources  # noqa: E402
 
@@ -223,83 +222,6 @@ class NetworkProcessHardeningContractTests(unittest.TestCase):
                 {},
                 "https://metadata.example/latest",
             )
-
-    def test_top_model_collector_rejects_unsafe_initial_origin_before_open(self) -> None:
-        opener = mock.Mock()
-        private_resolution = [
-            (socket.AF_INET, socket.SOCK_STREAM, 6, "", ("127.0.0.1", 443))
-        ]
-        with (
-            mock.patch.object(
-                validate_sources.socket,
-                "getaddrinfo",
-                return_value=private_resolution,
-            ),
-            mock.patch.object(
-                collect_top_models.urllib.request,
-                "build_opener",
-                return_value=opener,
-            ),
-            self.assertRaisesRegex(SystemExit, "non-public"),
-        ):
-            collect_top_models.fetch_models("https://metadata.example", 1)
-        opener.open.assert_not_called()
-
-    def test_top_model_collector_revalidates_redirects_and_uses_pinned_transport(self) -> None:
-        handler = collect_top_models.PublicHTTPSRedirectHandler()
-        private_resolution = [
-            (socket.AF_INET, socket.SOCK_STREAM, 6, "", ("169.254.169.254", 443))
-        ]
-        with (
-            mock.patch.object(
-                validate_sources.socket,
-                "getaddrinfo",
-                return_value=private_resolution,
-            ),
-            self.assertRaisesRegex(collect_top_models.urllib.error.URLError, "non-public"),
-        ):
-            handler.redirect_request(
-                collect_top_models.urllib.request.Request("https://huggingface.co/start"),
-                None,
-                302,
-                "Found",
-                {},
-                "https://metadata.example/latest",
-            )
-
-        response = mock.MagicMock()
-        response.geturl.return_value = "https://huggingface.co/final"
-        response.read.return_value = b"[]"
-        response.__enter__.return_value = response
-        opener = mock.Mock()
-        opener.open.return_value = response
-
-        with (
-            mock.patch.object(
-                validate_sources.socket,
-                "getaddrinfo",
-                return_value=[
-                    (socket.AF_INET, socket.SOCK_STREAM, 6, "", ("93.184.216.34", 443))
-                ],
-            ),
-            mock.patch.object(
-                collect_top_models.urllib.request,
-                "build_opener",
-                return_value=opener,
-            ) as build_opener,
-        ):
-            self.assertEqual(collect_top_models.fetch_models("https://huggingface.co", 1), [])
-        self.assertIsInstance(
-            build_opener.call_args.args[0],
-            collect_top_models.PublicHTTPSRedirectHandler,
-        )
-        self.assertTrue(
-            any(
-                isinstance(handler, validate_sources.PublicHTTPSHandler)
-                for handler in build_opener.call_args.args
-            )
-        )
-        response.read.assert_called_once_with(collect_top_models.MAX_NETWORK_RESPONSE_BYTES + 1)
 
     def test_contributor_http_error_redacts_reflected_token_and_headers(self) -> None:
         token = "top-secret-token"

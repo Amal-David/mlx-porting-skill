@@ -24,6 +24,7 @@ from _common import COMPOUND_PROMOTION_REQUIRED_GATES, SkillError, compose_stack
 from generate_claim_catalog import REQUIRED_BENCHMARK_GATES  # noqa: E402
 from make_port_plan import load_recommendation_report, recommendation_lines  # noqa: E402
 from recommend_optimizations import (  # noqa: E402
+    MAX_KNOWLEDGE_GRAPH_BYTES,
     load_receipt_assessments,
     target_claim_holds,
     trusted_inspection_sha256,
@@ -182,6 +183,7 @@ def run_recommender(
     traits: list[str] | None = None,
     target_profile: dict[str, object] | None = None,
     blockers: list[str] | None = None,
+    knowledge_graph: Path | None = None,
 ) -> tuple[dict[str, object], str]:
     inspection = tmp / f"inspection-{len(list(tmp.glob('inspection-*.json')))}.json"
     output = tmp / f"recommendations-{len(list(tmp.glob('recommendations-*.json')))}.json"
@@ -200,6 +202,8 @@ def run_recommender(
         args.extend(["--target-profile", profile_path])
     if blockers:
         args.extend(["--family", families[0]])
+    if knowledge_graph is not None:
+        args.extend(["--knowledge-graph", knowledge_graph])
     run_script("recommend_optimizations.py", *args)
     return json.loads(output.read_text(encoding="utf-8")), markdown.read_text(encoding="utf-8")
 
@@ -221,6 +225,148 @@ def candidate_by_id(report: dict[str, object], method_id: str) -> dict[str, obje
 
 
 class RecommendationContractTests(unittest.TestCase):
+    def test_graph_advisory_surfaces_provenance_without_becoming_a_sixth_bucket(self) -> None:
+        with tempfile.TemporaryDirectory() as raw_tmp:
+            tmp = Path(raw_tmp)
+            graph_path = tmp / "knowledge_graph.json"
+            nodes = [
+                {
+                    "id": "candidate:paper:fixture-claim",
+                    "kind": "source_candidate",
+                    "label": "Fixture claims 999x speedup",
+                    "locator": "https://example.com/unreviewed-paper",
+                    "read_state": "unread_candidate",
+                    "review_status": "candidate-unreviewed",
+                },
+                {
+                    "id": "source:fixture-lineage",
+                    "kind": "source",
+                    "label": "Known fixture source",
+                    "locator": "https://example.com/known-source",
+                    "read_state": "indexed_only",
+                    "review_depth": "indexed",
+                },
+                {
+                    "id": "source:fixture-evidence",
+                    "kind": "source",
+                    "label": "Fixture evidence",
+                    "locator": "https://example.com/evidence",
+                    "read_state": "already_read",
+                    "review_depth": "screened",
+                },
+                {
+                    "id": "approach:fixture-review-only",
+                    "kind": "approach",
+                    "label": "Fixture approach",
+                    "status": "research-candidate",
+                    "decision_state": "method_registry",
+                    "applies_to": ["dense-decoder-transformer"],
+                },
+                {
+                    "id": "outcome:fixture-review-only",
+                    "kind": "model_outcome",
+                    "label": "Fixture outcome",
+                    "status": "source_backed_working",
+                    "decision_state": "outcome_registry",
+                    "families": ["dense-decoder-transformer"],
+                },
+            ]
+            edges = [
+                {
+                    "source": "candidate:paper:fixture-claim",
+                    "target": "approach:fixture-review-only",
+                    "relation": "candidate_relevant_to",
+                    "score": 999,
+                },
+                {
+                    "source": "source:fixture-evidence",
+                    "target": "approach:fixture-review-only",
+                    "relation": "evidence_for",
+                },
+                {
+                    "source": "source:fixture-evidence",
+                    "target": "outcome:fixture-review-only",
+                    "relation": "evidence_for_outcome",
+                },
+                {
+                    "source": "candidate:paper:fixture-claim",
+                    "target": "source:fixture-lineage",
+                    "relation": "candidate_version_of",
+                },
+            ]
+            graph_path.write_text(json.dumps({
+                "schema_version": 1,
+                "generated_at": "2026-07-10T00:00:00+00:00",
+                "run_id": "fixture-graph",
+                "policy": {
+                    "review_only": True,
+                    "auto_promote_sources": False,
+                    "auto_modify_recommendations": False,
+                },
+                "node_count": len(nodes),
+                "edge_count": len(edges),
+                "nodes": nodes,
+                "edges": edges,
+            }), encoding="utf-8")
+
+            report, markdown = run_recommender(
+                tmp,
+                ["dense-decoder-transformer"],
+                knowledge_graph=graph_path,
+            )
+            advisory = report["research_advisory"]
+            self.assertEqual(advisory["status"], "available")
+            self.assertTrue(advisory["distinct_from_advisor_buckets"])
+            self.assertEqual(advisory["selected_count"], 4)
+            self.assertEqual(
+                {item["relation"] for item in advisory["items"]},
+                {
+                    "candidate_relevant_to",
+                    "evidence_for",
+                    "evidence_for_outcome",
+                    "candidate_version_of",
+                },
+            )
+            for item in advisory["items"]:
+                self.assertFalse(item["execution_allowed"])
+                self.assertFalse(item["numeric_claims_included"])
+                self.assertNotIn("expected_effect", item)
+                self.assertNotIn("improvement_band", item)
+                self.assertIn("source_node_id", item["graph_provenance"])
+                self.assertIn("target_node_id", item["graph_provenance"])
+                self.assertNotIn("source_label", item)
+                self.assertNotIn("target_label", item)
+            self.assertNotIn("999x speedup", json.dumps(advisory))
+            self.assertNotIn("score", json.dumps(advisory))
+            self.assertNotIn("unreviewed-research-signal", report["advisor_buckets"])
+            self.assertIn("Unreviewed research signals (experimental/review queue)", markdown)
+            self.assertIn("never supply numeric claims", markdown)
+
+    def test_graph_advisory_fails_closed_without_crashing_recommendations(self) -> None:
+        with tempfile.TemporaryDirectory() as raw_tmp:
+            tmp = Path(raw_tmp)
+            malformed = tmp / "malformed-graph.json"
+            malformed.write_text('{"schema_version": 1, "nodes": [', encoding="utf-8")
+            report, markdown = run_recommender(
+                tmp,
+                ["dense-decoder-transformer"],
+                knowledge_graph=malformed,
+            )
+            self.assertEqual(report["research_advisory"]["status"], "unavailable")
+            self.assertIn("not valid JSON", report["research_advisory"]["reason"])
+            self.assertTrue(report["ready_candidates"])
+            self.assertIn("Graph unavailable", markdown)
+
+            oversized = tmp / "oversized-graph.json"
+            oversized.write_bytes(b"{" + b" " * MAX_KNOWLEDGE_GRAPH_BYTES + b"}")
+            oversized_report, _ = run_recommender(
+                tmp,
+                ["dense-decoder-transformer"],
+                knowledge_graph=oversized,
+            )
+            self.assertEqual(oversized_report["research_advisory"]["status"], "unavailable")
+            self.assertIn("advisory read limit", oversized_report["research_advisory"]["reason"])
+
     def test_family_override_cannot_bypass_missing_inspection_contract(self) -> None:
         with tempfile.TemporaryDirectory() as raw_tmp:
             tmp = Path(raw_tmp)

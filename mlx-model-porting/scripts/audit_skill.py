@@ -101,6 +101,16 @@ def main() -> int:
         sources = load_structured(assets / "sources.yaml")
         techniques = load_structured(assets / "techniques.yaml")
         architectures = load_structured(assets / "architectures.yaml")
+        weight_map_template = load_structured(assets / "WEIGHT_MAP.json")
+        add_error(
+            errors,
+            not isinstance(weight_map_template, dict)
+            or weight_map_template.get("schema_version") != 1
+            or not isinstance(weight_map_template.get("entries"), list)
+            or not isinstance(weight_map_template.get("ignored_source"), list)
+            or not isinstance(weight_map_template.get("generated_target"), list),
+            "WEIGHT_MAP.json example template has an invalid schema",
+        )
         source_items = sources.get("sources", [])
         if sources.get("count") != len(source_items):
             errors.append("sources.yaml count does not match source list length")

@@ -20,6 +20,18 @@ SKILL_ROOT = SCRIPT_DIR.parent
 DEFAULT_RECEIPT_ASSESSMENTS = SKILL_ROOT / "assets" / "benchmarks" / "receipt_assessments.json"
 DEFAULT_EFFECTIVE_CLAIMS = SKILL_ROOT / "assets" / "effective_claims.json"
 DEFAULT_SOURCES = SKILL_ROOT / "assets" / "sources.yaml"
+DEFAULT_KNOWLEDGE_GRAPH = SKILL_ROOT / "assets" / "knowledge_graph.json"
+MAX_KNOWLEDGE_GRAPH_BYTES = 2 * 1024 * 1024
+MAX_KNOWLEDGE_GRAPH_NODES = 10_000
+MAX_KNOWLEDGE_GRAPH_EDGES = 20_000
+GRAPH_NODE_ID_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9:._/-]{0,511}$")
+GRAPH_SIGNAL_RELATIONS = (
+    "candidate_relevant_to",
+    "evidence_for",
+    "evidence_for_outcome",
+    "candidate_version_of",
+)
+GRAPH_ALLOWED_RELATIONS = {*GRAPH_SIGNAL_RELATIONS, "contributor_in_refresh"}
 STATUS_RANK = {
     "native-mlx": 0,
     "official-mlx-project": 1,
@@ -65,6 +77,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--taxonomy", default=str(SKILL_ROOT / "assets" / "recommendation-taxonomy.yaml"))
     parser.add_argument("--architectures", default=str(SKILL_ROOT / "assets" / "architectures.yaml"))
     parser.add_argument("--sources", default=str(DEFAULT_SOURCES))
+    parser.add_argument(
+        "--knowledge-graph",
+        default=str(DEFAULT_KNOWLEDGE_GRAPH),
+        help="Review-only knowledge graph; malformed or oversized graphs are reported as unavailable",
+    )
     parser.add_argument(
         "--effective-claims",
         default=str(DEFAULT_EFFECTIVE_CLAIMS),
@@ -511,6 +528,246 @@ def validate_family_ids(families: list[str], architectures: dict[str, Any]) -> N
     unknown = sorted(set(families) - allowed)
     if unknown:
         raise SkillError("unknown architecture family ids: " + ", ".join(unknown))
+
+
+def _graph_unavailable(families: list[str], reason: str) -> dict[str, Any]:
+    return {
+        "label": "Unreviewed research signals (experimental/review queue)",
+        "status": "unavailable",
+        "review_only": True,
+        "distinct_from_advisor_buckets": True,
+        "execution_allowed": False,
+        "numeric_authority": "assets/effective_claims.json only",
+        "families": list(families),
+        "reason": reason[:500],
+        "relation_counts": {relation: 0 for relation in GRAPH_SIGNAL_RELATIONS},
+        "selected_count": 0,
+        "items": [],
+    }
+
+
+def _load_bounded_graph_json(path: Path) -> Any:
+    try:
+        with path.open("rb") as handle:
+            raw = handle.read(MAX_KNOWLEDGE_GRAPH_BYTES + 1)
+    except OSError as exc:
+        raise SkillError(f"could not read {path}: {exc}") from exc
+    if len(raw) > MAX_KNOWLEDGE_GRAPH_BYTES:
+        raise SkillError(
+            f"graph exceeds the {MAX_KNOWLEDGE_GRAPH_BYTES}-byte advisory read limit"
+        )
+    try:
+        text = raw.decode("utf-8")
+    except UnicodeDecodeError as exc:
+        raise SkillError(f"graph is not valid UTF-8: {exc}") from exc
+
+    def reject_duplicate_keys(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
+        value: dict[str, Any] = {}
+        for key, item in pairs:
+            if key in value:
+                raise SkillError(f"graph contains duplicate JSON key {key!r}")
+            value[key] = item
+        return value
+
+    try:
+        return json.loads(text, object_pairs_hook=reject_duplicate_keys)
+    except json.JSONDecodeError as exc:
+        raise SkillError(f"graph is not valid JSON: {exc}") from exc
+
+
+def _graph_plain_text(value: Any, label: str, *, required: bool = False) -> str:
+    if value in (None, "") and not required:
+        return ""
+    if not isinstance(value, str) or (required and not value):
+        raise SkillError(f"graph {label} must be a non-empty string")
+    if len(value) > 2048 or any(ord(character) < 32 for character in value):
+        raise SkillError(f"graph {label} contains invalid text")
+    return value
+
+
+def _graph_string_list(value: Any, label: str) -> list[str]:
+    if value is None:
+        return []
+    if not isinstance(value, list) or not all(isinstance(item, str) and item for item in value):
+        raise SkillError(f"graph {label} must be a list of non-empty strings")
+    return [str(item) for item in value]
+
+
+def validate_knowledge_graph(graph: Any) -> tuple[dict[str, dict[str, Any]], list[dict[str, Any]]]:
+    if not isinstance(graph, dict) or graph.get("schema_version") != 1:
+        raise SkillError("graph root must be a schema_version 1 object")
+    policy = graph.get("policy")
+    if not isinstance(policy, dict) or (
+        policy.get("review_only") is not True
+        or policy.get("auto_promote_sources") is not False
+        or policy.get("auto_modify_recommendations") is not False
+    ):
+        raise SkillError("graph policy must remain review-only and non-promoting")
+    nodes = graph.get("nodes")
+    edges = graph.get("edges")
+    if not isinstance(nodes, list) or len(nodes) > MAX_KNOWLEDGE_GRAPH_NODES:
+        raise SkillError("graph nodes must be a bounded list")
+    if not isinstance(edges, list) or len(edges) > MAX_KNOWLEDGE_GRAPH_EDGES:
+        raise SkillError("graph edges must be a bounded list")
+    if graph.get("node_count") != len(nodes) or graph.get("edge_count") != len(edges):
+        raise SkillError("graph node_count or edge_count does not match its records")
+
+    nodes_by_id: dict[str, dict[str, Any]] = {}
+    for index, node in enumerate(nodes):
+        if not isinstance(node, dict):
+            raise SkillError(f"graph node[{index}] must be an object")
+        node_id = _graph_plain_text(node.get("id"), f"node[{index}].id", required=True)
+        if GRAPH_NODE_ID_RE.fullmatch(node_id) is None:
+            raise SkillError(f"graph node[{index}].id is not a controlled identifier")
+        if NUMERIC_MULTIPLIER_RE.search(node_id):
+            raise SkillError(f"graph node[{index}].id contains a numeric-claim-like token")
+        if node_id in nodes_by_id:
+            raise SkillError(f"graph contains duplicate node id {node_id!r}")
+        _graph_plain_text(node.get("kind"), f"node[{index}].kind", required=True)
+        _graph_plain_text(node.get("label"), f"node[{index}].label")
+        locator = _graph_plain_text(node.get("locator"), f"node[{index}].locator")
+        if locator and (not locator.startswith("https://") or len(locator) > 2048):
+            raise SkillError(f"graph node[{index}].locator must be an HTTPS URL")
+        if locator and NUMERIC_MULTIPLIER_RE.search(locator):
+            raise SkillError(f"graph node[{index}].locator contains a numeric-claim-like token")
+        for field in ("applies_to", "families"):
+            _graph_string_list(node.get(field), f"node[{index}].{field}")
+        for field in ("review_status", "read_state", "review_depth", "decision_state", "status"):
+            _graph_plain_text(node.get(field), f"node[{index}].{field}")
+        nodes_by_id[node_id] = node
+
+    validated_edges: list[dict[str, Any]] = []
+    seen_edges: set[tuple[str, str, str]] = set()
+    for index, edge in enumerate(edges):
+        if not isinstance(edge, dict):
+            raise SkillError(f"graph edge[{index}] must be an object")
+        source = _graph_plain_text(edge.get("source"), f"edge[{index}].source", required=True)
+        target = _graph_plain_text(edge.get("target"), f"edge[{index}].target", required=True)
+        relation = _graph_plain_text(edge.get("relation"), f"edge[{index}].relation", required=True)
+        if relation not in GRAPH_ALLOWED_RELATIONS:
+            raise SkillError(f"graph edge[{index}] has unknown relation {relation!r}")
+        if source not in nodes_by_id or target not in nodes_by_id:
+            raise SkillError(f"graph edge[{index}] has a dangling endpoint")
+        identity = (source, target, relation)
+        if identity in seen_edges:
+            raise SkillError(f"graph contains duplicate edge {identity!r}")
+        seen_edges.add(identity)
+        validated_edges.append(edge)
+    return nodes_by_id, validated_edges
+
+
+def _graph_review_status(node: dict[str, Any]) -> str:
+    for field in ("review_status", "read_state", "review_depth", "decision_state", "status"):
+        value = node.get(field)
+        if isinstance(value, str) and value:
+            return value
+    return "unspecified-review-state"
+
+
+def _graph_node_matches_families(
+    node: dict[str, Any],
+    families: list[str],
+    taxonomy: dict[str, Any],
+) -> bool:
+    tags = {
+        str(value).lower()
+        for field in ("applies_to", "families")
+        for value in node.get(field, [])
+        if isinstance(value, str)
+    }
+    if "all" in tags:
+        return True
+    routed = {str(value).lower() for value in families}
+    family_groups = taxonomy.get("family_groups", {})
+    return any(_family_tag_matches(tag, routed, family_groups) for tag in tags)
+
+
+def _graph_signal_item(
+    edge: dict[str, Any],
+    nodes_by_id: dict[str, dict[str, Any]],
+) -> dict[str, Any]:
+    source = nodes_by_id[str(edge["source"])]
+    target = nodes_by_id[str(edge["target"])]
+    provenance: dict[str, Any] = {
+        "source_node_id": source["id"],
+        "target_node_id": target["id"],
+        "source_review_status": _graph_review_status(source),
+        "target_review_status": _graph_review_status(target),
+    }
+    if source.get("locator"):
+        provenance["source_url"] = source["locator"]
+    if target.get("locator"):
+        provenance["target_url"] = target["locator"]
+    return {
+        "advice_class": "unreviewed-research-signal",
+        "relation": edge["relation"],
+        "review_status": "experimental-review-queue",
+        "execution_allowed": False,
+        "numeric_claims_included": False,
+        "graph_provenance": provenance,
+    }
+
+
+def load_graph_advisory(
+    path: str | Path,
+    families: list[str],
+    taxonomy: dict[str, Any],
+    *,
+    per_relation_limit: int,
+) -> dict[str, Any]:
+    try:
+        graph = _load_bounded_graph_json(Path(path))
+        nodes_by_id, edges = validate_knowledge_graph(graph)
+    except (SkillError, OSError, json.JSONDecodeError) as exc:
+        return _graph_unavailable(families, str(exc))
+
+    relevant_targets = {
+        node_id
+        for node_id, node in nodes_by_id.items()
+        if _graph_node_matches_families(node, families, taxonomy)
+    }
+    relevant_candidates = {
+        str(edge["source"])
+        for edge in edges
+        if edge["relation"] == "candidate_relevant_to"
+        and str(edge["target"]) in relevant_targets
+    }
+    relevant: dict[str, list[dict[str, Any]]] = {
+        relation: [] for relation in GRAPH_SIGNAL_RELATIONS
+    }
+    for edge in edges:
+        relation = str(edge["relation"])
+        if relation in {"candidate_relevant_to", "evidence_for", "evidence_for_outcome"}:
+            if str(edge["target"]) in relevant_targets:
+                relevant[relation].append(edge)
+        elif relation == "candidate_version_of" and str(edge["source"]) in relevant_candidates:
+            relevant[relation].append(edge)
+
+    selected: list[dict[str, Any]] = []
+    relation_counts: dict[str, int] = {}
+    for relation in GRAPH_SIGNAL_RELATIONS:
+        relation_edges = sorted(
+            relevant[relation],
+            key=lambda edge: (str(edge["source"]), str(edge["target"])),
+        )
+        relation_counts[relation] = len(relation_edges)
+        selected.extend(
+            _graph_signal_item(edge, nodes_by_id)
+            for edge in relation_edges[:per_relation_limit]
+        )
+    return {
+        "label": "Unreviewed research signals (experimental/review queue)",
+        "status": "available",
+        "review_only": True,
+        "distinct_from_advisor_buckets": True,
+        "execution_allowed": False,
+        "numeric_authority": "assets/effective_claims.json only",
+        "families": list(families),
+        "reason": None,
+        "relation_counts": relation_counts,
+        "selected_count": len(selected),
+        "items": selected,
+    }
 
 
 def resolve_route_families(
@@ -1216,6 +1473,32 @@ def write_markdown(report: dict[str, Any], path: str | Path) -> None:
             continue
         lines += ["| Method | Status | Expected effect | First gate |", "|---|---|---|---|"]
         lines += _candidate_rows(items)
+    research = report["research_advisory"]
+    lines += [
+        "",
+        "## Unreviewed research signals (experimental/review queue)",
+        "",
+        "> Review-only graph provenance. These signals are separate from the five advisor buckets, "
+        "cannot authorize execution, and never supply numeric claims.",
+        "",
+    ]
+    if research["status"] == "unavailable":
+        lines.append(f"Graph unavailable: {research['reason']}")
+    elif not research["items"]:
+        lines.append("No family-relevant graph edges were found.")
+    else:
+        for item in research["items"]:
+            provenance = item["graph_provenance"]
+            lines += [
+                f"- `{item['relation']}`: `{provenance['source_node_id']}` -> "
+                f"`{provenance['target_node_id']}`",
+                "  - Review status: "
+                f"source `{provenance['source_review_status']}`; "
+                f"target `{provenance['target_review_status']}`",
+                "  - Execution allowed: `false`",
+            ]
+            if provenance.get("source_url"):
+                lines.append(f"  - Source URL: {provenance['source_url']}")
     if report.get("held_candidates"):
         lines += ["", "## Held by missing capability or workload evidence", "", "| Method | Status | Expected effect | First gate |", "|---|---|---|---|"]
         lines += _candidate_rows(report["held_candidates"])
@@ -1255,6 +1538,12 @@ def main() -> int:
         objectives = {str(x).lower() for x in args.objective}
         validate_objective_ids(objectives, taxonomy)
         context = build_match_context(inspection, families, target_profile)
+        research_advisory = load_graph_advisory(
+            args.knowledge_graph,
+            families,
+            taxonomy,
+            per_relation_limit=min(max(1, args.limit), 25),
+        )
         prepared_methods: list[dict[str, Any]] = []
         for method in guidance.get("methods", []):
             if not objective_match(method, objectives):
@@ -1349,6 +1638,7 @@ def main() -> int:
             "blocked_advice_visible": bool(has_blockers and args.allow_blocked),
             "blockers": inspection.get("recommendation_blockers", []),
             "advisor_buckets": advisor_buckets,
+            "research_advisory": research_advisory,
             "ready_candidates": [] if suppress_blocked_advice else eligible_ready,
             "research_candidates": [] if suppress_blocked_advice else eligible_research,
             "held_candidates": held_candidates,

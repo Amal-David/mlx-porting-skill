@@ -11,6 +11,7 @@ from typing import Any
 
 from _common import SkillError, load_structured, run_process_capture
 from recommend_optimizations import (
+    GRAPH_SIGNAL_RELATIONS,
     resolve_route_families,
     trusted_inspection_sha256,
     validate_trusted_inspection,
@@ -62,6 +63,7 @@ TRUSTED_RECOMMENDATION_FIELDS = {
     "blocked_advice_visible",
     "blockers",
     "advisor_buckets",
+    "research_advisory",
     "ready_candidates",
     "research_candidates",
     "held_candidates",
@@ -295,6 +297,65 @@ def load_recommendation_report(
                 raise SkillError(
                     f"Recommendation report experimental candidate {method_id!r} violates opt-in policy"
                 )
+    research = report.get("research_advisory")
+    if not isinstance(research, dict):
+        raise SkillError("Recommendation report research_advisory must be an object")
+    if (
+        research.get("label") != "Unreviewed research signals (experimental/review queue)"
+        or research.get("status") not in {"available", "unavailable"}
+        or research.get("review_only") is not True
+        or research.get("distinct_from_advisor_buckets") is not True
+        or research.get("execution_allowed") is not False
+        or research.get("numeric_authority") != "assets/effective_claims.json only"
+        or research.get("families") != families
+    ):
+        raise SkillError("Recommendation report research_advisory violates the review-only contract")
+    relation_counts = research.get("relation_counts")
+    if not isinstance(relation_counts, dict) or set(relation_counts) != set(GRAPH_SIGNAL_RELATIONS):
+        raise SkillError("Recommendation report research_advisory has invalid relation counts")
+    if any(
+        isinstance(count, bool) or not isinstance(count, int) or count < 0
+        for count in relation_counts.values()
+    ):
+        raise SkillError("Recommendation report research_advisory relation counts must be non-negative")
+    research_items = research.get("items")
+    if not isinstance(research_items, list) or research.get("selected_count") != len(research_items):
+        raise SkillError("Recommendation report research_advisory item count is invalid")
+    if research["status"] == "unavailable" and (
+        research_items or not isinstance(research.get("reason"), str) or not research["reason"]
+    ):
+        raise SkillError("Unavailable research_advisory must contain only an explicit reason")
+    for index, item in enumerate(research_items):
+        if not isinstance(item, dict):
+            raise SkillError(f"Recommendation report research_advisory item {index} must be an object")
+        if (
+            item.get("advice_class") != "unreviewed-research-signal"
+            or item.get("relation") not in GRAPH_SIGNAL_RELATIONS
+            or item.get("review_status") != "experimental-review-queue"
+            or item.get("execution_allowed") is not False
+            or item.get("numeric_claims_included") is not False
+            or "expected_effect" in item
+            or "improvement_band" in item
+        ):
+            raise SkillError(f"Recommendation report research_advisory item {index} is not review-only")
+        provenance = item.get("graph_provenance")
+        if not isinstance(provenance, dict):
+            raise SkillError(f"Recommendation report research_advisory item {index} lacks provenance")
+        for field in (
+            "source_node_id", "target_node_id", "source_review_status", "target_review_status",
+        ):
+            if not isinstance(provenance.get(field), str) or not provenance[field]:
+                raise SkillError(
+                    f"Recommendation report research_advisory item {index} has invalid {field}"
+                )
+        for field in ("source_url", "target_url"):
+            if field in provenance and (
+                not isinstance(provenance[field], str)
+                or not provenance[field].startswith("https://")
+            ):
+                raise SkillError(
+                    f"Recommendation report research_advisory item {index} has invalid {field}"
+                )
     if report.get("receipt_assessments_status") != "checked-in":
         raise SkillError(
             "Port plans accept only recommendations recomputable from checked-in receipt assessments"
@@ -385,6 +446,27 @@ def recommendation_lines(report: dict[str, Any] | None) -> list[str]:
                     "Execution remains held until explicit consent."
                 )
             lines.append(line)
+        lines.append("")
+    research = report["research_advisory"]
+    lines.extend([
+        "### Unreviewed research signals (experimental/review queue)",
+        "",
+        "These provenance-only signals are separate from the five advisor buckets, cannot authorize execution, and do not supply numeric claims.",
+        "",
+    ])
+    if research["status"] == "unavailable":
+        lines.extend([f"Graph unavailable: {research['reason']}", ""])
+    elif not research["items"]:
+        lines.extend(["No family-relevant graph edges were found.", ""])
+    else:
+        for item in research["items"]:
+            provenance = item["graph_provenance"]
+            lines.append(
+                f"- `{item['relation']}`: `{provenance['source_node_id']}` -> "
+                f"`{provenance['target_node_id']}`; source review "
+                f"`{provenance['source_review_status']}`, target review "
+                f"`{provenance['target_review_status']}`; execution held."
+            )
         lines.append("")
     return lines
 

@@ -444,7 +444,10 @@ class ManifestContractTests(unittest.TestCase):
             socket_path = root / "unsupported.sock"
             unix_socket = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
             try:
-                unix_socket.bind(str(socket_path))
+                try:
+                    unix_socket.bind(str(socket_path))
+                except PermissionError:
+                    self.skipTest("sandbox forbids creating Unix-domain socket fixtures")
                 with self.assertRaisesRegex(manifest.SkillError, "unsupported socket"):
                     manifest.build_files(root)
                 with self.assertRaisesRegex(install_skill.SkillError, "unsupported"):

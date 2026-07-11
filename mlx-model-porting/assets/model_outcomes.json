@@ -7,15 +7,8 @@
     "Every model or family outcome must state overall and speculative-decoding branches with controlled provenance; range may be null when a numeric claim is held.",
     "Potential speedup ranges are planning bands, not benchmark claims; performance observations keep their historical number in observed_source_range until promotion gates pass.",
     "Keep source-reported numbers attached to hardware, workload, versions, and quality gates.",
-    "Use local_reproduced only when the external receipt assessment is promotion-ready with every integrity, comparability, stability, quality, rollback, and enabled-method gate passing.",
-    "For top-model coverage, license and download metadata are demand signals; they are not implementation proof."
+    "Use local_reproduced only when the external receipt assessment is promotion-ready with every integrity, comparability, stability, quality, rollback, and enabled-method gate passing."
   ],
-  "coverage_target": {
-    "snapshot_asset": "assets/top_models_snapshot.json",
-    "minimum_models": 250,
-    "selection": "Top downloaded public Hugging Face model records at collection time, with license metadata retained rather than silently assuming OSS.",
-    "refresh_command": "python3 mlx-model-porting/scripts/collect_top_models.py --limit 250 --out mlx-model-porting/assets/top_models_snapshot.json"
-  },
   "status_definitions": {
     "local_reproduced": "A local test, benchmark, parity fixture, or skill validation gate reproduced the result.",
     "source_backed_working": "A maintained repo, official docs, model card, or pinned implementation shows the route or behavior works, but this repo has not reproduced it locally for the selected model.",

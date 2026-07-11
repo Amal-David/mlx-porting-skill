@@ -40,6 +40,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--contributor-output", default=str(SKILL_ROOT / "assets" / "contributor-refresh.json"))
     parser.add_argument("--graph-output", default=str(SKILL_ROOT / "assets" / "knowledge_graph.json"))
     parser.add_argument("--previous-graph", default=str(SKILL_ROOT / "assets" / "knowledge_graph.json"))
+    parser.add_argument("--research-backlog", default=str(SKILL_ROOT / "assets" / "research_backlog.json"))
     parser.add_argument("--no-research-loop", action="store_true")
     parser.add_argument(
         "--command-timeout",
@@ -141,6 +142,17 @@ def build_contributor_command(args: argparse.Namespace) -> list[str]:
     return command
 
 
+def build_backlog_reconcile_command(args: argparse.Namespace) -> list[str]:
+    return [
+        sys.executable,
+        str(SCRIPT_DIR / "knowledge_curator.py"),
+        "--reconcile-backlog",
+        "--previous-graph", args.graph_output,
+        "--update-candidates", args.update_output,
+        "--research-backlog", args.research_backlog,
+    ]
+
+
 def read_gap_hints(delta_path: Path) -> list[str]:
     try:
         delta = load_structured(delta_path)
@@ -227,12 +239,17 @@ def main() -> int:
             str(SCRIPT_DIR / "knowledge_curator.py"),
             "--run-id", run_id,
             "--update-candidates", args.update_output,
+            "--contributor-refresh", args.contributor_output,
+            "--research-backlog", args.research_backlog,
             "--previous-graph", args.previous_graph,
             "--graph-output", args.graph_output,
             "--delta-output", str(delta_output),
             "--markdown-output", str(markdown_output),
         ]
         commands.append(run_command(curator_command, REPO_ROOT, timeout=args.command_timeout))
+        commands.append(
+            run_command(build_backlog_reconcile_command(args), REPO_ROOT, timeout=args.command_timeout)
+        )
         gap_hints = read_gap_hints(delta_output)
         research_loop_output = ""
         if not args.no_research_loop:
@@ -254,6 +271,7 @@ def main() -> int:
             "commands": commands,
             "next_actions": [
                 "Review knowledge-delta.md for already-read, unread, and updated sources.",
+                "Review the graph-derived research_backlog.json reconciliation and keep its check mode green.",
                 "Dispatch or inspect research-loop/campaign.json before turning new leads into skill/app/CLI edits.",
                 "If a finding is promotion-ready, make a separate review PR with tests and rollback conditions.",
             ],

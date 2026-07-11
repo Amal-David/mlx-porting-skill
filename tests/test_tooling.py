@@ -438,15 +438,10 @@ class ToolingTests(unittest.TestCase):
                 result.stdout,
             )
 
-    def test_model_outcome_registry_covers_top_snapshot_without_false_decoder_routes(self) -> None:
+    def test_model_outcome_registry_preserves_claim_boundaries(self) -> None:
         sources = {source["id"] for source in json.loads((SKILL / "assets" / "sources.yaml").read_text())["sources"]}
         local_sources = {"asset-architectures", "asset-research-backlog"}
         outcomes = json.loads((SKILL / "assets" / "model_outcomes.json").read_text())
-        snapshot = json.loads((SKILL / "assets" / "top_models_snapshot.json").read_text())
-
-        self.assertGreaterEqual(outcomes["coverage_target"]["minimum_models"], 250)
-        self.assertGreaterEqual(snapshot["model_count"], 250)
-        self.assertGreaterEqual(snapshot["covered_count"], 200)
 
         for record in outcomes["records"]:
             with self.subTest(record=record["id"]):
@@ -477,11 +472,6 @@ class ToolingTests(unittest.TestCase):
         self.assertIsNone(speculative["range"])
         self.assertEqual(speculative["provenance"], "performance_observation")
         self.assertEqual(speculative["observed_source_range"], "1.0x-1.3x")
-
-        by_id = {model["id"]: model for model in snapshot["models"]}
-        self.assertIn("decoder-mlx-lm-working-route", by_id["Qwen/Qwen3-0.6B"]["matched_outcome_ids"])
-        self.assertNotIn("decoder-mlx-lm-working-route", by_id["google-bert/bert-base-uncased"]["matched_outcome_ids"])
-        self.assertIn("encoder-embedding-top-model-gap", by_id["google-bert/bert-base-uncased"]["matched_outcome_ids"])
 
     def test_static_inspection_routes_dense_decoder(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -692,6 +682,7 @@ class ToolingTests(unittest.TestCase):
             self.assertIn("recommend_optimizations.py", text)
             self.assertNotIn("Expected effect", text)
             self.assertIn("Experimental approaches", text)
+            self.assertIn("Unreviewed research signals (experimental/review queue)", text)
             self.assertIn("Stop conditions", text)
 
     def test_optimization_recommender_splits_ready_and_research_candidates(self) -> None:
@@ -844,6 +835,7 @@ class ToolingTests(unittest.TestCase):
         for required in [
             "contributor_learnings.json",
             "research_backlog.json",
+            "knowledge_graph.json",
             "recommendation-taxonomy.yaml",
             "optimization_guidance.yaml",
             "This is an experimental approach. Do you want to try it?",
@@ -1658,6 +1650,117 @@ class ToolingTests(unittest.TestCase):
             self.assertIn("approach:draft-model-speculation", lead_targets)
             self.assertIn("New Approach Leads", markdown_path.read_text())
 
+    def test_knowledge_curator_ingests_contributor_refresh_as_review_queue(self) -> None:
+        import knowledge_curator
+
+        refresh = knowledge_curator.validate_contributor_refresh({
+            "schema_version": 1,
+            "generated_at": "2026-07-10T00:00:00+00:00",
+            "review_only": True,
+            "repo": "ml-explore/mlx",
+            "source": "https://api.github.com/repos/ml-explore/mlx/contributors",
+            "retrieved": "2026-07-10",
+            "requested_count": 1000,
+            "linked_user_count": 2,
+            "anonymous_author_count": 3,
+            "top_logins": ["alice", "bob"],
+            "api_receipt": {},
+        })
+        nodes: dict[str, dict[str, object]] = {}
+        edges: list[dict[str, object]] = []
+        knowledge_curator.ingest_contributor_refresh(nodes, edges, refresh)
+
+        collection = nodes["review-queue:contributors:ml-explore-mlx"]
+        self.assertTrue(collection["review_only"])
+        self.assertEqual(collection["anonymous_author_count"], 3)
+        self.assertIn("candidate:contributor:alice", nodes)
+        self.assertIn("candidate:contributor:bob", nodes)
+        self.assertFalse(any("anon" in node_id for node_id in nodes if node_id.startswith("candidate:")))
+        self.assertEqual({edge["relation"] for edge in edges}, {"contributor_in_refresh"})
+
+    def test_knowledge_curator_reconciles_and_checks_backlog_offline(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_path = Path(tmp)
+            graph_path = tmp_path / "knowledge_graph.json"
+            candidates_path = tmp_path / "update-candidates.json"
+            backlog_path = tmp_path / "research_backlog.json"
+            nodes = [
+                {
+                    "id": "backlog:fixture-gap",
+                    "kind": "backlog_item",
+                    "label": "fixture-gap",
+                    "status": "needs-validation",
+                    "priority": "P1",
+                    "decision_state": "needs-review",
+                    "summary": "Fixture validation gap.",
+                    "validation_gate": "Pass the fixture parity gate.",
+                    "source": "research-runs/fixture/synthesis.json",
+                    "affected": ["tests/test_tooling.py"],
+                    "families": ["dense-decoder-transformer"],
+                },
+                {
+                    "id": "candidate:paper:fixture",
+                    "kind": "source_candidate",
+                    "label": "Fixture paper",
+                    "locator": "https://example.com/fixture",
+                    "read_state": "unread_candidate",
+                },
+            ]
+            graph_path.write_text(json.dumps({
+                "schema_version": 1,
+                "generated_at": "2026-07-10T03:00:00+00:00",
+                "run_id": "fixture-reconcile",
+                "policy": {
+                    "review_only": True,
+                    "auto_promote_sources": False,
+                    "auto_modify_recommendations": False,
+                },
+                "node_count": len(nodes),
+                "edge_count": 0,
+                "nodes": nodes,
+                "edges": [],
+            }), encoding="utf-8")
+            candidates_path.write_text(json.dumps({
+                "schema_version": 1,
+                "generated_at": "2026-07-10T02:00:00+00:00",
+                "papers": [{"id": "fixture"}],
+                "repositories": [{"repo": "fixture/repo"}],
+            }), encoding="utf-8")
+
+            run_script(
+                "knowledge_curator.py",
+                "--reconcile-backlog",
+                "--previous-graph", graph_path,
+                "--update-candidates", candidates_path,
+                "--research-backlog", backlog_path,
+            )
+            backlog = json.loads(backlog_path.read_text(encoding="utf-8"))
+            self.assertEqual(backlog["reviewed"], "2026-07-10")
+            self.assertEqual(backlog["items"][0]["id"], "fixture-gap")
+            self.assertEqual(backlog["generated_from"]["paper_candidate_count"], 1)
+            self.assertEqual(
+                backlog["generated_from"]["candidate_read_states"],
+                {"unread_candidate": 1},
+            )
+            run_script(
+                "knowledge_curator.py",
+                "--check-backlog",
+                "--previous-graph", graph_path,
+                "--update-candidates", candidates_path,
+                "--research-backlog", backlog_path,
+            )
+            backlog["items"][0]["summary"] = "stale"
+            backlog_path.write_text(json.dumps(backlog), encoding="utf-8")
+            drift = run_script(
+                "knowledge_curator.py",
+                "--check-backlog",
+                "--previous-graph", graph_path,
+                "--update-candidates", candidates_path,
+                "--research-backlog", backlog_path,
+                expected=1,
+            )
+            self.assertIn("research backlog drift", drift.stderr)
+
     def test_knowledge_curator_preserves_arxiv_revision_and_detects_drift(self) -> None:
         import knowledge_curator
 
@@ -1950,6 +2053,8 @@ class ToolingTests(unittest.TestCase):
             update_output = tmp_path / "update-candidates.json"
             contributor_output = tmp_path / "contributor-refresh.json"
             graph_output = tmp_path / "knowledge_graph.json"
+            research_backlog = tmp_path / "research_backlog.json"
+            shutil.copyfile(SKILL / "assets" / "research_backlog.json", research_backlog)
 
             run_script(
                 "nightly_knowledge_curator.py",
@@ -1961,6 +2066,7 @@ class ToolingTests(unittest.TestCase):
                 "--contributor-output", contributor_output,
                 "--graph-output", graph_output,
                 "--previous-graph", graph_output,
+                "--research-backlog", research_backlog,
                 "--agent-count", "2",
             )
             run_dir = output_root / "fixture-nightly"
@@ -1968,7 +2074,7 @@ class ToolingTests(unittest.TestCase):
             campaign = json.loads((run_dir / "research-loop" / "campaign.json").read_text())
 
             self.assertTrue(receipt["review_only"])
-            self.assertEqual(len(receipt["commands"]), 4)
+            self.assertEqual(len(receipt["commands"]), 5)
             self.assertFalse(os.path.isabs(receipt["graph_output"]))
             self.assertFalse(os.path.isabs(receipt["delta_output"]))
             self.assertFalse(os.path.isabs(receipt["delta_markdown"]))
@@ -1980,6 +2086,7 @@ class ToolingTests(unittest.TestCase):
             self.assertTrue(update_output.exists())
             self.assertTrue(contributor_output.exists())
             self.assertTrue(graph_output.exists())
+            self.assertIn("generated_from", json.loads(research_backlog.read_text()))
             self.assertTrue((run_dir / "knowledge-delta.json").exists())
             self.assertTrue((run_dir / "research-loop" / "subagents.json").exists())
             self.assertEqual(campaign["wave_count"], 1)

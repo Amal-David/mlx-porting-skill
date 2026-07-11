@@ -23,7 +23,24 @@ if str(ROOT / "tests") not in sys.path:
     sys.path.insert(0, str(ROOT / "tests"))
 
 
-HAS_MLX = importlib.util.find_spec("mlx") is not None
+def mlx_runtime_available() -> bool:
+    if importlib.util.find_spec("mlx") is None:
+        return False
+    probe = subprocess.run(
+        [
+            sys.executable,
+            "-c",
+            "import mlx.core as mx; value=mx.array([1], dtype=mx.int32); mx.eval(value)",
+        ],
+        cwd=ROOT,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    return probe.returncode == 0
+
+
+HAS_MLX = mlx_runtime_available()
 
 
 def tiny_config(**overrides: object) -> dict[str, object]:
@@ -343,7 +360,7 @@ class ScaffoldPortDependencyFreeContractTests(unittest.TestCase):
             )
 
 
-@unittest.skipUnless(HAS_MLX, "mlx is required for generated-model execution tests")
+@unittest.skipUnless(HAS_MLX, "a usable MLX runtime is required for generated-model execution tests")
 class ScaffoldPortMLXContractTests(unittest.TestCase):
     def test_tiny_gqa_forward_generate_and_cache_match_full_context(self) -> None:
         import mlx.core as mx

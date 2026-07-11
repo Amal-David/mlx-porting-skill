@@ -488,6 +488,8 @@ def validate(skill: Path, check_urls: bool, timeout: float, workers: int) -> tup
     )
     effective_claims_path = assets / "effective_claims.json"
     effective_claims = load_structured(effective_claims_path) if effective_claims_path.exists() else {}
+    research_backlog_path = assets / "research_backlog.json"
+    research_backlog = load_structured(research_backlog_path) if research_backlog_path.exists() else {}
     errors: list[str] = []
     warnings: list[str] = []
 
@@ -501,6 +503,7 @@ def validate(skill: Path, check_urls: bool, timeout: float, workers: int) -> tup
         model_outcomes_path,
         receipt_assessments_path,
         effective_claims_path,
+        research_backlog_path,
     ):
         if not registry_path.exists():
             continue
@@ -564,6 +567,30 @@ def validate(skill: Path, check_urls: bool, timeout: float, workers: int) -> tup
             continue
         add_error(errors, method_id in effective_by_method, f"duplicate effective claim for {method_id}")
         effective_by_method[method_id] = row
+
+    backlog_items = research_backlog.get("items", []) if isinstance(research_backlog, dict) else []
+    add_error(
+        errors,
+        research_backlog.get("schema_version") != 1 if isinstance(research_backlog, dict) else True,
+        "research backlog must use schema_version 1",
+    )
+    add_error(errors, not isinstance(backlog_items, list), "research backlog must contain an items list")
+    generated_from = research_backlog.get("generated_from") if isinstance(research_backlog, dict) else None
+    add_error(errors, not isinstance(generated_from, dict), "research backlog must record generated_from provenance")
+    backlog_ids: set[str] = set()
+    for item in backlog_items if isinstance(backlog_items, list) else []:
+        item_id = item.get("id") if isinstance(item, dict) else None
+        add_error(errors, not isinstance(item_id, str) or not item_id, "research backlog item missing id")
+        if not isinstance(item_id, str) or not item_id:
+            continue
+        add_error(errors, item_id in backlog_ids, f"duplicate research backlog item {item_id}")
+        backlog_ids.add(item_id)
+        add_error(
+            errors,
+            item.get("status") not in {"validated", "needs-validation"},
+            f"research backlog item {item_id} has invalid status",
+        )
+        add_error(errors, not item.get("required_gate"), f"research backlog item {item_id} lacks required_gate")
 
     try:
         recomputed_assessments = build_assessment_report(benchmark_root)

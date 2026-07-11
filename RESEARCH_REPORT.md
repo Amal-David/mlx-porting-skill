@@ -253,7 +253,7 @@ evidence: all 28 files from the 2026-07-08 PR run remain byte-identical. Eleven
 older June 27/July 7 research artifacts received one mechanical privacy-only
 redaction: machine-specific checkout prefixes became `<repo-root>`. No finding,
 source, timestamp, command meaning, claim, or outcome changed. The reviewed
-2026-07-10 graph now contains 432 nodes and 233 non-dangling edges, including
+2026-07-10 graph now contains 697 nodes and 499 non-dangling edges, including
 lineage edges for every known repository candidate. arXiv base identity is
 separate from immutable `vN` revision; three current `v2` papers are held as
 `updated_candidate` with explicit before/after comparison state because the
@@ -262,6 +262,27 @@ older source records did not pin a paper revision.
 ## Generated views and dependency flow
 
 Canonical data flows one way into human- and site-facing views:
+
+### Research-to-advisor review queue
+
+`update-candidates.json`, the automated `contributor-refresh.json` source
+selection receipt, hand-reviewed contributor learnings, model outcomes, and the
+generated backlog feed `knowledge_curator.py`. The curator preserves those
+inputs as review-only nodes and edges in `knowledge_graph.json`; it also
+reconciles `research_backlog.json` deterministically from the current graph and
+update-candidate state. `knowledge_curator.py --check-backlog` fails when that
+derived backlog drifts.
+
+`recommend_optimizations.py` reads the graph with a fixed byte limit and a
+fail-closed schema check. For the routed architecture families it shows bounded
+`candidate_relevant_to`, `evidence_for`, `evidence_for_outcome`, and
+`candidate_version_of` provenance under a separate **Unreviewed research
+signals (experimental/review queue)** section. Every item remains
+non-executable and carries node ids, available source URLs, and review states.
+It is not a sixth advisor bucket and cannot provide a numeric claim;
+`effective_claims.json` remains the sole numeric authority. The former top-model
+popularity snapshot and collector were removed because no architecture-safe
+runtime decision consumed them.
 
 ```text
 sources.yaml
@@ -274,6 +295,14 @@ benchmarks/*.json
 
 optimization_guidance.yaml + sources.yaml + receipt_assessments.json
   └─ generate_claim_catalog.py ─> effective_claims.json
+
+update-candidates.json + contributor-refresh.json + reviewed research assets
+  └─ knowledge_curator.py ─> knowledge_graph.json
+                            └> research_backlog.json (reconcile/check)
+
+knowledge_graph.json + effective_claims.json
+  └─ recommend_optimizations.py ─> five advice buckets
+                                   + separate unreviewed research signals
 
 VERSION + canonical registries + references/*.md + generated assessments/claims
   └─ generate_site_data.py ─> site/data.js
