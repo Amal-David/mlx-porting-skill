@@ -1,5 +1,52 @@
 # Changelog
 
+## 0.5.0 — 2026-07-11
+
+- Added an executable dense-decoder porting chain: `capture_oracle.py` records
+  a pinned Torch oracle; `scaffold_port.py` generates a fail-closed eager MLX
+  package; `convert_checkpoint.py` applies explicit schema-2 weight maps;
+  `capture_mlx.py` records matching MLX tensors; and `run_parity.py` runs both
+  captures plus the ordered first-divergence parity ladder in one command.
+- Hardened the dense-decoder scaffold for inactive sliding-window metadata and
+  independently detected Q/K/V/O projection biases without weakening its
+  fail-closed architecture boundary.
+- Added the first checked-in real end-to-end port packet for pinned
+  Qwen2.5-0.5B-Instruct: 290 tensors converted, all 29 parity rungs passed,
+  exact eight-token greedy output matched Torch, standalone MLX, and offline
+  MLX-LM, and no model weights or NPZ captures were committed.
+- Added the repository-owned `attested-mlx-port-wall-time` runner lane with
+  per-run challenges, checked-in runner and dependency evidence, exact-output
+  quality recomputation, and validator-derived execution attestation. The 13
+  receipts now classify as 11 `performance_observation`, 1 `promotion_ready`,
+  and 1 `rejected`.
+- Promoted exactly one local claim, `bf16-weight-cast`. Its catalogued range
+  `1.0x-1.8122x` is receipt-bound and available only for the canonical fingerprint
+  of the attested Qwen load-plus-six-token workload; it is not a portable or
+  pure-decode guarantee. The effective catalogue contains 10 claims: 1 local
+  promotion and 9 withheld records.
+- Wired `knowledge_graph.json` into the advisor as a bounded, fail-closed,
+  separate unreviewed-research-signals queue; reconciled
+  `research_backlog.json` deterministically with a drift check; and removed the
+  unused top-model popularity collector. The reviewed graph contains 697 nodes
+  and 499 edges.
+- Expanded the canonical corpus to 66 techniques and 28 guidance methods while
+  preserving 17 architecture routes, 350 sources, and 4 planning stacks. The
+  tool directory now contains 29 inspectable Python scripts.
+- Added asset-consumer coverage and raised the offline suite to 423 tests,
+  including dense-decoder scaffold, conversion, capture, parity, attestation,
+  catalogue, backlog, security, and generated-artifact contracts.
+- Clarified the capability boundary: dense-decoder Transformers are tooled end
+  to end and proven by one real model port; the other 16 families have tooled
+  intake, routing, planning, generic validation, and evidence gates, but their
+  architecture-module implementations remain runbook-guided. Domain quality
+  evaluators beyond exact-output parity remain future work.
+- Documented the deterministic backlog reconcile/check step, regenerated site
+  data from canonical inputs, and refreshed public documentation, adapters,
+  validation truth, and the final manifest for version 0.5.0.
+- Preserved the earlier DNS-rebinding, benchmark-ratio integrity,
+  evidence-index sanitization, crash-safe installation, retired-surface,
+  timeout, and generated-drift guards.
+
 ## 0.4.0 — 2026-07-10
 
 - Retired the public model-advisor Worker and removed the runtime/deployment

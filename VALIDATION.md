@@ -1,8 +1,8 @@
 # Validation status
 
-**Release snapshot:** 0.4.0
+**Release snapshot:** 0.5.0
 
-**Review date:** 2026-07-10
+**Review date:** 2026-07-11
 
 This file separates repository-level proof from target-model proof. Offline
 tests can demonstrate deterministic routing, safety controls, evidence
@@ -16,13 +16,18 @@ optimization improves a particular Mac workload.
 |---|---:|---|
 | Architecture-family routes | 17 | `mlx-model-porting/assets/architectures.yaml` |
 | Evidence sources | 350 | `mlx-model-porting/assets/sources.yaml` |
-| Technique records | 65 | `mlx-model-porting/assets/techniques.yaml` |
-| Optimization-guidance methods | 27 | `mlx-model-porting/assets/optimization_guidance.yaml` |
+| Technique records | 66 | `mlx-model-porting/assets/techniques.yaml` |
+| Optimization-guidance methods | 28 | `mlx-model-porting/assets/optimization_guidance.yaml` |
 | Optimization stacks | 4 | `mlx-model-porting/assets/optimization_stacks.yaml` |
-| Benchmark receipts | 11 | `mlx-model-porting/assets/benchmarks/receipt_assessments.json` |
-| Performance observations | 10 | generated benchmark assessment |
-| Promotion-ready receipts | 0 | generated benchmark assessment |
+| Python scripts | 29 | `mlx-model-porting/scripts/*.py` |
+| Benchmark receipts | 13 | `mlx-model-porting/assets/benchmarks/receipt_assessments.json` |
+| Performance observations | 11 | generated benchmark assessment |
+| Promotion-ready receipts | 1 | generated benchmark assessment |
 | Rejected receipts | 1 | generated benchmark assessment |
+| Effective claims | 10 | `mlx-model-porting/assets/effective_claims.json` |
+| Promoted / withheld claims | 1 / 9 | generated effective-claim catalogue |
+| Knowledge-graph nodes / edges | 697 / 499 | `mlx-model-porting/assets/knowledge_graph.json` |
+| Offline tests | 423 | `python3 -m unittest discover -s tests` |
 
 The 17 routes are synthetic golden scenarios. They prove that every declared
 family has a fixture exercising route selection, expected weight coverage, a
@@ -36,6 +41,7 @@ represent 17 completed real-model ports.
 | Weak, unknown, and tied architecture signals stop for manual review; compatible hybrid routes remain explicit. | `tests/test_scenarios.py`, `tests/test_routing_contract.py` |
 | Intake is static by default, remote code is not executed, hostile model artifacts are read through bounded no-follow paths, partial shards block recommendations, local paths are portable by default, and truncation blocks clean conclusions. | `tests/test_model_intake_hardening.py`, `tests/test_tooling.py`, `tests/test_hardening_filesystem_contract.py`, `tests/test_hardening_project_inspection_contract.py` |
 | Weight-map transforms are explicit and tensor comparison fails on NaN/Inf, shape drift, tolerance failure, or cosine drift. | `tests/test_tooling.py`, `tests/test_scenarios.py` |
+| Dense-decoder source capture, fail-closed scaffold generation, schema-2 conversion, MLX capture, and first-divergence parity have dependency-free contracts plus gated Torch/MLX execution tests. | `tests/test_capture_oracle_contract.py`, `tests/test_scaffold_port_contract.py`, `tests/test_convert_checkpoint_contract.py`, `tests/test_parity_runner_contract.py` |
 | Recommendations match controlled family, capability, workload, objective, and version identifiers exactly. | `tests/test_recommendation_contract.py` |
 | The five advisor buckets are enforced, experimental approaches require opt-in, blocked intake forbids execution, and rejected methods stay rejected. | `tests/test_recommendation_contract.py`, `tests/test_tooling.py` |
 | Compound numbers require compatible measured-together coverage and unique evidence lineage; regressions and duplicate composition are not promoted. | `tests/test_recommendation_contract.py`, `tests/test_claim_catalog_contract.py` |
@@ -54,8 +60,8 @@ current receipt set as:
 
 | Classification | Count | Meaning |
 |---|---:|---|
-| `performance_observation` | 10 | A measurement is preserved, but one or more promotion gates are missing or failed. It is not a reusable speed or memory claim. |
-| `promotion_ready` | 0 | No local receipt currently authorizes a promoted numeric claim. |
+| `performance_observation` | 11 | A measurement is preserved, but one or more promotion gates are missing or failed. It is not a reusable speed or memory claim. |
+| `promotion_ready` | 1 | The attested Qwen BF16 receipt passes every current gate for its exact fingerprint. |
 | `rejected` | 1 | The measured configuration regressed or otherwise fails the claim boundary. |
 
 The checked-in observations include older Apple M4 Pro runs, but they use
@@ -158,8 +164,9 @@ the only controlled built-in task metric. Lossy or task-specific candidates
 remain observations until an equally controlled evaluator is implemented.
 
 The generated `mlx-model-porting/assets/effective_claims.json` is the sole
-numeric authority consumed by the advisor. It keeps current local observations
-withheld and currently withholds every source-reported range because the exact
+numeric authority consumed by the advisor. It promotes one fingerprint-scoped
+local claim, keeps the other local observations withheld, and withholds every
+source-reported range because the exact
 source experiment is not representable by the existing `TargetProfile` schema.
 Source evidence can justify trying a method, but only a locally reproduced
 receipt set can promote its number. The catalog never treats a multiplied stack
@@ -178,21 +185,27 @@ enough.
 
 ## What still requires real Apple Silicon execution
 
-- Source-oracle parity for an actual PyTorch/Hugging Face model and its MLX
-  implementation.
-- Complete checkpoint conversion for any of the 17 routed architecture
-  families.
-- Task-specific language, vision, audio, speech, diffusion, streaming, or
-  scientific quality evaluation.
+- The checked-in Qwen2.5-0.5B-Instruct packet proves one real model in one
+  family: `dense-decoder-transformer`. It passed 29 source-to-MLX parity rungs,
+  exact greedy-token comparison, and an independent offline MLX-LM cross-check.
+- That run does not prove another dense-decoder config or any of the other 16
+  routed families. Each still needs its own source oracle, architecture-module
+  implementation, complete checkpoint conversion, and parity packet.
+- Exact-output parity is the only controlled built-in task quality gate. Domain
+  evaluation remains required for language quality, vision, audio, speech,
+  diffusion, streaming, scientific tasks, and any lossy change.
+- One `bf16-weight-cast` claim is promoted only for the complete attested Qwen
+  load-plus-six-token fingerprint. Other models, workloads, hardware/software
+  profiles, metrics, and optimization claims still require compatible real
+  Apple Silicon receipts.
 - Target-chip latency, throughput, memory, energy, compilation, and thermal
   measurements.
-- Baseline-compatible schema-2 receipts for any local numeric promotion.
 - End-to-end validation of a measured-together optimization stack.
 - License and publication review for a particular converted checkpoint.
 
 Static source-format inspection of ONNX, GGUF, Flax/Orbax, TensorFlow/Keras,
 Core ML, or safetensors artifacts is metadata triage only. The repository does
-not include a generic converter from those formats to executable MLX graphs.
+not lower arbitrary graphs from those formats into executable MLX.
 
 ## What requires network access
 
@@ -213,6 +226,7 @@ Run from the repository root:
 python3 -m unittest discover -s tests -v
 python3 mlx-model-porting/scripts/audit_skill.py --strict mlx-model-porting
 python3 mlx-model-porting/scripts/validate_sources.py mlx-model-porting
+python3 mlx-model-porting/scripts/knowledge_curator.py --check-backlog
 python3 mlx-model-porting/scripts/validate_benchmarks.py check
 python3 mlx-model-porting/scripts/generate_claim_catalog.py --check
 python3 mlx-model-porting/scripts/generate_evidence_index.py --check

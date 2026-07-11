@@ -1,8 +1,8 @@
 # Research report: an architecture-aware MLX porting standard
 
-**Review date:** 2026-07-10
+**Review date:** 2026-07-11
 
-**Artifact version:** 0.4.0
+**Artifact version:** 0.5.0
 
 ## Executive finding
 
@@ -23,12 +23,14 @@ pieces into one conservative flow:
 
 `static intake → architecture route → source oracle → eager MLX graph → deterministic weight map → parity → profiling → evidence-gated advice → packaging`
 
-This repository provides that standard. It is not a universal checkpoint
-converter and does not claim that every indexed architecture or technique has
-been reproduced. Its value is the explicit routing, evidence, validation, and
-rollback contract an agent can apply to new work.
+This repository provides that standard. Dense-decoder Transformers now have an
+executable end-to-end path proven on one real checkpoint. The other 16 routed
+families retain executable intake, planning, generic validation, and evidence
+gates, with architecture-module implementation supplied by their runbooks
+rather than a generator. No indexed architecture or technique is treated as
+locally reproduced without its own evidence.
 
-## Review findings resolved in 0.4.0
+## Foundation reconciled in 0.4.0
 
 The full-project review found that the previous implementation mixed useful
 research with several unsafe or misleading boundaries:
@@ -55,23 +57,36 @@ reconciles nightly evidence without silently promoting research. The remaining
 limitations are listed at the end of this report; they are proof work, not
 missing prose.
 
+Version 0.5.0 adds the dense-decoder execution chain and the first checked-in
+real port packet, introduces one narrow attested benchmark adapter and one
+fingerprint-scoped promoted claim, and wires the reviewed knowledge graph into
+the advisor as a separate non-executable research queue. The deterministically
+reconciled backlog and drift check preserve the T-7007 knowledge-layer state:
+697 nodes, 499 edges, bounded advisor consumption, and no numeric authority
+outside `effective_claims.json`.
+
 ## Current corpus and proof boundary
 
-The 0.4.0 snapshot contains:
+The 0.5.0 snapshot contains:
 
 | Surface | Count | Boundary |
 |---|---:|---|
-| Architecture routes | 17 | Synthetic golden route and guard scenarios, not completed real-model ports. |
+| Architecture routes | 17 | Synthetic golden route and guard scenarios; one dense-decoder model has a completed real port. |
 | Evidence sources | 350 | Every source has review depth; 23 carry classified support scope and claim types, while 327 remain intentionally unclassified. |
-| Technique records | 65 | Status describes evidence maturity, not a portable performance guarantee. |
-| Guidance methods | 27 | Target matching and evidence gates determine whether advice can be surfaced. |
+| Technique records | 66 | Status describes evidence maturity, not a portable performance guarantee. |
+| Guidance methods | 28 | Target matching and evidence gates determine whether advice can be surfaced. |
 | Optimization stacks | 4 | Planning structures; no positive compound number is implied. |
-| Benchmark receipts | 11 | 10 performance observations, 0 promotion-ready, 1 rejected. |
+| Python scripts | 29 | Inspectable intake, execution, validation, evidence, and packaging tools. |
+| Benchmark receipts | 13 | 11 performance observations, 1 promotion-ready, 1 rejected. |
+| Effective claims | 10 | One fingerprint-scoped local promotion; nine withheld. |
+| Knowledge graph | 697 nodes / 499 edges | Review-only research memory with a reconciled backlog and bounded advisor projection. |
+| Offline tests | 423 | Contract, security, determinism, portability, generated-drift, and gated execution coverage. |
 
-No local speed or memory claim is currently promotion-ready. Historical
-measurements remain useful experimental observations, but missing or failed
-lineage, workload, runner, quality, stability, rollback, compatibility, or
-noise gates prevent promotion.
+One `bf16-weight-cast` claim is promotion-ready only for the complete canonical
+fingerprint of the attested Qwen load-plus-six-token workload. Eleven other
+measurements remain observations, and missing or failed lineage, workload,
+runner, quality, stability, rollback, compatibility, or noise gates continue to
+prevent promotion.
 
 ## Execution architecture
 
@@ -101,26 +116,30 @@ checkpoint for that family has been ported.
 
 ### 3. Source oracle before implementation
 
-The source implementation is frozen into reproducible inputs, preprocessing,
+`capture_oracle.py` freezes the source implementation into reproducible inputs,
 intermediate captures, state/cache behavior, and outputs. This is the central
 trust boundary: most port failures come from layout, masks, positions,
 normalization, tied weights, preprocessing, cache semantics, codec timing, or
 streaming state rather than from the matrix multiplication itself.
 
-The first MLX path stays eager and minimal. Quantization, compilation, custom
-kernels, batching, caching, and speculative execution wait until the smallest
-useful graph passes parity.
+For dense decoders, `scaffold_port.py` re-inspects the artifact and generates a
+minimal eager MLX package. Other families still require their runbook-defined
+module implementation. Quantization, compilation, custom kernels, batching,
+caching, and speculative execution wait until the smallest useful graph passes
+parity.
 
 ### 4. Deterministic weight conversion and parity ladder
 
-Weight conversion is an authored manifest of key mapping and shape transforms.
-Every rename, transpose, permutation, reshape, split, merge, squeeze, and tie is
-reviewable; permissive loading cannot hide missing weights.
+`convert_checkpoint.py` drafts and applies schema-2 maps of key and shape
+transforms. Every rename, transpose, permutation, reshape, split, merge,
+squeeze, and tie is reviewable; permissive loading cannot hide missing weights.
 
-Parity proceeds from configuration and preprocessing through weights,
-primitives, blocks, intermediate tensors, end-to-end output, task quality,
-cache/state behavior, boundaries, long context, streaming, and batching. A
-generic tensor tolerance is necessary but not sufficient for model quality.
+`run_parity.py` invokes source and `capture_mlx.py` capture in one command and
+stops at the first input, embedding, layer, final-norm, logit, or exact-token
+divergence. The Qwen2.5-0.5B-Instruct packet passed all 29 rungs and matched
+eight greedy token IDs across Torch, standalone MLX, and offline MLX-LM. This
+proves that model and family path only; a tensor tolerance or exact token match
+is not a general domain-quality evaluation.
 
 ### 5. Target-aware advisor
 
@@ -163,10 +182,13 @@ components, and freezes the quality contract before execution. Only wall time
 measured by the parent harness counts, never a value printed by the child
 command, and every measured run must recreate the candidate artifact used by
 the exact-output quality gate.
-Neither lane is currently promotion-capable: the generic runner can ignore its
-arguments, while the MLX-LM lane does not yet attest imported package bytes and
-per-run generated output. The explicit `execution_attested` gate keeps both as
-observations until a reviewed built-in adapter closes that boundary.
+Neither generic lane is promotion-capable: the external runner can ignore its
+arguments, while the MLX-LM lane does not attest imported package bytes and
+per-run generated output. The repository-owned
+`attested-mlx-port-wall-time` adapter is the narrow exception for the Qwen
+worked-port workload. Its parent challenge, reviewed runner, retained loaded
+dependencies, model/workload identity, and per-run output are independently
+re-hashed before `execution_attested=true`; other runners remain observations.
 
 `generate_claim_catalog.py` combines the canonical guidance, source evidence,
 and generated receipt assessments into `assets/effective_claims.json`. The
@@ -378,15 +400,17 @@ the published documentation and offline file view share the same corpus counts.
 
 ## What remains deliberately unresolved
 
-- No generic arbitrary-model converter is shipped.
-- Synthetic route coverage is not end-to-end checkpoint support.
-- No local numeric receipt is promotion-ready in the 0.4.0 snapshot.
+- No arbitrary-model architecture generator is shipped.
+- Synthetic route coverage is not end-to-end checkpoint support; only one
+  dense-decoder checkpoint has completed the full executable chain.
+- The one promoted claim is scoped to its complete attested Qwen fingerprint;
+  it does not authorize a portable model, workload, or metric claim.
 - Source-reported performance remains constrained to the cited revision,
   hardware, model, inputs, workload, and metric.
 - MLX techniques inferred from CUDA or papers remain experimental until a
   reproducible MLX path passes parity and target-workload measurement.
-- Real audio, vision, diffusion, scientific, long-context, and streaming ports
-  need domain-specific quality suites beyond tensor parity.
+- Domain evaluations beyond exact output remain future work for language,
+  audio, vision, diffusion, scientific, long-context, and streaming ports.
 
 The next evidence milestone is not a larger unqualified number. It is a small
 set of real, source-pinned ports with complete source oracles, deterministic

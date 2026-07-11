@@ -42,9 +42,9 @@
     <section class="hero" aria-labelledby="hero-title">
       <div class="hero-shell">
         <div class="hero-copy">
-          <div class="status-kicker"><span class="status-dot" aria-hidden="true"></span>Executable standard · v<span data-value="version">0.4.0</span></div>
+          <div class="status-kicker"><span class="status-dot" aria-hidden="true"></span>Executable standard · v<span data-value="version">0.5.0</span></div>
           <h1 id="hero-title">Port models to MLX with <em>proof at every step.</em></h1>
-          <p class="hero-lead">Start with a PyTorch module, model directory, checkpoint, or existing MLX project. Leave with an architecture route, deterministic weight map, parity ladder, benchmark receipts, and an honest publication boundary.</p>
+          <p class="hero-lead">Dense-decoder Transformers can run the full source-capture, scaffold, schema-2 conversion, and parity chain. Other families leave with an architecture route, implementation runbook, validation plan, and honest evidence boundary.</p>
           <div class="hero-actions">
             <a class="button primary" href="./docs/index.html#quick-start">Start a port →</a>
             <a class="button" href="https://github.com/Amal-David/mlx-porting-skill">Inspect the repository</a>
@@ -72,8 +72,8 @@
         <div class="hero-stats" aria-label="Current corpus summary">
           <div class="stat"><strong data-value="architectures.total">17</strong><span>architecture families with golden routing scenarios</span></div>
           <div class="stat"><strong data-value="sources.total">350</strong><span>catalogued live evidence sources with recorded review depth</span></div>
-          <div class="stat"><strong data-value="techniques.total">65</strong><span>techniques separated by support status</span></div>
-          <div class="stat"><strong data-value="benchmarks.promotion_ready">0</strong><span>promotion-ready local speed claims after every gate</span></div>
+          <div class="stat"><strong data-value="techniques.total">66</strong><span>techniques separated by support status</span></div>
+          <div class="stat"><strong data-value="benchmarks.promotion_ready">1</strong><span>promotion-ready local speed claims after every gate</span></div>
         </div>
       </div>
     </section>
@@ -128,7 +128,7 @@
         <div class="section-heading">
           <span class="section-kicker">Architecture-specific routes</span>
           <h2>Different graphs deserve different runbooks.</h2>
-          <p>The registry covers dense and MoE Transformers, vision-language and audio-language systems, diffusion and flow, speech stacks, state-space hybrids, time series, graph models, codecs, vocoders, and CV backbones. Coverage means the routing and guard behavior is tested; it does not mean every checkpoint has been ported end to end.</p>
+          <p>The registry covers dense and MoE Transformers, vision-language and audio-language systems, diffusion and flow, speech stacks, state-space hybrids, time series, graph models, codecs, vocoders, and CV backbones. Dense decoders are the only generated architecture path and are proven by one real Qwen port. The other 16 families have tested routing and guards, not generated modules or completed checkpoint support.</p>
         </div>
         <div class="family-grid" id="family-grid" aria-live="polite">
           <p class="generated-fallback">The complete family list is available in the repository’s <a href="https://github.com/Amal-David/mlx-porting-skill/blob/main/mlx-model-porting/assets/architectures.yaml">architecture registry</a>. Interactive route cards require the local generated data file.</p>
@@ -146,8 +146,8 @@
           </div>
           <div class="limitation-box">
             <h3>Current local benchmark status</h3>
-            <p><strong data-value="benchmarks.total">13</strong> receipts are retained: <strong data-value="benchmarks.by_classification.performance_observation">12</strong> performance observations, <strong data-value="benchmarks.by_classification.rejected">1</strong> rejected configuration, and <strong data-value="benchmarks.promotion_ready">0</strong> promotion-ready local speed claims.</p>
-            <p>The effective catalog withholds <strong data-value="effective_claims.by_state.withheld">9</strong> of <strong data-value="effective_claims.total">9</strong> numeric records. No source-reported range is currently profile-eligible.</p>
+            <p><strong data-value="benchmarks.total">13</strong> receipts are retained: <strong data-value="benchmarks.by_classification.performance_observation">11</strong> performance observations, <strong data-value="benchmarks.by_classification.rejected">1</strong> rejected configuration, and <strong data-value="benchmarks.promotion_ready">1</strong> promotion-ready local speed claim.</p>
+            <p>The effective catalog withholds <strong data-value="effective_claims.by_state.withheld">9</strong> of <strong data-value="effective_claims.total">10</strong> numeric records. One fingerprint-scoped local reproduction is promoted; no source-reported range is currently profile-eligible.</p>
           </div>
         </div>
         <div class="evidence-ledger" aria-label="Evidence state definitions">
@@ -170,10 +170,10 @@
           </div>
           <div class="limitation-box">
             <ul>
-              <li>Golden scenarios prove routing, source-key coverage, seeded parity-bug detection, and recommendation policy—not real checkpoint support for every family. Broader tooling tests validate weight-map behavior.</li>
+              <li>One Qwen2.5 dense-decoder port passed 29 parity rungs and exact greedy-token comparison. Golden scenarios prove routing, source-key coverage, seeded parity-bug detection, and recommendation policy for all families—not real checkpoint support for the other 16.</li>
               <li>Static format inspection does not convert ONNX, GGUF, Flax/Orbax, TensorFlow/Keras, or Core ML graphs into executable MLX.</li>
               <li>Source-reported speed ranges are not portable guarantees across chips, versions, shapes, concurrency, precision, or quality constraints.</li>
-              <li>Apple Silicon execution, external research agents, live links, and upstream pin drift remain separate hardware, live-execution, and network validation surfaces.</li>
+              <li>Exact output is the only controlled built-in task metric. Domain evaluation, other-model Apple Silicon execution, external research agents, live links, and upstream pin drift remain separate validation surfaces.</li>
             </ul>
           </div>
         </div>

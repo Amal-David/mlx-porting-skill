@@ -157,8 +157,10 @@ receipt must identify:
 - independent execution attestation for the exact runner/dependency bytes and
   proof that the declared model/workload produced each measured output.
 
-No current runner lane passes that final gate, so current receipts cannot
-promote a method or stack number even when their other measurement gates pass.
+The generic external-command and legacy MLX-LM lanes do not pass that final
+gate. The narrow `attested-mlx-port-wall-time` lane may promote only the exact
+reviewed model/workload method measured by its complete fingerprint; it does
+not promote a stack or authorize another runner.
 
 Benchmark receipts live under `assets/benchmarks/`. Generate and validate their
 assessments with `scripts/validate_benchmarks.py`; never hand-edit the generated

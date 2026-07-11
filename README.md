@@ -1,16 +1,19 @@
 # MLX model porting, inspection, and evidence-gated optimization
 
-`mlx-model-porting` is a portable Agent Skill for guiding an unfamiliar
-PyTorch or Hugging Face model into a correct MLX implementation, or for
-inspecting an existing MLX project before improving it. It provides static
-intake, architecture routing, source-oracle and weight-map guidance, parity
-gates, profiling tools, and conservative optimization advice.
+`mlx-model-porting` is a portable Agent Skill for taking an unfamiliar PyTorch
+or Hugging Face model through static intake, architecture routing, source
+capture, explicit weight conversion, staged MLX parity, profiling, and
+evidence-gated optimization. It can also inspect an existing MLX project before
+improving it.
 
-This repository is an engineering workflow, **not a generic converter that can
-turn any checkpoint into a working MLX model**. The 17 architecture routes are
-covered by synthetic golden scenarios; they are routing and guard fixtures, not
-17 completed real-model ports. One pinned Qwen2.5-0.5B-Instruct worked example
-now exercises the dense-decoder chain on real weights.
+This repository is an engineering workflow, **not an arbitrary-checkpoint
+conversion system**. Its `dense-decoder-transformer` route is tooled end to end
+and has been proven on one real model: pinned Qwen2.5-0.5B-Instruct. The other
+16 architecture families have executable intake, routing, planning, generic
+weight/parity validation, and evidence gates, but their architecture-module
+implementation remains runbook-guided. All 17 routes have synthetic golden
+scenarios; those fixtures are not 17 completed real-model ports. Controlled
+domain evaluators beyond exact-output parity remain future work.
 
 The public runbook is available at
 [mlx-porter.pages.dev](https://mlx-porter.pages.dev/), and its offline source is
@@ -27,15 +30,29 @@ in [`site/`](site/).
 | [`mlx-model-porting/examples/`](mlx-model-porting/examples/) | Porting patterns and no-weights worked examples. |
 | [`tests/`](tests/) | Synthetic scenarios and contract, security, determinism, and portability tests. |
 
-Current 0.4.0 corpus snapshot:
+Current 0.5.0 corpus snapshot:
 
 - 17 architecture-family routes with synthetic golden coverage;
 - 350 evidence sources with explicit review depth; 23 currently carry classified
   support scope and claim types, while 327 remain intentionally unclassified;
-- 65 technique records, 27 optimization-guidance methods, and 4 stack
+- 66 technique records, 28 optimization-guidance methods, and 4 stack
   definitions;
-- 13 checked-in benchmark receipts: 12 `performance_observation`, 0
-  `promotion_ready`, and 1 `rejected`.
+- 29 inspectable Python scripts and 423 offline tests;
+- a 697-node, 499-edge research graph plus a deterministically reconciled
+  backlog;
+- 13 checked-in benchmark receipts: 11 `performance_observation`, 1
+  `promotion_ready`, and 1 `rejected`;
+- 10 effective claims: 1 fingerprint-scoped local promotion and 9 withheld.
+
+## Capability boundary
+
+The tooled path is deliberately narrower than the routing catalogue:
+
+| Scope | What is executable now | What remains runbook-guided or future work |
+|---|---|---|
+| `dense-decoder-transformer` | Static inspection, Torch oracle capture, eager MLX scaffold generation, schema-2 weight-map conversion, MLX capture, first-divergence parity, benchmarking, and claim gating. | Additional configs still fail closed until their semantics are implemented; only one real checkpoint has completed the full path. |
+| Other 16 families | Static inspection, family/hybrid routing, port planning, explicit weight-map validation, generic tensor comparison, benchmarking, and evidence/claim gates. | Architecture-specific MLX module implementation and model-specific capture wiring are described by the runbooks but are not generated. |
+| Quality evaluation | Exact tensor/ID comparison and controlled exact-output benchmark parity. | Domain evaluators for language quality, vision, audio, speech, diffusion, streaming, scientific tasks, and lossy changes. |
 
 ## How the workflow fits together
 
@@ -46,11 +63,15 @@ Current 0.4.0 corpus snapshot:
 2. **Route to a family runbook.** Confidence and ambiguity gates can stop a
    weak route; hybrid models can require more than one runbook.
 3. **Build a source oracle and the smallest eager MLX graph.** Freeze fixtures
-   and intermediate tensors before changing performance behavior.
+   and intermediate tensors before changing performance behavior. Dense
+   decoders can use the checked-in capture and scaffold tools; other families
+   follow their runbooks.
 4. **Convert weights deterministically.** Every rename, transpose, reshape,
    split, merge, and tie belongs in an inspectable weight map.
-5. **Pass staged parity.** Compare weights, blocks, state/cache behavior,
-   outputs, and task-specific quality before optimization.
+5. **Pass staged parity.** The dense-decoder runner captures both sides and
+   stops at the first input, embedding, layer, norm, logit, or exact-token
+   divergence. Other families use the generic validation primitives until a
+   family-specific runner exists.
 6. **Profile, then advise.** Recommendations match controlled family,
    capability, workload, objective, and software identifiers exactly. A local
    numeric promotion additionally requires the exact receipt-derived experiment
@@ -154,6 +175,32 @@ Inspection reports use portable basename-only local references by default.
 Pass `--include-local-paths` only when an absolute path is deliberately needed
 for local debugging; do not publish that form.
 
+### Dense-decoder execution toolchain
+
+For an unblocked `dense-decoder-transformer` inspection, the executable chain
+runs in this order:
+
+1. `capture_oracle.py` loads only a pinned local Hugging Face model with remote
+   code disabled and records deterministic inputs, embeddings, every decoder
+   layer, final norm, logits, and greedy token IDs in a bounded NPZ plus a
+   content-addressed manifest.
+2. `scaffold_port.py` re-inspects the same artifact and generates the minimal
+   eager MLX package. It supports only declared dense-decoder semantics,
+   including inactive sliding-window metadata and independently detected
+   Q/K/V/O projection biases; unsupported or ambiguous config fails closed.
+3. `convert_checkpoint.py` drafts or applies a complete `WEIGHT_MAP` schema 2,
+   rejects unresolved coverage and shape drift, and writes deterministic
+   safetensors for the generated package.
+4. `capture_mlx.py` validates the scaffold identity, executes the user-owned MLX
+   package, and emits source-compatible tensors and a bounded manifest.
+5. `run_parity.py` is the one-command parity flow after scaffolding and
+   conversion. It invokes source and MLX capture, compares the ordered ladder,
+   and stops at the first input, embedding, layer, final-norm, logit, or exact
+   generated-ID divergence.
+6. `_capture_common.py` is the shared non-CLI contract for bounded inputs,
+   manifests, tensor inventories, and strict artifact writing used by all three
+   capture/parity commands.
+
 After inspection pins the local source artifacts, capture the executable source
 oracle before implementing or optimizing the MLX graph. Use token IDs when the
 fixture should not depend on tokenizer behavior:
@@ -169,6 +216,48 @@ The command stays offline, refuses Hugging Face remote code, and writes
 `source-oracle.manifest.json` beside the NPZ. The manifest binds config and
 weight digests, capture inputs, library versions, and every tensor's shape,
 dtype, and raw-byte SHA-256.
+
+Generate the dense-decoder package, resolve and validate the draft map, then
+convert the weights:
+
+```bash
+python3 mlx-model-porting/scripts/scaffold_port.py inspection.json \
+  --artifact-root MODEL \
+  --output mlx_port
+
+python3 mlx-model-porting/scripts/convert_checkpoint.py \
+  --source inspection.json \
+  --scaffold-manifest mlx_port/scaffold-manifest.json \
+  --emit-draft-map WEIGHT_MAP.draft.json
+
+python3 mlx-model-porting/scripts/validate_weight_map.py \
+  --source inspection.json \
+  --target mlx_port/scaffold-manifest.json \
+  --mapping WEIGHT_MAP.json \
+  --output weight-map-report.json
+
+python3 mlx-model-porting/scripts/convert_checkpoint.py \
+  --source MODEL \
+  --mapping WEIGHT_MAP.json \
+  --output converted
+```
+
+The draft is not executable authority: review it, set `draft` to `false`, and
+resolve every entry before conversion. Then run the source-to-MLX parity ladder
+in one command:
+
+```bash
+python3 mlx-model-porting/scripts/run_parity.py \
+  --source-model MODEL \
+  --package mlx_port \
+  --weights converted \
+  --token-ids 1 42 17 9 \
+  --generate-steps 4 \
+  --output parity-report.json
+```
+
+Choose model-specific tolerances and quality gates; never relax a default just
+to turn a first-divergence report green.
 
 For a local synthetic smoke path that does not download a model:
 
@@ -193,7 +282,8 @@ end-to-end checkpoint conversion.
 records a complete offline run over the pinned local Qwen2.5-0.5B-Instruct
 checkpoint. It includes the portable inspection and capture manifests, complete
 weight map, per-rung parity report, exact Torch/standalone-MLX/MLX-LM transcript,
-and schema-2 benchmark receipt pointers. Weights and NPZ tensors are excluded.
+and schema-2 benchmark receipt pointers. All 29 ordered parity rungs and the
+eight greedy token IDs matched. Weights and NPZ tensors are excluded.
 
 ## Start from an existing MLX project
 
@@ -251,15 +341,15 @@ python3 mlx-model-porting/scripts/recommend_optimizations.py inspection.json \
   --markdown OPTIMIZATIONS.md
 ```
 
-For a future `local-promotion` claim, project the profile from the full promoted
-fingerprint instead of copying its digest. This example deliberately copies the
-canonical objects without reconstructing or normalizing them:
+For the current `local-promotion` claim, project the profile from the full
+promoted fingerprint instead of copying its digest. This example deliberately
+copies the canonical objects without reconstructing or normalizing them:
 
 ```python
 import json
 
 catalog = json.load(open("mlx-model-porting/assets/effective_claims.json"))
-claim = next(row for row in catalog["claims"] if row["method_id"] == "METHOD_ID")
+claim = next(row for row in catalog["claims"] if row["method_id"] == "bf16-weight-cast")
 fingerprint = claim["experiment_fingerprint"]
 payload = fingerprint["payload"]
 target = payload["target"]
@@ -302,10 +392,14 @@ remain withheld observations: the existing `TargetProfile` cannot encode their
 complete benchmark scope closely enough to make them profile-eligible.
 Source-reported numbers are never advisor-visible until an equivalent local
 target-workload benchmark passes the promotion contract.
-Historical and newly generated local receipts remain performance observations
-because neither runner lane independently attests the executed dependency bytes
-and model/workload semantics. Exact argv and quality digests are necessary but
-not sufficient to promote a number.
+Eleven local receipts remain performance observations. The generic external
+command and legacy MLX-LM lanes do not independently attest the executed
+dependency bytes and model/workload semantics. The narrow repository-owned
+`attested-mlx-port-wall-time` adapter closes that boundary for its exact Qwen
+workload only. The resulting `bf16-weight-cast` catalogued range
+`1.0x-1.8122x` is receipt-bound and fingerprint-scoped to load plus six greedy
+tokens with evidence
+capture; it is not a portable guarantee or a pure-decode claim.
 Compound numbers are withheld unless compatible steps were validated together
 with unique evidence lineage; multiplying per-step ceilings is never a measured
 claim.
@@ -330,12 +424,13 @@ locally reproduced implementation reference.
 
 The benchmark truth is generated in
 [`BENCHMARK_REPORT.md`](mlx-model-porting/assets/BENCHMARK_REPORT.md). The current
-13-receipt set contains useful historical and worked-port measurements, but **zero local speed
-or memory claims are promotion-ready**. Do not describe individual ratios as
-reliable or portable wins.
+13-receipt set contains 11 observations, 1 promotion-ready receipt, and 1
+rejected receipt. Exactly one local claim is promoted; it remains bound to the
+complete catalogued fingerprint and must not be generalized to other models,
+workloads, environments, or metrics.
 
-Measurement validation has two controlled runner lanes. `mlx-lm-generate`
-retains its token-throughput observations. `external-command-wall-time` covers the other
+Measurement validation has two generic runner lanes. `mlx-lm-generate` retains
+its token-throughput observations. `external-command-wall-time` covers other
 architecture families with direct, no-shell argv: a digest-pinned Python runner
 at argv position 1, `models.target.id`, `models.target.revision`, checked-in
 workload inputs, and semantic `variant_config` must all be bound through an
@@ -350,7 +445,11 @@ must recreate the exact label-owned quality output; values printed by the model
 command are never accepted as metrics. This generic lane is observation-only:
 a digest does not prove that arbitrary runner code used its bound arguments.
 The MLX-LM lane is also observation-only until its imported package bytes and
-per-run model output are independently bound.
+per-run model output are independently bound. The separate
+`attested-mlx-port-wall-time` adapter is intentionally Qwen/workload-specific:
+it binds a fresh parent challenge, reviewed runner bytes, retained loaded
+dependencies, model/workload identity, and every output before the validator
+sets `execution_attested=true`.
 
 ## Release gates
 
@@ -360,6 +459,7 @@ Run these checks from the repository root:
 python3 -m unittest discover -s tests -v
 python3 mlx-model-porting/scripts/audit_skill.py --strict mlx-model-porting
 python3 mlx-model-porting/scripts/validate_sources.py mlx-model-porting
+python3 mlx-model-porting/scripts/knowledge_curator.py --check-backlog
 python3 mlx-model-porting/scripts/validate_benchmarks.py check
 python3 mlx-model-porting/scripts/generate_claim_catalog.py --check
 python3 mlx-model-porting/scripts/generate_evidence_index.py --check
@@ -386,6 +486,6 @@ recommendations.
 
 ## Versioning
 
-The 0.4.0 release snapshot is dated 2026-07-10. The package version is recorded
+The 0.5.0 release snapshot is dated 2026-07-11. The package version is recorded
 in [`VERSION`](VERSION) and the skill frontmatter; release changes are recorded
 in [`CHANGELOG.md`](CHANGELOG.md).

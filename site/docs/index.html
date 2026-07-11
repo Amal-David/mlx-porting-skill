@@ -79,9 +79,9 @@
 
       <article class="docs-article">
         <header class="docs-hero">
-          <p class="docs-breadcrumb">Documentation / executable porting standard / v<span data-value="version">0.4.0</span></p>
+          <p class="docs-breadcrumb">Documentation / executable porting standard / v<span data-value="version">0.5.0</span></p>
           <h1>Make the port <em>explain itself.</em></h1>
-          <p class="docs-lead">MLX Porter guides an agent or engineer through the evidence chain around a model port. It supplies routing, runbooks, static inspectors, validators, benchmark contracts, and publication gates. It does not contain a magic arbitrary-model converter.</p>
+          <p class="docs-lead">MLX Porter supplies an executable capture, scaffold, schema-2 conversion, and parity chain for dense-decoder Transformers, proven by one real Qwen2.5 port. The other 16 families have executable routing, planning, generic validation, and evidence gates, while architecture-module implementation remains runbook-guided.</p>
           <div class="docs-summary" aria-label="Generated documentation summary">
             <div><strong data-value="architectures.total">17</strong><span>declared routes with golden scenarios</span></div>
             <div><strong data-value="local_docs.runbooks">17</strong><span>architecture runbooks</span></div>
@@ -139,7 +139,7 @@ python3 mlx-model-porting/scripts/make_port_plan.py inspection.json \
             <div class="route-node"><strong>Parity ladder</strong><span>Tensor → block → output → state → task.</span></div>
             <div class="route-node"><strong>Profile → publish</strong><span>One change, quality gate, benchmark receipt, rollback.</span></div>
           </div>
-          <div class="callout"><strong>No generic conversion command</strong><p>The repository validates the method and evidence around a conversion. The agent or engineer writes the eager MLX implementation and deterministic mapping for the target architecture.</p></div>
+          <div class="callout"><strong>Tooled scope</strong><p>For an unblocked dense decoder, <span class="inline-code">capture_oracle.py</span>, <span class="inline-code">scaffold_port.py</span>, <span class="inline-code">convert_checkpoint.py</span>, <span class="inline-code">capture_mlx.py</span>, and <span class="inline-code">run_parity.py</span> implement the rail above. Other routed families still require the runbook-defined MLX module and model-specific capture wiring. Exact output is the only controlled built-in task metric.</p></div>
         </section>
 
         <section class="doc-section" id="routes" data-search="families runbook transformer moe vision language audio diffusion flow speech graph time series cv">
@@ -171,6 +171,10 @@ python3 mlx-model-porting/scripts/make_port_plan.py inspection.json \
           <span class="label">06 / oracle</span>
           <h2>Build a source oracle</h2>
           <p>Freeze a small, representative fixture before porting. Record source revision, preprocessing, tokenizer or processor, seed, train/eval state, dtype, device, generation settings, and cache/state behavior.</p>
+          <pre data-copy><code>python3 mlx-model-porting/scripts/capture_oracle.py /path/to/model \
+  --token-ids 1 42 17 9 \
+  --generate-steps 4 \
+  --output source-oracle.npz</code></pre>
           <ol>
             <li>Capture embeddings or earliest feature transforms.</li>
             <li>Capture one block at the first non-trivial mask, routing, recurrence, or multimodal boundary.</li>
@@ -184,7 +188,16 @@ python3 mlx-model-porting/scripts/make_port_plan.py inspection.json \
         <section class="doc-section" id="weights" data-search="weights map tensor rename transpose reshape split merge dtype coverage">
           <span class="label">07 / weights</span>
           <h2>Validate the weight map</h2>
-          <p>Author a mapping manifest that records each source key, target key, transform, expected shape, dtype decision, and reason for any intentionally unmapped value.</p>
+          <p>For a dense decoder, generate the eager package and draft the schema-2 map. Review the draft, resolve every entry, and set <span class="inline-code">draft</span> to false before validation and conversion.</p>
+          <pre data-copy><code>python3 mlx-model-porting/scripts/scaffold_port.py inspection.json \
+  --artifact-root /path/to/model \
+  --output mlx_port
+
+python3 mlx-model-porting/scripts/convert_checkpoint.py \
+  --source inspection.json \
+  --scaffold-manifest mlx_port/scaffold-manifest.json \
+  --emit-draft-map WEIGHT_MAP.draft.json</code></pre>
+          <p>The mapping records each source key, target key, transform, expected shape, dtype decision, and reason for any intentionally unmapped value.</p>
           <pre data-copy><code>python3 mlx-model-porting/scripts/validate_weight_map.py \
   --source source-manifest.json \
   --target target-manifest.json \
@@ -196,6 +209,15 @@ python3 mlx-model-porting/scripts/make_port_plan.py inspection.json \
         <section class="doc-section" id="parity" data-search="parity tensors npz atol rtol cosine output state task">
           <span class="label">08 / parity</span>
           <h2>Climb the parity ladder</h2>
+          <p>After conversion, one command captures both runtimes and stops at the first dense-decoder divergence:</p>
+          <pre data-copy><code>python3 mlx-model-porting/scripts/run_parity.py \
+  --source-model /path/to/model \
+  --package mlx_port \
+  --weights converted \
+  --token-ids 1 42 17 9 \
+  --generate-steps 4 \
+  --output parity-report.json</code></pre>
+          <p>Use the family-neutral comparator for additional captures and runbook-defined checkpoints:</p>
           <pre data-copy><code>python3 mlx-model-porting/scripts/compare_tensors.py \
   source.npz target.npz \
   --mapping mapping.json \
@@ -219,7 +241,7 @@ python3 mlx-model-porting/scripts/make_port_plan.py inspection.json \
         <section class="doc-section" id="optimize" data-search="optimization target profile consent compile quantization cache speculative kernel research experimental">
           <span class="label">09 / optimize</span>
           <h2>Optimization is a controlled experiment</h2>
-          <p>The recommender matches controlled family, capability, workload, software, and hardware identifiers. Raw guidance numbers are scrubbed; the generated effective-claim catalog is the only numeric authority. It currently withholds all <strong data-value="effective_claims.total">9</strong> numeric records. A future local promotion requires the full canonical <span class="inline-code">TargetProfile.experiment_fingerprint</span>, exact receipt-derived model, target, and workload descriptors, exact hardware and software, and a non-empty controlled workload set. A copied digest or generic profile cannot unlock a number.</p>
+          <p>The recommender matches controlled family, capability, workload, software, and hardware identifiers. Raw guidance numbers are scrubbed; the generated effective-claim catalog is the only numeric authority. It currently contains <strong data-value="effective_claims.total">10</strong> numeric records, with one fingerprint-scoped local promotion and all source-reported ranges withheld. Any local promotion requires the full canonical <span class="inline-code">TargetProfile.experiment_fingerprint</span>, exact receipt-derived model, target, and workload descriptors, exact hardware and software, and a non-empty controlled workload set. A copied digest or generic profile cannot unlock a number.</p>
           <pre data-copy><code>python3 mlx-model-porting/scripts/recommend_optimizations.py inspection.json \
   --target-profile target-profile.json \
   --objective peak-memory \
@@ -244,7 +266,7 @@ python3 mlx-model-porting/scripts/make_port_plan.py inspection.json \
           <span class="label">10 / measure</span>
           <h2>Benchmark receipts</h2>
           <p>A generic command benchmark can record bounded wall-time output and optional RSS. With <span class="inline-code">--receipt-spec</span>, the family-neutral <span class="inline-code">external-command-wall-time</span> adapter produces controlled observation evidence. Its exact argv template executes one digest-pinned Python runner at argv position 1 and binds <span class="inline-code">models.target.id</span>, <span class="inline-code">models.target.revision</span>, checked-in workload evidence, and semantic <span class="inline-code">variant_config</span>. The harness hashes the resolved interpreter and package metadata, sanitizes and binds the ambient environment, starts Python with <span class="inline-code">-I -B</span>, statically rejects symlink components, snapshots the quality contract before execution, and requires every measured run to recreate the declared output under <span class="inline-code">quality/outputs/&lt;label&gt;/</span>. Only parent-measured wall time counts; child stdout cannot attest performance.</p>
-          <div class="callout warning"><strong>Execution is not attested yet</strong><p>A digest-pinned script can still ignore its model/workload arguments, and the legacy MLX-LM lane does not bind imported package bytes or per-run model output. The explicit <span class="inline-code">execution_attested</span> gate is therefore false for both lanes; receipts remain observations until a reviewed built-in adapter closes this boundary.</p></div>
+          <div class="callout warning"><strong>Attestation is adapter-specific</strong><p>A digest-pinned generic script can ignore its model/workload arguments, and the legacy MLX-LM lane does not bind imported package bytes or per-run output; both remain observations. The narrow repository-owned <span class="inline-code">attested-mlx-port-wall-time</span> Qwen adapter binds a fresh parent challenge, reviewed runner and loaded dependency bytes, model/workload identity, and every output before the validator sets <span class="inline-code">execution_attested=true</span>. It does not attest another model or runner.</p></div>
           <pre data-copy><code>python3 mlx-model-porting/scripts/benchmark_command.py \
   --warmup 1 --runs 5 --timeout 600 \
   --output benchmark.json \
@@ -294,7 +316,7 @@ python3 mlx-model-porting/scripts/make_port_plan.py inspection.json \
   "comparison_role": "candidate",
   "rollback_condition": "Rollback on quality failure or a gain within noise."
 }</code></pre>
-          <h3>Schema-2 candidate receipt shape (observation-only today)</h3>
+          <h3>Legacy MLX-LM schema-2 candidate (observation-only)</h3>
           <pre data-copy><code>python3 mlx-model-porting/scripts/benchmark_generation.py \
   --label candidate \
   --runs 5 --warmup 1 \
@@ -345,7 +367,7 @@ python3 mlx-model-porting/scripts/validate_benchmarks.py check \
               </tbody>
             </table>
           </div>
-          <div class="callout proof"><strong>Current committed receipts</strong><p><strong data-value="benchmarks.total">13</strong> total: <strong data-value="benchmarks.by_classification.performance_observation">12</strong> observations, <strong data-value="benchmarks.promotion_ready">0</strong> promotion-ready, and <strong data-value="benchmarks.by_classification.rejected">1</strong> rejected. No existing local number is presented here as a validated speedup.</p></div>
+          <div class="callout proof"><strong>Current committed receipts</strong><p><strong data-value="benchmarks.total">13</strong> total: <strong data-value="benchmarks.by_classification.performance_observation">11</strong> observations, <strong data-value="benchmarks.promotion_ready">1</strong> promotion-ready, and <strong data-value="benchmarks.by_classification.rejected">1</strong> rejected. The promoted local range remains bound to its canonical target, quality contract, and attested adapter workload.</p></div>
         </section>
 
         <section class="doc-section" id="validate" data-search="validate audit strict manifest tests offline urls CI">
@@ -354,6 +376,7 @@ python3 mlx-model-porting/scripts/validate_benchmarks.py check \
           <p>Run deterministic offline gates before any release. Live URL health and upstream pin drift are separate networked checks so a transient outage cannot corrupt prior evidence.</p>
           <pre data-copy><code>python3 mlx-model-porting/scripts/audit_skill.py --strict mlx-model-porting
 python3 mlx-model-porting/scripts/validate_sources.py mlx-model-porting
+python3 mlx-model-porting/scripts/knowledge_curator.py --check-backlog
 python3 mlx-model-porting/scripts/validate_benchmarks.py check
 python3 mlx-model-porting/scripts/generate_claim_catalog.py --check
 python3 mlx-model-porting/scripts/generate_evidence_index.py --check
@@ -401,7 +424,7 @@ python3 -m unittest discover -s tests -v</code></pre>
         <section class="doc-section" id="limitations" data-search="limitations offline real models conversion formats cv graph forecasting network apple silicon">
           <span class="label">15 / boundary</span>
           <h2>Limitations</h2>
-          <div class="callout warning"><strong>Offline green is not a real-model claim</strong><p>Golden scenarios prove routing, guard behavior, source-key coverage, seeded parity failure, and recommendations; the broader tooling suite validates the weight-map command. Neither proves end-to-end conversion or parity for real checkpoints across every declared family.</p></div>
+          <div class="callout warning"><strong>One real port is still one scope</strong><p>The Qwen2.5 packet proves one dense-decoder checkpoint, 29 parity rungs, and exact greedy-token output. Golden scenarios prove routing and guards for all 17 families; they do not prove end-to-end conversion across every family, and exact output does not replace domain evaluation.</p></div>
           <ul>
             <li>Forecasting coverage does not imply tabular, ranking, or recommender support.</li>
             <li>Current CV route coverage centers on backbone/classifier patterns; dense vision, promptable masks, OCR, depth, and pose remain candidate tracks.</li>
@@ -414,7 +437,7 @@ python3 -m unittest discover -s tests -v</code></pre>
         </section>
 
         <footer class="doc-footer">
-          <p>MLX Porter v<span data-value="version">0.4.0</span> · generated site facts come from the checked-in registries and receipts · © <span data-year></span></p>
+          <p>MLX Porter v<span data-value="version">0.5.0</span> · generated site facts come from the checked-in registries and receipts · © <span data-year></span></p>
         </footer>
       </article>
     </main>

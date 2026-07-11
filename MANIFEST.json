@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
-  "version": "0.4.0",
-  "generated_at": "2026-07-11T01:15:09.058680+00:00",
+  "version": "0.5.0",
+  "generated_at": "2026-07-11T01:33:19.160027+00:00",
   "file_count": 457,
   "files": [
     {
@@ -57,8 +57,8 @@
     },
     {
       "path": "CHANGELOG.md",
-      "size_bytes": 7967,
-      "sha256": "3ae42550d8821161d1b8c0419c4b280827a068de7dc9691675f10671afeb4325",
+      "size_bytes": 11040,
+      "sha256": "889a1a1bfeca5b1c55cbc3fd904fd9deb9c1470b395457ee2e8d41b373a77f0a",
       "executable": false
     },
     {
@@ -69,8 +69,8 @@
     },
     {
       "path": "CONTRIBUTING.md",
-      "size_bytes": 12488,
-      "sha256": "950c29c61a179982f1bf19fe51a70f17077c6a238829ecad83394a6b9edd1108",
+      "size_bytes": 14339,
+      "sha256": "91e1fa3fe961f432d8a74d39b2537ea2f557b548af916d926f4a993dc6a4128d",
       "executable": false
     },
     {
@@ -87,74 +87,74 @@
     },
     {
       "path": "README.md",
-      "size_bytes": 17487,
-      "sha256": "947c1ba5fe8b3de0365cb85da4fefa2f541f34e996214d328069d0f20c8f7c10",
+      "size_bytes": 22681,
+      "sha256": "f048f154e1be7b78ce762fd1326d3da856624731a7d4724e2b15506c9f40157e",
       "executable": false
     },
     {
       "path": "RESEARCH_REPORT.md",
-      "size_bytes": 20501,
-      "sha256": "440271242759cd6e698bb78dba5103f2b3286d2aff36b8ee5d8d9b1c754a8984",
+      "size_bytes": 22335,
+      "sha256": "d489beed586fa10c88c447b85a9afa9727b8d3a7c4fe46337c3e641810087025",
       "executable": false
     },
     {
       "path": "VALIDATION.md",
-      "size_bytes": 15157,
-      "sha256": "a5f43a32c00a3f64741b828cc1af34141625ef60fa715325b61e5cd3cbda1e3a",
+      "size_bytes": 16597,
+      "sha256": "c95202d7d511002467d8b0b525d90113d503233b4edf6a59964f2c12fe213ba9",
       "executable": false
     },
     {
       "path": "VERSION",
       "size_bytes": 6,
-      "sha256": "40b8eb4000a913a7791090535f291d3d369874162a89ef3c9e3d4e887a1b9e79",
+      "sha256": "a0ad50640139a524f86591157145bf1d4674ea9c065bfea21558f0f7b04430c8",
       "executable": false
     },
     {
       "path": "adapters/README.md",
       "size_bytes": 3282,
-      "sha256": "cc1a736a44ebe2ae5470e59721746773b526fa8dd8292e63caf8b0c8bddd915e",
+      "sha256": "6b099c1af1ec4d3cccaac79c4e7671efb89de06d278a0cfd8d56ef7fe3f0e4a7",
       "executable": false
     },
     {
       "path": "adapters/antigravity.md",
       "size_bytes": 468,
-      "sha256": "7f1fdb6328dbee1cbf135360dc8f9ef7ec212ec899f03c7f699ef33f8168c213",
+      "sha256": "e17eab2ee3c2d5c631299578252d2769738185b1cbf991f4b3a6c1eaad901f5a",
       "executable": false
     },
     {
       "path": "adapters/claude-code.md",
       "size_bytes": 559,
-      "sha256": "19beae928a10f0575c54b9191e5fc377505780ef13b15ae2c082f3c73a8f9787",
+      "sha256": "0802df6f487b7c9e37b6e5b13243a1b0205d42179f89e3a8b988a85d2c26bc19",
       "executable": false
     },
     {
       "path": "adapters/codex.md",
       "size_bytes": 572,
-      "sha256": "79a39c89611a9e678413327b6a344aeeec2cb5a3e9e1f953983d8175d1f7a8bd",
+      "sha256": "be5040d0442d7dc7e0f30d33f2f2bcc57b4c02aa043b27147e2b300dfbc57dc2",
       "executable": false
     },
     {
       "path": "adapters/cursor.md",
       "size_bytes": 549,
-      "sha256": "ab7be08575407d8de9248ec39ec2639cd69d940bbd9134b58b5a455363c2a870",
+      "sha256": "9220c18f234f41484cda0649a98a3b63cb8feb2149ff8a98b17bc573e08a7c16",
       "executable": false
     },
     {
       "path": "adapters/gemini-cli.md",
       "size_bytes": 553,
-      "sha256": "4afa31ac8f560084fddbcfefb14fe61178a787e1cab8b181a2afbca113074337",
+      "sha256": "e51066ea67fc7946d533c64d688ed3ef072ae22ad0b17836d36ef62c3b94e40c",
       "executable": false
     },
     {
       "path": "adapters/github-copilot.md",
       "size_bytes": 558,
-      "sha256": "fe34393dd248a83afd2da11b72329fbac560303d665f6134a9a88930120aba74",
+      "sha256": "467bd60f3af97c8045339821809d362ed06c6ecd972e047ed32302387512fed8",
       "executable": false
     },
     {
       "path": "adapters/windsurf.md",
       "size_bytes": 553,
-      "sha256": "89800576b992f557caf3e151b43f237568cdc64eb29b56c896faaa847d379d96",
+      "sha256": "873c946b36815703ab849e3e3ace05573491c3ae8ce6eb95f471251084752de0",
       "executable": false
     },
     {
@@ -165,8 +165,8 @@
     },
     {
       "path": "mlx-model-porting/SKILL.md",
-      "size_bytes": 13465,
-      "sha256": "aa5c205a36e4251242cb344bd3f4d2d85787e28a198710dd9f1e8f50670364c2",
+      "size_bytes": 13463,
+      "sha256": "d64904fc9abc20f60d53a7de4624cdb85ab099438936b6a7d5beae3b57314ad7",
       "executable": false
     },
     {
@@ -1023,8 +1023,8 @@
     },
     {
       "path": "mlx-model-porting/references/compound-stacks.md",
-      "size_bytes": 10108,
-      "sha256": "d138667fd761c53572a5ef64e14873c4bdc2e92a80ace3523b341489152fbcbe",
+      "size_bytes": 10236,
+      "sha256": "6fe0705e9ed799db5fb01296ccedc0d812a146dce6e09ea79cbea2bc1de40ae9",
       "executable": false
     },
     {
@@ -1948,13 +1948,13 @@
     {
       "path": "site/data.js",
       "size_bytes": 4485,
-      "sha256": "ba2cf4f31e463050ccf6eaad620acb68321903b17f805c350190d0ef595ec267",
+      "sha256": "8d13c7837693108c173d52dae68d5e082849c014b5860b9db06a57ef9a53db97",
       "executable": false
     },
     {
       "path": "site/docs/index.html",
-      "size_bytes": 33866,
-      "sha256": "ae6178399023fbb6354da1cc31f759b1f28144ff0dfc90da702c64235454c0d2",
+      "size_bytes": 35692,
+      "sha256": "2abdf0aca98b2606e5109232ca23e2f1ad706117203eae778bf64ff77e2dacc4",
       "executable": false
     },
     {
@@ -1965,8 +1965,8 @@
     },
     {
       "path": "site/index.html",
-      "size_bytes": 16781,
-      "sha256": "b42d2a45ef2065c30fae054db9ab3606005cac3f121b8defa32a5d1349d75cb5",
+      "size_bytes": 16985,
+      "sha256": "bb092f0d728b5ca971d496c74de7a43f00d51508e48dcaf3064beb3368fd7c1c",
       "executable": false
     },
     {

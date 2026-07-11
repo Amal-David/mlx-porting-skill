@@ -91,27 +91,29 @@ window.MLX_PORTING_SITE_DATA = {
   },
   "benchmarks": {
     "by_classification": {
-      "performance_observation": 12,
+      "performance_observation": 11,
+      "promotion_ready": 1,
       "rejected": 1
     },
-    "promotion_ready": 0,
+    "promotion_ready": 1,
     "total": 13
   },
   "effective_claims": {
     "by_state": {
+      "local-promotion": 1,
       "withheld": 9
     },
-    "total": 9
+    "total": 10
   },
   "guidance": {
     "by_status": {
-      "native-mlx": 6,
+      "native-mlx": 7,
       "official-mlx-project": 3,
       "proven-mlx-port": 9,
       "rejected-or-superseded": 2,
       "research-candidate": 7
     },
-    "total": 27
+    "total": 28
   },
   "local_docs": {
     "references": 35,
@@ -151,13 +153,13 @@ window.MLX_PORTING_SITE_DATA = {
   },
   "techniques": {
     "by_status": {
-      "native-mlx": 14,
+      "native-mlx": 15,
       "official-mlx-project": 9,
       "proven-mlx-port": 22,
       "rejected-or-superseded": 1,
       "research-candidate": 19
     },
-    "total": 65
+    "total": 66
   },
-  "version": "0.4.0"
+  "version": "0.5.0"
 };

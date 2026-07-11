@@ -114,8 +114,10 @@ controlled MLX-LM schema-2 candidate, follow the receipt contract in
 - an explicit rollback condition; and
 - an independently reviewed execution attestation that proves the measured
   runner/package bytes actually exercised the declared model, revision,
-  workload, and per-run output. No current runner lane satisfies this final
-  gate, so new schema-2 receipts remain observations today.
+  workload, and per-run output. The generic external-command and legacy MLX-LM
+  lanes do not satisfy this gate. The repository-owned
+  `attested-mlx-port-wall-time` lane may satisfy it only for an explicitly
+  reviewed model/workload adapter with complete retained evidence.
 
 Legacy Python evaluators, schema-1 arbitrary JSON scores, or handwritten quality
 artifacts can be retained as observation provenance, but the validator does not
@@ -123,8 +125,8 @@ execute or trust them and they cannot make a receipt promotion-ready. Add a new
 task metric only as a controlled built-in schema that independently recomputes
 its result from bounded checked-in artifacts.
 
-Only a future promotion-ready assessment emits one receipt-specific canonical
-experiment fingerprint. It binds exact model/source revisions, target
+A promotion-ready assessment emits one receipt-specific canonical experiment
+fingerprint. It binds exact model/source revisions, target
 descriptor, workload artifacts and parameters, enabled methods, primary metric,
 experiment contract, baseline digest, raw measurements, and quality result.
 Compatible repetitions may group only when their stable semantic identity also
@@ -140,6 +142,30 @@ After adding or changing a receipt, regenerate the benchmark assessment. A
 missing or failed gate must remain visible as `performance_observation` or
 `rejected`; never replace the generated classification with prose.
 
+## Execution-tool test expectations
+
+Changes to `capture_oracle.py`, `scaffold_port.py`, `convert_checkpoint.py`,
+`capture_mlx.py`, `run_parity.py`, or `_capture_common.py` must preserve two
+test layers:
+
+- the base contract runs without importing Torch, Transformers, or MLX and
+  covers CLI validation, bounded parsing, deterministic manifests/output,
+  unsupported-config blockers, map coverage, scaffold drift, and
+  first-divergence behavior. Conversion may use the repository's required
+  NumPy dependency, but cannot require MLX for draft, validation, or fallback
+  safetensors tests;
+- real execution tests use `unittest.skipUnless` with an explicit dependency
+  probe. Torch/Transformers gates source-model capture; MLX gates generated
+  package execution and native safetensors loading; the full parity test runs
+  only when both stacks are usable. A missing optional runtime must produce an
+  honest skip, while missing required dependencies in an invoked CLI must fail
+  with an actionable message.
+
+Every new supported dense-decoder semantic needs a contract that would fail if
+its generated computation, target tensor set, conversion rule, or parity rung
+regressed. A runbook-only family must not gain an execution test that implies a
+shipped architecture module.
+
 ## Generated-file ownership
 
 Do not hand-edit generated artifacts.
@@ -149,6 +175,7 @@ Do not hand-edit generated artifacts.
 | Explicit live official-release and paper queries | `mlx-model-porting/assets/update-candidates.json` | `python3 mlx-model-porting/scripts/update_sources.py --output mlx-model-porting/assets/update-candidates.json` |
 | Explicit GitHub contributor query parameters | `mlx-model-porting/assets/contributor-refresh.json` | `python3 mlx-model-porting/scripts/collect_contributors.py --repo ml-explore/mlx --requested-count 1000 --output mlx-model-porting/assets/contributor-refresh.json` |
 | Reviewed source/contributor candidates plus canonical registries | `mlx-model-porting/assets/knowledge_graph.json` and a new dated nightly delta/run directory | `python3 mlx-model-porting/scripts/nightly_knowledge_curator.py` |
+| Current `knowledge_graph.json` plus `update-candidates.json` | `mlx-model-porting/assets/research_backlog.json` | `python3 mlx-model-porting/scripts/knowledge_curator.py --reconcile-backlog` (verify with `--check-backlog`) |
 | `mlx-model-porting/requirements-tools.txt` | `mlx-model-porting/requirements-tools.lock` | `uv pip compile mlx-model-porting/requirements-tools.txt --universal --python-version 3.10 --generate-hashes --output-file mlx-model-porting/requirements-tools.lock` |
 | `mlx-model-porting/assets/sources.yaml` | `EVIDENCE_INDEX.md` | `python3 mlx-model-porting/scripts/generate_evidence_index.py` |
 | Receipt JSON under `mlx-model-porting/assets/benchmarks/` | `receipt_assessments.json`, `receipts_index.json`, and `mlx-model-porting/assets/BENCHMARK_REPORT.md` | `python3 mlx-model-porting/scripts/validate_benchmarks.py generate` |
@@ -170,6 +197,8 @@ refresh is reviewed.
 Regenerate in dependency order:
 
 ```bash
+python3 mlx-model-porting/scripts/knowledge_curator.py --reconcile-backlog
+python3 mlx-model-porting/scripts/knowledge_curator.py --check-backlog
 python3 mlx-model-porting/scripts/validate_benchmarks.py generate
 python3 mlx-model-porting/scripts/generate_claim_catalog.py
 python3 mlx-model-porting/scripts/generate_evidence_index.py
@@ -217,6 +246,7 @@ Run from the repository root:
 python3 -m unittest discover -s tests -v
 python3 mlx-model-porting/scripts/audit_skill.py --strict mlx-model-porting
 python3 mlx-model-porting/scripts/validate_sources.py mlx-model-porting
+python3 mlx-model-porting/scripts/knowledge_curator.py --check-backlog
 python3 mlx-model-porting/scripts/validate_benchmarks.py check
 python3 mlx-model-porting/scripts/generate_claim_catalog.py --check
 python3 mlx-model-porting/scripts/generate_evidence_index.py --check
