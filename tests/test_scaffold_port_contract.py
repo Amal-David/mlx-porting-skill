@@ -179,6 +179,7 @@ class ScaffoldPortDependencyFreeContractTests(unittest.TestCase):
             set(scaffold_port.FAMILY_GENERATORS),
             {
                 "dense-decoder-transformer",
+                "encoder-decoder-transformer",
                 "encoder-transformer",
                 "moe-decoder-transformer",
                 "ssm-recurrent-hybrid",

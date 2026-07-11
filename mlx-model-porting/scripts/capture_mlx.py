@@ -62,7 +62,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--package", help="Directory produced by scaffold_port.py")
     parser.add_argument(
         "--mode",
-        choices=("dense-decoder", "encoder"),
+        choices=("dense-decoder", "encoder", "encoder-decoder"),
         default="dense-decoder",
         help="Capture contract (default: dense-decoder)",
     )
@@ -83,7 +83,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument(
         "--attention-mask",
         nargs="+",
-        help="Encoder mode only: one 0/1 value per tokenizer-free token ID",
+        help="Encoder modes only: one 0/1 value per tokenizer-free token ID",
     )
     parser.add_argument(
         "--tokenizer",
@@ -528,6 +528,10 @@ def _capture(
         model = generated_model.load_model(package / "config.json", weights_path)
         input_ids = mx.array(input_ids_np, dtype=mx.int32)
         attention_mask = mx.array(attention_mask_np, dtype=mx.int32)
+        config = _load_config(package)
+        is_encoder_decoder = config.get("is_encoder_decoder") is True
+        if (mode == "encoder-decoder") != is_encoder_decoder:
+            raise SkillError("capture mode does not match scaffold encoder-decoder identity")
         if mode == "encoder":
             if generate_steps != 0:
                 raise SkillError("--mode encoder requires --generate-steps 0")
@@ -557,20 +561,25 @@ def _capture(
             return arrays
 
         logits, _, captures = model(input_ids, attention_mask=attention_mask, capture=True)
-        sequence = input_ids
-        mask = attention_mask
-        generated = []
-        for _ in range(generate_steps):
-            step_logits, _ = model(sequence, attention_mask=mask)
-            next_token = mx.argmax(step_logits[:, -1, :], axis=-1).astype(mx.int32)
-            generated.append(next_token)
-            sequence = mx.concatenate((sequence, next_token[:, None]), axis=1)
-            mask = mx.concatenate((mask, mx.ones((mask.shape[0], 1), dtype=mx.int32)), axis=1)
-        generated_ids = (
-            mx.stack(generated, axis=1)
-            if generated
-            else mx.zeros((input_ids.shape[0], 0), dtype=mx.int32)
-        )
+        if mode == "encoder-decoder":
+            generated_ids = generated_model.greedy_generate(
+                model, input_ids, generate_steps, attention_mask=attention_mask
+            )
+        else:
+            sequence = input_ids
+            mask = attention_mask
+            generated = []
+            for _ in range(generate_steps):
+                step_logits, _ = model(sequence, attention_mask=mask)
+                next_token = mx.argmax(step_logits[:, -1, :], axis=-1).astype(mx.int32)
+                generated.append(next_token)
+                sequence = mx.concatenate((sequence, next_token[:, None]), axis=1)
+                mask = mx.concatenate((mask, mx.ones((mask.shape[0], 1), dtype=mx.int32)), axis=1)
+            generated_ids = (
+                mx.stack(generated, axis=1)
+                if generated
+                else mx.zeros((input_ids.shape[0], 0), dtype=mx.int32)
+            )
         tensors = {
             "input_ids": input_ids,
             "attention_mask": attention_mask,
@@ -651,8 +660,8 @@ def main(argv: list[str] | None = None) -> int:
         if args.package is None or args.weights is None or args.output is None:
             raise SkillError("--package, --weights, and --output are required for MLX capture")
         prompts, token_ids = validate_input_mode(args.token_ids, args.prompt, args.prompts_file)
-        if args.attention_mask and args.mode != "encoder":
-            raise SkillError("--attention-mask is supported only with --mode encoder")
+        if args.attention_mask and args.mode not in {"encoder", "encoder-decoder"}:
+            raise SkillError("--attention-mask is supported only with an encoder mode")
         if args.attention_mask and token_ids is None:
             raise SkillError("--attention-mask requires --token-ids")
         if token_ids is not None and args.tokenizer is not None:
@@ -719,7 +728,7 @@ def main(argv: list[str] | None = None) -> int:
             config,
             np,
             explicit_attention_mask,
-            args.mode == "encoder",
+            args.mode in {"encoder", "encoder-decoder"},
         )
         arrays = _capture(
             package,

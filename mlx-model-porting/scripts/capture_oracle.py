@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Capture a deterministic PyTorch/Hugging Face causal-decoder source oracle.
+"""Capture deterministic causal-decoder or encoder-decoder source tensors.
 
 The stable NPZ tensor-key scheme is:
 
@@ -87,7 +87,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("model", nargs="?", help="Local model directory; hub IDs are not accepted")
     parser.add_argument(
         "--mode",
-        choices=("dense-decoder", "encoder"),
+        choices=("dense-decoder", "encoder", "encoder-decoder"),
         default="dense-decoder",
         help="Capture contract (default: dense-decoder)",
     )
@@ -114,7 +114,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument(
         "--attention-mask",
         nargs="+",
-        help="Encoder mode only: one 0/1 value per tokenizer-free token ID",
+        help="Encoder modes only: one 0/1 value per tokenizer-free token ID",
     )
     parser.add_argument(
         "--generate-steps",
@@ -668,6 +668,133 @@ def capture_tensors(
     }
 
 
+def capture_encoder_decoder_tensors(
+    model: Any,
+    input_ids: Any,
+    attention_mask: Any,
+    config: dict[str, Any],
+    generate_steps: int,
+    torch: Any,
+) -> dict[str, Any]:
+    """Capture the T5-style encoder and first decoder step plus greedy IDs."""
+    start = config.get("decoder_start_token_id")
+    if type(start) is not int or start < 0:
+        raise SkillError("encoder-decoder config requires decoder_start_token_id")
+    decoder_input_ids = torch.full(
+        (input_ids.shape[0], 1), start, dtype=input_ids.dtype, device=input_ids.device
+    )
+    captures: dict[str, Any] = {}
+    handles: list[Any] = []
+    decoder = getattr(model, "decoder", None)
+    blocks = getattr(decoder, "block", None)
+    encoder = getattr(model, "encoder", None)
+    encoder_blocks = getattr(encoder, "block", None)
+    if (
+        blocks is None
+        or encoder_blocks is None
+        or len(blocks) != _expected_layer_count(config)
+        or len(encoder_blocks) != len(blocks)
+    ):
+        raise SkillError("could not locate the standard encoder-decoder decoder blocks")
+    try:
+        for index, block in enumerate(encoder_blocks):
+            handles.append(
+                block.register_forward_hook(
+                    _capture_hook(captures, f"encoder.layer.{index}.hidden", torch)
+                )
+            )
+        for index, block in enumerate(blocks):
+            layers = getattr(block, "layer", None)
+            if layers is None or len(layers) < 3:
+                raise SkillError("decoder block does not expose self/cross/FF layers")
+            handles.append(
+                layers[1].register_forward_hook(
+                    _capture_hook(captures, f"decoder.layer.{index}.cross_attention", torch)
+                )
+            )
+            handles.append(
+                block.register_forward_hook(
+                    _capture_hook(captures, f"decoder.layer.{index}.hidden", torch)
+                )
+            )
+        with torch.inference_mode():
+            outputs = model(
+                input_ids=input_ids,
+                attention_mask=attention_mask,
+                decoder_input_ids=decoder_input_ids,
+                use_cache=False,
+                output_hidden_states=True,
+                return_dict=True,
+            )
+    finally:
+        for handle in reversed(handles):
+            handle.remove()
+    encoder_states = getattr(outputs, "encoder_hidden_states", None)
+    decoder_states = getattr(outputs, "decoder_hidden_states", None)
+    logits = getattr(outputs, "logits", None)
+    expected = _expected_layer_count(config)
+    if (
+        not encoder_states
+        or not decoder_states
+        or expected is None
+        or len(encoder_states) != expected + 1
+        or len(decoder_states) != expected + 1
+        or logits is None
+        or not torch.is_tensor(logits)
+    ):
+        raise SkillError("encoder-decoder forward did not return complete hidden states and logits")
+    captures["encoder.embed"] = encoder_states[0].detach()
+    captures["decoder.embed"] = decoder_states[0].detach()
+    required_layers = {
+        *(f"encoder.layer.{index}.hidden" for index in range(expected)),
+        *(f"decoder.layer.{index}.hidden" for index in range(expected)),
+    }
+    missing_layers = sorted(required_layers - captures.keys())
+    if missing_layers:
+        raise SkillError("encoder-decoder block hooks did not capture: " + ", ".join(missing_layers))
+    captures["encoder.final_norm"] = encoder_states[-1].detach()
+    captures["decoder.final_norm"] = decoder_states[-1].detach()
+    captures["logits"] = logits.detach()
+    missing_cross = sorted(
+        f"decoder.layer.{index}.cross_attention"
+        for index in range(expected)
+        if f"decoder.layer.{index}.cross_attention" not in captures
+    )
+    if missing_cross:
+        raise SkillError("decoder cross-attention hooks did not capture: " + ", ".join(missing_cross))
+    captures = {
+        name: _zero_padded_query_rows(value, attention_mask, torch)
+        for name, value in captures.items()
+    }
+
+    generated: list[Any] = []
+    sequence = decoder_input_ids
+    with torch.inference_mode():
+        for _ in range(generate_steps):
+            step = model(
+                input_ids=input_ids,
+                attention_mask=attention_mask,
+                decoder_input_ids=sequence,
+                use_cache=False,
+                return_dict=True,
+            )
+            next_token = torch.argmax(step.logits[:, -1, :], dim=-1)
+            generated.append(next_token)
+            sequence = torch.cat((sequence, next_token[:, None]), dim=1)
+    generated_ids = (
+        torch.stack(generated, dim=1)
+        if generated
+        else torch.empty((input_ids.shape[0], 0), dtype=input_ids.dtype, device=input_ids.device)
+    )
+    return {
+        "input_ids": input_ids.detach(),
+        "attention_mask": attention_mask.detach(),
+        "decoder_input_ids": decoder_input_ids.detach(),
+        **captures,
+        "generated_token_ids": generated_ids.detach(),
+    }
+
+
 def to_numpy_tensors(tensors: dict[str, Any], *, keep_dtype: bool, np: Any) -> dict[str, Any]:
     arrays: dict[str, Any] = {}
     for key in sorted(tensors):
@@ -694,8 +821,8 @@ def _validate_capture_args(args: argparse.Namespace) -> tuple[list[str], list[in
     if args.output is None:
         raise SkillError("--output is required for oracle capture")
     prompts, token_ids = validate_input_mode(args.token_ids, args.prompt, args.prompts_file)
-    if args.attention_mask and args.mode != "encoder":
-        raise SkillError("--attention-mask is supported only with --mode encoder")
+    if args.attention_mask and args.mode not in {"encoder", "encoder-decoder"}:
+        raise SkillError("--attention-mask is supported only with an encoder mode")
     if args.attention_mask and token_ids is None:
         raise SkillError("--attention-mask requires --token-ids")
     return prompts, token_ids
@@ -736,6 +863,9 @@ def main(argv: list[str] | None = None) -> int:
 
         prompts, token_ids = _validate_capture_args(args)
         model_dir, config, model_record = inspect_local_model(args.model)
+        is_encoder_decoder = config.get("is_encoder_decoder") is True
+        if (args.mode == "encoder-decoder") != is_encoder_decoder:
+            raise SkillError("capture mode does not match source encoder-decoder identity")
 
         output = validate_output_path(Path(args.output), label="NPZ output")
         if output.suffix.lower() != ".npz":
@@ -775,7 +905,13 @@ def main(argv: list[str] | None = None) -> int:
             ) from exc
         try:
             import transformers
-            from transformers import AutoConfig, AutoModel, AutoModelForCausalLM, AutoTokenizer
+            from transformers import (
+                AutoConfig,
+                AutoModel,
+                AutoModelForCausalLM,
+                AutoModelForSeq2SeqLM,
+                AutoTokenizer,
+            )
         except ImportError as exc:
             raise SkillError(
                 "capture_oracle.py requires optional package 'transformers'; "
@@ -796,7 +932,11 @@ def main(argv: list[str] | None = None) -> int:
                 "capture_oracle.py refuses remote code"
             ) from exc
         try:
-            model_class = AutoModel if args.mode == "encoder" else AutoModelForCausalLM
+            model_class = {
+                "dense-decoder": AutoModelForCausalLM,
+                "encoder": AutoModel,
+                "encoder-decoder": AutoModelForSeq2SeqLM,
+            }[args.mode]
             model = model_class.from_pretrained(
                 str(model_dir),
                 config=hf_config,
@@ -810,7 +950,11 @@ def main(argv: list[str] | None = None) -> int:
                     "model architecture requires remote code; capture_oracle.py supports only "
                     "built-in Transformers architectures"
                 ) from exc
-            model_kind = "encoder" if args.mode == "encoder" else "causal language model"
+            model_kind = {
+                "dense-decoder": "causal language model",
+                "encoder": "encoder",
+                "encoder-decoder": "encoder-decoder language model",
+            }[args.mode]
             raise SkillError(f"could not load built-in local {model_kind}: {exc}") from exc
         model.train(False)
 
@@ -827,13 +971,22 @@ def main(argv: list[str] | None = None) -> int:
             torch,
             AutoTokenizer,
             explicit_attention_mask,
-            args.mode == "encoder",
+            args.mode in {"encoder", "encoder-decoder"},
         )
         if args.mode == "encoder":
             if args.generate_steps != 0:
                 raise SkillError("--mode encoder requires --generate-steps 0")
             captured = capture_encoder_tensors(
                 model, input_ids, attention_mask, config, torch
+            )
+        elif args.mode == "encoder-decoder":
+            captured = capture_encoder_decoder_tensors(
+                model,
+                input_ids,
+                attention_mask,
+                config,
+                args.generate_steps,
+                torch,
             )
         else:
             captured = capture_tensors(

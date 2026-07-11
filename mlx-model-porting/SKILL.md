@@ -15,10 +15,10 @@ metadata:
 
 Produce or inspect a **correct, reproducible, architecture-aware MLX implementation**. Correctness comes before speed. Every speed or memory claim must name the hardware, software versions, workload, baseline, and quality gate.
 
-Executable chains cover the real [Qwen2.5](examples/worked-port-qwen2.5-0.5b-instruct/README.md)
-dense decoder and [BGE](examples/worked-port-bge-base-en/README.md) BERT encoder,
-plus synthetic MoE and SSM gates. Others remain runbook-guided. Exact output is
-the built-in metric; domain evaluators are future work.
+Executable real-port chains cover [Qwen2.5](examples/worked-port-qwen2.5-0.5b-instruct/README.md),
+[BGE](examples/worked-port-bge-base-en/README.md), and
+[t5-small](examples/worked-port-t5-small/README.md); MoE and SSM use synthetic
+gates. Others remain runbook-guided. Exact output is the built-in metric.
 
 ## When to use this skill
 
@@ -86,8 +86,8 @@ Run `scripts/capture_oracle.py` against the pinned local Hugging Face model befo
 
 Read [core porting method](references/porting-core.md); choose via the trigger map and the controlled family records in `assets/architectures.yaml`. Load every runbook returned by a hybrid route. The registry is the complete runbook inventory; do not substitute an abbreviated parallel list.
 
-Scaffold an unblocked dense decoder, supported sparse-MoE decoder or BERT text
-encoder, or opt-in synthetic `minimal_selective` SSM:
+Scaffold an unblocked dense decoder, sparse-MoE decoder, BERT encoder, T5
+encoder-decoder, or opt-in synthetic `minimal_selective` SSM:
 
 ```bash
 python3 scripts/scaffold_port.py inspection.json --artifact-root MODEL --output mlx_port
@@ -96,7 +96,7 @@ python3 scripts/scaffold_port.py inspection.json --artifact-root MODEL --output 
 It re-inspects the artifact and fails closed. Review unsupported config before
 continuing; never patch around a generator blocker.
 
-[Example](examples/worked-port-qwen2.5-0.5b-instruct/README.md) (no weights).
+See the linked worked ports above (no weights).
 
 Start eager: FP, batch one unless intrinsic, no compile/kernels, state/cache, assertions, reversible map.
 

@@ -340,14 +340,17 @@ class ParityRunnerDependencyFreeContractTests(unittest.TestCase):
                     no_site=True,
                 )
 
-            self.assertEqual(completed.returncode, 2, completed.stdout + completed.stderr)
-            expected = (
-                "target manifest"
-                if filename == "target-manifest.json"
-                else "converted weights"
-            )
-            self.assertIn(expected, completed.stderr)
-            self.assertIn("does not match conversion-report.json attestation", completed.stderr)
+                self.assertEqual(completed.returncode, 2, completed.stdout + completed.stderr)
+                expected = (
+                    "target manifest"
+                    if filename == "target-manifest.json"
+                    else "converted weights"
+                )
+                self.assertIn(expected, completed.stderr)
+                self.assertIn(
+                    "does not match conversion-report.json attestation",
+                    completed.stderr,
+                )
 
     def test_token_id_mode_never_requires_a_tokenizer(self) -> None:
         with tempfile.TemporaryDirectory() as raw_tmp:

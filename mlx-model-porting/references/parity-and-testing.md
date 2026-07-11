@@ -36,6 +36,13 @@ Encoder mode uses `--mode encoder --generate-steps 0` and retains `input_ids`,
 `pooled`. It has no logits or generated-token rung. A tokenizer-free padded
 fixture may provide `--attention-mask` with one 0/1 value per token ID.
 
+Encoder-decoder mode uses `--mode encoder-decoder` and architecture-specific keys:
+`encoder.embed`, every `encoder.layer.{i}.hidden`, `encoder.final_norm`,
+`decoder_input_ids`, `decoder.embed`, every
+`decoder.layer.{i}.cross_attention` and `decoder.layer.{i}.hidden`,
+`decoder.final_norm`, first-step `logits`, and `generated_token_ids`. Source
+input IDs and the attention mask always describe the encoder input.
+
 Floating captures are saved as float32 unless `--keep-dtype` is explicit.
 Integer IDs and masks retain their integer dtype. Future target-side capture
 tools should mirror these names exactly; model-specific extra checkpoints may
@@ -64,6 +71,9 @@ after the first failure: `input_ids`, `embed`, every `layer.{i}.hidden` in
 ascending order, `final_norm`, `logits`, and exact `generated_token_ids`.
 Encoder mode instead orders exact IDs, exact attention mask, embedding, every
 encoder layer, final hidden state, and pooled/CLS output.
+Encoder-decoder order follows the encoder stack, then decoder start,
+cross-attention and block boundaries, decoder norm, logits, and exact generated
+IDs.
 
 `capture_mlx.py` validates the scaffold generator header, config digest,
 execution-file digests, and converted target parameter contract before running

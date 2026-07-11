@@ -392,7 +392,11 @@ def validate_capture_manifest(payload: Any) -> dict[str, Any]:
         raise SkillError("oracle manifest capture must record exactly one input mode")
     if set(capture) == reproducible_capture_fields:
         expected_input_mode = "token_ids" if token_ids is not None else "prompt"
-        if capture["mode"] not in {"dense-decoder", "encoder"}:
+        if capture["mode"] not in {
+            "dense-decoder",
+            "encoder",
+            "encoder-decoder",
+        }:
             raise SkillError("oracle manifest capture.mode is invalid")
         if capture["input_mode"] != expected_input_mode:
             raise SkillError("oracle manifest capture.input_mode is inconsistent")
