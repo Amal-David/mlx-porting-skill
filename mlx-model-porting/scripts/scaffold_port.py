@@ -81,6 +81,9 @@ MOE_ROUTER_PROFILES: dict[str, dict[str, Any]] = {
     "ernie4_5_moe": {"implemented": False, "router": "unknown", "reason": "router semantics are not implemented"},
 }
 
+ENCODER_FAMILY = "encoder-transformer"
+ENCODER_RUNBOOK = "references/runbook-encoder-transformer.md"
+
 SSM_FAMILY = "ssm-recurrent-hybrid"
 SSM_RUNBOOK = "references/runbook-ssm-hybrid.md"
 
@@ -164,8 +167,43 @@ SSM_FORBIDDEN_TENSOR_SEGMENTS = frozenset({
     "self_attn",
 })
 
+ENCODER_CONFIG_FEATURE_ALLOWLIST = frozenset({
+    "hidden_act",
+    "hidden_size",
+    "intermediate_size",
+    "layer_norm_eps",
+    "max_position_embeddings",
+    "num_attention_heads",
+    "num_hidden_layers",
+    "pad_token_id",
+    "position_embedding_type",
+    "type_vocab_size",
+    "vocab_size",
+})
+
+ENCODER_INFERENCE_METADATA_KEYS = frozenset({
+    "add_cross_attention",
+    "attention_probs_dropout_prob",
+    "classifier_dropout",
+    "gradient_checkpointing",
+    "hidden_dropout_prob",
+})
+
+SUPPORTED_BERT_ARCHITECTURES = frozenset({
+    "BertForMaskedLM",
+    "BertForMultipleChoice",
+    "BertForNextSentencePrediction",
+    "BertForPreTraining",
+    "BertForQuestionAnswering",
+    "BertForSequenceClassification",
+    "BertForTokenClassification",
+    "BertLMHeadModel",
+    "BertModel",
+})
+
 FAMILY_FEATURE_ALLOWLISTS = {
     DENSE_FAMILY: DENSE_CONFIG_FEATURE_ALLOWLIST,
+    ENCODER_FAMILY: ENCODER_CONFIG_FEATURE_ALLOWLIST,
     MOE_FAMILY: MOE_CONFIG_FEATURE_ALLOWLIST,
     SSM_FAMILY: SSM_CONFIG_FEATURE_ALLOWLIST,
 }
@@ -767,6 +805,187 @@ def validate_moe_config(config: Any) -> dict[str, Any]:
     if isinstance(rope_config, dict) and _rope_type(rope_config) == "dynamic" and head_dim <= 2:
         raise SkillError("config.json dynamic RoPE requires head_dim greater than 2")
     return config
+
+
+def unsupported_encoder_features(config: dict[str, Any]) -> list[str]:
+    """Return every config feature outside the supported absolute-position BERT path."""
+    errors: list[str] = []
+    model_type = config.get("model_type")
+    if model_type != "bert":
+        errors.append(f"model_type={model_type!r} is not supported; only 'bert' is accepted")
+    architectures = config.get("architectures")
+    if (
+        not isinstance(architectures, list)
+        or not architectures
+        or not all(
+            isinstance(value, str) and value in SUPPORTED_BERT_ARCHITECTURES
+            for value in architectures
+        )
+    ):
+        errors.append(
+            "architectures must contain only supported BERT identities: "
+            + ", ".join(sorted(SUPPORTED_BERT_ARCHITECTURES))
+        )
+    for key in ("is_decoder", "is_encoder_decoder", "add_cross_attention"):
+        value = config.get(key, False)
+        if not isinstance(value, bool):
+            errors.append(f"{key} must be boolean when present")
+        elif value:
+            errors.append(f"{key}=true is not supported by the bidirectional BERT scaffold")
+    activation = config.get("hidden_act", "gelu")
+    if not isinstance(activation, str) or activation.lower() != "gelu":
+        errors.append("hidden_act must be 'gelu'")
+    position_type = config.get("position_embedding_type", "absolute")
+    if not isinstance(position_type, str) or position_type.lower() != "absolute":
+        errors.append(
+            f"position_embedding_type={position_type!r} is not supported; only 'absolute' is accepted"
+        )
+    classified = (
+        ENCODER_CONFIG_FEATURE_ALLOWLIST
+        | ENCODER_INFERENCE_METADATA_KEYS
+        | KNOWN_METADATA_KEYS
+    )
+    for key in sorted(set(config) - classified):
+        # Presence is computation-relevant even when the value is falsey. This is
+        # intentionally not filtered through _meaningfully_set().
+        errors.append(f"unrecognized computation-relevant config key {key!r}")
+    return errors
+
+
+def validate_encoder_config(config: Any) -> dict[str, Any]:
+    if not isinstance(config, dict):
+        raise SkillError("config.json must contain an object")
+    errors = unsupported_encoder_features(config)
+    if errors:
+        raise SkillError(
+            "Unsupported config features; no code was generated. "
+            f"Consult {ENCODER_RUNBOOK}:\n- " + "\n- ".join(errors)
+        )
+    hidden = _config_int(config, "hidden_size")
+    heads = _config_int(config, "num_attention_heads")
+    _config_int(config, "num_hidden_layers")
+    _config_int(config, "intermediate_size")
+    _config_int(config, "max_position_embeddings")
+    _config_int(config, "type_vocab_size")
+    _config_int(config, "vocab_size")
+    _config_float(config, "layer_norm_eps", default=1e-12)
+    if hidden % heads:
+        raise SkillError("config.json hidden_size must be divisible by num_attention_heads")
+    pad_token_id = config.get("pad_token_id", 0)
+    if type(pad_token_id) is not int or pad_token_id < 0:
+        raise SkillError("config.json pad_token_id must be a non-negative integer")
+    return config
+
+
+def _inspection_tensor_shapes(inspection: dict[str, Any]) -> dict[str, list[int]]:
+    tensors = inspection.get("tensors")
+    if not isinstance(tensors, list):
+        raise SkillError("inspection tensor inventory must be a list")
+    result: dict[str, list[int]] = {}
+    for index, item in enumerate(tensors):
+        if not isinstance(item, dict):
+            raise SkillError(f"inspection tensor inventory entry {index} must be an object")
+        key = item.get("key")
+        shape = item.get("shape")
+        if not isinstance(key, str) or not key or not isinstance(shape, list) or not all(
+            type(value) is int and value >= 0 for value in shape
+        ):
+            raise SkillError(f"inspection tensor inventory entry {index} is invalid")
+        if key in result:
+            raise SkillError(f"inspection tensor inventory contains duplicate key {key!r}")
+        result[key] = shape
+    return result
+
+
+def encoder_target_tensor_dict(config: dict[str, Any], *, pooler: bool) -> dict[str, list[int]]:
+    hidden = _config_int(config, "hidden_size")
+    intermediate = _config_int(config, "intermediate_size")
+    layers = _config_int(config, "num_hidden_layers")
+    tensors: dict[str, list[int]] = {
+        "embeddings.LayerNorm.bias": [hidden],
+        "embeddings.LayerNorm.weight": [hidden],
+        "embeddings.position_embeddings.weight": [
+            _config_int(config, "max_position_embeddings"), hidden
+        ],
+        "embeddings.token_type_embeddings.weight": [
+            _config_int(config, "type_vocab_size"), hidden
+        ],
+        "embeddings.word_embeddings.weight": [_config_int(config, "vocab_size"), hidden],
+    }
+    for index in range(layers):
+        prefix = f"encoder.layer.{index}"
+        tensors.update({
+            f"{prefix}.attention.self.query.weight": [hidden, hidden],
+            f"{prefix}.attention.self.query.bias": [hidden],
+            f"{prefix}.attention.self.key.weight": [hidden, hidden],
+            f"{prefix}.attention.self.key.bias": [hidden],
+            f"{prefix}.attention.self.value.weight": [hidden, hidden],
+            f"{prefix}.attention.self.value.bias": [hidden],
+            f"{prefix}.attention.output.dense.weight": [hidden, hidden],
+            f"{prefix}.attention.output.dense.bias": [hidden],
+            f"{prefix}.attention.output.LayerNorm.weight": [hidden],
+            f"{prefix}.attention.output.LayerNorm.bias": [hidden],
+            f"{prefix}.intermediate.dense.weight": [intermediate, hidden],
+            f"{prefix}.intermediate.dense.bias": [intermediate],
+            f"{prefix}.output.dense.weight": [hidden, intermediate],
+            f"{prefix}.output.dense.bias": [hidden],
+            f"{prefix}.output.LayerNorm.weight": [hidden],
+            f"{prefix}.output.LayerNorm.bias": [hidden],
+        })
+    if pooler:
+        tensors.update({
+            "pooler.dense.weight": [hidden, hidden],
+            "pooler.dense.bias": [hidden],
+        })
+    return tensors
+
+
+def validate_encoder_topology(
+    inspection: dict[str, Any],
+    config: dict[str, Any],
+) -> bool:
+    """Validate the inspected BERT tensor graph, not merely config identity."""
+    actual = _inspection_tensor_shapes(inspection)
+    forbidden_markers = (
+        "decoder", "crossattention", "cross_attn", "cross_attn", "expert", "router",
+    )
+    forbidden = sorted(
+        key for key in actual if any(marker in key.lower() for marker in forbidden_markers)
+    )
+    if forbidden:
+        raise SkillError(
+            "Unsupported encoder tensor topology; no code was generated. "
+            "Found decoder/cross-attention/expert tensors: " + ", ".join(forbidden[:8])
+        )
+    pooler_keys = {"pooler.dense.weight", "pooler.dense.bias"}
+    present_pooler = pooler_keys & set(actual)
+    if present_pooler and present_pooler != pooler_keys:
+        raise SkillError("encoder tensor topology has an incomplete pooler")
+    pooler = bool(present_pooler)
+    expected = encoder_target_tensor_dict(config, pooler=pooler)
+    allowed_buffers = {"embeddings.position_ids", "embeddings.token_type_ids"}
+    missing = sorted(set(expected) - set(actual))
+    unexpected = sorted(set(actual) - set(expected) - allowed_buffers)
+    mismatched = sorted(
+        key for key in set(expected) & set(actual) if expected[key] != actual[key]
+    )
+    if missing or unexpected or mismatched:
+        details = []
+        if missing:
+            details.append("missing tensors: " + ", ".join(missing[:8]))
+        if unexpected:
+            details.append("unexpected tensors: " + ", ".join(unexpected[:8]))
+        if mismatched:
+            details.append(
+                "shape mismatches: "
+                + ", ".join(
+                    f"{key} expected {expected[key]} got {actual[key]}" for key in mismatched[:8]
+                )
+            )
+        raise SkillError(
+            "Unsupported encoder tensor topology; no code was generated. " + "; ".join(details)
+        )
+    return pooler
 
 
 CONFIG_TEMPLATE = r'''__HEADER__
@@ -2302,6 +2521,368 @@ def generate_moe_decoder(
     return files
 
 
+ENCODER_CONFIG_TEMPLATE = r'''__HEADER__
+"""Validated config.json parser for the generated BERT encoder."""
+from __future__ import annotations
+
+import json
+from dataclasses import dataclass
+from pathlib import Path
+
+
+def _positive_int(data, key):
+    value = data.get(key)
+    if type(value) is not int or value <= 0:
+        raise ValueError(f"{key} must be a positive integer")
+    return value
+
+
+@dataclass(frozen=True)
+class ModelConfig:
+    hidden_size: int
+    num_hidden_layers: int
+    num_attention_heads: int
+    intermediate_size: int
+    max_position_embeddings: int
+    type_vocab_size: int
+    layer_norm_eps: float
+    hidden_act: str
+    vocab_size: int
+    pad_token_id: int
+    position_embedding_type: str
+
+    @classmethod
+    def from_dict(cls, data):
+        hidden = _positive_int(data, "hidden_size")
+        heads = _positive_int(data, "num_attention_heads")
+        if hidden % heads:
+            raise ValueError("hidden_size must be divisible by num_attention_heads")
+        position_type = data.get("position_embedding_type", "absolute")
+        if position_type != "absolute":
+            raise ValueError("position_embedding_type must be 'absolute'")
+        activation = data.get("hidden_act", "gelu")
+        if activation != "gelu":
+            raise ValueError("hidden_act must be 'gelu'")
+        epsilon = data.get("layer_norm_eps", 1e-12)
+        if isinstance(epsilon, bool) or not isinstance(epsilon, (int, float)) or epsilon <= 0:
+            raise ValueError("layer_norm_eps must be a positive number")
+        pad = data.get("pad_token_id", 0)
+        if type(pad) is not int or pad < 0:
+            raise ValueError("pad_token_id must be a non-negative integer")
+        return cls(
+            hidden_size=hidden,
+            num_hidden_layers=_positive_int(data, "num_hidden_layers"),
+            num_attention_heads=heads,
+            intermediate_size=_positive_int(data, "intermediate_size"),
+            max_position_embeddings=_positive_int(data, "max_position_embeddings"),
+            type_vocab_size=_positive_int(data, "type_vocab_size"),
+            layer_norm_eps=float(epsilon),
+            hidden_act=activation,
+            vocab_size=_positive_int(data, "vocab_size"),
+            pad_token_id=pad,
+            position_embedding_type=position_type,
+        )
+
+    @classmethod
+    def from_file(cls, path: str | Path):
+        with Path(path).open("r", encoding="utf-8") as handle:
+            data = json.load(handle)
+        if not isinstance(data, dict):
+            raise ValueError("config.json must contain an object")
+        return cls.from_dict(data)
+'''
+
+
+ENCODER_MODEL_TEMPLATE = r'''__HEADER__
+"""Minimal eager MLX BERT encoder with bidirectional padded attention."""
+from __future__ import annotations
+
+from pathlib import Path
+
+from config import ModelConfig
+
+
+def _require_mlx():
+    try:
+        import mlx.core as mx
+        import mlx.nn as nn
+    except ImportError as exc:
+        raise RuntimeError("generated model requires MLX: python3 -m pip install mlx") from exc
+    return mx, nn
+
+
+def build_model(config: ModelConfig):
+    mx, nn = _require_mlx()
+    head_dim = config.hidden_size // config.num_attention_heads
+
+    class BertEmbeddings(nn.Module):
+        def __init__(self):
+            super().__init__()
+            self.word_embeddings = nn.Embedding(config.vocab_size, config.hidden_size)
+            self.position_embeddings = nn.Embedding(
+                config.max_position_embeddings, config.hidden_size
+            )
+            self.token_type_embeddings = nn.Embedding(config.type_vocab_size, config.hidden_size)
+            self.LayerNorm = nn.LayerNorm(config.hidden_size, eps=config.layer_norm_eps)
+
+        def __call__(self, input_ids, token_type_ids=None):
+            batch, length = input_ids.shape
+            if length > config.max_position_embeddings:
+                raise ValueError("input length exceeds max_position_embeddings")
+            if token_type_ids is None:
+                token_type_ids = mx.zeros((batch, length), dtype=mx.int32)
+            positions = mx.broadcast_to(mx.arange(length, dtype=mx.int32)[None, :], (batch, length))
+            hidden = (
+                self.word_embeddings(input_ids)
+                + self.position_embeddings(positions)
+                + self.token_type_embeddings(token_type_ids)
+            )
+            return self.LayerNorm(hidden)
+
+    class BertSelfAttention(nn.Module):
+        def __init__(self):
+            super().__init__()
+            self.query = nn.Linear(config.hidden_size, config.hidden_size, bias=True)
+            self.key = nn.Linear(config.hidden_size, config.hidden_size, bias=True)
+            self.value = nn.Linear(config.hidden_size, config.hidden_size, bias=True)
+
+        def __call__(self, hidden, attention_mask=None):
+            batch, length, _ = hidden.shape
+            def split(value):
+                return value.reshape(
+                    batch, length, config.num_attention_heads, head_dim
+                ).transpose(0, 2, 1, 3)
+            query = split(self.query(hidden))
+            key = split(self.key(hidden))
+            value = split(self.value(hidden))
+            scores = (query @ key.transpose(0, 1, 3, 2)) * (head_dim ** -0.5)
+            if attention_mask is not None:
+                if attention_mask.shape != (batch, length):
+                    raise ValueError("attention_mask must match input_ids shape")
+                scores = mx.where(
+                    attention_mask[:, None, None, :].astype(mx.bool_),
+                    scores,
+                    mx.array(-3.4028235e38, dtype=scores.dtype),
+                )
+            probabilities = mx.softmax(scores.astype(mx.float32), axis=-1).astype(value.dtype)
+            return (probabilities @ value).transpose(0, 2, 1, 3).reshape(
+                batch, length, config.hidden_size
+            )
+
+    class BertSelfOutput(nn.Module):
+        def __init__(self):
+            super().__init__()
+            self.dense = nn.Linear(config.hidden_size, config.hidden_size, bias=True)
+            self.LayerNorm = nn.LayerNorm(config.hidden_size, eps=config.layer_norm_eps)
+
+        def __call__(self, hidden, residual):
+            return self.LayerNorm(self.dense(hidden) + residual)
+
+    class BertAttention(nn.Module):
+        def __init__(self):
+            super().__init__()
+            self.self = BertSelfAttention()
+            self.output = BertSelfOutput()
+
+        def __call__(self, hidden, attention_mask=None):
+            return self.output(self.self(hidden, attention_mask=attention_mask), hidden)
+
+    class BertIntermediate(nn.Module):
+        def __init__(self):
+            super().__init__()
+            self.dense = nn.Linear(config.hidden_size, config.intermediate_size, bias=True)
+
+        def __call__(self, hidden):
+            return nn.gelu(self.dense(hidden))
+
+    class BertOutput(nn.Module):
+        def __init__(self):
+            super().__init__()
+            self.dense = nn.Linear(config.intermediate_size, config.hidden_size, bias=True)
+            self.LayerNorm = nn.LayerNorm(config.hidden_size, eps=config.layer_norm_eps)
+
+        def __call__(self, hidden, residual):
+            return self.LayerNorm(self.dense(hidden) + residual)
+
+    class BertLayer(nn.Module):
+        def __init__(self):
+            super().__init__()
+            self.attention = BertAttention()
+            self.intermediate = BertIntermediate()
+            self.output = BertOutput()
+
+        def __call__(self, hidden, attention_mask=None):
+            attended = self.attention(hidden, attention_mask=attention_mask)
+            return self.output(self.intermediate(attended), attended)
+
+    class BertEncoder(nn.Module):
+        def __init__(self):
+            super().__init__()
+            self.layer = [BertLayer() for _ in range(config.num_hidden_layers)]
+
+        def __call__(self, hidden, attention_mask=None, capture=False):
+            captures = {}
+            for index, layer in enumerate(self.layer):
+                hidden = layer(hidden, attention_mask=attention_mask)
+                if capture:
+                    captures[f"layer.{index}.hidden"] = hidden
+            return hidden, captures
+
+    class BertPooler(nn.Module):
+        def __init__(self):
+            super().__init__()
+            self.dense = nn.Linear(config.hidden_size, config.hidden_size, bias=True)
+
+        def __call__(self, hidden):
+            return mx.tanh(self.dense(hidden[:, 0]))
+
+    class BertModel(nn.Module):
+        def __init__(self):
+            super().__init__()
+            self.embeddings = BertEmbeddings()
+            self.encoder = BertEncoder()
+            if __HAS_POOLER__:
+                self.pooler = BertPooler()
+
+        def __call__(self, input_ids, *, attention_mask=None, token_type_ids=None, capture=False):
+            hidden = self.embeddings(input_ids, token_type_ids=token_type_ids)
+            captures = {"embed": hidden} if capture else {}
+            hidden, layer_captures = self.encoder(
+                hidden, attention_mask=attention_mask, capture=capture
+            )
+            captures.update(layer_captures)
+            pooled = self.pooler(hidden) if __HAS_POOLER__ else hidden[:, 0]
+            if capture:
+                captures["final_hidden"] = hidden
+                captures["pooled"] = pooled
+                return hidden, pooled, captures
+            return hidden, pooled
+
+    return BertModel()
+
+
+def load_model(config_path: str | Path, weights_path: str | Path):
+    mx, _ = _require_mlx()
+    model = build_model(ModelConfig.from_file(config_path))
+    weights = mx.load(str(weights_path))
+    if not isinstance(weights, dict):
+        raise ValueError("converted weights must load as a name-to-array mapping")
+    model.load_weights(list(weights.items()), strict=True)
+    getattr(mx, "eval")(model.parameters())
+    return model
+'''
+
+
+ENCODER_CAPTURE_TEMPLATE = r'''__HEADER__
+"""Direct token-ID capture CLI for the generated BERT encoder."""
+from __future__ import annotations
+
+import argparse
+import json
+from pathlib import Path
+
+from model import _require_mlx, load_model
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description="Capture generated BERT encoder tensors")
+    parser.add_argument("--weights", required=True)
+    parser.add_argument("--config", default=str(Path(__file__).with_name("config.json")))
+    parser.add_argument("--token-ids", nargs="+", type=int, required=True)
+    parser.add_argument("--attention-mask", nargs="+", type=int)
+    args = parser.parse_args()
+    mx, _ = _require_mlx()
+    input_ids = mx.array([args.token_ids], dtype=mx.int32)
+    mask_values = args.attention_mask or [1] * len(args.token_ids)
+    if len(mask_values) != len(args.token_ids) or any(value not in (0, 1) for value in mask_values):
+        raise ValueError("--attention-mask must contain one 0/1 value per token ID")
+    attention_mask = mx.array([mask_values], dtype=mx.int32)
+    model = load_model(args.config, args.weights)
+    _, _, captures = model(input_ids, attention_mask=attention_mask, capture=True)
+    getattr(mx, "eval")(*captures.values())
+    print(json.dumps({name: list(value.shape) for name, value in sorted(captures.items())}))
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
+'''
+
+
+ENCODER_README_TEMPLATE = r'''# Generated MLX BERT encoder
+
+Generated by `scaffold_port.py` version __VERSION__ from trusted inspection
+`sha256:__DIGEST__` for family `encoder-transformer`.
+
+This eager standalone MLX package implements the inspected BERT text-encoder
+topology: word, learned absolute position, and token-type embeddings followed by
+embedding LayerNorm; __LAYERS__ bidirectional post-LayerNorm attention/FFN blocks;
+and __POOLER__. It has no causal mask, KV cache, or autoregressive interface.
+
+Parameter names intentionally mirror Hugging Face `BertModel` state-dict keys.
+The scaffold manifest is the target contract for a schema-2 `WEIGHT_MAP.json`.
+Validate masked and unmasked source/target captures through `run_parity.py
+--mode encoder`; support for relative/rotary positions and modality-specific
+ViT/CLIP frontends is deliberately excluded.
+'''
+
+
+def _encoder_scaffold_manifest(
+    files: dict[str, str],
+    config: dict[str, Any],
+    inspection_digest: str,
+    *,
+    pooler: bool,
+) -> str:
+    records = []
+    for name in ("capture.py", "config.json", "config.py", "model.py"):
+        raw = files[name].encode("utf-8")
+        records.append({
+            "path": name,
+            "size_bytes": len(raw),
+            "sha256": hashlib.sha256(raw).hexdigest(),
+        })
+    target = encoder_target_tensor_dict(config, pooler=pooler)
+    payload = {
+        "schema_version": 1,
+        "generator": {"name": "scaffold_port.py", "version": GENERATOR_VERSION},
+        "inspection_sha256": inspection_digest,
+        "config_sha256": hashlib.sha256(files["config.json"].encode("utf-8")).hexdigest(),
+        "files": records,
+        "tensors": [{"key": key, "shape": target[key]} for key in sorted(target)],
+    }
+    return json.dumps(payload, indent=2, sort_keys=True, ensure_ascii=False) + "\n"
+
+
+def generate_encoder_transformer(
+    inspection: dict[str, Any],
+    config: dict[str, Any],
+) -> dict[str, str]:
+    validate_encoder_config(config)
+    pooler = validate_encoder_topology(inspection, config)
+    digest = trusted_inspection_sha256(inspection)
+    header = _header(digest)
+    files = {
+        "config.json": json.dumps(config, indent=2, sort_keys=True, ensure_ascii=False) + "\n",
+        "config.py": ENCODER_CONFIG_TEMPLATE.replace("__HEADER__", header),
+        "model.py": (
+            ENCODER_MODEL_TEMPLATE.replace("__HEADER__", header)
+            .replace("__HAS_POOLER__", "True" if pooler else "False")
+        ),
+        "capture.py": ENCODER_CAPTURE_TEMPLATE.replace("__HEADER__", header),
+        "README.md": (
+            ENCODER_README_TEMPLATE.replace("__VERSION__", GENERATOR_VERSION)
+            .replace("__DIGEST__", digest)
+            .replace("__LAYERS__", str(_config_int(config, "num_hidden_layers")))
+            .replace("__POOLER__", "a dense+tanh CLS pooler" if pooler else "CLS pooling")
+        ),
+    }
+    files[SCAFFOLD_MANIFEST] = _encoder_scaffold_manifest(
+        files, config, digest, pooler=pooler
+    )
+    return files
+
+
 def ssm_target_tensors(config: dict[str, Any]) -> list[dict[str, Any]]:
     d_model = _config_int(config, "d_model")
     d_state = _config_int(config, "d_state")
@@ -2365,6 +2946,7 @@ FAMILY_GENERATORS: dict[str, Generator] = {
     DENSE_FAMILY: generate_dense_decoder,
     MOE_FAMILY: generate_moe_decoder,
     SSM_FAMILY: generate_selective_ssm,
+    ENCODER_FAMILY: generate_encoder_transformer,
 }
 
 

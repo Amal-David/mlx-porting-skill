@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import importlib.util
+import hashlib
 import json
 import os
 import py_compile
@@ -138,6 +139,7 @@ class MoeScaffoldDependencyFreeContractTests(unittest.TestCase):
             set(scaffold_port.FAMILY_GENERATORS),
             {
                 "dense-decoder-transformer",
+                "encoder-transformer",
                 "moe-decoder-transformer",
                 "ssm-recurrent-hybrid",
             },
@@ -482,6 +484,20 @@ class MoeScaffoldSyntheticParityTests(unittest.TestCase):
             )
 
             weights_path = converted / "model.safetensors"
+
+            def attest_mutated_weights() -> None:
+                report_path = converted / "conversion-report.json"
+                report = json.loads(report_path.read_text(encoding="utf-8"))
+                raw = weights_path.read_bytes()
+                report["outputs"]["weights"].update({
+                    "size_bytes": len(raw),
+                    "sha256": hashlib.sha256(raw).hexdigest(),
+                })
+                report_path.write_text(
+                    json.dumps(report, indent=2, sort_keys=True) + "\n",
+                    encoding="utf-8",
+                )
+
             original_arrays = load_file(weights_path)
             arrays = {key: value.copy() for key, value in original_arrays.items()}
             for layer in range(2):
@@ -490,6 +506,7 @@ class MoeScaffoldSyntheticParityTests(unittest.TestCase):
             temporary = converted / "model.routing-mutant.safetensors"
             save_file(arrays, temporary)
             os.replace(temporary, weights_path)
+            attest_mutated_weights()
 
             routing_failed = run_script(
                 RUN_PARITY, *parity_args, "--output", routing_failing_report,
@@ -510,6 +527,7 @@ class MoeScaffoldSyntheticParityTests(unittest.TestCase):
             temporary = converted / "model.seeded-bug.safetensors"
             save_file(arrays, temporary)
             os.replace(temporary, weights_path)
+            attest_mutated_weights()
 
             failed = run_script(RUN_PARITY, *parity_args, "--output", failing_report)
             self.assertEqual(failed.returncode, 1, failed.stdout + failed.stderr)

@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import importlib.util
+import hashlib
 import json
 import os
 import subprocess
@@ -160,8 +161,10 @@ def write_dependency_free_scaffold(root: Path) -> tuple[Path, Path, Path]:
         (package / "scaffold-manifest.json").read_text(encoding="utf-8")
     )
     weights.mkdir()
-    (weights / "model.safetensors").write_bytes(b"not-read-before-mlx-import")
-    (weights / "target-manifest.json").write_text(
+    weights_path = weights / "model.safetensors"
+    weights_path.write_bytes(b"not-read-before-mlx-import")
+    target_path = weights / "target-manifest.json"
+    target_path.write_text(
         json.dumps({
             "schema_version": 1,
             "format": "safetensors",
@@ -173,7 +176,47 @@ def write_dependency_free_scaffold(root: Path) -> tuple[Path, Path, Path]:
         }),
         encoding="utf-8",
     )
-    (weights / "conversion-report.json").write_text("{}\n", encoding="utf-8")
+    def record(path: Path) -> dict[str, object]:
+        raw = path.read_bytes()
+        return {
+            "name": path.name,
+            "size_bytes": len(raw),
+            "sha256": hashlib.sha256(raw).hexdigest(),
+        }
+    tensor_count = len(scaffold_manifest["tensors"])
+    (weights / "conversion-report.json").write_text(
+        json.dumps({
+            "schema_version": 1,
+            "counts": {
+                "ignored_source_tensors": 0,
+                "mapped_source_tensors": tensor_count,
+                "mapping_entries": tensor_count,
+                "source_tensors": tensor_count,
+                "target_tensors": tensor_count,
+            },
+            "transforms_applied": {"rename": tensor_count},
+            "dtype_policy": {"global": "keep", "targets": {}},
+            "memory_budget": {
+                "limit_bytes": 1,
+                "aggregate_materialized_bytes": 0,
+                "estimated_peak_bytes": 0,
+                "source_materialized_bytes": 0,
+                "target_materialized_bytes": 0,
+                "target_encoded_bytes": 0,
+            },
+            "inputs": {
+                "mapping": {"name": "WEIGHT_MAP.json", "size_bytes": 0, "sha256": "0" * 64},
+                "source_files": [
+                    {"name": "source.safetensors", "size_bytes": 0, "sha256": "0" * 64}
+                ],
+            },
+            "outputs": {
+                "weights": {**record(weights_path), "writer": "test-fixture"},
+                "target_manifest": record(target_path),
+            },
+        }),
+        encoding="utf-8",
+    )
     return inspection, package, weights
 
 
@@ -246,6 +289,7 @@ class ParityRunnerDependencyFreeContractTests(unittest.TestCase):
             )
             self.assertEqual(drifted.returncode, 2, drifted.stdout + drifted.stderr)
             self.assertIn("unvalidated modifications", drifted.stderr)
+
             self.assertIn("model.py", drifted.stderr)
             allowed = run_script(
                 CAPTURE_MLX,
@@ -279,6 +323,31 @@ class ParityRunnerDependencyFreeContractTests(unittest.TestCase):
             )
             self.assertEqual(config_drift.returncode, 2, config_drift.stdout + config_drift.stderr)
             self.assertIn("config.json", config_drift.stderr)
+
+    def test_capture_mlx_rejects_stale_conversion_digests(self) -> None:
+        for filename in ("model.safetensors", "target-manifest.json"):
+            with self.subTest(filename=filename), tempfile.TemporaryDirectory() as raw_tmp:
+                root = Path(raw_tmp).resolve()
+                _, package, weights = write_dependency_free_scaffold(root)
+                with (weights / filename).open("ab") as handle:
+                    handle.write(b"\n " if filename == "target-manifest.json" else b"tampered")
+                completed = run_script(
+                    CAPTURE_MLX,
+                    "--package", package,
+                    "--weights", weights,
+                    "--token-ids", "1", "2",
+                    "--output", root / "target.npz",
+                    no_site=True,
+                )
+
+            self.assertEqual(completed.returncode, 2, completed.stdout + completed.stderr)
+            expected = (
+                "target manifest"
+                if filename == "target-manifest.json"
+                else "converted weights"
+            )
+            self.assertIn(expected, completed.stderr)
+            self.assertIn("does not match conversion-report.json attestation", completed.stderr)
 
     def test_token_id_mode_never_requires_a_tokenizer(self) -> None:
         with tempfile.TemporaryDirectory() as raw_tmp:
@@ -315,9 +384,10 @@ class ParityRunnerDependencyFreeContractTests(unittest.TestCase):
             "ok": True,
             "inputs": {
                 "source_model": "/source", "package": "/package", "weights": "/weights",
-                "mode": "token_ids", "prompts": None, "token_ids": [1, 2],
+                "mode": "dense-decoder", "input_mode": "token_ids",
+                "prompts": None, "token_ids": [1, 2], "attention_mask": [[1, 1]],
                 "generate_steps": 1, "seed": 0, "dtype_policy": "float32",
-                "allow_modified": False,
+                "allow_modified": False, "fault_inject_target": None,
             },
             "tolerances": {"atol": 1e-5, "rtol": 1e-4, "cosine_min": -1.0},
             "rungs": [{
@@ -407,9 +477,7 @@ class ParityRunnerTorchPreparationContractTests(unittest.TestCase):
 )
 @require_mlx_keystone(HAS_MLX_RUNTIME, "a usable MLX runtime is required")
 class ParityRunnerEndToEndContractTests(unittest.TestCase):
-    def test_real_tool_chain_passes_then_seeded_layer_zero_weight_bug_stops_at_layer_zero(self) -> None:
-        from safetensors.numpy import load_file, save_file
-
+    def test_real_tool_chain_passes_then_seeded_target_fault_stops_at_layer_zero(self) -> None:
         with tempfile.TemporaryDirectory() as raw_tmp:
             root = Path(raw_tmp).resolve()
             source = root / "source"
@@ -468,15 +536,12 @@ class ParityRunnerEndToEndContractTests(unittest.TestCase):
             self.assertTrue(passing["ok"], passing)
             self.assertEqual(passing["summary"]["status"], "pass")
 
-            weights_path = converted / "model.safetensors"
-            arrays = load_file(weights_path)
-            bug_key = "model.layers.0.self_attn.q_proj.weight"
-            arrays[bug_key] = arrays[bug_key].T.copy()
-            temporary = converted / "model.seeded-bug.safetensors"
-            save_file(arrays, temporary)
-            os.replace(temporary, weights_path)
-
-            failed = run_script(RUN_PARITY, *parity_args, "--output", failing_report)
+            failed = run_script(
+                RUN_PARITY,
+                *parity_args,
+                "--fault-inject-target", "layer.0.hidden",
+                "--output", failing_report,
+            )
             self.assertEqual(failed.returncode, 1, failed.stdout + failed.stderr)
             failing = json.loads(failing_report.read_text(encoding="utf-8"))
             run_parity.validate_parity_report(failing)

@@ -2,8 +2,8 @@
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
   "version": "0.5.0",
-  "generated_at": "2026-07-11T17:48:39.661570+00:00",
-  "file_count": 462,
+  "generated_at": "2026-07-11T17:58:38.253482+00:00",
+  "file_count": 472,
   "files": [
     {
       "path": ".agents/skills/mlx-model-porting",
@@ -171,8 +171,8 @@
     },
     {
       "path": "mlx-model-porting/SKILL.md",
-      "size_bytes": 13463,
-      "sha256": "968e43a494f3bcfadb17c44803f90a0bec700986182572642d6c710b77c555f2",
+      "size_bytes": 13464,
+      "sha256": "2fb26364f8e21dd21fc3eb778850236bcf46c17aee992d0408e4f8eb46e3d6e1",
       "executable": false
     },
     {
@@ -932,6 +932,60 @@
       "executable": false
     },
     {
+      "path": "mlx-model-porting/examples/worked-port-bge-base-en/README.md",
+      "size_bytes": 6451,
+      "sha256": "746dd993659e52e1c65eaaaa1ef9012051c470147056f63cbf93f12c14690e78",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/examples/worked-port-bge-base-en/WEIGHT_MAP.json",
+      "size_bytes": 61914,
+      "sha256": "9f3c01ae8a2737e917b2844ee966fd872041c8df0ffc5966eb139693ea558ed1",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/examples/worked-port-bge-base-en/converted-target-manifest.json",
+      "size_bytes": 26939,
+      "sha256": "c5a9d900a3d4645613557bd4200cd013bb74d972835ce07aa240851735b3bfc0",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/examples/worked-port-bge-base-en/inspection.json",
+      "size_bytes": 55409,
+      "sha256": "02ddd87654857a4fbfb0bb75aefc16d668ccf3ba963b833feba911f080c81406",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/examples/worked-port-bge-base-en/parity-report.json",
+      "size_bytes": 5749,
+      "sha256": "264e64ce89df4ad4dbcc23b4f6d010f483497671daae364e75ecd80a6e30ec02",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/examples/worked-port-bge-base-en/scaffold-manifest.json",
+      "size_bytes": 23372,
+      "sha256": "48365fb71558ce1cd2508b2e74714147a7ff55ceb3d908456b5a28d9b8e9dddd",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/examples/worked-port-bge-base-en/source-oracle.manifest.json",
+      "size_bytes": 4764,
+      "sha256": "382488071a70cd24bae94eaa270d09330a9d108c8e7e56476740e0c0123c4e1d",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/examples/worked-port-bge-base-en/target-f32.manifest.json",
+      "size_bytes": 4772,
+      "sha256": "0ec3ca761d5515fa1036acf751842836f1e7c5c5c5ba106c8d7185eb8aff8d39",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/examples/worked-port-bge-base-en/weight-map-validation.json",
+      "size_bytes": 61288,
+      "sha256": "0f8bea395a61f59f7aaea96aff18662649f8f1b1eca775c37c1688c073a242d7",
+      "executable": false
+    },
+    {
       "path": "mlx-model-porting/examples/worked-port-qwen2.5-0.5b-instruct/PORT_PLAN.md",
       "size_bytes": 5736,
       "sha256": "817673a5f0c192f569f3430935dc61a47e712929fd03487e408e6793491b26f5",
@@ -1095,8 +1149,8 @@
     },
     {
       "path": "mlx-model-porting/references/parity-and-testing.md",
-      "size_bytes": 8148,
-      "sha256": "165ed03a6ddfbbe1ef993e4e25cf454bf040fb95d5a1319c1fcb7513401a5a09",
+      "size_bytes": 8585,
+      "sha256": "c688f86bc562f26d3612bec1a4a4ec2f5417531ab9fb70b27d9eea8c4869bcad",
       "executable": false
     },
     {
@@ -1773,8 +1827,8 @@
     },
     {
       "path": "mlx-model-porting/scripts/_capture_common.py",
-      "size_bytes": 21620,
-      "sha256": "a98daed4875301d7b68ae76ecb08549390ac377d03a282a40d15a0dc08a99a2b",
+      "size_bytes": 22925,
+      "sha256": "a270efba1c4e173b90c1dd49925f37c0e984388345c297e6104be69e8a014acd",
       "executable": false
     },
     {
@@ -1809,14 +1863,14 @@
     },
     {
       "path": "mlx-model-porting/scripts/capture_mlx.py",
-      "size_bytes": 23956,
-      "sha256": "f544ce3ee5550124809b600625ff93218cd06dde967eaa3328fa5a2c576edb60",
+      "size_bytes": 32821,
+      "sha256": "bd7e24f8aa6e0a9972bd73844576db54f1d56b8bd2c2378134f224c284d48f8a",
       "executable": false
     },
     {
       "path": "mlx-model-porting/scripts/capture_oracle.py",
-      "size_bytes": 29599,
-      "sha256": "a8243149d5d1a6b796f61e568d84d3f5f7ae66ee794d1197b59484447e142290",
+      "size_bytes": 33931,
+      "sha256": "0c037f4637b3ed22ce85e824b040575a27f4de6613a56e5e4f53421aa19ead0b",
       "executable": false
     },
     {
@@ -1911,8 +1965,8 @@
     },
     {
       "path": "mlx-model-porting/scripts/run_parity.py",
-      "size_bytes": 20634,
-      "sha256": "537769bafeac9eaa4b65639b3aa6e51730f3e793bd801e395e87e04aef65e3fd",
+      "size_bytes": 24406,
+      "sha256": "17755f86345bc918d54044513e7f41743ab50ce0b16d20958d611b6ab411d1ee",
       "executable": false
     },
     {
@@ -1923,8 +1977,8 @@
     },
     {
       "path": "mlx-model-porting/scripts/scaffold_port.py",
-      "size_bytes": 103191,
-      "sha256": "1fa4ab89594d661e842477a8dbeb3ff537e9ee1a370ff92cbcef2a1e3366cfe2",
+      "size_bytes": 126683,
+      "sha256": "adf95e5ca2816f67270420f8fd54f85bb961f31aa03a04a2757e662fe2691559",
       "executable": true
     },
     {
@@ -2594,6 +2648,12 @@
       "executable": false
     },
     {
+      "path": "tests/test_encoder_contract.py",
+      "size_bytes": 12510,
+      "sha256": "cea915cce1af5d4fe0c96293f5695f54326aafb4be8116316586d71b7d3b2984",
+      "executable": false
+    },
+    {
       "path": "tests/test_evidence_index_contract.py",
       "size_bytes": 12183,
       "sha256": "084709f8d5695d58539e87573ee8f48729376d43b89d6847d878243f44c7ab5e",
@@ -2685,8 +2745,8 @@
     },
     {
       "path": "tests/test_parity_runner_contract.py",
-      "size_bytes": 20777,
-      "sha256": "15fbc18dad7e5f3e0ecd4f9366d9adcf811bc2f7bc4c659e65990bb72f73d95d",
+      "size_bytes": 23390,
+      "sha256": "fa3449d2770aa08c78314889a821c6beeb7ad88b92b1edcda91aac64a1cb52ea",
       "executable": false
     },
     {
@@ -2721,14 +2781,14 @@
     },
     {
       "path": "tests/test_scaffold_moe_contract.py",
-      "size_bytes": 22286,
-      "sha256": "b396c06777a09480b44b39cd9df3496b4e2aa2a6f83f667e4248a32d22e3b877",
+      "size_bytes": 23007,
+      "sha256": "85b7e1d96fa50e58155e5a582d15db6df76782bb51016d16ef543928d4f937cc",
       "executable": false
     },
     {
       "path": "tests/test_scaffold_port_contract.py",
-      "size_bytes": 51112,
-      "sha256": "af43ccde952b1beaff71f481e3d7ef1cb049e9cd0729a00f83e3b8f28f202a75",
+      "size_bytes": 51155,
+      "sha256": "1ef0d97e877d3eeb2fc48061d01794be1f3f71bcf5f0a980d3bb0a3e14113829",
       "executable": false
     },
     {
