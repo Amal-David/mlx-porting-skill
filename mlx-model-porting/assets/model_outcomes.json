@@ -7,7 +7,7 @@
     "Every model or family outcome must state overall and speculative-decoding branches with controlled provenance; range may be null when a numeric claim is held.",
     "Potential speedup ranges are planning bands, not benchmark claims; performance observations keep their historical number in observed_source_range until promotion gates pass.",
     "Keep source-reported numbers attached to hardware, workload, versions, and quality gates.",
-    "Use local_reproduced only when the external receipt assessment is promotion-ready with every integrity, comparability, stability, quality, rollback, and enabled-method gate passing."
+    "Use local_reproduced only when the external receipt assessment is promotion-ready with every integrity, comparability, stability, quality, rollback, enabled-method, and externally signed attestation gate passing."
   ],
   "status_definitions": {
     "local_reproduced": "A local test, benchmark, parity fixture, or skill validation gate reproduced the result.",
@@ -30,7 +30,7 @@
       "did_not_work": [
         "The original scaffold rejected inert sliding-window metadata and could not express Q/K/V-only bias; both defects required generator fixes before conversion.",
         "Default FP32-style tensor tolerances were not valid for BF16 source arithmetic versus the F32 target graph; the worked report records the symmetric model-specific gate and its observed extrema.",
-        "The BF16 benchmark variant diverged after the six-token exact-quality window, and its timing receipt remains execution-unattested rather than a promoted quality or speed claim."
+        "The checked-in BF16 quality artifact captures only six generated tokens, and its timing receipt remains execution-unattested rather than a promoted quality or speed claim."
       ],
       "claim_boundary": "Claim one pinned local real-model port, exact eight-token greedy agreement for the F32 artifact, and one held F32-versus-BF16 wall-time observation. Do not generalize the tolerance, BF16 quality window, performance ratio, longer-context behavior, batching, or publication readiness.",
       "potential_speedup": {
@@ -43,16 +43,16 @@
           "observed_source_range": "1.3037x-1.3037x",
           "claim_status": "held",
           "hold_reasons": [
-            "The generic external-command runner records execution_attested=false even though model, workload, interpreter, quality, and raw-output gates pass.",
+            "The runner records execution_attested=false because no external signature or out-of-repository trust anchor exists, even though the internal model, workload, interpreter, quality, and raw-output gates pass.",
             "The workload is separate-process load plus six greedy tokens on one Apple M4 Pro, not steady-state decode or a portable product workload.",
-            "The BF16 continuation diverges after the exact six-token quality window."
+            "No checked-in BF16 quality artifact covers output beyond the exact six-token window."
           ],
           "confidence": "performance_observation",
           "basis": "Schema-2 receipts observed 0.3247475000 s F32 versus 0.2490912910 s BF16 median wall time, a recomputed 1.3037288406x inverse ratio. The measurement is retained as an observation only.",
           "applies_when": [
             "The exact pinned source, standalone scaffold, conversion maps, and Apple M4 Pro workload are reproduced.",
             "The six-token exact-output contract passes for both variants.",
-            "The receipt remains labeled performance_observation until independent execution attestation exists."
+            "The receipt remains labeled performance_observation until a protected Apple-Silicon signer produces an external signature that verifies against an out-of-repository trust anchor."
           ],
           "measure": [
             "separate-process load-plus-generation wall time",
@@ -95,7 +95,7 @@
         "mlx-lm-repo",
         "mlx-lm-models"
       ],
-      "next_validation": "Add multiple prompts and boundary lengths, full-versus-incremental logit/cache parity, batch coverage, an independently attested runner, and a longer BF16 task-quality evaluation before widening the claim."
+      "next_validation": "Add multiple prompts and boundary lengths, full-versus-incremental logit/cache parity, batch coverage, an externally signed runner receipt with an out-of-repository trust root, and a longer BF16 task-quality evaluation before widening the claim."
     },
     {
       "id": "decoder-mlx-lm-working-route",

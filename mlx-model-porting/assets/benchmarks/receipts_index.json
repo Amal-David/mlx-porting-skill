@@ -206,9 +206,11 @@
       },
       "schema_version": 2,
       "receipt_sha256": "11ede57ed58d4623214f852bf7827fece79fd77daac70f2beb11d68d076f333d",
-      "classification": "promotion_ready",
-      "promotion_ready": true,
-      "reasons": []
+      "classification": "performance_observation",
+      "promotion_ready": false,
+      "reasons": [
+        "missing-external-attestation-signature"
+      ]
     },
     {
       "label": "qwen2.5-0.5b-port-f32",
@@ -230,7 +232,8 @@
       "classification": "performance_observation",
       "promotion_ready": false,
       "reasons": [
-        "baseline-role-not-promotable"
+        "baseline-role-not-promotable",
+        "missing-external-attestation-signature"
       ]
     },
     {

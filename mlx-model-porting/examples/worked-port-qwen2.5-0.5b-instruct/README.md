@@ -19,10 +19,12 @@ tensor captures remain outside the repository.
   eight-token greedy output.
 - Independent check: Torch, the standalone scaffold cache path, and local
   MLX-LM 0.31.1 produced the same eight IDs and continuation.
-- Benchmark: the F32 schema-2 receipt is an execution-attested baseline
-  observation; the BF16 receipt is `promotion_ready` with every gate passing.
-  Its fingerprint-scoped, catalogued range is `1.0x-1.8122x` for the attested
-  adapter workload, not pure decode throughput.
+- Benchmark: both F32 and BF16 schema-2 receipts are
+  `performance_observation`. The retained challenge, dependency, and output
+  bundles support reproducibility-on-request, but no external signature or
+  out-of-repository trust anchor exists. The raw BF16 inverse-wall-time ratio,
+  `1.8122003933x`, is one reproducible local-run observation, not a claim of reliable speedup. It covers load plus six captured tokens and is not an effective
+  range or pure-decode claim.
 
 ## Local setup and provenance
 
@@ -222,25 +224,26 @@ returned the same eight greedy IDs and decoded text. The exact transcript is in
 
 A second conversion changed only the global map policy from F32 to BF16. The
 benchmark workload measures separate-process load plus six cached greedy tokens;
-six tokens were selected because F32 and BF16 preserve that exact fixed output.
-The seventh BF16 token diverges, so no broader BF16 quality equivalence is
-claimed.
+the checked-in quality artifact captures an exact six-token match. No BF16
+quality equivalence is claimed beyond the captured output.
 
 The receipt harness used isolated Python 3.13.11 with MLX 0.24.0 under `-I -B`.
 The checked-in runner is content-pinned at argv position 1. For every process,
 the parent wrote a fresh nonce challenge and snapshotted the quality contract;
 the runner hashed the selected model artifact, executed the fixed workload,
 retained the actually loaded MLX and generated-port dependency bytes, and wrote
-the measured output plus a content-bound evidence bundle. The validator
-re-derived those bindings before setting `execution_attested=true`.
+the measured output plus a digest-bound evidence bundle. The validator
+re-derived those bindings, establishing internal consistency but not
+authenticity. SHA-256 is not a signature, so the missing external signer keeps
+`execution_attested=false`.
 
 The parent-measured wall time includes the adapter's model hashing, dependency
 capture, and evidence writing. The F32 median was 1.6550946250 seconds (CV
 0.0060855); BF16 was 0.9133066250 seconds (CV 0.0090013). The inverse-wall-time
 ratio 1.8122003933 cleared the fixed 1.02 noise threshold, and the exact
-six-token quality contract passed. The seventh BF16 token still diverges, so
-the promoted range remains fingerprint-scoped to this exact six-token attested
-workload.
+six-token quality contract passed. The ratio remains a reproducible observation
+for this captured workload and is not promoted or exposed as an effective
+range.
 
 ```bash
 python3 mlx-model-porting/scripts/benchmark_command.py \

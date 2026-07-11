@@ -127,22 +127,27 @@ repetition must keep the exact baseline file/digest, semantic experiment
 measurements remain in each full fingerprint; the conservative minimum
 repetition supplies any future promoted ratio and fingerprint.
 
-These controls do not prove arbitrary runner semantics or installed dependency
-bytes. The `execution_attested` gate therefore remains false for the generic
-runner and legacy MLX-LM lanes, making their receipts observations. The one
-narrow exception is the repository-owned `attested-mlx-port-wall-time` Qwen
-worked-port adapter. Its receipts pin the checked-in runner at argv position 1;
-the parent issues a fresh per-run challenge and snapshots its quality contract,
-evidence bundle, and output; and the validator re-hashes the trusted runner,
-every retained loaded MLX/port dependency, the workload, challenge, and output
-before accepting execution attestation. This is not a generic escape hatch:
-another model or runner remains unattested until it has an equally reviewed,
-model-specific adapter.
+These controls establish internal consistency and reproducibility-on-request;
+they do not prove authenticity. The generic runner and legacy MLX-LM lanes
+remain observations. The repository-owned `attested-mlx-port-wall-time` Qwen
+adapter adds a fresh per-run challenge plus retained runner, dependency,
+workload, output, and evidence bytes, all checked with unkeyed SHA-256. That is
+useful reproducibility evidence, but SHA-256 is a digest, not a signature. A
+receipt author can fabricate a coherent bundle and recompute every digest.
 
-The attested adapter hashes the model and writes dependency/evidence snapshots
-inside the child process. Parent wall time includes that work. Any promoted
-ratio from this lane is therefore scoped to attested end-to-end execution and
-must not be restated as pure prefill or decode throughput.
+The `execution_attested` promotion gate therefore requires an external
+signature covering the repository commit/tree, challenge, reviewed dependency
+manifest, raw output, promotion policy, and timing. The signature must come
+from a protected Apple-Silicon signer and verify against a maintainer-controlled
+trust anchor that is neither part of the submitted receipt/evidence nor checked
+into this repository. Building that signer and trust-root distribution is
+future work. Until it exists, `execution_attested=false` for every checked-in
+receipt and every measured ratio remains an observation.
+
+The Qwen adapter hashes the model and writes dependency/evidence snapshots
+inside the child process. Parent wall time includes that work, so its retained
+inverse-wall-time observation must not be restated as pure prefill or decode
+throughput.
 
 The receipt spec has exactly these nine top-level fields; artifact paths and
 digests are relative to the directory that will contain the receipt:

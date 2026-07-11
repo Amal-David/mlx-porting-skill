@@ -91,17 +91,15 @@ window.MLX_PORTING_SITE_DATA = {
   },
   "benchmarks": {
     "by_classification": {
-      "performance_observation": 11,
-      "promotion_ready": 1,
+      "performance_observation": 12,
       "rejected": 1
     },
-    "promotion_ready": 1,
+    "promotion_ready": 0,
     "total": 13
   },
   "effective_claims": {
     "by_state": {
-      "local-promotion": 1,
-      "withheld": 9
+      "withheld": 10
     },
     "total": 10
   },

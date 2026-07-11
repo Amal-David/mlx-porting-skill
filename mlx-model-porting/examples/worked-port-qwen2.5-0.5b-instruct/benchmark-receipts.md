@@ -6,19 +6,20 @@ same exact six-token quality artifact.
 
 | Variant | Receipt | Median wall time | CV | Classification | State |
 |---|---|---:|---:|---|---|
-| F32 baseline | [`qwen2.5-0.5b-port-f32.json`](../../assets/benchmarks/qwen2.5-0.5b-port-f32.json) | 1.6550946250 s | 0.0060855 | `performance_observation` | `execution_attested=true`; baseline role is non-promotable |
-| BF16 candidate | [`qwen2.5-0.5b-port-bf16.json`](../../assets/benchmarks/qwen2.5-0.5b-port-bf16.json) | 0.9133066250 s | 0.0090013 | `promotion_ready` | every promotion gate passes |
+| F32 baseline | [`qwen2.5-0.5b-port-f32.json`](../../assets/benchmarks/qwen2.5-0.5b-port-f32.json) | 1.6550946250 s | 0.0060855 | `performance_observation` | `execution_attested=false`; external signature missing |
+| BF16 candidate | [`qwen2.5-0.5b-port-bf16.json`](../../assets/benchmarks/qwen2.5-0.5b-port-bf16.json) | 0.9133066250 s | 0.0090013 | `performance_observation` | `execution_attested=false`; external signature missing |
 
 - `1.8122003933x` is the observed receipt inverse-wall-time ratio, not a portable guarantee.
 - `1.02x` is the required receipt noise floor.
-- `1.0x-1.8122x` is the generated catalogued range, exposed only with
-  the exact canonical experiment fingerprint.
+- No effective range is generated; the observed ratio remains non-promotable.
 
 Both receipts use the repository-owned `attested-mlx-port-wall-time` runner.
-The timing includes model hashing and evidence capture, so this is an attested
-adapter wall-time claim rather than a pure decode-speed claim. Exact output
-passes for six generated tokens; the known seventh-token BF16 divergence keeps
-the quality scope narrow.
+The timing includes model hashing and evidence capture. The challenge and
+digest-bound bundles establish internal consistency and
+reproducibility-on-request, not authenticity: SHA-256 is not a signature. A
+protected Apple-Silicon signer and out-of-repository trust anchor are future
+work. Exact output is captured for six generated tokens; no quality claim is
+made beyond that artifact.
 
 Receipt SHA-256:
 

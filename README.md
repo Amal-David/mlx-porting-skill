@@ -37,12 +37,12 @@ Current 0.5.0 corpus snapshot:
   support scope and claim types, while 327 remain intentionally unclassified;
 - 66 technique records, 28 optimization-guidance methods, and 4 stack
   definitions;
-- 29 inspectable Python scripts and 423 offline tests;
+- 29 inspectable Python scripts and 425 offline tests;
 - a 697-node, 499-edge research graph plus a deterministically reconciled
   backlog;
-- 13 checked-in benchmark receipts: 11 `performance_observation`, 1
+- 13 checked-in benchmark receipts: 12 `performance_observation`, 0
   `promotion_ready`, and 1 `rejected`;
-- 10 effective claims: 1 fingerprint-scoped local promotion and 9 withheld.
+- 10 effective claims, all withheld.
 
 ## Capability boundary
 
@@ -341,41 +341,27 @@ python3 mlx-model-porting/scripts/recommend_optimizations.py inspection.json \
   --markdown OPTIMIZATIONS.md
 ```
 
-For the current `local-promotion` claim, project the profile from the full
-promoted fingerprint instead of copying its digest. This example deliberately
-copies the canonical objects without reconstructing or normalizing them:
+No current claim has an effective range. Inspect the generated catalogue's
+withholding reasons before designing a new measurement:
 
 ```python
 import json
 
 catalog = json.load(open("mlx-model-porting/assets/effective_claims.json"))
-claim = next(row for row in catalog["claims"] if row["method_id"] == "bf16-weight-cast")
-fingerprint = claim["experiment_fingerprint"]
-payload = fingerprint["payload"]
-target = payload["target"]
-profile = {
-    "schema_version": 1,
-    "hardware": target["descriptor"]["hardware"],
-    "software": target["descriptor"]["software"],
-    "capabilities": [],
-    "workloads": ["server"],  # choose the exact controlled workload tag in scope
-    "models": payload["models"],
-    "target": target,
-    "workload": payload["workload"],
-    "experiment_fingerprint": fingerprint,
+held = {
+    row["method_id"]: row["withheld_reasons"]
+    for row in catalog["claims"]
+    if row["effective_range"] is None
 }
-print(json.dumps(profile, indent=2))
+print(json.dumps(held, indent=2))
 ```
 
-The fingerprint binds the candidate receipt SHA-256, model and source revisions,
-target and workload descriptors, enabled methods, metric, experiment contract,
-baseline receipt, aggregates, every measured result and raw-output digest, and
-the quality result digest. Multiple receipts pool only through a separate stable
-identity that retains the exact baseline file/digest, warmup/run/timeout protocol, and
-exact-output quality contract; the lowest compatible ratio supplies the public
-range and full fingerprint. The advisor also exact-matches the profile's model,
-target, workload, hardware, and software objects. A copied digest, empty profile,
-or merely similar Mac cannot unlock the number.
+Any future promotion must bind the candidate receipt SHA-256, model and source
+revisions, target and workload descriptors, enabled methods, metric, experiment
+contract, baseline receipt, aggregates, every measured result and raw-output
+digest, and the quality result digest. It must also carry an external signature
+verified against an out-of-repository trust anchor. A copied digest, empty
+profile, or merely similar Mac cannot unlock a number.
 
 The advisor separates results into five controlled buckets:
 
@@ -392,14 +378,16 @@ remain withheld observations: the existing `TargetProfile` cannot encode their
 complete benchmark scope closely enough to make them profile-eligible.
 Source-reported numbers are never advisor-visible until an equivalent local
 target-workload benchmark passes the promotion contract.
-Eleven local receipts remain performance observations. The generic external
+Twelve local receipts remain performance observations. The generic external
 command and legacy MLX-LM lanes do not independently attest the executed
 dependency bytes and model/workload semantics. The narrow repository-owned
-`attested-mlx-port-wall-time` adapter closes that boundary for its exact Qwen
-workload only. The resulting `bf16-weight-cast` catalogued range
-`1.0x-1.8122x` is receipt-bound and fingerprint-scoped to load plus six greedy
-tokens with evidence
-capture; it is not a portable guarantee or a pure-decode claim.
+`attested-mlx-port-wall-time` adapter retains runner, dependency, challenge,
+and output evidence for its exact Qwen workload, establishing internal
+consistency and reproducibility-on-request. It does not close the authenticity
+boundary: SHA-256 is a digest, not a signature, and no external signer or trust
+root exists today. The raw `1.8122003933x` inverse-wall-time ratio is one reproducible local-run observation, not a claim of reliable speedup. It covers load plus
+six captured greedy tokens and is not an effective range, portable guarantee,
+or pure-decode claim.
 Compound numbers are withheld unless compatible steps were validated together
 with unique evidence lineage; multiplying per-step ceilings is never a measured
 claim.
@@ -424,10 +412,8 @@ locally reproduced implementation reference.
 
 The benchmark truth is generated in
 [`BENCHMARK_REPORT.md`](mlx-model-porting/assets/BENCHMARK_REPORT.md). The current
-13-receipt set contains 11 observations, 1 promotion-ready receipt, and 1
-rejected receipt. Exactly one local claim is promoted; it remains bound to the
-complete catalogued fingerprint and must not be generalized to other models,
-workloads, environments, or metrics.
+13-receipt set contains 12 observations, 0 promotion-ready receipts, and 1
+rejected receipt. All ten effective claims are withheld.
 
 Measurement validation has two generic runner lanes. `mlx-lm-generate` retains
 its token-throughput observations. `external-command-wall-time` covers other
@@ -448,8 +434,10 @@ The MLX-LM lane is also observation-only until its imported package bytes and
 per-run model output are independently bound. The separate
 `attested-mlx-port-wall-time` adapter is intentionally Qwen/workload-specific:
 it binds a fresh parent challenge, reviewed runner bytes, retained loaded
-dependencies, model/workload identity, and every output before the validator
-sets `execution_attested=true`.
+dependencies, model/workload identity, and every output. Those bindings support
+reproduction but cannot set `execution_attested=true` without a signature from
+a protected Apple-Silicon signer verified against an out-of-repository trust
+anchor. That external trust root is future work.
 
 ## Release gates
 

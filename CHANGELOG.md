@@ -16,14 +16,15 @@
   MLX-LM, and no model weights or NPZ captures were committed.
 - Added the repository-owned `attested-mlx-port-wall-time` runner lane with
   per-run challenges, checked-in runner and dependency evidence, exact-output
-  quality recomputation, and validator-derived execution attestation. The 13
-  receipts now classify as 11 `performance_observation`, 1 `promotion_ready`,
+  quality recomputation, and reproducibility-on-request evidence. The lane is
+  resealed because unkeyed digests establish internal consistency, not
+  authenticity; promotion now requires an external signer and trust root. The
+  13 receipts classify as 12 `performance_observation`, 0 `promotion_ready`,
   and 1 `rejected`.
-- Promoted exactly one local claim, `bf16-weight-cast`. Its catalogued range
-  `1.0x-1.8122x` is receipt-bound and available only for the canonical fingerprint
-  of the attested Qwen load-plus-six-token workload; it is not a portable or
-  pure-decode guarantee. The effective catalogue contains 10 claims: 1 local
-  promotion and 9 withheld records.
+- Withheld all 10 effective claims, including `bf16-weight-cast`. The raw
+  `1.8122003933x` inverse-wall-time ratio is one reproducible local-run observation, not a claim of reliable speedup. It remains evidence for the captured Qwen
+  load-plus-six-token workload, not an effective range, portable guarantee, or
+  pure-decode claim.
 - Wired `knowledge_graph.json` into the advisor as a bounded, fail-closed,
   separate unreviewed-research-signals queue; reconciled
   `research_backlog.json` deterministically with a drift check; and removed the
@@ -32,7 +33,7 @@
 - Expanded the canonical corpus to 66 techniques and 28 guidance methods while
   preserving 17 architecture routes, 350 sources, and 4 planning stacks. The
   tool directory now contains 29 inspectable Python scripts.
-- Added asset-consumer coverage and raised the offline suite to 423 tests,
+- Added asset-consumer coverage and raised the offline suite to 425 tests,
   including dense-decoder scaffold, conversion, capture, parity, attestation,
   catalogue, backlog, security, and generated-artifact contracts.
 - Clarified the capability boundary: dense-decoder Transformers are tooled end

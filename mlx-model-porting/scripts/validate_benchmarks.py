@@ -77,6 +77,20 @@ ATTESTED_VARIANTS = {
         "dtype_policy": "bf16",
     },
 }
+EXTERNAL_ATTESTATION_BLOCKER = "missing-external-attestation-signature"
+EXTERNAL_ATTESTATION_SIGNED_FIELDS = (
+    "repository_commit",
+    "repository_tree",
+    "challenge",
+    "reviewed_dependency_manifest",
+    "raw_output",
+    "promotion_policy",
+    "timing",
+)
+ATTESTATION_PROMOTION_BLOCKERS = {
+    "execution-semantics-unattested",
+    EXTERNAL_ATTESTATION_BLOCKER,
+}
 EXTERNAL_INTERPRETER_FLAGS = ["-I", "-B"]
 EXTERNAL_MODEL_FIELDS = {"id", "revision", "lineage_id", "source_id", "source_revision"}
 SHELL_EXECUTABLES = {"bash", "cmd", "dash", "fish", "ksh", "powershell", "pwsh", "sh", "zsh"}
@@ -1544,6 +1558,93 @@ def _artifact_identity(value: Any) -> dict[str, Any] | None:
     return identity
 
 
+def unreferenced_attestation_files(
+    root: Path,
+    receipts: dict[str, dict[str, Any]],
+) -> list[str]:
+    """Return attestation-tree files unreachable from receipt artifact bindings."""
+    referenced: set[str] = set()
+    pending_snapshots: list[dict[str, Any]] = []
+
+    def record(artifact: Any) -> None:
+        identity = _artifact_identity(artifact)
+        if identity is None or not identity["path"].startswith("attestations/"):
+            return
+        referenced.add(identity["path"])
+        if identity["path"].endswith(("/challenge.json", "/evidence.json")):
+            pending_snapshots.append(identity)
+
+    def record_execution_attestation(value: Any) -> None:
+        if not isinstance(value, dict):
+            return
+        for key in ("challenge", "evidence", "output"):
+            record(value.get(key))
+
+    def read_json(artifact: Any, *, limit: int) -> Any:
+        identity = _artifact_identity(artifact)
+        if identity is None or identity["size_bytes"] > limit:
+            return None
+        path = resolve_artifact(root, identity["path"])
+        if path is None or not path.is_file():
+            return None
+        try:
+            return json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, UnicodeDecodeError, json.JSONDecodeError):
+            return None
+
+    for receipt in receipts.values():
+        runs = receipt.get("runs")
+        if not isinstance(runs, list):
+            continue
+        for run in runs:
+            if not isinstance(run, dict):
+                continue
+            record_execution_attestation(run.get("execution_attestation"))
+            report = read_json(
+                run.get("raw_output"),
+                limit=MAX_EXTERNAL_REPORT_BYTES,
+            )
+            if not isinstance(report, dict):
+                continue
+            for phase_runs in (report.get("warmups"), report.get("runs")):
+                if not isinstance(phase_runs, list):
+                    continue
+                for phase_run in phase_runs:
+                    if isinstance(phase_run, dict):
+                        record_execution_attestation(
+                            phase_run.get("execution_attestation")
+                        )
+
+    inspected_snapshots: set[str] = set()
+    while pending_snapshots:
+        identity = pending_snapshots.pop()
+        relative = identity["path"]
+        if relative in inspected_snapshots:
+            continue
+        inspected_snapshots.add(relative)
+        payload = read_json(identity, limit=MAX_ATTESTATION_ARTIFACT_BYTES)
+        if not isinstance(payload, dict):
+            continue
+        if relative.endswith("/challenge.json"):
+            record(payload.get("quality_contract"))
+        elif relative.endswith("/evidence.json"):
+            dependencies = payload.get("dependencies")
+            if isinstance(dependencies, list):
+                for dependency in dependencies:
+                    if isinstance(dependency, dict):
+                        record(dependency.get("artifact"))
+
+    attestation_root = root / "attestations"
+    if not attestation_root.exists():
+        return []
+    actual = {
+        path.relative_to(root).as_posix()
+        for path in attestation_root.rglob("*")
+        if path.is_file() or path.is_symlink()
+    }
+    return sorted(actual - referenced)
+
+
 def _load_bounded_attestation_json(
     root: Path,
     artifact: Any,
@@ -1897,7 +1998,13 @@ def attested_execution_state(
         ):
             return False, "attestation-output-digest-mismatch"
 
-    return True, None
+    # The retained challenge/evidence bundle above establishes internal
+    # consistency and reproducibility-on-request only. Promotion additionally
+    # requires a signature over EXTERNAL_ATTESTATION_SIGNED_FIELDS from a
+    # protected Apple-Silicon signer, verified against a trust anchor that is
+    # neither receipt-controlled nor checked into this repository. No such
+    # external verifier exists today, so repository evidence remains sealed.
+    return False, EXTERNAL_ATTESTATION_BLOCKER
 
 
 def schema2_gate_state(receipt: dict[str, Any], root: Path) -> tuple[list[str], dict[str, bool], dict[str, Any]]:
@@ -2296,7 +2403,7 @@ def assess_schema2_baseline(
     baseline_blockers, _, _ = schema2_gate_state(baseline, root) if baseline.get("schema_version") == 2 else (["legacy-schema-1"], {}, {})
     baseline_compatibility_blockers = [
         blocker for blocker in baseline_blockers
-        if blocker != "execution-semantics-unattested"
+        if blocker not in ATTESTATION_PROMOTION_BLOCKERS
     ]
     if baseline_compatibility_blockers:
         blockers.append("baseline-not-validation-complete")
@@ -2455,7 +2562,7 @@ def build_assessment_report(root: Path) -> dict[str, Any]:
         )
         non_attestation_blockers = [
             blocker for blocker in blockers
-            if blocker != "execution-semantics-unattested"
+            if blocker not in ATTESTATION_PROMOTION_BLOCKERS
         ]
         noise_only_rejection = (
             schema_version == 2
@@ -2492,7 +2599,15 @@ def build_assessment_report(root: Path) -> dict[str, Any]:
             "primary_metric": receipt.get("comparison", {}).get("primary_metric", DEFAULT_PRIMARY_METRIC),
             "chip": environment.get("cpu_brand") or environment.get("mac_model") or environment.get("machine"),
         })
-    return {"schema_version": 1, "assessments": rows}
+    integrity_errors = [
+        f"unreferenced-attestation-file:{path}"
+        for path in unreferenced_attestation_files(root, receipts)
+    ]
+    return {
+        "schema_version": 1,
+        "integrity_errors": integrity_errors,
+        "assessments": rows,
+    }
 
 
 def assessment_summary(report: dict[str, Any]) -> dict[str, int]:
@@ -2502,7 +2617,8 @@ def assessment_summary(report: dict[str, Any]) -> dict[str, int]:
         "performance_observation_count": sum(row.get("classification") == "performance_observation" for row in rows),
         "promotion_ready_count": sum(row.get("classification") == "promotion_ready" for row in rows),
         "rejected_count": sum(row.get("classification") == "rejected" for row in rows),
-        "integrity_error_count": sum(
+        "integrity_error_count": len(report.get("integrity_errors", []))
+        + sum(
             reason in INTEGRITY_BLOCKERS
             for row in rows
             for reason in row.get("reasons", [])
@@ -2552,6 +2668,7 @@ def render_benchmark_report(report: dict[str, Any]) -> str:
         f"- Performance observations: {summary['performance_observation_count']}",
         f"- Promotion-ready: {summary['promotion_ready_count']}",
         f"- Rejected: {summary['rejected_count']}",
+        f"- Integrity errors: {summary['integrity_error_count']}",
         "",
         "## Assessments",
         "",
@@ -2577,7 +2694,7 @@ def render_benchmark_report(report: dict[str, Any]) -> str:
         "",
         "## Promotion rule",
         "",
-        "A candidate is `promotion_ready` only when aggregate recomputation, pinned target/source lineage, the canonical experiment invariant, normalized target/workload hashes, bounded raw evidence, controlled quality, stability, rollback, baseline compatibility, and independent execution attestation all pass. Execution attestation must bind the exact runner/dependency bytes and prove that the declared model/workload generated every measured output. The generic external-command and MLX-LM lanes remain unattested; only the repository-owned Qwen worked-port adapter can satisfy this gate. The primary-metric ratio must also exceed `1 + max(2%, 2 x max(candidate CV, baseline CV))`. Missing evidence is never inferred.",
+        "A candidate is `promotion_ready` only when aggregate recomputation, pinned target/source lineage, the canonical experiment invariant, normalized target/workload hashes, bounded raw evidence, controlled quality, stability, rollback, baseline compatibility, and externally signed execution attestation all pass. The retained Qwen challenge/evidence lane establishes internal consistency and reproducibility-on-request, but SHA-256 digests are not signatures. Promotion requires a protected Apple-Silicon signer and an out-of-repository trust anchor covering the repository commit/tree, challenge, reviewed dependency manifest, raw output, promotion policy, and timing. No such signer exists today, so every checked-in receipt remains sealed. The primary-metric ratio must also exceed `1 + max(2%, 2 x max(candidate CV, baseline CV))`. Missing evidence is never inferred.",
         "",
     ])
     return "\n".join(lines)

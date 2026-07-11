@@ -241,7 +241,7 @@ python3 mlx-model-porting/scripts/convert_checkpoint.py \
         <section class="doc-section" id="optimize" data-search="optimization target profile consent compile quantization cache speculative kernel research experimental">
           <span class="label">09 / optimize</span>
           <h2>Optimization is a controlled experiment</h2>
-          <p>The recommender matches controlled family, capability, workload, software, and hardware identifiers. Raw guidance numbers are scrubbed; the generated effective-claim catalog is the only numeric authority. It currently contains <strong data-value="effective_claims.total">10</strong> numeric records, with one fingerprint-scoped local promotion and all source-reported ranges withheld. Any local promotion requires the full canonical <span class="inline-code">TargetProfile.experiment_fingerprint</span>, exact receipt-derived model, target, and workload descriptors, exact hardware and software, and a non-empty controlled workload set. A copied digest or generic profile cannot unlock a number.</p>
+          <p>The recommender matches controlled family, capability, workload, software, and hardware identifiers. Raw guidance numbers are scrubbed; the generated effective-claim catalog is the only numeric authority. It currently contains <strong data-value="effective_claims.total">10</strong> numeric records, all withheld. Any future local promotion requires the full canonical <span class="inline-code">TargetProfile.experiment_fingerprint</span>, exact receipt-derived model, target, and workload descriptors, exact hardware and software, a non-empty controlled workload set, and an external signature verified against an out-of-repository trust anchor. A copied digest or generic profile cannot unlock a number.</p>
           <pre data-copy><code>python3 mlx-model-porting/scripts/recommend_optimizations.py inspection.json \
   --target-profile target-profile.json \
   --objective peak-memory \
@@ -367,7 +367,7 @@ python3 mlx-model-porting/scripts/validate_benchmarks.py check \
               </tbody>
             </table>
           </div>
-          <div class="callout proof"><strong>Current committed receipts</strong><p><strong data-value="benchmarks.total">13</strong> total: <strong data-value="benchmarks.by_classification.performance_observation">11</strong> observations, <strong data-value="benchmarks.promotion_ready">1</strong> promotion-ready, and <strong data-value="benchmarks.by_classification.rejected">1</strong> rejected. The promoted local range remains bound to its canonical target, quality contract, and attested adapter workload.</p></div>
+          <div class="callout proof"><strong>Current committed receipts</strong><p><strong data-value="benchmarks.total">13</strong> total: <strong data-value="benchmarks.by_classification.performance_observation">12</strong> observations, <strong data-value="benchmarks.promotion_ready">0</strong> promotion-ready, and <strong data-value="benchmarks.by_classification.rejected">1</strong> rejected. The retained Qwen challenge and digest bundle supports reproducibility-on-request, not forgery-proof attestation; SHA-256 is not a signature.</p></div>
         </section>
 
         <section class="doc-section" id="validate" data-search="validate audit strict manifest tests offline urls CI">
@@ -430,7 +430,7 @@ python3 -m unittest discover -s tests -v</code></pre>
             <li>Current CV route coverage centers on backbone/classifier patterns; dense vision, promptable masks, OCR, depth, and pose remain candidate tracks.</li>
             <li>Graph coverage proves GCN-style message-passing routing, not point-cloud, equivariant, molecular, or scientific ML.</li>
             <li>Training is a supporting workflow for adapters, distillation, QAT, or architecture artifacts—not a generic port target.</li>
-            <li>Legacy local benchmark observations lack one or more modern receipt gates; none is promotion-ready.</li>
+            <li>All current local benchmark measurements are observations; none has the externally signed attestation required for promotion.</li>
             <li>Live Apple Silicon execution, external researcher agents, network collectors, URL health, and upstream revision drift are not proven by deterministic offline tests.</li>
           </ul>
           <p>For the complete boundary, read <a href="https://github.com/Amal-David/mlx-porting-skill/blob/main/VALIDATION.md">VALIDATION.md</a> and the generated <a href="https://github.com/Amal-David/mlx-porting-skill/blob/main/mlx-model-porting/assets/BENCHMARK_REPORT.md">benchmark assessment</a>.</p>

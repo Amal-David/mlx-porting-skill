@@ -73,7 +73,7 @@
           <div class="stat"><strong data-value="architectures.total">17</strong><span>architecture families with golden routing scenarios</span></div>
           <div class="stat"><strong data-value="sources.total">350</strong><span>catalogued live evidence sources with recorded review depth</span></div>
           <div class="stat"><strong data-value="techniques.total">66</strong><span>techniques separated by support status</span></div>
-          <div class="stat"><strong data-value="benchmarks.promotion_ready">1</strong><span>promotion-ready local speed claims after every gate</span></div>
+          <div class="stat"><strong data-value="benchmarks.promotion_ready">0</strong><span>promotion-ready local speed claims without an external trust root</span></div>
         </div>
       </div>
     </section>
@@ -146,8 +146,8 @@
           </div>
           <div class="limitation-box">
             <h3>Current local benchmark status</h3>
-            <p><strong data-value="benchmarks.total">13</strong> receipts are retained: <strong data-value="benchmarks.by_classification.performance_observation">11</strong> performance observations, <strong data-value="benchmarks.by_classification.rejected">1</strong> rejected configuration, and <strong data-value="benchmarks.promotion_ready">1</strong> promotion-ready local speed claim.</p>
-            <p>The effective catalog withholds <strong data-value="effective_claims.by_state.withheld">9</strong> of <strong data-value="effective_claims.total">10</strong> numeric records. One fingerprint-scoped local reproduction is promoted; no source-reported range is currently profile-eligible.</p>
+            <p><strong data-value="benchmarks.total">13</strong> receipts are retained: <strong data-value="benchmarks.by_classification.performance_observation">12</strong> performance observations, <strong data-value="benchmarks.by_classification.rejected">1</strong> rejected configuration, and <strong data-value="benchmarks.promotion_ready">0</strong> promotion-ready local speed claims.</p>
+            <p>The effective catalog withholds <strong data-value="effective_claims.by_state.withheld">10</strong> of <strong data-value="effective_claims.total">10</strong> numeric records. The Qwen BF16 timing remains reproducibility-on-request evidence; no local or source-reported range is currently effective.</p>
           </div>
         </div>
         <div class="evidence-ledger" aria-label="Evidence state definitions">
@@ -155,7 +155,7 @@
           <div class="ledger-row" style="--ledger-color: var(--aluminum-400)"><i class="ledger-mark" aria-hidden="true"></i><strong>Research candidate</strong><span>A primary paper can support considering an algorithm or architecture. It still needs an MLX implementation, source oracle, and parity before recommendation.</span></div>
           <div class="ledger-row" style="--ledger-color: var(--gold)"><i class="ledger-mark" aria-hidden="true"></i><strong>Source-reported observation</strong><span>A source number can justify a local experiment, never a portable recommendation. It stays held until an equivalent local run passes promotion.</span></div>
           <div class="ledger-row" style="--ledger-color: var(--blue)"><i class="ledger-mark" aria-hidden="true"></i><strong>Observation</strong><span>A real historical measurement is preserved, but legacy schema, incomplete quality, incompatible baselines, or unstable metrics block promotion.</span></div>
-          <div class="ledger-row" style="--ledger-color: var(--lime)"><i class="ledger-mark" aria-hidden="true"></i><strong>Promotion-ready</strong><span>Aggregates, pinned lineage, runner semantics, workload, raw output, declarative quality, stability, rollback, baseline, and noise margin all pass.</span></div>
+          <div class="ledger-row" style="--ledger-color: var(--lime)"><i class="ledger-mark" aria-hidden="true"></i><strong>Promotion-ready</strong><span>All measurement gates pass and a protected Apple-Silicon signer authenticates commit/tree, challenge, dependencies, output, policy, and timing against an external trust root.</span></div>
           <div class="ledger-row" style="--ledger-color: var(--coral)"><i class="ledger-mark" aria-hidden="true"></i><strong>Rejected / incomplete</strong><span>Regressions and invalid stacks remain visible as negative evidence. They cannot silently reappear as “measured together.”</span></div>
         </div>
       </div>

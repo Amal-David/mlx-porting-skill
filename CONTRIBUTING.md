@@ -112,12 +112,14 @@ controlled MLX-LM schema-2 candidate, follow the receipt contract in
   explicit finite timeout no greater than 3600 seconds for external receipts;
 - enabled method IDs and primary metric; and
 - an explicit rollback condition; and
-- an independently reviewed execution attestation that proves the measured
-  runner/package bytes actually exercised the declared model, revision,
-  workload, and per-run output. The generic external-command and legacy MLX-LM
-  lanes do not satisfy this gate. The repository-owned
-  `attested-mlx-port-wall-time` lane may satisfy it only for an explicitly
-  reviewed model/workload adapter with complete retained evidence.
+- an external signature over the repository commit/tree, challenge, reviewed
+  dependency manifest, raw output, promotion policy, and timing, produced by a
+  protected Apple-Silicon signer and verified against a maintainer-controlled
+  trust anchor outside the submitted receipt/evidence and this repository. The
+  generic lanes do not satisfy this gate. The repository-owned
+  `attested-mlx-port-wall-time` lane preserves internally consistent evidence
+  for reproduction, but its unkeyed SHA-256 digests are not signatures and it
+  remains observation-only until that external signer exists.
 
 Legacy Python evaluators, schema-1 arbitrary JSON scores, or handwritten quality
 artifacts can be retained as observation provenance, but the validator does not

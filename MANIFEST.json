@@ -2,7 +2,7 @@
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
   "version": "0.5.0",
-  "generated_at": "2026-07-11T01:56:27.528973+00:00",
+  "generated_at": "2026-07-11T05:49:40.346150+00:00",
   "file_count": 458,
   "files": [
     {
@@ -21,8 +21,8 @@
     },
     {
       "path": ".gitattributes",
-      "size_bytes": 65,
-      "sha256": "b9fcdf1e7d25b69fadebd583e51e276064d240cd640b54ca077dbf51039f867b",
+      "size_bytes": 81,
+      "sha256": "ac19f8f48b3e7dbbf2d1041fbafec99bca12cd12939c14bfa7e12f279a06173e",
       "executable": false
     },
     {
@@ -63,8 +63,8 @@
     },
     {
       "path": "CHANGELOG.md",
-      "size_bytes": 11040,
-      "sha256": "889a1a1bfeca5b1c55cbc3fd904fd9deb9c1470b395457ee2e8d41b373a77f0a",
+      "size_bytes": 11173,
+      "sha256": "9ec020deb24b9126b85891bdbd1ce76076517ef2805b506fbac5f49c5fcde661",
       "executable": false
     },
     {
@@ -75,8 +75,8 @@
     },
     {
       "path": "CONTRIBUTING.md",
-      "size_bytes": 14339,
-      "sha256": "91e1fa3fe961f432d8a74d39b2537ea2f557b548af916d926f4a993dc6a4128d",
+      "size_bytes": 14510,
+      "sha256": "7c0a011d8264b91ed86cf89ef728bb83ba68ba3386cba9d138c01882e552eda4",
       "executable": false
     },
     {
@@ -93,20 +93,20 @@
     },
     {
       "path": "README.md",
-      "size_bytes": 22681,
-      "sha256": "f048f154e1be7b78ce762fd1326d3da856624731a7d4724e2b15506c9f40157e",
+      "size_bytes": 22151,
+      "sha256": "d142e070da5e5024eae621131c2b648a953f5f7d81b12a2f00ee05f2bf7a944c",
       "executable": false
     },
     {
       "path": "RESEARCH_REPORT.md",
-      "size_bytes": 22335,
-      "sha256": "d489beed586fa10c88c447b85a9afa9727b8d3a7c4fe46337c3e641810087025",
+      "size_bytes": 22765,
+      "sha256": "b4ea5720efaedd51bbf32d4c31c7323f2d97d208804b1823bda6bab4723ab27e",
       "executable": false
     },
     {
       "path": "VALIDATION.md",
-      "size_bytes": 16597,
-      "sha256": "c95202d7d511002467d8b0b525d90113d503233b4edf6a59964f2c12fe213ba9",
+      "size_bytes": 17220,
+      "sha256": "59c360e6e8c758a814fd2790f47895cb596daa3c3a38cfacc3b92694a6796c78",
       "executable": false
     },
     {
@@ -172,13 +172,13 @@
     {
       "path": "mlx-model-porting/SKILL.md",
       "size_bytes": 13463,
-      "sha256": "d64904fc9abc20f60d53a7de4624cdb85ab099438936b6a7d5beae3b57314ad7",
+      "sha256": "05b749003a1e73189412e0c174236e782a24639fbf80c13704093feebf1d0c69",
       "executable": false
     },
     {
       "path": "mlx-model-porting/assets/BENCHMARK_REPORT.md",
-      "size_bytes": 5428,
-      "sha256": "c55dd156166c48a2019485ead4f377c7eee7a3774e37721b24f774505449a56e",
+      "size_bytes": 5681,
+      "sha256": "814a383cee4604f13949f312c13e9acbbb080f017be6b2e08d91fc92a9e502ee",
       "executable": false
     },
     {
@@ -795,14 +795,14 @@
     },
     {
       "path": "mlx-model-porting/assets/benchmarks/receipt_assessments.json",
-      "size_bytes": 49837,
-      "sha256": "a9ed9b8c19c290c96067accc8c815e87aacf9ca6d03954ea79fc2e344e67c090",
+      "size_bytes": 28454,
+      "sha256": "4e4e42c1acbc6c59bc9ffff0f1579974b826e6bf1f94246c8240dfb748de87ea",
       "executable": false
     },
     {
       "path": "mlx-model-porting/assets/benchmarks/receipts_index.json",
-      "size_bytes": 21084,
-      "sha256": "467d0836c18e5d1438560b4aba6009d1e5b3cfc067315c0637a5b4cb2d1e522f",
+      "size_bytes": 21199,
+      "sha256": "b98ab5cab5bbe116d1f041b07877b12dde004bfbd49c7e48a1137978128ade5b",
       "executable": false
     },
     {
@@ -855,8 +855,8 @@
     },
     {
       "path": "mlx-model-porting/assets/effective_claims.json",
-      "size_bytes": 62166,
-      "sha256": "0327cae1fec3e5a8a7426ece1d54388051f45aa322a7f6b6cd4737ffd15640aa",
+      "size_bytes": 17022,
+      "sha256": "053ac7d75467973e4bc3a705bc2ef6cbf35b26a85e7b3f69e952ea63d3198089",
       "executable": false
     },
     {
@@ -867,14 +867,14 @@
     },
     {
       "path": "mlx-model-porting/assets/model_outcomes.json",
-      "size_bytes": 31326,
-      "sha256": "976605b7b3fa57b83bf79089feb681aaca4b857f57b409eb945f24bb867e1cde",
+      "size_bytes": 31543,
+      "sha256": "71644b15a0faa6b7e1e2e3ac2366e4ad2caea96bd5a3395c815e626d2866876d",
       "executable": false
     },
     {
       "path": "mlx-model-porting/assets/optimization_guidance.yaml",
-      "size_bytes": 62513,
-      "sha256": "bba87dc9ac0939347c14fa04c50deedd7c95f7a4cd62186578be4ca67c12bb6c",
+      "size_bytes": 63064,
+      "sha256": "52ce67642553066f75fff2ef787c258ad75b8abe6226bd60e85c33097e3ae589",
       "executable": false
     },
     {
@@ -939,8 +939,8 @@
     },
     {
       "path": "mlx-model-porting/examples/worked-port-qwen2.5-0.5b-instruct/README.md",
-      "size_bytes": 11677,
-      "sha256": "0bc75c8a232394d5c1e752fd31cde05cb71fb43f3f5841e707ad0ed3c65e827c",
+      "size_bytes": 11945,
+      "sha256": "f0cf6b0a4672164f0eb8041edff3c826658b1c1f9812750ea0dc24a7b985f56a",
       "executable": false
     },
     {
@@ -975,8 +975,8 @@
     },
     {
       "path": "mlx-model-porting/examples/worked-port-qwen2.5-0.5b-instruct/benchmark-receipts.md",
-      "size_bytes": 1868,
-      "sha256": "9ddad1e743a75f08238cba4fcd31fb9a6588139bf4ba754817e5f9e4f6aca33c",
+      "size_bytes": 1988,
+      "sha256": "237fd5ddeb57511a313d627e4729b9db1d42dd0ffd78370dd9d73ff489c6990c",
       "executable": false
     },
     {
@@ -1017,8 +1017,8 @@
     },
     {
       "path": "mlx-model-porting/references/benchmarking.md",
-      "size_bytes": 10291,
-      "sha256": "1b00520b05fcbcf6c75c712bb0b1d2c65f1fe4619b0b075bcb3b20afc8375b69",
+      "size_bytes": 10572,
+      "sha256": "563a3808a373eecf02bd3ebcbd4ebfdd36a6edd3ec72eba7e5547bd495790e1a",
       "executable": false
     },
     {
@@ -1029,8 +1029,8 @@
     },
     {
       "path": "mlx-model-porting/references/compound-stacks.md",
-      "size_bytes": 10236,
-      "sha256": "6fe0705e9ed799db5fb01296ccedc0d812a146dce6e09ea79cbea2bc1de40ae9",
+      "size_bytes": 10402,
+      "sha256": "2e5b97713ee6b903038c87255c467955b28051571b0c446812ada80cd81fd3d3",
       "executable": false
     },
     {
@@ -1929,8 +1929,8 @@
     },
     {
       "path": "mlx-model-porting/scripts/validate_benchmarks.py",
-      "size_bytes": 112993,
-      "sha256": "980cbaa8a553425802622ac4b2b6682831d1b527ac90ff0a84f9dc6730315671",
+      "size_bytes": 117684,
+      "sha256": "9b617009e76125cdf545d4b8177f6b8adaeaeea21f1bee711d79578b65dd1011",
       "executable": false
     },
     {
@@ -1953,14 +1953,14 @@
     },
     {
       "path": "site/data.js",
-      "size_bytes": 4485,
-      "sha256": "8d13c7837693108c173d52dae68d5e082849c014b5860b9db06a57ef9a53db97",
+      "size_bytes": 4430,
+      "sha256": "eaf1e03ed5a7ce187d3ef9218b40178011774cbac1367c7df35fa172ee6aafb3",
       "executable": false
     },
     {
       "path": "site/docs/index.html",
-      "size_bytes": 35692,
-      "sha256": "2abdf0aca98b2606e5109232ca23e2f1ad706117203eae778bf64ff77e2dacc4",
+      "size_bytes": 35757,
+      "sha256": "533d785e54dd5e26664c421dc31de1543fa1113a2a192b510e266ab619710760",
       "executable": false
     },
     {
@@ -1971,8 +1971,8 @@
     },
     {
       "path": "site/index.html",
-      "size_bytes": 16985,
-      "sha256": "bb092f0d728b5ca971d496c74de7a43f00d51508e48dcaf3064beb3368fd7c1c",
+      "size_bytes": 17042,
+      "sha256": "f9aa6bc392d742330ba1bdc1777126bbdfa9b71dd4ed606febd387eed4d4c57e",
       "executable": false
     },
     {
@@ -2535,8 +2535,8 @@
     },
     {
       "path": "tests/test_benchmark_evidence_contract.py",
-      "size_bytes": 95776,
-      "sha256": "2b69147d36179773fafb1a51c7cc6b96bcb2eeeb89bc822f6fcd961005a232e6",
+      "size_bytes": 96929,
+      "sha256": "b8c850b8344663d12330327174235de9cd929cdc8654420ceeb8e23e4227ac02",
       "executable": false
     },
     {
@@ -2547,8 +2547,8 @@
     },
     {
       "path": "tests/test_claim_catalog_contract.py",
-      "size_bytes": 33380,
-      "sha256": "2baec68b6a6e23af4e0a729ec621cdfdf55985453b599b091425a97437dd4081",
+      "size_bytes": 33549,
+      "sha256": "7a4590608a98bf3ffc242788f37bea5fda3d73684e412983a8d486720be58a65",
       "executable": false
     },
     {
@@ -2571,8 +2571,8 @@
     },
     {
       "path": "tests/test_distribution_portability.py",
-      "size_bytes": 4490,
-      "sha256": "4c41b678824e36b02f50729775d5171aeb21f7f98ea3dec3a8da8d2480be62cc",
+      "size_bytes": 6518,
+      "sha256": "bdbadaf0cc26c389fc18cb03dbe1f6d94076a9c5eadece2cd315b9ef61992ead",
       "executable": false
     },
     {
@@ -2673,8 +2673,8 @@
     },
     {
       "path": "tests/test_promotion_validation_contract.py",
-      "size_bytes": 6069,
-      "sha256": "fed3b3a886bcca18fea0a0f0d021c1a2e1b17ab9eff6ed72459221f013ce8f71",
+      "size_bytes": 6855,
+      "sha256": "d3367c54074f703bbe1107589ccb2ac59ab8a78278d0a5166717de555bbd7711",
       "executable": false
     },
     {

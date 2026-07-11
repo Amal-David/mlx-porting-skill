@@ -154,13 +154,16 @@ receipt must identify:
   every measured result and raw-output descriptor/digest, and the quality
   artifact/result digest;
 - rollback condition and caveats.
-- independent execution attestation for the exact runner/dependency bytes and
-  proof that the declared model/workload produced each measured output.
+- an external signature covering the repository commit/tree, challenge,
+  reviewed dependency manifest, raw output, promotion policy, and timing,
+  verified against a maintainer-controlled trust anchor outside the submitted
+  receipt/evidence and repository.
 
 The generic external-command and legacy MLX-LM lanes do not pass that final
-gate. The narrow `attested-mlx-port-wall-time` lane may promote only the exact
-reviewed model/workload method measured by its complete fingerprint; it does
-not promote a stack or authorize another runner.
+gate. The narrow `attested-mlx-port-wall-time` lane preserves digest-bound
+reproducibility evidence for its exact reviewed model/workload, but it cannot
+promote without the external signer and trust root. It does not promote a stack
+or authorize another runner.
 
 Benchmark receipts live under `assets/benchmarks/`. Generate and validate their
 assessments with `scripts/validate_benchmarks.py`; never hand-edit the generated

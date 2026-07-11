@@ -1,1 +1,1 @@
-mlx-model-porting/assets/benchmarks/attestations/** -diff -merge
+mlx-model-porting/assets/benchmarks/attestations/dependencies/*.bin -diff -merge

@@ -58,8 +58,8 @@ limitations are listed at the end of this report; they are proof work, not
 missing prose.
 
 Version 0.5.0 adds the dense-decoder execution chain and the first checked-in
-real port packet, introduces one narrow attested benchmark adapter and one
-fingerprint-scoped promoted claim, and wires the reviewed knowledge graph into
+real port packet, introduces one narrow benchmark reproducibility adapter with
+a resealed promotion boundary, and wires the reviewed knowledge graph into
 the advisor as a separate non-executable research queue. The deterministically
 reconciled backlog and drift check preserve the T-7007 knowledge-layer state:
 697 nodes, 499 edges, bounded advisor consumption, and no numeric authority
@@ -77,15 +77,16 @@ The 0.5.0 snapshot contains:
 | Guidance methods | 28 | Target matching and evidence gates determine whether advice can be surfaced. |
 | Optimization stacks | 4 | Planning structures; no positive compound number is implied. |
 | Python scripts | 29 | Inspectable intake, execution, validation, evidence, and packaging tools. |
-| Benchmark receipts | 13 | 11 performance observations, 1 promotion-ready, 1 rejected. |
-| Effective claims | 10 | One fingerprint-scoped local promotion; nine withheld. |
+| Benchmark receipts | 13 | 12 performance observations, 0 promotion-ready, 1 rejected. |
+| Effective claims | 10 | All ten are withheld. |
 | Knowledge graph | 697 nodes / 499 edges | Review-only research memory with a reconciled backlog and bounded advisor projection. |
-| Offline tests | 423 | Contract, security, determinism, portability, generated-drift, and gated execution coverage. |
+| Offline tests | 425 | Contract, security, determinism, portability, generated-drift, and gated execution coverage. |
 
-One `bf16-weight-cast` claim is promotion-ready only for the complete canonical
-fingerprint of the attested Qwen load-plus-six-token workload. Eleven other
-measurements remain observations, and missing or failed lineage, workload,
-runner, quality, stability, rollback, compatibility, or noise gates continue to
+The `bf16-weight-cast` measurement is a reproducible observation for the
+captured Qwen load-plus-six-token workload. It is not promotion-ready because
+no external signer or out-of-repository trust root exists. All other positive
+measurements also remain observations, and missing or failed lineage, workload,
+runner, quality, stability, rollback, compatibility, or trust gates continue to
 prevent promotion.
 
 ## Execution architecture
@@ -185,10 +186,17 @@ the exact-output quality gate.
 Neither generic lane is promotion-capable: the external runner can ignore its
 arguments, while the MLX-LM lane does not attest imported package bytes and
 per-run generated output. The repository-owned
-`attested-mlx-port-wall-time` adapter is the narrow exception for the Qwen
-worked-port workload. Its parent challenge, reviewed runner, retained loaded
-dependencies, model/workload identity, and per-run output are independently
-re-hashed before `execution_attested=true`; other runners remain observations.
+`attested-mlx-port-wall-time` adapter retains a parent challenge, reviewed
+runner, loaded dependencies, model/workload identity, and per-run output for
+the Qwen worked-port workload. Re-hashing those author-supplied bytes proves
+internal consistency, not authenticity; SHA-256 is not a signature.
+
+Promotion requires a protected Apple-Silicon signer to sign the repository
+commit/tree, challenge, reviewed dependency manifest, raw output, promotion
+policy, and timing. The validator must verify that signature against a
+maintainer-controlled trust anchor outside the receipt, evidence tree, and
+repository. That signer is future work, so every checked-in receipt has
+`execution_attested=false`.
 
 `generate_claim_catalog.py` combines the canonical guidance, source evidence,
 and generated receipt assessments into `assets/effective_claims.json`. The
@@ -196,7 +204,7 @@ advisor consumes that generated catalogue as its sole numeric authority. A
 custom or handwritten assessment sidecar cannot manufacture a local claim
 because the advisor recomputes the colocated receipt evidence.
 
-Successful local promotion also carries a canonical experiment fingerprint from
+Any future local promotion must also carry a canonical experiment fingerprint from
 receipt to assessment to claim. It covers exact model/source revisions, target,
 workload, experiment, metric, methods, and baseline binding. Heterogeneous
 semantic identities cannot collapse into one range. Compatible repetitions
@@ -403,8 +411,8 @@ the published documentation and offline file view share the same corpus counts.
 - No arbitrary-model architecture generator is shipped.
 - Synthetic route coverage is not end-to-end checkpoint support; only one
   dense-decoder checkpoint has completed the full executable chain.
-- The one promoted claim is scoped to its complete attested Qwen fingerprint;
-  it does not authorize a portable model, workload, or metric claim.
+- The captured Qwen BF16 timing remains a reproducible observation, not a
+  promoted claim or portable model, workload, or metric guarantee.
 - Source-reported performance remains constrained to the cited revision,
   hardware, model, inputs, workload, and metric.
 - MLX techniques inferred from CUDA or papers remain experimental until a
