@@ -24,10 +24,63 @@ from recommend_optimizations import (
 )
 
 
-GENERATOR_VERSION = "1.0.1"
+GENERATOR_VERSION = "1.1.0"
 SCAFFOLD_MANIFEST = "scaffold-manifest.json"
 DENSE_FAMILY = "dense-decoder-transformer"
 DENSE_RUNBOOK = "references/runbook-decoder-transformer.md"
+MOE_FAMILY = "moe-decoder-transformer"
+MOE_RUNBOOK = "references/runbook-moe-transformer.md"
+
+MOE_ROUTER_PROFILES: dict[str, dict[str, Any]] = {
+    "mixtral": {
+        "implemented": True,
+        "router": "softmax-top-k",
+        "renormalize": "always",
+        "topology": "mixtral-block-sparse",
+    },
+    "qwen2_moe": {
+        "implemented": True,
+        "router": "softmax-top-k",
+        "renormalize": "config",
+        "topology": "qwen2-per-expert",
+    },
+    "granitemoe": {
+        "implemented": True,
+        "router": "softmax-top-k",
+        "renormalize": "always",
+        "topology": "granite-packed-experts",
+    },
+    "phimoe": {
+        "implemented": False,
+        "router": "sparse-mixer",
+        "reason": "SparseMixer routing is not implemented",
+    },
+    "qwen3_moe": {
+        "implemented": False,
+        "router": "softmax-top-k",
+        "reason": "Q/K normalization and shared-expert topology are not implemented",
+    },
+    "olmoe": {
+        "implemented": False,
+        "router": "softmax-top-k",
+        "reason": "Q/K normalization topology is not implemented",
+    },
+    "deepseek_v2": {
+        "implemented": False,
+        "router": "grouped-top-k",
+        "reason": "MLA, shared experts, and grouped routing are not implemented",
+    },
+    "deepseek_v3": {
+        "implemented": False,
+        "router": "grouped-top-k-with-bias",
+        "reason": "MLA, shared experts, grouped routing, and router bias are not implemented",
+    },
+    "dbrx": {"implemented": False, "router": "unknown", "reason": "router semantics are not implemented"},
+    "grok": {"implemented": False, "router": "unknown", "reason": "router semantics are not implemented"},
+    "minimax": {"implemented": False, "router": "unknown", "reason": "router semantics are not implemented"},
+    "ernie4_5_moe": {"implemented": False, "router": "unknown", "reason": "router semantics are not implemented"},
+}
+
 SSM_FAMILY = "ssm-recurrent-hybrid"
 SSM_RUNBOOK = "references/runbook-ssm-hybrid.md"
 
@@ -59,6 +112,23 @@ DENSE_CONFIG_FEATURE_ALLOWLIST = frozenset({
 })
 FEATURE_ALLOWLIST = DENSE_CONFIG_FEATURE_ALLOWLIST
 
+MOE_CONFIG_FEATURE_ALLOWLIST = DENSE_CONFIG_FEATURE_ALLOWLIST | frozenset({
+    "decoder_sparse_step",
+    "layer_types",
+    "mlp_only_layers",
+    "moe_intermediate_size",
+    "norm_topk_prob",
+    "num_experts",
+    "num_experts_per_tok",
+    "num_local_experts",
+    "output_router_logits",
+    "qkv_bias",
+    "rope_parameters",
+    "router_aux_loss_coef",
+    "router_bias",
+    "router_jitter_noise",
+    "top_k",
+})
 SSM_CONFIG_FEATURE_ALLOWLIST = frozenset({
     "conv_bias",
     "d_conv",
@@ -93,6 +163,12 @@ SSM_FORBIDDEN_TENSOR_SEGMENTS = frozenset({
     "router",
     "self_attn",
 })
+
+FAMILY_FEATURE_ALLOWLISTS = {
+    DENSE_FAMILY: DENSE_CONFIG_FEATURE_ALLOWLIST,
+    MOE_FAMILY: MOE_CONFIG_FEATURE_ALLOWLIST,
+    SSM_FAMILY: SSM_CONFIG_FEATURE_ALLOWLIST,
+}
 
 KNOWN_METADATA_KEYS = frozenset({
     "_commit_hash",
@@ -166,6 +242,23 @@ MOE_KEYS = frozenset({
     "router_aux_loss_coef",
     "router_jitter_noise",
     "shared_expert_intermediate_size",
+})
+MOE_UNSUPPORTED_KEYS = frozenset({
+    "add_router_probs",
+    "aux_loss_at_inference",
+    "capacity_factor",
+    "drop_tokens",
+    "ep_size",
+    "expert_capacity",
+    "expert_parallel_size",
+    "expert_parallelism",
+    "n_group",
+    "num_expert_groups",
+    "routed_scaling_factor",
+    "scoring_func",
+    "token_drop",
+    "topk_group",
+    "topk_method",
 })
 QUANTIZATION_KEYS = frozenset({
     "bits",
@@ -458,6 +551,221 @@ def validate_ssm_config(config: Any) -> dict[str, Any]:
     for key in ("d_model", "d_state", "d_conv", "expand", "n_layer", "vocab_size"):
         _config_int(config, key)
     _config_float(config, "rms_norm_eps", default=1e-5)
+    return config
+
+
+def _aliased_positive_int(
+    config: dict[str, Any],
+    primary: str,
+    alias: str,
+) -> int:
+    first = config.get(primary)
+    second = config.get(alias)
+    if first is not None and second is not None and first != second:
+        raise SkillError(f"config.json {primary} and {alias} must agree when both are present")
+    value = first if first is not None else second
+    if type(value) is not int or value <= 0:
+        raise SkillError(f"config.json requires positive integer {primary} or {alias}")
+    return value
+
+
+def moe_router_profile(config: dict[str, Any]) -> dict[str, Any]:
+    model_type = config.get("model_type")
+    if not isinstance(model_type, str) or not model_type:
+        raise SkillError("config.json model_type must identify an explicit MoE router profile")
+    alias = model_type.lower()
+    profile = MOE_ROUTER_PROFILES.get(alias)
+    if profile is None:
+        raise SkillError(f"config.json model_type {alias!r} has no MoE router profile")
+    if not profile["implemented"]:
+        raise SkillError(
+            f"config.json model_type {alias!r} is not supported: {profile['reason']}"
+        )
+    return profile
+
+
+def _moe_head_dim(config: dict[str, Any], hidden: int, heads: int) -> int:
+    value = config.get("head_dim")
+    return hidden // heads if value is None else _config_int(config, "head_dim")
+
+
+def unsupported_moe_features(config: dict[str, Any]) -> list[str]:
+    """Return every unsupported computation feature for the sparse-MoE subset."""
+    moe_specific = MOE_KEYS | MOE_UNSUPPORTED_KEYS | frozenset({
+        "chunk_size_feed_forward",
+        "layer_types",
+        "mlp_only_layers",
+        "output_router_logits",
+        "qkv_bias",
+        "rope_parameters",
+        "router_bias",
+        "top_k",
+        "attention_multiplier",
+        "embedding_multiplier",
+        "logits_scaling",
+        "residual_multiplier",
+    })
+    dense_view = {key: value for key, value in config.items() if key not in moe_specific}
+    if dense_view.get("sliding_window") is None:
+        dense_view.pop("sliding_window", None)
+    if dense_view.get("max_window_layers") is None:
+        dense_view.pop("max_window_layers", None)
+    if dense_view.get("sliding_window") == 0 and dense_view.get("use_sliding_window") is False:
+        dense_view.pop("sliding_window", None)
+        dense_view.pop("max_window_layers", None)
+    errors = unsupported_dense_features(dense_view)
+
+    chunk_size = config.get("chunk_size_feed_forward", 0)
+    if type(chunk_size) is not int or chunk_size != 0:
+        errors.append("chunk_size_feed_forward must be 0")
+
+    for key in sorted(MOE_UNSUPPORTED_KEYS):
+        if key not in config:
+            continue
+        value = config[key]
+        if value is None:
+            continue
+        if key in {"add_router_probs", "aux_loss_at_inference", "drop_tokens", "token_drop"} and value is False:
+            continue
+        if key == "expert_parallelism" and value is False:
+            continue
+        if key in {"n_group", "num_expert_groups", "topk_group"} and type(value) is int and value == 1:
+            continue
+        if key == "routed_scaling_factor" and not isinstance(value, bool) and isinstance(value, (int, float)) and value == 1.0:
+            continue
+        if key == "scoring_func" and isinstance(value, str) and value.lower() == "softmax":
+            continue
+        if key == "topk_method" and isinstance(value, str) and value.lower() in {"greedy", "default"}:
+            continue
+        errors.append(f"{key}={value!r} is not supported by the single-device softmax router")
+
+    for key in (
+        "attention_multiplier",
+        "embedding_multiplier",
+        "logits_scaling",
+        "residual_multiplier",
+    ):
+        if key in config:
+            value = config[key]
+            if isinstance(value, bool) or not isinstance(value, (int, float)) or value != 1.0:
+                errors.append(f"{key} must be the neutral numeric value 1.0")
+
+    if "pruned_heads" in config:
+        pruning = config["pruned_heads"]
+        if not isinstance(pruning, dict):
+            errors.append("pruned_heads must be an object when present")
+        elif pruning:
+            errors.append("pruned_heads must be empty; attention-head pruning is not supported")
+
+    for key in (
+        "moe_shared_expert_intermediate_size",
+        "num_shared_experts",
+        "shared_expert_intermediate_size",
+    ):
+        if key not in config or config[key] is None:
+            continue
+        value = config[key]
+        if type(value) is int and value == 0:
+            continue
+        errors.append(f"shared-expert config key {key!r} is set; shared experts are not supported")
+
+    for key in ("decoder_sparse_step", "expert_interval", "moe_layer_freq"):
+        if key in config and config[key] is not None:
+            value = config[key]
+            if type(value) is not int or value != 1:
+                errors.append(f"{key}={value!r} is not supported; every decoder layer must be MoE")
+    if config.get("mlp_only_layers") not in (None, []):
+        errors.append("mlp_only_layers must be empty; mixed dense/MoE layer schedules are not supported")
+    layer_types = config.get("layer_types")
+    if layer_types is not None and (
+        not isinstance(layer_types, list)
+        or not layer_types
+        or any(str(value).lower() != "full_attention" for value in layer_types)
+    ):
+        errors.append("layer_types must contain only 'full_attention'")
+    for key in ("norm_topk_prob", "output_router_logits", "qkv_bias", "router_bias"):
+        if key in config and not isinstance(config[key], bool):
+            errors.append(f"{key} must be boolean when present")
+    if config.get("output_router_logits") is True:
+        errors.append("output_router_logits=True is not supported; auxiliary router outputs are not captured")
+    if config.get("router_bias") is True:
+        errors.append("router_bias=True is not supported")
+    jitter = config.get("router_jitter_noise", 0.0)
+    if isinstance(jitter, bool) or not isinstance(jitter, (int, float)) or jitter != 0.0:
+        errors.append("router_jitter_noise must be 0.0 for deterministic eager inference")
+
+    rope_parameters = config.get("rope_parameters")
+    if rope_parameters is not None:
+        if not isinstance(rope_parameters, dict):
+            errors.append("rope_parameters must be null or an object")
+        else:
+            rope_type = _rope_type(rope_parameters)
+            allowed = {"rope_type", "type", "rope_theta"}
+            if rope_type in {"dynamic", "linear"}:
+                allowed.update({"factor", "original_max_position_embeddings"})
+            if rope_type not in SUPPORTED_ROPE_TYPES:
+                errors.append(f"rope_parameters type {rope_type!r} is not supported")
+            for key in sorted(set(rope_parameters) - allowed):
+                errors.append(f"rope_parameters key {key!r} is not supported")
+            if rope_type in {"dynamic", "linear"}:
+                factor = rope_parameters.get("factor")
+                if isinstance(factor, bool) or not isinstance(factor, (int, float)) or factor <= 1.0:
+                    errors.append(
+                        f"rope_parameters factor must be a number greater than 1 for type {rope_type!r}"
+                    )
+    if rope_parameters is not None and config.get("rope_scaling") is not None:
+        errors.append("rope_parameters and rope_scaling cannot both be set")
+    if isinstance(rope_parameters, dict) and "rope_theta" in rope_parameters and "rope_theta" in config:
+        if rope_parameters["rope_theta"] != config["rope_theta"]:
+            errors.append("rope_parameters.rope_theta and rope_theta must agree")
+
+    return errors
+
+
+def validate_moe_config(config: Any) -> dict[str, Any]:
+    if not isinstance(config, dict):
+        raise SkillError("config.json must contain an object")
+    errors = unsupported_moe_features(config)
+    if errors:
+        raise SkillError(
+            "Unsupported config features; no code was generated. "
+            f"Consult {MOE_RUNBOOK}:\n- " + "\n- ".join(errors)
+        )
+    moe_router_profile(config)
+    hidden = _config_int(config, "hidden_size")
+    heads = _config_int(config, "num_attention_heads")
+    kv_heads = _config_int(config, "num_key_value_heads", default=heads)
+    head_dim = _moe_head_dim(config, hidden, heads)
+    _config_int(config, "num_hidden_layers")
+    _config_int(config, "vocab_size")
+    _config_int(config, "intermediate_size")
+    _config_int(config, "max_position_embeddings", default=2048)
+    _config_float(config, "rms_norm_eps", default=1e-5)
+    rope_parameters = config.get("rope_parameters")
+    rope_theta_default = (
+        float(rope_parameters.get("rope_theta", 10000.0))
+        if isinstance(rope_parameters, dict) else 10000.0
+    )
+    _config_float(config, "rope_theta", default=rope_theta_default)
+    experts = _aliased_positive_int(config, "num_experts", "num_local_experts")
+    top_k = _aliased_positive_int(config, "num_experts_per_tok", "top_k")
+    _config_int(
+        config,
+        "moe_intermediate_size",
+        default=_config_int(config, "intermediate_size"),
+    )
+    if top_k > experts:
+        raise SkillError("config.json num_experts_per_tok/top_k must not exceed the expert count")
+    if hidden != heads * head_dim:
+        raise SkillError("config.json hidden_size must equal num_attention_heads * head_dim")
+    if heads % kv_heads:
+        raise SkillError("config.json num_attention_heads must be divisible by num_key_value_heads")
+    for key in ("attention_bias", "mlp_bias", "rope_traditional", "tie_word_embeddings"):
+        if key in config and not isinstance(config[key], bool):
+            raise SkillError(f"config.json {key} must be boolean")
+    rope_config = config.get("rope_scaling", rope_parameters)
+    if isinstance(rope_config, dict) and _rope_type(rope_config) == "dynamic" and head_dim <= 2:
+        raise SkillError("config.json dynamic RoPE requires head_dim greater than 2")
     return config
 
 
@@ -806,6 +1114,166 @@ def greedy_generate(model, input_ids, max_new_tokens: int):
     getattr(mx, "eval")(result)
     return result
 '''
+
+
+def _replace_template_once(source: str, old: str, new: str, *, label: str) -> str:
+    if source.count(old) != 1:
+        raise SkillError(f"internal {label} template seam is not unique")
+    return source.replace(old, new, 1)
+
+
+def moe_config_template() -> str:
+    """Derive the MoE config parser while preserving the dense config contract."""
+    source = CONFIG_TEMPLATE.replace(
+        '"""Validated config.json parser for the generated dense decoder."""',
+        '"""Validated config.json parser for the generated sparse-MoE decoder."""',
+        1,
+    )
+    source = _replace_template_once(
+        source,
+        '        head_dim = _positive_int(data, "head_dim", hidden_size // heads)\n',
+        '        head_dim_value = data.get("head_dim")\n'
+        '        head_dim = (\n'
+        '            hidden_size // heads if head_dim_value is None\n'
+        '            else _positive_int(data, "head_dim")\n'
+        '        )\n',
+        label="MoE nullable head_dim",
+    )
+    source = _replace_template_once(
+        source,
+        "    intermediate_size: int\n",
+        "    intermediate_size: int\n"
+        "    moe_intermediate_size: int\n"
+        "    num_experts: int\n"
+        "    num_experts_per_tok: int\n"
+        "    norm_topk_prob: bool\n",
+        label="MoE config fields",
+    )
+    source = _replace_template_once(
+        source,
+        "        activation = data.get(\"hidden_act\", data.get(\"activation_function\", \"silu\"))\n"
+        "        if not isinstance(activation, str):\n"
+        "            raise ValueError(\"hidden_act must be a string\")\n"
+        "        return cls(\n",
+        "        activation = data.get(\"hidden_act\", data.get(\"activation_function\", \"silu\"))\n"
+        "        if not isinstance(activation, str):\n"
+        "            raise ValueError(\"hidden_act must be a string\")\n"
+        "        expert_values = (data.get(\"num_experts\"), data.get(\"num_local_experts\"))\n"
+        "        if all(value is not None for value in expert_values) and expert_values[0] != expert_values[1]:\n"
+        "            raise ValueError(\"num_experts and num_local_experts must agree\")\n"
+        "        num_experts = expert_values[0] if expert_values[0] is not None else expert_values[1]\n"
+        "        if type(num_experts) is not int or num_experts <= 0:\n"
+        "            raise ValueError(\"num_experts or num_local_experts must be a positive integer\")\n"
+        "        top_k_values = (data.get(\"num_experts_per_tok\"), data.get(\"top_k\"))\n"
+        "        if all(value is not None for value in top_k_values) and top_k_values[0] != top_k_values[1]:\n"
+        "            raise ValueError(\"num_experts_per_tok and top_k must agree\")\n"
+        "        top_k = top_k_values[0] if top_k_values[0] is not None else top_k_values[1]\n"
+        "        if type(top_k) is not int or top_k <= 0 or top_k > num_experts:\n"
+        "            raise ValueError(\"num_experts_per_tok/top_k must be positive and at most num_experts\")\n"
+        "        model_type = str(data.get(\"model_type\", \"\")).lower()\n"
+        "        if model_type in {\"mixtral\", \"granitemoe\"}:\n"
+        "            norm_topk_prob = True\n"
+        "        else:\n"
+        "            norm_topk_prob = data.get(\"norm_topk_prob\", False)\n"
+        "        if not isinstance(norm_topk_prob, bool):\n"
+        "            raise ValueError(\"norm_topk_prob must be boolean\")\n"
+        "        rope_parameters = data.get(\"rope_parameters\")\n"
+        "        if rope_scaling is None and isinstance(rope_parameters, dict):\n"
+        "            rope_scaling = {key: value for key, value in rope_parameters.items() if key != \"rope_theta\"}\n"
+        "        return cls(\n",
+        label="MoE config validation",
+    )
+    source = _replace_template_once(
+        source,
+        '            intermediate_size=_positive_int(data, "intermediate_size"),\n',
+        '            intermediate_size=_positive_int(data, "intermediate_size"),\n'
+        '            moe_intermediate_size=_positive_int(\n'
+        '                data, "moe_intermediate_size", _positive_int(data, "intermediate_size")\n'
+        '            ),\n'
+        '            num_experts=num_experts,\n'
+        '            num_experts_per_tok=top_k,\n'
+        '            norm_topk_prob=norm_topk_prob,\n',
+        label="MoE config construction",
+    )
+    source = _replace_template_once(
+        source,
+        '            rope_theta=_positive_float(data, "rope_theta", 10000.0),\n',
+        '            rope_theta=_positive_float(\n'
+        '                data, "rope_theta",\n'
+        '                float(rope_parameters.get("rope_theta", 10000.0))\n'
+        '                if isinstance(rope_parameters, dict) else 10000.0,\n'
+        '            ),\n',
+        label="MoE rope parameters",
+    )
+    return source
+
+
+def moe_model_template() -> str:
+    """Reuse the dense attention/cache model and replace only its feed-forward block."""
+    source = MODEL_TEMPLATE.replace(
+        '"""Minimal eager MLX dense decoder with GQA/MHA and growing KV caches."""',
+        '"""Minimal eager MLX sparse-MoE decoder with GQA/MHA and growing KV caches."""',
+        1,
+    )
+    dense_mlp = '''    class MLP(nn.Module):
+        def __init__(self):
+            super().__init__()
+            self.gate_proj = nn.Linear(config.hidden_size, config.intermediate_size, bias=config.mlp_bias)
+            self.up_proj = nn.Linear(config.hidden_size, config.intermediate_size, bias=config.mlp_bias)
+            self.down_proj = nn.Linear(config.intermediate_size, config.hidden_size, bias=config.mlp_bias)
+
+        def __call__(self, x):
+            return self.down_proj(activate(self.gate_proj(x)) * self.up_proj(x))
+'''
+    moe_mlp = '''    class Expert(nn.Module):
+        def __init__(self):
+            super().__init__()
+            self.gate_proj = nn.Linear(
+                config.hidden_size, config.moe_intermediate_size, bias=config.mlp_bias
+            )
+            self.up_proj = nn.Linear(
+                config.hidden_size, config.moe_intermediate_size, bias=config.mlp_bias
+            )
+            self.down_proj = nn.Linear(
+                config.moe_intermediate_size, config.hidden_size, bias=config.mlp_bias
+            )
+
+        def __call__(self, x):
+            return self.down_proj(activate(self.gate_proj(x)) * self.up_proj(x))
+
+    class MLP(nn.Module):
+        def __init__(self):
+            super().__init__()
+            self.gate = nn.Linear(config.hidden_size, config.num_experts, bias=False)
+            self.experts = [Expert() for _ in range(config.num_experts)]
+
+        def __call__(self, x):
+            router_logits = self.gate(x)
+            routing_weights = mx.softmax(router_logits.astype(mx.float32), axis=-1, precise=True)
+            top_k = config.num_experts_per_tok
+            selected = mx.stop_gradient(
+                mx.argpartition(-routing_weights, kth=top_k - 1, axis=-1)[..., :top_k]
+            )
+            scores = mx.take_along_axis(routing_weights, selected, axis=-1)
+            if config.norm_topk_prob:
+                scores = scores / mx.sum(scores, axis=-1, keepdims=True)
+            combined = mx.zeros_like(x)
+            for expert_index, expert in enumerate(self.experts):
+                coefficient = mx.sum(
+                    mx.where(selected == expert_index, scores, mx.zeros_like(scores)),
+                    axis=-1,
+                )
+                active = coefficient[..., None] != 0
+                expert_output = expert(x)
+                contribution = mx.where(
+                    active,
+                    expert_output * coefficient[..., None].astype(x.dtype),
+                    mx.zeros_like(expert_output),
+                )
+                combined = combined + contribution
+            return combined
+'''
+    return _replace_template_once(source, dense_mlp, moe_mlp, label="MoE MLP")
 
 
 GENERATE_TEMPLATE = r'''__HEADER__
@@ -1383,6 +1851,62 @@ checkpoint support. No tolerance is relaxed for this scaffold.
 '''
 
 
+MOE_README_TEMPLATE = r'''# Generated MLX sparse-MoE decoder
+
+Generated by `scaffold_port.py` version __VERSION__ from trusted inspection
+`sha256:__DIGEST__` for family `moe-decoder-transformer`.
+
+This is a **starting implementation**, not a guaranteed port. It implements a
+readable single-device sparse-expert loop so routing and expert combination can
+be parity-tested before any dispatch optimization.
+
+## Stable parameter-name scheme
+
+Linear weights use MLX/Hugging Face layout `[output_dims, input_dims]`.
+
+- `model.embed_tokens.weight` — `[vocab_size, hidden_size]`
+- `model.layers.{i}.input_layernorm.weight` — `[hidden_size]`
+- `model.layers.{i}.self_attn.{q,k,v,o}_proj.weight` — standard dense-decoder attention names
+- `model.layers.{i}.post_attention_layernorm.weight` — `[hidden_size]`
+- `model.layers.{i}.mlp.gate.weight` — `[num_experts, hidden_size]` router
+- `model.layers.{i}.mlp.experts.{e}.gate_proj.weight` — `[moe_intermediate_size, hidden_size]`
+- `model.layers.{i}.mlp.experts.{e}.up_proj.weight` — `[moe_intermediate_size, hidden_size]`
+- `model.layers.{i}.mlp.experts.{e}.down_proj.weight` — `[hidden_size, moe_intermediate_size]`
+- `model.norm.weight` — `[hidden_size]`
+- `lm_head.weight` — `[vocab_size, hidden_size]`, untied configs only
+
+Attention projection biases are derived independently from inspected tensors:
+__ATTENTION_BIAS_SUMMARY__. Expert projection biases follow `mlp_bias`; the
+router is bias-free.
+
+## Implemented assumptions
+
+- every decoder layer uses the same sparse-MoE structure;
+- router softmax is evaluated in float32, then top-k experts are selected;
+- Mixtral and GraniteMoE always renormalize selected probabilities; Qwen2-MoE
+  follows its boolean `norm_topk_prob` value;
+- expert MLPs use the configured gated activation and a readable expert loop;
+- dense-decoder GQA/MHA, RoPE, padding mask, growing KV cache, and greedy decode are reused unchanged;
+- shared experts, grouped routing, capacity/token dropping, expert parallelism,
+  router jitter, inference auxiliary outputs, non-softmax scoring, mixed
+  dense/MoE schedules, quantization, unimplemented router aliases, and custom
+  attention variants fail closed;
+- generation requires the complete inspected tensor inventory to match the
+  selected alias profile exactly, including every layer and routed expert.
+
+## Run and verify
+
+```bash
+python3 generate.py --weights converted.safetensors --token-ids 1 42 17 --max-new-tokens 4
+python3 mlx-model-porting/scripts/run_parity.py --source-model MODEL --package mlx_port --weights converted --token-ids 1 42 17 --output parity-report.json
+```
+
+Before relying on output, validate every expert index and tensor shape, compare
+every stable capture rung, check exact greedy continuation, and prove cached
+decode logits match full-context logits.
+'''
+
+
 def _header(digest: str) -> str:
     return f"# Generated by scaffold_port.py {GENERATOR_VERSION} from inspection sha256:{digest}."
 
@@ -1426,6 +1950,19 @@ def dense_attention_biases(
         raise SkillError(
             "config.json attention_bias=true conflicts with incomplete inspected attention bias tensors"
         )
+    return biases
+
+
+def moe_attention_biases(
+    inspection: dict[str, Any],
+    config: dict[str, Any],
+) -> dict[str, bool]:
+    biases = dense_attention_biases(inspection, config)
+    qkv_bias = config.get("qkv_bias")
+    if qkv_bias is not None:
+        expected = all(biases[name] for name in ("q_proj", "k_proj", "v_proj"))
+        if qkv_bias != expected:
+            raise SkillError("config.json qkv_bias conflicts with inspected Q/K/V bias tensors")
     return biases
 
 
@@ -1483,10 +2020,180 @@ def dense_target_tensors(
     return [{"key": key, "shape": tensors[key]} for key in sorted(tensors)]
 
 
+def moe_target_tensors(
+    config: dict[str, Any],
+    attention_biases: dict[str, bool] | None = None,
+) -> list[dict[str, Any]]:
+    """Return the sparse-MoE parameter contract with explicit HF expert names."""
+    hidden = _config_int(config, "hidden_size")
+    heads = _config_int(config, "num_attention_heads")
+    kv_heads = _config_int(config, "num_key_value_heads", default=heads)
+    head_dim = _moe_head_dim(config, hidden, heads)
+    layers = _config_int(config, "num_hidden_layers")
+    vocab = _config_int(config, "vocab_size")
+    experts = _aliased_positive_int(config, "num_experts", "num_local_experts")
+    moe_intermediate = _config_int(
+        config,
+        "moe_intermediate_size",
+        default=_config_int(config, "intermediate_size"),
+    )
+    if attention_biases is None:
+        attention_biases = {
+            projection: bool(config.get("attention_bias", False))
+            for projection in ATTENTION_PROJECTIONS
+        }
+    tensors: dict[str, list[int]] = {
+        "model.embed_tokens.weight": [vocab, hidden],
+        "model.norm.weight": [hidden],
+    }
+    if not bool(config.get("tie_word_embeddings", False)):
+        tensors["lm_head.weight"] = [vocab, hidden]
+    attention_bias_shapes = {
+        "q_proj": [heads * head_dim],
+        "k_proj": [kv_heads * head_dim],
+        "v_proj": [kv_heads * head_dim],
+        "o_proj": [hidden],
+    }
+    for layer in range(layers):
+        prefix = f"model.layers.{layer}"
+        tensors.update({
+            f"{prefix}.input_layernorm.weight": [hidden],
+            f"{prefix}.post_attention_layernorm.weight": [hidden],
+            f"{prefix}.self_attn.q_proj.weight": [heads * head_dim, hidden],
+            f"{prefix}.self_attn.k_proj.weight": [kv_heads * head_dim, hidden],
+            f"{prefix}.self_attn.v_proj.weight": [kv_heads * head_dim, hidden],
+            f"{prefix}.self_attn.o_proj.weight": [hidden, heads * head_dim],
+            f"{prefix}.mlp.gate.weight": [experts, hidden],
+        })
+        for projection in ATTENTION_PROJECTIONS:
+            if attention_biases.get(projection):
+                tensors[f"{prefix}.self_attn.{projection}.bias"] = attention_bias_shapes[projection]
+        for expert in range(experts):
+            expert_prefix = f"{prefix}.mlp.experts.{expert}"
+            tensors.update({
+                f"{expert_prefix}.gate_proj.weight": [moe_intermediate, hidden],
+                f"{expert_prefix}.up_proj.weight": [moe_intermediate, hidden],
+                f"{expert_prefix}.down_proj.weight": [hidden, moe_intermediate],
+            })
+            if bool(config.get("mlp_bias", False)):
+                tensors.update({
+                    f"{expert_prefix}.gate_proj.bias": [moe_intermediate],
+                    f"{expert_prefix}.up_proj.bias": [moe_intermediate],
+                    f"{expert_prefix}.down_proj.bias": [hidden],
+                })
+    return [{"key": key, "shape": tensors[key]} for key in sorted(tensors)]
+
+
+def moe_source_tensors(
+    config: dict[str, Any],
+    attention_biases: dict[str, bool] | None = None,
+) -> list[dict[str, Any]]:
+    """Return the exact inspected source topology accepted for one router alias."""
+    profile = moe_router_profile(config)
+    topology = str(profile["topology"])
+    target = {
+        item["key"]: list(item["shape"])
+        for item in moe_target_tensors(config, attention_biases)
+    }
+    if topology == "qwen2-per-expert":
+        return [{"key": key, "shape": target[key]} for key in sorted(target)]
+
+    layers = _config_int(config, "num_hidden_layers")
+    experts = _aliased_positive_int(config, "num_experts", "num_local_experts")
+    hidden = _config_int(config, "hidden_size")
+    intermediate = _config_int(
+        config,
+        "moe_intermediate_size",
+        default=_config_int(config, "intermediate_size"),
+    )
+    source = {
+        key: shape
+        for key, shape in target.items()
+        if ".mlp." not in key
+    }
+    for layer in range(layers):
+        target_prefix = f"model.layers.{layer}.mlp"
+        if topology == "mixtral-block-sparse":
+            source[f"model.layers.{layer}.block_sparse_moe.gate.weight"] = [experts, hidden]
+            for expert in range(experts):
+                prefix = f"model.layers.{layer}.block_sparse_moe.experts.{expert}"
+                source[f"{prefix}.w1.weight"] = [intermediate, hidden]
+                source[f"{prefix}.w2.weight"] = [hidden, intermediate]
+                source[f"{prefix}.w3.weight"] = [intermediate, hidden]
+        elif topology == "granite-packed-experts":
+            prefix = f"model.layers.{layer}.block_sparse_moe"
+            source[f"{prefix}.router.layer.weight"] = [experts, hidden]
+            source[f"{prefix}.input_linear.weight"] = [experts, 2 * intermediate, hidden]
+            source[f"{prefix}.output_linear.weight"] = [experts, hidden, intermediate]
+        else:
+            raise SkillError(f"internal unsupported MoE topology profile {topology!r}")
+        for key in tuple(source):
+            if key.startswith(target_prefix):
+                raise SkillError("internal MoE source topology retained target expert names")
+    return [{"key": key, "shape": source[key]} for key in sorted(source)]
+
+
+def validate_moe_tensor_topology(
+    inspection: dict[str, Any],
+    config: dict[str, Any],
+    attention_biases: dict[str, bool],
+) -> None:
+    """Fail closed unless every inspected tensor matches the supported source profile."""
+    expected = {
+        item["key"]: item["shape"]
+        for item in moe_source_tensors(config, attention_biases)
+    }
+    tensors = inspection.get("tensors")
+    if not isinstance(tensors, list) or not tensors:
+        raise SkillError("inspected MoE tensor topology is missing; no code was generated")
+    actual: dict[str, list[int]] = {}
+    malformed: list[str] = []
+    for index, tensor in enumerate(tensors):
+        if not isinstance(tensor, dict):
+            malformed.append(f"tensor[{index}] is not an object")
+            continue
+        key = tensor.get("key")
+        shape = tensor.get("shape")
+        if not isinstance(key, str) or not key:
+            malformed.append(f"tensor[{index}] has no valid key")
+            continue
+        if key in actual:
+            malformed.append(f"duplicate tensor key {key}")
+            continue
+        if (
+            not isinstance(shape, list)
+            or not shape
+            or any(type(dimension) is not int or dimension <= 0 for dimension in shape)
+        ):
+            malformed.append(f"tensor {key} has an invalid shape")
+            continue
+        actual[key] = shape
+    missing = sorted(set(expected) - set(actual))
+    unexpected = sorted(set(actual) - set(expected))
+    mismatched = sorted(
+        key for key in set(actual) & set(expected) if actual[key] != expected[key]
+    )
+    if malformed or missing or unexpected or mismatched:
+        details = list(malformed)
+        if missing:
+            details.append("missing tensors: " + ", ".join(missing[:8]))
+        if unexpected:
+            details.append("unsupported tensors: " + ", ".join(unexpected[:8]))
+        if mismatched:
+            details.extend(
+                f"shape mismatch for {key}: inspected {actual[key]}, expected {expected[key]}"
+                for key in mismatched[:8]
+            )
+        raise SkillError(
+            "Unsupported inspected MoE tensor topology; no code was generated.\n- "
+            + "\n- ".join(details)
+        )
+
+
 def _scaffold_manifest(
     files: dict[str, str],
     inspection_digest: str,
-    target_tensors: list[dict[str, Any]],
+    tensors: list[dict[str, Any]],
 ) -> str:
     execution_files = ("capture.py", "config.json", "config.py", "model.py")
     records = []
@@ -1503,7 +2210,7 @@ def _scaffold_manifest(
         "inspection_sha256": inspection_digest,
         "config_sha256": hashlib.sha256(files["config.json"].encode("utf-8")).hexdigest(),
         "files": records,
-        "tensors": target_tensors,
+        "tensors": tensors,
     }
     return json.dumps(
         payload,
@@ -1550,6 +2257,47 @@ def generate_dense_decoder(
         files,
         digest,
         dense_target_tensors(config, attention_biases),
+    )
+    return files
+
+
+def generate_moe_decoder(
+    inspection: dict[str, Any],
+    config: dict[str, Any],
+) -> dict[str, str]:
+    validate_moe_config(config)
+    attention_biases = moe_attention_biases(inspection, config)
+    validate_moe_tensor_topology(inspection, config, attention_biases)
+    digest = trusted_inspection_sha256(inspection)
+    header = _header(digest)
+    model_source = moe_model_template().replace("__HEADER__", header)
+    for projection in ATTENTION_PROJECTIONS:
+        placeholder = f"__{projection.upper()}_BIAS__"
+        model_source = model_source.replace(
+            placeholder,
+            "True" if attention_biases[projection] else "False",
+        )
+    bias_summary = ", ".join(
+        f"`{projection}`={'present' if attention_biases[projection] else 'absent'}"
+        for projection in ATTENTION_PROJECTIONS
+    )
+    files = {
+        "config.json": json.dumps(config, indent=2, sort_keys=True, ensure_ascii=False) + "\n",
+        "config.py": moe_config_template().replace("__HEADER__", header),
+        "model.py": model_source,
+        "generate.py": GENERATE_TEMPLATE.replace("__HEADER__", header),
+        "capture.py": CAPTURE_TEMPLATE.replace("__HEADER__", header),
+        "README.md": (
+            MOE_README_TEMPLATE
+            .replace("__VERSION__", GENERATOR_VERSION)
+            .replace("__DIGEST__", digest)
+            .replace("__ATTENTION_BIAS_SUMMARY__", bias_summary)
+        ),
+    }
+    files[SCAFFOLD_MANIFEST] = _scaffold_manifest(
+        files,
+        digest,
+        moe_target_tensors(config, attention_biases),
     )
     return files
 
@@ -1615,6 +2363,7 @@ def generate_selective_ssm(
 Generator = Callable[[dict[str, Any], dict[str, Any]], dict[str, str]]
 FAMILY_GENERATORS: dict[str, Generator] = {
     DENSE_FAMILY: generate_dense_decoder,
+    MOE_FAMILY: generate_moe_decoder,
     SSM_FAMILY: generate_selective_ssm,
 }
 

@@ -15,9 +15,10 @@ metadata:
 
 Produce or inspect a **correct, reproducible, architecture-aware MLX implementation**. Correctness comes before speed. Every speed or memory claim must name the hardware, software versions, workload, baseline, and quality gate.
 
-Dense decoders have a proven executable [Qwen2.5 chain](examples/worked-port-qwen2.5-0.5b-instruct/README.md).
-SSM has a synthetic-only `minimal_selective` scaffold; other families remain
-runbook-guided. Exact output is the only built-in task metric.
+Dense and sparse-MoE decoders have executable capture/scaffold/conversion/parity
+chains. Dense is proven by a [Qwen2.5 port](examples/worked-port-qwen2.5-0.5b-instruct/README.md);
+MoE and SSM by synthetic gates. Other families remain runbook-guided. Exact
+output is the only built-in task metric; domain evaluators remain future work.
 
 ## When to use this skill
 
@@ -85,7 +86,8 @@ Run `scripts/capture_oracle.py` against the pinned local Hugging Face model befo
 
 Read [core porting method](references/porting-core.md); choose via the trigger map and the controlled family records in `assets/architectures.yaml`. Load every runbook returned by a hybrid route. The registry is the complete runbook inventory; do not substitute an abbreviated parallel list.
 
-Scaffold an unblocked dense decoder or opt-in synthetic `minimal_selective` SSM:
+Scaffold an unblocked dense decoder, supported sparse-MoE decoder, or opt-in
+synthetic `minimal_selective` SSM:
 
 ```bash
 python3 scripts/scaffold_port.py inspection.json --artifact-root MODEL --output mlx_port
