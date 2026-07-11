@@ -27,7 +27,7 @@ optimization improves a particular Mac workload.
 | Effective claims | 10 | `mlx-model-porting/assets/effective_claims.json` |
 | Promoted / withheld claims | 0 / 10 | generated effective-claim catalogue |
 | Knowledge-graph nodes / edges | 697 / 499 | `mlx-model-porting/assets/knowledge_graph.json` |
-| Offline tests | 425 | `python3 -m unittest discover -s tests` |
+| Offline tests | 446 | `python3 -m unittest discover -s tests` |
 
 The 17 routes are synthetic golden scenarios. They prove that every declared
 family has a fixture exercising route selection, expected weight coverage, a
@@ -41,7 +41,7 @@ represent 17 completed real-model ports.
 | Weak, unknown, and tied architecture signals stop for manual review; compatible hybrid routes remain explicit. | `tests/test_scenarios.py`, `tests/test_routing_contract.py` |
 | Intake is static by default, remote code is not executed, hostile model artifacts are read through bounded no-follow paths, partial shards block recommendations, local paths are portable by default, and truncation blocks clean conclusions. | `tests/test_model_intake_hardening.py`, `tests/test_tooling.py`, `tests/test_hardening_filesystem_contract.py`, `tests/test_hardening_project_inspection_contract.py` |
 | Weight-map transforms are explicit and tensor comparison fails on NaN/Inf, shape drift, tolerance failure, or cosine drift. | `tests/test_tooling.py`, `tests/test_scenarios.py` |
-| Dense-decoder source capture, fail-closed scaffold generation, schema-2 conversion, MLX capture, and first-divergence parity have dependency-free contracts plus gated Torch/MLX execution tests. | `tests/test_capture_oracle_contract.py`, `tests/test_scaffold_port_contract.py`, `tests/test_convert_checkpoint_contract.py`, `tests/test_parity_runner_contract.py` |
+| Dense-decoder source capture, fail-closed scaffold generation, schema-2 conversion, MLX capture, and first-divergence parity have dependency-free contracts plus gated Torch/MLX execution tests. The opt-in synthetic selective-SSM scaffold additionally proves its FP32 recurrence against NumPy, recurrent state against full recomputation, and seeded-discretization failure detection. | `tests/test_capture_oracle_contract.py`, `tests/test_scaffold_port_contract.py`, `tests/test_convert_checkpoint_contract.py`, `tests/test_parity_runner_contract.py` |
 | Recommendations match controlled family, capability, workload, objective, and version identifiers exactly. | `tests/test_recommendation_contract.py` |
 | The five advisor buckets are enforced, experimental approaches require opt-in, blocked intake forbids execution, and rejected methods stay rejected. | `tests/test_recommendation_contract.py`, `tests/test_tooling.py` |
 | Compound numbers require compatible measured-together coverage and unique evidence lineage; regressions and duplicate composition are not promoted. | `tests/test_recommendation_contract.py`, `tests/test_claim_catalog_contract.py` |
@@ -210,9 +210,10 @@ instead of reporting successful validation with silent skips.
 - The checked-in Qwen2.5-0.5B-Instruct packet proves one real model in one
   family: `dense-decoder-transformer`. It passed 29 source-to-MLX parity rungs,
   exact greedy-token comparison, and an independent offline MLX-LM cross-check.
-- That run does not prove another dense-decoder config or any of the other 16
-  routed families. Each still needs its own source oracle, architecture-module
-  implementation, complete checkpoint conversion, and parity packet.
+- The synthetic selective-SSM test proves only the opt-in minimal recurrence;
+  it is not a Mamba/Mamba2 or hybrid checkpoint cross-check. The remaining
+  routed families and every real SSM checkpoint still need a source oracle,
+  architecture-specific mapping, conversion, and parity packet.
 - Exact-output parity is the only controlled built-in task quality gate. Domain
   evaluation remains required for language quality, vision, audio, speech,
   diffusion, streaming, scientific tasks, and any lossy change.
