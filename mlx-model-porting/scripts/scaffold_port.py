@@ -24,7 +24,7 @@ from recommend_optimizations import (
 )
 
 
-GENERATOR_VERSION = "1.0.0"
+GENERATOR_VERSION = "1.0.1"
 SCAFFOLD_MANIFEST = "scaffold-manifest.json"
 DENSE_FAMILY = "dense-decoder-transformer"
 DENSE_RUNBOOK = "references/runbook-decoder-transformer.md"
@@ -441,6 +441,15 @@ def _rope_kind(config: ModelConfig) -> str:
     return str(scaling.get("rope_type", scaling.get("type", "default"))).lower()
 
 
+def _dynamic_rope_limit(config: ModelConfig) -> int | None:
+    if _rope_kind(config) != "dynamic":
+        return None
+    scaling = config.rope_scaling or {}
+    return int(
+        scaling.get("original_max_position_embeddings", config.max_position_embeddings)
+    )
+
+
 def build_model(config: ModelConfig):
     """Build and return an MLX nn.Module without importing MLX at module import time."""
     mx, nn = _require_mlx()
@@ -502,21 +511,32 @@ def build_model(config: ModelConfig):
             repeats = config.num_attention_heads // config.num_key_value_heads
             expanded_k = mx.repeat(rotated_k, repeats, axis=1) if repeats != 1 else rotated_k
             expanded_v = mx.repeat(v, repeats, axis=1) if repeats != 1 else v
-            scores = (q @ expanded_k.transpose(0, 1, 3, 2)) * (config.head_dim ** -0.5)
+            scores = (
+                (q @ expanded_k.transpose(0, 1, 3, 2)) * (config.head_dim ** -0.5)
+            ).astype(mx.float32)
+            mask_value = mx.array(-1e9, dtype=mx.float32)
             key_length = expanded_k.shape[2]
             query_positions = mx.arange(offset, offset + length)[:, None]
             key_positions = mx.arange(key_length)[None, :]
             allowed = key_positions <= query_positions
-            scores = mx.where(allowed[None, None, :, :], scores, mx.array(-1e9, dtype=scores.dtype))
+            scores = mx.where(allowed[None, None, :, :], scores, mask_value)
+            query_mask = None
             if attention_mask is not None:
                 if attention_mask.shape[-1] != key_length:
                     raise ValueError("attention_mask length must include the complete cached context")
                 scores = mx.where(
                     attention_mask[:, None, None, :].astype(mx.bool_),
                     scores,
-                    mx.array(-1e9, dtype=scores.dtype),
+                    mask_value,
                 )
-            probabilities = mx.softmax(scores.astype(mx.float32), axis=-1).astype(q.dtype)
+                query_mask = attention_mask[:, offset : offset + length]
+            probabilities = mx.softmax(scores, axis=-1).astype(q.dtype)
+            if query_mask is not None:
+                probabilities = mx.where(
+                    query_mask[:, None, :, None].astype(mx.bool_),
+                    probabilities,
+                    mx.zeros_like(probabilities),
+                )
             attended = probabilities @ expanded_v
             attended = attended.transpose(0, 2, 1, 3).reshape(batch, length, config.hidden_size)
             return self.o_proj(attended), new_cache
@@ -559,6 +579,14 @@ def build_model(config: ModelConfig):
         def __call__(self, input_ids, cache=None, attention_mask=None, capture=False):
             if cache is not None and len(cache) != len(self.layers):
                 raise ValueError("cache must contain one (key, value) pair per decoder layer")
+            dynamic_limit = _dynamic_rope_limit(config)
+            if cache is not None and dynamic_limit is not None:
+                cached_length = int(cache[0][0].shape[2])
+                if cached_length + input_ids.shape[1] > dynamic_limit:
+                    raise ValueError(
+                        "dynamic-NTK RoPE requires full-sequence recomputation "
+                        "past original_max_position_embeddings"
+                    )
             hidden = self.embed_tokens(input_ids)
             captures = {"embed": hidden} if capture else {}
             updated = []
@@ -582,6 +610,7 @@ def build_model(config: ModelConfig):
     class CausalLM(nn.Module):
         def __init__(self):
             super().__init__()
+            self.config = config
             self.model = Backbone()
             if not config.tie_word_embeddings:
                 self.lm_head = nn.Linear(config.hidden_size, config.vocab_size, bias=False)
@@ -626,12 +655,20 @@ def greedy_generate(model, input_ids, max_new_tokens: int):
     if max_new_tokens == 0:
         return mx.zeros((batch, 0), dtype=input_ids.dtype)
     logits, cache = model(input_ids)
+    sequence = input_ids
+    model_config = getattr(model, "config", None)
+    dynamic_limit = _dynamic_rope_limit(model_config) if model_config is not None else None
     generated = []
     next_token = mx.argmax(logits[:, -1, :], axis=-1).astype(input_ids.dtype)
     for index in range(max_new_tokens):
         generated.append(next_token)
         if index + 1 < max_new_tokens:
-            logits, cache = model(next_token[:, None], cache=cache)
+            sequence = mx.concatenate((sequence, next_token[:, None]), axis=1)
+            if dynamic_limit is not None and sequence.shape[1] > dynamic_limit:
+                logits, _ = model(sequence)
+                cache = None
+            else:
+                logits, cache = model(next_token[:, None], cache=cache)
             next_token = mx.argmax(logits[:, -1, :], axis=-1).astype(input_ids.dtype)
     result = mx.stack(generated, axis=1)
     getattr(mx, "eval")(result)
@@ -864,6 +901,12 @@ conversion must map the source tie owner to `model.embed_tokens.weight` and omit
 - gated SiLU/SwiGLU, GELU/GeGLU, or ReLU/ReGLU MLP;
 - no dropout, active sliding window, QK normalization, MoE, quantization, soft caps, or custom attention variants;
 - `use_sliding_window=false` explicitly selects full attention even when inert sliding-window metadata remains in the source config.
+
+For dynamic-NTK RoPE, the base changes once the sequence exceeds
+`original_max_position_embeddings`. Greedy decoding therefore stops reusing the
+KV cache at that boundary and uses full-sequence recomputation for every later
+step. This preserves one RoPE base across every key at a decode step, at the
+cost of losing cached-decode speed beyond the original context limit.
 
 ## Run and verify
 

@@ -38,7 +38,7 @@ class PromotionValidationContractTests(unittest.TestCase):
                     self.assertIn(receipt, by_receipt)
                     self.assertNotEqual(by_receipt[receipt]["classification"], "rejected")
 
-    def test_current_local_reproduced_claim_is_backed_by_attested_promotion(self) -> None:
+    def test_no_in_repo_receipt_or_effective_claim_is_promoted(self) -> None:
         guidance = json.loads(
             (SKILL / "assets" / "optimization_guidance.yaml").read_text(encoding="utf-8")
         )
@@ -56,12 +56,38 @@ class PromotionValidationContractTests(unittest.TestCase):
             item for item in assessments["assessments"]
             if item["receipt"] == "qwen2.5-0.5b-port-bf16.json"
         )
-        self.assertEqual(method["improvement_band"]["provenance"], "local_reproduced")
-        self.assertEqual(claim["promotion_state"], "local-promotion")
-        self.assertEqual(claim["effective_range"], method["improvement_band"]["range"])
-        self.assertEqual(candidate["classification"], "promotion_ready")
-        self.assertTrue(candidate["gates"]["execution_attested"])
-        self.assertEqual(candidate["reasons"], [])
+        self.assertEqual(
+            method["improvement_band"]["provenance"],
+            "performance_observation",
+        )
+        self.assertEqual(method["improvement_band"]["claim_status"], "held")
+        self.assertTrue(
+            all(
+                row["classification"] != "promotion_ready"
+                and row["promotion_ready"] is False
+                for row in assessments["assessments"]
+            )
+        )
+        self.assertTrue(
+            all(
+                item["promotion_state"] == "withheld"
+                and item["effective_range"] is None
+                for item in claims["claims"]
+            )
+        )
+        self.assertEqual(claim["promotion_state"], "withheld")
+        self.assertIsNone(claim["effective_range"])
+        self.assertIn(
+            "performance-observation-not-promotable",
+            claim["withheld_reasons"],
+        )
+        self.assertIn(
+            "claim-status-held",
+            claim["withheld_reasons"],
+        )
+        self.assertEqual(candidate["classification"], "performance_observation")
+        self.assertFalse(candidate["gates"]["execution_attested"])
+        self.assertIn("missing-external-attestation-signature", candidate["reasons"])
 
     def test_local_reproduced_claim_requires_generated_local_promotion(self) -> None:
         with tempfile.TemporaryDirectory() as raw_tmp:

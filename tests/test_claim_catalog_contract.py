@@ -279,7 +279,7 @@ def raw_ratio_receipt(*, candidate: bool) -> dict[str, object]:
 
 
 class ClaimCatalogContractTests(unittest.TestCase):
-    def test_committed_catalog_has_one_conservative_record_per_improvement_band(self) -> None:
+    def test_committed_catalog_withholds_every_improvement_band(self) -> None:
         run_script("generate_claim_catalog.py", "--check")
         guidance = json.loads((SKILL / "assets" / "optimization_guidance.yaml").read_text(encoding="utf-8"))
         catalog = json.loads((SKILL / "assets" / "effective_claims.json").read_text(encoding="utf-8"))
@@ -293,12 +293,21 @@ class ClaimCatalogContractTests(unittest.TestCase):
             claim for claim in catalog["claims"]
             if claim["effective_range"] is not None
         ]
-        self.assertEqual([claim["method_id"] for claim in promoted], ["bf16-weight-cast"])
-        self.assertEqual(promoted[0]["effective_range"], "1.0x-1.8122x")
-        self.assertEqual(promoted[0]["promotion_state"], "local-promotion")
-        self.assertEqual(promoted[0]["withheld_reasons"], [])
+        self.assertEqual(promoted, [])
 
         by_id = {claim["method_id"]: claim for claim in catalog["claims"]}
+        bf16 = by_id["bf16-weight-cast"]
+        self.assertEqual(bf16["observed_range"], "1.0x-1.8122x")
+        self.assertIsNone(bf16["effective_range"])
+        self.assertEqual(bf16["promotion_state"], "withheld")
+        self.assertIn(
+            "performance-observation-not-promotable",
+            bf16["withheld_reasons"],
+        )
+        self.assertIn(
+            "claim-status-held",
+            bf16["withheld_reasons"],
+        )
         for method_id, observed_range in {
             "continuous-batching-serving": "1.0x-4.3x",
             "multimodal-content-prefix-cache": "1.0x-28.0x",

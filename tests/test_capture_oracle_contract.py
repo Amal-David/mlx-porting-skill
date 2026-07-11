@@ -302,6 +302,80 @@ class CaptureOracleTorchContractTests(unittest.TestCase):
             *extra,
         )
 
+    def test_float16_left_padding_is_finite_and_matches_unpadded_capture(self) -> None:
+        import numpy as np
+        import torch
+        from transformers import LlamaConfig, LlamaForCausalLM
+
+        config = {
+            "attention_bias": False,
+            "attention_dropout": 0.0,
+            "head_dim": 4,
+            "hidden_act": "silu",
+            "hidden_size": 8,
+            "intermediate_size": 16,
+            "max_position_embeddings": 32,
+            "mlp_bias": False,
+            "num_attention_heads": 2,
+            "num_hidden_layers": 2,
+            "num_key_value_heads": 2,
+            "pad_token_id": 0,
+            "rms_norm_eps": 1e-5,
+            "rope_theta": 10000.0,
+            "tie_word_embeddings": False,
+            "use_cache": True,
+            "vocab_size": 16,
+        }
+        torch.manual_seed(8004)
+        model = LlamaForCausalLM(LlamaConfig(**config)).to(dtype=torch.float16)
+        model.train(False)
+        batch_ids = torch.tensor([[1, 2, 3], [0, 4, 5]], dtype=torch.long)
+        batch_mask = torch.tensor([[1, 1, 1], [0, 1, 1]], dtype=torch.long)
+        batch = capture_oracle.capture_tensors(
+            model,
+            batch_ids,
+            batch_mask,
+            config,
+            0,
+            torch,
+        )
+        singles = [
+            capture_oracle.capture_tensors(
+                model,
+                ids,
+                torch.ones_like(ids),
+                config,
+                0,
+                torch,
+            )
+            for ids in (
+                torch.tensor([[1, 2, 3]], dtype=torch.long),
+                torch.tensor([[4, 5]], dtype=torch.long),
+            )
+        ]
+
+        floating = [
+            name for name, value in batch.items()
+            if torch.is_tensor(value) and value.is_floating_point() and value.ndim >= 2
+        ]
+        self.assertIn("logits", floating)
+        for name in floating:
+            with self.subTest(tensor=name):
+                self.assertTrue(torch.isfinite(batch[name]).all().item())
+                self.assertTrue(torch.all(batch[name][1, 0] == 0).item())
+                np.testing.assert_allclose(
+                    batch[name][0].detach().float().numpy(),
+                    singles[0][name][0].detach().float().numpy(),
+                    rtol=1e-2,
+                    atol=1e-2,
+                )
+                np.testing.assert_allclose(
+                    batch[name][1, 1:].detach().float().numpy(),
+                    singles[1][name][0].detach().float().numpy(),
+                    rtol=1e-2,
+                    atol=1e-2,
+                )
+
     def test_tiny_local_model_capture_has_stable_keys_shapes_and_digests(self) -> None:
         import numpy as np
 

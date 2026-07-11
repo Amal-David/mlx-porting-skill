@@ -1,6 +1,8 @@
 from __future__ import annotations
 
+import json
 import re
+import subprocess
 import unittest
 from pathlib import Path
 
@@ -33,12 +35,61 @@ def shipped_utf8_text() -> tuple[tuple[Path, str], ...]:
 
 
 class DistributionPortabilityTests(unittest.TestCase):
-    def test_byte_exact_attestations_are_opaque_to_git_diff_and_merge(self) -> None:
+    def test_binary_attestations_are_opaque_while_text_evidence_is_lintable(self) -> None:
         attributes = (ROOT / ".gitattributes").read_text(encoding="utf-8").splitlines()
         self.assertIn(
+            "mlx-model-porting/assets/benchmarks/attestations/dependencies/*.bin -diff -merge",
+            attributes,
+        )
+        self.assertNotIn(
             "mlx-model-porting/assets/benchmarks/attestations/** -diff -merge",
             attributes,
         )
+
+        attestation_root = (
+            ROOT / "mlx-model-porting" / "assets" / "benchmarks" / "attestations"
+        )
+        binary_payloads = sorted((attestation_root / "dependencies").glob("*.bin"))
+        json_evidence = sorted(attestation_root.rglob("*.json"))
+        runner = (
+            ROOT / "mlx-model-porting" / "assets" / "benchmarks"
+            / "runners" / "attested_mlx_port.py"
+        )
+        text_evidence = [*json_evidence, runner]
+        self.assertTrue(binary_payloads)
+        self.assertTrue(json_evidence)
+        self.assertTrue(runner.is_file())
+
+        relative_paths = [
+            path.relative_to(ROOT).as_posix()
+            for path in [*binary_payloads, *text_evidence]
+        ]
+        result = subprocess.run(
+            ["git", "check-attr", "diff", "merge", "--", *relative_paths],
+            cwd=ROOT,
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+        by_path: dict[str, dict[str, str]] = {}
+        for line in result.stdout.splitlines():
+            path, attribute, value = line.split(": ", 2)
+            by_path.setdefault(path, {})[attribute] = value
+
+        for path in binary_payloads:
+            relative = path.relative_to(ROOT).as_posix()
+            self.assertEqual(by_path[relative], {"diff": "unset", "merge": "unset"})
+        for path in text_evidence:
+            relative = path.relative_to(ROOT).as_posix()
+            self.assertEqual(
+                by_path[relative],
+                {"diff": "unspecified", "merge": "unspecified"},
+            )
+
+        for path in json_evidence:
+            with self.subTest(json=path.relative_to(ROOT)):
+                self.assertIsInstance(json.loads(path.read_text(encoding="utf-8")), dict)
+        compile(runner.read_text(encoding="utf-8"), str(runner), "exec")
 
     def test_contributor_instructions_are_checkout_and_home_agnostic(self) -> None:
         for name in ("AGENTS.md", "CLAUDE.md"):

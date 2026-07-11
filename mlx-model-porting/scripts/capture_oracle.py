@@ -463,6 +463,15 @@ def build_inputs(
     return input_ids, attention_mask
 
 
+def _zero_padded_query_rows(value: Any, attention_mask: Any, torch: Any) -> Any:
+    if not torch.is_tensor(value) or value.ndim < 2 or value.shape[:2] != attention_mask.shape:
+        return value
+    query_mask = attention_mask.to(device=value.device, dtype=torch.bool)
+    for _ in range(value.ndim - 2):
+        query_mask = query_mask.unsqueeze(-1)
+    return torch.where(query_mask, value, torch.zeros_like(value))
+
+
 def capture_tensors(
     model: Any,
     input_ids: Any,
@@ -529,6 +538,10 @@ def capture_tensors(
     missing = sorted(required - set(captures))
     if missing:
         raise SkillError("model hooks did not capture required tensors: " + ", ".join(missing))
+    captures = {
+        name: _zero_padded_query_rows(value, attention_mask, torch)
+        for name, value in captures.items()
+    }
 
     generated: list[Any] = []
     sequence = input_ids

@@ -909,15 +909,25 @@ class BenchmarkEvidenceContractTests(unittest.TestCase):
         self.assertEqual(first, second)
         summary = validate_benchmarks.assessment_summary(first)
         self.assertEqual(summary["receipt_count"], 13)
-        self.assertEqual(summary["promotion_ready_count"], 1)
+        self.assertEqual(summary["performance_observation_count"], 12)
+        self.assertEqual(summary["promotion_ready_count"], 0)
         self.assertEqual(summary["rejected_count"], 1)
+        self.assertEqual(summary["integrity_error_count"], 0)
         by_label = {row["label"]: row for row in first["assessments"]}
         self.assertEqual(
             [
                 label for label, row in by_label.items()
                 if row["classification"] == "promotion_ready"
             ],
-            ["qwen2.5-0.5b-port-bf16"],
+            [],
+        )
+        self.assertEqual(
+            by_label["qwen2.5-0.5b-port-bf16"]["classification"],
+            "performance_observation",
+        )
+        self.assertIn(
+            validate_benchmarks.EXTERNAL_ATTESTATION_BLOCKER,
+            by_label["qwen2.5-0.5b-port-bf16"]["reasons"],
         )
         self.assertTrue(all(row["gates"]["aggregates_recomputed"] for row in by_label.values()))
         self.assertIn("incompatible-quant-baseline", by_label["quant-4bit"]["reasons"])
@@ -1025,23 +1035,43 @@ class BenchmarkEvidenceContractTests(unittest.TestCase):
                 {"wall_seconds": 0.70},
             )
 
-    def test_repository_owned_attested_lane_can_promote(self) -> None:
+    def test_self_authored_coherent_attestation_stays_sealed(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             _, candidate = write_attested_pair(root)
             report = validate_benchmarks.build_assessment_report(root)
             by_label = {row["label"]: row for row in report["assessments"]}
-            self.assertTrue(by_label["attested-baseline"]["gates"]["execution_attested"])
+            self.assertFalse(by_label["attested-baseline"]["gates"]["execution_attested"])
             row = by_label["attested-candidate"]
-            self.assertEqual(row["classification"], "promotion_ready")
-            self.assertTrue(row["promotion_ready"])
-            self.assertTrue(row["gates"]["execution_attested"])
-            self.assertEqual(row["reasons"], [])
+            self.assertEqual(row["classification"], "performance_observation")
+            self.assertFalse(row["promotion_ready"])
+            self.assertFalse(row["gates"]["execution_attested"])
+            self.assertEqual(
+                row["reasons"],
+                [validate_benchmarks.EXTERNAL_ATTESTATION_BLOCKER],
+            )
             self.assertGreater(
                 row["recomputed_median_ratios"]["wall_seconds_inverse"],
                 row["improvement"]["required_ratio"],
             )
-            self.assertIsNotNone(row["experiment_fingerprint"])
+            self.assertIsNone(row["experiment_fingerprint"])
+
+            write_json(
+                root / "attestations" / "attested-candidate" / "unreferenced.json",
+                {"author_controlled": True},
+            )
+            report = validate_benchmarks.build_assessment_report(root)
+            self.assertEqual(
+                report["integrity_errors"],
+                [
+                    "unreferenced-attestation-file:attestations/"
+                    "attested-candidate/unreferenced.json"
+                ],
+            )
+            self.assertEqual(
+                validate_benchmarks.assessment_summary(report)["integrity_error_count"],
+                1,
+            )
 
     def test_attested_system_metadata_uses_executed_interpreter_versions(self) -> None:
         system = {"python": "3.14-parent", "mlx_version": "0.30.4"}

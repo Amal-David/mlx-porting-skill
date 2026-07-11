@@ -38,7 +38,7 @@ from _common import SkillError, sha256_file
 
 
 SCAFFOLD_MANIFEST = "scaffold-manifest.json"
-SUPPORTED_GENERATOR_VERSION = "1.0.0"
+SUPPORTED_GENERATOR_VERSION = "1.0.1"
 MAX_SCAFFOLD_MANIFEST_BYTES = 16 * 1024 * 1024
 MAX_CONFIG_BYTES = 16 * 1024 * 1024
 MAX_TOKENIZER_CONFIG_BYTES = 16 * 1024 * 1024
@@ -379,6 +379,15 @@ def _import_generated_model(package: Path) -> Any:
     return module
 
 
+def _zero_padded_query_rows(value: Any, attention_mask: Any, mx: Any) -> Any:
+    if value.ndim < 2 or value.shape[:2] != attention_mask.shape:
+        return value
+    query_mask = attention_mask.astype(mx.bool_)
+    for _ in range(value.ndim - 2):
+        query_mask = query_mask[..., None]
+    return mx.where(query_mask, value, mx.zeros_like(value))
+
+
 def _capture(
     package: Path,
     weights_path: Path,
@@ -416,8 +425,11 @@ def _capture(
         tensors = {
             "input_ids": input_ids,
             "attention_mask": attention_mask,
-            **captures,
-            "logits": logits,
+            **{
+                name: _zero_padded_query_rows(value, attention_mask, mx)
+                for name, value in captures.items()
+            },
+            "logits": _zero_padded_query_rows(logits, attention_mask, mx),
             "generated_token_ids": generated_ids,
         }
         getattr(mx, "eval")(*tensors.values())
