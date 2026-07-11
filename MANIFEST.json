@@ -2,8 +2,8 @@
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
   "version": "0.5.0",
-  "generated_at": "2026-07-11T07:06:02.505293+00:00",
-  "file_count": 461,
+  "generated_at": "2026-07-11T16:48:40.512952+00:00",
+  "file_count": 462,
   "files": [
     {
       "path": ".agents/skills/mlx-model-porting",
@@ -105,8 +105,8 @@
     },
     {
       "path": "VALIDATION.md",
-      "size_bytes": 17814,
-      "sha256": "e3f7fdec87a88e77e5994e5eef75ff3137cf7dbff0f73df3082dcde52d13203e",
+      "size_bytes": 17878,
+      "sha256": "f5b6c12ba0c281677ec7e5ffe276f55a966d8b6ef5a6234125c9dafdca74bc3d",
       "executable": false
     },
     {
@@ -171,8 +171,8 @@
     },
     {
       "path": "mlx-model-porting/SKILL.md",
-      "size_bytes": 13463,
-      "sha256": "05b749003a1e73189412e0c174236e782a24639fbf80c13704093feebf1d0c69",
+      "size_bytes": 13465,
+      "sha256": "03cb7e2c821d161b750f238e1c9cf2808c99e5e0f4809d7dd0a52b0ddb67f8d4",
       "executable": false
     },
     {
@@ -1810,7 +1810,7 @@
     {
       "path": "mlx-model-porting/scripts/capture_mlx.py",
       "size_bytes": 23956,
-      "sha256": "fd6ee51fbbe2d4134a789510e3d5cab71a2ebcfdf7f1f6f8d0c6b5916441422e",
+      "sha256": "f544ce3ee5550124809b600625ff93218cd06dde967eaa3328fa5a2c576edb60",
       "executable": false
     },
     {
@@ -1923,8 +1923,8 @@
     },
     {
       "path": "mlx-model-porting/scripts/scaffold_port.py",
-      "size_bytes": 48404,
-      "sha256": "e6c6b3b81dc8bfccda956e6f529d3815a20f9242f5bc06d82d6cbd4aba094a0f",
+      "size_bytes": 82694,
+      "sha256": "ac818288a1b925a79267f717edaf5d669ff58458115d952d44d3903e9ab33af3",
       "executable": true
     },
     {
@@ -2720,9 +2720,15 @@
       "executable": false
     },
     {
+      "path": "tests/test_scaffold_moe_contract.py",
+      "size_bytes": 22199,
+      "sha256": "5293b2a79d5ae052387483716869674dc9649ea349f5235d67005666ebaaca34",
+      "executable": false
+    },
+    {
       "path": "tests/test_scaffold_port_contract.py",
-      "size_bytes": 29925,
-      "sha256": "1d7dd77b3f8e8f059a0883db1544be49a6a56573510be9cfde8c3aef94de7b99",
+      "size_bytes": 29948,
+      "sha256": "fd315e6b5d53330797ce119971c9a9a8f3db1f412690be44b1287602e772f839",
       "executable": false
     },
     {
