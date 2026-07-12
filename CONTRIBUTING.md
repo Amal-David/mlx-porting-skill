@@ -83,6 +83,35 @@ An experimental contributor, blog, package, paper, or repository approach must
 stay in the `experimental-approach` advisor bucket and require the prompt:
 “This is an experimental approach. Do you want to try it?”
 
+### Learning and optimization atlas extension flow
+
+The public study guide is a generated consumer of the same decision system, not
+a second recommendation registry. When a technique becomes a teachable method:
+
+1. register the technique and reviewed evidence, then add complete applicability,
+   status, trade-off, validation, rollback, and evidence references to
+   `assets/optimization_guidance.yaml`;
+2. assign the method to exactly one `optimization_families` branch in
+   `assets/learning_paths.json` and only to representative journeys where it is
+   useful teaching context—journey membership is not model support;
+3. add method-level entries to `method_quality_gates` for every lossy or
+   conditionally-lossy path, including any method marked that way in
+   `optimization_stacks.yaml`;
+4. keep numeric outcomes exclusively in generated `effective_claims.json`;
+   screened, indexed, withheld, rejected, or source-reported ranges must not be
+   copied into learning data or public method guidance;
+5. run `generate_site_data.py`, then the learning, optimization-taxonomy,
+   evidence-boundary, interaction, no-JavaScript, responsive, and export-link
+   tests; and
+6. regenerate `MANIFEST.json` only after every authored and generated file is
+   final.
+
+The site generator rejects methods without reviewed canonical evidence and
+rejects `indexed` sources from public method links. Research candidates retain
+their explicit user-opt-in advisor policy; rejected or superseded methods are
+never selectable. A local-promotion number must retain its metric, exact target
+constraints, experiment fingerprint, and effective range as one scoped record.
+
 ## Benchmark extension flow
 
 Use `mlx-model-porting/scripts/benchmark_generation.py` only for legacy

@@ -2,7 +2,7 @@
 
 **Review date:** 2026-07-11
 
-**Artifact version:** 0.5.0
+**Artifact version:** 0.6.0
 
 ## Executive finding
 
@@ -65,22 +65,30 @@ reconciled backlog and drift check preserve the T-7007 knowledge-layer state:
 697 nodes, 499 edges, bounded advisor consumption, and no numeric authority
 outside `effective_claims.json`.
 
+Version 0.6.0 adds the learning-first portal: an MLX mental-model curriculum,
+source-to-MLX translation guide, four honest guided journeys, a motion-guided
+hero proof loop, and a parity/profile-gated optimization atlas. The atlas keeps
+all 28 methods in eight measured-bottleneck families, preserves model-specific
+proof boundaries and runbooks in exports, and refuses indexed evidence,
+unscoped numbers, research without opt-in, or rejected methods as actionable
+guidance.
+
 ## Current corpus and proof boundary
 
-The 0.5.0 snapshot contains:
+The 0.6.0 snapshot contains:
 
 | Surface | Count | Boundary |
 |---|---:|---|
 | Architecture routes | 17 | Synthetic golden route and guard scenarios; one dense-decoder model has a completed real port. |
-| Evidence sources | 350 | Every source has review depth; 23 carry classified support scope and claim types, while 327 remain intentionally unclassified. |
+| Evidence sources | 356 | Every source has review depth; 30 carry classified support scope and claim types, while 326 remain intentionally unclassified. |
 | Technique records | 66 | Status describes evidence maturity, not a portable performance guarantee. |
 | Guidance methods | 28 | Target matching and evidence gates determine whether advice can be surfaced. |
 | Optimization stacks | 4 | Planning structures; no positive compound number is implied. |
-| Python scripts | 29 | Inspectable intake, execution, validation, evidence, and packaging tools. |
+| Python scripts | 30 | Inspectable intake, execution, validation, evidence, and packaging tools. |
 | Benchmark receipts | 13 | 12 performance observations, 0 promotion-ready, 1 rejected. |
 | Effective claims | 10 | All ten are withheld. |
-| Knowledge graph | 697 nodes / 499 edges | Review-only research memory with a reconciled backlog and bounded advisor projection. |
-| Offline tests | 425 | Contract, security, determinism, portability, generated-drift, and gated execution coverage. |
+| Knowledge graph | 703 nodes / 501 edges | Review-only research memory with a reconciled backlog and bounded advisor projection. |
+| Offline tests | 468 | Contract, security, determinism, portability, generated-drift, learning-atlas, and gated execution coverage. |
 
 The `bf16-weight-cast` measurement is a reproducible observation for the
 captured Qwen load-plus-six-token workload. It is not promotion-ready because
@@ -245,7 +253,7 @@ another:
 6. `assets/effective_claims.json` resolves the numeric claim actually visible to
    the advisor.
 
-At this release boundary, all nine catalogued numeric records are withheld.
+At this release boundary, all 10 catalogued numeric records are withheld.
 Three preserve source-reported benchmark ranges as observations, but none is
 profile-eligible: their exact hardware, model, precision, workload geometry,
 cache state, concurrency or batch shape, and baseline cannot all be expressed

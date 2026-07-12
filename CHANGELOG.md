@@ -1,5 +1,46 @@
 # Changelog
 
+## 0.6.0 — 2026-07-12
+
+- Rebuilt the public documentation as a learning-first study guide covering
+  MLX fundamentals, what a port preserves, architecture/modality recognition,
+  PyTorch and CUDA translation lenses, the ordered parity rail, honest
+  benchmarking, publication boundaries, and an expanded glossary before the
+  executable field manual.
+- Added four guided model journeys over one canonical eight-checkpoint spine:
+  the pinned Qwen2.5-0.5B-Instruct proof remains `proven`, while Whisper-style
+  ASR, FLUX-style diffusion, and LLaVA-style VLM remain explicitly labelled
+  simulations with model-specific proof boundaries and runbooks.
+- Added a dependency-free interactive porting atlas with URL/history state,
+  keyboard traversal, comparison mode, readable text export, responsive
+  vertical stepping, complete no-JavaScript fallback, and fail-closed malformed
+  data handling.
+- Replaced the landing-page status graphic with a pausable mathematical proof
+  loop—classify, translate, prove parity, profile—and equivalent static mobile
+  and reduced-motion frames.
+- Added a parity- and profile-gated optimization atlas covering all 28 methods
+  across eight measured-bottleneck families. Research requires explicit
+  opt-in, rejected paths stay unavailable, lossy methods carry canonical
+  quality gates, and current numeric outcomes remain withheld or absent.
+- Connected optimization hypotheses to the selected model journey, preserving
+  journey applicability, proof boundaries, canonical sources, real runbooks,
+  tested commands, rollback conditions, focus, and browser Back/Forward state
+  in the expert handoff.
+- Hardened generated learning data against indexed nightly evidence, unsafe or
+  missing links, advisor/status drift, malformed family and journey metadata,
+  unscoped future local-promotion ranges, and status-incompatible canonical
+  source selection.
+- Added the official PyTorch CUDA Graphs semantics source to document why CUDA
+  capture/replay is NVIDIA-specific and why stable MLX compilation is the
+  portable branch; the corpus now contains 356 sources and a 703-node,
+  501-edge review graph.
+- Documented the curriculum and optimization-atlas contributor flow and raised
+  the deterministic offline suite to 468 tests.
+- Reconciled the durable nightly-curator content already present on `main` and
+  regenerated the current graph, backlog, evidence index, site data, and
+  release manifest without importing the stale conflicting snapshot from the
+  closed nightly PR.
+
 ## 0.5.0 — 2026-07-11
 
 - Added an executable dense-decoder porting chain: `capture_oracle.py` records

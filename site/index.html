@@ -3,11 +3,11 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>MLX Porter — Port models to Apple MLX with proof</title>
-  <meta name="description" content="An executable, source-first standard for inspecting, routing, porting, validating, benchmarking, and publishing models on Apple MLX.">
+  <title>MLX Porter — Learn MLX by porting a model</title>
+  <meta name="description" content="Learn how PyTorch and CUDA model semantics translate to Apple MLX, then follow an evidence-gated path from source inspection to a proven port.">
   <meta name="theme-color" content="#090c0e">
   <meta property="og:title" content="MLX Porter">
-  <meta property="og:description" content="Port models to Apple MLX with proof at every step.">
+  <meta property="og:description" content="Learn the system, simulate representative ports, and prove every MLX translation step.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://mlx-porter.pages.dev/">
   <link rel="canonical" href="https://mlx-porter.pages.dev/">
@@ -20,16 +20,16 @@
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="site-header">
     <nav class="nav-shell" aria-label="Primary navigation">
-      <a class="brand" href="./index.html" aria-label="MLX Porter home">
+      <a class="brand" href="./index.html">
         <span class="brand-mark" aria-hidden="true">MX</span>
         <span>MLX Porter</span>
       </a>
       <button class="nav-menu-button" type="button" data-nav-toggle aria-expanded="false" aria-controls="primary-links">Menu</button>
       <div class="nav-links" id="primary-links">
+        <a href="#learn">Learn MLX</a>
+        <a href="#atlas-preview">Atlas</a>
         <a href="#workflow">Workflow</a>
-        <a href="#routes">Routes</a>
         <a href="#evidence">Evidence</a>
-        <a href="#limits">Limits</a>
       </div>
       <div class="nav-actions">
         <a href="./docs/index.html">Docs</a>
@@ -38,42 +38,206 @@
     </nav>
   </header>
 
-  <main class="landing-main" id="main">
+  <main class="landing-main" id="main" tabindex="-1">
     <section class="hero" aria-labelledby="hero-title">
       <div class="hero-shell">
         <div class="hero-copy">
-          <div class="status-kicker"><span class="status-dot" aria-hidden="true"></span>Executable standard · v<span data-value="version">0.5.0</span></div>
-          <h1 id="hero-title">Port models to MLX with <em>proof at every step.</em></h1>
-          <p class="hero-lead">Dense-decoder Transformers can run the full source-capture, scaffold, schema-2 conversion, and parity chain. Other families leave with an architecture route, implementation runbook, validation plan, and honest evidence boundary.</p>
+          <div class="status-kicker"><span class="status-dot" aria-hidden="true"></span>Learning atlas · executable standard · v<span data-value="version">0.6.0</span></div>
+          <h1 id="hero-title">Learn the system. <em>Port the model.</em></h1>
+          <p class="hero-lead">See how a PyTorch or CUDA model becomes a readable MLX graph: identify the architecture, translate runtime semantics, map weights, prove the first matching path, then optimize only what the profile earns.</p>
           <div class="hero-actions">
-            <a class="button primary" href="./docs/index.html#quick-start">Start a port →</a>
-            <a class="button" href="https://github.com/Amal-David/mlx-porting-skill">Inspect the repository</a>
+            <a class="button primary" href="#learn">Learn MLX fundamentals</a>
+            <a class="button" href="./docs/index.html#porting-atlas">Start a guided port →</a>
           </div>
+          <p class="hero-expert-link">Already know the terrain? <a href="./docs/index.html#quick-start">Open the executable field manual</a> or <a href="https://github.com/Amal-David/mlx-porting-skill">inspect the repository</a>.</p>
         </div>
 
-        <div class="chip-stage" aria-label="Illustration of an auditable MLX porting pipeline">
+        <div class="chip-stage">
           <div class="chip-board">
             <span class="trace one" aria-hidden="true"></span>
             <span class="trace two" aria-hidden="true"></span>
             <span class="trace three" aria-hidden="true"></span>
             <div class="chip-core">
-              <strong>PORT / VALIDATE / PROFILE</strong>
-              <div class="signal-list" aria-hidden="true">
-                <div class="signal"><span>lineage</span><span class="signal-track"><span style="--signal: 94%; --signal-color: var(--lime)"></span></span><b>pinned</b></div>
-                <div class="signal"><span>weights</span><span class="signal-track"><span style="--signal: 86%; --signal-color: var(--cyan)"></span></span><b>mapped</b></div>
-                <div class="signal"><span>parity</span><span class="signal-track"><span style="--signal: 78%; --signal-color: var(--blue)"></span></span><b>staged</b></div>
-                <div class="signal"><span>claims</span><span class="signal-track"><span style="--signal: 48%; --signal-color: var(--gold)"></span></span><b>gated</b></div>
-              </div>
-              <div class="chip-foot"><span>APPLE SILICON</span><span>RECEIPT 01</span></div>
+              <figure class="port-loop" data-port-loop aria-labelledby="port-loop-title" aria-describedby="port-loop-caption">
+                <header class="port-loop-heading">
+                  <span class="port-loop-controls"><span>08s / guided proof</span><button type="button" data-port-loop-toggle aria-pressed="false">Pause motion</button></span>
+                  <strong id="port-loop-title">Porting is a proof loop</strong>
+                </header>
+                <div class="port-loop-canvas" role="list" aria-label="Four ordered porting stages">
+                  <svg class="port-loop-wires" viewBox="0 0 400 280" preserveAspectRatio="none" aria-hidden="true">
+                    <defs>
+                      <marker id="port-loop-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+                        <path d="M 0 0 L 8 4 L 0 8 z"></path>
+                      </marker>
+                    </defs>
+                    <path class="port-loop-axis" d="M 50 140 H 350 M 200 30 V 250"></path>
+                    <path class="port-loop-base" d="M 82 58 H 318 V 222 H 82 V 58" marker-end="url(#port-loop-arrow)"></path>
+                    <path class="port-loop-current" pathLength="100" d="M 82 58 H 318 V 222 H 82 V 58"></path>
+                  </svg>
+
+                  <article class="port-loop-node source" data-loop-step="classify" style="--loop-phase: 0" role="listitem">
+                    <span>01 / classify</span>
+                    <code>f_torch(x; W_src)</code>
+                    <small>pin graph, inputs, state</small>
+                  </article>
+                  <article class="port-loop-node translate" data-loop-step="translate" style="--loop-phase: 1" role="listitem">
+                    <span>02 / translate</span>
+                    <code>W_MLX = P(W_src)</code>
+                    <small>map axes + rebuild runtime</small>
+                  </article>
+                  <article class="port-loop-node parity" data-loop-step="parity" style="--loop-phase: 2" role="listitem">
+                    <span>03 / prove</span>
+                    <code>Δ = ||y_src − y_MLX||</code>
+                    <small>stop at first divergence</small>
+                  </article>
+                  <article class="port-loop-node profile" data-loop-step="profile" style="--loop-phase: 3" role="listitem">
+                    <span>04 / profile</span>
+                    <code>arg max phase_time</code>
+                    <small>change one measured bottleneck</small>
+                  </article>
+
+                  <div class="port-loop-gate">
+                    <span>parity gate</span>
+                    <strong>unlock only when Δ ≤ ε</strong>
+                    <small>optimize → re-run proof</small>
+                  </div>
+                </div>
+                <footer class="port-loop-foot"><span>source → MLX → proof → measure</span><span>repeat</span></footer>
+                <figcaption class="sr-only" id="port-loop-caption">A model port loops through four ordered ideas: classify the source computation, translate weights and runtime behavior into MLX, prove source-to-MLX parity, then profile one bottleneck. Every optimization returns to the parity gate before publication.</figcaption>
+              </figure>
             </div>
           </div>
         </div>
 
         <div class="hero-stats" aria-label="Current corpus summary">
           <div class="stat"><strong data-value="architectures.total">17</strong><span>architecture families with golden routing scenarios</span></div>
-          <div class="stat"><strong data-value="sources.total">350</strong><span>catalogued live evidence sources with recorded review depth</span></div>
+          <div class="stat"><strong data-value="sources.total">356</strong><span>catalogued live evidence sources with recorded review depth</span></div>
           <div class="stat"><strong data-value="techniques.total">66</strong><span>techniques separated by support status</span></div>
           <div class="stat"><strong data-value="benchmarks.promotion_ready">0</strong><span>promotion-ready local speed claims without an external trust root</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section learning-section" id="learn" aria-labelledby="learn-title">
+      <div class="section-shell">
+        <div class="learn-intro-layout">
+          <div class="section-heading">
+            <span class="section-kicker">Learn MLX</span>
+            <h2 id="learn-title">First, change the mental model.</h2>
+            <p>MLX feels familiar because its arrays look NumPy-like. The important differences are underneath: expressions are lazy, CPU and GPU operate over unified memory, and compilation works best around pure, stable, reused regions.</p>
+          </div>
+          <aside class="mlx-primer" aria-label="What an MLX port preserves">
+            <span class="primer-label">A port is not a file conversion</span>
+            <p>It preserves the source computation, preprocessing, state, weight meaning, numerical policy, and output behavior in a new runtime.</p>
+            <a href="./docs/index.html#what-is-porting">Understand what is being ported →</a>
+          </aside>
+        </div>
+
+        <div class="learn-grid">
+          <article class="learn-card">
+            <span class="card-index">01 / arrays</span>
+            <h3>NumPy-like, built for Apple silicon</h3>
+            <p><span class="inline-code">mx.array</span>, <span class="inline-code">mlx.nn</span>, and composable transforms give the port a readable native foundation.</p>
+            <a href="https://ml-explore.github.io/mlx/build/html/usage/quick_start.html">Official Quick Start ↗</a>
+          </article>
+          <article class="learn-card">
+            <span class="card-index">02 / memory</span>
+            <h3>One memory pool, explicit operations</h3>
+            <p>Unified memory removes the usual tensor-transfer choreography, but framework bridges may still copy or force evaluation.</p>
+            <a href="https://ml-explore.github.io/mlx/build/html/usage/unified_memory.html">Learn unified memory ↗</a>
+          </article>
+          <article class="learn-card">
+            <span class="card-index">03 / execution</span>
+            <h3>Build lazily, evaluate deliberately</h3>
+            <p>Place <span class="inline-code">mx.eval</span> at dependency, comparison, and measurement boundaries—not after every operation.</p>
+            <a href="https://ml-explore.github.io/mlx/build/html/usage/lazy_evaluation.html">Learn lazy evaluation ↗</a>
+          </article>
+          <article class="learn-card">
+            <span class="card-index">04 / graphs</span>
+            <h3>Compile the stable hot region</h3>
+            <p>Prove an eager path first. Then compile pure, repeatedly used regions while keeping mutable state visible.</p>
+            <a href="https://ml-explore.github.io/mlx/build/html/usage/compile.html">Learn compilation ↗</a>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section alt" id="atlas-preview" aria-labelledby="atlas-preview-title">
+      <div class="section-shell">
+        <div class="section-heading">
+          <span class="section-kicker">Learn the system</span>
+          <h2 id="atlas-preview-title">See the whole port before you touch code.</h2>
+          <p>Choose a representative model and trace the same proof rail through a different graph. The architecture branch changes. The rule does not: optimization stays locked until parity and a measured bottleneck exist.</p>
+        </div>
+
+        <div class="atlas-preview">
+          <fieldset class="atlas-preview-picker">
+            <legend>Choose a sample port</legend>
+            <div class="preview-options">
+              <input class="preview-radio" type="radio" name="preview-model" id="preview-qwen" checked>
+              <label for="preview-qwen"><span>Text</span>Qwen2.5-0.5B-Instruct</label>
+              <input class="preview-radio" type="radio" name="preview-model" id="preview-whisper">
+              <label for="preview-whisper"><span>Speech</span>Whisper-style ASR</label>
+              <input class="preview-radio" type="radio" name="preview-model" id="preview-flux">
+              <label for="preview-flux"><span>Image</span>FLUX-style diffusion/flow</label>
+            </div>
+          </fieldset>
+
+          <div class="atlas-preview-board">
+            <article class="atlas-preview-path" data-preview-path="qwen" aria-labelledby="preview-qwen-title">
+              <header class="preview-path-header">
+                <div><span class="path-status proven">Proven guided lab</span><h3 id="preview-qwen-title">Qwen2.5 dense decoder</h3></div>
+                <p>Tokens → embedding → RoPE/RMSNorm/GQA blocks → KV state → logits</p>
+              </header>
+              <ol class="atlas-preview-steps" aria-label="Qwen2.5 port checkpoints">
+                <li><span>01</span><strong>Inspect</strong><small>Pin the exact dense-decoder checkpoint.</small></li>
+                <li><span>02</span><strong>Capture oracle</strong><small>Freeze IDs, blocks, state, and outputs.</small></li>
+                <li><span>03</span><strong>Rebuild</strong><small>Translate the readable eager MLX graph.</small></li>
+                <li><span>04</span><strong>Map weights</strong><small>Declare every transform and source key.</small></li>
+                <li class="parity"><span>05</span><strong>Prove parity</strong><small>Pass the ordered source-to-MLX ladder.</small></li>
+                <li><span>06</span><strong>Profile</strong><small>Separate load, prefill, and cached decode.</small></li>
+                <li class="gated"><span>07</span><strong>Optimize</strong><small>Gated by parity · attention, cache, compile, or decode.</small></li>
+                <li><span>08</span><strong>Publish</strong><small>Keep the proof bound to this checkpoint.</small></li>
+              </ol>
+              <footer><a class="button small primary" href="./docs/index.html#porting-atlas">Explore the interactive atlas</a><a class="button small" href="./docs/index.html#qwen-worked-port">Open the proven lab</a></footer>
+            </article>
+
+            <article class="atlas-preview-path" data-preview-path="whisper" aria-labelledby="preview-whisper-title">
+              <header class="preview-path-header">
+                <div><span class="path-status simulation">Runbook simulation</span><h3 id="preview-whisper-title">Whisper-style ASR</h3></div>
+                <p>Waveform → mel frontend → encoder → cross-attention decoder → transcript</p>
+              </header>
+              <ol class="atlas-preview-steps" aria-label="Whisper-style ASR port checkpoints">
+                <li><span>01</span><strong>Inspect</strong><small>Separate speech modality from encoder-decoder architecture.</small></li>
+                <li><span>02</span><strong>Capture oracle</strong><small>Freeze waveform, mel, encoder, decoder, and timestamps.</small></li>
+                <li><span>03</span><strong>Rebuild</strong><small>Make frontend and cache lifetimes explicit.</small></li>
+                <li><span>04</span><strong>Map weights</strong><small>Keep encoder, cross-attention, and decoder transforms visible.</small></li>
+                <li class="parity"><span>05</span><strong>Prove parity</strong><small>Check features, state, logits, transcript, and timestamps.</small></li>
+                <li><span>06</span><strong>Profile</strong><small>Separate frontend, encoder, and autoregressive decode.</small></li>
+                <li class="gated"><span>07</span><strong>Optimize</strong><small>Gated by parity · attention, compile, or evaluation boundaries.</small></li>
+                <li><span>08</span><strong>Publish</strong><small>Keep simulation status until task quality is reproduced.</small></li>
+              </ol>
+              <footer><a class="button small primary" href="./docs/index.html#porting-atlas">Simulate this port</a><a class="button small" href="./docs/index.html#routes">Open ASR runbooks</a></footer>
+            </article>
+
+            <article class="atlas-preview-path" data-preview-path="flux" aria-labelledby="preview-flux-title">
+              <header class="preview-path-header">
+                <div><span class="path-status simulation">Runbook simulation</span><h3 id="preview-flux-title">FLUX-style diffusion/flow</h3></div>
+                <p>Prompt encoder → latent + schedule → repeated flow step → VAE → image</p>
+              </header>
+              <ol class="atlas-preview-steps" aria-label="FLUX-style port checkpoints">
+                <li><span>01</span><strong>Inspect</strong><small>Inventory every pipeline component and scheduler.</small></li>
+                <li><span>02</span><strong>Capture oracle</strong><small>Freeze conditioning, latents, schedule, and decode.</small></li>
+                <li><span>03</span><strong>Rebuild</strong><small>Prove one readable flow or denoiser step.</small></li>
+                <li><span>04</span><strong>Map weights</strong><small>Audit encoder, denoiser, and VAE separately.</small></li>
+                <li class="parity"><span>05</span><strong>Prove parity</strong><small>Compare fixed-seed latent checkpoints and output quality.</small></li>
+                <li><span>06</span><strong>Profile</strong><small>Separate repeated steps, scheduler, and VAE work.</small></li>
+                <li class="gated"><span>07</span><strong>Optimize</strong><small>Gated by parity · compile, eval, streaming, or spatial kernel.</small></li>
+                <li><span>08</span><strong>Publish</strong><small>Say FLUX-style until an exact port is proven.</small></li>
+              </ol>
+              <footer><a class="button small primary" href="./docs/index.html#porting-atlas">Simulate this port</a><a class="button small" href="./docs/index.html#routes">Open diffusion runbook</a></footer>
+            </article>
+          </div>
         </div>
       </div>
     </section>

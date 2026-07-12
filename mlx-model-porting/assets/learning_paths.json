@@ -1,0 +1,990 @@
+{
+  "schema_version": 1,
+  "reviewed": "2026-07-12",
+  "checkpoint_order": [
+    "inspect",
+    "oracle",
+    "implement",
+    "map",
+    "parity",
+    "profile",
+    "optimize",
+    "publish"
+  ],
+  "official_learning_source_ids": [
+    "mlx-docs",
+    "mlx-doc-quick-start",
+    "mlx-doc-unified-memory",
+    "mlx-doc-lazy",
+    "mlx-doc-compile",
+    "mlx-doc-framework-conversion",
+    "mlx-doc-function-transforms",
+    "mlx-doc-neural-networks",
+    "mlx-doc-streams",
+    "mlx-doc-fast-sdpa",
+    "mlx-repo",
+    "mlx-examples-repo",
+    "mlx-lm-repo"
+  ],
+  "journey_statuses": {
+    "proven": "A pinned checkpoint has a checked-in, reproducible MLX proof packet in this repository.",
+    "simulation": "A teaching route assembled from canonical runbooks and evidence; it is not a completed checkpoint port."
+  },
+  "foundations": [
+    {
+      "id": "what-is-mlx",
+      "title": "What MLX is",
+      "plain_language": "MLX is an array framework for machine learning on Apple silicon with a NumPy-like API.",
+      "why_it_matters": "Its lazy execution and unified-memory model change where porters place evaluation, state, and measurement boundaries.",
+      "pytorch_cuda": "PyTorch projects commonly think in eager tensors plus explicit CPU-to-CUDA movement.",
+      "mlx_translation": "Build with mx.array and mlx.nn, let operations select device and stream, and evaluate only at deliberate boundaries.",
+      "example": "Create arrays and modules first; call mx.eval only when a dependency, comparison, or measurement needs realized results.",
+      "common_trap": "Treating unified memory as a promise that every framework bridge is zero-copy.",
+      "proof_check": "You can explain when an MLX expression is built and when its result is actually needed.",
+      "next_step": "Learn what a port must preserve beyond weights.",
+      "source_ids": [
+        "mlx-docs",
+        "mlx-doc-quick-start",
+        "mlx-doc-unified-memory",
+        "mlx-doc-lazy",
+        "mlx-doc-streams",
+        "mlx-doc-neural-networks",
+        "mlx-doc-function-transforms"
+      ]
+    },
+    {
+      "id": "what-is-porting",
+      "title": "What porting means",
+      "plain_language": "A port reproduces a source model's behavior in a new runtime.",
+      "why_it_matters": "Checkpoint conversion alone cannot preserve control flow, layouts, masks, cache semantics, preprocessing, or generation behavior.",
+      "pytorch_cuda": "The source implementation and its outputs are the behavioral contract, not only state_dict keys.",
+      "mlx_translation": "Rebuild the computation in MLX, transform every weight explicitly, and compare staged outputs against a source oracle.",
+      "example": "Match tokenizer inputs, one primitive, one block, full logits, stateful decode, and the task result in order.",
+      "common_trap": "Loading tensors successfully and calling the model ported before output parity exists.",
+      "proof_check": "You can name source semantics, weight transforms, state, and outputs that need evidence.",
+      "next_step": "Read the model before choosing an implementation route.",
+      "source_ids": [
+        "mlx-repo",
+        "mlx-examples-repo"
+      ]
+    },
+    {
+      "id": "read-the-model",
+      "title": "Read the model before code",
+      "plain_language": "Inventory the model's artifacts, inputs, outputs, repeated blocks, state, and surrounding pipeline.",
+      "why_it_matters": "Modality, architecture, and workload are separate decisions that select different runbooks and proof gates.",
+      "pytorch_cuda": "A Transformers class name may hide a vision tower, audio frontend, decoder, scheduler, or custom cache.",
+      "mlx_translation": "Route every component through its native MLX family and record uncertainty instead of forcing one label.",
+      "example": "Whisper is speech input and an encoder-decoder architecture; LLaVA composes vision, projection, and language components.",
+      "common_trap": "Using modality as the architecture family or treating a composed model as one homogeneous block.",
+      "proof_check": "The port plan lists source format, modality, architecture components, state, preprocessing, and output contract.",
+      "next_step": "Capture a source oracle before rewriting anything.",
+      "source_ids": [
+        "mlx-examples-repo"
+      ]
+    },
+    {
+      "id": "correctness-rail",
+      "title": "The correctness rail",
+      "plain_language": "Move from the smallest comparable value to the complete task, stopping at the first divergence.",
+      "why_it_matters": "A late end-to-end failure gives too little information to locate a semantic mismatch.",
+      "pytorch_cuda": "Capture deterministic source tensors and state at named checkpoints.",
+      "mlx_translation": "Implement an eager readable MLX path, map weights, then compare primitive, block, output, state, and task rungs.",
+      "example": "A wrong attention mask should fail at attention output before it is hidden by later residual blocks.",
+      "common_trap": "Optimizing or compiling before an eager path has parity.",
+      "proof_check": "Every passed rung names inputs, shapes, dtype policy, tolerance, and source artifact.",
+      "next_step": "Learn how to debug the first failed rung.",
+      "source_ids": [
+        "mlx-repo"
+      ]
+    },
+    {
+      "id": "first-divergence",
+      "title": "Debug the first divergence",
+      "plain_language": "The earliest failing comparison is the highest-signal place to investigate.",
+      "why_it_matters": "Later errors compound and can make a local layout or state bug look like a global model failure.",
+      "pytorch_cuda": "Inspect source shapes, layouts, dtypes, masks, position rules, and state mutation at the failing boundary.",
+      "mlx_translation": "Compare the matching MLX primitive, then the enclosing block, output head, recurrent/cache state, and task result.",
+      "example": "If projected vision embeddings match but logits do not, inspect token placement and decoder inputs next.",
+      "common_trap": "Loosening tolerances until the failure disappears without explaining the numerical policy.",
+      "proof_check": "A fix makes the intended rung pass while all earlier rungs remain green.",
+      "next_step": "Profile only after the correctness rail is stable.",
+      "source_ids": [
+        "mlx-repo"
+      ]
+    },
+    {
+      "id": "profile-bottleneck",
+      "title": "Profile the real bottleneck",
+      "plain_language": "Measure the phase that limits the target workload before choosing an optimization.",
+      "why_it_matters": "Prefill, decode, preprocessing, denoising, streaming, memory, and serving can demand different techniques.",
+      "pytorch_cuda": "CUDA intuition about a hot kernel does not prove the same bottleneck exists on MLX and Apple silicon.",
+      "mlx_translation": "Place evaluation around measured regions so lazy work is included exactly once and synchronization is intentional.",
+      "example": "Separate prompt prefill from token decode instead of reporting one blended generation time.",
+      "common_trap": "Timing graph construction while the computation is realized outside the measured region.",
+      "proof_check": "The receipt names workload, cold or warm state, evaluation boundaries, hardware, software, and quality gate.",
+      "next_step": "Select a technique from the measured bottleneck branch.",
+      "source_ids": [
+        "mlx-doc-lazy",
+        "mlx-doc-compile"
+      ]
+    },
+    {
+      "id": "benchmark-honestly",
+      "title": "Benchmark without fooling yourself",
+      "plain_language": "A benchmark is a scoped observation, not a portable promise.",
+      "why_it_matters": "Shape, cache state, dtype, model revision, quality, and measurement boundaries can change the result.",
+      "pytorch_cuda": "Framework benchmark habits still need explicit warmup, synchronization, inputs, and quality checks.",
+      "mlx_translation": "Force the intended lazy work inside the timed region and preserve raw evidence plus rollback conditions.",
+      "example": "Compare the same prompt, decode length, cache state, dtype policy, and output-quality gate.",
+      "common_trap": "Publishing a source-reported or local speed range as an effective recommendation.",
+      "proof_check": "Another engineer can reproduce the exact workload and see why the number is or is not promotion-ready.",
+      "next_step": "Package the port and its proof boundary together.",
+      "source_ids": [
+        "mlx-doc-lazy"
+      ]
+    },
+    {
+      "id": "publish-proof",
+      "title": "Publish the proof boundary",
+      "plain_language": "Ship the implementation together with provenance, validation, limitations, and a rollback story.",
+      "why_it_matters": "Users need to know exactly which checkpoint, workload, and behavior were reproduced.",
+      "pytorch_cuda": "A converted artifact without its source revision, transforms, and validation cannot be audited.",
+      "mlx_translation": "Record source pin, weight map, parity report, benchmark metadata, supported route, and known gaps.",
+      "example": "Label one pinned Qwen checkpoint proven while keeping neighboring Qwen architectures unclaimed.",
+      "common_trap": "Promoting indexed research or a passing smoke test into supported guidance.",
+      "proof_check": "Every claim points to evidence and every risky change names a rollback condition.",
+      "next_step": "Use the field manual to execute the same rail on a real model.",
+      "source_ids": [
+        "mlx-repo"
+      ]
+    }
+  ],
+  "translation_lens": [
+    {
+      "id": "array-and-device",
+      "title": "Arrays and device placement",
+      "plain_language": "MLX arrays live in unified memory while operations select a device and stream.",
+      "why_it_matters": "Ported code should not copy PyTorch device-transfer choreography blindly.",
+      "pytorch_cuda": "torch.Tensor plus .to('cuda') or explicit host/device copies.",
+      "mlx_translation": "Use mx.array and operation or stream placement; treat framework interop as a separate boundary.",
+      "example": "Keep the array identity stable and choose the GPU stream for the operation that consumes it.",
+      "common_trap": "Assuming every external buffer shares storage without a copy.",
+      "proof_check": "The same input produces the expected shape, dtype, and values on the selected MLX device.",
+      "next_step": "Account for lazy evaluation before comparing timing."
+    },
+    {
+      "id": "lazy-evaluation",
+      "title": "Eager assumptions to lazy evaluation",
+      "plain_language": "MLX builds computation graphs lazily and realizes them when results are needed.",
+      "why_it_matters": "Evaluation placement affects memory, timing, and when state becomes observable.",
+      "pytorch_cuda": "Most eager PyTorch operations execute as they are issued.",
+      "mlx_translation": "Use deliberate mx.eval boundaries at comparisons, dependencies, and measurements.",
+      "example": "Evaluate model outputs inside a timed region before stopping the timer.",
+      "common_trap": "Printing, scalar extraction, or NumPy conversion creates an accidental synchronization point.",
+      "proof_check": "Timing includes the intended work once and parity reads realized outputs.",
+      "next_step": "Make checkpoint transforms explicit."
+    },
+    {
+      "id": "weight-map",
+      "title": "state_dict to weight map",
+      "plain_language": "Weights need a deterministic name, shape, layout, and dtype transformation contract.",
+      "why_it_matters": "Matching parameter counts does not prove tensors land in semantically equivalent operations.",
+      "pytorch_cuda": "Load a state_dict into a source class with framework-native naming and layouts.",
+      "mlx_translation": "Declare rename, transpose, reshape, split, merge, and dtype transforms before assignment.",
+      "example": "Split a fused QKV tensor only when the source layout and target attention module require it.",
+      "common_trap": "Guessing a transpose from a coincidentally compatible shape.",
+      "proof_check": "Source-key coverage is complete and every transformed tensor has a shape and checksum record.",
+      "next_step": "Verify operation-specific layouts."
+    },
+    {
+      "id": "tensor-layout",
+      "title": "Framework layout to operation layout",
+      "plain_language": "Layout is an operation contract, not a global framework preference.",
+      "why_it_matters": "Image, attention, convolution, and linear operations may expect different axis orders.",
+      "pytorch_cuda": "Source code may rely on NCHW conventions or implicit contiguous tensors.",
+      "mlx_translation": "Make every required transpose and reshape visible at the boundary that needs it.",
+      "example": "Record whether attention uses batch, heads, query, and key dimensions before calling fast SDPA.",
+      "common_trap": "Applying one repository-wide layout rule to every modality.",
+      "proof_check": "The primitive comparison passes with named axes and no unexplained reshape.",
+      "next_step": "Choose numerical roles explicitly."
+    },
+    {
+      "id": "numerical-dtype",
+      "title": "Autocast habits to numerical roles",
+      "plain_language": "Choose dtype and accumulation by the numerical role of each operation.",
+      "why_it_matters": "Norms, softmax, recurrence, FFTs, and quantizer distances can be more sensitive than linear layers.",
+      "pytorch_cuda": "Global AMP or autocast may select mixed precision implicitly.",
+      "mlx_translation": "Set weight, activation, accumulation, and sensitive-operation dtypes deliberately.",
+      "example": "Keep a sensitive reduction in higher precision while storing linear weights more compactly.",
+      "common_trap": "Calling a full-model dtype cast a lossless optimization.",
+      "proof_check": "Parity tolerances and task quality remain within the declared numerical policy.",
+      "next_step": "Expose mutable state."
+    },
+    {
+      "id": "explicit-state",
+      "title": "Hidden mutation to explicit state",
+      "plain_language": "Caches and recurrent values should be visible inputs and outputs of the ported computation.",
+      "why_it_matters": "Hidden mutation can make parity, compilation, and reuse incorrect or stale.",
+      "pytorch_cuda": "Modules may mutate buffers, KV caches, or recurrent fields internally.",
+      "mlx_translation": "Thread cache, recurrent, and compiled state explicitly and validate update order.",
+      "example": "Compare one-token KV growth and the next-token logits from the same prior state.",
+      "common_trap": "Capturing mutable state inside a compiled function and reusing stale values.",
+      "proof_check": "State shapes, positions, contents, and reset semantics pass staged comparisons.",
+      "next_step": "Compile only stable regions."
+    },
+    {
+      "id": "stable-compilation",
+      "title": "torch.compile and CUDA graphs to mx.compile",
+      "plain_language": "Compile pure, stable, reused MLX regions after eager parity.",
+      "why_it_matters": "Changing shapes, dtypes, Python structure, or captured state can retrace or invalidate assumptions.",
+      "pytorch_cuda": "torch.compile and CUDA graphs optimize or capture framework execution under their own contracts.",
+      "mlx_translation": "Use mx.compile for a function with explicit inputs, outputs, and stable structure.",
+      "example": "Compile a repeated denoiser step while leaving scheduler bookkeeping explicit.",
+      "common_trap": "Compiling an entire dynamic pipeline before locating the measured bottleneck.",
+      "proof_check": "Compiled and eager outputs match and the target workload shows an end-to-end benefit.",
+      "next_step": "Escalate to custom code only when profiling justifies it."
+    },
+    {
+      "id": "custom-extensions",
+      "title": "CUDA extensions to native MLX or Metal",
+      "plain_language": "Prefer readable MLX operations before custom backend work.",
+      "why_it_matters": "A custom kernel adds correctness, portability, maintenance, and fallback obligations.",
+      "pytorch_cuda": "A source project may depend on a CUDA extension or fused kernel.",
+      "mlx_translation": "Try native MLX operations, mx.fast, and compilation first; use custom Metal only after profiling.",
+      "example": "Replace compatible attention with MLX fast SDPA before designing an attention kernel.",
+      "common_trap": "Porting a CUDA optimization before reproducing the source semantics it accelerates.",
+      "proof_check": "The custom path matches the readable fallback and names a no-benefit rollback condition.",
+      "next_step": "Measure with explicit synchronization."
+    },
+    {
+      "id": "timing-and-sync",
+      "title": "CUDA timing to MLX evaluation boundaries",
+      "plain_language": "Lazy scheduling means timing must force the work being measured.",
+      "why_it_matters": "A timer around graph construction can omit execution or charge it to the next phase.",
+      "pytorch_cuda": "CUDA measurements commonly use explicit synchronization or framework events.",
+      "mlx_translation": "Evaluate outputs at the intended dependency or measurement boundary and avoid unrelated sync points.",
+      "example": "Realize prefill logits before ending the prefill timer, then time cached decode separately.",
+      "common_trap": "Comparing an eager source measurement with an unevaluated MLX expression.",
+      "proof_check": "Repeated cold and warm runs account for the same work and state.",
+      "next_step": "Use framework bridges only as controlled oracle tools."
+    },
+    {
+      "id": "framework-bridges",
+      "title": "Framework bridges for oracle comparison",
+      "plain_language": "NumPy and DLPack can move comparable values across framework boundaries.",
+      "why_it_matters": "They are useful for proof but can force evaluation, copy memory, or change ownership semantics.",
+      "pytorch_cuda": "Convert source tensors to a neutral or exchange representation for comparison.",
+      "mlx_translation": "Use documented conversion paths and keep the bridge outside measured model regions.",
+      "example": "Export one source checkpoint tensor for a deterministic primitive comparison.",
+      "common_trap": "Including conversion time in one runtime but not the other.",
+      "proof_check": "The receipt records copy, dtype, ownership, and synchronization behavior at the boundary.",
+      "next_step": "Return to native MLX arrays for the actual port."
+    }
+  ],
+  "checkpoint_nodes": [
+    {
+      "id": "inspect",
+      "title": "Inspect",
+      "outcome": "A pinned semantic inventory",
+      "concept": "Identify artifacts, inputs, outputs, modality, architecture, state, and source format.",
+      "why_mlx_differs": "MLX route selection depends on the actual computation, not a filename or task label.",
+      "inspect": "Config, class graph, tensor inventory, preprocessing, generation or scheduler code, and custom operations.",
+      "prerequisite": "A pinned local source revision with remote model code disabled.",
+      "proof": "The port plan records evidence and uncertainty for every selected family.",
+      "evidence_state": "required"
+    },
+    {
+      "id": "oracle",
+      "title": "Capture oracle",
+      "outcome": "Deterministic source checkpoints",
+      "concept": "Record source tensors, state, and outputs before translating implementation details.",
+      "why_mlx_differs": "The source oracle is the behavioral contract used to judge the new runtime.",
+      "inspect": "Inputs, RNG, preprocessing, primitive boundaries, repeated blocks, state, logits, and task output.",
+      "prerequisite": "A safe source runtime and a small representative input.",
+      "proof": "Captured artifacts are bounded, named, reproducible, and tied to the source revision.",
+      "evidence_state": "required"
+    },
+    {
+      "id": "implement",
+      "title": "Rebuild",
+      "outcome": "A readable eager MLX graph",
+      "concept": "Reproduce source semantics with native MLX modules and operations.",
+      "why_mlx_differs": "Lazy execution, layout, state, and numerical roles need explicit MLX choices.",
+      "inspect": "Operator semantics, masks, positions, residual order, activation functions, state, and output contracts.",
+      "prerequisite": "Source oracle and architecture route.",
+      "proof": "Small synthetic inputs exercise every critical branch before real weights are loaded.",
+      "evidence_state": "required"
+    },
+    {
+      "id": "map",
+      "title": "Map weights",
+      "outcome": "Deterministic source-to-MLX transforms",
+      "concept": "Declare how every source tensor becomes a target parameter.",
+      "why_mlx_differs": "Names, layouts, fused projections, and dtype policies can differ from the source framework.",
+      "inspect": "Rename, transpose, reshape, split, merge, dtype, destination shape, and source-key coverage.",
+      "prerequisite": "Target module tree and a complete source tensor inventory.",
+      "proof": "The converter reports complete coverage, expected shapes, and no unexplained tensor drop.",
+      "evidence_state": "required"
+    },
+    {
+      "id": "parity",
+      "title": "Prove parity",
+      "outcome": "The first trustworthy MLX path",
+      "concept": "Compare staged values from primitives through the final task.",
+      "why_mlx_differs": "Only parity distinguishes a semantic port from a checkpoint that merely loads.",
+      "inspect": "Shapes, primitive outputs, blocks, final outputs, cache or recurrent state, and task behavior.",
+      "prerequisite": "Source oracle, eager implementation, and complete weight map.",
+      "proof": "Every rung passes a declared tolerance or exact-match rule; the first divergence is explained.",
+      "evidence_state": "gate"
+    },
+    {
+      "id": "profile",
+      "title": "Profile",
+      "outcome": "A measured bottleneck",
+      "concept": "Separate the workload into phases and find the limiting one.",
+      "why_mlx_differs": "Lazy scheduling and unified memory change where work and synchronization are observed.",
+      "inspect": "Prefill, decode, preprocessing, repeated steps, memory, streaming, synchronization, and serving behavior.",
+      "prerequisite": "A parity-passing eager path and representative workload.",
+      "proof": "The receipt includes evaluation boundaries, hardware, software, shapes, warm state, and quality.",
+      "evidence_state": "gate"
+    },
+    {
+      "id": "optimize",
+      "title": "Optimize",
+      "outcome": "A faster or smaller path with proof",
+      "concept": "Choose a technique that matches the measured bottleneck and architecture.",
+      "why_mlx_differs": "Native operators, compilation, caches, compression, algorithms, and serving each have different contracts.",
+      "inspect": "Applicability, prerequisite, evidence status, quality gate, benchmark, and rollback.",
+      "prerequisite": "Parity and a measured bottleneck; this node is gated until both exist.",
+      "proof": "Parity and quality remain valid and the representative end-to-end workload improves.",
+      "evidence_state": "gated"
+    },
+    {
+      "id": "publish",
+      "title": "Publish",
+      "outcome": "An inspectable port packet",
+      "concept": "Package code, provenance, transforms, validation, measurements, limitations, and rollback.",
+      "why_mlx_differs": "A reusable MLX route needs an honest boundary around model, target, and evidence.",
+      "inspect": "Source pin, license, plan, weight map, parity report, benchmark receipts, runbook, and known gaps.",
+      "prerequisite": "All claims have canonical evidence and unsupported paths remain labeled.",
+      "proof": "A clean environment can reproduce the documented route without remote model code.",
+      "evidence_state": "required"
+    }
+  ],
+  "journeys": [
+    {
+      "id": "qwen25-dense-decoder",
+      "title": "Qwen2.5-0.5B-Instruct",
+      "model_id": "Qwen/Qwen2.5-0.5B-Instruct",
+      "model_outcome_id": "qwen25-05b-instruct-local-worked-port",
+      "status": "proven",
+      "modality": "text",
+      "source_format": "safetensors",
+      "architecture_ids": [
+        "dense-decoder-transformer"
+      ],
+      "source_ids": [
+        "mlx-lm-models",
+        "mlx-lm-convert",
+        "paper-2407-10671"
+      ],
+      "proof_ladder_rungs": 29,
+      "summary": "The only guided lab backed by a checked-in checkpoint port and ordered parity packet.",
+      "proof_boundary": "Claim one pinned local real-model port, exact eight-token greedy agreement for the F32 artifact, and one held F32-versus-BF16 wall-time observation. Do not generalize the tolerance, BF16 quality window, performance ratio, longer-context behavior, batching, or publication readiness.",
+      "component_path": [
+        {
+          "id": "qwen-tokenizer",
+          "checkpoint": "oracle",
+          "title": "Tokenizer contract",
+          "outcome": "Exact input IDs",
+          "concept": "Prompt formatting and tokenization define the first model input.",
+          "why_mlx_differs": "The MLX graph can be correct while a different chat template changes every later value.",
+          "inspect": "Tokenizer revision, special tokens, template, padding, and input IDs.",
+          "prerequisite": "Pinned model and tokenizer artifacts.",
+          "proof": "The source and target consume the same token IDs.",
+          "evidence_state": "proven"
+        },
+        {
+          "id": "qwen-embedding",
+          "checkpoint": "implement",
+          "title": "Embedding",
+          "outcome": "Tokens become hidden states",
+          "concept": "The embedding table maps token IDs into the model width.",
+          "why_mlx_differs": "Weight naming and gather semantics must match before repeated blocks are meaningful.",
+          "inspect": "Vocabulary size, hidden size, tied weights, dtype, and gather output.",
+          "prerequisite": "Exact token IDs and mapped embedding weight.",
+          "proof": "Embedding outputs pass the declared tensor comparison.",
+          "evidence_state": "proven"
+        },
+        {
+          "id": "qwen-decoder-block",
+          "checkpoint": "parity",
+          "title": "Decoder block loop",
+          "outcome": "Attention and MLP preserve source order",
+          "concept": "Repeated RMSNorm, RoPE, grouped-query attention, residual, and MLP blocks transform the sequence.",
+          "why_mlx_differs": "Mask shape, RoPE convention, GQA grouping, residual order, and lazy state must stay explicit.",
+          "inspect": "Norm epsilon, projection layout, head counts, RoPE base, mask, activation, and residual order.",
+          "prerequisite": "Primitive-level parity for norm, RoPE, attention, and MLP.",
+          "proof": "Every ordered block checkpoint passes before the final head is compared.",
+          "evidence_state": "proven"
+        },
+        {
+          "id": "qwen-kv-state",
+          "checkpoint": "parity",
+          "title": "KV cache state",
+          "outcome": "Cached decode matches full-context semantics",
+          "concept": "Key and value state grows across autoregressive generation.",
+          "why_mlx_differs": "Cache layout, position offsets, update order, and evaluation boundaries are target-runtime choices.",
+          "inspect": "Cache axes, length, grouped heads, positions, reset, and next-token logits.",
+          "prerequisite": "Full prefill parity and explicit cache state.",
+          "proof": "Single-token cached decode matches the source at each checked step.",
+          "evidence_state": "proven"
+        },
+        {
+          "id": "qwen-logits-generation",
+          "checkpoint": "publish",
+          "title": "Norm, head, and generation",
+          "outcome": "The pinned task result matches",
+          "concept": "Final normalization and the language head produce logits used by the generation loop.",
+          "why_mlx_differs": "Tied weights, sampling order, cache reuse, and stop rules can diverge after tensor parity.",
+          "inspect": "Final norm, head weight, logits, greedy selection, stop tokens, and emitted IDs.",
+          "prerequisite": "All earlier parity rungs and cache checks pass.",
+          "proof": "The checked-in packet records matching inputs and the exact greedy output sequence.",
+          "evidence_state": "proven"
+        }
+      ],
+      "checkpoint_notes": {
+        "inspect": "Pin the exact Qwen2.5-0.5B-Instruct revision and identify the dense decoder route.",
+        "oracle": "Capture tokenizer IDs, primitive tensors, repeated blocks, logits, KV state, and greedy outputs.",
+        "implement": "Build a readable standalone MLX decoder with explicit RoPE, GQA, RMSNorm, masks, and cache.",
+        "map": "Apply the checked-in schema-2 rename and transform contract with full source-key coverage.",
+        "parity": "Run the ordered 29-rung ladder under its declared floating-point policy.",
+        "profile": "Measure load, prefill, and cached decode separately; keep observations tied to the local receipt.",
+        "optimize": "Only after parity, test attention, compile, dtype, quantization, cache, or decode-algorithm branches independently.",
+        "publish": "Publish the exact checkpoint boundary, parity packet, receipts, and limitations without generalizing to all Qwen models."
+      },
+      "optimization_method_ids": [
+        "fast-sdpa",
+        "compile-stable-region",
+        "lazy-eval-boundaries",
+        "bf16-weight-cast",
+        "native-low-bit-weight-quantization",
+        "uniform-kv-quantization",
+        "adaptive-kv-quantization",
+        "prompt-prefix-cache",
+        "continuous-batching-serving",
+        "draft-model-speculation",
+        "prompt-lookup-ngram-speculation",
+        "eagle-medusa-mtp-drafters",
+        "cache-privacy-and-isolation",
+        "cuda-graphs-decode-capture"
+      ]
+    },
+    {
+      "id": "whisper-style-asr",
+      "title": "Whisper-style ASR",
+      "status": "simulation",
+      "modality": "audio-to-text",
+      "source_format": "safetensors",
+      "hybrid_profile_id": "whisper-asr-seq2seq",
+      "architecture_ids": [
+        "automatic-speech-recognition",
+        "encoder-decoder-transformer"
+      ],
+      "source_ids": [
+        "repo-whisper",
+        "paper-2311-00430",
+        "mlx-examples-repo"
+      ],
+      "summary": "A runbook simulation for audio preprocessing, encoder-decoder structure, cross-attention, cache, timestamps, and task quality.",
+      "proof_boundary": "This is a runbook simulation, not a completed Whisper checkpoint port. The official MLX example proves an implementation path exists; it does not provide this repository's pinned parity and task-quality packet.",
+      "component_path": [
+        {
+          "id": "whisper-waveform",
+          "checkpoint": "inspect",
+          "title": "Waveform contract",
+          "outcome": "Deterministic audio input",
+          "concept": "Sample rate, channel policy, normalization, clipping, and duration define the raw input.",
+          "why_mlx_differs": "A model graph cannot correct a frontend mismatch introduced before MLX sees the samples.",
+          "inspect": "Sample rate, channel fold, dtype, amplitude, padding, and truncation.",
+          "prerequisite": "Pinned audio fixture and preprocessing configuration.",
+          "proof": "The same normalized waveform reaches both frontends.",
+          "evidence_state": "simulation"
+        },
+        {
+          "id": "whisper-mel-frontend",
+          "checkpoint": "oracle",
+          "title": "Mel frontend",
+          "outcome": "Feature parity before the network",
+          "concept": "Windowing, FFT, mel filters, log scaling, and padding create encoder features.",
+          "why_mlx_differs": "FFT and layout details can diverge before any learned layer runs.",
+          "inspect": "Window, hop, FFT size, mel basis, log floor, frame count, layout, and dtype.",
+          "prerequisite": "Exact waveform contract and source frontend oracle.",
+          "proof": "Mel features pass shape and value gates under an explicit tolerance.",
+          "evidence_state": "simulation"
+        },
+        {
+          "id": "whisper-encoder",
+          "checkpoint": "implement",
+          "title": "Audio encoder",
+          "outcome": "Context features match",
+          "concept": "The encoder turns mel frames into contextual audio representations.",
+          "why_mlx_differs": "Convolution layout, positions, attention masks, and normalization need explicit translation.",
+          "inspect": "Frontend convolutions, positions, encoder masks, attention, MLP, and norms.",
+          "prerequisite": "Feature parity and mapped encoder weights.",
+          "proof": "Selected encoder blocks and the final encoder output pass parity.",
+          "evidence_state": "simulation"
+        },
+        {
+          "id": "whisper-cross-attention-decoder",
+          "checkpoint": "parity",
+          "title": "Cross-attention decoder",
+          "outcome": "Text state attends to audio correctly",
+          "concept": "The decoder mixes text self-attention with cross-attention over encoder features.",
+          "why_mlx_differs": "Self and cross caches have different lifetimes, masks, positions, and update rules.",
+          "inspect": "Decoder prompt tokens, self mask, cross mask, cache split, forced tokens, and language/task controls.",
+          "prerequisite": "Encoder output parity and explicit cache structures.",
+          "proof": "Decoder checkpoints and next-token logits match for the same state.",
+          "evidence_state": "simulation"
+        },
+        {
+          "id": "whisper-transcript-timestamps",
+          "checkpoint": "publish",
+          "title": "Transcript and timestamps",
+          "outcome": "Task behavior is measured",
+          "concept": "Token decoding, suppression rules, timestamps, and text normalization create the user-visible output.",
+          "why_mlx_differs": "Matching logits is necessary but not sufficient for identical transcript and timestamp behavior.",
+          "inspect": "Decoding options, suppressed tokens, timestamp rules, normalization, WER or CER, and segment output.",
+          "prerequisite": "Encoder-decoder parity on a representative corpus slice.",
+          "proof": "Task metrics and timestamp behavior meet a declared quality gate.",
+          "evidence_state": "simulation"
+        }
+      ],
+      "checkpoint_notes": {
+        "inspect": "Classify speech modality separately from the encoder-decoder architecture and frontend.",
+        "oracle": "Capture waveform, mel features, encoder outputs, cross-attention decoder checkpoints, and timestamps.",
+        "implement": "Rebuild the frontend, audio encoder, text decoder, masks, positions, and distinct cache lifetimes.",
+        "map": "Map convolution, encoder, decoder, cross-attention, embedding, and head tensors explicitly.",
+        "parity": "Prove features, encoder, decoder, state, logits, transcript, and timestamp behavior in order.",
+        "profile": "Separate frontend, encoder, autoregressive decoder, and task post-processing costs.",
+        "optimize": "For offline Whisper, start with attention, compilation, and evaluation boundaries only when their prerequisites hold.",
+        "publish": "Keep this route labeled simulation until a pinned checkpoint and task-quality packet are reproduced."
+      },
+      "optimization_method_ids": [
+        "fast-sdpa",
+        "compile-stable-region",
+        "lazy-eval-boundaries"
+      ]
+    },
+    {
+      "id": "flux-style-diffusion",
+      "title": "FLUX-style diffusion/flow",
+      "status": "simulation",
+      "modality": "text-to-image",
+      "source_format": "safetensors",
+      "architecture_ids": [
+        "diffusion-flow"
+      ],
+      "source_ids": [
+        "paper-2212-09748",
+        "paper-2112-10752",
+        "paper-2209-03003",
+        "paper-2210-02747",
+        "paper-2403-03206",
+        "mlx-examples-repo"
+      ],
+      "summary": "A generic FLUX-style simulation for multi-component pipelines and repeated flow or denoising steps; it is not an exact FLUX port claim.",
+      "proof_boundary": "This is a generic FLUX-style teaching route, not an exact FLUX checkpoint claim. Fixed-seed output still requires declared image-quality checks; pixel identity is not promised by default.",
+      "component_path": [
+        {
+          "id": "flux-prompt-encoder",
+          "checkpoint": "inspect",
+          "title": "Prompt encoder",
+          "outcome": "Conditioning is reproducible",
+          "concept": "Tokenizer and text encoder outputs condition the image-generation process.",
+          "why_mlx_differs": "A pipeline may contain separately versioned encoders with their own layouts and dtype policies.",
+          "inspect": "Tokenizer, encoder variants, hidden-state selection, pooling, masks, and guidance inputs.",
+          "prerequisite": "Pinned pipeline configuration and prompt fixture.",
+          "proof": "Conditioning tensors match before entering the denoiser.",
+          "evidence_state": "simulation"
+        },
+        {
+          "id": "flux-latent-scheduler",
+          "checkpoint": "oracle",
+          "title": "Latent and scheduler",
+          "outcome": "The same trajectory starts",
+          "concept": "Initial latent, timestep or sigma schedule, guidance, and RNG define the iterative path.",
+          "why_mlx_differs": "Different RNG, scheduler math, or timestep dtype changes every later latent.",
+          "inspect": "Seed, latent shape, scheduler configuration, timestep sequence, scaling, and guidance.",
+          "prerequisite": "Pinned pipeline config and deterministic source execution.",
+          "proof": "Initial latent and every scheduled input agree under the declared policy.",
+          "evidence_state": "simulation"
+        },
+        {
+          "id": "flux-denoiser-step",
+          "checkpoint": "implement",
+          "title": "Repeated flow or denoiser step",
+          "outcome": "One iterative update matches",
+          "concept": "A large transformer or denoiser predicts the update applied at each scheduled step.",
+          "why_mlx_differs": "Layout, multimodal conditioning, timestep embedding, attention, and lazy graph lifetime shape the hot loop.",
+          "inspect": "Block order, conditioning joins, attention, timestep embedding, residuals, and output parameterization.",
+          "prerequisite": "Matching latent, schedule, and conditioning tensors.",
+          "proof": "Selected internal blocks and one full update pass parity before iteration.",
+          "evidence_state": "simulation"
+        },
+        {
+          "id": "flux-latent-loop",
+          "checkpoint": "parity",
+          "title": "Latent trajectory",
+          "outcome": "Divergence stays bounded across steps",
+          "concept": "The scheduler repeatedly combines predictions and latents.",
+          "why_mlx_differs": "Small numerical or scheduler differences accumulate over the entire trajectory.",
+          "inspect": "Latent checkpoints at fixed steps, evaluation boundaries, dtype, and scheduler state.",
+          "prerequisite": "One-step parity and identical schedule.",
+          "proof": "Fixed-step latent checkpoints satisfy the declared comparison policy.",
+          "evidence_state": "simulation"
+        },
+        {
+          "id": "flux-vae-image",
+          "checkpoint": "publish",
+          "title": "VAE decode and image",
+          "outcome": "The task output is comparable",
+          "concept": "The final latent is decoded and post-processed into an image.",
+          "why_mlx_differs": "VAE layouts, scaling, clipping, color conversion, and quality metrics sit outside the denoiser.",
+          "inspect": "Latent scaling, decoder, output range, channel order, post-processing, and quality metric.",
+          "prerequisite": "Latent trajectory parity and mapped VAE weights.",
+          "proof": "Fixed-seed output and declared image-quality checks pass without claiming pixel identity by default.",
+          "evidence_state": "simulation"
+        }
+      ],
+      "checkpoint_notes": {
+        "inspect": "Inventory every pipeline component, scheduler, source artifact, and conditioning path.",
+        "oracle": "Capture conditioning, initial latent, schedule, selected denoiser blocks, latent steps, and final decode.",
+        "implement": "Rebuild components independently, then compose a readable single-step pipeline before iteration.",
+        "map": "Keep encoder, denoiser, and VAE weight namespaces and transforms separately auditable.",
+        "parity": "Compare scheduler identity, one-step updates, fixed latent checkpoints, VAE output, and quality.",
+        "profile": "Separate prompt encoding, repeated denoiser work, scheduler overhead, transfers, and VAE decode.",
+        "optimize": "Current registry candidates are stable compilation, evaluation boundaries, block streaming, and the spatial grid-sample kernel.",
+        "publish": "Label the route FLUX-style simulation until an exact model source and reproducible MLX proof are checked in."
+      },
+      "optimization_method_ids": [
+        "compile-stable-region",
+        "lazy-eval-boundaries",
+        "block-weight-streaming",
+        "spatial-grid-sample-kernel"
+      ]
+    },
+    {
+      "id": "llava-style-vlm",
+      "title": "LLaVA-style vision-language model",
+      "status": "simulation",
+      "modality": "image-to-text",
+      "source_format": "safetensors",
+      "architecture_ids": [
+        "vision-language-omni",
+        "encoder-transformer",
+        "dense-decoder-transformer"
+      ],
+      "source_ids": [
+        "paper-2304-08485",
+        "mlx-vlm-repo",
+        "mlx-vlm-readme",
+        "llava-onevision-blog",
+        "paper-2403-15388"
+      ],
+      "summary": "A composed-route simulation that keeps image processing, vision encoding, projection, language decoding, and KV state visible.",
+      "proof_boundary": "This is a composed-route simulation with no pinned model outcome or local proof ladder. MLX-VLM evidence is third-party and must not be presented as Apple-official or locally reproduced.",
+      "component_path": [
+        {
+          "id": "llava-image-processor",
+          "checkpoint": "inspect",
+          "title": "Image processor",
+          "outcome": "Pixels have an exact contract",
+          "concept": "Resize, crop, normalize, tile, and patch policies create the vision input.",
+          "why_mlx_differs": "A correct vision encoder cannot repair different pixels or patch layout.",
+          "inspect": "Image size, aspect policy, interpolation, normalization, tiling, channel order, and batch shape.",
+          "prerequisite": "Pinned processor configuration and image fixture.",
+          "proof": "Processed pixels and metadata match the source contract.",
+          "evidence_state": "simulation"
+        },
+        {
+          "id": "llava-vision-encoder",
+          "checkpoint": "oracle",
+          "title": "Vision encoder",
+          "outcome": "Image features match",
+          "concept": "An encoder transformer turns image patches into visual features.",
+          "why_mlx_differs": "Patch layout, position encoding, attention, feature selection, and dtype must be routed through the encoder family.",
+          "inspect": "Patch embedding, positions, masks, encoder blocks, selected layers, and output layout.",
+          "prerequisite": "Pixel parity and mapped vision weights.",
+          "proof": "Selected vision blocks and final feature tensors pass parity.",
+          "evidence_state": "simulation"
+        },
+        {
+          "id": "llava-projector",
+          "checkpoint": "implement",
+          "title": "Multimodal projector",
+          "outcome": "Vision features enter language space",
+          "concept": "A projector maps vision width and token structure into the language model embedding space.",
+          "why_mlx_differs": "Projection layout, activation, feature selection, and image-token count determine language positions.",
+          "inspect": "Input layer selection, projector architecture, activation, output width, and token count.",
+          "prerequisite": "Vision feature parity and mapped projector weights.",
+          "proof": "Projected embeddings match before they are inserted into the text sequence.",
+          "evidence_state": "simulation"
+        },
+        {
+          "id": "llava-token-assembly",
+          "checkpoint": "parity",
+          "title": "Multimodal token assembly",
+          "outcome": "Image and text positions agree",
+          "concept": "Projected image tokens replace or join placeholders in the language sequence.",
+          "why_mlx_differs": "Template, placeholder count, padding, positions, and masks can shift the entire decoder state.",
+          "inspect": "Prompt template, image placeholders, insertion index, attention mask, positions, and labels.",
+          "prerequisite": "Projected embedding and tokenizer parity.",
+          "proof": "Assembled embeddings, positions, and masks match exactly where required.",
+          "evidence_state": "simulation"
+        },
+        {
+          "id": "llava-decoder-output",
+          "checkpoint": "publish",
+          "title": "Language decoder and output",
+          "outcome": "Multimodal behavior is measured",
+          "concept": "A dense decoder with KV state generates text conditioned on visual tokens.",
+          "why_mlx_differs": "Decoder attention, cache, image-prefix reuse, sampling, and serving state are separate contracts.",
+          "inspect": "Prefill logits, cached decode, positions, stop rules, text output, and image-conditioned task quality.",
+          "prerequisite": "All modality-boundary and decoder checkpoints pass.",
+          "proof": "Logits, cache behavior, and a declared multimodal task gate pass for the pinned scenario.",
+          "evidence_state": "simulation"
+        }
+      ],
+      "checkpoint_notes": {
+        "inspect": "Route image processing, the encoder tower, projector, dense decoder, and KV state as separate components.",
+        "oracle": "Capture pixels, vision features, projected embeddings, token assembly, logits, cache, and final output.",
+        "implement": "Rebuild each component through its native runbook before composing the multimodal path.",
+        "map": "Keep vision, projector, and language tensor transforms distinct with complete source-key coverage.",
+        "parity": "Prove every modality boundary before evaluating the final image-conditioned task.",
+        "profile": "Separate image processing, vision encoding, projection, language prefill, cached decode, and serving reuse.",
+        "optimize": "Select attention, compile, memory, cache, batching, spatial, or research branches only after their own gates.",
+        "publish": "Keep Apple MLX, third-party MLX-VLM, paper-only research, and local reproduction states visibly distinct."
+      },
+      "optimization_method_ids": [
+        "fast-sdpa",
+        "compile-stable-region",
+        "lazy-eval-boundaries",
+        "block-weight-streaming",
+        "native-low-bit-weight-quantization",
+        "prompt-prefix-cache",
+        "continuous-batching-serving",
+        "content-prefix-cache-vlm",
+        "eagle-medusa-mtp-drafters",
+        "cache-privacy-and-isolation",
+        "vision-feature-cache",
+        "multimodal-content-prefix-cache",
+        "video-input-budgeting",
+        "visual-token-pruning-or-merge",
+        "spatial-grid-sample-kernel"
+      ]
+    }
+  ],
+  "optimization_families": [
+    {
+      "id": "evaluation-scheduling",
+      "title": "Evaluation and scheduling",
+      "bottleneck": "Lazy graph lifetime, synchronization, or misplaced evaluation dominates the measured phase.",
+      "proof_gate": "Parity passes with identical state and the measured region realizes the intended work exactly once.",
+      "rollback": "Remove the boundary change when it increases memory, synchronization, or end-to-end latency.",
+      "method_ids": [
+        "lazy-eval-boundaries"
+      ]
+    },
+    {
+      "id": "native-operators-compilation",
+      "title": "Native operators and compilation",
+      "bottleneck": "A compatible repeated operator or stable graph region dominates runtime.",
+      "proof_gate": "Eager parity exists and the native or compiled path matches it across representative shapes and state.",
+      "rollback": "Use the readable eager fallback on semantic mismatch, retracing instability, or no end-to-end benefit.",
+      "method_ids": [
+        "fast-sdpa",
+        "compile-stable-region"
+      ]
+    },
+    {
+      "id": "layout-numerics",
+      "title": "Layout and numerical representation",
+      "bottleneck": "Dispatch layout, gather structure, dtype, or accumulation behavior limits the target path.",
+      "proof_gate": "Named axes and numerical roles are explicit and parity plus quality remain within policy.",
+      "rollback": "Restore the baseline layout or precision when conversion overhead, instability, or quality loss appears.",
+      "method_ids": [
+        "moe-gather-and-expert-batching"
+      ]
+    },
+    {
+      "id": "state-memory",
+      "title": "State and memory",
+      "bottleneck": "Weights or KV state exceed the useful memory budget or create avoidable transfer and cache cost.",
+      "proof_gate": "State update, position, reset, isolation, and representative memory accounting are validated.",
+      "rollback": "Return to full state or resident weights when parity, quality, privacy, or end-to-end latency regresses.",
+      "method_ids": [
+        "block-weight-streaming",
+        "uniform-kv-quantization",
+        "adaptive-kv-quantization"
+      ]
+    },
+    {
+      "id": "compression",
+      "title": "Compression",
+      "bottleneck": "Weight, state, or token representation dominates memory or bandwidth after baseline parity.",
+      "proof_gate": "The compressed artifact passes task-specific quality and memory gates on the representative workload.",
+      "rollback": "Restore the last parity-passing representation when quality, stability, or total latency fails its gate.",
+      "method_ids": [
+        "bf16-weight-cast",
+        "native-low-bit-weight-quantization",
+        "visual-token-pruning-or-merge",
+        "moe-expert-dispatch-and-quantization"
+      ]
+    },
+    {
+      "id": "inference-algorithms",
+      "title": "Inference algorithms",
+      "bottleneck": "Autoregressive target-model calls dominate after the underlying decoder is correct.",
+      "proof_gate": "Acceptance semantics, token distribution or exact mode, state, and task quality match the declared policy.",
+      "rollback": "Use baseline generation when acceptance overhead, incompatibility, or output-quality drift removes the benefit.",
+      "method_ids": [
+        "draft-model-speculation",
+        "prompt-lookup-ngram-speculation",
+        "eagle-medusa-mtp-drafters"
+      ]
+    },
+    {
+      "id": "serving-pipeline",
+      "title": "Serving and pipeline",
+      "bottleneck": "Batching, preprocessing, cache reuse, streaming, or multi-request scheduling limits the real workload.",
+      "proof_gate": "Isolation, cache keys, fairness, task quality, workload mix, and end-to-end behavior are validated.",
+      "rollback": "Disable reuse or scheduling changes on privacy, correctness, starvation, memory, or tail-latency regression.",
+      "method_ids": [
+        "prompt-prefix-cache",
+        "continuous-batching-serving",
+        "content-prefix-cache-vlm",
+        "audio-streaming-and-cache",
+        "cache-privacy-and-isolation",
+        "vision-feature-cache",
+        "multimodal-content-prefix-cache",
+        "video-input-budgeting",
+        "qwen3-tts-batch-generation",
+        "audio-reference-conditioning-cache",
+        "generic-audio-prefix-cache"
+      ]
+    },
+    {
+      "id": "custom-backend",
+      "title": "Custom backend work",
+      "bottleneck": "A proven hot operation has no adequate native MLX path after safer options are exhausted.",
+      "proof_gate": "A readable fallback passes parity and the custom path is benchmarked over representative shapes and devices.",
+      "rollback": "Keep or restore the fallback on semantic mismatch, maintenance risk, rejected platform assumptions, or no measured win.",
+      "method_ids": [
+        "moe-gate-up-fusion",
+        "spatial-grid-sample-kernel",
+        "cuda-graphs-decode-capture"
+      ]
+    }
+  ],
+  "method_quality_gates": {
+    "bf16-weight-cast": [
+      "task-specific quality against F32"
+    ],
+    "native-low-bit-weight-quantization": [
+      "task quality against unquantized baseline"
+    ],
+    "uniform-kv-quantization": [
+      "logit/perplexity drift over context lengths",
+      "retrieval/reasoning quality"
+    ],
+    "adaptive-kv-quantization": [
+      "matched bit budget comparison",
+      "long-context quality"
+    ],
+    "visual-token-pruning-or-merge": [
+      "task quality suite"
+    ],
+    "moe-expert-dispatch-and-quantization": [
+      "quality against the unquantized expert baseline"
+    ],
+    "video-input-budgeting": [
+      "video QA/OCR/diagram probes"
+    ],
+    "audio-streaming-and-cache": [
+      "chunk-boundary continuity",
+      "speaker similarity/intelligibility"
+    ]
+  },
+  "glossary": [
+    {
+      "term": "MLX",
+      "definition": "Apple's array framework for machine learning on Apple silicon, with lazy evaluation, composable transforms, and unified-memory operation."
+    },
+    {
+      "term": "eager graph",
+      "definition": "The simplest readable MLX implementation used to prove semantics before compilation or specialized optimization."
+    },
+    {
+      "term": "source oracle",
+      "definition": "Deterministic tensors, state, and outputs captured from the pinned source implementation for comparison."
+    },
+    {
+      "term": "parity",
+      "definition": "Evidence that source and MLX behavior agree under a declared exact or numerical comparison policy."
+    },
+    {
+      "term": "route",
+      "definition": "The selected architecture-family and capability path that determines runbooks, risks, and proof gates."
+    },
+    {
+      "term": "runbook",
+      "definition": "Architecture-specific implementation and validation guidance with supported, experimental, and blocked boundaries."
+    },
+    {
+      "term": "checkpoint",
+      "definition": "A named intermediate tensor, state, or output used to localize correctness across the port."
+    },
+    {
+      "term": "weight map",
+      "definition": "The explicit rename, transpose, reshape, split, merge, dtype, and destination contract for source tensors."
+    },
+    {
+      "term": "KV cache",
+      "definition": "Stored attention keys and values reused across autoregressive decoding steps."
+    },
+    {
+      "term": "schema-2",
+      "definition": "The repository's structured weight-map and conversion contract with explicit tensor transforms and coverage."
+    },
+    {
+      "term": "golden scenario",
+      "definition": "A small representative input and expected behavior used as a stable end-to-end validation target."
+    },
+    {
+      "term": "receipt",
+      "definition": "Structured raw evidence for one bounded benchmark or validation run, including its exact context."
+    },
+    {
+      "term": "promotion-ready",
+      "definition": "An evidence state that has satisfied the repository's provenance, workload, quality, attestation, and scope gates."
+    },
+    {
+      "term": "execution attestation",
+      "definition": "Evidence binding a measurement to its command, dependencies, outputs, and trusted verification boundary."
+    },
+    {
+      "term": "TargetProfile",
+      "definition": "The controlled hardware, software, model, workload, and capability context used for recommendation eligibility."
+    },
+    {
+      "term": "source-key coverage",
+      "definition": "The proportion and disposition of source checkpoint keys accounted for by the weight-map contract."
+    },
+    {
+      "term": "proof boundary",
+      "definition": "The exact model, revision, target, workload, behavior, and evidence scope a claim is allowed to cover."
+    }
+  ]
+}

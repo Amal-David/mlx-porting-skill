@@ -20,6 +20,14 @@
     node.textContent = String(new Date().getFullYear());
   });
 
+  const portLoop = document.querySelector("[data-port-loop]");
+  const portLoopToggle = portLoop?.querySelector("[data-port-loop-toggle]");
+  portLoopToggle?.addEventListener("click", () => {
+    const paused = portLoop.classList.toggle("is-paused");
+    portLoopToggle.setAttribute("aria-pressed", String(paused));
+    portLoopToggle.textContent = paused ? "Resume motion" : "Pause motion";
+  });
+
   const renderFamilies = (container, compact = false) => {
     const families = get("architectures.families");
     if (!container || !Array.isArray(families) || families.length === 0) return;
