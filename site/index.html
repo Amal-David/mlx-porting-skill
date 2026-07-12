@@ -42,7 +42,7 @@
     <section class="hero" aria-labelledby="hero-title">
       <div class="hero-shell">
         <div class="hero-copy">
-          <div class="status-kicker"><span class="status-dot" aria-hidden="true"></span>Executable standard · v<span data-value="version">0.5.0</span></div>
+          <div class="status-kicker"><span class="status-dot" aria-hidden="true"></span>Executable standard · v<span data-value="version">0.6.0</span></div>
           <h1 id="hero-title">Port models to MLX with <em>proof at every step.</em></h1>
           <p class="hero-lead">Dense-decoder Transformers can run the full source-capture, scaffold, schema-2 conversion, and parity chain. Other families leave with an architecture route, implementation runbook, validation plan, and honest evidence boundary.</p>
           <div class="hero-actions">
@@ -128,7 +128,7 @@
         <div class="section-heading">
           <span class="section-kicker">Architecture-specific routes</span>
           <h2>Different graphs deserve different runbooks.</h2>
-          <p>The registry covers dense and MoE Transformers, vision-language and audio-language systems, diffusion and flow, speech stacks, state-space hybrids, time series, graph models, codecs, vocoders, and CV backbones. Dense decoders are the only generated architecture path and are proven by one real Qwen port. The other 16 families have tested routing and guards, not generated modules or completed checkpoint support.</p>
+          <p>The registry covers 17 architecture routes. Six have executable scaffolds: dense decoder, BERT encoder, T5 encoder-decoder, HuBERT/Wav2Vec2 acoustic encoder, sparse MoE, and selective SSM. Qwen2.5, BGE, t5-small, and HuBERT-base are real checkpoint proofs; MoE and SSM are synthetic-only; the other 11 routes remain runbook-guided.</p>
         </div>
         <div class="family-grid" id="family-grid" aria-live="polite">
           <p class="generated-fallback">The complete family list is available in the repository’s <a href="https://github.com/Amal-David/mlx-porting-skill/blob/main/mlx-model-porting/assets/architectures.yaml">architecture registry</a>. Interactive route cards require the local generated data file.</p>
@@ -170,7 +170,7 @@
           </div>
           <div class="limitation-box">
             <ul>
-              <li>One Qwen2.5 dense-decoder port passed 29 parity rungs and exact greedy-token comparison. Golden scenarios prove routing, source-key coverage, seeded parity-bug detection, and recommendation policy for all families—not real checkpoint support for the other 16.</li>
+              <li>Four real packets cover Qwen2.5, BGE, t5-small, and HuBERT-base. MoE and SSM gates are synthetic. Golden scenarios prove routing for all families, not real checkpoint support for every route.</li>
               <li>Static format inspection does not convert ONNX, GGUF, Flax/Orbax, TensorFlow/Keras, or Core ML graphs into executable MLX.</li>
               <li>Source-reported speed ranges are not portable guarantees across chips, versions, shapes, concurrency, precision, or quality constraints.</li>
               <li>Exact output is the only controlled built-in task metric. Domain evaluation, other-model Apple Silicon execution, external research agents, live links, and upstream pin drift remain separate validation surfaces.</li>

@@ -5,7 +5,7 @@ license: Apache-2.0
 compatibility: Execution and performance validation require an Apple Silicon Mac with a supported MLX installation. Planning and static inspection can run elsewhere. Python 3.10+ and git are recommended; NumPy is required only for tensor parity and huggingface-hub only for explicitly enabled network intake (see requirements-tools.txt). Network access is optional and must be explicitly enabled.
 metadata:
   author: mlx-porting-skill
-  version: "0.5.0"
+  version: "0.6.0"
   last-reviewed: "2026-07-11"
 ---
 
@@ -15,11 +15,12 @@ metadata:
 
 Produce or inspect a **correct, reproducible, architecture-aware MLX implementation**. Correctness comes before speed. Every speed or memory claim must name the hardware, software versions, workload, baseline, and quality gate.
 
-Dense decoders have an executable capture/scaffold/schema-2 conversion/parity
-chain proven by one [Qwen2.5 port](examples/worked-port-qwen2.5-0.5b-instruct/README.md).
-The other 16 families have tooled routing/planning/generic validation but
-runbook-guided module implementation. Exact output is the only built-in task
-metric; domain evaluators remain future work.
+Six families have scaffolds. Packets:
+[Qwen2.5](examples/worked-port-qwen2.5-0.5b-instruct/README.md),
+[BGE](examples/worked-port-bge-base-en/README.md),
+[t5-small](examples/worked-port-t5-small/README.md), and
+[HuBERT](examples/worked-port-hubert-base-ls960/README.md). MoE/SSM are
+synthetic; others are runbook-guided. Exact output is the built-in metric.
 
 ## When to use this skill
 
@@ -36,6 +37,7 @@ metric; domain evaluators remain future work.
 | User points at an existing local MLX project, running MLX app, or completed MLX port. | [inspector mode](references/inspector-mode.md) plus [inspect_mlx_project.py](scripts/inspect_mlx_project.py) |
 | User asks "what can I do with this model?", asks for capability fit, or wants model-specific advice. | [model advisor playbook](references/model-advisor-playbook.md) |
 | A known architecture family needs the right runbook. | [model support map](references/model-support-map.md), then the architecture table in Workflow step 4 below |
+| Dense decoder, BERT encoder, T5 encoder-decoder, HuBERT/Wav2Vec2 acoustic encoder, sparse MoE, or selective SSM. | Use `scaffold_port.py`; select capture/parity mode `dense-decoder` (default), `encoder`, `encoder-decoder`, `asr`, or `ssm`. |
 | NaN, Inf, cosine-similarity drift, parity failure, or garbage output appears versus the source. | [failure atlas](references/failure-atlas.md) |
 | Weight conversion, key mapping, tensor rename, transpose, reshape, split, merge, or shape transform is in scope. | [core porting method](references/porting-core.md) |
 | The user says "make it faster" but no profile, workload, or baseline exists yet. | [benchmarking](references/benchmarking.md) |
@@ -87,7 +89,9 @@ Run `scripts/capture_oracle.py` against the pinned local Hugging Face model befo
 
 Read [core porting method](references/porting-core.md); choose via the trigger map and the controlled family records in `assets/architectures.yaml`. Load every runbook returned by a hybrid route. The registry is the complete runbook inventory; do not substitute an abbreviated parallel list.
 
-For an unblocked `dense-decoder-transformer` inspection, scaffold implementation:
+Scaffold an unblocked dense decoder, sparse-MoE decoder, BERT encoder, T5
+encoder-decoder, HuBERT/Wav2Vec2 acoustic encoder, or opt-in synthetic
+`minimal_selective` SSM:
 
 ```bash
 python3 scripts/scaffold_port.py inspection.json --artifact-root MODEL --output mlx_port
@@ -96,7 +100,7 @@ python3 scripts/scaffold_port.py inspection.json --artifact-root MODEL --output 
 It re-inspects the artifact and fails closed. Review unsupported config before
 continuing; never patch around a generator blocker.
 
-[Example](examples/worked-port-qwen2.5-0.5b-instruct/README.md) (no weights).
+See the linked worked ports above (no weights).
 
 Start eager: FP, batch one unless intrinsic, no compile/kernels, state/cache, assertions, reversible map.
 
@@ -109,11 +113,10 @@ gaps; never mask exceptions.
 
 ### 6. Pass the parity ladder
 
-After conversion, `scripts/run_parity.py` is the one-command flow: it invokes
-`capture_oracle.py` and `capture_mlx.py`, then stops at the first failing
-input/embed/layer/norm/logit/exact-ID rung. Use `capture_mlx.py` for retained
-target captures and `compare_tensors.py` for extra checks; `_capture_common.py`
-holds shared bounded capture rules.
+After conversion, `scripts/run_parity.py --mode MODE` runs source/MLX capture
+and stops at the first failed rung. Modes: `dense-decoder` (default), `encoder`,
+`encoder-decoder`, `ssm`, `asr`. Use `capture_mlx.py` for retained captures and
+`compare_tensors.py` for extras; `_capture_common.py` holds bounded rules.
 
 When parity fails, use [failure atlas](references/failure-atlas.md); do not optimize a failing graph.
 
@@ -143,5 +146,9 @@ Stop when license, remote code, unresolved parity, regressions, missing kernel f
 
 ## Maintenance
 
-For maintenance, read [mnt](references/maintenance-and-provenance.md), [hyp](references/hypothesis-led-learning.md), [deep](references/deep-research-loop.md). The 0.5.0 payload has 29 scripts, 66 techniques, and 13 benchmark receipts: 12 observations, 0 promotion-ready, and 1 rejected. Use `scripts/nightly_knowledge_curator.py` for receipts, delta, packets; use hypothesis-led for 50-100/learn-flow/public-port/kernel/2x/5x targets. Keep flags/receipts/gates/matrices/dossiers/ledger in [deep](references/deep-research-loop.md); run `scripts/audit_skill.py --strict` and `scripts/validate_sources.py` before distribution.
+Read [maintenance](references/maintenance-and-provenance.md) and the
+[research loop](references/deep-research-loop.md). Version 0.6.0 has 31 scripts,
+66 techniques, and 13 receipts: 12 observations, 0 promotion-ready, 1 rejected.
+Use `nightly_knowledge_curator.py` for review packets. Before distribution run
+`audit_skill.py --strict` and `validate_sources.py`.
 When `assets/architectures.yaml` changes, keep the golden scenario gate in `tests/test_scenarios.py` at full family coverage.

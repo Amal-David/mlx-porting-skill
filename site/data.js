@@ -159,5 +159,5 @@ window.MLX_PORTING_SITE_DATA = {
     },
     "total": 66
   },
-  "version": "0.5.0"
+  "version": "0.6.0"
 };

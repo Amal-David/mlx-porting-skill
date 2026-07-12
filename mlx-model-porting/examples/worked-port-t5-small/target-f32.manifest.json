@@ -1,0 +1,320 @@
+{
+  "schema_version": 1,
+  "model": {
+    "directory": "t5-small-mlx",
+    "fingerprint": "sha256:2e88d308dad924640204d8e2e6556a2db3939f0ba18582383685c75f1e97cf5e",
+    "config": {
+      "name": "config.json",
+      "size_bytes": 1237,
+      "sha256": "f15ce24b3659d4608578078329a0e4e03f7e12dbf26577945de985841a0ac116"
+    },
+    "weights": {
+      "algorithm": "sha256",
+      "file_count": 1,
+      "total_bytes": 242041976,
+      "max_listed_files": 256,
+      "truncated": false,
+      "omitted_file_count": 0,
+      "files": [
+        {
+          "name": "model.safetensors",
+          "size_bytes": 242041976,
+          "sha256": "78381e09d48d1eec0441c4f212f7bbeb9ae1bdaef67ecd66374f73ffe3ba071f"
+        }
+      ]
+    }
+  },
+  "capture": {
+    "prompts": null,
+    "token_ids": [
+      13959,
+      1566,
+      12,
+      2968,
+      10,
+      37,
+      629,
+      19,
+      1627,
+      5,
+      1
+    ],
+    "generate_steps": 8,
+    "seed": 0,
+    "dtype_policy": "float32"
+  },
+  "tensors": [
+    {
+      "name": "attention_mask",
+      "shape": [
+        1,
+        11
+      ],
+      "dtype": "int32",
+      "sha256": "30d58a4cb0b991e482779a48fc5d53133aafda913881d005fd323405d1c9d64c"
+    },
+    {
+      "name": "decoder.embed",
+      "shape": [
+        1,
+        1,
+        512
+      ],
+      "dtype": "float32",
+      "sha256": "fc2eed59718ca0c7398b584e6bac72af14bde482a9ff5e426f94b51bb427abc0"
+    },
+    {
+      "name": "decoder.final_norm",
+      "shape": [
+        1,
+        1,
+        512
+      ],
+      "dtype": "float32",
+      "sha256": "ac12472b17acd54a54163291d59ab08510b2fd3b8bf410b7ba00e02b90dd7446"
+    },
+    {
+      "name": "decoder.layer.0.cross_attention",
+      "shape": [
+        1,
+        1,
+        512
+      ],
+      "dtype": "float32",
+      "sha256": "877dc1a94e2cbcfc4829c2bc0484e14c3c6adf28b36028d889524a85f393eb7c"
+    },
+    {
+      "name": "decoder.layer.0.hidden",
+      "shape": [
+        1,
+        1,
+        512
+      ],
+      "dtype": "float32",
+      "sha256": "387b3ac9c8ad4093123c769cb055e60859bf6d281b978e19593fce6cd79e008a"
+    },
+    {
+      "name": "decoder.layer.1.cross_attention",
+      "shape": [
+        1,
+        1,
+        512
+      ],
+      "dtype": "float32",
+      "sha256": "abfdfa9cd707cde2ba738751c58efe7ea93207490f8fa9bd7799dfe4ad1cef1a"
+    },
+    {
+      "name": "decoder.layer.1.hidden",
+      "shape": [
+        1,
+        1,
+        512
+      ],
+      "dtype": "float32",
+      "sha256": "fbed1392fb6e96bb8c209c5c26dda9ba17ea677f0845975591ee83079c49e204"
+    },
+    {
+      "name": "decoder.layer.2.cross_attention",
+      "shape": [
+        1,
+        1,
+        512
+      ],
+      "dtype": "float32",
+      "sha256": "1a7b71a8c0cb18f12b92da56237e2cbbde14fbac8af0c693a3ae09645229f0f7"
+    },
+    {
+      "name": "decoder.layer.2.hidden",
+      "shape": [
+        1,
+        1,
+        512
+      ],
+      "dtype": "float32",
+      "sha256": "2e5c6f26808590d6ec03e06c4cf88e4099b48b4b03b289be7d78220381314807"
+    },
+    {
+      "name": "decoder.layer.3.cross_attention",
+      "shape": [
+        1,
+        1,
+        512
+      ],
+      "dtype": "float32",
+      "sha256": "40df7ef2cd53b40a0951df5136bfdf10782f1608ece6e2d6934c8658b07f9853"
+    },
+    {
+      "name": "decoder.layer.3.hidden",
+      "shape": [
+        1,
+        1,
+        512
+      ],
+      "dtype": "float32",
+      "sha256": "e7bc755e378c0935b052a2b6a9ebf793d0c3adfb2cc9b1431c85767892c3e05c"
+    },
+    {
+      "name": "decoder.layer.4.cross_attention",
+      "shape": [
+        1,
+        1,
+        512
+      ],
+      "dtype": "float32",
+      "sha256": "c394a3140ce517135d1b4d30120fff10e7077e9f08d3ae1bc2c99c10d18eb2d7"
+    },
+    {
+      "name": "decoder.layer.4.hidden",
+      "shape": [
+        1,
+        1,
+        512
+      ],
+      "dtype": "float32",
+      "sha256": "38a7fd603d9c51c3ef80eca060c9b2083ca5e59f0e35d855759fc3fb8c478361"
+    },
+    {
+      "name": "decoder.layer.5.cross_attention",
+      "shape": [
+        1,
+        1,
+        512
+      ],
+      "dtype": "float32",
+      "sha256": "fde4aaff9d5216c2a408c5d9368af576fd2753a03621bfdedbb9bbedfa220595"
+    },
+    {
+      "name": "decoder.layer.5.hidden",
+      "shape": [
+        1,
+        1,
+        512
+      ],
+      "dtype": "float32",
+      "sha256": "f1ff7d6e2fbc0149f8094d56d66e98c2b71fa381d7a0a1ed18ab50b41911ee6d"
+    },
+    {
+      "name": "decoder_input_ids",
+      "shape": [
+        1,
+        1
+      ],
+      "dtype": "int32",
+      "sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119"
+    },
+    {
+      "name": "encoder.embed",
+      "shape": [
+        1,
+        11,
+        512
+      ],
+      "dtype": "float32",
+      "sha256": "20fd75c6e0bd6669a4aa331cbc622571453e46c254ca557dbe496f1b270cdd5a"
+    },
+    {
+      "name": "encoder.final_norm",
+      "shape": [
+        1,
+        11,
+        512
+      ],
+      "dtype": "float32",
+      "sha256": "30dabba1756b06c7bd1a4be374c56971282fed7347adc49442771324bfe4463f"
+    },
+    {
+      "name": "encoder.layer.0.hidden",
+      "shape": [
+        1,
+        11,
+        512
+      ],
+      "dtype": "float32",
+      "sha256": "c1d10ca9bbae08895b6744858f46215ea48e7a9b631a0bd69cfdc3a38c174b59"
+    },
+    {
+      "name": "encoder.layer.1.hidden",
+      "shape": [
+        1,
+        11,
+        512
+      ],
+      "dtype": "float32",
+      "sha256": "1dcb04a66d8e357096648d755301c550cb25c30eb13d08018f5632df9f22caed"
+    },
+    {
+      "name": "encoder.layer.2.hidden",
+      "shape": [
+        1,
+        11,
+        512
+      ],
+      "dtype": "float32",
+      "sha256": "2aa8415c4b30dbbd1eef14f3d0803e8731dbb178dac66b5c3e49b0935297b802"
+    },
+    {
+      "name": "encoder.layer.3.hidden",
+      "shape": [
+        1,
+        11,
+        512
+      ],
+      "dtype": "float32",
+      "sha256": "3d76a277c2e173c6c8af23d722e69f8af7b96f71b38ca3e42917a60ab5b9cbc7"
+    },
+    {
+      "name": "encoder.layer.4.hidden",
+      "shape": [
+        1,
+        11,
+        512
+      ],
+      "dtype": "float32",
+      "sha256": "da12489a47c5003b64be0b213d62da0de7079056cb77472bf733d723356b9f99"
+    },
+    {
+      "name": "encoder.layer.5.hidden",
+      "shape": [
+        1,
+        11,
+        512
+      ],
+      "dtype": "float32",
+      "sha256": "c10000e5b76b8bdfece1ed7fd9916c7ed9d8ccda72cf540dd86a40cb77b92e61"
+    },
+    {
+      "name": "generated_token_ids",
+      "shape": [
+        1,
+        8
+      ],
+      "dtype": "int32",
+      "sha256": "7dbf5edc9876db62a832ef7d81cceb8c47481fca52d055a41951c9477f3e1835"
+    },
+    {
+      "name": "input_ids",
+      "shape": [
+        1,
+        11
+      ],
+      "dtype": "int32",
+      "sha256": "e0ec47db6c6c47e55f6e2c8a25383b65198834c5f3bf7d74875d455cd099690c"
+    },
+    {
+      "name": "logits",
+      "shape": [
+        1,
+        1,
+        32128
+      ],
+      "dtype": "float32",
+      "sha256": "f938f9a6e2e864a30fa15a53d9c463461590344b6eecb71bc590570a44da2d04"
+    }
+  ],
+  "libraries": {
+    "python": "3.14.4",
+    "numpy": "2.3.5",
+    "torch": "not-used",
+    "transformers": "not-used"
+  }
+}

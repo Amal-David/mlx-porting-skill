@@ -1,6 +1,6 @@
 # Validation status
 
-**Release snapshot:** 0.5.0
+**Release snapshot:** 0.6.0
 
 **Review date:** 2026-07-11
 
@@ -15,11 +15,13 @@ optimization improves a particular Mac workload.
 | Surface | Current checked-in truth | Canonical source |
 |---|---:|---|
 | Architecture-family routes | 17 | `mlx-model-porting/assets/architectures.yaml` |
+| Executable scaffold families | 6 | `scaffold_port.py::FAMILY_GENERATORS` |
+| Checked-in real checkpoint ports | 4 | Qwen2.5, BGE base, t5-small, HuBERT base examples |
 | Evidence sources | 350 | `mlx-model-porting/assets/sources.yaml` |
 | Technique records | 66 | `mlx-model-porting/assets/techniques.yaml` |
 | Optimization-guidance methods | 28 | `mlx-model-porting/assets/optimization_guidance.yaml` |
 | Optimization stacks | 4 | `mlx-model-porting/assets/optimization_stacks.yaml` |
-| Python scripts | 29 | `mlx-model-porting/scripts/*.py` |
+| Python scripts | 31 | `mlx-model-porting/scripts/*.py` |
 | Benchmark receipts | 13 | `mlx-model-porting/assets/benchmarks/receipt_assessments.json` |
 | Performance observations | 12 | generated benchmark assessment |
 | Promotion-ready receipts | 0 | generated benchmark assessment |
@@ -27,7 +29,7 @@ optimization improves a particular Mac workload.
 | Effective claims | 10 | `mlx-model-porting/assets/effective_claims.json` |
 | Promoted / withheld claims | 0 / 10 | generated effective-claim catalogue |
 | Knowledge-graph nodes / edges | 697 / 499 | `mlx-model-porting/assets/knowledge_graph.json` |
-| Offline tests | 425 | `python3 -m unittest discover -s tests` |
+| Offline tests | 486 | `python3 -m unittest discover -s tests` |
 
 The 17 routes are synthetic golden scenarios. They prove that every declared
 family has a fixture exercising route selection, expected weight coverage, a
@@ -41,7 +43,7 @@ represent 17 completed real-model ports.
 | Weak, unknown, and tied architecture signals stop for manual review; compatible hybrid routes remain explicit. | `tests/test_scenarios.py`, `tests/test_routing_contract.py` |
 | Intake is static by default, remote code is not executed, hostile model artifacts are read through bounded no-follow paths, partial shards block recommendations, local paths are portable by default, and truncation blocks clean conclusions. | `tests/test_model_intake_hardening.py`, `tests/test_tooling.py`, `tests/test_hardening_filesystem_contract.py`, `tests/test_hardening_project_inspection_contract.py` |
 | Weight-map transforms are explicit and tensor comparison fails on NaN/Inf, shape drift, tolerance failure, or cosine drift. | `tests/test_tooling.py`, `tests/test_scenarios.py` |
-| Dense-decoder source capture, fail-closed scaffold generation, schema-2 conversion, MLX capture, and first-divergence parity have dependency-free contracts plus gated Torch/MLX execution tests. | `tests/test_capture_oracle_contract.py`, `tests/test_scaffold_port_contract.py`, `tests/test_convert_checkpoint_contract.py`, `tests/test_parity_runner_contract.py` |
+| Six families have fail-closed scaffolds. Dense decoder, BERT encoder, T5 encoder-decoder, and HuBERT/Wav2Vec2 acoustic encoder have gated real-checkpoint parity; sparse MoE and selective SSM have synthetic correctness gates only. | `tests/test_scaffold_port_contract.py`, `tests/test_scaffold_moe_contract.py`, `tests/test_encoder_contract.py`, `tests/test_encoder_decoder_contract.py`, `tests/test_asr_encoder_contract.py`, `tests/test_parity_runner_contract.py` |
 | Recommendations match controlled family, capability, workload, objective, and version identifiers exactly. | `tests/test_recommendation_contract.py` |
 | The five advisor buckets are enforced, experimental approaches require opt-in, blocked intake forbids execution, and rejected methods stay rejected. | `tests/test_recommendation_contract.py`, `tests/test_tooling.py` |
 | Compound numbers require compatible measured-together coverage and unique evidence lineage; regressions and duplicate composition are not promoted. | `tests/test_recommendation_contract.py`, `tests/test_claim_catalog_contract.py` |
@@ -63,6 +65,9 @@ current receipt set as:
 | `performance_observation` | 12 | A measurement is preserved, but one or more promotion gates are missing or failed. It is not a reusable speed or memory claim. |
 | `promotion_ready` | 0 | No checked-in receipt has an external signature verified against an out-of-repository trust anchor. |
 | `rejected` | 1 | The measured configuration regressed or otherwise fails the claim boundary. |
+
+The earlier re-seal remains in force: architecture coverage and parity packets
+do not promote any numeric claim or replace the external signer/trust-root gate.
 
 The checked-in observations include older Apple M4 Pro runs, but they use
 legacy receipt contracts or lack required lineage, workload, output, quality,
@@ -210,9 +215,20 @@ instead of reporting successful validation with silent skips.
 - The checked-in Qwen2.5-0.5B-Instruct packet proves one real model in one
   family: `dense-decoder-transformer`. It passed 29 source-to-MLX parity rungs,
   exact greedy-token comparison, and an independent offline MLX-LM cross-check.
-- That run does not prove another dense-decoder config or any of the other 16
-  routed families. Each still needs its own source oracle, architecture-module
-  implementation, complete checkpoint conversion, and parity packet.
+- The checked-in BGE base packet proves the supported absolute-position BERT
+  subset of `encoder-transformer` across 17 parity rungs. It does not prove
+  RoBERTa, arbitrary BERT heads, or embedding quality.
+- The synthetic selective-SSM test proves only the opt-in minimal recurrence;
+  it is not a Mamba/Mamba2 or hybrid checkpoint cross-check.
+- The checked-in `t5-small` packet proves the non-gated ReLU T5 subset of
+  `encoder-decoder-transformer`. It passed 27 source-to-MLX rungs, exact greedy
+  tokens, and cached-versus-full decoder parity. It does not prove BART, NLLB,
+  Whisper, gated T5 variants, beam search, or task quality.
+- The checked-in HuBERT base packet proves the supported acoustic-encoder
+  subset of `automatic-speech-recognition` across 15 parity rungs. It does not
+  prove raw-waveform MLX frontend execution, CTC/seq2seq decoding, WER, or Whisper.
+- Sparse MoE and selective SSM are synthetic-only. The other 11 routed families
+  remain runbook-guided and need their own graph, conversion, and parity packet.
 - Exact-output parity is the only controlled built-in task quality gate. Domain
   evaluation remains required for language quality, vision, audio, speech,
   diffusion, streaming, scientific tasks, and any lossy change.
