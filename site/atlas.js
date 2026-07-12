@@ -205,6 +205,7 @@
     ) return false;
 
     let state = parseAtlasState(learning, globalScope.location.href);
+    let copyResetTimer;
 
     const writeUrl = (replace = false) => {
       const value = serializeAtlasState(globalScope.location.href, state);
@@ -331,7 +332,8 @@
         live.textContent = "Port plan selected. Press Command+C or Control+C to copy it.";
         copy.textContent = "Selected";
       }
-      globalScope.setTimeout(() => { copy.textContent = "Copy plan"; }, 1800);
+      globalScope.clearTimeout(copyResetTimer);
+      copyResetTimer = globalScope.setTimeout(() => { copy.textContent = "Copy plan"; }, 1800);
     });
     globalScope.addEventListener("popstate", () => {
       state = parseAtlasState(learning, globalScope.location.href);

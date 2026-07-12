@@ -123,6 +123,13 @@ for (const mutate of [
         source = ATLAS.read_text(encoding="utf-8")
         self.assertIsNone(re.search(r"\brequire\s*\(", source), "browser code must not import packages")
         self.assertIsNone(re.search(r"\bimport\s+(?:[^.(]|$)", source), "browser code must stay classic-script safe")
+        self.assertIn("globalScope.clearTimeout(copyResetTimer)", source)
+        self.assertIn("copyResetTimer = globalScope.setTimeout", source)
+        self.assertLess(
+            source.index("globalScope.clearTimeout(copyResetTimer)"),
+            source.index("copyResetTimer = globalScope.setTimeout"),
+            "a repeated copy must cancel the older feedback reset before scheduling the latest one",
+        )
 
         result = subprocess.run(
             [self.node or "node", "--check", str(ATLAS)],

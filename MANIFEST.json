@@ -2,7 +2,7 @@
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
   "version": "0.6.0",
-  "generated_at": "2026-07-12T18:22:50.667651+00:00",
+  "generated_at": "2026-07-12T18:31:52.155042+00:00",
   "file_count": 467,
   "files": [
     {
@@ -1965,8 +1965,8 @@
     },
     {
       "path": "site/atlas.js",
-      "size_bytes": 16578,
-      "sha256": "753356f493bf84b3e66d313535efecaafa035a8973f3de8a8d501c825c1604be",
+      "size_bytes": 16667,
+      "sha256": "466bc9bc82a1b3d0644d19847db5d3f7d064b4515567a7e9f7749eb723d94b78",
       "executable": false
     },
     {
@@ -2565,8 +2565,8 @@
     },
     {
       "path": "tests/test_atlas_interaction_contract.py",
-      "size_bytes": 9575,
-      "sha256": "f4916a02bd4db145692753156e1dca75e0a2dcee472482f07c08997edfe23287",
+      "size_bytes": 9997,
+      "sha256": "1f8c12a34007331d520ce8e6a01587bbd28aa9bee7ee6b1efaf208aad64b4a96",
       "executable": false
     },
     {
