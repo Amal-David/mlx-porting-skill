@@ -1,14 +1,19 @@
 <!-- superplan-entry-instructions:start -->
-# Superplan Operating Contract
+# Optional Superplan Operating Contract
 
-Apply this contract for any request that may touch the repo: implementation, debugging, review, planning, repo-specific clarification, or broad exploration.
+When Superplan is installed, load and follow `superplan-entry` from the first
+available location:
 
-Before doing any of that work, load and follow `superplan-entry` from the first available path:
-- `/Users/amal/Downloads/mlx-porting-skill/.codex/skills/superplan-entry/SKILL.md`
-- `/Users/amal/Downloads/mlx-porting-skill/.superplan/skills/superplan-entry/SKILL.md`
-- `/Users/amal/.config/superplan/skills/superplan-entry/SKILL.md`
+- `.codex/skills/superplan-entry/SKILL.md`
+- `.superplan/skills/superplan-entry/SKILL.md`
+- `${HOME}/.config/superplan/skills/superplan-entry/SKILL.md`
+- `${HOME}/.codex/skills/superplan-entry/SKILL.md`
 
-Non-negotiable rules:
+If Superplan is unavailable, continue with the repository-native workflow in
+`VALIDATION.md`; optional orchestration must never make a fresh checkout
+unusable.
+
+When Superplan is active:
 - No implementation before loading and following `superplan-entry`.
 - No broad repo exploration before loading and following `superplan-entry`.
 - No planning or repo-specific clarification before loading and following `superplan-entry`.
@@ -23,7 +28,8 @@ Canonical loop when Superplan is active:
 4. Use lifecycle commands such as `superplan task runtime block`, `superplan task runtime request-feedback`, and `superplan task review complete`; never hand-edit `.superplan/runtime/`.
 
 Decision guardrails:
-- If readiness is missing, give the concrete missing-layer guidance and stop.
+- If Superplan readiness is missing, fall back to the repository-native
+  workflow unless the user explicitly asked for Superplan itself.
 - If work is already shaped, resume the owning execution or review phase instead of routing from scratch.
 - If the request is large, ambiguous, or multi-workstream, route before implementing.
 <!-- superplan-entry-instructions:end -->
@@ -31,4 +37,5 @@ Decision guardrails:
 ## MLX model porting requests
 
 - For any request about porting, converting, running, quantizing, benchmarking, or optimizing a model for MLX or Apple Silicon (e.g. "port this HF model to my Mac", "run Qwen on Apple Silicon", "make this faster on my M3", "fix NaN in my MLX port"), the domain source of truth is `mlx-model-porting/SKILL.md` - load it and its Trigger map before improvising.
-- Superplan governs workflow sequencing; the skill governs technical content. Both apply together.
+- When available, Superplan governs workflow sequencing; the skill always
+  governs technical content.

@@ -1,0 +1,934 @@
+{
+  "schema_version": 2,
+  "label": "qwen2.5-0.5b-port-f32",
+  "timestamp": "2026-07-10T16:02:34.042907+00:00",
+  "environment": {
+    "platform": "macOS-26.3-arm64-arm-64bit-Mach-O",
+    "machine": "arm64",
+    "processor": "arm",
+    "python": "3.13.11",
+    "cpu_count": 14,
+    "mac_model": "Mac16,8",
+    "cpu_brand": "Apple M4 Pro",
+    "memory_bytes": 51539607552,
+    "macos_version": "26.3",
+    "mlx_version": "0.24.0"
+  },
+  "versions": {
+    "mlx": "0.24.0"
+  },
+  "command": [
+    "python3.13",
+    "runners/attested_mlx_port.py",
+    "--model",
+    "local/Qwen2.5-0.5B-Instruct-standalone-mlx",
+    "--revision",
+    "7df68182b704fb0933625cdb44cc4e89e8f4cfdb5cb75b3e2251f608807f65f0",
+    "--input",
+    "qwen2.5-0.5b/input.json",
+    "--steps",
+    "6",
+    "--mode",
+    "f32",
+    "--output",
+    "quality/outputs/qwen2.5-0.5b-port-f32/result.json",
+    "--attestation-challenge",
+    "attestations/qwen2.5-0.5b-port-f32/current-challenge.json",
+    "--attestation-output",
+    "attestations/qwen2.5-0.5b-port-f32/current-evidence.json"
+  ],
+  "command_display": "python3.13 runners/attested_mlx_port.py --model local/Qwen2.5-0.5B-Instruct-standalone-mlx --revision 7df68182b704fb0933625cdb44cc4e89e8f4cfdb5cb75b3e2251f608807f65f0 --input qwen2.5-0.5b/input.json --steps 6 --mode f32 --output quality/outputs/qwen2.5-0.5b-port-f32/result.json --attestation-challenge attestations/qwen2.5-0.5b-port-f32/current-challenge.json --attestation-output attestations/qwen2.5-0.5b-port-f32/current-evidence.json",
+  "cwd": ".",
+  "config_notes": {
+    "dtype_policy": "f32",
+    "mode": "f32",
+    "quality_output_path": "quality/outputs/qwen2.5-0.5b-port-f32/result.json",
+    "attestation_challenge_path": "attestations/qwen2.5-0.5b-port-f32/current-challenge.json",
+    "attestation_output_path": "attestations/qwen2.5-0.5b-port-f32/current-evidence.json",
+    "weights_bytes": 1976163149,
+    "weights_sha256": "7df68182b704fb0933625cdb44cc4e89e8f4cfdb5cb75b3e2251f608807f65f0"
+  },
+  "variant_config": {
+    "dtype_policy": "f32",
+    "mode": "f32",
+    "quality_output_path": "quality/outputs/qwen2.5-0.5b-port-f32/result.json",
+    "attestation_challenge_path": "attestations/qwen2.5-0.5b-port-f32/current-challenge.json",
+    "attestation_output_path": "attestations/qwen2.5-0.5b-port-f32/current-evidence.json",
+    "weights_bytes": 1976163149,
+    "weights_sha256": "7df68182b704fb0933625cdb44cc4e89e8f4cfdb5cb75b3e2251f608807f65f0"
+  },
+  "enabled_methods": [],
+  "models": {
+    "target": {
+      "id": "local/Qwen2.5-0.5B-Instruct-standalone-mlx",
+      "revision": "7df68182b704fb0933625cdb44cc4e89e8f4cfdb5cb75b3e2251f608807f65f0",
+      "lineage_id": "qwen2.5-0.5b-instruct-worked-port",
+      "source_id": "Qwen/Qwen2.5-0.5B-Instruct",
+      "source_revision": "7ae557604adf67be50417f59c2c2f167def9a775"
+    }
+  },
+  "target": {
+    "descriptor": {
+      "hardware": {
+        "chip": "Apple M4 Pro",
+        "model": "Mac16,8",
+        "memory_bytes": 51539607552
+      },
+      "software": {
+        "python": "3.13.11",
+        "mlx": "0.24.0"
+      },
+      "benchmark_system": {
+        "platform": "macOS-26.3-arm64-arm-64bit-Mach-O",
+        "machine": "arm64",
+        "processor": "arm",
+        "python": "3.13.11",
+        "cpu_count": 14,
+        "mac_model": "Mac16,8",
+        "cpu_brand": "Apple M4 Pro",
+        "memory_bytes": 51539607552,
+        "macos_version": "26.3",
+        "mlx_version": "0.24.0"
+      },
+      "execution_environment_sha256": "fb92dff807869db984ce006d301f2963c0ff65fce5c2dc3cd3208c91fb97827c",
+      "interpreter": {
+        "name": "python3.13",
+        "sha256": "98ebb7c41c86d099dc16c02320f3634b5665bbe2bdf064e642fefc923262fbb1",
+        "size_bytes": 52640,
+        "version": "Python 3.13.11",
+        "flags": [
+          "-I",
+          "-B"
+        ],
+        "environment": {
+          "distributions": [
+            {
+              "direct_url_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "location_sha256": "65320a52f72cb374240443f9da3a13a01df7eac83271b67fe954861705c57431",
+              "metadata_sha256": "4ed6ffe9ccbed05046ab7bff2024cd3ca717295b368bed1fe20a73e365bc415a",
+              "name": "certifi",
+              "record_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "version": "2026.4.22"
+            },
+            {
+              "direct_url_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "location_sha256": "65320a52f72cb374240443f9da3a13a01df7eac83271b67fe954861705c57431",
+              "metadata_sha256": "bba9eebcffea3c92aedb3bc86e2db3906cd5bbb2a39e744861417222b398de3e",
+              "name": "cffi",
+              "record_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "version": "1.17.1"
+            },
+            {
+              "direct_url_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "location_sha256": "65320a52f72cb374240443f9da3a13a01df7eac83271b67fe954861705c57431",
+              "metadata_sha256": "2e799ad48699e5b88f3919e564ab285e99509740325f01f330cd9840bac75a78",
+              "name": "cryptography",
+              "record_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "version": "45.0.3"
+            },
+            {
+              "direct_url_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "location_sha256": "65320a52f72cb374240443f9da3a13a01df7eac83271b67fe954861705c57431",
+              "metadata_sha256": "07ac0176a2ff124e90aa61efbb2526dab50129f8883790f065f037e8c5185a89",
+              "name": "mlx",
+              "record_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "version": "0.24.0"
+            },
+            {
+              "direct_url_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "location_sha256": "65320a52f72cb374240443f9da3a13a01df7eac83271b67fe954861705c57431",
+              "metadata_sha256": "a211fceacea4e6621f4316364d2d0b7127c00de3856b8062082f9bc5957ea4db",
+              "name": "packaging",
+              "record_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "version": "24.2"
+            },
+            {
+              "direct_url_sha256": "f487ce8626fb0edc890c38b6e4e888e5fdbba9522032395e036fe19b634da59b",
+              "location_sha256": "65320a52f72cb374240443f9da3a13a01df7eac83271b67fe954861705c57431",
+              "metadata_sha256": "d33a92c75037c8959bf67d939e857070fff6567ac3f64293e728600d095bc6f0",
+              "name": "pip",
+              "record_sha256": "3400fc87f8351c4067f3a8c09fe7ecd20c6e376ab8899660f18fa5a3a99006dd",
+              "version": "25.0"
+            },
+            {
+              "direct_url_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "location_sha256": "65320a52f72cb374240443f9da3a13a01df7eac83271b67fe954861705c57431",
+              "metadata_sha256": "2a1ba0725e7d236fbe2d5c50a4fff9c9e3fe34ca494f2cebde5c45c3791379d3",
+              "name": "pip",
+              "record_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "version": "25.3"
+            },
+            {
+              "direct_url_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "location_sha256": "65320a52f72cb374240443f9da3a13a01df7eac83271b67fe954861705c57431",
+              "metadata_sha256": "a2f9de903084179394e6e6aa87d6fafe01429906abf64c459d6b54c532dff6c0",
+              "name": "pycparser",
+              "record_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "version": "2.22"
+            },
+            {
+              "direct_url_sha256": "5ca4ff6c319236191029d9a9e43844cc1bcddd04503b80153eef9a889bfa0684",
+              "location_sha256": "65320a52f72cb374240443f9da3a13a01df7eac83271b67fe954861705c57431",
+              "metadata_sha256": "0907ed7511969025fe59acae50e2eaf8c65f554ae66ae2f0109d2af70d0c698c",
+              "name": "wheel",
+              "record_sha256": "8ad5649326df20a8de99b15b0419184e11d3e6409b71d8f4f602b823e557c051",
+              "version": "0.45.1"
+            }
+          ],
+          "schema_version": 1,
+          "startup_files": [
+            {
+              "path_sha256": "346b8013f39b136c907c5213996e65a3e8c959bab519e465da0b20424f84f209",
+              "sha256": "7767e083377ba3a97a42bd199dac51f5ea3a71669f2dbebec011bd696f79ebb4",
+              "size_bytes": 3773
+            }
+          ],
+          "sys_path_sha256": "9be0e1aef189c04363b3e8d5071b278558056de21bb3d1895b1934dc8334721c",
+          "sha256": "641d814093f34a97ffbc7010ce4469ce656a05d8072cb998cd0c2d7b7383e194"
+        }
+      }
+    },
+    "sha256": "4f3c73d38043e07dde5e05b20643f473152ab679eb513e3f4ef4e0efab5aa508"
+  },
+  "workload": {
+    "id": "qwen2.5-0.5b-load-plus-six-token-greedy-decode",
+    "artifacts": [
+      {
+        "role": "runner",
+        "path": "runners/attested_mlx_port.py",
+        "sha256": "146f7cde42480a1a17b61ffb588cfcf114214c151641d292ceb7271b0a0f8196",
+        "size_bytes": 13424
+      },
+      {
+        "role": "input",
+        "path": "qwen2.5-0.5b/input.json",
+        "sha256": "8e911fbfaba3da99dd167de55602eea203a0e19fd9a09786daf4ccd55421abfe",
+        "size_bytes": 165
+      }
+    ],
+    "parameters": {
+      "batch": 1,
+      "cache": "growing-kv",
+      "compile": false,
+      "generate_steps": 6,
+      "prompt_tokens": 11,
+      "timing_scope": "separate-process-load-plus-greedy-decode"
+    },
+    "sha256": "a76b7c67d075d769a74ff9c29b31099163fb9c705764013551c77c3fb4b84734"
+  },
+  "comparison": {
+    "role": "baseline",
+    "primary_metric": "wall_seconds"
+  },
+  "warmup_runs": 1,
+  "measured_runs": 5,
+  "timeout_seconds": 120.0,
+  "runs": [
+    {
+      "run": 1,
+      "wall_seconds": 1.6512163750012405,
+      "raw_output": {
+        "path": "raw/qwen2.5-0.5b-port-f32/benchmark-command.json",
+        "sha256": "4773312d265ed66a23abd4ab57e91de2df3a4e36afdaab085c5374e55d702c3c",
+        "size_bytes": 14112,
+        "truncated": false
+      },
+      "execution_attestation": {
+        "challenge": {
+          "path": "attestations/qwen2.5-0.5b-port-f32/runs/measure-001/challenge.json",
+          "sha256": "bdee75de5362573a3c4f36493c81f43c80db3b1cff7330fa41a00c1c48a74efd",
+          "size_bytes": 1175
+        },
+        "evidence": {
+          "path": "attestations/qwen2.5-0.5b-port-f32/runs/measure-001/evidence.json",
+          "sha256": "cdfe44f1dac24909f80dd49e1ae8aeba25b38de8338ae65d95fb39f9c776fb6a",
+          "size_bytes": 13423
+        },
+        "output": {
+          "path": "attestations/qwen2.5-0.5b-port-f32/runs/measure-001/output.json",
+          "sha256": "fab6ebd4d30cf608888c50b82e0b3752b340ebc8d6f42585f7a71bf2763821e9",
+          "size_bytes": 54
+        }
+      }
+    },
+    {
+      "run": 2,
+      "wall_seconds": 1.6591140410164371,
+      "raw_output": {
+        "path": "raw/qwen2.5-0.5b-port-f32/benchmark-command.json",
+        "sha256": "4773312d265ed66a23abd4ab57e91de2df3a4e36afdaab085c5374e55d702c3c",
+        "size_bytes": 14112,
+        "truncated": false
+      },
+      "execution_attestation": {
+        "challenge": {
+          "path": "attestations/qwen2.5-0.5b-port-f32/runs/measure-002/challenge.json",
+          "sha256": "9a7784d512010de5e479f830547af7076bf3ff1891191ca46be09e56d287a35e",
+          "size_bytes": 1175
+        },
+        "evidence": {
+          "path": "attestations/qwen2.5-0.5b-port-f32/runs/measure-002/evidence.json",
+          "sha256": "a83d6f4688bf83079fd4856b26aff9bce805e069631a212238510530e3551c7a",
+          "size_bytes": 13423
+        },
+        "output": {
+          "path": "attestations/qwen2.5-0.5b-port-f32/runs/measure-002/output.json",
+          "sha256": "fab6ebd4d30cf608888c50b82e0b3752b340ebc8d6f42585f7a71bf2763821e9",
+          "size_bytes": 54
+        }
+      }
+    },
+    {
+      "run": 3,
+      "wall_seconds": 1.6550946249917615,
+      "raw_output": {
+        "path": "raw/qwen2.5-0.5b-port-f32/benchmark-command.json",
+        "sha256": "4773312d265ed66a23abd4ab57e91de2df3a4e36afdaab085c5374e55d702c3c",
+        "size_bytes": 14112,
+        "truncated": false
+      },
+      "execution_attestation": {
+        "challenge": {
+          "path": "attestations/qwen2.5-0.5b-port-f32/runs/measure-003/challenge.json",
+          "sha256": "a1057cec8e9b261c7ace9ce4808a84a41c3bd34cdabcf9dab39ec5c77988e879",
+          "size_bytes": 1175
+        },
+        "evidence": {
+          "path": "attestations/qwen2.5-0.5b-port-f32/runs/measure-003/evidence.json",
+          "sha256": "5bb7184e7287a28c21d7706e01eaac743ededbb901b1b444f82bc509753d5c68",
+          "size_bytes": 13423
+        },
+        "output": {
+          "path": "attestations/qwen2.5-0.5b-port-f32/runs/measure-003/output.json",
+          "sha256": "fab6ebd4d30cf608888c50b82e0b3752b340ebc8d6f42585f7a71bf2763821e9",
+          "size_bytes": 54
+        }
+      }
+    },
+    {
+      "run": 4,
+      "wall_seconds": 1.6427383339905646,
+      "raw_output": {
+        "path": "raw/qwen2.5-0.5b-port-f32/benchmark-command.json",
+        "sha256": "4773312d265ed66a23abd4ab57e91de2df3a4e36afdaab085c5374e55d702c3c",
+        "size_bytes": 14112,
+        "truncated": false
+      },
+      "execution_attestation": {
+        "challenge": {
+          "path": "attestations/qwen2.5-0.5b-port-f32/runs/measure-004/challenge.json",
+          "sha256": "4265f6fbf399ebd6b74dbe831331cae7507d6fe11dd787022e992eb84ef41326",
+          "size_bytes": 1175
+        },
+        "evidence": {
+          "path": "attestations/qwen2.5-0.5b-port-f32/runs/measure-004/evidence.json",
+          "sha256": "5392945f91e0ad1afd705a27ec8f09c8d415ac63b1e3bbd259dc63087e8d76f0",
+          "size_bytes": 13423
+        },
+        "output": {
+          "path": "attestations/qwen2.5-0.5b-port-f32/runs/measure-004/output.json",
+          "sha256": "fab6ebd4d30cf608888c50b82e0b3752b340ebc8d6f42585f7a71bf2763821e9",
+          "size_bytes": 54
+        }
+      }
+    },
+    {
+      "run": 5,
+      "wall_seconds": 1.673295207991032,
+      "raw_output": {
+        "path": "raw/qwen2.5-0.5b-port-f32/benchmark-command.json",
+        "sha256": "4773312d265ed66a23abd4ab57e91de2df3a4e36afdaab085c5374e55d702c3c",
+        "size_bytes": 14112,
+        "truncated": false
+      },
+      "execution_attestation": {
+        "challenge": {
+          "path": "attestations/qwen2.5-0.5b-port-f32/runs/measure-005/challenge.json",
+          "sha256": "2b37fc38e0225a7e630e9f14fe7ffe1001fe33330b078f5a2154defc173c949e",
+          "size_bytes": 1175
+        },
+        "evidence": {
+          "path": "attestations/qwen2.5-0.5b-port-f32/runs/measure-005/evidence.json",
+          "sha256": "8e41659740d94372b7d821d82556937bf62ccc249a2ea7a31760670c1fa610e3",
+          "size_bytes": 13423
+        },
+        "output": {
+          "path": "attestations/qwen2.5-0.5b-port-f32/runs/measure-005/output.json",
+          "sha256": "fab6ebd4d30cf608888c50b82e0b3752b340ebc8d6f42585f7a71bf2763821e9",
+          "size_bytes": 54
+        }
+      }
+    }
+  ],
+  "aggregate": {
+    "wall_seconds": {
+      "median": 1.6550946249917615,
+      "min": 1.6427383339905646,
+      "max": 1.673295207991032
+    }
+  },
+  "stability": {
+    "primary_metric": "wall_seconds",
+    "max_cv": 0.1,
+    "min_runs": 5
+  },
+  "quality": {
+    "status": "pass",
+    "artifact": {
+      "path": "quality/qwen2.5-0.5b-port-f32.bound.json",
+      "sha256": "e1f41957f69a8b40db381016899e8e3af79b94a9177037d245e02428adef5f6a",
+      "size_bytes": 1232
+    }
+  },
+  "rollback_condition": "Keep F32 as the correctness baseline; reject any candidate whose exact output differs or whose wall-time change is within measurement noise.",
+  "runner": {
+    "id": "attested-mlx-port-wall-time",
+    "version": 1,
+    "shape": "repository-owned-qwen2.5-workload-v1",
+    "command_sha256": "cfac89014fc14b60a63e0a2b0fcedec5db6bb16e8376fc6014b20514756726bf",
+    "argv_template": [
+      {
+        "literal": "python3.13"
+      },
+      {
+        "source": [
+          "workload",
+          "artifacts",
+          0,
+          "path"
+        ]
+      },
+      {
+        "literal": "--model"
+      },
+      {
+        "source": [
+          "models",
+          "target",
+          "id"
+        ]
+      },
+      {
+        "literal": "--revision"
+      },
+      {
+        "source": [
+          "models",
+          "target",
+          "revision"
+        ]
+      },
+      {
+        "literal": "--input"
+      },
+      {
+        "source": [
+          "workload",
+          "artifacts",
+          1,
+          "path"
+        ]
+      },
+      {
+        "literal": "--steps"
+      },
+      {
+        "source": [
+          "workload",
+          "parameters",
+          "generate_steps"
+        ]
+      },
+      {
+        "literal": "--mode"
+      },
+      {
+        "source": [
+          "variant_config",
+          "mode"
+        ]
+      },
+      {
+        "literal": "--output"
+      },
+      {
+        "source": [
+          "variant_config",
+          "quality_output_path"
+        ]
+      },
+      {
+        "literal": "--attestation-challenge"
+      },
+      {
+        "source": [
+          "variant_config",
+          "attestation_challenge_path"
+        ]
+      },
+      {
+        "literal": "--attestation-output"
+      },
+      {
+        "source": [
+          "variant_config",
+          "attestation_output_path"
+        ]
+      }
+    ],
+    "bindings": [
+      {
+        "index": 1,
+        "source": [
+          "workload",
+          "artifacts",
+          0,
+          "path"
+        ],
+        "value_sha256": "e035e7dde9c8d34a5ffed40fd5e324e04dae2fb0a0935ac0a6788c5571cf7e14"
+      },
+      {
+        "index": 3,
+        "source": [
+          "models",
+          "target",
+          "id"
+        ],
+        "value_sha256": "950faf8c34b6860999501105b65c24e744650ed4e560a9d6b4cf579324d0462b"
+      },
+      {
+        "index": 5,
+        "source": [
+          "models",
+          "target",
+          "revision"
+        ],
+        "value_sha256": "d8121cee85f23a6a6be5cf118eea2659e2c2b3faeac59f47683281f4b5c49167"
+      },
+      {
+        "index": 7,
+        "source": [
+          "workload",
+          "artifacts",
+          1,
+          "path"
+        ],
+        "value_sha256": "172b7d8005a97ff601f759eef3a7f4248ebc9ef2d786d9841a4a61a6908b7454"
+      },
+      {
+        "index": 9,
+        "source": [
+          "workload",
+          "parameters",
+          "generate_steps"
+        ],
+        "value_sha256": "92e9e7e5922d26e17e48f0869ab25cc99499fdab722c065de8e0965c96c68e86"
+      },
+      {
+        "index": 11,
+        "source": [
+          "variant_config",
+          "mode"
+        ],
+        "value_sha256": "35a93e947a0847478818f0cce323f8d7a761468cef63c0b6af80c7aca1c458f3"
+      },
+      {
+        "index": 13,
+        "source": [
+          "variant_config",
+          "quality_output_path"
+        ],
+        "value_sha256": "b34c874a6fdb8e2e9521653c16979a924feee199eb34351726782945c3ed9017"
+      },
+      {
+        "index": 15,
+        "source": [
+          "variant_config",
+          "attestation_challenge_path"
+        ],
+        "value_sha256": "37868a5798d4316c91c9a495df8e1e3bf2aee6bcb69a67f4af17c65a1e604543"
+      },
+      {
+        "index": 17,
+        "source": [
+          "variant_config",
+          "attestation_output_path"
+        ],
+        "value_sha256": "9891052c1bb59387bf1233a540d96363e5509ea2ab04a46fddc645c1fe6ce457"
+      }
+    ],
+    "implementation": {
+      "path": "runners/attested_mlx_port.py",
+      "sha256": "146f7cde42480a1a17b61ffb588cfcf114214c151641d292ceb7271b0a0f8196",
+      "size_bytes": 13424
+    },
+    "interpreter": {
+      "name": "python3.13",
+      "sha256": "98ebb7c41c86d099dc16c02320f3634b5665bbe2bdf064e642fefc923262fbb1",
+      "size_bytes": 52640,
+      "version": "Python 3.13.11",
+      "flags": [
+        "-I",
+        "-B"
+      ],
+      "environment": {
+        "distributions": [
+          {
+            "direct_url_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "location_sha256": "65320a52f72cb374240443f9da3a13a01df7eac83271b67fe954861705c57431",
+            "metadata_sha256": "4ed6ffe9ccbed05046ab7bff2024cd3ca717295b368bed1fe20a73e365bc415a",
+            "name": "certifi",
+            "record_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "version": "2026.4.22"
+          },
+          {
+            "direct_url_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "location_sha256": "65320a52f72cb374240443f9da3a13a01df7eac83271b67fe954861705c57431",
+            "metadata_sha256": "bba9eebcffea3c92aedb3bc86e2db3906cd5bbb2a39e744861417222b398de3e",
+            "name": "cffi",
+            "record_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "version": "1.17.1"
+          },
+          {
+            "direct_url_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "location_sha256": "65320a52f72cb374240443f9da3a13a01df7eac83271b67fe954861705c57431",
+            "metadata_sha256": "2e799ad48699e5b88f3919e564ab285e99509740325f01f330cd9840bac75a78",
+            "name": "cryptography",
+            "record_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "version": "45.0.3"
+          },
+          {
+            "direct_url_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "location_sha256": "65320a52f72cb374240443f9da3a13a01df7eac83271b67fe954861705c57431",
+            "metadata_sha256": "07ac0176a2ff124e90aa61efbb2526dab50129f8883790f065f037e8c5185a89",
+            "name": "mlx",
+            "record_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "version": "0.24.0"
+          },
+          {
+            "direct_url_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "location_sha256": "65320a52f72cb374240443f9da3a13a01df7eac83271b67fe954861705c57431",
+            "metadata_sha256": "a211fceacea4e6621f4316364d2d0b7127c00de3856b8062082f9bc5957ea4db",
+            "name": "packaging",
+            "record_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "version": "24.2"
+          },
+          {
+            "direct_url_sha256": "f487ce8626fb0edc890c38b6e4e888e5fdbba9522032395e036fe19b634da59b",
+            "location_sha256": "65320a52f72cb374240443f9da3a13a01df7eac83271b67fe954861705c57431",
+            "metadata_sha256": "d33a92c75037c8959bf67d939e857070fff6567ac3f64293e728600d095bc6f0",
+            "name": "pip",
+            "record_sha256": "3400fc87f8351c4067f3a8c09fe7ecd20c6e376ab8899660f18fa5a3a99006dd",
+            "version": "25.0"
+          },
+          {
+            "direct_url_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "location_sha256": "65320a52f72cb374240443f9da3a13a01df7eac83271b67fe954861705c57431",
+            "metadata_sha256": "2a1ba0725e7d236fbe2d5c50a4fff9c9e3fe34ca494f2cebde5c45c3791379d3",
+            "name": "pip",
+            "record_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "version": "25.3"
+          },
+          {
+            "direct_url_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "location_sha256": "65320a52f72cb374240443f9da3a13a01df7eac83271b67fe954861705c57431",
+            "metadata_sha256": "a2f9de903084179394e6e6aa87d6fafe01429906abf64c459d6b54c532dff6c0",
+            "name": "pycparser",
+            "record_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "version": "2.22"
+          },
+          {
+            "direct_url_sha256": "5ca4ff6c319236191029d9a9e43844cc1bcddd04503b80153eef9a889bfa0684",
+            "location_sha256": "65320a52f72cb374240443f9da3a13a01df7eac83271b67fe954861705c57431",
+            "metadata_sha256": "0907ed7511969025fe59acae50e2eaf8c65f554ae66ae2f0109d2af70d0c698c",
+            "name": "wheel",
+            "record_sha256": "8ad5649326df20a8de99b15b0419184e11d3e6409b71d8f4f602b823e557c051",
+            "version": "0.45.1"
+          }
+        ],
+        "schema_version": 1,
+        "startup_files": [
+          {
+            "path_sha256": "346b8013f39b136c907c5213996e65a3e8c959bab519e465da0b20424f84f209",
+            "sha256": "7767e083377ba3a97a42bd199dac51f5ea3a71669f2dbebec011bd696f79ebb4",
+            "size_bytes": 3773
+          }
+        ],
+        "sys_path_sha256": "9be0e1aef189c04363b3e8d5071b278558056de21bb3d1895b1934dc8334721c",
+        "sha256": "641d814093f34a97ffbc7010ce4469ce656a05d8072cb998cd0c2d7b7383e194"
+      }
+    }
+  },
+  "experiment": {
+    "invariant": {
+      "runner": {
+        "id": "attested-mlx-port-wall-time",
+        "version": 1,
+        "shape": "repository-owned-qwen2.5-workload-v1",
+        "argv_template": [
+          {
+            "literal": "python3.13"
+          },
+          {
+            "source": [
+              "workload",
+              "artifacts",
+              0,
+              "path"
+            ]
+          },
+          {
+            "literal": "--model"
+          },
+          {
+            "source": [
+              "models",
+              "target",
+              "id"
+            ]
+          },
+          {
+            "literal": "--revision"
+          },
+          {
+            "source": [
+              "models",
+              "target",
+              "revision"
+            ]
+          },
+          {
+            "literal": "--input"
+          },
+          {
+            "source": [
+              "workload",
+              "artifacts",
+              1,
+              "path"
+            ]
+          },
+          {
+            "literal": "--steps"
+          },
+          {
+            "source": [
+              "workload",
+              "parameters",
+              "generate_steps"
+            ]
+          },
+          {
+            "literal": "--mode"
+          },
+          {
+            "source": [
+              "variant_config",
+              "mode"
+            ]
+          },
+          {
+            "literal": "--output"
+          },
+          {
+            "source": [
+              "variant_config",
+              "quality_output_path"
+            ]
+          },
+          {
+            "literal": "--attestation-challenge"
+          },
+          {
+            "source": [
+              "variant_config",
+              "attestation_challenge_path"
+            ]
+          },
+          {
+            "literal": "--attestation-output"
+          },
+          {
+            "source": [
+              "variant_config",
+              "attestation_output_path"
+            ]
+          }
+        ]
+      },
+      "source": {
+        "id": "Qwen/Qwen2.5-0.5B-Instruct",
+        "revision": "7ae557604adf67be50417f59c2c2f167def9a775"
+      },
+      "invocation": {
+        "argv_template": [
+          {
+            "literal": "python3.13"
+          },
+          {
+            "source": [
+              "workload",
+              "artifacts",
+              0,
+              "path"
+            ]
+          },
+          {
+            "literal": "--model"
+          },
+          {
+            "source": [
+              "models",
+              "target",
+              "id"
+            ]
+          },
+          {
+            "literal": "--revision"
+          },
+          {
+            "source": [
+              "models",
+              "target",
+              "revision"
+            ]
+          },
+          {
+            "literal": "--input"
+          },
+          {
+            "source": [
+              "workload",
+              "artifacts",
+              1,
+              "path"
+            ]
+          },
+          {
+            "literal": "--steps"
+          },
+          {
+            "source": [
+              "workload",
+              "parameters",
+              "generate_steps"
+            ]
+          },
+          {
+            "literal": "--mode"
+          },
+          {
+            "source": [
+              "variant_config",
+              "mode"
+            ]
+          },
+          {
+            "literal": "--output"
+          },
+          {
+            "source": [
+              "variant_config",
+              "quality_output_path"
+            ]
+          },
+          {
+            "literal": "--attestation-challenge"
+          },
+          {
+            "source": [
+              "variant_config",
+              "attestation_challenge_path"
+            ]
+          },
+          {
+            "literal": "--attestation-output"
+          },
+          {
+            "source": [
+              "variant_config",
+              "attestation_output_path"
+            ]
+          }
+        ],
+        "bindings": [
+          {
+            "index": 1,
+            "source": [
+              "workload",
+              "artifacts",
+              0,
+              "path"
+            ]
+          },
+          {
+            "index": 3,
+            "source": [
+              "models",
+              "target",
+              "id"
+            ]
+          },
+          {
+            "index": 5,
+            "source": [
+              "models",
+              "target",
+              "revision"
+            ]
+          },
+          {
+            "index": 7,
+            "source": [
+              "workload",
+              "artifacts",
+              1,
+              "path"
+            ]
+          },
+          {
+            "index": 9,
+            "source": [
+              "workload",
+              "parameters",
+              "generate_steps"
+            ]
+          }
+        ]
+      },
+      "target_sha256": "4f3c73d38043e07dde5e05b20643f473152ab679eb513e3f4ef4e0efab5aa508",
+      "workload_sha256": "a76b7c67d075d769a74ff9c29b31099163fb9c705764013551c77c3fb4b84734",
+      "primary_metric": "wall_seconds",
+      "operating_system": {
+        "platform": "macOS-26.3-arm64-arm-64bit-Mach-O",
+        "macos_version": "26.3"
+      },
+      "sample_shape": {
+        "run_count": 5,
+        "warmup_count": 1,
+        "timeout_seconds": 120.0
+      }
+    },
+    "invariant_sha256": "dc7134124091a7cc8e65336dcab0609d80c81dbd51749605168ecb76eb52440f",
+    "variant": {
+      "target_id": "local/Qwen2.5-0.5B-Instruct-standalone-mlx",
+      "target_revision": "7df68182b704fb0933625cdb44cc4e89e8f4cfdb5cb75b3e2251f608807f65f0",
+      "enabled_methods": [],
+      "config": {
+        "dtype_policy": "f32",
+        "mode": "f32",
+        "quality_output_path": "quality/outputs/qwen2.5-0.5b-port-f32/result.json",
+        "attestation_challenge_path": "attestations/qwen2.5-0.5b-port-f32/current-challenge.json",
+        "attestation_output_path": "attestations/qwen2.5-0.5b-port-f32/current-evidence.json",
+        "weights_bytes": 1976163149,
+        "weights_sha256": "7df68182b704fb0933625cdb44cc4e89e8f4cfdb5cb75b3e2251f608807f65f0"
+      },
+      "invocation_arguments": {
+        "models.target.id": "950faf8c34b6860999501105b65c24e744650ed4e560a9d6b4cf579324d0462b",
+        "models.target.revision": "d8121cee85f23a6a6be5cf118eea2659e2c2b3faeac59f47683281f4b5c49167",
+        "variant_config.mode": "35a93e947a0847478818f0cce323f8d7a761468cef63c0b6af80c7aca1c458f3"
+      }
+    },
+    "variant_sha256": "dd1417e36610d869592ca8881854901741e4e2f39b98780aad70362243b712a5"
+  }
+}

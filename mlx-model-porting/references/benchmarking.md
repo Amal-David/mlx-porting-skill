@@ -102,6 +102,119 @@ Revert when the win exists only in a microbenchmark, only after excluding first-
 
 `benchmark_command.py` measures command wall time, return status, optional process RSS when `psutil` is present, stdout/stderr summaries, and environment metadata. Model-specific scripts should additionally emit TTFT, tokens/s, RTF, and quality metrics to files referenced in the report.
 
+For a controlled family-neutral observation, pass `--receipt-spec` and a schema-2
+`--quality-contract`. The spec's argv template may contain only exact literals
+or allowlisted sources from `models.target`, workload parameters/artifact paths,
+and `variant_config`; it must bind `models.target.id`,
+`models.target.revision`, and exactly one digest-pinned Python runner as argv
+position 1. The adapter hashes the resolved interpreter and installed-package
+metadata, sanitizes and binds the ambient environment, launches Python with
+`-I -B`, and executes from the
+receipt root with bounded
+run/warmup/output settings, and records only parent-measured `wall_seconds`.
+Text printed by the child process is raw evidence, never a performance metric.
+Every measured run must recreate the exact quality candidate under
+`quality/outputs/<label>/`; the raw report binds that per-run digest to the
+built-in quality contract.
+
+Receipt mode statically rejects symlinked artifact/output components, snapshots the quality
+contract before the child starts, and verifies the source contract did not
+change. Target and source revisions, the exact root-level baseline, and its
+structural gates are checked before the measured command runs; stability is
+still assessed from the complete pair. A compatible
+repetition must keep the exact baseline file/digest, semantic experiment
+(including warmup/run counts and timeout), and exact-output quality contract. Receipt-specific raw
+measurements remain in each full fingerprint; the conservative minimum
+repetition supplies any future promoted ratio and fingerprint.
+
+These controls establish internal consistency and reproducibility-on-request;
+they do not prove authenticity. The generic runner and legacy MLX-LM lanes
+remain observations. The repository-owned `attested-mlx-port-wall-time` Qwen
+adapter adds a fresh per-run challenge plus retained runner, dependency,
+workload, output, and evidence bytes, all checked with unkeyed SHA-256. That is
+useful reproducibility evidence, but SHA-256 is a digest, not a signature. A
+receipt author can fabricate a coherent bundle and recompute every digest.
+
+The `execution_attested` promotion gate therefore requires an external
+signature covering the repository commit/tree, challenge, reviewed dependency
+manifest, raw output, promotion policy, and timing. The signature must come
+from a protected Apple-Silicon signer and verify against a maintainer-controlled
+trust anchor that is neither part of the submitted receipt/evidence nor checked
+into this repository. Building that signer and trust-root distribution is
+future work. Until it exists, `execution_attested=false` for every checked-in
+receipt and every measured ratio remains an observation.
+
+The Qwen adapter hashes the model and writes dependency/evidence snapshots
+inside the child process. Parent wall time includes that work, so its retained
+inverse-wall-time observation must not be restated as pure prefill or decode
+throughput.
+
+The receipt spec has exactly these nine top-level fields; artifact paths and
+digests are relative to the directory that will contain the receipt:
+
+```json
+{
+  "schema_version": 1,
+  "label": "candidate",
+  "argv_template": [
+    {"literal": "python3"},
+    {"source": ["workload", "artifacts", 0, "path"]},
+    {"literal": "--model"},
+    {"source": ["models", "target", "id"]},
+    {"literal": "--revision"},
+    {"source": ["models", "target", "revision"]},
+    {"literal": "--input"},
+    {"source": ["workload", "artifacts", 1, "path"]},
+    {"literal": "--mode"},
+    {"source": ["variant_config", "mode"]},
+    {"literal": "--output"},
+    {"source": ["variant_config", "quality_output_path"]}
+  ],
+  "models": {
+    "target": {
+      "id": "owner/model",
+      "revision": "<pinned 40-64 hex revision>",
+      "lineage_id": "controlled-lineage",
+      "source_id": "owner/source-model",
+      "source_revision": "<pinned 40-64 hex revision>"
+    }
+  },
+  "workload": {
+    "id": "controlled-workload",
+    "artifacts": [
+      {"role": "runner", "path": "runner.py", "sha256": "<sha256>", "size_bytes": 1234},
+      {"role": "input", "path": "input.bin", "sha256": "<sha256>", "size_bytes": 5678}
+    ],
+    "parameters": {"shape": "fixed"}
+  },
+  "variant_config": {
+    "mode": "candidate",
+    "quality_output_path": "quality/outputs/candidate/result.txt"
+  },
+  "enabled_methods": ["method-id"],
+  "comparison_role": "candidate",
+  "rollback_condition": "Rollback on quality failure or a gain within noise."
+}
+```
+
+```bash
+python3 mlx-model-porting/scripts/benchmark_command.py \
+  --receipt-spec candidate.spec.json \
+  --quality-contract quality-contract.json \
+  --baseline-receipt baseline.json \
+  --warmup 1 --runs 5 --timeout 600 \
+  --output candidate.json
+```
+
+Receipt mode rejects environment overrides because redacted values cannot be
+compared across baseline and candidate. Express a controlled variant through
+`variant_config` and bind it into `argv_template` instead. It also requires an
+explicit finite positive `--timeout` of at most 3600 seconds. Warmup count,
+measured-run count, and timeout are part of the experiment protocol and must
+match across compatible repetitions. Receipt mode refuses to overwrite an
+existing receipt or collide with a baseline, workload, quality-control, raw, or
+bound-output path; use a new label for a new evidence run.
+
 ## Receipt harness
 
 `scripts/benchmark_generation.py` wraps `mlx_lm generate`-style commands and writes receipt JSON under `assets/benchmarks/` by default. Each measured run must print prompt tokens/s, generation tokens/s, and peak memory lines; missing metrics or nonzero exits fail loudly. Receipts include environment metadata, exact command arguments, config notes, per-run metrics, aggregate median/min/max values, and a labeled `ttft_proxy` computed as prompt tokens divided by prompt throughput. The harness records `speedup_vs_baseline` only when `--baseline-receipt` is provided, so standalone receipts never contain speedup numbers.

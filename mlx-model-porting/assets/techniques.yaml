@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "reviewed": "2026-06-27",
+  "reviewed": "2026-07-10",
   "statuses": [
     "native-mlx",
     "official-mlx-project",
@@ -658,6 +658,25 @@
       "reviewed": "2026-06-23"
     },
     {
+      "id": "weight-bf16-cast",
+      "title": "BF16 weight casting for MLX inference",
+      "category": "quantization",
+      "status": "native-mlx",
+      "applies_to": [
+        "linear-heavy-models",
+        "dense-decoder-transformer"
+      ],
+      "use_when": "A controlled F32 baseline and task-specific quality gate show that BF16 weights preserve the required output window.",
+      "avoid_when": "The quality window fails, the runtime already stores equivalent precision, or the measured gain does not clear noise.",
+      "validation_gate": "Exact conversion manifest, task quality against F32, isolated end-to-end benchmark, stability, and rollback to F32.",
+      "evidence": [
+        "mlx-docs",
+        "mlx-repo"
+      ],
+      "reviewed": "2026-07-10",
+      "rollback_condition": "Restore F32 when the declared quality window changes, output parity fails, or end-to-end wall time no longer clears the fixed noise gate."
+    },
+    {
       "id": "mxfp4-nvfp4-mxfp8",
       "title": "Native MLX affine/MX/NV low-bit quantization modes",
       "category": "quantization",
@@ -678,21 +697,25 @@
     },
     {
       "id": "activation-quant",
-      "title": "Activation quantization",
+      "title": "MLX quantized-input path for supported low-bit modes",
       "category": "quantization",
-      "status": "research-candidate",
+      "status": "native-mlx",
       "applies_to": [
-        "large-transformer"
+        "linear-heavy-models"
       ],
-      "use_when": "Weight-only memory is insufficient and efficient kernels exist.",
-      "avoid_when": "No MLX kernel or activation outliers cause quality collapse.",
-      "validation_gate": "Calibration/quality and true end-to-end MLX speed.",
+      "use_when": "The exact MLX quantization mode documents quantize_input=True support for the target QuantizedLinear or quantized matmul path.",
+      "avoid_when": "Treating generic calibrated activation quantization, arbitrary operators, unsupported modes, or paper-only recipes as native MLX support.",
+      "validation_gate": "Exact mode and group-size support, layer coverage, calibration/quality, load roundtrip, and true end-to-end MLX speed.",
       "evidence": [
+        "mlx-doc-core-quantize",
+        "mlx-doc-nn-quantize",
+        "mlx-doc-quantized-matmul",
         "paper-2211-10438",
         "paper-2404-00456",
         "paper-2405-04532"
       ],
-      "reviewed": "2026-06-23"
+      "reviewed": "2026-07-09",
+      "rollback_condition": "Disable quantized input if the selected MLX mode or layer path does not support it, quality exceeds budget, or end-to-end latency regresses."
     },
     {
       "id": "lora",
@@ -964,7 +987,6 @@
       "evidence": [
         "paper-2606-21842",
         "vllm-blog-anatomy",
-        "sankalp-prompt-cache-blog",
         "vllm-mlx-repo"
       ],
       "reviewed": "2026-06-24"

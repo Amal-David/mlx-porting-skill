@@ -1,6 +1,137 @@
 {
   "schema_version": 1,
-  "reviewed": "2026-06-27",
+  "reviewed": "2026-07-09",
+  "matching_policy": {
+    "mode": "exact-controlled-identifiers",
+    "family_rule": "A method must match at least one recommended_families entry by exact family id or an explicitly declared family group. Substring matching is forbidden.",
+    "capability_rule": "model_types are exact normalized config model_type values; capabilities_all and workloads_any are exact TargetProfile identifiers.",
+    "unknown_rule": "Missing capability, workload, or version evidence holds the method or its numeric claim; it never counts as an implicit match."
+  },
+  "family_groups": {
+    "all": [
+      "dense-decoder-transformer",
+      "moe-decoder-transformer",
+      "encoder-transformer",
+      "non-generative-cv-backbone",
+      "graph-message-passing",
+      "time-series-forecasting",
+      "encoder-decoder-transformer",
+      "ssm-recurrent-hybrid",
+      "diffusion-flow",
+      "vision-language-omni",
+      "neural-audio-codec",
+      "autoregressive-audio-lm",
+      "flow-diffusion-tts",
+      "vocoder-waveform-decoder",
+      "automatic-speech-recognition",
+      "streaming-speech",
+      "separation-enhancement"
+    ],
+    "linear-heavy-models": [
+      "dense-decoder-transformer",
+      "moe-decoder-transformer",
+      "encoder-transformer",
+      "encoder-decoder-transformer",
+      "ssm-recurrent-hybrid",
+      "vision-language-omni",
+      "autoregressive-audio-lm"
+    ],
+    "decoder-transformer": [
+      "dense-decoder-transformer",
+      "moe-decoder-transformer"
+    ],
+    "autoregressive-decoder": [
+      "dense-decoder-transformer",
+      "moe-decoder-transformer"
+    ],
+    "autoregressive-transformer": [
+      "dense-decoder-transformer",
+      "moe-decoder-transformer"
+    ],
+    "audio-lm": [
+      "autoregressive-audio-lm"
+    ],
+    "audio-codec": [
+      "neural-audio-codec"
+    ],
+    "tts": [
+      "autoregressive-audio-lm",
+      "flow-diffusion-tts"
+    ],
+    "stt": [
+      "automatic-speech-recognition",
+      "streaming-speech"
+    ],
+    "speech-to-speech": [
+      "streaming-speech",
+      "separation-enhancement"
+    ],
+    "vocoder": [
+      "vocoder-waveform-decoder"
+    ],
+    "vlm": [
+      "vision-language-omni"
+    ],
+    "video-vlm": [
+      "vision-language-omni"
+    ],
+    "voice-cloning": [
+      "autoregressive-audio-lm"
+    ]
+  },
+  "capability_ids": [
+    "api:batch-generate",
+    "api:stream-generate",
+    "causal-decoder",
+    "full-attention",
+    "gated-delta-recurrence",
+    "kv-cache",
+    "mamba2-state-space",
+    "multimodal-projector",
+    "input:video",
+    "sparse-moe"
+  ],
+  "workload_ids": [
+    "agents",
+    "code",
+    "concurrent-serving",
+    "concurrent-tts-short-prompts",
+    "long-context",
+    "long-context-vlm",
+    "multimodal-serving",
+    "reference-audio-reuse",
+    "rag",
+    "repeated-media",
+    "repetitive-prompts",
+    "server",
+    "streaming-audio",
+    "video-input"
+  ],
+  "target_profile_contract": {
+    "schema_version": 1,
+    "required_sections_for_numeric_claims": [
+      "hardware",
+      "software",
+      "workloads"
+    ],
+    "local_promotion_exact_field": "experiment_fingerprint",
+    "software_keys": [
+      "mlx",
+      "mlx_lm",
+      "mlx_vlm",
+      "mlx_audio",
+      "vllm_mlx_revision"
+    ],
+    "policy": "A TargetProfile narrows applicability but cannot promote a source-reported number. Local numeric advice requires the full canonical receipt-derived experiment_fingerprint, exact receipt-derived models, target, and workload descriptors, exact non-empty hardware and software mappings, and a non-empty controlled workload set. A copied digest, generic profile, or merely similar target is insufficient."
+  },
+  "benchmark_runner_policy": {
+    "controlled_runner_ids": [
+      "mlx-lm-generate",
+      "external-command-wall-time"
+    ],
+    "external_primary_metric": "wall_seconds",
+    "policy": "Family-neutral promotion may use only parent-measured wall_seconds from a bounded benchmark_command schema-1 report. The external argv template must bind a digest-pinned runner artifact, models.target.id, checked-in workload evidence, and variant_config; command stdout cannot attest performance."
+  },
   "objective_tags": [
     {
       "id": "ttft",
@@ -17,6 +148,10 @@
     {
       "id": "concurrent-throughput",
       "label": "aggregate throughput under concurrency"
+    },
+    {
+      "id": "batch-throughput",
+      "label": "aggregate throughput for a controlled batch"
     },
     {
       "id": "first-audio-latency",
@@ -45,6 +180,10 @@
     {
       "id": "latency",
       "label": "general latency"
+    },
+    {
+      "id": "wall-time",
+      "label": "parent-measured external process wall time"
     },
     {
       "id": "throughput",
@@ -108,7 +247,8 @@
   ],
   "improvement_band_policy": {
     "profile_required": "No numeric band may be claimed until measured on the target workload.",
-    "source_reported": "A cited source reports the range; keep its hardware/workload caveat attached.",
+    "source_reported": "A cited source reports the range; preserve it as a held observation until an equivalent local target-workload benchmark passes promotion.",
+    "performance_observation": "A local run recorded performance, but the receipt set has not passed every lineage, comparability, stability, reproducibility, and quality gate required for promotion.",
     "local_reproduced": "A local benchmark artifact reproduces the result with metadata and quality gate.",
     "multiplicative_hypothesis": "Derived product of source-reported ceilings only; never a claim and must carry the unmeasured-composition flag.",
     "not_a_speedup": "The item is a correctness, risk, or product-mode decision rather than an optimization claim."
@@ -170,6 +310,13 @@
     "proven-mlx-port": "benchmark-required",
     "research-candidate": "experimental-approach",
     "rejected-or-superseded": "rejected-do-not-use"
+  },
+  "claim_provenance_to_advisor_bucket": {
+    "local_reproduced": "validated-locally",
+    "performance_observation": "benchmark-required",
+    "source_reported": "benchmark-required",
+    "profile_required": "benchmark-required",
+    "not_a_speedup": "validated-source-theory"
   },
   "default_keep_gate": [
     "correctness/parity passes",

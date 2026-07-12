@@ -1,144 +1,426 @@
-# Research report: an architecture-aware MLX porting skill
+# Research report: an architecture-aware MLX porting standard
 
-**Review date:** 2026-06-24  
-**Artifact version:** 0.1.0
+**Review date:** 2026-07-11
+
+**Artifact version:** 0.5.0
 
 ## Executive finding
 
-There are useful pieces of the requested system, but the public landscape is fragmented:
+The MLX ecosystem contains strong components, but they solve different parts of
+the problem:
 
-- a general MLX development skill covers basic array, neural-network, compilation, and migration gotchas;
-- narrow speech skills expose already-supported MLX STT/TTS models;
-- MLX-LM, MLX-VLM, and MLX-Audio contain strong conversion and inference implementations;
-- MLX serving projects add batching, paged/prefix cache behavior, and benchmark harnesses;
-- inference research supplies many candidate techniques, but most papers assume CUDA and do not establish a Metal/MLX win.
+- Apple-maintained MLX and MLX-LM define the framework and a broad set of
+  language-model implementation patterns;
+- pinned third-party projects such as MLX-VLM, MLX-Audio, and vllm-mlx provide
+  useful multimodal, audio, and serving prior art;
+- papers and non-MLX implementations supply architecture and algorithm
+  candidates; and
+- model repositories supply configuration, preprocessing, checkpoint, and
+  license truth for a particular port.
 
-What was not found as a cohesive artifact is a **cross-agent, evidence-versioned, architecture-aware runbook that starts from an arbitrary model and enforces intake → source oracle → deterministic weight conversion → staged parity → profiling → optimization → quantization → serving → publication**.
+What remains uncommon is a portable engineering standard that joins those
+pieces into one conservative flow:
 
-This repository fills that gap as an initial engineering corpus. It does not pretend that every indexed paper has been reproduced on MLX. Instead, it distinguishes native support, proven MLX implementations, transferable candidates, and unverified ideas.
+`static intake → architecture route → source oracle → eager MLX graph → deterministic weight map → parity → profiling → evidence-gated advice → packaging`
 
-## Existing artifacts audited
+This repository provides that standard. Dense-decoder Transformers now have an
+executable end-to-end path proven on one real checkpoint. The other 16 routed
+families retain executable intake, planning, generic validation, and evidence
+gates, with architecture-module implementation supplied by their runbooks
+rather than a generator. No indexed architecture or technique is treated as
+locally reproduced without its own evidence.
 
-### `mlx-dev-skill`
+## Foundation reconciled in 0.4.0
 
-Strengths:
+The full-project review found that the previous implementation mixed useful
+research with several unsafe or misleading boundaries:
 
-- useful MLX fundamentals: lazy evaluation, `mx.eval`, array indexing differences, NHWC convolution layout, module call conventions, dtypes, and compilation state;
-- compact and easy to activate.
+- the public Worker duplicated repository logic and could drift from the
+  checked-in skill and documentation;
+- architecture routing could overcommit on weak evidence and did not represent
+  known hybrid models as composable routes;
+- recommendation matching was too broad to support target-specific numeric
+  advice, while generated and handwritten claim surfaces could disagree;
+- historical benchmark ratios looked more authoritative than their lineage,
+  workload, quality, stability, and execution evidence justified;
+- model intake, installers, research collectors, archive readers, subprocesses,
+  and network redirects contained unbounded or insufficiently attested paths;
+- generated documentation, site data, benchmark assessments, and the
+  distribution manifest lacked one complete dependency/drift contract; and
+- the nightly curator conflated arXiv base identity with exact revisions and
+  did not consistently link known update candidates to prior evidence.
 
-Gap relative to this project:
+Version 0.4.0 removes the Worker, makes routing confidence-aware and
+composable, centralizes numeric authority, withholds every unproved claim,
+hardens the executable surfaces, makes generated views deterministic, and
+reconciles nightly evidence without silently promoting research. The remaining
+limitations are listed at the end of this report; they are proof work, not
+missing prose.
 
-- no architecture fingerprinting or arbitrary-model intake;
-- no architecture-specific porting runbooks;
-- no source-oracle and layerwise parity protocol;
-- no deterministic weight-map schema;
-- no evidence/status registry for recent inference methods;
-- no audio codec, TTS, ASR, streaming, or vocoder porting methodology;
-- no controlled daily research/update process.
+Version 0.5.0 adds the dense-decoder execution chain and the first checked-in
+real port packet, introduces one narrow benchmark reproducibility adapter with
+a resealed promotion boundary, and wires the reviewed knowledge graph into
+the advisor as a separate non-executable research queue. The deterministically
+reconciled backlog and drift check preserve the T-7007 knowledge-layer state:
+697 nodes, 499 edges, bounded advisor consumption, and no numeric authority
+outside `effective_claims.json`.
 
-### MLX-LM
+## Current corpus and proof boundary
 
-Provides the strongest official reference for decoder-only and related language-model ports: conversion and quantization, generation caches, prompt caching, speculative decoding, training adapters, and a broad architecture catalogue. It should be the first reference for compatible language models.
+The 0.5.0 snapshot contains:
 
-### MLX-VLM
+| Surface | Count | Boundary |
+|---|---:|---|
+| Architecture routes | 17 | Synthetic golden route and guard scenarios; one dense-decoder model has a completed real port. |
+| Evidence sources | 350 | Every source has review depth; 23 carry classified support scope and claim types, while 327 remain intentionally unclassified. |
+| Technique records | 66 | Status describes evidence maturity, not a portable performance guarantee. |
+| Guidance methods | 28 | Target matching and evidence gates determine whether advice can be surfaced. |
+| Optimization stacks | 4 | Planning structures; no positive compound number is implied. |
+| Python scripts | 29 | Inspectable intake, execution, validation, evidence, and packaging tools. |
+| Benchmark receipts | 13 | 12 performance observations, 0 promotion-ready, 1 rejected. |
+| Effective claims | 10 | All ten are withheld. |
+| Knowledge graph | 697 nodes / 499 edges | Review-only research memory with a reconciled backlog and bounded advisor projection. |
+| Offline tests | 425 | Contract, security, determinism, portability, generated-drift, and gated execution coverage. |
 
-Provides active multimodal patterns and, in current code, advanced serving features including continuous batching, automatic prefix caching, quantized KV options, and multiple speculative-drafter families. These features demonstrate why the registry must be revision- and date-aware.
+The `bf16-weight-cast` measurement is a reproducible observation for the
+captured Qwen load-plus-six-token workload. It is not promotion-ready because
+no external signer or out-of-repository trust root exists. All other positive
+measurements also remain observations, and missing or failed lineage, workload,
+runner, quality, stability, rollback, compatibility, or trust gates continue to
+prevent promotion.
 
-### MLX-Audio
+## Execution architecture
 
-Provides a broad and fast-moving implementation corpus across TTS, STT, speech-to-speech, language identification, codecs, and streaming. Its conversion path already performs model-domain/type detection, model-specific sanitization, dtype conversion, mixed recipes, multiple quantization modes, and publication. It is a critical source of proven patterns, but it is a library—not a generic methodology that can guide an agent through a never-before-ported architecture.
+### 1. Two explicit entry paths
 
-### MLX serving projects
+`inspect_model.py` statically inspects source-model metadata, safetensors
+headers, source-format manifests, licenses, and risk signals. Network access is
+opt-in, and remote model code is never an intake requirement.
 
-Projects such as `vllm-mlx` explore continuous batching, paged/prefix caching, SSD tiers, sparse prefill, speculative paths, and benchmark storage. These are valuable serving references. They must remain distinct from framework guarantees and should be treated as third-party implementations until validated for the target workload.
+`inspect_mlx_project.py` handles an existing MLX project or converted
+checkpoint. It inventories runtime surfaces, proof gaps, likely improvement
+paths, and contribution candidates without importing or executing the target
+project. A truncated inventory blocks a clean conclusion.
 
-## Design conclusions
+### 2. Confidence-aware and composable routing
 
-### 1. Architecture comes before optimization
+`assets/architectures.yaml` is the route authority. A family must clear both an
+absolute evidence threshold and a lead over the runner-up; weak or tied signals
+become an ambiguity blocker instead of a guess. Known hybrids such as recurrent
+plus attention or MoE plus recurrent models can emit one primary family and
+multiple required component runbooks.
 
-“Transformer” is too broad. A dense decoder, MoE decoder, Whisper-style encoder-decoder, Mamba-style state-space model, residual-vector-quantized codec, delay-pattern audio LM, flow-matching TTS model, and streaming transducer have different state, cache, shape, quantization, and correctness constraints. The skill therefore routes to a family runbook before selecting techniques.
+Each declared family has a synthetic golden scenario. That fixture checks
+routing, expected weight-key coverage, detection of a seeded parity failure,
+and correct optimization inclusion/exclusion. It does not prove that a real
+checkpoint for that family has been ported.
 
-### 2. The source oracle is the central trust boundary
+### 3. Source oracle before implementation
 
-Most failed ports are not caused by a missing matrix multiplication. They are caused by subtle mismatches in preprocessing, tensor layout, positional encoding, cache semantics, normalization epsilon, tied weights, padding/masking, sampling, codec delay patterns, or streaming state. The skill mandates portable fixtures and staged intermediate comparisons before performance work.
+`capture_oracle.py` freezes the source implementation into reproducible inputs,
+intermediate captures, state/cache behavior, and outputs. This is the central
+trust boundary: most port failures come from layout, masks, positions,
+normalization, tied weights, preprocessing, cache semantics, codec timing, or
+streaming state rather than from the matrix multiplication itself.
 
-### 3. Techniques need implementation status, not hype labels
+For dense decoders, `scaffold_port.py` re-inspects the artifact and generates a
+minimal eager MLX package. Other families still require their runbook-defined
+module implementation. Quantization, compilation, custom kernels, batching,
+caching, and speculative execution wait until the smallest useful graph passes
+parity.
 
-Each technique is assigned a status such as:
+### 4. Deterministic weight conversion and parity ladder
 
-- `native-mlx`;
-- `official-mlx-project`;
-- `proven-mlx-port`;
-- `research-candidate`;
-- `rejected-or-superseded`.
+`convert_checkpoint.py` drafts and applies schema-2 maps of key and shape
+transforms. Every rename, transpose, permutation, reshape, split, merge,
+squeeze, and tie is reviewable; permissive loading cannot hide missing weights.
 
-A paper can justify an experiment, not a claim that the technique is beneficial on Apple Silicon. The registry includes a decision rule and validation gate for each technique.
+`run_parity.py` invokes source and `capture_mlx.py` capture in one command and
+stops at the first input, embedding, layer, final-norm, logit, or exact-token
+divergence. The Qwen2.5-0.5B-Instruct packet passed all 29 rungs and matched
+eight greedy token IDs across Torch, standalone MLX, and offline MLX-LM. This
+proves that model and family path only; a tensor tolerance or exact token match
+is not a general domain-quality evaluation.
 
-### 4. Audio needs a distinct optimization grammar
+### 5. Target-aware advisor
 
-Audio pipelines often contain several very different bottlenecks:
+The advisor matches exact controlled identifiers for family, model type,
+capability, workload, objective, and relevant software versions. Missing target
+evidence creates a hold rather than an implicit match.
 
-- feature extraction or waveform preprocessing;
-- semantic/acoustic token generation;
-- codebook scheduling;
-- codec decode;
-- convolutional or Fourier vocoding;
-- overlap-add and streaming buffers.
+Results are separated into five buckets:
 
-Token/s alone is therefore insufficient. The runbooks use time-to-first-audio, real-time factor, chunk boundary quality, sample continuity, ASR intelligibility, speaker similarity, and peak memory alongside ordinary tensor parity.
+1. `validated-locally` — a local parity, test, or promotion gate supports the
+   result for the stated scope;
+2. `validated-source-theory` — official APIs, pinned implementations, or
+   primary theory justify the path, but target confirmation remains necessary;
+3. `benchmark-required` — safe to consider after parity, with no numeric target
+   claim yet;
+4. `experimental-approach` — unpromoted research requiring explicit user
+   opt-in; and
+5. `rejected-do-not-use` — incompatible, unsafe, contradicted, superseded, or
+   otherwise blocked.
 
-### 5. Custom kernels are a final, measured step
+The bucket is not itself permission to skip parity, quality, or licensing work.
 
-MLX already exposes fused and low-level operations. The default sequence is native operation → layout/state correction → stable-region compilation → existing fast primitive → custom Metal kernel. A custom kernel must have a reference implementation, numerical tests, shape/dtype coverage, a fallback, and an end-to-end win—not merely a kernel microbenchmark.
+### 6. Receipt assessment and numeric-claim authority
 
-### 6. Continuous updates must be governed
+`validate_benchmarks.py` independently assesses checked-in receipts. Historical
+schema-1 receipts are immutable observations. A schema-2 candidate must bind a
+controlled runner to pinned model lineage and checked-in workload artifacts,
+preserve raw-output digests, pass a controlled built-in quality contract, match
+a compatible baseline, meet stability and noise thresholds, and declare
+rollback before it can be promotion-ready. The current controlled quality
+contract is exact-output parity over distinct digest-bound artifacts; arbitrary
+external JSON values and legacy Python evaluators remain observation-only.
+The measured runner may be the MLX-LM generation adapter or the
+family-neutral `external-command-wall-time` adapter. The latter resolves a
+no-shell argv template that executes a digest-pinned Python runner, binds the
+target model and revision, workload evidence, semantic variant, and label-owned
+output, and hashes the resolved interpreter plus sanitized environment into the
+target identity. It starts Python with `-I -B`, statically rejects symlink
+components, and freezes the quality contract before execution. Only wall time
+measured by the parent harness counts, never a value printed by the child
+command, and every measured run must recreate the candidate artifact used by
+the exact-output quality gate.
+Neither generic lane is promotion-capable: the external runner can ignore its
+arguments, while the MLX-LM lane does not attest imported package bytes and
+per-run generated output. The repository-owned
+`attested-mlx-port-wall-time` adapter retains a parent challenge, reviewed
+runner, loaded dependencies, model/workload identity, and per-run output for
+the Qwen worked-port workload. Re-hashing those author-supplied bytes proves
+internal consistency, not authenticity; SHA-256 is not a signature.
 
-A daily job that edits recommendations automatically is unsafe. New papers can be wrong for MLX, upstream commits can regress, and third-party repositories can be compromised or abandoned. The included update workflow collects candidates, snapshots revisions, runs audits, and prepares review material. It intentionally does not auto-merge.
+Promotion requires a protected Apple-Silicon signer to sign the repository
+commit/tree, challenge, reviewed dependency manifest, raw output, promotion
+policy, and timing. The validator must verify that signature against a
+maintainer-controlled trust anchor outside the receipt, evidence tree, and
+repository. That signer is future work, so every checked-in receipt has
+`execution_attested=false`.
 
-## Research methodology and limits
+`generate_claim_catalog.py` combines the canonical guidance, source evidence,
+and generated receipt assessments into `assets/effective_claims.json`. The
+advisor consumes that generated catalogue as its sole numeric authority. A
+custom or handwritten assessment sidecar cannot manufacture a local claim
+because the advisor recomputes the colocated receipt evidence.
 
-The evidence index combines:
+Any future local promotion must also carry a canonical experiment fingerprint from
+receipt to assessment to claim. It covers exact model/source revisions, target,
+workload, experiment, metric, methods, and baseline binding. Heterogeneous
+semantic identities cannot collapse into one range. Compatible repetitions
+must share the exact baseline file/digest, warmup/run/timeout protocol, and exact-output
+quality contract; they use the conservative minimum and retain that receipt's
+full fingerprint. The advisor requires the complete canonical
+fingerprint plus exact model/source, target, workload, hardware, software, and
+controlled-workload descriptors in the `TargetProfile` before showing the
+number. A copied digest or generic profile cannot unlock a local claim.
 
-- official framework and library source/docs;
-- active MLX ecosystem implementations;
-- architecture papers;
-- recent work on attention, KV management, serving, quantization, speculative decoding, neural codecs, TTS, ASR, and streaming.
+Stacks are conservative by construction. Unknown pairs stay unknown; duplicate
+lineage cannot be multiplied; a regressing member withholds the local claim;
+and a measured-together claim must cover the exact ordered methods. A product of
+individual ceilings is a hypothesis, never a measured compound result.
 
-Review depth is explicit:
+### 7. Packaging and publication
 
-- `synthesized`: the source directly informed a rule, runbook, or registry decision;
-- `screened`: abstract/readme/code path reviewed for relevance and limitations;
-- `indexed`: catalogued for future review and daily-change detection.
+A publishable port records source and revision, license, tokenizer or processor,
+conversion recipe, weight-map result, parity and quality results, software and
+hardware versions, benchmark workload, limitations, and rollback. Converted
+weights are not ready merely because they load.
 
-The corpus is intentionally broader than the deeply synthesized subset. It would be misleading to claim line-by-line reproduction of every indexed paper. The skill is designed so evidence can be promoted only through review and tests.
+## Evidence architecture
 
-## 2026-06-24 adversarial audit addendum
+Evidence is layered so that one kind of fact cannot silently impersonate
+another:
 
-The publish-readiness audit corrected three source-identity errors before release: Orca now points to the primary USENIX OSDI 2022 page, HQQ now points to the Dropbox implementation instead of an unrelated arXiv paper, and Prompt Lookup Decoding now points to its primary repository instead of an unrelated combined-speculator paper. The MLX core API evidence was also split into concrete, URL-checkable operator docs for fast norm/RoPE, quantized matmul, gather matmul, block-masked matmul, and Hadamard transform.
+1. `assets/sources.yaml` records source identity, snapshot, and review depth for
+   every entry. Classified records additionally carry support scope, claim type,
+   and boundaries; an absent classification grants no implicit claim.
+2. `assets/techniques.yaml` records the broader technique decision registry.
+3. `assets/optimization_guidance.yaml` records actionable method matching,
+   gates, tradeoffs, rollback, and any scoped observation.
+4. `assets/recommendation-taxonomy.yaml` defines controlled identifiers,
+   TargetProfile requirements, statuses, and the five advisor buckets.
+5. `assets/benchmarks/*.json` records experiments; generated assessments decide
+   whether any receipt may support promotion.
+6. `assets/effective_claims.json` resolves the numeric claim actually visible to
+   the advisor.
 
-Latest MLX ecosystem review on 2026-06-24 added native low-bit mode guidance for MLX `affine`, `mxfp4`, `mxfp8`, and `nvfp4`; pinned current MLX, MLX-LM, MLX-VLM, MLX-Audio, and vllm-mlx snapshots; and downgraded or scoped claims that were third-party, cache-composition-sensitive, or paper-only. New June 2026 KV-cache papers were indexed as screened research candidates, not promoted to supported techniques.
+At this release boundary, all nine catalogued numeric records are withheld.
+Three preserve source-reported benchmark ranges as observations, but none is
+profile-eligible: their exact hardware, model, precision, workload geometry,
+cache state, concurrency or batch shape, and baseline cannot all be expressed
+and matched by the current `TargetProfile` contract. The observations remain
+useful research evidence without becoming portable performance promises. The
+generator also enforces the durable rule: source-reported numbers remain held
+until an equivalent local target-workload run passes every promotion gate.
 
-The release gate now includes structural provenance validation via `scripts/validate_sources.py`. A supported technique must cite implementation evidence, and moving synthesized sources must carry a snapshot.
+Review depth is deliberately separate from support scope:
 
-## Recommended next validation phase
+- `synthesized` means a source directly informed a rule, runbook, or decision;
+- `screened` means the relevant material and its limitations were reviewed;
+- `indexed` means catalogue-only evidence awaiting deeper review.
 
-Before calling this a mature public skill, run a benchmark suite over at least:
+The controlled support scopes are `context_only`, `local_reproduced`,
+`official_mlx`, `official_mlx_project`, `paper_only`, and
+`third_party_pinned`. In particular, a pinned non-Apple MLX implementation is
+reproducible prior art, not an Apple framework guarantee.
 
-1. a dense decoder LLM;
-2. a sparse MoE LLM;
-3. a Whisper-style ASR model;
-4. a neural audio codec;
-5. an autoregressive codec TTS model;
-6. a flow/diffusion TTS model;
-7. a streaming speech model;
-8. one deliberately unsupported architecture.
+Method status is now mechanically tied to that classification. `native-mlx`
+requires synthesized pinned `official_mlx` API or implementation evidence;
+`official-mlx-project` requires an Apple-project implementation; and
+`proven-mlx-port` requires a synthesized pinned third-party or locally
+reproduced path. A one-line status promotion without compatible evidence fails
+validation.
 
-For each case, evaluate whether the agent:
+The primary ecosystem anchors at this review are MLX v0.32.0 and MLX-LM
+v0.31.3 from Apple-maintained projects. The synthesized MLX-Audio anchor remains
+v0.4.4; v0.4.5 was collected on 2026-07-10 as a review-only candidate and is not
+silently treated as equivalent evidence. MLX-VLM and vllm-mlx are also useful
+pinned third-party references and remain labelled accordingly.
 
-- selects the correct runbook;
-- creates a complete weight map;
-- catches seeded parity bugs;
-- rejects irrelevant CUDA-only optimizations;
-- chooses useful MLX-native improvements;
-- reports honest, reproducible metrics;
-- avoids executing remote code or publishing incompatible weights.
+The nightly-curator conflict was reconciled without rewriting its July 8
+evidence: all 28 files from the 2026-07-08 PR run remain byte-identical. Eleven
+older June 27/July 7 research artifacts received one mechanical privacy-only
+redaction: machine-specific checkout prefixes became `<repo-root>`. No finding,
+source, timestamp, command meaning, claim, or outcome changed. The reviewed
+2026-07-10 graph now contains 697 nodes and 499 non-dangling edges, including
+lineage edges for every known repository candidate. arXiv base identity is
+separate from immutable `vN` revision; three current `v2` papers are held as
+`updated_candidate` with explicit before/after comparison state because the
+older source records did not pin a paper revision.
+
+## Generated views and dependency flow
+
+Canonical data flows one way into human- and site-facing views:
+
+### Research-to-advisor review queue
+
+`update-candidates.json`, the automated `contributor-refresh.json` source
+selection receipt, hand-reviewed contributor learnings, model outcomes, and the
+generated backlog feed `knowledge_curator.py`. The curator preserves those
+inputs as review-only nodes and edges in `knowledge_graph.json`; it also
+reconciles `research_backlog.json` deterministically from the current graph and
+update-candidate state. `knowledge_curator.py --check-backlog` fails when that
+derived backlog drifts.
+
+`recommend_optimizations.py` reads the graph with a fixed byte limit and a
+fail-closed schema check. For the routed architecture families it shows bounded
+`candidate_relevant_to`, `evidence_for`, `evidence_for_outcome`, and
+`candidate_version_of` provenance under a separate **Unreviewed research
+signals (experimental/review queue)** section. Every item remains
+non-executable and carries node ids, available source URLs, and review states.
+It is not a sixth advisor bucket and cannot provide a numeric claim;
+`effective_claims.json` remains the sole numeric authority. The former top-model
+popularity snapshot and collector were removed because no architecture-safe
+runtime decision consumed them.
+
+```text
+sources.yaml
+  └─ generate_evidence_index.py ─> EVIDENCE_INDEX.md
+
+benchmarks/*.json
+  └─ validate_benchmarks.py ─> receipt_assessments.json
+                              ├> receipts_index.json
+                              └> BENCHMARK_REPORT.md
+
+optimization_guidance.yaml + sources.yaml + receipt_assessments.json
+  └─ generate_claim_catalog.py ─> effective_claims.json
+
+update-candidates.json + contributor-refresh.json + reviewed research assets
+  └─ knowledge_curator.py ─> knowledge_graph.json
+                            └> research_backlog.json (reconcile/check)
+
+knowledge_graph.json + effective_claims.json
+  └─ recommend_optimizations.py ─> five advice buckets
+                                   + separate unreviewed research signals
+
+VERSION + canonical registries + references/*.md + generated assessments/claims
+  └─ generate_site_data.py ─> site/data.js
+
+final distributed tree
+  └─ manifest.py ─> MANIFEST.json
+```
+
+Generated files are review artifacts, not editing surfaces. Their drift checks
+make a registry, receipt, version, or report change fail until every dependent
+view is regenerated. `MANIFEST.json` is regenerated last.
+
+## Extension flow
+
+### Add or change an architecture family
+
+1. Add detection signals, runbook path, routing constraints, and any explicit
+   hybrid composition to `assets/architectures.yaml`.
+2. Add or update the family runbook with state/cache semantics, weight
+   transforms, parity checkpoints, optimization order, quantization exclusions,
+   failure modes, and a minimal validation matrix.
+3. Add a synthetic scenario that exercises routing, weight coverage, a seeded
+   parity failure, and positive/negative optimization selection.
+4. Verify that every declared family still has golden coverage and that weak
+   evidence fails closed.
+
+This extends routing knowledge. A real-model port still requires its own source
+oracle, conversion implementation, and validation packet.
+
+### Add or change a technique
+
+1. Register primary or pinned evidence in `sources.yaml` with honest review
+   depth, support scope, and claim types.
+2. Add the technique status and decision rule to `techniques.yaml`.
+3. Add actionable guidance only when family/capability/workload targeting,
+   correctness and quality gates, benchmark protocol, tradeoffs, and rollback
+   are explicit.
+4. Add stack composition notes only for the exact pair and order supported by
+   evidence; unknown remains the default.
+5. Add recommendation and source-validation tests, then regenerate dependent
+   views.
+
+A paper-only or CUDA implementation can justify `research-candidate`, not
+supported MLX guidance.
+
+### Add a benchmark candidate
+
+1. Record a schema-2 experiment with immutable target and source lineage,
+   checked-in workload artifacts, either a controlled MLX-LM invocation or the
+   digest-pinned family-neutral wall-time adapter, and bounded raw outputs.
+2. Pair a candidate with an exactly compatible baseline and declare the enabled
+   methods, primary metric, stability limit, controlled exact-output quality
+   contract, and rollback condition. Lossy or task-specific candidates remain
+   observations until a suitable built-in evaluator exists.
+3. Regenerate benchmark assessments; do not edit the assessment, index, or
+   report by hand.
+4. Regenerate the effective claim catalogue. A failed gate remains visible as
+   an observation or rejection and cannot be rewritten as a success in prose.
+
+### Add research evidence
+
+Automated research may collect, normalize, rank, and prepare review material.
+It may not upgrade `indexed` to `synthesized`, promote a technique, modify the
+claim catalogue, or auto-merge a recommendation without human review and the
+required gates.
+
+### Change public documentation or version data
+
+Edit the authored Markdown or canonical asset, then regenerate the evidence
+index, benchmark views, claim catalogue, and site data as their inputs require.
+The static site has no worker dependency; `site/data.js` is derived locally so
+the published documentation and offline file view share the same corpus counts.
+
+## What remains deliberately unresolved
+
+- No arbitrary-model architecture generator is shipped.
+- Synthetic route coverage is not end-to-end checkpoint support; only one
+  dense-decoder checkpoint has completed the full executable chain.
+- The captured Qwen BF16 timing remains a reproducible observation, not a
+  promoted claim or portable model, workload, or metric guarantee.
+- Source-reported performance remains constrained to the cited revision,
+  hardware, model, inputs, workload, and metric.
+- MLX techniques inferred from CUDA or papers remain experimental until a
+  reproducible MLX path passes parity and target-workload measurement.
+- Domain evaluations beyond exact output remain future work for language,
+  audio, vision, diffusion, scientific, long-context, and streaming ports.
+
+The next evidence milestone is not a larger unqualified number. It is a small
+set of real, source-pinned ports with complete source oracles, deterministic
+weight maps, task-quality gates, and compatible schema-2 baseline/candidate
+receipts.

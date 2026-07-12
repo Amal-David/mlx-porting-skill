@@ -14,7 +14,13 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-from _common import SkillError, dump_json, load_structured
+from _common import SkillError, dump_json, load_structured, redact_secret_text
+from validate_sources import (
+    PublicHTTPSRedirectHandler,
+    build_public_https_opener,
+    open_public_https,
+    require_public_https_url,
+)
 
 SCRIPT_DIR = Path(__file__).resolve().parent
 SKILL_ROOT = SCRIPT_DIR.parent
@@ -28,6 +34,10 @@ RATE_LIMIT_HEADERS = {
     "X-RateLimit-Reset": "reset",
     "X-RateLimit-Resource": "resource",
 }
+MAX_NETWORK_RESPONSE_BYTES = 8 * 1024 * 1024
+MAX_CONTRIBUTOR_PAGES = 100
+MAX_REQUESTED_CONTRIBUTORS = 10_000
+CANONICAL_GITHUB_API_ORIGIN = ("https", "api.github.com", 443)
 
 
 def parse_args() -> argparse.Namespace:
@@ -92,31 +102,87 @@ def normalize_url(url: str) -> str:
     return urllib.parse.urlunparse(parsed._replace(query=query))
 
 
-class GitHubClient:
-    def __init__(self, timeout: float, token: str | None):
-        self.timeout = timeout
-        self.token = token
+def url_origin(url: str) -> tuple[str, str, int | None]:
+    try:
+        parsed = urllib.parse.urlparse(url)
+        hostname = parsed.hostname
+        port = parsed.port
+    except ValueError as exc:
+        raise SkillError(f"Invalid contributor API URL: {url}") from exc
+    scheme = parsed.scheme.lower()
+    if scheme not in {"http", "https"} or not hostname or parsed.username or parsed.password:
+        raise SkillError(f"Invalid contributor API URL: {url}")
+    if port is None:
+        port = 443 if scheme == "https" else 80
+    return scheme, hostname.lower(), port
 
-    def fetch_json(self, url: str) -> tuple[list[Any], dict[str, str], int, str]:
+
+class SameOriginTokenRedirectHandler(PublicHTTPSRedirectHandler):
+    """Require public HTTPS redirects and strip cross-origin authorization."""
+
+    def __init__(self, token_origin: tuple[str, str, int | None]):
+        super().__init__()
+        self.token_origin = token_origin
+
+    def redirect_request(
+        self,
+        req: urllib.request.Request,
+        fp: Any,
+        code: int,
+        msg: str,
+        headers: Any,
+        newurl: str,
+    ) -> urllib.request.Request | None:
+        redirected = super().redirect_request(req, fp, code, msg, headers, newurl)
+        if redirected is not None and url_origin(newurl) != self.token_origin:
+            redirected.remove_header("Authorization")
+        return redirected
+
+
+class GitHubClient:
+    def __init__(self, timeout: float, token: str | None, token_origin: str = "https://api.github.com"):
+        self.timeout = timeout
+        self.token_origin = url_origin(token_origin)
+        if token and self.token_origin[0] != "https":
+            raise SkillError("Refusing to send a contributor API token without HTTPS")
+        self.token = token if self.token_origin == CANONICAL_GITHUB_API_ORIGIN else None
+        self.redirect_handler = SameOriginTokenRedirectHandler(self.token_origin)
+        self.opener = build_public_https_opener(self.redirect_handler)
+
+    def request_headers(self, url: str) -> dict[str, str]:
         headers = {
             "Accept": "application/vnd.github+json",
             "User-Agent": USER_AGENT,
             "X-GitHub-Api-Version": API_VERSION,
         }
-        if self.token:
+        if self.token and url_origin(url) == self.token_origin and url_origin(url)[0] == "https":
             headers["Authorization"] = f"Bearer {self.token}"
-        request = urllib.request.Request(url, headers=headers)
+        return headers
+
+    def fetch_json(self, url: str) -> tuple[list[Any], dict[str, str], int, str]:
+        request = urllib.request.Request(url, headers=self.request_headers(url))
         try:
-            with urllib.request.urlopen(request, timeout=self.timeout) as response:
-                body = json.loads(response.read().decode("utf-8"))
+            with open_public_https(self.opener, request, self.timeout) as response:
+                payload = response.read(MAX_NETWORK_RESPONSE_BYTES + 1)
+                if len(payload) > MAX_NETWORK_RESPONSE_BYTES:
+                    raise SkillError(
+                        f"GitHub contributors response exceeds {MAX_NETWORK_RESPONSE_BYTES} bytes for {url}"
+                    )
+                body = json.loads(payload.decode("utf-8"))
                 if not isinstance(body, list):
                     raise SkillError(f"GitHub contributors response is not a list for {url}")
                 return body, dict(response.headers.items()), int(response.status), response.url
         except urllib.error.HTTPError as exc:
-            detail = exc.read().decode("utf-8", errors="replace")[:300]
+            try:
+                detail = exc.read(301).decode("utf-8", errors="replace")[:300]
+            finally:
+                exc.close()
+            if self.token:
+                detail = detail.replace(self.token, "[REDACTED]")
+            detail = redact_secret_text(detail)
             raise SkillError(f"GitHub request failed for {url}: HTTP {exc.code}: {detail}") from exc
         except (urllib.error.URLError, TimeoutError, json.JSONDecodeError) as exc:
-            raise SkillError(f"GitHub request failed for {url}: {exc}") from exc
+            raise SkillError(f"GitHub request failed for {url}: {redact_secret_text(str(exc))}") from exc
 
 
 class FixtureClient:
@@ -179,17 +245,26 @@ def collect_pages(
     keep_logins: bool,
 ) -> dict[str, Any]:
     url: str | None = start_url
+    pagination_origin = url_origin(start_url)
     count = 0
     logins: list[str] = []
     pages: list[dict[str, Any]] = []
     stop_reason = "not_started"
     seen_urls: set[str] = set()
     while url and count < requested_count:
+        if len(pages) >= MAX_CONTRIBUTOR_PAGES:
+            raise SkillError(
+                f"Contributor pagination exceeds {MAX_CONTRIBUTOR_PAGES} pages"
+            )
+        if url_origin(url) != pagination_origin:
+            raise SkillError(f"Contributor pagination must stay same-origin: {url}")
         normalized = normalize_url(url)
         if normalized in seen_urls:
             raise SkillError(f"Contributor pagination loop detected at {url}")
         seen_urls.add(normalized)
         items, headers, status_code, resolved_url = client.fetch_json(url)
+        if url_origin(resolved_url) != pagination_origin:
+            raise SkillError(f"Contributor response redirected outside the same-origin API: {resolved_url}")
         remaining = requested_count - count
         retained_items = items[:remaining]
         if keep_logins:
@@ -208,7 +283,10 @@ def collect_pages(
         if not next_url:
             stop_reason = "link_header_exhausted"
             break
-        url = urllib.parse.urljoin(resolved_url, next_url)
+        candidate_url = urllib.parse.urljoin(resolved_url, next_url)
+        if url_origin(candidate_url) != pagination_origin:
+            raise SkillError(f"Contributor pagination Link must stay same-origin: {candidate_url}")
+        url = candidate_url
     if not pages:
         stop_reason = "no_pages"
     return {
@@ -223,10 +301,20 @@ def collect_pages(
 def validate_args(args: argparse.Namespace) -> None:
     if "/" not in args.repo or args.repo.count("/") != 1:
         raise SkillError("--repo must be in owner/name form")
-    if args.requested_count < 1:
-        raise SkillError("--requested-count must be at least 1")
+    if not 1 <= args.requested_count <= MAX_REQUESTED_CONTRIBUTORS:
+        raise SkillError(
+            f"--requested-count must be between 1 and {MAX_REQUESTED_CONTRIBUTORS}"
+        )
     if not 1 <= args.per_page <= 100:
         raise SkillError("--per-page must be between 1 and 100")
+    parsed_api = urllib.parse.urlparse(args.api_base)
+    if parsed_api.scheme.lower() not in {"http", "https"} or not parsed_api.hostname:
+        raise SkillError("--api-base must be an absolute HTTP(S) URL")
+    if not args.offline_fixture:
+        try:
+            require_public_https_url(args.api_base)
+        except urllib.error.URLError as exc:
+            raise SkillError(f"--api-base must be public HTTPS: {exc.reason}") from exc
 
 
 def build_report(args: argparse.Namespace) -> dict[str, Any]:
@@ -240,7 +328,7 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
             args.per_page,
         )
     else:
-        client = GitHubClient(args.timeout, token)
+        client = GitHubClient(args.timeout, token, token_origin=args.api_base)
 
     linked_start_url = contributors_url(args.api_base, args.repo, args.per_page)
     anonymous_start_url = contributors_url(args.api_base, args.repo, args.per_page, anon=True)
@@ -293,7 +381,7 @@ def main() -> int:
         )
         return 0
     except (SkillError, OSError) as exc:
-        print(f"error: {exc}", file=sys.stderr)
+        print(f"error: {redact_secret_text(str(exc))}", file=sys.stderr)
         return 2
 
 

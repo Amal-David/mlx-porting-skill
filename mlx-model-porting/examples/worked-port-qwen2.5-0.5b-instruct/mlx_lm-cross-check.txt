@@ -1,0 +1,33 @@
+Offline local cross-check
+=========================
+
+Environment:
+  HF_HUB_OFFLINE=1
+  TRANSFORMERS_OFFLINE=1
+  trust_remote_code=False
+  mlx_lm=0.31.1
+
+Prompt:
+  Explain why the sky is blue in one sentence.
+
+Prompt token IDs:
+  [840, 20772, 3170, 279, 12884, 374, 6303, 304, 825, 11652, 13]
+
+Torch oracle generated IDs:
+  [576, 12884, 374, 6303, 1576, 432, 25963, 39020]
+
+Standalone scaffold F32 cache-decode generated IDs:
+  [576, 12884, 374, 6303, 1576, 432, 25963, 39020]
+
+MLX-LM local-snapshot generated IDs:
+  [576, 12884, 374, 6303, 1576, 432, 25963, 39020]
+
+Continuation from all three paths:
+   The sky is blue because it reflects sunlight
+
+Full decoded text:
+  Explain why the sky is blue in one sentence. The sky is blue because it reflects sunlight
+
+MLX-LM API invocation used the local path $WORK/source and passed the integer
+prompt directly to mlx_lm.generate_step with max_tokens=8. No Hub ID or network
+fallback was supplied.

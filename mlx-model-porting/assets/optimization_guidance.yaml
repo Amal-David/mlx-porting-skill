@@ -1,6 +1,11 @@
 {
   "schema_version": 1,
-  "reviewed": "2026-06-27",
+  "reviewed": "2026-07-10",
+  "evidence_lineage_policy": {
+    "required_for_numeric_band": true,
+    "rule": "Every numeric band names one or more evidence_lineage_ids. The same lineage may describe alternatives, but it may contribute at most once to a compound result.",
+    "held_claim_rule": "Historical observations that lack a promotion-quality correctness gate or were measured on a superseded version remain claim_status=held and render as profile_required."
+  },
   "evidence_class_definitions": {
     "official_docs": "Official framework or product documentation. Best for API support and constraints.",
     "repositories": "Source repositories, source files, or releases. Best for implementation existence and exact behavior.",
@@ -9,7 +14,7 @@
   },
   "effect_policy": [
     "Expected effects are hypotheses until measured on the target Mac, model, prompt/audio/image distribution, precision, and serving mode.",
-    "Use source-reported ranges only when the cited source reports them; otherwise say profile-required.",
+    "Preserve cited source-reported ranges only as held observations; expose a number to advice only after an equivalent local target-workload run passes promotion.",
     "Report TTFT, decode speed, throughput, peak memory, quality, and complexity separately because optimizations routinely trade one for another.",
     "Rollback if quality/parity fails, if end-to-end benefit disappears, or if complexity exceeds the target product need."
   ],
@@ -202,6 +207,89 @@
       }
     },
     {
+      "id": "bf16-weight-cast",
+      "technique_id": "weight-bf16-cast",
+      "category": "quantization",
+      "status": "native-mlx",
+      "objectives": [
+        "model-size",
+        "latency"
+      ],
+      "applies_to": [
+        "linear-heavy-models",
+        "dense-decoder-transformer"
+      ],
+      "recommendation": "Cast a controlled F32 MLX port to BF16 only when the exact target workload retains its declared quality window; keep timing results observation-only until every promotion gate, including external signed attestation, passes.",
+      "expected_effect": "One local Qwen2.5 0.5B worked-port run observed median wall time of 1.655095 s for F32 and 0.913307 s for BF16 (1.8122x inverse-wall-time ratio) while preserving the declared exact six-token output. This is a raw performance observation, not a promoted speedup; the timing includes adapter hashing and evidence capture and is not a pure decode claim.",
+      "improvement_band": {
+        "provenance": "performance_observation",
+        "claim_status": "held",
+        "evidence_lineage_ids": [
+          "local-qwen2.5-0.5b-f32-vs-bf16-attested-2026-07-10"
+        ],
+        "hold_reasons": [
+          "The retained challenge, dependency, and output digests establish internal consistency, not authenticity.",
+          "No protected Apple-Silicon signer or out-of-repository trust anchor exists for this run."
+        ],
+        "range": "1.0x-1.8122x",
+        "metric": "wall-time",
+        "measured_on": {
+          "chip": "Apple M4 Pro",
+          "memory_gb": 48,
+          "mlx": "0.24.0",
+          "adapter": "attested-mlx-port-wall-time",
+          "date": "2026-07-10"
+        },
+        "receipts": [
+          "qwen2.5-0.5b-port-f32.json",
+          "qwen2.5-0.5b-port-bf16.json"
+        ],
+        "basis": "One warmup and five isolated measured processes per variant on Apple M4 Pro. The repository-owned runner re-hashed the exact model artifact and retained loaded MLX/port dependency bytes for each run; parent wall time includes that evidence-capture work. F32 median was 1.6550946249917615 s, BF16 median was 0.9133066249778494 s, both CVs passed 0.10, the inverse-wall-time ratio 1.8122003933037305 exceeded the 1.02 noise threshold, and exact six-token output parity passed. The evidence has no external signature or trust root, so it cannot support promotion.",
+        "applies_when": "Preserve only as a raw observation for this Qwen2.5 0.5B load-plus-six-token workload, MLX 0.24.0 target, exact-output quality contract, and parent-measured adapter semantics. It is not an effective range; re-benchmark other models, MLX versions, or pure decode workloads."
+      },
+      "target_constraints": {
+        "required_profile_fields": [
+          "hardware.chip",
+          "software.mlx",
+          "workloads"
+        ],
+        "exact_software": {
+          "mlx": "0.24.0"
+        },
+        "source_ids": [
+          "mlx-docs"
+        ]
+      },
+      "tradeoffs": [
+        "Reduced precision may change generated outputs beyond the validated six-token window.",
+        "The observed wall-time ratio includes model hashing and evidence capture, so it must not be presented as pure decode speed."
+      ],
+      "validation_gates": [
+        "deterministic F32-to-BF16 conversion manifest",
+        "task-specific quality against F32",
+        "isolated parent-measured end-to-end benchmark",
+        "external signature over commit/tree, challenge, reviewed dependencies, raw output, policy, and timing, verified against an out-of-repository trust anchor",
+        "stability and noise-floor clearance"
+      ],
+      "rollback_conditions": [
+        "quality output leaves the declared window",
+        "external attestation signature is missing or invalid",
+        "wall-time gain falls within noise",
+        "target model, workload, or software fingerprint changes"
+      ],
+      "evidence_refs": {
+        "official_docs": [
+          "mlx-docs"
+        ],
+        "repositories": [
+          "mlx-repo"
+        ],
+        "papers": [],
+        "technical_blogs": [],
+        "benchmark_artifacts": []
+      }
+    },
+    {
       "id": "native-low-bit-weight-quantization",
       "technique_id": "mxfp4-nvfp4-mxfp8",
       "category": "quantization",
@@ -221,7 +309,15 @@
       "recommendation": "Use MLX affine, mxfp4, mxfp8, or nvfp4 only where the target Linear path and conversion tooling support the mode.",
       "expected_effect": "Memory roughly follows bit width for quantized weights, but latency and quality are workload dependent.",
       "improvement_band": {
-        "provenance": "local_reproduced",
+        "provenance": "performance_observation",
+        "claim_status": "held",
+        "evidence_lineage_ids": [
+          "local-qwen3-1.7b-bf16-vs-community-4bit-2026-07-06"
+        ],
+        "hold_reasons": [
+          "The compared checkpoints are not a controlled one-recipe conversion pair.",
+          "Greedy outputs diverged on 3/3 prompts and no formal task-quality gate passed."
+        ],
         "range": "1.0x-2.4x",
         "metric": "decode-tokens-per-sec",
         "measured_on": {
@@ -237,6 +333,22 @@
         ],
         "basis": "Local Qwen3 1.7B bf16 versus mlx-community/Qwen3-1.7B-4bit on a 539-token prompt with 256 greedy generated tokens, runs=5 and warmup=1; ceiling is the aggregate median decode-token/sec ratio 130.179/54.318=2.4x. The 4-bit run was noisy: decode min/max spread exceeded 20% of its median.",
         "applies_when": "Workload, model family, quantization recipe, and MLX-LM runtime are similar enough to reproduce locally, and the product quality budget accepts quantization drift; this receipt's greedy 3-prompt quality note diverged 3/3 versus bf16 and is not a formal eval."
+      },
+      "target_constraints": {
+        "required_profile_fields": [
+          "hardware.chip",
+          "software.mlx",
+          "software.mlx_lm",
+          "workloads"
+        ],
+        "exact_software": {
+          "mlx": "0.30.4",
+          "mlx_lm": "0.31.1"
+        },
+        "source_ids": [
+          "mlx-doc-core-quantize",
+          "mlx-lm-release-0313"
+        ]
       },
       "tradeoffs": [
         "Low-bit formats can harm quality, especially MoE or outlier-heavy models.",
@@ -318,7 +430,15 @@
         "technical_blogs": []
       },
       "improvement_band": {
-        "provenance": "local_reproduced",
+        "provenance": "performance_observation",
+        "claim_status": "held",
+        "evidence_lineage_ids": [
+          "local-qwen25-coder-7b-kv4-8k-2026-07-06"
+        ],
+        "hold_reasons": [
+          "The receipt has no formal long-context task-quality gate.",
+          "Peak memory increased in the measured candidate, so the advertised memory objective was not demonstrated."
+        ],
         "range": "1.0x-1.1x",
         "metric": "decode-tokens-per-sec",
         "basis": "Local receipts kv-baseline-8k and kv-4bit-8k measured the same Qwen2.5-Coder 7B 4-bit target on Apple M4 Pro, MLX 0.30.4, MLX-LM 0.31.1, with an 8058-token long prompt, max_tokens=256, temp=0.0, seed=207. The KV run used --kv-bits 4 --kv-group-size 64 --quantized-kv-start 0 and reached 32.594 median decode tok/s versus 29.248 baseline tok/s (1.114x). Median MLX peak memory was 6.570 GB versus 5.453 GB baseline, a +1.117 GB peak delta for this measured path.",
@@ -339,6 +459,25 @@
           "kv-baseline-8k.json",
           "kv-4bit-8k.json"
         ]
+      },
+      "target_constraints": {
+        "required_profile_fields": [
+          "hardware.chip",
+          "software.mlx",
+          "software.mlx_lm",
+          "workloads"
+        ],
+        "exact_software": {
+          "mlx": "0.30.4",
+          "mlx_lm": "0.31.1"
+        },
+        "workloads_any": [
+          "long-context"
+        ],
+        "source_ids": [
+          "mlx-lm-cache",
+          "mlx-lm-release-0313"
+        ]
       }
     },
     {
@@ -355,6 +494,14 @@
         "moe-decoder-transformer",
         "long-context"
       ],
+      "match": {
+        "families_any": [
+          "decoder-transformer"
+        ],
+        "workloads_any": [
+          "long-context"
+        ]
+      },
       "recommendation": "Treat layerwise, key/value, RoPE-aware, and hardware-aware KV bit allocation as experiments until reproduced in MLX.",
       "expected_effect": "Source-reported papers target better quality at matched KV budgets, but no general MLX speedup is established.",
       "tradeoffs": [
@@ -403,10 +550,29 @@
         "agents",
         "rag"
       ],
+      "match": {
+        "families_any": [
+          "decoder-transformer",
+          "vision-language-omni"
+        ],
+        "workloads_any": [
+          "rag",
+          "repetitive-prompts"
+        ]
+      },
       "recommendation": "Reuse immutable prefix state only when model, tokenizer/template, processor, adapter, quantization, positions, and cache format version match.",
       "expected_effect": "Can eliminate repeated prefill work for exact cache hits; benefit is proportional to repeated prefix cost.",
       "improvement_band": {
-        "provenance": "local_reproduced",
+        "provenance": "performance_observation",
+        "claim_status": "held",
+        "evidence_lineage_ids": [
+          "local-qwen3-1.7b-prompt-cache-2026-07-06"
+        ],
+        "hold_reasons": [
+          "Cold and warm receipts generated different token counts.",
+          "The prompt/cache fixtures and generated outputs are not retained for a reproducible correctness gate.",
+          "ttft_proxy is not instrumented time-to-first-token."
+        ],
         "range": "1.0x-23.8x",
         "metric": "ttft-proxy",
         "measured_on": {
@@ -422,6 +588,26 @@
         ],
         "basis": "Local mlx-community/Qwen3-1.7B-4bit cold-vs-warm prompt-cache workload: cold generation processed a 4056-token raw prompt without cache; warm generation reused a cache_prompt file for the 4040-token raw prefix and generated from the 16-token suffix. Ceiling is the aggregate median inverse ttft_proxy ratio 2.8588s/0.1204s=23.8x; ttft_proxy is prompt_tokens / prompt_tps, not instrumented first-token latency.",
         "applies_when": "The immutable prefix repeats exactly under the same model, tokenizer/template, quantization state, cache format, positions, and namespace; benefit is workload-conditional on prefix length and hit rate, with correctness and privacy isolation verified."
+      },
+      "target_constraints": {
+        "required_profile_fields": [
+          "hardware.chip",
+          "software.mlx",
+          "software.mlx_lm",
+          "workloads"
+        ],
+        "exact_software": {
+          "mlx": "0.30.4",
+          "mlx_lm": "0.31.1"
+        },
+        "workloads_any": [
+          "repetitive-prompts",
+          "rag"
+        ],
+        "source_ids": [
+          "mlx-lm-cache",
+          "mlx-lm-release-0313"
+        ]
       },
       "tradeoffs": [
         "Cache invalidation and namespace mistakes can corrupt outputs.",
@@ -452,9 +638,6 @@
           "paper-2402-05099",
           "paper-2412-03594",
           "paper-2606-21842"
-        ],
-        "technical_blogs": [
-          "sankalp-prompt-cache-blog"
         ]
       }
     },
@@ -473,14 +656,50 @@
         "autoregressive-transformer",
         "vision-language-omni"
       ],
+      "match": {
+        "families_any": [
+          "decoder-transformer",
+          "vision-language-omni"
+        ],
+        "workloads_any": [
+          "concurrent-serving",
+          "server"
+        ]
+      },
       "recommendation": "Use only for concurrent serving where scheduler complexity is justified.",
       "expected_effect": "vllm-mlx reports up to 4.3x aggregate throughput at 16 concurrent requests and 21%-87% higher text throughput than llama.cpp across tested models; do not generalize outside that setup.",
       "improvement_band": {
-        "provenance": "source_reported",
-        "range": "1.0x-4.3x",
+        "provenance": "profile_required",
+        "claim_status": "held",
+        "evidence_lineage_ids": [
+          "vllm-mlx-concurrent-serving-a48c86c"
+        ],
+        "range": null,
+        "observed_source_range": "1.0x-4.3x",
+        "hold_reasons": [
+          "The source reports different maxima between its abstract and evaluated benchmark body.",
+          "The current TargetProfile cannot encode the exact source hardware, model, quantization, concurrency, prompt/output mix, and baseline together."
+        ],
         "metric": "batch-throughput",
         "basis": "vllm-mlx reports up to 4.3x aggregate throughput at 16 concurrent requests; keep the existing 21%-87% text-throughput note attached to its tested-model setup.",
         "applies_when": "Concurrent serving workloads match the vllm-mlx benchmark shape closely enough to reproduce throughput against a local baseline."
+      },
+      "target_constraints": {
+        "required_profile_fields": [
+          "hardware.chip",
+          "software.vllm_mlx_revision",
+          "workloads"
+        ],
+        "exact_software": {
+          "vllm_mlx_revision": "a48c86c1a41900f7d26658471b5f67e5fdd35445"
+        },
+        "workloads_any": [
+          "concurrent-serving"
+        ],
+        "source_ids": [
+          "vllm-mlx-continuous-batching-guide",
+          "paper-2601-19139"
+        ]
       },
       "tradeoffs": [
         "Can hurt isolated single-user latency.",
@@ -518,7 +737,7 @@
       "id": "content-prefix-cache-vlm",
       "technique_id": "automatic-prefix-cache",
       "category": "multimodal-serving",
-      "status": "proven-mlx-port",
+      "status": "rejected-or-superseded",
       "objectives": [
         "ttft",
         "throughput"
@@ -527,14 +746,18 @@
         "vision-language-omni",
         "vlm"
       ],
-      "recommendation": "Use content-based prefix/image cache only when processor output is deterministic and cache keying includes model and processor revisions.",
-      "expected_effect": "vllm-mlx reports 28x repeated image-query speedup and 24.7x video cache speedup on its M4 Max evaluation; treat as repeated-input serving evidence, not a universal VLM speedup.",
+      "recommendation": "Superseded by multimodal-content-prefix-cache; do not count this alias as a separate optimization or evidence line.",
+      "expected_effect": "No independent speedup claim. This entry preserves the old method id so existing reports can migrate without double-counting the repeated-media cache observation.",
       "improvement_band": {
-        "provenance": "source_reported",
-        "range": "1.0x-28.0x",
+        "provenance": "profile_required",
+        "claim_status": "superseded",
+        "evidence_lineage_ids": [
+          "vllm-mlx-repeated-media-cache-a48c86c"
+        ],
+        "range": null,
         "metric": "repeated-media-ttft",
-        "basis": "vllm-mlx reports 28x repeated image-query speedup and 24.7x video cache speedup on its M4 Max evaluation; the floor remains no gain for non-repeated media.",
-        "applies_when": "The workload repeats identical media and the processor, model revision, cache key, and warm-output parity gates match the source-reported setup."
+        "basis": "Same evidence lineage as multimodal-content-prefix-cache; retained only as a superseded identifier.",
+        "applies_when": "Never as an additional stack multiplier; migrate to multimodal-content-prefix-cache."
       },
       "tradeoffs": [
         "Hashing/normalization must not collapse distinct inputs.",
@@ -580,7 +803,16 @@
       "recommendation": "Try only when a compatible smaller draft model shares tokenizer/vocabulary and acceptance is high enough to offset draft cost.",
       "expected_effect": "Local Qwen2.5-Coder 7B/1.5B speculative decoding receipts on Apple M4 Pro measured a workload-conditional decode-throughput band of 1.0x-1.3x on a fixed code-generation prompt; k=2 improved median decode throughput, while k=3 and k=4 regressed.",
       "improvement_band": {
-        "provenance": "local_reproduced",
+        "provenance": "performance_observation",
+        "claim_status": "held",
+        "evidence_lineage_ids": [
+          "local-qwen25-coder-speculative-k-sweep-2026-07-06"
+        ],
+        "hold_reasons": [
+          "MLX-LM 0.31.2 fixed speculative-decoding output corruption after this 0.31.1 receipt.",
+          "The stored receipts do not include an acceptance trace or formal distribution/task-quality gate.",
+          "k=3 and k=4 regressed, so the result is configuration-specific rather than a portable band."
+        ],
         "range": "1.0x-1.3x",
         "metric": "decode-tokens-per-sec",
         "basis": "Local receipts spec-baseline, spec-draft-k2, spec-draft-k3, and spec-draft-k4 measured mlx-community/Qwen2.5-Coder-7B-Instruct-4bit with draft mlx-community/Qwen2.5-Coder-1.5B-Instruct-4bit on Apple M4 Pro, MLX 0.30.4, MLX-LM 0.31.1. The fixed code-generation prompt was 552 chat-template tokens with max_tokens=256, temp=0.0, seed=207. Sweep medians were k=2 1.254x, k=3 0.673x, and k=4 0.550x versus the plain 4-bit target baseline, so the floor remains 1.0x and the ceiling rounds to 1.3x.",
@@ -602,6 +834,23 @@
           "spec-draft-k2.json",
           "spec-draft-k3.json",
           "spec-draft-k4.json"
+        ]
+      },
+      "target_constraints": {
+        "required_profile_fields": [
+          "hardware.chip",
+          "software.mlx",
+          "software.mlx_lm",
+          "workloads"
+        ],
+        "exact_software": {
+          "mlx": "0.30.4",
+          "mlx_lm": "0.31.1"
+        },
+        "source_ids": [
+          "mlx-lm-speculative",
+          "mlx-lm-release-0312",
+          "mlx-lm-release-0313"
         ]
       },
       "tradeoffs": [
@@ -645,6 +894,16 @@
         "code",
         "rag"
       ],
+      "match": {
+        "families_any": [
+          "decoder-transformer"
+        ],
+        "workloads_any": [
+          "code",
+          "rag",
+          "repetitive-prompts"
+        ]
+      },
       "recommendation": "Consider as a low-memory experiment for copy-heavy workloads only after implementing a target MLX drafter.",
       "expected_effect": "Workload-dependent; no universal band. Benefits require frequent prompt/context n-gram matches.",
       "tradeoffs": [
@@ -776,6 +1035,18 @@
         "audio-codec",
         "vocoder"
       ],
+      "match": {
+        "families_any": [
+          "audio-lm",
+          "flow-diffusion-tts",
+          "streaming-speech",
+          "audio-codec",
+          "vocoder"
+        ],
+        "workloads_any": [
+          "streaming-audio"
+        ]
+      },
       "recommendation": "Use cache-aware streaming, overlap-add, and chunked codec/vocoder execution only when chunk boundaries preserve audio quality.",
       "expected_effect": "Profile-required. Optimize first-audio latency and RTF separately from total waveform latency.",
       "tradeoffs": [
@@ -823,6 +1094,19 @@
         "rag",
         "agents"
       ],
+      "match": {
+        "families_any": [
+          "decoder-transformer",
+          "vision-language-omni"
+        ],
+        "workloads_any": [
+          "agents",
+          "multimodal-serving",
+          "rag",
+          "repeated-media",
+          "server"
+        ]
+      },
       "recommendation": "Require namespace isolation, opt-out, padding/constant-time policy review, and leakage tests before cross-user cache reuse.",
       "expected_effect": "No speedup claim; this is a safety gate for cache optimizations.",
       "tradeoffs": [
@@ -848,8 +1132,7 @@
           "paper-2606-21842"
         ],
         "technical_blogs": [
-          "vllm-blog-anatomy",
-          "sankalp-prompt-cache-blog"
+          "vllm-blog-anatomy"
         ]
       }
     },
@@ -860,13 +1143,21 @@
       "status": "proven-mlx-port",
       "objectives": [
         "ttft",
-        "prefill-throughput",
-        "peak-memory"
+        "prefill-throughput"
       ],
       "applies_to": [
         "vision-language-omni",
         "multimodal-serving"
       ],
+      "match": {
+        "families_any": [
+          "vision-language-omni"
+        ],
+        "workloads_any": [
+          "multimodal-serving",
+          "repeated-media"
+        ]
+      },
       "recommendation": "Use for repeated identical image/video inputs after keying by content hash and processor/projector revision.",
       "expected_effect": "Source-reported repeated-media wins can be large, but local benefit depends on media reuse and preprocessing cost.",
       "tradeoffs": [
@@ -911,14 +1202,51 @@
         "long-context-vlm",
         "multimodal-serving"
       ],
+      "match": {
+        "families_any": [
+          "vision-language-omni"
+        ],
+        "workloads_any": [
+          "multimodal-serving",
+          "repeated-media"
+        ]
+      },
       "recommendation": "Use a media-aware block prefix cache only when restored cache coverage and media placeholder safety are proven.",
       "expected_effect": "vllm-mlx reports up to 28x repeated-image and 24.7x video cache speedups in its benchmark setup; treat those as source-reported, not portable guarantees.",
       "improvement_band": {
-        "provenance": "source_reported",
-        "range": "1.0x-28.0x",
+        "provenance": "profile_required",
+        "claim_status": "held",
+        "evidence_lineage_ids": [
+          "vllm-mlx-repeated-media-cache-a48c86c"
+        ],
+        "range": null,
+        "observed_source_range": "1.0x-28.0x",
+        "hold_reasons": [
+          "The observed maximum is specific to a 4-bit Qwen3-VL-8B repeated-identical-image benchmark on an M4 Max 128GB machine.",
+          "The current TargetProfile cannot encode the exact source model, quantization, media dimensions, cache-hit turn, hardware, and baseline together."
+        ],
         "metric": "repeated-media-ttft",
         "basis": "vllm-mlx reports up to 28x repeated-image and 24.7x video cache speedups in its benchmark setup; keep the high end limited to repeated media cache hits.",
         "applies_when": "Media-aware block prefix cache hits dominate TTFT and cold/warm parity, placeholder safety, tenant namespace, and memory gates pass."
+      },
+      "target_constraints": {
+        "required_profile_fields": [
+          "hardware.chip",
+          "software.vllm_mlx_revision",
+          "workloads"
+        ],
+        "exact_software": {
+          "vllm_mlx_revision": "a48c86c1a41900f7d26658471b5f67e5fdd35445"
+        },
+        "workloads_any": [
+          "repeated-media",
+          "multimodal-serving"
+        ],
+        "source_ids": [
+          "vllm-mlx-multimodal-guide",
+          "vllm-mlx-mllm-batch-source",
+          "paper-2601-19139"
+        ]
       },
       "tradeoffs": [
         "Raises privacy, memory, eviction, and batch-noninvariance risks.",
@@ -965,6 +1293,17 @@
         "vision-language-omni",
         "video-vlm"
       ],
+      "match": {
+        "families_any": [
+          "vision-language-omni"
+        ],
+        "capabilities_all": [
+          "input:video"
+        ],
+        "workloads_any": [
+          "video-input"
+        ]
+      },
       "recommendation": "Treat FPS/frame/pixel budgets as an explicit quality mode for video VLMs.",
       "expected_effect": "Profile-required. Lower visual-token count often improves prefill/TTFT, but effect depends on processor and task.",
       "tradeoffs": [
@@ -1046,18 +1385,57 @@
         "first-audio-latency"
       ],
       "applies_to": [
-        "autoregressive-audio-lm",
-        "tts",
-        "server"
+        "autoregressive-audio-lm"
       ],
+      "match": {
+        "families_any": [
+          "autoregressive-audio-lm"
+        ],
+        "model_types": [
+          "qwen3_tts"
+        ],
+        "capabilities_all": [
+          "api:batch-generate"
+        ],
+        "workloads_any": [
+          "concurrent-tts-short-prompts"
+        ]
+      },
       "recommendation": "Use Qwen3-TTS batch_generate for compatible concurrent TTS jobs after single-request quality is locked.",
       "expected_effect": "MLX-Audio docs report 1.67x to 5.45x batch throughput on 6-bit short prompts at batch sizes 1-8; reproduce on the target text/voice mix.",
       "improvement_band": {
-        "provenance": "source_reported",
-        "range": "1.0x-5.45x",
+        "provenance": "profile_required",
+        "claim_status": "held",
+        "evidence_lineage_ids": [
+          "mlx-audio-qwen3-tts-batch-v0.4.4"
+        ],
+        "range": null,
+        "observed_source_range": "1.0x-5.45x",
+        "hold_reasons": [
+          "The observed maximum is specific to the documented Qwen3-TTS 1.7B CustomVoice 6-bit short-prompt batch-8 example.",
+          "The source omits enough hardware, software, and baseline detail that the current TargetProfile cannot reproduce the experiment scope exactly."
+        ],
         "metric": "batch-throughput",
         "basis": "MLX-Audio docs report 1.67x to 5.45x batch throughput on 6-bit short prompts at batch sizes 1-8; keep the floor at no gain for single-request or mismatched workloads.",
         "applies_when": "Compatible Qwen3-TTS batch_generate jobs use comparable short prompts, quantization, voice/reference isolation, and audio quality gates."
+      },
+      "target_constraints": {
+        "required_profile_fields": [
+          "hardware.chip",
+          "software.mlx_audio",
+          "capabilities",
+          "workloads"
+        ],
+        "exact_software": {
+          "mlx_audio": "0.4.4"
+        },
+        "workloads_any": [
+          "concurrent-tts-short-prompts"
+        ],
+        "source_ids": [
+          "mlx-audio-release-044",
+          "mlx-audio-qwen3-tts-docs"
+        ]
       },
       "tradeoffs": [
         "Batching can increase TTFB and tail latency.",
@@ -1101,6 +1479,14 @@
         "tts",
         "voice-cloning"
       ],
+      "match": {
+        "families_any": [
+          "audio-lm"
+        ],
+        "workloads_any": [
+          "reference-audio-reuse"
+        ]
+      },
       "recommendation": "Cache repeated reference/ICL conditioning only with model/codec/quantization/speaker fingerprint keys.",
       "expected_effect": "Profile-required. Helps only when reference conditioning cost is material and repeated.",
       "tradeoffs": [
@@ -1274,8 +1660,16 @@
       "recommendation": "Use only when the source model actually depends on PyTorch grid_sample-style spatial or volume warping; first lock a readable MLX/NumPy reference, then consider a custom Metal kernel for the profiled warp.",
       "expected_effect": "Profile-required. Local Apple M4 Pro / MLX 0.30.4 reproduction of the pinned 3D benchmark showed about 10x kernel-level speedup versus the repo's pure-MLX gather baseline, but end-to-end benefit depends on model use.",
       "improvement_band": {
-        "provenance": "local_reproduced",
-        "range": "1.0x-10.0x",
+        "provenance": "profile_required",
+        "claim_status": "held",
+        "evidence_lineage_ids": [
+          "local-grid-sample-kernel-m4pro-mlx0.30.4"
+        ],
+        "hold_reasons": [
+          "The receipt list is empty and the observation is kernel-only rather than an end-to-end model result."
+        ],
+        "range": null,
+        "observed_source_range": "1.0x-10.0x",
         "metric": "kernel-latency",
         "basis": "Local Apple M4 Pro / MLX 0.30.4 reproduction of the pinned 3D benchmark showed about 10x kernel-level speedup versus the repo's pure-MLX gather baseline; end-to-end model benefit remains workload-dependent.",
         "applies_when": "The source model uses the same supported grid_sample mode, layout, dtype, padding, and benchmark shape after oracle parity passes.",
@@ -1284,6 +1678,20 @@
           "mlx": "0.30.4"
         },
         "receipts": []
+      },
+      "target_constraints": {
+        "required_profile_fields": [
+          "hardware.chip",
+          "software.mlx",
+          "workloads"
+        ],
+        "exact_software": {
+          "mlx": "0.30.4"
+        },
+        "source_ids": [
+          "katlun-grid-sample-benchmark",
+          "mlx-doc-custom-extensions"
+        ]
       },
       "tradeoffs": [
         "Pinned implementation covers forward bilinear/trilinear sampling with zeros or border padding, not reflection, nearest mode, or training gradients.",

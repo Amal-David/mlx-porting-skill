@@ -50,15 +50,17 @@ Never infer QKV split sizes from equal thirds when GQA/MQA makes K/V smaller. De
 
 ## Minimal MLX path
 
-1. Implement config parser with explicit defaults.
-2. Implement normalization and MLP.
-3. Implement RoPE/position logic.
-4. Implement attention without cache and test a block.
-5. Add exact causal/padding mask behavior.
-6. Add a simple full/growing KV cache.
-7. Assemble stack and logits.
-8. Add deterministic greedy generation.
-9. Save/reload and retest.
+1. Capture the pinned source oracle with `scripts/capture_oracle.py`.
+2. For an unblocked trusted inspection, run `scripts/scaffold_port.py inspection.json --artifact-root MODEL --output mlx_port`. It re-inspects the artifact and fails closed on unsupported config semantics.
+3. Review the generated config assumptions and stable parameter-name scheme against the source implementation before converting any weight.
+4. Validate normalization, configured gated MLP activation, and RoPE scaling independently.
+5. Validate attention without cache, including exact causal/padding mask behavior, and test one complete block.
+6. Validate the generated full/growing KV cache against full-context logits.
+7. Declare every rename, transpose, QKV split, merge, target shape, and dtype policy in `WEIGHT_MAP.json`; run `scripts/convert_checkpoint.py --source MODEL --mapping WEIGHT_MAP.json --output converted`, then validate `converted/target-manifest.json` with `scripts/validate_weight_map.py` before checking the assembled stack, final norm, tied or untied head, and logits. The converter refuses draft or unresolved maps and unexplained source tensors.
+8. Run `scripts/run_parity.py --source-model MODEL --package mlx_port --weights converted` with the shared prompt or token-ID fixture. It drives source and MLX capture, maps the stable keys, and stops at the first failing embedding/layer/final-norm/logit/generation rung. Debug only that first divergence before rerunning.
+9. Use `scripts/compare_tensors.py` directly for optional attention/MLP branch captures, then validate deterministic greedy generation, save/reload, boundary context, and cache reset/reuse.
+
+`scaffold_port.py` is a starting implementation, not a guaranteed port. It currently covers only the explicit dense-decoder feature allowlist. It accepts inert sliding-window metadata only when `use_sliding_window=false` explicitly selects full attention, and it continues to reject active or ambiguous sliding-window semantics, QK normalization, MoE, quantization metadata, unknown RoPE scaling, soft caps, and unrecognized computation-bearing config keys. Attention projection biases are derived independently from complete inspected tensor coverage so Q/K/V-only layouts are preserved without inventing an output bias. A generated package must still pass source parity and task-quality gates; edit it when inspection-backed source semantics differ.
 
 ## Parity traps
 

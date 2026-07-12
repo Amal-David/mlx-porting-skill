@@ -1,0 +1,18 @@
+{
+  "candidate_artifact": {
+    "path": "quality/outputs/qwen2.5-0.5b-port-bf16/result.json",
+    "sha256": "fab6ebd4d30cf608888c50b82e0b3752b340ebc8d6f42585f7a71bf2763821e9",
+    "size_bytes": 54
+  },
+  "metric": "exact-output-parity",
+  "reference_artifact": {
+    "path": "qwen2.5-0.5b/expected.json",
+    "sha256": "fab6ebd4d30cf608888c50b82e0b3752b340ebc8d6f42585f7a71bf2763821e9",
+    "size_bytes": 54
+  },
+  "schema_version": 2,
+  "validator": {
+    "id": "mlx-benchmark-exact-output-parity",
+    "version": 1
+  }
+}

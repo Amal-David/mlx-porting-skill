@@ -4,19 +4,36 @@ from __future__ import annotations
 
 import argparse
 import concurrent.futures
+import errno
+import hashlib
+import http.client
+import ipaddress
 import json
+import queue
 import re
+import socket
 import sys
+import threading
+import time
 import urllib.error
+import urllib.parse
 import urllib.request
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-from _common import SkillError, dump_json, load_structured
+from _common import SkillError, dump_json, load_structured, parse_band
+from generate_claim_catalog import build_claim_catalog
+from validate_benchmarks import build_assessment_report, build_receipts_index, render_benchmark_report
 
 IMPLEMENTATION_KINDS = {"official-doc", "repository", "source-code", "release"}
 SOURCE_KINDS = IMPLEMENTATION_KINDS | {"paper", "technical-blog", "benchmark-artifact", "issue-report"}
 SUPPORTED_STATUSES = {"native-mlx", "official-mlx-project", "proven-mlx-port"}
+METHOD_STATUS_SUPPORT_SCOPES = {
+    "native-mlx": {"official_mlx"},
+    "official-mlx-project": {"official_mlx_project"},
+    "proven-mlx-port": {"third_party_pinned", "local_reproduced"},
+}
 REVIEW_DEPTHS = {"synthesized", "screened", "indexed"}
 EVIDENCE_CLASSES = {
     "official_api_doc",
@@ -48,8 +65,16 @@ CLAIM_TYPES = {
     "risk_or_negative",
 }
 STACK_LOSSINESS = {"lossless", "conditionally-lossy"}
-STACK_PAIR_VALIDITY = {"validated-composable", "unknown", "known-conflicting"}
+STACK_PAIR_VALIDITY = {"validated-composable", "unknown", "known-conflicting", "mutually-exclusive"}
+OUTCOME_PROVENANCE = {
+    "profile_required",
+    "source_reported",
+    "performance_observation",
+    "local_reproduced",
+    "not_a_speedup",
+}
 NUMERIC_RANGE_RE = re.compile(r"\b~?\d+(?:\.\d+)?x(?:\s*-\s*\d+(?:\.\d+)?x)?\b")
+SHA256_RE = re.compile(r"^[0-9a-f]{64}$")
 KIND_TO_EVIDENCE_CLASS = {
     "official-doc": {"official_api_doc"},
     "source-code": {"primary_source_code"},
@@ -65,6 +90,7 @@ KNOWN_ARXIV_TITLES = {
     "paper-2309-15531": "Rethinking Channel Dimensions to Isolate Outliers for Low-bit Weight Quantization of Large Language Models",
     "paper-2404-19124": "Accelerating Production LLMs with Combined Token/Embedding Speculators",
 }
+MAX_HTTPS_ADDRESS_ATTEMPTS = 4
 
 
 def parse_args() -> argparse.Namespace:
@@ -82,6 +108,25 @@ def add_error(errors: list[str], condition: bool, message: str) -> None:
         errors.append(message)
 
 
+def find_duplicate_json_keys(path: Path) -> list[str]:
+    """Return duplicate mapping keys before normal JSON loading discards them."""
+    duplicates: set[str] = set()
+
+    def pairs_hook(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
+        result: dict[str, Any] = {}
+        for key, value in pairs:
+            if key in result:
+                duplicates.add(key)
+            result[key] = value
+        return result
+
+    try:
+        json.loads(path.read_text(encoding="utf-8"), object_pairs_hook=pairs_hook)
+    except (OSError, json.JSONDecodeError):
+        return []
+    return sorted(duplicates)
+
+
 def has_any_evidence_ref(evidence_refs: Any) -> bool:
     if not isinstance(evidence_refs, dict):
         return False
@@ -94,6 +139,14 @@ def contains_key(value: Any, key: str) -> bool:
     if isinstance(value, list):
         return any(contains_key(item, key) for item in value)
     return False
+
+
+def file_sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        while chunk := handle.read(1024 * 1024):
+            digest.update(chunk)
+    return digest.hexdigest()
 
 
 def compound_has_numeric_range(value: Any) -> bool:
@@ -112,13 +165,406 @@ def compound_has_numeric_range(value: Any) -> bool:
     return False
 
 
+def https_url_structure_error(url: str) -> str | None:
+    try:
+        parsed = urllib.parse.urlsplit(url)
+        port = parsed.port
+    except ValueError as exc:
+        return f"malformed URL: {exc}"
+    if parsed.scheme.lower() != "https":
+        return "URL scheme must be https"
+    if not parsed.hostname:
+        return "URL must include a hostname"
+    if parsed.username is not None or parsed.password is not None:
+        return "URL must not contain userinfo credentials"
+    hostname = parsed.hostname.rstrip(".").lower()
+    if hostname == "localhost" or hostname.endswith(".localhost"):
+        return "URL hostname must not be localhost"
+    try:
+        literal_address = ipaddress.ip_address(hostname.split("%", 1)[0])
+    except ValueError:
+        literal_address = None
+    if literal_address is not None and not literal_address.is_global:
+        return "URL literal address must be globally routable"
+    if port is not None and not 1 <= port <= 65535:
+        return "URL port is outside 1..65535"
+    return None
+
+
+@dataclass(frozen=True)
+class PublicHTTPSAddress:
+    family: int
+    socktype: int
+    proto: int
+    sockaddr: tuple[Any, ...]
+    address: str
+
+
+@dataclass(frozen=True)
+class PublicHTTPSDestination:
+    hostname: str
+    port: int
+    addresses: tuple[PublicHTTPSAddress, ...]
+    address_set: frozenset[str]
+
+
+class NetworkDeadlineExceeded(TimeoutError):
+    pass
+
+
+@dataclass(frozen=True)
+class NetworkDeadline:
+    timeout: float
+    expires_at: float
+
+    @classmethod
+    def start(cls, timeout: float) -> "NetworkDeadline":
+        bounded_timeout = max(0.0, float(timeout))
+        return cls(timeout=bounded_timeout, expires_at=time.monotonic() + bounded_timeout)
+
+    def remaining(self) -> float:
+        remaining = self.expires_at - time.monotonic()
+        if remaining <= 0:
+            raise NetworkDeadlineExceeded(
+                f"overall network deadline exceeded after {self.timeout:.3f}s"
+            )
+        return remaining
+
+
+def call_with_network_deadline(
+    deadline: NetworkDeadline,
+    function: Any,
+    /,
+    *args: Any,
+    **kwargs: Any,
+) -> Any:
+    """Bound a blocking resolver or transport call without extending its deadline."""
+    outcomes: queue.Queue[tuple[bool, Any]] = queue.Queue(maxsize=1)
+
+    def invoke() -> None:
+        try:
+            outcomes.put((True, function(*args, **kwargs)))
+        except BaseException as exc:  # noqa: BLE001 - re-raise on the checking thread
+            outcomes.put((False, exc))
+
+    worker = threading.Thread(target=invoke, daemon=True)
+    worker.start()
+    try:
+        succeeded, value = outcomes.get(timeout=deadline.remaining())
+    except queue.Empty as exc:
+        raise NetworkDeadlineExceeded(
+            f"overall network deadline exceeded after {deadline.timeout:.3f}s"
+        ) from exc
+    if not succeeded:
+        raise value
+    try:
+        deadline.remaining()
+    except NetworkDeadlineExceeded:
+        close = getattr(value, "close", None)
+        if callable(close):
+            close()
+        raise
+    return value
+
+
+def require_public_https_url(
+    url: str,
+    *,
+    deadline: NetworkDeadline | None = None,
+    max_addresses: int = MAX_HTTPS_ADDRESS_ATTEMPTS,
+) -> PublicHTTPSDestination:
+    structure_error = https_url_structure_error(url)
+    if structure_error:
+        raise urllib.error.URLError(structure_error)
+    parsed = urllib.parse.urlsplit(url)
+    hostname = str(parsed.hostname)
+    port = parsed.port or 443
+    try:
+        if deadline is None:
+            resolved = socket.getaddrinfo(hostname, port, type=socket.SOCK_STREAM)
+        else:
+            resolved = call_with_network_deadline(
+                deadline,
+                socket.getaddrinfo,
+                hostname,
+                port,
+                type=socket.SOCK_STREAM,
+            )
+    except OSError as exc:
+        raise urllib.error.URLError(f"could not resolve URL hostname: {exc}") from exc
+    addresses: list[PublicHTTPSAddress] = []
+    seen: set[tuple[int, int, int, tuple[Any, ...]]] = set()
+    unsafe: set[str] = set()
+    for item in resolved:
+        if not isinstance(item, tuple) or len(item) < 5:
+            raise urllib.error.URLError("resolver returned malformed address record")
+        family, socktype, proto, _, sockaddr = item[:5]
+        if family not in {socket.AF_INET, socket.AF_INET6}:
+            raise urllib.error.URLError(f"resolver returned unsupported address family {family!r}")
+        if socktype != socket.SOCK_STREAM:
+            raise urllib.error.URLError(f"resolver returned unsupported socket type {socktype!r}")
+        if not isinstance(sockaddr, tuple) or len(sockaddr) < 2:
+            raise urllib.error.URLError("resolver returned malformed socket address")
+        if sockaddr[1] != port:
+            raise urllib.error.URLError("resolver returned an address for an unexpected port")
+        address = str(sockaddr[0]).split("%", 1)[0]
+        try:
+            parsed_address = ipaddress.ip_address(address)
+        except ValueError as exc:
+            raise urllib.error.URLError(f"resolver returned malformed address {address!r}") from exc
+        normalized_address = str(parsed_address)
+        if not parsed_address.is_global:
+            unsafe.add(normalized_address)
+        key = (int(family), int(socktype), int(proto), sockaddr)
+        if key not in seen:
+            seen.add(key)
+            addresses.append(
+                PublicHTTPSAddress(
+                    family=int(family),
+                    socktype=int(socktype),
+                    proto=int(proto),
+                    sockaddr=sockaddr,
+                    address=normalized_address,
+                )
+            )
+    if not addresses:
+        raise urllib.error.URLError("URL hostname resolved to no addresses")
+    if unsafe:
+        raise urllib.error.URLError(
+            "URL hostname resolves to non-public address(es): " + ", ".join(sorted(unsafe))
+        )
+    if max_addresses < 1:
+        raise urllib.error.URLError("HTTPS address-attempt cap must be at least one")
+    addresses = addresses[:max_addresses]
+    return PublicHTTPSDestination(
+        hostname=hostname,
+        port=port,
+        addresses=tuple(addresses),
+        address_set=frozenset(address.address for address in addresses),
+    )
+
+
+class _PeerAddressMismatch(OSError):
+    pass
+
+
+class PinnedHTTPSConnection(http.client.HTTPSConnection):
+    """Connect to vetted numeric addresses while verifying TLS for the URL host."""
+
+    def __init__(
+        self,
+        host: str,
+        *,
+        destination: PublicHTTPSDestination,
+        timeout: Any = socket._GLOBAL_DEFAULT_TIMEOUT,
+        source_address: tuple[str, int] | None = None,
+        context: Any = None,
+        blocksize: int = 8192,
+        deadline: NetworkDeadline | None = None,
+    ) -> None:
+        super().__init__(
+            host,
+            timeout=timeout,
+            source_address=source_address,
+            context=context,
+            blocksize=blocksize,
+        )
+        if self.host.rstrip(".").lower() != destination.hostname.rstrip(".").lower():
+            raise ValueError("HTTPS connection host does not match vetted URL hostname")
+        if self.port != destination.port:
+            raise ValueError("HTTPS connection port does not match vetted URL port")
+        self.destination = destination
+        self.server_hostname = destination.hostname
+        self.deadline = deadline
+
+    def _connect_pinned_socket(self) -> Any:
+        last_error: OSError | None = None
+        for endpoint in self.destination.addresses:
+            sock = None
+            try:
+                sock = socket.socket(endpoint.family, endpoint.socktype, endpoint.proto)
+                if self.deadline is not None:
+                    sock.settimeout(self.deadline.remaining())
+                elif self.timeout is not socket._GLOBAL_DEFAULT_TIMEOUT:
+                    sock.settimeout(self.timeout)
+                if self.source_address:
+                    sock.bind(self.source_address)
+                sock.connect(endpoint.sockaddr)
+                peer = sock.getpeername()
+                if not isinstance(peer, tuple) or not peer:
+                    raise _PeerAddressMismatch("connected peer has no verifiable IP address")
+                try:
+                    peer_address = str(
+                        ipaddress.ip_address(str(peer[0]).split("%", 1)[0])
+                    )
+                except ValueError as exc:
+                    raise _PeerAddressMismatch(
+                        f"connected peer returned malformed address {peer[0]!r}"
+                    ) from exc
+                if peer_address not in self.destination.address_set:
+                    raise _PeerAddressMismatch(
+                        f"connected peer {peer_address} is outside vetted address set"
+                    )
+                try:
+                    sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
+                except OSError as exc:
+                    if exc.errno != errno.ENOPROTOOPT:
+                        raise
+                return sock
+            except _PeerAddressMismatch:
+                if sock is not None:
+                    sock.close()
+                raise
+            except OSError as exc:
+                last_error = exc
+                if sock is not None:
+                    sock.close()
+        if last_error is not None:
+            raise last_error
+        raise OSError("no vetted HTTPS address was available for connection")
+
+    def connect(self) -> None:
+        if self._tunnel_host:
+            raise OSError("HTTPS proxies are unsupported by the pinned public HTTPS transport")
+        sys.audit("http.client.connect", self, self.server_hostname, self.port)
+        raw_socket = self._connect_pinned_socket()
+        try:
+            if self.deadline is not None:
+                raw_socket.settimeout(self.deadline.remaining())
+            self.sock = self._context.wrap_socket(
+                raw_socket,
+                server_hostname=self.server_hostname,
+            )
+        except BaseException:
+            raw_socket.close()
+            self.sock = None
+            raise
+
+
+_PINNED_DESTINATION_ATTRIBUTE = "_mlx_public_https_destination"
+_NETWORK_DEADLINE_ATTRIBUTE = "_mlx_public_https_deadline"
+
+
+def _destination_matches_url(destination: PublicHTTPSDestination, url: str) -> bool:
+    try:
+        parsed = urllib.parse.urlsplit(url)
+        port = parsed.port or 443
+    except ValueError:
+        return False
+    return (
+        parsed.scheme.lower() == "https"
+        and parsed.hostname is not None
+        and parsed.hostname.rstrip(".").lower() == destination.hostname.rstrip(".").lower()
+        and port == destination.port
+    )
+
+
+def _pin_request_destination(
+    request: urllib.request.Request,
+    destination: PublicHTTPSDestination,
+) -> None:
+    setattr(request, _PINNED_DESTINATION_ATTRIBUTE, destination)
+
+
+def _pin_request_deadline(
+    request: urllib.request.Request,
+    deadline: NetworkDeadline,
+) -> None:
+    setattr(request, _NETWORK_DEADLINE_ATTRIBUTE, deadline)
+
+
+class PublicHTTPSHandler(urllib.request.HTTPSHandler):
+    def https_open(self, req: urllib.request.Request) -> Any:
+        deadline = getattr(req, _NETWORK_DEADLINE_ATTRIBUTE, None)
+        destination = getattr(req, _PINNED_DESTINATION_ATTRIBUTE, None)
+        if not isinstance(destination, PublicHTTPSDestination) or not _destination_matches_url(
+            destination,
+            req.full_url,
+        ):
+            destination = require_public_https_url(req.full_url, deadline=deadline)
+            _pin_request_destination(req, destination)
+
+        def connection_factory(host: str, **kwargs: Any) -> PinnedHTTPSConnection:
+            if isinstance(deadline, NetworkDeadline):
+                kwargs["timeout"] = deadline.remaining()
+            return PinnedHTTPSConnection(
+                host,
+                destination=destination,
+                deadline=deadline,
+                **kwargs,
+            )
+
+        return self.do_open(connection_factory, req, context=self._context)
+
+    https_request = urllib.request.AbstractHTTPHandler.do_request_
+
+
+class PublicHTTPSRedirectHandler(urllib.request.HTTPRedirectHandler):
+    def redirect_request(
+        self,
+        req: urllib.request.Request,
+        fp: Any,
+        code: int,
+        msg: str,
+        headers: Any,
+        newurl: str,
+    ) -> urllib.request.Request | None:
+        redirected = super().redirect_request(req, fp, code, msg, headers, newurl)
+        if redirected is not None:
+            deadline = getattr(req, _NETWORK_DEADLINE_ATTRIBUTE, None)
+            destination = require_public_https_url(newurl, deadline=deadline)
+            _pin_request_destination(redirected, destination)
+            if isinstance(deadline, NetworkDeadline):
+                _pin_request_deadline(redirected, deadline)
+        return redirected
+
+
+def build_public_https_opener(
+    redirect_handler: PublicHTTPSRedirectHandler | None = None,
+) -> urllib.request.OpenerDirector:
+    return urllib.request.build_opener(
+        redirect_handler or PublicHTTPSRedirectHandler(),
+        urllib.request.ProxyHandler({}),
+        PublicHTTPSHandler(),
+    )
+
+
+def open_public_https(
+    opener: urllib.request.OpenerDirector,
+    request: urllib.request.Request,
+    timeout: float,
+    *,
+    deadline: NetworkDeadline | None = None,
+) -> Any:
+    active_deadline = deadline or NetworkDeadline.start(timeout)
+    destination = require_public_https_url(request.full_url, deadline=active_deadline)
+    _pin_request_destination(request, destination)
+    _pin_request_deadline(request, active_deadline)
+    response = call_with_network_deadline(
+        active_deadline,
+        opener.open,
+        request,
+        timeout=active_deadline.remaining(),
+    )
+    try:
+        structure_error = https_url_structure_error(response.geturl())
+        if structure_error:
+            raise urllib.error.URLError(structure_error)
+        return response
+    except BaseException:
+        response.close()
+        raise
+
+
 def check_url(source: dict[str, Any], timeout: float) -> dict[str, Any]:
     url = str(source.get("url", ""))
-    headers = {"User-Agent": "mlx-model-porting-skill/0.2.0"}
+    headers = {"User-Agent": "mlx-model-porting-skill/0.4.0"}
     result: dict[str, Any] = {"id": source.get("id"), "url": url, "ok": False}
+    opener = build_public_https_opener()
+    deadline = NetworkDeadline.start(timeout)
     try:
         request = urllib.request.Request(url, method="HEAD", headers=headers)
-        with urllib.request.urlopen(request, timeout=timeout) as response:
+        with open_public_https(opener, request, timeout, deadline=deadline) as response:
             result.update({"ok": 200 <= response.status < 400, "status": response.status})
     except urllib.error.HTTPError as exc:
         if exc.code not in {403, 405, 429}:
@@ -126,8 +572,8 @@ def check_url(source: dict[str, Any], timeout: float) -> dict[str, Any]:
             return result
         try:
             request = urllib.request.Request(url, headers=headers)
-            with urllib.request.urlopen(request, timeout=timeout) as response:
-                response.read(1024)
+            with open_public_https(opener, request, timeout, deadline=deadline) as response:
+                call_with_network_deadline(deadline, response.read, 1024)
                 result.update({"ok": 200 <= response.status < 400, "status": response.status})
         except Exception as retry_exc:  # noqa: BLE001 - report external check failure precisely
             result.update({"status": getattr(retry_exc, "code", None), "error": str(retry_exc)})
@@ -138,6 +584,7 @@ def check_url(source: dict[str, Any], timeout: float) -> dict[str, Any]:
 
 def validate(skill: Path, check_urls: bool, timeout: float, workers: int) -> tuple[dict[str, Any], list[str]]:
     assets = skill / "assets"
+    benchmark_root = (assets / "benchmarks").resolve()
     sources = load_structured(assets / "sources.yaml")
     techniques = load_structured(assets / "techniques.yaml")
     optimization_guidance_path = assets / "optimization_guidance.yaml"
@@ -146,8 +593,156 @@ def validate(skill: Path, check_urls: bool, timeout: float, workers: int) -> tup
     optimization_stacks = load_structured(optimization_stacks_path) if optimization_stacks_path.exists() else {}
     taxonomy_path = assets / "recommendation-taxonomy.yaml"
     taxonomy = load_structured(taxonomy_path) if taxonomy_path.exists() else {}
+    architectures_path = assets / "architectures.yaml"
+    architectures = load_structured(architectures_path) if architectures_path.exists() else {}
+    model_outcomes_path = assets / "model_outcomes.json"
+    model_outcomes = load_structured(model_outcomes_path) if model_outcomes_path.exists() else {}
+    receipt_assessments_path = assets / "benchmarks" / "receipt_assessments.json"
+    receipt_assessments = (
+        load_structured(receipt_assessments_path) if receipt_assessments_path.exists() else {}
+    )
+    effective_claims_path = assets / "effective_claims.json"
+    effective_claims = load_structured(effective_claims_path) if effective_claims_path.exists() else {}
+    research_backlog_path = assets / "research_backlog.json"
+    research_backlog = load_structured(research_backlog_path) if research_backlog_path.exists() else {}
     errors: list[str] = []
     warnings: list[str] = []
+
+    for registry_path in (
+        assets / "sources.yaml",
+        assets / "techniques.yaml",
+        optimization_guidance_path,
+        optimization_stacks_path,
+        taxonomy_path,
+        architectures_path,
+        model_outcomes_path,
+        receipt_assessments_path,
+        effective_claims_path,
+        research_backlog_path,
+    ):
+        if not registry_path.exists():
+            continue
+        for duplicate_key in find_duplicate_json_keys(registry_path):
+            errors.append(f"{registry_path.name} contains duplicate JSON key {duplicate_key!r}")
+
+    assessment_rows = receipt_assessments.get("assessments", []) if isinstance(receipt_assessments, dict) else []
+    add_error(
+        errors,
+        receipt_assessments.get("schema_version") != 1 if isinstance(receipt_assessments, dict) else True,
+        "benchmark receipt assessments must use schema_version 1",
+    )
+    add_error(errors, not isinstance(assessment_rows, list), "benchmark receipt assessments must contain an assessments list")
+    assessments_by_receipt: dict[str, dict[str, Any]] = {}
+    for row in assessment_rows if isinstance(assessment_rows, list) else []:
+        receipt_ref = row.get("receipt") if isinstance(row, dict) else None
+        add_error(errors, not isinstance(receipt_ref, str) or not receipt_ref, "benchmark assessment missing receipt")
+        if not isinstance(receipt_ref, str) or not receipt_ref:
+            continue
+        add_error(errors, receipt_ref in assessments_by_receipt, f"duplicate benchmark assessment for {receipt_ref}")
+        assessments_by_receipt[receipt_ref] = row
+        add_error(
+            errors,
+            row.get("classification") not in {"performance_observation", "promotion_ready", "rejected"},
+            f"benchmark assessment {receipt_ref} has invalid classification {row.get('classification')}",
+        )
+        expected_digest = row.get("receipt_sha256")
+        add_error(
+            errors,
+            not isinstance(expected_digest, str) or SHA256_RE.fullmatch(expected_digest) is None,
+            f"benchmark assessment {receipt_ref} has invalid receipt_sha256",
+        )
+        receipt_path = (assets / "benchmarks" / receipt_ref).resolve()
+        benchmark_root_resolved = (assets / "benchmarks").resolve()
+        try:
+            receipt_path.relative_to(benchmark_root_resolved)
+        except ValueError:
+            errors.append(f"benchmark assessment receipt escapes assets/benchmarks: {receipt_ref}")
+            continue
+        if not receipt_path.is_file():
+            errors.append(f"benchmark assessment receipt not found: {receipt_ref}")
+        elif isinstance(expected_digest, str) and SHA256_RE.fullmatch(expected_digest):
+            add_error(
+                errors,
+                file_sha256(receipt_path) != expected_digest,
+                f"benchmark assessment digest mismatch for {receipt_ref}",
+            )
+
+    effective_rows = effective_claims.get("claims", []) if isinstance(effective_claims, dict) else []
+    add_error(
+        errors,
+        effective_claims.get("schema_version") != 1 if isinstance(effective_claims, dict) else True,
+        "effective claim catalog must use schema_version 1",
+    )
+    add_error(errors, not isinstance(effective_rows, list), "effective claim catalog must contain a claims list")
+    effective_by_method: dict[str, dict[str, Any]] = {}
+    for row in effective_rows if isinstance(effective_rows, list) else []:
+        method_id = row.get("method_id") if isinstance(row, dict) else None
+        add_error(errors, not isinstance(method_id, str) or not method_id, "effective claim missing method_id")
+        if not isinstance(method_id, str) or not method_id:
+            continue
+        add_error(errors, method_id in effective_by_method, f"duplicate effective claim for {method_id}")
+        effective_by_method[method_id] = row
+
+    backlog_items = research_backlog.get("items", []) if isinstance(research_backlog, dict) else []
+    add_error(
+        errors,
+        research_backlog.get("schema_version") != 1 if isinstance(research_backlog, dict) else True,
+        "research backlog must use schema_version 1",
+    )
+    add_error(errors, not isinstance(backlog_items, list), "research backlog must contain an items list")
+    generated_from = research_backlog.get("generated_from") if isinstance(research_backlog, dict) else None
+    add_error(errors, not isinstance(generated_from, dict), "research backlog must record generated_from provenance")
+    backlog_ids: set[str] = set()
+    for item in backlog_items if isinstance(backlog_items, list) else []:
+        item_id = item.get("id") if isinstance(item, dict) else None
+        add_error(errors, not isinstance(item_id, str) or not item_id, "research backlog item missing id")
+        if not isinstance(item_id, str) or not item_id:
+            continue
+        add_error(errors, item_id in backlog_ids, f"duplicate research backlog item {item_id}")
+        backlog_ids.add(item_id)
+        add_error(
+            errors,
+            item.get("status") not in {"validated", "needs-validation"},
+            f"research backlog item {item_id} has invalid status",
+        )
+        add_error(errors, not item.get("required_gate"), f"research backlog item {item_id} lacks required_gate")
+
+    try:
+        recomputed_assessments = build_assessment_report(benchmark_root)
+        add_error(
+            errors,
+            recomputed_assessments != receipt_assessments,
+            "benchmark receipt assessments are stale or not reproducible",
+        )
+        receipts_index_path = benchmark_root / "receipts_index.json"
+        committed_index = load_structured(receipts_index_path) if receipts_index_path.exists() else None
+        add_error(
+            errors,
+            committed_index != build_receipts_index(recomputed_assessments, benchmark_root),
+            "benchmark receipts index is stale or not reproducible",
+        )
+        benchmark_report_path = assets / "BENCHMARK_REPORT.md"
+        committed_report = (
+            benchmark_report_path.read_text(encoding="utf-8") if benchmark_report_path.exists() else None
+        )
+        add_error(
+            errors,
+            committed_report != render_benchmark_report(recomputed_assessments),
+            "benchmark report is stale or not reproducible",
+        )
+        recomputed_claims = build_claim_catalog(
+            optimization_guidance,
+            sources,
+            recomputed_assessments,
+            assessments_available=True,
+        )
+        add_error(
+            errors,
+            recomputed_claims != effective_claims,
+            "effective claim catalog is stale or not reproducible",
+        )
+    except (SkillError, OSError, ValueError) as exc:
+        errors.append(f"could not recompute benchmark/effective evidence: {exc}")
 
     source_items = sources.get("sources", [])
     add_error(errors, sources.get("count") != len(source_items), "sources.yaml count does not match source list length")
@@ -160,7 +755,9 @@ def validate(skill: Path, check_urls: bool, timeout: float, workers: int) -> tup
         add_error(errors, not sid, "source missing id")
         add_error(errors, source.get("kind") not in SOURCE_KINDS, f"invalid source kind for {sid}: {source.get('kind')}")
         add_error(errors, source.get("review_depth") not in REVIEW_DEPTHS, f"invalid review_depth for source {sid}")
-        add_error(errors, not str(source.get("url", "")).startswith("https://"), f"source URL is not https: {sid}")
+        source_url = str(source.get("url", ""))
+        structure_error = https_url_structure_error(source_url)
+        add_error(errors, structure_error is not None, f"invalid source URL for {sid}: {structure_error}")
         evidence_class = source.get("evidence_class")
         if evidence_class is not None:
             add_error(errors, evidence_class not in EVIDENCE_CLASSES, f"invalid evidence_class for source {sid}: {evidence_class}")
@@ -176,10 +773,27 @@ def validate(skill: Path, check_urls: bool, timeout: float, workers: int) -> tup
         add_error(errors, bool(source.get("benchmark_refs")) and source.get("evidence_class") != "local_benchmark_artifact", f"benchmark_refs require local_benchmark_artifact evidence class: {sid}")
         if source.get("review_depth") == "synthesized" and source.get("kind") in IMPLEMENTATION_KINDS:
             add_error(errors, not source.get("snapshot"), f"synthesized moving source lacks snapshot: {sid}")
+            github_ref = re.search(
+                r"^https://github\.com/[^/]+/[^/]+/(?:blob|tree)/([^/]+)",
+                source_url,
+            )
+            if github_ref:
+                pinned_ref = github_ref.group(1)
+                add_error(
+                    errors,
+                    re.fullmatch(r"[0-9a-f]{40}", pinned_ref) is None,
+                    f"synthesized GitHub source {sid} must use a full 40-hex commit URL",
+                )
+                add_error(
+                    errors,
+                    source.get("snapshot") != pinned_ref,
+                    f"synthesized GitHub source {sid} snapshot must match its commit URL",
+                )
         if source.get("kind") == "paper" and str(sid).startswith("paper-"):
             expected = str(sid).replace("paper-", "").replace("-", ".")
             snapshot = str(source.get("snapshot", ""))
-            if snapshot and snapshot != expected:
+            expected_snapshot = re.compile(rf"{re.escape(expected)}(?:v[1-9]\d*)?")
+            if snapshot and expected_snapshot.fullmatch(snapshot) is None:
                 warnings.append(f"paper {sid} snapshot {snapshot!r} does not match id-derived {expected!r}")
             known_title = KNOWN_ARXIV_TITLES.get(str(sid))
             if known_title:
@@ -212,7 +826,6 @@ def validate(skill: Path, check_urls: bool, timeout: float, workers: int) -> tup
             add_error(errors, not technique.get("rollback_condition"), f"technique {tid} has empty rollback_condition")
 
     improvement_band_tiers = set(taxonomy.get("improvement_band_policy", {})) if isinstance(taxonomy, dict) else set()
-    benchmark_root = (assets / "benchmarks").resolve()
     technique_ids = {t.get("id") for t in techniques.get("techniques", []) if isinstance(t, dict)}
     method_ids = {m.get("id") for m in optimization_guidance.get("methods", []) if isinstance(m, dict)}
     for method in optimization_guidance.get("methods", []):
@@ -227,30 +840,145 @@ def validate(skill: Path, check_urls: bool, timeout: float, workers: int) -> tup
         add_error(errors, not method.get("rollback_conditions"), f"optimization guidance method {mid} lacks rollback_conditions")
         evidence_refs = method.get("evidence_refs", {})
         add_error(errors, not isinstance(evidence_refs, dict), f"optimization guidance method {mid} evidence_refs must be a mapping")
+        method_status = method.get("status")
+        if method_status in METHOD_STATUS_SUPPORT_SCOPES and isinstance(evidence_refs, dict):
+            cited_source_ids = {
+                str(source_id)
+                for refs in evidence_refs.values()
+                if isinstance(refs, list)
+                for source_id in refs
+            }
+            allowed_scopes = METHOD_STATUS_SUPPORT_SCOPES[str(method_status)]
+            supporting_sources = [
+                source_by_id[source_id]
+                for source_id in cited_source_ids
+                if source_id in source_by_id
+                and source_by_id[source_id].get("review_depth") == "synthesized"
+                and source_by_id[source_id].get("support_scope") in allowed_scopes
+                and source_by_id[source_id].get("evidence_class") in EVIDENCE_CLASSES
+                and source_by_id[source_id].get("snapshot")
+                and bool(
+                    {"api_support", "mlx_implementation"}
+                    & set(source_by_id[source_id].get("claim_types", []))
+                )
+            ]
+            add_error(
+                errors,
+                not supporting_sources,
+                f"optimization guidance method {mid} status {method_status} lacks synthesized pinned "
+                f"supporting evidence with scope {sorted(allowed_scopes)}",
+            )
         improvement_band = method.get("improvement_band")
         if improvement_band is not None:
             add_error(errors, not isinstance(improvement_band, dict), f"optimization guidance method {mid} improvement_band must be a mapping")
             if isinstance(improvement_band, dict):
                 provenance = improvement_band.get("provenance")
                 add_error(errors, provenance not in improvement_band_tiers, f"optimization guidance method {mid} has invalid improvement_band provenance {provenance}")
-                add_error(errors, not improvement_band.get("range"), f"optimization guidance method {mid} improvement_band lacks range")
+                band_range = improvement_band.get("range")
+                if provenance == "profile_required":
+                    add_error(errors, band_range is not None, f"profile_required improvement_band for {mid} must not contain a numeric range")
+                else:
+                    add_error(errors, not isinstance(band_range, str) or not band_range, f"optimization guidance method {mid} improvement_band lacks range")
                 receipts = improvement_band.get("receipts")
                 has_local_receipts = provenance == "local_reproduced" and isinstance(receipts, list) and bool(receipts)
                 requires_1x_floor = provenance != "local_reproduced" or not has_local_receipts
                 add_error(
                     errors,
-                    requires_1x_floor and not str(improvement_band.get("range", "")).startswith("1.0x-"),
+                    isinstance(band_range, str) and requires_1x_floor and not band_range.startswith("1.0x-"),
                     f"optimization guidance method {mid} improvement_band range must start at 1.0x unless local_reproduced has receipts",
+                )
+                lineages = improvement_band.get("evidence_lineage_ids")
+                if isinstance(band_range, str):
+                    add_error(errors, not isinstance(lineages, list) or not lineages, f"numeric improvement_band for {mid} lacks evidence_lineage_ids")
+                claim_status = improvement_band.get("claim_status")
+                add_error(
+                    errors,
+                    claim_status not in {"held", "eligible-with-profile", "superseded"},
+                    f"optimization guidance method {mid} has invalid claim_status {claim_status}",
                 )
                 add_error(errors, not improvement_band.get("metric"), f"optimization guidance method {mid} improvement_band lacks metric")
                 add_error(errors, not improvement_band.get("basis"), f"optimization guidance method {mid} improvement_band lacks basis")
                 add_error(errors, not improvement_band.get("applies_when"), f"optimization guidance method {mid} improvement_band lacks applies_when")
+                catalog_claim = effective_by_method.get(str(mid))
+                add_error(errors, catalog_claim is None, f"optimization guidance method {mid} lacks an effective claim record")
+                if isinstance(catalog_claim, dict):
+                    expected_observed_range = (
+                        band_range
+                        if isinstance(band_range, str)
+                        else improvement_band.get("observed_source_range")
+                    )
+                    add_error(
+                        errors,
+                        catalog_claim.get("provenance") != provenance,
+                        f"effective claim for {mid} has stale provenance",
+                    )
+                    add_error(
+                        errors,
+                        catalog_claim.get("observed_range") != expected_observed_range,
+                        f"effective claim for {mid} has stale observed_range",
+                    )
+                    add_error(
+                        errors,
+                        catalog_claim.get("effective_range") is not None
+                        and provenance != "local_reproduced",
+                        f"non-local effective claim for {mid} must not expose effective_range",
+                    )
                 if provenance == "source_reported":
                     add_error(errors, not has_any_evidence_ref(evidence_refs), f"source_reported improvement_band for {mid} lacks evidence_refs")
+                    add_error(
+                        errors,
+                        claim_status != "held",
+                        f"source_reported improvement_band for {mid} must remain held until locally reproduced",
+                    )
+                    if isinstance(catalog_claim, dict):
+                        add_error(
+                            errors,
+                            catalog_claim.get("promotion_state") != "withheld",
+                            f"source_reported improvement_band for {mid} must remain withheld",
+                        )
+                        add_error(
+                            errors,
+                            catalog_claim.get("profile_eligible_range") is not None,
+                            f"source_reported improvement_band for {mid} must not expose profile_eligible_range",
+                        )
+                if provenance == "performance_observation":
+                    add_error(
+                        errors,
+                        claim_status != "held",
+                        f"performance_observation improvement_band for {mid} must be held",
+                    )
+                    measured_on = improvement_band.get("measured_on")
+                    add_error(
+                        errors,
+                        not isinstance(measured_on, dict) or not measured_on,
+                        f"performance_observation improvement_band for {mid} lacks measured_on metadata",
+                    )
+                    add_error(
+                        errors,
+                        not isinstance(receipts, list) or not receipts,
+                        f"performance_observation improvement_band for {mid} requires receipts",
+                    )
+                    if isinstance(catalog_claim, dict):
+                        add_error(
+                            errors,
+                            catalog_claim.get("promotion_state") != "withheld"
+                            or catalog_claim.get("effective_range") is not None,
+                            f"performance_observation improvement_band for {mid} must remain withheld",
+                        )
                 if provenance == "local_reproduced":
                     measured_on = improvement_band.get("measured_on")
                     add_error(errors, not isinstance(measured_on, dict) or not measured_on, f"local_reproduced improvement_band for {mid} lacks measured_on metadata")
                     add_error(errors, not isinstance(receipts, list), f"local_reproduced improvement_band for {mid} receipts must be a list")
+                    add_error(errors, claim_status != "eligible-with-profile", f"local_reproduced improvement_band for {mid} must be eligible-with-profile")
+                    add_error(errors, not receipts, f"promotable local_reproduced improvement_band for {mid} requires receipts")
+                    add_error(
+                        errors,
+                        not isinstance(catalog_claim, dict)
+                        or catalog_claim.get("promotion_state") != "local-promotion"
+                        or catalog_claim.get("effective_range") != band_range,
+                        f"local_reproduced improvement_band for {mid} is not backed by a local-promotion effective claim",
+                    )
+                if provenance in {"performance_observation", "local_reproduced"}:
                     for receipt in (receipts if isinstance(receipts, list) else []):
                         raw_receipt = Path(str(receipt))
                         receipt_path = raw_receipt if raw_receipt.is_absolute() else benchmark_root / raw_receipt
@@ -258,9 +986,28 @@ def validate(skill: Path, check_urls: bool, timeout: float, workers: int) -> tup
                         try:
                             resolved.relative_to(benchmark_root)
                         except ValueError:
-                            errors.append(f"local_reproduced improvement_band for {mid} receipt escapes assets/benchmarks: {receipt}")
+                            errors.append(f"{provenance} improvement_band for {mid} receipt escapes assets/benchmarks: {receipt}")
                             continue
-                        add_error(errors, not resolved.is_file(), f"local_reproduced improvement_band for {mid} receipt not found: {receipt}")
+                        add_error(errors, not resolved.is_file(), f"{provenance} improvement_band for {mid} receipt not found: {receipt}")
+                        assessment = assessments_by_receipt.get(str(receipt))
+                        add_error(
+                            errors,
+                            assessment is None,
+                            f"{provenance} improvement_band for {mid} receipt lacks assessment: {receipt}",
+                        )
+                        if isinstance(assessment, dict):
+                            add_error(
+                                errors,
+                                provenance == "performance_observation"
+                                and assessment.get("classification") == "rejected",
+                                f"performance_observation improvement_band for {mid} references rejected receipt: {receipt}",
+                            )
+                if isinstance(band_range, str):
+                    target_constraints = method.get("target_constraints")
+                    add_error(errors, not isinstance(target_constraints, dict), f"numeric improvement_band for {mid} lacks target_constraints")
+                    if isinstance(target_constraints, dict):
+                        for source_id in target_constraints.get("source_ids", []):
+                            add_error(errors, source_id not in source_by_id, f"target_constraints for {mid} references missing source {source_id}")
         for role, refs in (evidence_refs or {}).items():
             add_error(errors, role not in {"official_docs", "repositories", "papers", "technical_blogs", "issues", "benchmark_artifacts"}, f"optimization guidance method {mid} has invalid evidence role {role}")
             add_error(errors, not isinstance(refs, list), f"optimization guidance method {mid} evidence role {role} must be a list")
@@ -268,14 +1015,35 @@ def validate(skill: Path, check_urls: bool, timeout: float, workers: int) -> tup
                 add_error(errors, source_id not in source_by_id, f"optimization guidance method {mid} references missing evidence {source_id}")
 
     if optimization_stacks:
+        controlled_workloads = {
+            str(value) for value in taxonomy.get("workload_ids", [])
+        } if isinstance(taxonomy, dict) else set()
+        controlled_objectives = {
+            str(item.get("id"))
+            for item in taxonomy.get("objective_tags", [])
+            if isinstance(item, dict) and item.get("id")
+        } if isinstance(taxonomy, dict) else set()
         add_error(errors, contains_key(optimization_stacks, "compound_range"), "optimization_stacks contains forbidden compound_range key")
         stacks = optimization_stacks.get("stacks", [])
         add_error(errors, not isinstance(stacks, list), "optimization_stacks stacks must be a list")
         for stack in (stacks if isinstance(stacks, list) else []):
             sid = stack.get("id") if isinstance(stack, dict) else None
             add_error(errors, not sid, "optimization stack missing id")
+            add_error(errors, stack.get("status") != "planning-only", f"optimization stack {sid} must be planning-only")
             primary_metric = stack.get("primary_metric") if isinstance(stack, dict) else None
             add_error(errors, not isinstance(primary_metric, str) or not primary_metric, f"optimization stack {sid} primary_metric must be a non-empty string")
+            for workload in stack.get("workloads_any", []) if isinstance(stack, dict) else []:
+                add_error(
+                    errors,
+                    workload not in controlled_workloads,
+                    f"optimization stack {sid} references unknown workload {workload}",
+                )
+            for objective in stack.get("objectives_any", []) if isinstance(stack, dict) else []:
+                add_error(
+                    errors,
+                    objective not in controlled_objectives,
+                    f"optimization stack {sid} references unknown objective {objective}",
+                )
             steps = stack.get("steps", []) if isinstance(stack, dict) else []
             add_error(errors, not isinstance(steps, list) or not steps, f"optimization stack {sid} must have steps")
             step_method_ids: set[str] = set()
@@ -283,17 +1051,37 @@ def validate(skill: Path, check_urls: bool, timeout: float, workers: int) -> tup
                 method_id = step.get("method") if isinstance(step, dict) else None
                 add_error(errors, method_id not in method_ids, f"optimization stack {sid} step references missing method {method_id}")
                 if method_id:
+                    add_error(
+                        errors,
+                        str(method_id) in step_method_ids,
+                        f"optimization stack {sid} has duplicate step method {method_id}",
+                    )
                     step_method_ids.add(str(method_id))
                 add_error(errors, not isinstance(step, dict) or step.get("lossiness") not in STACK_LOSSINESS, f"optimization stack {sid} step {method_id} has invalid lossiness")
                 add_error(errors, not isinstance(step, dict) or not step.get("gate"), f"optimization stack {sid} step {method_id} lacks gate")
                 add_error(errors, not isinstance(step, dict) or not step.get("rollback"), f"optimization stack {sid} step {method_id} lacks rollback")
             notes = stack.get("composition_notes", []) if isinstance(stack, dict) else []
             add_error(errors, not isinstance(notes, list), f"optimization stack {sid} composition_notes must be a list")
+            normalized_pairs: set[tuple[str, str]] = set()
             for note in (notes if isinstance(notes, list) else []):
                 pair = note.get("pair") if isinstance(note, dict) else None
                 add_error(errors, not isinstance(pair, list) or len(pair) != 2, f"optimization stack {sid} composition_note pair must list two step methods")
                 for method_id in (pair if isinstance(pair, list) else []):
                     add_error(errors, str(method_id) not in step_method_ids, f"optimization stack {sid} composition pair references method outside stack: {method_id}")
+                if isinstance(pair, list) and len(pair) == 2:
+                    normalized_pair = tuple(sorted((str(pair[0]), str(pair[1]))))
+                    add_error(
+                        errors,
+                        normalized_pair[0] == normalized_pair[1],
+                        f"optimization stack {sid} has self composition pair {normalized_pair[0]}",
+                    )
+                    add_error(
+                        errors,
+                        normalized_pair in normalized_pairs,
+                        f"optimization stack {sid} has duplicate composition pair "
+                        f"{normalized_pair[0]} + {normalized_pair[1]}",
+                    )
+                    normalized_pairs.add(normalized_pair)
                 validity = note.get("validity") if isinstance(note, dict) else None
                 add_error(errors, validity not in STACK_PAIR_VALIDITY, f"optimization stack {sid} composition pair has invalid validity {validity}")
                 add_error(errors, not isinstance(note, dict) or not note.get("why"), f"optimization stack {sid} composition pair lacks why")
@@ -327,20 +1115,140 @@ def validate(skill: Path, check_urls: bool, timeout: float, workers: int) -> tup
                         add_error(errors, not resolved.is_file(), f"optimization stack {sid} compound receipt not found: {receipt_ref}")
                 compound_shape = {key: value for key, value in compound.items() if key != "receipts"}
                 add_error(errors, compound_has_numeric_range(compound_shape), f"optimization stack {sid} compound stores a numeric range")
+            observations = stack.get("observed_configurations", []) if isinstance(stack, dict) else []
+            add_error(errors, not isinstance(observations, list), f"optimization stack {sid} observed_configurations must be a list")
+            for observation in observations if isinstance(observations, list) else []:
+                oid = observation.get("id") if isinstance(observation, dict) else None
+                add_error(errors, not oid, f"optimization stack {sid} observed configuration lacks id")
+                add_error(errors, observation.get("decision") != "rejected", f"optimization stack {sid} observation {oid} must be rejected")
+                add_error(errors, not isinstance(observation.get("measured_ratio"), str), f"optimization stack {sid} observation {oid} lacks measured_ratio")
+                add_error(errors, not observation.get("evidence_lineage_ids"), f"optimization stack {sid} observation {oid} lacks evidence_lineage_ids")
+                add_error(errors, not observation.get("rollback"), f"optimization stack {sid} observation {oid} lacks rollback")
+                receipt_ref = observation.get("receipt")
+                if receipt_ref:
+                    receipt_path = (benchmark_root / str(receipt_ref)).resolve()
+                    try:
+                        receipt_path.relative_to(benchmark_root)
+                    except ValueError:
+                        errors.append(f"optimization stack {sid} observation receipt escapes assets/benchmarks: {receipt_ref}")
+                    else:
+                        add_error(errors, not receipt_path.is_file(), f"optimization stack {sid} observation receipt not found: {receipt_ref}")
 
     if taxonomy:
         taxonomy_objectives = taxonomy.get("objective_tags", [])
         add_error(errors, not isinstance(taxonomy_objectives, list) or not taxonomy_objectives, "recommendation taxonomy lacks objective_tags")
         objective_ids = {str(item.get("id")) for item in taxonomy_objectives if isinstance(item, dict)}
+        family_ids = {
+            str(item.get("id"))
+            for item in architectures.get("families", [])
+            if isinstance(item, dict) and item.get("id")
+        }
+        family_groups = taxonomy.get("family_groups", {})
+        add_error(errors, not isinstance(family_groups, dict) or not family_groups, "recommendation taxonomy lacks family_groups")
+        for group_id, group_families in family_groups.items() if isinstance(family_groups, dict) else []:
+            add_error(errors, not isinstance(group_families, list) or not group_families, f"family group {group_id} must be a non-empty list")
+            for family_id in group_families if isinstance(group_families, list) else []:
+                add_error(errors, str(family_id) not in family_ids, f"family group {group_id} references unknown family {family_id}")
+        capability_ids = {str(value) for value in taxonomy.get("capability_ids", [])}
+        workload_ids = {str(value) for value in taxonomy.get("workload_ids", [])}
+        controlled_tags = family_ids | set(family_groups) | capability_ids | workload_ids
         for method in optimization_guidance.get("methods", []):
             for objective in method.get("objectives", []):
                 add_error(errors, objective_ids and str(objective) not in objective_ids, f"optimization guidance method {method.get('id')} uses objective outside taxonomy: {objective}")
+            for tag in method.get("applies_to", []):
+                add_error(errors, str(tag) not in controlled_tags, f"optimization guidance method {method.get('id')} uses uncontrolled applies_to id {tag}")
+            match = method.get("match")
+            if match is not None:
+                add_error(errors, not isinstance(match, dict), f"optimization guidance method {method.get('id')} match must be a mapping")
+                if isinstance(match, dict):
+                    for family_id in match.get("families_any", []):
+                        add_error(errors, str(family_id) not in family_ids and str(family_id) not in family_groups, f"optimization guidance method {method.get('id')} match references unknown family {family_id}")
+                    for capability in match.get("capabilities_all", []):
+                        add_error(errors, str(capability) not in capability_ids, f"optimization guidance method {method.get('id')} match references unknown capability {capability}")
+                    for workload in match.get("workloads_any", []):
+                        add_error(errors, str(workload) not in workload_ids, f"optimization guidance method {method.get('id')} match references unknown workload {workload}")
+                    add_error(errors, "model_types" in match and not all(isinstance(value, str) and value for value in match.get("model_types", [])), f"optimization guidance method {method.get('id')} has invalid model_types")
+            constraints = method.get("target_constraints")
+            if constraints is not None:
+                add_error(errors, not isinstance(constraints, dict), f"optimization guidance method {method.get('id')} target_constraints must be a mapping")
+                if isinstance(constraints, dict):
+                    for workload in constraints.get("workloads_any", []):
+                        add_error(errors, str(workload) not in workload_ids, f"optimization guidance method {method.get('id')} target constraint references unknown workload {workload}")
+                    allowed_software = set(taxonomy.get("target_profile_contract", {}).get("software_keys", []))
+                    for software_key in constraints.get("exact_software", {}):
+                        add_error(errors, str(software_key) not in allowed_software, f"optimization guidance method {method.get('id')} target constraint references unknown software key {software_key}")
         for evidence_class in taxonomy.get("evidence_classes", []):
             add_error(errors, evidence_class not in EVIDENCE_CLASSES, f"recommendation taxonomy has invalid evidence_class {evidence_class}")
         for scope in taxonomy.get("support_scopes", []):
             add_error(errors, scope not in SUPPORT_SCOPES, f"recommendation taxonomy has invalid support_scope {scope}")
         for claim_type in taxonomy.get("claim_types", []):
             add_error(errors, claim_type not in CLAIM_TYPES, f"recommendation taxonomy has invalid claim_type {claim_type}")
+        buckets = {str(item.get("id")): item for item in taxonomy.get("advisor_buckets", []) if isinstance(item, dict)}
+        experimental = buckets.get("experimental-approach", {})
+        add_error(errors, experimental.get("requires_user_opt_in") is not True, "experimental advisor bucket must require user opt-in")
+        add_error(errors, experimental.get("prompt") != "This is an experimental approach. Do you want to try it?", "experimental advisor bucket has the wrong opt-in prompt")
+
+    for outcome in model_outcomes.get("records", []):
+        outcome_id = outcome.get("id") if isinstance(outcome, dict) else None
+        potential = outcome.get("potential_speedup", {}) if isinstance(outcome, dict) else {}
+        for branch_name in ("overall", "speculative_decoding"):
+            branch = potential.get(branch_name, {}) if isinstance(potential, dict) else {}
+            add_error(errors, not isinstance(branch, dict), f"model outcome {outcome_id} {branch_name} must be a mapping")
+            if not isinstance(branch, dict):
+                continue
+            band_range = branch.get("range")
+            provenance = branch.get("provenance")
+            add_error(
+                errors,
+                provenance not in OUTCOME_PROVENANCE,
+                f"model outcome {outcome_id} {branch_name} has invalid provenance {provenance}",
+            )
+            if band_range is None:
+                add_error(
+                    errors,
+                    provenance not in {"profile_required", "performance_observation"},
+                    f"model outcome {outcome_id} {branch_name} without a range must be profile_required or performance_observation",
+                )
+                if provenance == "performance_observation":
+                    observed_range = branch.get("observed_source_range")
+                    add_error(
+                        errors,
+                        not isinstance(observed_range, str),
+                        f"model outcome {outcome_id} {branch_name} performance_observation lacks observed_source_range",
+                    )
+                    if isinstance(observed_range, str):
+                        try:
+                            parse_band(observed_range)
+                        except ValueError as exc:
+                            errors.append(
+                                f"model outcome {outcome_id} {branch_name} has invalid observed_source_range: {exc}"
+                            )
+                    add_error(
+                        errors,
+                        not branch.get("evidence_lineage_ids"),
+                        f"model outcome {outcome_id} {branch_name} performance_observation lacks evidence_lineage_ids",
+                    )
+            elif isinstance(band_range, str):
+                try:
+                    floor, ceiling = parse_band(band_range)
+                except ValueError as exc:
+                    errors.append(f"model outcome {outcome_id} {branch_name} has invalid range: {exc}")
+                else:
+                    add_error(
+                        errors,
+                        provenance in {"profile_required", "performance_observation"},
+                        f"model outcome {outcome_id} {branch_name} {provenance} must not expose a numeric range",
+                    )
+                    if provenance == "not_a_speedup":
+                        add_error(
+                            errors,
+                            floor != 1.0 or ceiling != 1.0,
+                            f"model outcome {outcome_id} {branch_name} not_a_speedup range must be 1.0x-1.0x",
+                        )
+                    if ceiling > 1.0:
+                        add_error(errors, not branch.get("evidence_lineage_ids"), f"model outcome {outcome_id} {branch_name} numeric upside lacks evidence_lineage_ids")
+            else:
+                errors.append(f"model outcome {outcome_id} {branch_name} range must be a string or null")
 
     url_results: list[dict[str, Any]] = []
     if check_urls:

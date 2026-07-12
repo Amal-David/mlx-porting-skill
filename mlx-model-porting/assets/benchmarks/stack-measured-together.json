@@ -21,9 +21,9 @@
   "command": [
     "sh",
     "-lc",
-    "cat mlx-model-porting/assets/benchmarks/prompts/t207-stack-suffix.txt | python3 -m mlx_lm generate --model mlx-community/Qwen2.5-Coder-7B-Instruct-4bit --prompt-cache-file /tmp/t207-stack-combined-kv-cache.safetensors --draft-model mlx-community/Qwen2.5-Coder-1.5B-Instruct-4bit --num-draft-tokens 2 --prompt - --max-tokens 256 --temp 0.0 --seed 207 --kv-bits 4 --kv-group-size 64 --quantized-kv-start 0"
+    "cat mlx-model-porting/assets/benchmarks/prompts/t207-stack-suffix.txt | python3 -m mlx_lm generate --model mlx-community/Qwen2.5-Coder-7B-Instruct-4bit --prompt-cache-file <historical-ephemeral-cache>/t207-stack-combined-kv-cache.safetensors --draft-model mlx-community/Qwen2.5-Coder-1.5B-Instruct-4bit --num-draft-tokens 2 --prompt - --max-tokens 256 --temp 0.0 --seed 207 --kv-bits 4 --kv-group-size 64 --quantized-kv-start 0"
   ],
-  "command_display": "sh -lc 'cat mlx-model-porting/assets/benchmarks/prompts/t207-stack-suffix.txt | python3 -m mlx_lm generate --model mlx-community/Qwen2.5-Coder-7B-Instruct-4bit --prompt-cache-file /tmp/t207-stack-combined-kv-cache.safetensors --draft-model mlx-community/Qwen2.5-Coder-1.5B-Instruct-4bit --num-draft-tokens 2 --prompt - --max-tokens 256 --temp 0.0 --seed 207 --kv-bits 4 --kv-group-size 64 --quantized-kv-start 0'",
+  "command_display": "sh -lc 'cat mlx-model-porting/assets/benchmarks/prompts/t207-stack-suffix.txt | python3 -m mlx_lm generate --model mlx-community/Qwen2.5-Coder-7B-Instruct-4bit --prompt-cache-file <historical-ephemeral-cache>/t207-stack-combined-kv-cache.safetensors --draft-model mlx-community/Qwen2.5-Coder-1.5B-Instruct-4bit --num-draft-tokens 2 --prompt - --max-tokens 256 --temp 0.0 --seed 207 --kv-bits 4 --kv-group-size 64 --quantized-kv-start 0'",
   "config_notes": {
     "model": "mlx-community/Qwen2.5-Coder-7B-Instruct-4bit",
     "model_revision": "019cc73c45c770444708a6dd8690c66243cc5c80",
@@ -32,9 +32,9 @@
     "num_draft_tokens": "2",
     "stack_steps": "plain_4bit_target_weights_plus_kv_4bit_plus_prompt_cache_plus_draft_model",
     "kv_flags": "--kv-bits_4_--kv-group-size_64_--quantized-kv-start_0",
-    "prompt_cache_file": "/tmp/t207-stack-combined-kv-cache.safetensors",
-    "cached_prefix_file": "/Users/amal/Downloads/mlx-porting-skill/mlx-model-porting/assets/benchmarks/prompts/t207-long-prompt-8k.txt",
-    "suffix_file": "/Users/amal/Downloads/mlx-porting-skill/mlx-model-porting/assets/benchmarks/prompts/t207-stack-suffix.txt",
+    "prompt_cache_file": "<historical-ephemeral-cache>/t207-stack-combined-kv-cache.safetensors",
+    "cached_prefix_file": "<repo-root>/mlx-model-porting/assets/benchmarks/prompts/t207-long-prompt-8k.txt",
+    "suffix_file": "<repo-root>/mlx-model-porting/assets/benchmarks/prompts/t207-stack-suffix.txt",
     "prompt_cache_build": "cache_prompt_target_first_then_combined_target_plus_draft_cache_for_mlx_lm_generate_draft_cache_requirement",
     "workload": "cached_8053_token_long_prompt_prefix_plus_34_token_suffix_max_tokens_256_temp_0_seed_207",
     "baseline_basis": "vs_plain_4bit_8k_baseline_kv-baseline-8k_matched_context_not_fp16",
@@ -129,7 +129,7 @@
   },
   "speedup_vs_baseline": {
     "baseline_label": "kv-baseline-8k",
-    "baseline_file": "/Users/amal/Downloads/mlx-porting-skill/mlx-model-porting/assets/benchmarks/kv-baseline-8k.json",
+    "baseline_file": "<repo-root>/mlx-model-porting/assets/benchmarks/kv-baseline-8k.json",
     "basis": "Ratios of aggregate medians; only decode_tps is comparable for this matched ~8k decode-context comparison.",
     "baseline_rationale": "matched ~8k decode context; the earlier spec-baseline comparison mixed a 552-token context with an 8k-context run and is not apples-to-apples.",
     "note": "TTFT and prefill are not comparable between these two runs: stack-measured-together used a prompt cache and processed only a 34-token suffix, while kv-baseline-8k processed the full 8058-token prompt.",

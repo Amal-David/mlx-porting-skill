@@ -2,7 +2,7 @@
 
 `mlx-model-porting/` follows the shared Agent Skills format: one `SKILL.md` plus optional `scripts/`, `references/`, and `assets/`. Use the same folder across clients; do not fork the technical corpus per agent.
 
-Fresh repository checkouts are pre-installed for Claude Code and `.agents`-root clients through checked-in relative symlinks at `.claude/skills/mlx-model-porting` and `.agents/skills/mlx-model-porting`. On Windows, Git may materialize symlinks as text files depending on local configuration; use the installer with an explicit `--dest` path there.
+Fresh repository checkouts are pre-installed for Claude Code and `.agents`-root clients through checked-in relative symlinks at `.claude/skills/mlx-model-porting` and `.agents/skills/mlx-model-porting`. On Windows, Git may materialize symlinks as text files depending on local configuration. Native copy mode is intentionally unavailable because the attested installer requires POSIX no-follow directory APIs. Use WSL for a manifest-attested copy, or point the client directly at the checked-out `mlx-model-porting/` directory; Developer Mode symlinks are also viable when the client supports them. Do not replace the checked-in link with an unverified recursive copy.
 
 Use the documented client preset first:
 
@@ -32,9 +32,9 @@ python3 mlx-model-porting/scripts/install_skill.py --dest PATH_TO_CLIENT_SKILLS_
 
 After installation, start a fresh agent session and ask:
 
-> List the loaded skill named `mlx-model-porting`, then state its version and the first three non-negotiable rules without running any model code.
+> List the loaded skill named `mlx-model-porting`, then state its version and the first four non-negotiable rules without running any model code.
 
-Expected version: `0.3.0`. The response should mention static intake, source pinning/oracle, and no optimization before parity.
+Expected version: `0.5.0`. The response should mention static intake, source pinning/oracle, and no optimization before parity.
 
 ## Adapter policy
 

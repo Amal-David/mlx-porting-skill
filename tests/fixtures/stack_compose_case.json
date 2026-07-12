@@ -67,6 +67,34 @@
       ]
     }
   },
+  "receipt_assessments": {
+    "schema_version": 1,
+    "assessments": [
+      {
+        "receipt": "synthetic-stack-receipt.json",
+        "label": "synthetic-stack-receipt",
+        "receipt_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "classification": "performance_observation",
+        "enabled_methods": [
+          "safe-method",
+          "conflict-a",
+          "conflict-b",
+          "ttft-method",
+          "profile-only"
+        ],
+        "reasons": [
+          "The measured ratio regressed and the stack contains a known-conflicting pair."
+        ],
+        "gates": {
+          "promotion_ready": false
+        },
+        "primary_metric": "generation_tps",
+        "recomputed_median_ratios": {
+          "decode_tps": 0.9
+        }
+      }
+    ]
+  },
   "guidance_methods": [
     {
       "id": "safe-method",
@@ -103,78 +131,5 @@
     {
       "id": "profile-only"
     }
-  ],
-  "expected": {
-    "primary_metric": "decode-tokens-per-sec",
-    "hypothesis_ceiling": {
-      "floor": "1.0x",
-      "ceiling": "1.5x",
-      "metric": "decode-tokens-per-sec",
-      "provenance": "multiplicative_hypothesis",
-      "flag": "unmeasured composition - multiplicative hypothesis, not a claim"
-    },
-    "unmeasured_upside": [
-      "profile-only"
-    ],
-    "other_metric_upside": [
-      {
-        "method": "ttft-method",
-        "metric": "ttft-proxy",
-        "range": "1.0x-9.0x"
-      }
-    ],
-    "excluded_conflicts": [
-      [
-        "conflict-a",
-        "conflict-b"
-      ]
-    ],
-    "per_step": [
-      {
-        "method": "safe-method",
-        "band": "1.0x-1.5x",
-        "lossiness": "lossless",
-        "gate": "Safe method gate"
-      },
-      {
-        "method": "conflict-a",
-        "band": "1.0x-2.0x",
-        "lossiness": "lossless",
-        "gate": "Conflict A gate"
-      },
-      {
-        "method": "conflict-b",
-        "band": "1.0x-5.0x",
-        "lossiness": "conditionally-lossy",
-        "gate": "Conflict B gate"
-      },
-      {
-        "method": "ttft-method",
-        "band": "1.0x-9.0x",
-        "lossiness": "lossless",
-        "gate": "TTFT method gate"
-      },
-      {
-        "method": "profile-only",
-        "band": null,
-        "lossiness": "lossless",
-        "gate": "Profile-only gate"
-      }
-    ],
-    "measured": {
-      "ratio": "0.9x",
-      "provenance": "local_reproduced",
-      "receipt": "synthetic-stack-receipt.json",
-      "label": "synthetic-stack-receipt",
-      "file": "synthetic-stack-receipt.json",
-      "metric": "decode-tokens-per-sec",
-      "measured_on": {
-        "chip": "Apple M4 Pro",
-        "mlx_lm": "0.31.1"
-      },
-      "basis": "Synthetic measured-together receipt versus a plain baseline.",
-      "caveat": "Synthetic caveat for fixture coverage.",
-      "floor": "1.0x"
-    }
-  }
+  ]
 }

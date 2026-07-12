@@ -8,7 +8,14 @@
     "audio_head.weight",
     "speech_embedding.weight"
   ],
-  "optimization_must_include": "qwen3-tts-batch-generation",
+  "optimization_must_include": "audio-reference-conditioning-cache",
   "optimization_must_exclude": "fast-sdpa",
+  "target_profile": {
+    "schema_version": 1,
+    "hardware": {},
+    "software": {},
+    "capabilities": [],
+    "workloads": ["reference-audio-reuse"]
+  },
   "seeded_parity_bug": {"shape": [3, 5], "delta": 7.0}
 }

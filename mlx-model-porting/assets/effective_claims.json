@@ -1,0 +1,558 @@
+{
+  "schema_version": 1,
+  "guidance_schema_version": 1,
+  "receipt_assessment_state": "available",
+  "claim_count": 10,
+  "claims": [
+    {
+      "method_id": "bf16-weight-cast",
+      "method_status": "native-mlx",
+      "provenance": "performance_observation",
+      "claim_status": "held",
+      "metric": "wall-time",
+      "observed_range": "1.0x-1.8122x",
+      "profile_eligible_range": null,
+      "effective_range": null,
+      "experiment_fingerprint": null,
+      "promotion_state": "withheld",
+      "evidence_source_ids": [
+        "mlx-docs",
+        "mlx-repo"
+      ],
+      "evidence_lineage_ids": [
+        "local-qwen2.5-0.5b-f32-vs-bf16-attested-2026-07-10"
+      ],
+      "target_constraints": {
+        "exact_software": {
+          "mlx": "0.24.0"
+        },
+        "required_profile_fields": [
+          "hardware.chip",
+          "software.mlx",
+          "workloads"
+        ],
+        "source_ids": [
+          "mlx-docs"
+        ]
+      },
+      "receipt_assessments": [
+        {
+          "receipt": "qwen2.5-0.5b-port-bf16.json",
+          "role": "candidate",
+          "classification": "performance_observation",
+          "promotion_ready": false,
+          "receipt_sha256": "11ede57ed58d4623214f852bf7827fece79fd77daac70f2beb11d68d076f333d",
+          "method_enabled": true,
+          "required_gates_passed": false,
+          "experiment_fingerprint": null
+        },
+        {
+          "receipt": "qwen2.5-0.5b-port-f32.json",
+          "role": "baseline",
+          "classification": "performance_observation",
+          "promotion_ready": false,
+          "receipt_sha256": "c7775a8a3bce14dbbca143ca622ae14e1d7a81a986bae6304d6ea90c307ad04a",
+          "method_enabled": false,
+          "required_gates_passed": false,
+          "experiment_fingerprint": null
+        }
+      ],
+      "withheld_reasons": [
+        "claim-status-held",
+        "performance-observation-not-promotable"
+      ]
+    },
+    {
+      "method_id": "content-prefix-cache-vlm",
+      "method_status": "rejected-or-superseded",
+      "provenance": "profile_required",
+      "claim_status": "superseded",
+      "metric": "repeated-media-ttft",
+      "observed_range": null,
+      "profile_eligible_range": null,
+      "effective_range": null,
+      "experiment_fingerprint": null,
+      "promotion_state": "withheld",
+      "evidence_source_ids": [
+        "mlx-vlm-readme",
+        "paper-2601-19139",
+        "vllm-mlx-repo"
+      ],
+      "evidence_lineage_ids": [
+        "vllm-mlx-repeated-media-cache-a48c86c"
+      ],
+      "target_constraints": null,
+      "receipt_assessments": [],
+      "withheld_reasons": [
+        "claim-status-superseded",
+        "profile-required-provenance"
+      ]
+    },
+    {
+      "method_id": "continuous-batching-serving",
+      "method_status": "proven-mlx-port",
+      "provenance": "profile_required",
+      "claim_status": "held",
+      "metric": "batch-throughput",
+      "observed_range": "1.0x-4.3x",
+      "profile_eligible_range": null,
+      "effective_range": null,
+      "experiment_fingerprint": null,
+      "promotion_state": "withheld",
+      "evidence_source_ids": [
+        "mlx-vlm-readme",
+        "orca-osdi22",
+        "paper-2309-06180",
+        "paper-2601-19139",
+        "vllm-blog-anatomy",
+        "vllm-mlx-continuous-batching-guide",
+        "vllm-mlx-repo"
+      ],
+      "evidence_lineage_ids": [
+        "vllm-mlx-concurrent-serving-a48c86c"
+      ],
+      "target_constraints": {
+        "exact_software": {
+          "vllm_mlx_revision": "a48c86c1a41900f7d26658471b5f67e5fdd35445"
+        },
+        "required_profile_fields": [
+          "hardware.chip",
+          "software.vllm_mlx_revision",
+          "workloads"
+        ],
+        "source_ids": [
+          "vllm-mlx-continuous-batching-guide",
+          "paper-2601-19139"
+        ],
+        "workloads_any": [
+          "concurrent-serving"
+        ]
+      },
+      "receipt_assessments": [],
+      "withheld_reasons": [
+        "claim-status-held",
+        "profile-required-provenance"
+      ]
+    },
+    {
+      "method_id": "draft-model-speculation",
+      "method_status": "official-mlx-project",
+      "provenance": "performance_observation",
+      "claim_status": "held",
+      "metric": "decode-tokens-per-sec",
+      "observed_range": "1.0x-1.3x",
+      "profile_eligible_range": null,
+      "effective_range": null,
+      "experiment_fingerprint": null,
+      "promotion_state": "withheld",
+      "evidence_source_ids": [
+        "mlx-lm-release-0312",
+        "mlx-lm-release-0313",
+        "mlx-lm-speculative",
+        "paper-2211-17192",
+        "paper-2302-01318"
+      ],
+      "evidence_lineage_ids": [
+        "local-qwen25-coder-speculative-k-sweep-2026-07-06"
+      ],
+      "target_constraints": {
+        "exact_software": {
+          "mlx": "0.30.4",
+          "mlx_lm": "0.31.1"
+        },
+        "required_profile_fields": [
+          "hardware.chip",
+          "software.mlx",
+          "software.mlx_lm",
+          "workloads"
+        ],
+        "source_ids": [
+          "mlx-lm-speculative",
+          "mlx-lm-release-0312",
+          "mlx-lm-release-0313"
+        ]
+      },
+      "receipt_assessments": [
+        {
+          "receipt": "spec-baseline.json",
+          "role": "unrelated",
+          "classification": "performance_observation",
+          "promotion_ready": false,
+          "receipt_sha256": "81d21b1e1849418f97b59e622fdb91fc50f335f706612eac973dbceb62566a9f",
+          "method_enabled": false,
+          "required_gates_passed": false,
+          "experiment_fingerprint": null
+        },
+        {
+          "receipt": "spec-draft-k2.json",
+          "role": "candidate",
+          "classification": "performance_observation",
+          "promotion_ready": false,
+          "receipt_sha256": "a16c7d6bba98fc0725ba78a8ef465d52cdec8a210eecc437a8f56dbd164220f3",
+          "method_enabled": true,
+          "required_gates_passed": false,
+          "experiment_fingerprint": null
+        },
+        {
+          "receipt": "spec-draft-k3.json",
+          "role": "candidate",
+          "classification": "performance_observation",
+          "promotion_ready": false,
+          "receipt_sha256": "065cf9b998d60aca0b31a7403d8f96f3fde918fa79b86fca7427166049b1f21c",
+          "method_enabled": true,
+          "required_gates_passed": false,
+          "experiment_fingerprint": null
+        },
+        {
+          "receipt": "spec-draft-k4.json",
+          "role": "candidate",
+          "classification": "performance_observation",
+          "promotion_ready": false,
+          "receipt_sha256": "a1ad234c72d15f97df7cc43920fd52441dd2141a126d984fa42d3e044452c6a4",
+          "method_enabled": true,
+          "required_gates_passed": false,
+          "experiment_fingerprint": null
+        }
+      ],
+      "withheld_reasons": [
+        "claim-status-held",
+        "performance-observation-not-promotable"
+      ]
+    },
+    {
+      "method_id": "multimodal-content-prefix-cache",
+      "method_status": "proven-mlx-port",
+      "provenance": "profile_required",
+      "claim_status": "held",
+      "metric": "repeated-media-ttft",
+      "observed_range": "1.0x-28.0x",
+      "profile_eligible_range": null,
+      "effective_range": null,
+      "experiment_fingerprint": null,
+      "promotion_state": "withheld",
+      "evidence_source_ids": [
+        "mlx-vlm-apc-source",
+        "mlx-vlm-ar-cache-guards",
+        "paper-2601-19139",
+        "vllm-doc-prefix-caching",
+        "vllm-mlx-mllm-batch-source",
+        "vllm-mlx-multimodal-guide"
+      ],
+      "evidence_lineage_ids": [
+        "vllm-mlx-repeated-media-cache-a48c86c"
+      ],
+      "target_constraints": {
+        "exact_software": {
+          "vllm_mlx_revision": "a48c86c1a41900f7d26658471b5f67e5fdd35445"
+        },
+        "required_profile_fields": [
+          "hardware.chip",
+          "software.vllm_mlx_revision",
+          "workloads"
+        ],
+        "source_ids": [
+          "vllm-mlx-multimodal-guide",
+          "vllm-mlx-mllm-batch-source",
+          "paper-2601-19139"
+        ],
+        "workloads_any": [
+          "repeated-media",
+          "multimodal-serving"
+        ]
+      },
+      "receipt_assessments": [],
+      "withheld_reasons": [
+        "claim-status-held",
+        "profile-required-provenance"
+      ]
+    },
+    {
+      "method_id": "native-low-bit-weight-quantization",
+      "method_status": "native-mlx",
+      "provenance": "performance_observation",
+      "claim_status": "held",
+      "metric": "decode-tokens-per-sec",
+      "observed_range": "1.0x-2.4x",
+      "profile_eligible_range": null,
+      "effective_range": null,
+      "experiment_fingerprint": null,
+      "promotion_state": "withheld",
+      "evidence_source_ids": [
+        "mlx-audio-convert",
+        "mlx-doc-core-quantize",
+        "mlx-doc-nn-quantize",
+        "mlx-doc-quantized-matmul",
+        "mlx-lm-convert",
+        "mlx-lm-release-0313",
+        "nvidia-nvfp4-blog",
+        "paper-2310-16836",
+        "spheron-nvfp4-mxfp4-guide"
+      ],
+      "evidence_lineage_ids": [
+        "local-qwen3-1.7b-bf16-vs-community-4bit-2026-07-06"
+      ],
+      "target_constraints": {
+        "exact_software": {
+          "mlx": "0.30.4",
+          "mlx_lm": "0.31.1"
+        },
+        "required_profile_fields": [
+          "hardware.chip",
+          "software.mlx",
+          "software.mlx_lm",
+          "workloads"
+        ],
+        "source_ids": [
+          "mlx-doc-core-quantize",
+          "mlx-lm-release-0313"
+        ]
+      },
+      "receipt_assessments": [
+        {
+          "receipt": "quant-4bit.json",
+          "role": "candidate",
+          "classification": "performance_observation",
+          "promotion_ready": false,
+          "receipt_sha256": "ae6da36683617bff20cda370b1707c4b46b46874ad5ac41992d6046a8db77175",
+          "method_enabled": true,
+          "required_gates_passed": false,
+          "experiment_fingerprint": null
+        },
+        {
+          "receipt": "quant-baseline-bf16.json",
+          "role": "unrelated",
+          "classification": "performance_observation",
+          "promotion_ready": false,
+          "receipt_sha256": "d299da6bdadcd525bbd10713673c2e6bc2b9a6f6d66f7707ee54cb859b53ed6c",
+          "method_enabled": false,
+          "required_gates_passed": false,
+          "experiment_fingerprint": null
+        }
+      ],
+      "withheld_reasons": [
+        "claim-status-held",
+        "performance-observation-not-promotable"
+      ]
+    },
+    {
+      "method_id": "prompt-prefix-cache",
+      "method_status": "official-mlx-project",
+      "provenance": "performance_observation",
+      "claim_status": "held",
+      "metric": "ttft-proxy",
+      "observed_range": "1.0x-23.8x",
+      "profile_eligible_range": null,
+      "effective_range": null,
+      "experiment_fingerprint": null,
+      "promotion_state": "withheld",
+      "evidence_source_ids": [
+        "mlx-lm-cache",
+        "mlx-lm-release-0313",
+        "mlx-vlm-readme",
+        "paper-2402-05099",
+        "paper-2412-03594",
+        "paper-2606-21842",
+        "vllm-doc-prefix-caching",
+        "vllm-mlx-repo"
+      ],
+      "evidence_lineage_ids": [
+        "local-qwen3-1.7b-prompt-cache-2026-07-06"
+      ],
+      "target_constraints": {
+        "exact_software": {
+          "mlx": "0.30.4",
+          "mlx_lm": "0.31.1"
+        },
+        "required_profile_fields": [
+          "hardware.chip",
+          "software.mlx",
+          "software.mlx_lm",
+          "workloads"
+        ],
+        "source_ids": [
+          "mlx-lm-cache",
+          "mlx-lm-release-0313"
+        ],
+        "workloads_any": [
+          "repetitive-prompts",
+          "rag"
+        ]
+      },
+      "receipt_assessments": [
+        {
+          "receipt": "pcache-cold.json",
+          "role": "unrelated",
+          "classification": "performance_observation",
+          "promotion_ready": false,
+          "receipt_sha256": "2edbbedc36a86dda78ab6dc18d5c973b7cd89db43e1e8c819877f6e72069eb3c",
+          "method_enabled": false,
+          "required_gates_passed": false,
+          "experiment_fingerprint": null
+        },
+        {
+          "receipt": "pcache-warm.json",
+          "role": "candidate",
+          "classification": "performance_observation",
+          "promotion_ready": false,
+          "receipt_sha256": "47cfeba0fd66d45cfaa9c4343bad6573695304c00bc19ea5fc784202bf321c37",
+          "method_enabled": true,
+          "required_gates_passed": false,
+          "experiment_fingerprint": null
+        }
+      ],
+      "withheld_reasons": [
+        "claim-status-held",
+        "performance-observation-not-promotable"
+      ]
+    },
+    {
+      "method_id": "qwen3-tts-batch-generation",
+      "method_status": "proven-mlx-port",
+      "provenance": "profile_required",
+      "claim_status": "held",
+      "metric": "batch-throughput",
+      "observed_range": "1.0x-5.45x",
+      "profile_eligible_range": null,
+      "effective_range": null,
+      "experiment_fingerprint": null,
+      "promotion_state": "withheld",
+      "evidence_source_ids": [
+        "mlx-audio-qwen3-tts-docs",
+        "mlx-audio-release-044",
+        "paper-2601-15621"
+      ],
+      "evidence_lineage_ids": [
+        "mlx-audio-qwen3-tts-batch-v0.4.4"
+      ],
+      "target_constraints": {
+        "exact_software": {
+          "mlx_audio": "0.4.4"
+        },
+        "required_profile_fields": [
+          "hardware.chip",
+          "software.mlx_audio",
+          "capabilities",
+          "workloads"
+        ],
+        "source_ids": [
+          "mlx-audio-release-044",
+          "mlx-audio-qwen3-tts-docs"
+        ],
+        "workloads_any": [
+          "concurrent-tts-short-prompts"
+        ]
+      },
+      "receipt_assessments": [],
+      "withheld_reasons": [
+        "claim-status-held",
+        "profile-required-provenance"
+      ]
+    },
+    {
+      "method_id": "spatial-grid-sample-kernel",
+      "method_status": "proven-mlx-port",
+      "provenance": "profile_required",
+      "claim_status": "held",
+      "metric": "kernel-latency",
+      "observed_range": "1.0x-10.0x",
+      "profile_eligible_range": null,
+      "effective_range": null,
+      "experiment_fingerprint": null,
+      "promotion_state": "withheld",
+      "evidence_source_ids": [
+        "katlun-grid-sample-benchmark",
+        "katlun-grid-sample-source",
+        "katlun-grid-sample-tests",
+        "mlx-doc-custom-extensions"
+      ],
+      "evidence_lineage_ids": [
+        "local-grid-sample-kernel-m4pro-mlx0.30.4"
+      ],
+      "target_constraints": {
+        "exact_software": {
+          "mlx": "0.30.4"
+        },
+        "required_profile_fields": [
+          "hardware.chip",
+          "software.mlx",
+          "workloads"
+        ],
+        "source_ids": [
+          "katlun-grid-sample-benchmark",
+          "mlx-doc-custom-extensions"
+        ]
+      },
+      "receipt_assessments": [],
+      "withheld_reasons": [
+        "claim-status-held",
+        "profile-required-provenance"
+      ]
+    },
+    {
+      "method_id": "uniform-kv-quantization",
+      "method_status": "official-mlx-project",
+      "provenance": "performance_observation",
+      "claim_status": "held",
+      "metric": "decode-tokens-per-sec",
+      "observed_range": "1.0x-1.1x",
+      "profile_eligible_range": null,
+      "effective_range": null,
+      "experiment_fingerprint": null,
+      "promotion_state": "withheld",
+      "evidence_source_ids": [
+        "mlx-lm-cache",
+        "mlx-lm-release-0313",
+        "mlx-vlm-readme",
+        "paper-2402-02750"
+      ],
+      "evidence_lineage_ids": [
+        "local-qwen25-coder-7b-kv4-8k-2026-07-06"
+      ],
+      "target_constraints": {
+        "exact_software": {
+          "mlx": "0.30.4",
+          "mlx_lm": "0.31.1"
+        },
+        "required_profile_fields": [
+          "hardware.chip",
+          "software.mlx",
+          "software.mlx_lm",
+          "workloads"
+        ],
+        "source_ids": [
+          "mlx-lm-cache",
+          "mlx-lm-release-0313"
+        ],
+        "workloads_any": [
+          "long-context"
+        ]
+      },
+      "receipt_assessments": [
+        {
+          "receipt": "kv-4bit-8k.json",
+          "role": "candidate",
+          "classification": "performance_observation",
+          "promotion_ready": false,
+          "receipt_sha256": "1dc4551ff2e27d1183a159fccfdb7be4e498f03c9e9d92a917cc8f171f34a2ca",
+          "method_enabled": true,
+          "required_gates_passed": false,
+          "experiment_fingerprint": null
+        },
+        {
+          "receipt": "kv-baseline-8k.json",
+          "role": "unrelated",
+          "classification": "performance_observation",
+          "promotion_ready": false,
+          "receipt_sha256": "c6c3b60be9b195a933fbeb1d89499a24e968cdaa9601593f4e7dac6fa1a991c1",
+          "method_enabled": false,
+          "required_gates_passed": false,
+          "experiment_fingerprint": null
+        }
+      ],
+      "withheld_reasons": [
+        "claim-status-held",
+        "performance-observation-not-promotable"
+      ]
+    }
+  ]
+}

@@ -7,21 +7,118 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: validate-mlx-porting-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  PYTHONDONTWRITEBYTECODE: "1"
+  PIP_DISABLE_PIP_VERSION_CHECK: "1"
+  PIP_NO_INPUT: "1"
+
 jobs:
-  validate:
+  release-validation:
+    name: Release validation (Python 3.12)
     runs-on: ubuntu-latest
+    timeout-minutes: 25
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Scan repository for verified secrets
+        run: >-
+          docker run --rm --volume "$PWD:/repo:ro"
+          ghcr.io/trufflesecurity/trufflehog@sha256:d52e62fe0237bf0199cb79f94593051300b0989d9aeab8b431001d9f75e469c1
+          filesystem /repo --fail --no-update --github-actions
+          --results=verified
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
         with:
           python-version: "3.12"
-      - name: Install test dependency
-        run: python3 -m pip install --disable-pip-version-check numpy
-      - name: Audit skill
+      - name: Run dependency-free repository secret regression
+        run: python3 -m unittest -v tests.test_distribution_portability
+      - name: Install hash-locked test dependency
+        run: >-
+          python3 -m pip install
+          --require-hashes --only-binary=:all:
+          -r .github/requirements-ci.txt
+      - name: Audit skill strictly
         run: python3 mlx-model-porting/scripts/audit_skill.py --strict mlx-model-porting
-      - name: Validate source provenance
+      - name: Validate source provenance offline
         run: python3 mlx-model-porting/scripts/validate_sources.py mlx-model-porting
+      - name: Check benchmark assessments and report drift
+        run: python3 mlx-model-porting/scripts/validate_benchmarks.py check
+      - name: Check effective claim catalogue drift
+        run: python3 mlx-model-porting/scripts/generate_claim_catalog.py --check
+      - name: Check evidence index drift
+        run: python3 mlx-model-porting/scripts/generate_evidence_index.py --check
+      - name: Check static site data drift
+        run: python3 mlx-model-porting/scripts/generate_site_data.py --check
+      - name: Check static JavaScript syntax
+        run: |
+          node --check site/data.js
+          node --check site/app.js
       - name: Check artifact manifest integrity
         run: python3 mlx-model-porting/scripts/manifest.py check
-      - name: Unit tests
-        run: PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s tests -v
+      - name: Verify release documentation and metadata contracts
+        run: >-
+          python3 -m unittest -v
+          tests.test_release_contract
+          tests.test_documentation_contract
+          tests.test_public_claims_contract
+      - name: Verify a clean, idempotent skill installation
+        run: |
+          install_root="$RUNNER_TEMP/agent-skills"
+          python3 mlx-model-porting/scripts/install_skill.py --dest "$install_root" --mode copy
+          python3 mlx-model-porting/scripts/audit_skill.py --strict "$install_root/mlx-model-porting"
+          python3 mlx-model-porting/scripts/install_skill.py --dest "$install_root" --mode copy
+      # Ubuntu cannot execute MLX keystone math. The Apple-Silicon release path must
+      # run the full suite with MLX_KEYSTONE_REQUIRED=1.
+      - name: Acknowledge Ubuntu MLX keystone coverage gap
+        run: test "$RUNNER_OS" = "Linux"
+      - name: Run the full deterministic test suite
+        run: python3 -m unittest discover -s tests -v
+      - name: Check patch whitespace
+        run: |
+          set -euo pipefail
+          git diff --check
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            base="${{ github.event.pull_request.base.sha }}"
+          else
+            base="${{ github.event.before }}"
+          fi
+          if [[ -n "$base" && "$base" != "0000000000000000000000000000000000000000" ]] \
+            && git cat-file -e "$base^{commit}"; then
+            git diff --check "$base" HEAD
+          else
+            git show --check --format= HEAD
+          fi
+
+  supported-python:
+    name: Full offline suite (Python ${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10", "3.14"]
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install hash-locked test dependency
+        run: >-
+          python3 -m pip install
+          --require-hashes --only-binary=:all:
+          -r .github/requirements-ci.txt
+      - name: Compile shipped Python at the supported boundaries
+        run: python3 -m compileall -q mlx-model-porting/scripts tests
+      # Ubuntu cannot execute MLX keystone math. The Apple-Silicon release path must
+      # run the full suite with MLX_KEYSTONE_REQUIRED=1.
+      - name: Acknowledge Ubuntu MLX keystone coverage gap
+        run: test "$RUNNER_OS" = "Linux"
+      - name: Run the complete deterministic test suite
+        run: python3 -m unittest discover -s tests -v

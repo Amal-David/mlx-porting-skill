@@ -1,0 +1,35 @@
+{
+  "name": "whisper-composition",
+  "config": {
+    "model_type": "whisper",
+    "architectures": ["WhisperForConditionalGeneration"],
+    "encoder_layers": 4,
+    "decoder_layers": 4,
+    "is_encoder_decoder": true,
+    "num_mel_bins": 80,
+    "sampling_rate": 16000,
+    "license": "apache-2.0"
+  },
+  "tensor_keys": [
+    "encoder.layers.0.self_attn.q_proj.weight",
+    "decoder.layers.0.self_attn.q_proj.weight",
+    "decoder.layers.0.encoder_attn.k_proj.weight",
+    "feature_extractor.conv1.weight"
+  ],
+  "expected_status": "recommended",
+  "expected_primary_family": "automatic-speech-recognition",
+  "expected_families": [
+    "automatic-speech-recognition",
+    "encoder-decoder-transformer"
+  ],
+  "expected_runbooks": [
+    "references/runbook-asr.md",
+    "references/runbook-encoder-decoder.md"
+  ],
+  "expected_traits": [
+    "audio-encoder",
+    "autoregressive-text-decoder",
+    "cross-attention",
+    "kv-cache"
+  ]
+}

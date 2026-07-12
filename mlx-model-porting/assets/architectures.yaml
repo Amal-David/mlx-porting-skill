@@ -1,6 +1,336 @@
 {
   "schema_version": 1,
-  "reviewed": "2026-06-27",
+  "reviewed": "2026-07-09",
+  "routing_policy": {
+    "minimum_score": 8.0,
+    "minimum_margin": 2.0,
+    "confidence_reference_score": 30.0,
+    "profile_primary_bonus": 20.0,
+    "profile_secondary_bonus": 2.0,
+    "notes": "A family is recommendable only when its absolute evidence clears minimum_score and its lead over the runner-up clears minimum_margin. Otherwise inspection must return an ambiguity blocker."
+  },
+  "hybrid_profiles": [
+    {
+      "id": "qwen3-next",
+      "model_type_aliases": [
+        "qwen3_next"
+      ],
+      "class_patterns": [
+        "Qwen3NextForCausalLM",
+        "Qwen3NextModel"
+      ],
+      "primary_family": "moe-decoder-transformer",
+      "components": [
+        {
+          "family": "moe-decoder-transformer",
+          "runbook": "references/runbook-moe-transformer.md",
+          "traits": [
+            "causal-decoder",
+            "sparse-moe",
+            "shared-expert"
+          ]
+        },
+        {
+          "family": "ssm-recurrent-hybrid",
+          "runbook": "references/runbook-ssm-hybrid.md",
+          "traits": [
+            "gated-delta-recurrence",
+            "convolutional-state"
+          ]
+        },
+        {
+          "family": "dense-decoder-transformer",
+          "runbook": "references/runbook-decoder-transformer.md",
+          "traits": [
+            "full-attention",
+            "kv-cache"
+          ]
+        }
+      ],
+      "official_reference": "https://github.com/ml-explore/mlx-lm/blob/ed1fca4cef15a824c5f1702c80f70b4cffc8e4dd/mlx_lm/models/qwen3_next.py",
+      "notes": "MLX-LM alternates gated-delta recurrent and full-attention layers and uses sparse plus shared experts. Porting requires all three component contracts."
+    },
+    {
+      "id": "falcon-h1",
+      "model_type_aliases": [
+        "falcon_h1"
+      ],
+      "class_patterns": [
+        "FalconH1ForCausalLM",
+        "FalconH1Model"
+      ],
+      "primary_family": "ssm-recurrent-hybrid",
+      "components": [
+        {
+          "family": "ssm-recurrent-hybrid",
+          "runbook": "references/runbook-ssm-hybrid.md",
+          "traits": [
+            "causal-decoder",
+            "mamba2-state-space",
+            "convolutional-state"
+          ]
+        },
+        {
+          "family": "dense-decoder-transformer",
+          "runbook": "references/runbook-decoder-transformer.md",
+          "traits": [
+            "full-attention",
+            "kv-cache"
+          ]
+        }
+      ],
+      "official_reference": "https://github.com/ml-explore/mlx-lm/blob/ed1fca4cef15a824c5f1702c80f70b4cffc8e4dd/mlx_lm/models/falcon_h1.py",
+      "notes": "MLX-LM carries recurrent Mamba state and attention KV state together for each hybrid block. Both state contracts are required."
+    },
+    {
+      "id": "nemotron-h",
+      "model_type_aliases": [
+        "nemotron_h"
+      ],
+      "class_patterns": [
+        "NemotronHForCausalLM",
+        "NemotronHModel"
+      ],
+      "primary_family": "ssm-recurrent-hybrid",
+      "components": [
+        {
+          "family": "ssm-recurrent-hybrid",
+          "runbook": "references/runbook-ssm-hybrid.md",
+          "traits": [
+            "causal-decoder",
+            "mamba2-state-space",
+            "convolutional-state",
+            "hybrid-block-schedule"
+          ]
+        },
+        {
+          "family": "moe-decoder-transformer",
+          "runbook": "references/runbook-moe-transformer.md",
+          "traits": [
+            "sparse-moe"
+          ],
+          "when_any_config": [
+            "n_routed_experts",
+            "num_experts_per_tok",
+            "moe_intermediate_size"
+          ]
+        },
+        {
+          "family": "dense-decoder-transformer",
+          "runbook": "references/runbook-decoder-transformer.md",
+          "traits": [
+            "full-attention",
+            "kv-cache"
+          ]
+        }
+      ],
+      "official_reference": "https://github.com/ml-explore/mlx-lm/blob/ed1fca4cef15a824c5f1702c80f70b4cffc8e4dd/mlx_lm/models/nemotron_h.py",
+      "notes": "The block schedule composes Mamba, attention, MLP, and optionally MoE blocks. The MoE route activates only when expert configuration is present."
+    },
+    {
+      "id": "whisper-asr-seq2seq",
+      "model_type_aliases": [
+        "whisper"
+      ],
+      "class_patterns": [
+        "WhisperForConditionalGeneration",
+        "WhisperForAudioClassification"
+      ],
+      "primary_family": "automatic-speech-recognition",
+      "components": [
+        {
+          "family": "automatic-speech-recognition",
+          "runbook": "references/runbook-asr.md",
+          "traits": [
+            "audio-encoder",
+            "feature-extraction",
+            "task-specific-decoding"
+          ]
+        },
+        {
+          "family": "encoder-decoder-transformer",
+          "runbook": "references/runbook-encoder-decoder.md",
+          "traits": [
+            "autoregressive-text-decoder",
+            "cross-attention",
+            "kv-cache"
+          ]
+        }
+      ],
+      "official_reference": "https://github.com/ml-explore/mlx-examples/tree/796f5b53cab69a3d48a44233ce21aae889e94a08/whisper",
+      "notes": "Whisper is both an ASR task route and an encoder-decoder architecture. Both preprocessing/quality and cross-attention/cache contracts are required."
+    },
+    {
+      "id": "qwen2-audio-conditional-generation",
+      "model_type_aliases": [
+        "qwen2_audio"
+      ],
+      "class_patterns": [
+        "Qwen2AudioForConditionalGeneration",
+        "Qwen2AudioModel"
+      ],
+      "primary_family": "vision-language-omni",
+      "components": [
+        {
+          "family": "vision-language-omni",
+          "runbook": "references/runbook-multimodal-omni.md",
+          "traits": [
+            "audio-conditioned-language",
+            "multimodal-projector",
+            "causal-decoder"
+          ]
+        },
+        {
+          "family": "automatic-speech-recognition",
+          "runbook": "references/runbook-asr.md",
+          "traits": [
+            "audio-encoder",
+            "feature-extraction",
+            "asr-quality-gate"
+          ]
+        }
+      ],
+      "official_reference": "https://github.com/Blaizzy/mlx-audio/tree/412cf7cd381c2a3f6a8189af04a95af24cb415b6/mlx_audio",
+      "notes": "Qwen2-Audio combines an audio frontend with conditional language generation; route both the modality boundary and ASR validation surface."
+    },
+    {
+      "id": "moshi-streaming-audio-lm",
+      "model_type_aliases": [
+        "moshi"
+      ],
+      "class_patterns": [
+        "MoshiForConditionalGeneration",
+        "MoshiModel"
+      ],
+      "primary_family": "streaming-speech",
+      "components": [
+        {
+          "family": "streaming-speech",
+          "runbook": "references/runbook-streaming-speech.md",
+          "traits": [
+            "full-duplex-streaming",
+            "persistent-stream-state",
+            "chunk-scheduling"
+          ]
+        },
+        {
+          "family": "autoregressive-audio-lm",
+          "runbook": "references/runbook-autoregressive-audio.md",
+          "traits": [
+            "autoregressive-audio-tokens",
+            "multi-codebook-schedule",
+            "codec-state"
+          ]
+        }
+      ],
+      "official_reference": "https://github.com/Blaizzy/mlx-audio/tree/412cf7cd381c2a3f6a8189af04a95af24cb415b6/mlx_audio",
+      "notes": "Moshi needs both the autoregressive audio-token contract and persistent streaming/chunk invariance validation."
+    },
+    {
+      "id": "rnnt-streaming-asr",
+      "model_type_aliases": [
+        "rnnt"
+      ],
+      "class_patterns": [
+        "RNNTForSpeechRecognition",
+        "RNNTransducer",
+        "Transducer"
+      ],
+      "primary_family": "streaming-speech",
+      "components": [
+        {
+          "family": "streaming-speech",
+          "runbook": "references/runbook-streaming-speech.md",
+          "traits": [
+            "persistent-stream-state",
+            "chunk-invariance",
+            "flush-semantics"
+          ]
+        },
+        {
+          "family": "automatic-speech-recognition",
+          "runbook": "references/runbook-asr.md",
+          "traits": [
+            "audio-encoder",
+            "prediction-network",
+            "transducer-joiner",
+            "search-state"
+          ]
+        }
+      ],
+      "official_reference": "https://github.com/Blaizzy/mlx-audio/tree/412cf7cd381c2a3f6a8189af04a95af24cb415b6/mlx_audio",
+      "notes": "RNN-T is an ASR architecture with explicit streaming state; both task quality and chunk/flush behavior are required."
+    },
+    {
+      "id": "voxtral-realtime-asr",
+      "model_type_aliases": [
+        "voxtral_realtime"
+      ],
+      "class_patterns": [
+        "VoxtralRealtimeForConditionalGeneration",
+        "VoxtralRealtimeModel"
+      ],
+      "primary_family": "streaming-speech",
+      "components": [
+        {
+          "family": "streaming-speech",
+          "runbook": "references/runbook-streaming-speech.md",
+          "traits": [
+            "realtime-audio-input",
+            "persistent-stream-state",
+            "chunk-invariance"
+          ]
+        },
+        {
+          "family": "automatic-speech-recognition",
+          "runbook": "references/runbook-asr.md",
+          "traits": [
+            "audio-encoder",
+            "asr-quality-gate",
+            "search-state"
+          ]
+        }
+      ],
+      "official_reference": "https://github.com/Blaizzy/mlx-audio/tree/412cf7cd381c2a3f6a8189af04a95af24cb415b6/mlx_audio",
+      "notes": "Voxtral Realtime is an ASR route whose defining contract is persistent realtime chunk state."
+    },
+    {
+      "id": "gemma3-vision-language",
+      "model_type_aliases": [
+        "gemma3"
+      ],
+      "class_patterns": [
+        "Gemma3ForConditionalGeneration"
+      ],
+      "when_any_config": [
+        "vision_config",
+        "image_token_id",
+        "image_token_index"
+      ],
+      "primary_family": "vision-language-omni",
+      "components": [
+        {
+          "family": "vision-language-omni",
+          "runbook": "references/runbook-multimodal-omni.md",
+          "traits": [
+            "image-encoder",
+            "multimodal-projector",
+            "image-conditioned-language"
+          ]
+        },
+        {
+          "family": "dense-decoder-transformer",
+          "runbook": "references/runbook-decoder-transformer.md",
+          "traits": [
+            "causal-decoder",
+            "kv-cache"
+          ]
+        }
+      ],
+      "official_reference": "https://github.com/Blaizzy/mlx-vlm/tree/6a8cdff6a1f53f46a15d4adb997c3b2d5f621263/mlx_vlm",
+      "notes": "Activate this composition only when vision configuration is present; text-only Gemma 3 remains a dense decoder route."
+    }
+  ],
   "families": [
     {
       "id": "dense-decoder-transformer",
@@ -120,7 +450,6 @@
       "class_patterns": [
         "ForSequenceClassification",
         "ForTokenClassification",
-        "Model",
         "Encoder"
       ],
       "config_signals": [
@@ -382,7 +711,6 @@
         "llava",
         "qwen2_vl",
         "qwen3_vl",
-        "gemma3",
         "gemma3n",
         "idefics",
         "paligemma",

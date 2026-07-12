@@ -1,0 +1,11 @@
+# CPython 3.10 / ubuntu-latest x86_64 wheel from PyPI.
+numpy==2.2.6 ; python_version == "3.10" \
+    --hash=sha256:fc7b73d02efb0e18c000e9ad8b83480dfcd5dfd11065997ed4c6747470ae8915
+
+# CPython 3.12 / ubuntu-latest x86_64 wheel from PyPI.
+numpy==2.5.1 ; python_version == "3.12" \
+    --hash=sha256:59fda5e192b570217ec2580c96f00e9a7e12ef6866a900eb089b62c1a32545ca
+
+# CPython 3.14 / ubuntu-latest x86_64 wheel from PyPI.
+numpy==2.5.1 ; python_version == "3.14" \
+    --hash=sha256:54ad769f17bc2d833b620851989f62054fb9ab93c969d9e1dc3c8e3d56beea21

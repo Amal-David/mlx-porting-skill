@@ -1,0 +1,12 @@
+{
+  "name": "weak-shared-config",
+  "config": {
+    "architectures": ["MysteryModel"],
+    "hidden_size": 1024,
+    "num_hidden_layers": 24,
+    "num_attention_heads": 16,
+    "license": "apache-2.0"
+  },
+  "tensor_keys": ["backbone.layers.0.projection.weight"],
+  "expected_status": "ambiguous"
+}

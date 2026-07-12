@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="MLX Porter">
+  <rect width="64" height="64" rx="12" fill="#0f1417"/>
+  <rect x="10" y="10" width="44" height="44" rx="8" fill="none" stroke="#b9f45a" stroke-width="2"/>
+  <path d="M32 10v9M32 45v9M10 32h9M45 32h9" stroke="#42dfd0" stroke-width="2"/>
+  <path d="M20 40V24h5l7 8 7-8h5v16h-5v-9l-7 8-7-8v9z" fill="#eef3ef"/>
+</svg>

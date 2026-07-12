@@ -5,7 +5,7 @@ Look for blind spots, unsupported architecture families, missing validation gate
 
 ## Sources sampled
 - GitHub REST search API (https://docs.github.com/en/rest/search/search, accessed 2026-06-27)
-- Top-1000 contributor learnings artifact (file:///Users/amal/Downloads/mlx-porting-skill/mlx-model-porting/assets/contributor_learnings.json, accessed 2026-06-27)
+- Top-1000 contributor learnings artifact (file://<repo-root>/mlx-model-porting/assets/contributor_learnings.json, accessed 2026-06-27)
 - TorchVision operators documentation (https://docs.pytorch.org/vision/0.9/ops.html, accessed 2026-06-27)
 - PyTorch Geometric MessagePassing tutorial (https://pytorch-geometric.readthedocs.io/en/2.6.0/tutorial/create_gnn.html, accessed 2026-06-27)
 - Hugging Face Time Series Transformer docs (https://huggingface.co/docs/transformers/en/model_doc/time_series_transformer, accessed 2026-06-27)

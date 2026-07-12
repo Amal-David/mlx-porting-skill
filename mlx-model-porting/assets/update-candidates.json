@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-07-07T22:03:01.818520+00:00",
+  "generated_at": "2026-07-10T06:03:53.487812+00:00",
   "policy": {
     "auto_modify_recommendations": false,
     "auto_merge": false,
@@ -16,14 +16,14 @@
         "quantization"
       ],
       "default_branch": "main",
-      "head_sha": "7a1d4f5c12ac82f4b4d0a6e71538d89ca0605247",
-      "head_date": "2026-07-07T16:10:33Z",
-      "head_message": "Fix conv2 gradients in grouped strided case on Metal (#3800)",
+      "head_sha": "4367c73b60541ddd5a266ce4644fd93d20223b6e",
+      "head_date": "2026-07-10T00:37:28Z",
+      "head_message": "Warn at configure time when NAX kernels are disabled (#3824)",
       "url": "https://github.com/ml-explore/mlx",
       "latest_release": {
-        "tag": "v0.31.2",
-        "published_at": "2026-04-22T01:40:04Z",
-        "url": "https://github.com/ml-explore/mlx/releases/tag/v0.31.2"
+        "tag": "v0.32.0",
+        "published_at": "2026-07-07T22:29:13Z",
+        "url": "https://github.com/ml-explore/mlx/releases/tag/v0.32.0"
       },
       "known_snapshot": false
     },
@@ -37,9 +37,9 @@
         "cache"
       ],
       "default_branch": "main",
-      "head_sha": "2ed22318cd6a2fcc5c2e0caa1e1fb0ddeb7cafd5",
-      "head_date": "2026-06-24T23:12:59Z",
-      "head_message": "Fix deepseek indexer rope argument (#1431)",
+      "head_sha": "a790972f0f844d81067ed45c28b524220a10c019",
+      "head_date": "2026-07-09T00:03:19Z",
+      "head_message": "Fix broadcast crash in quantized SDPA with GQA + batched padding mask (batch >= 2) (#1467)",
       "url": "https://github.com/ml-explore/mlx-lm",
       "latest_release": {
         "tag": "v0.31.3",
@@ -73,9 +73,9 @@
         "speculative"
       ],
       "default_branch": "main",
-      "head_sha": "e9c5bd75e7d641f9ebc36c4ed18849513b25c5fd",
-      "head_date": "2026-07-07T19:52:39Z",
-      "head_message": "Merge pull request #1519 from weklund/apc-exact-mode-integration-tests",
+      "head_sha": "05440cc57c62799fe8d4d79079fb8d281f149b4b",
+      "head_date": "2026-07-09T18:01:14Z",
+      "head_message": "Merge pull request #1522 from sxy-trans-n/codex/qwen3-omni-incremental-audio",
       "url": "https://github.com/Blaizzy/mlx-vlm",
       "latest_release": {
         "tag": "v0.6.4",
@@ -94,14 +94,14 @@
         "codec"
       ],
       "default_branch": "main",
-      "head_sha": "c46d15312ad52b0928c0f20dc2d6a880461f32c5",
-      "head_date": "2026-07-06T17:56:47Z",
-      "head_message": "Merge pull request #783 from hhh2210/feat/qwen3-asr-segment-batching",
+      "head_sha": "64e8416c303fb3b3463dab8eb4ebd78c55a87c1a",
+      "head_date": "2026-07-10T05:04:55Z",
+      "head_message": "Merge pull request #826 from lucasnewman/improve-transcribe-diarize-performance",
       "url": "https://github.com/Blaizzy/mlx-audio",
       "latest_release": {
-        "tag": "v0.4.4",
-        "published_at": "2026-06-06T15:31:39Z",
-        "url": "https://github.com/Blaizzy/mlx-audio/releases/tag/v0.4.4"
+        "tag": "v0.4.5",
+        "published_at": "2026-07-09T16:32:10Z",
+        "url": "https://github.com/Blaizzy/mlx-audio/releases/tag/v0.4.5"
       },
       "known_snapshot": false
     },
@@ -147,14 +147,14 @@
         "codex"
       ],
       "default_branch": "main",
-      "head_sha": "2589f7a52df8f65905d47e603f65ec458464d45e",
-      "head_date": "2026-07-07T22:02:08Z",
-      "head_message": "Handle completion separators and popup dismissal (#31191)",
+      "head_sha": "1f0566d3f59298d1bb88820a0d35294f1eeb07ea",
+      "head_date": "2026-07-10T01:28:55Z",
+      "head_message": "exec-server: expose process helper to outer sandbox (#31937)",
       "url": "https://github.com/openai/codex",
       "latest_release": {
-        "tag": "rust-v0.142.5",
-        "published_at": "2026-07-01T01:15:44Z",
-        "url": "https://github.com/openai/codex/releases/tag/rust-v0.142.5"
+        "tag": "rust-v0.144.1",
+        "published_at": "2026-07-09T23:02:40Z",
+        "url": "https://github.com/openai/codex/releases/tag/rust-v0.144.1"
       },
       "known_snapshot": false
     }
@@ -190,6 +190,37 @@
       "review_status": "candidate-unreviewed",
       "known_url": false,
       "candidate_id": "candidate-benchmarking-on-device-machine-learning-on-apple-silicon-with-mlx"
+    },
+    {
+      "kind": "paper",
+      "query": "KV cache quantization long context",
+      "id": "http://arxiv.org/abs/2607.08032v1",
+      "title": "What to Keep, What to Forget: A Rate--Distortion View of Memory Compaction in LLMs and Agents",
+      "updated": "2026-07-09T01:15:03Z",
+      "published": "2026-07-09T01:15:03Z",
+      "authors": [
+        "Ashwin Gerard Colaco",
+        "Nada Lahjouji"
+      ],
+      "summary": "Large language models, and the agents built on them, spend an ever-growing share of their compute and memory on remembering: caching attention keys and values, carrying long prompts, maintaining recurrent state, and storing what happened in previous turns and sessions. Because none of this memory is free, four largely separate research communities have each learned to compact it. They evict or quantize the KV cache, prune or distill prompts, bound architectural state, and consolidate agent memory. We argue that these are instances of one problem: a rate--distortion decision about what context-derived information to retain versus discard, at what fidelity, under a resource budget, so as to preserve downstream task utility. We make this lens precise with a single compaction objective and a l",
+      "review_status": "candidate-unreviewed",
+      "known_url": false,
+      "candidate_id": "candidate-what-to-keep-what-to-forget-a-rate-distortion-view-of-memory-compaction-in-llms-and-agents"
+    },
+    {
+      "kind": "paper",
+      "query": "KV cache quantization long context",
+      "id": "http://arxiv.org/abs/2607.07144v1",
+      "title": "Fractal KV-Cache Archives: Lossless Symbolic Storage with In-Place Retrieval for Long-Context LLM Inference",
+      "updated": "2026-07-08T08:37:49Z",
+      "published": "2026-07-08T08:37:49Z",
+      "authors": [
+        "Vladimir Gusev"
+      ],
+      "summary": "The key-value (KV) cache dominates the memory cost of long-context autoregressive inference, and a growing body of work compresses it through quantization, eviction, or offloading. We study a complementary question: once a position's KV state has been quantized to codebook indices, how should the resulting symbol stream be stored, and can the storage layer do more than store? A family of contractive iterated-map codes that serialize a symbol sequence into a sequence of low-dimensional real vectors is revisited, and it is shown that they form a natural archive format for a quantized KV cache with the following features. The method provides exactly the access pattern a growing cache requires. It is lossless, it runs in linear time, and supports O(1) random access and O(1) amortized append. A",
+      "review_status": "candidate-unreviewed",
+      "known_url": false,
+      "candidate_id": "candidate-fractal-kv-cache-archives-lossless-symbolic-storage-with-in-place-retrieval-for-long-context-llm-inference"
     },
     {
       "kind": "paper",
@@ -305,43 +336,6 @@
       "review_status": "candidate-unreviewed",
       "known_url": true,
       "candidate_id": "candidate-ultraquant-4-bit-kv-caching-for-context-heavy-agents"
-    },
-    {
-      "kind": "paper",
-      "query": "KV cache quantization long context",
-      "id": "http://arxiv.org/abs/2604.21335v3",
-      "title": "Sub-Token Routing for KV Cache Compression",
-      "updated": "2026-06-12T16:58:45Z",
-      "published": "2026-04-23T06:47:33Z",
-      "authors": [
-        "Wei Jiang",
-        "Wei Wang"
-      ],
-      "summary": "Transformer inference often requires a large KV cache, especially for long-context language modeling and multimodal generation. Existing compression methods usually reduce cache cost by selecting, evicting, quantizing, or compressing cached tokens, or by reducing the visual-token sequence before language-model inference. We introduce sub-token routing, a KV-compression method that adds a finer control axis inside retained tokens. It splits each retained value vector into groups and keeps only selected groups, while leaving query and key states unchanged. The method is designed to work after token-level reduction. First, a token-reduction method determines which tokens are retained. Then, sub-token routing compresses the value states inside those retained tokens. Experiments under matched K",
-      "review_status": "candidate-unreviewed",
-      "known_url": false,
-      "candidate_id": "candidate-sub-token-routing-for-kv-cache-compression"
-    },
-    {
-      "kind": "paper",
-      "query": "KV cache quantization long context",
-      "id": "http://arxiv.org/abs/2605.18856v3",
-      "title": "SPHERICAL KV: Angle-Domain Attention and Rate-Distortion Retention for Efficient Long-Context Inference",
-      "updated": "2026-06-07T06:58:25Z",
-      "published": "2026-05-13T18:48:48Z",
-      "authors": [
-        "Anay Chauhan",
-        "Gurucharan Marthi Krishna Kumar",
-        "Arion Das",
-        "Amit Dhanda",
-        "Vinija Jain",
-        "Aman Chadha",
-        "Amitava Das"
-      ],
-      "summary": "Long-context inference is increasingly constrained by the KV cache: resident memory grows with context length, and decoding becomes limited by repeated High Bandwidth Memory (HBM) streaming rather than arithmetic. Existing methods such as eviction, windowing, quantization, and offloading reduce footprint, but often leave the critical-path bottleneck only partially addressed, especially when compressed states must still be reconstructed into dense vectors during decoding. We present Spherical KV, a long-context inference method that treats KV allocation as a rate-distortion problem grounded in attention geometry for efficient decoding. The method is built on two ideas: (i) represent directional information cheaply in the decode hot loop, and (ii) allocate retention and precision according t",
-      "review_status": "candidate-unreviewed",
-      "known_url": false,
-      "candidate_id": "candidate-spherical-kv-angle-domain-attention-and-rate-distortion-retention-for-efficient-long-context-inference"
     },
     {
       "kind": "paper",

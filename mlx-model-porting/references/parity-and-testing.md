@@ -1,5 +1,69 @@
 # Parity and testing
 
+## Capture the source oracle
+
+Use `scripts/capture_oracle.py` instead of assembling decoder captures by hand.
+It executes only a local Hugging Face model directory, keeps Transformers in
+offline mode, refuses remote model/tokenizer code, and writes a bounded NPZ plus
+a deterministic JSON manifest. A tokenizer-free fixture is the most portable
+starting point:
+
+```bash
+python3 mlx-model-porting/scripts/capture_oracle.py MODEL \
+  --token-ids 1 42 17 9 \
+  --generate-steps 4 \
+  --output source-oracle.npz
+```
+
+Use one or more `--prompt` values, or line-oriented `--prompts-file`, when the
+local tokenizer behavior is itself part of the oracle. The NPZ keys are a
+stable cross-framework contract:
+
+| Key | Meaning |
+|---|---|
+| `input_ids` | Rank-2 source token IDs. |
+| `attention_mask` | Integer mask paired with `input_ids`. |
+| `embed` | Decoder embedding-stage hidden state before layer 0. |
+| `layer.{i}.hidden` | Post-block hidden state for every zero-based decoder layer. |
+| `layer.{i}.attention` | Optional attention branch output when a standard attention submodule is hookable. |
+| `layer.{i}.mlp` | Optional MLP branch output before the residual when a standard MLP submodule is hookable. |
+| `final_norm` | Final decoder normalization output. |
+| `logits` | Full prompt logits. |
+| `generated_token_ids` | Exactly N greedy continuation IDs; prompt IDs are not repeated. |
+
+Floating captures are saved as float32 unless `--keep-dtype` is explicit.
+Integer IDs and masks retain their integer dtype. Future target-side capture
+tools should mirror these names exactly; model-specific extra checkpoints may
+use additional keys without renaming the stable set.
+
+## Run the cross-framework ladder
+
+After scaffolding the MLX package and converting its weights, use the bounded
+one-command runner instead of manually pairing archives:
+
+```bash
+python3 mlx-model-porting/scripts/run_parity.py \
+  --source-model MODEL \
+  --package mlx_port \
+  --weights converted \
+  --token-ids 1 42 17 9 \
+  --generate-steps 4 \
+  --output parity-report.json
+```
+
+Prompt mode accepts the same repeatable `--prompt` and `--prompts-file`
+fixtures as `capture_oracle.py`; the runner passes the pinned local source
+tokenizer to `capture_mlx.py`. Token-ID mode never loads a tokenizer. The
+strict-JSON report compares same-name keys in this order and stops immediately
+after the first failure: `input_ids`, `embed`, every `layer.{i}.hidden` in
+ascending order, `final_norm`, `logits`, and exact `generated_token_ids`.
+
+`capture_mlx.py` validates the scaffold generator header, config digest,
+execution-file digests, and converted target parameter contract before running
+the package. The package remains user-owned Python code executed with the
+current user's authority; this validation detects drift but is not a sandbox.
+Use `--allow-modified` only after reviewing intentional package edits.
+
 ## The parity ladder
 
 ### 1. Artifact parity
@@ -100,6 +164,10 @@ When a final output fails:
 6. inspect shape, axis order, masks, positions, and state update;
 7. test the isolated primitive;
 8. fix the first divergence only, then rerun the ladder.
+
+The `run_parity.py` summary makes step 3 executable: a failure at
+`layer.7.hidden` reports `layer 7` as the debug target and does not compare
+final norm, logits, or generation downstream of that divergence.
 
 ## Required regression matrix
 

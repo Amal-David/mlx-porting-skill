@@ -1,0 +1,32 @@
+{
+  "schema_version": 3,
+  "validator": {
+    "id": "mlx-benchmark-exact-output-parity",
+    "version": 1
+  },
+  "status": "pass",
+  "metric": {
+    "id": "exact-output-parity",
+    "reference_sha256": "fab6ebd4d30cf608888c50b82e0b3752b340ebc8d6f42585f7a71bf2763821e9",
+    "candidate_sha256": "fab6ebd4d30cf608888c50b82e0b3752b340ebc8d6f42585f7a71bf2763821e9",
+    "reference_size_bytes": 54,
+    "candidate_size_bytes": 54,
+    "exact_match": true
+  },
+  "bindings": {
+    "receipt_label": "qwen2.5-0.5b-port-f32",
+    "model_lineage_sha256": "ffc48ffd58004e200ac3ad7ddf19f404158dae08708a0450d4dc94423f924342",
+    "workload_sha256": "a76b7c67d075d769a74ff9c29b31099163fb9c705764013551c77c3fb4b84734",
+    "baseline_receipt_sha256": null,
+    "raw_output_set_sha256": "d3e9c9de81aea93fcc138f6aa6c5728fcf98d940f8ffdffa92feb7b996b9c550"
+  },
+  "provenance": {
+    "mode": "controlled-exact-output-v1",
+    "input": {
+      "path": "quality/inputs/3e06a9863647ac4b5f2b2e29137874c73acdeddb2820714b66a7141d783909d3.json",
+      "sha256": "3e06a9863647ac4b5f2b2e29137874c73acdeddb2820714b66a7141d783909d3",
+      "size_bytes": 522
+    },
+    "evaluation_sha256": "ffd1b848a7dad9e85e1d80cfdc7ba49beaa2b45fedeb8ae612d81035e0064dc5"
+  }
+}

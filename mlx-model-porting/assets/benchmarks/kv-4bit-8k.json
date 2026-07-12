@@ -28,7 +28,7 @@
     "model": "mlx-community/Qwen2.5-Coder-7B-Instruct-4bit",
     "model_revision": "019cc73c45c770444708a6dd8690c66243cc5c80",
     "workload": "8058_chat_tokens_long_prompt_max_tokens_256_temp_0_seed_207",
-    "prompt_file": "/Users/amal/Downloads/mlx-porting-skill/mlx-model-porting/assets/benchmarks/prompts/t207-long-prompt-8k.txt",
+    "prompt_file": "<repo-root>/mlx-model-porting/assets/benchmarks/prompts/t207-long-prompt-8k.txt",
     "kv_flags": "--kv-bits_4_--kv-group-size_64_--quantized-kv-start_0",
     "baseline_basis": "kv-baseline-8k_same_8k_prompt_no_kv_quant",
     "quality_gate": "greedy_long_context_policy_prompt_no_formal_quality_eval"
@@ -121,7 +121,7 @@
   },
   "speedup_vs_baseline": {
     "baseline_label": "kv-baseline-8k",
-    "baseline_file": "/Users/amal/Downloads/mlx-porting-skill/mlx-model-porting/assets/benchmarks/kv-baseline-8k.json",
+    "baseline_file": "<repo-root>/mlx-model-porting/assets/benchmarks/kv-baseline-8k.json",
     "basis": "Ratios of aggregate medians; ttft_proxy uses inverse ratio because lower is better.",
     "ratios": {
       "decode_tps": 1.1144009846827134,

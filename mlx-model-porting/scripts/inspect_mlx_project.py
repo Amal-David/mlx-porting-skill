@@ -6,14 +6,23 @@ import argparse
 import ast
 import json
 import re
-import subprocess
+import shlex
 import sys
 import tempfile
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-from _common import SkillError, dump_json, load_structured, sha256_file
+from _common import (
+    SkillError,
+    atomic_write_text,
+    bounded_files,
+    dump_json,
+    load_structured,
+    redact_secret_text,
+    run_process_capture,
+    sha256_file,
+)
 
 SCRIPT_DIR = Path(__file__).resolve().parent
 TEXT_EXTENSIONS = {
@@ -24,7 +33,7 @@ MLX_PACKAGES = ("mlx", "mlx_lm", "mlx_vlm", "mlx_audio")
 MAX_TEXT_BYTES = 2 * 1024 * 1024
 
 
-def parse_args() -> argparse.Namespace:
+def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Inspect a local MLX project or already-ported MLX model without running project code."
     )
@@ -35,7 +44,21 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--markdown", help="Write Markdown report")
     parser.add_argument("--max-files", type=int, default=800, help="Maximum project files to inventory")
     parser.add_argument("--hash-small-files", action="store_true", help="Hash inspected files up to 10 MiB")
-    return parser.parse_args()
+    parser.add_argument(
+        "--include-local-paths",
+        action="store_true",
+        help="Include absolute local paths in the report (off by default for portability)",
+    )
+    raw_args = list(sys.argv[1:] if argv is None else argv)
+    for index, value in enumerate(raw_args):
+        if value in {"--model", "--inspection"} and (
+            index + 1 >= len(raw_args) or raw_args[index + 1].startswith("-")
+        ):
+            parser.error(f"{value} requires a path value that does not begin with '-'")
+    args = parser.parse_args(raw_args)
+    if any(str(model).startswith("-") for model in args.model):
+        parser.error("--model requires a path value that does not begin with '-'")
+    return args
 
 
 def safe_read_text(path: Path) -> str | None:
@@ -48,8 +71,7 @@ def safe_read_text(path: Path) -> str | None:
 
 
 def inventory(root: Path, max_files: int, hash_small: bool) -> tuple[list[dict[str, Any]], bool]:
-    paths = [root] if root.is_file() else sorted(path for path in root.rglob("*") if path.is_file())
-    truncated = len(paths) > max_files
+    paths, truncated = bounded_files(root, max_files)
     records: list[dict[str, Any]] = []
     for path in paths[:max_files]:
         stat = path.stat()
@@ -220,9 +242,18 @@ def analyze_project(root: Path, files: list[dict[str, Any]]) -> dict[str, Any]:
     }
 
 
-def summarize_model_inspection(report: dict[str, Any], source: str) -> dict[str, Any]:
+def portable_local_reference(value: str | Path, include_local_paths: bool) -> str:
+    path = Path(value).expanduser()
+    return str(path.resolve()) if include_local_paths else (path.name or ".")
+
+
+def summarize_model_inspection(
+    report: dict[str, Any],
+    source: str,
+    include_local_paths: bool = False,
+) -> dict[str, Any]:
     return {
-        "source": source,
+        "source": portable_local_reference(source, include_local_paths),
         "ok": True,
         "inspection_mode": report.get("inspection_mode"),
         "recommended_family": report.get("recommended_family"),
@@ -239,22 +270,46 @@ def summarize_model_inspection(report: dict[str, Any], source: str) -> dict[str,
     }
 
 
-def run_model_inspection(model: str) -> dict[str, Any]:
+def run_model_inspection(model: str, include_local_paths: bool = False) -> dict[str, Any]:
+    if not isinstance(model, str) or not model or model.startswith("-"):
+        raise SkillError("model path must be non-empty and must not begin with '-'")
     with tempfile.TemporaryDirectory() as tmp:
         output = Path(tmp) / "inspection.json"
         command = [sys.executable, str(SCRIPT_DIR / "inspect_model.py"), model, "--output", str(output)]
-        completed = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, check=False)
+        completed, timed_out = run_process_capture(command, timeout=120.0)
+        if timed_out:
+            return {
+                "source": portable_local_reference(model, include_local_paths),
+                "ok": False,
+                "error": "inspect_model.py timed out after 120s",
+            }
         if completed.returncode != 0:
             return {
-                "source": model,
+                "source": portable_local_reference(model, include_local_paths),
                 "ok": False,
-                "error": completed.stderr.strip() or completed.stdout.strip() or f"inspect_model.py exited {completed.returncode}",
+                "error": redact_secret_text(
+                    completed.stderr.strip()
+                    or completed.stdout.strip()
+                    or f"inspect_model.py exited {completed.returncode}"
+                ),
             }
-        report = json.loads(output.read_text(encoding="utf-8"))
-        return summarize_model_inspection(report, model)
+        if not output.is_file():
+            raise SkillError("inspect_model.py exited successfully without writing its inspection output")
+        try:
+            report = json.loads(output.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError) as exc:
+            raise SkillError(f"inspect_model.py wrote an invalid inspection report: {exc}") from exc
+        if not isinstance(report, dict):
+            raise SkillError("inspect_model.py inspection output must be a JSON object")
+        return summarize_model_inspection(report, model, include_local_paths)
 
 
-def build_health(surface: dict[str, Any], models: list[dict[str, Any]]) -> dict[str, Any]:
+def build_health(
+    surface: dict[str, Any],
+    models: list[dict[str, Any]],
+    *,
+    inventory_truncated: bool = False,
+) -> dict[str, Any]:
     features = surface["features"]
     risks = surface["risks"]
     strengths: list[str] = []
@@ -270,9 +325,17 @@ def build_health(surface: dict[str, Any], models: list[dict[str, Any]]) -> dict[
         families = sorted({str(model["recommended_family"]) for model in models if model.get("recommended_family")})
         strengths.append("Model inspection routed: " + ", ".join(families))
 
-    if risks:
+    blockers: list[str] = []
+    if inventory_truncated:
+        blockers.append(
+            "Project inventory was truncated; clean status and optimization recommendations are blocked until a complete inventory is inspected."
+        )
+        status = "inventory-truncated"
+        summary = "Static inspection reached the file limit, so absence of risks or proof gaps cannot be established."
+    elif risks:
         status = "review-needed"
         summary = "Static inspection found high-signal risk flags before optimization advice should be trusted."
+        blockers.append("Resolve the reported high-signal project risks before trusting optimization advice.")
     elif not surface["packages"]:
         status = "no-mlx-surface-detected"
         summary = "No MLX imports or package usage were detected in the inspected project files."
@@ -282,15 +345,33 @@ def build_health(surface: dict[str, Any], models: list[dict[str, Any]]) -> dict[
     else:
         status = "looks-good"
         summary = "The project has MLX code plus parity and benchmark evidence; inspect model-specific gates before changing performance paths."
-    return {"status": status, "summary": summary, "strengths": strengths}
+    return {
+        "status": status,
+        "summary": summary,
+        "strengths": strengths,
+        "recommendation_blockers": blockers,
+    }
 
 
-def build_opportunities(surface: dict[str, Any], models: list[dict[str, Any]]) -> list[dict[str, str]]:
+def build_opportunities(
+    surface: dict[str, Any],
+    models: list[dict[str, Any]],
+    *,
+    inventory_truncated: bool = False,
+) -> list[dict[str, str]]:
     features = surface["features"]
     opportunities: list[dict[str, str]] = []
 
     def add(identifier: str, title: str, detail: str, gate: str) -> None:
         opportunities.append({"id": identifier, "title": title, "detail": detail, "validation_gate": gate})
+
+    if inventory_truncated:
+        add(
+            "complete-project-inventory",
+            "Complete the project inventory",
+            "The configured file limit truncated static inspection, so clean status and optimization recommendations are held.",
+            "Rerun with a sufficient --max-files value and review every included file before clearing this blocker.",
+        )
 
     if not features["parity_evidence"]:
         add(
@@ -384,9 +465,22 @@ def build_contribution_candidates(surface: dict[str, Any], models: list[dict[str
 
 
 def build_next_actions(args: argparse.Namespace, project: Path) -> list[str]:
-    model_args = " ".join(f"--model {model}" for model in args.model)
+    include_local_paths = bool(getattr(args, "include_local_paths", False))
+    inspect_command = [
+        "python3",
+        "mlx-model-porting/scripts/inspect_mlx_project.py",
+        portable_local_reference(project, include_local_paths),
+    ]
+    for model in args.model:
+        inspect_command.extend([
+            "--model",
+            portable_local_reference(model, include_local_paths),
+        ])
+    if include_local_paths:
+        inspect_command.append("--include-local-paths")
+    inspect_command.extend(["--markdown", "MLX_INSPECTION.md"])
     return [
-        f"python3 mlx-model-porting/scripts/inspect_mlx_project.py {project} {model_args} --markdown MLX_INSPECTION.md",
+        shlex.join(inspect_command),
         "Resolve any intake blockers before changing code.",
         "If a candidate is genuinely new, add a minimal fixture, parity receipt, benchmark metadata, and a proposed runbook change.",
     ]
@@ -403,9 +497,12 @@ def make_markdown(report: dict[str, Any]) -> str:
         f"- Summary: {health['summary']}",
         f"- MLX packages: {', '.join(surface['packages']) or 'none detected'}",
         "",
-        "## What looks good",
-        "",
     ]
+    if report.get("recommendation_blockers"):
+        lines += ["## Recommendation blockers", ""]
+        lines.extend(f"- {item}" for item in report["recommendation_blockers"])
+        lines.append("")
+    lines += ["## What looks good", ""]
     if health["strengths"]:
         lines.extend(f"- {item}" for item in health["strengths"])
     else:
@@ -448,17 +545,21 @@ def main() -> int:
         project = project.resolve()
         files, truncated = inventory(project, args.max_files, args.hash_small_files)
         surface = analyze_project(project, files)
-        model_inspections = [run_model_inspection(model) for model in args.model]
+        model_inspections = [
+            run_model_inspection(model, args.include_local_paths) for model in args.model
+        ]
         for inspection in args.inspection:
             loaded = load_structured(inspection)
-            model_inspections.append(summarize_model_inspection(loaded, inspection))
-        health = build_health(surface, model_inspections)
+            model_inspections.append(
+                summarize_model_inspection(loaded, inspection, args.include_local_paths)
+            )
+        health = build_health(surface, model_inspections, inventory_truncated=truncated)
         report = {
             "schema_version": 1,
             "generated_at": datetime.now(timezone.utc).isoformat(),
             "inspection_mode": "local-mlx-project-inspector",
             "project": {
-                "path": str(project),
+                "path": portable_local_reference(project, args.include_local_paths),
                 "file_count": len(files),
                 "inventory_truncated": truncated,
                 "extensions": dict(sorted(_counts(record["suffix"] or "<none>" for record in files).items())),
@@ -466,7 +567,12 @@ def main() -> int:
             "code_surface": surface,
             "model_inspections": model_inspections,
             "health": health,
-            "improvement_opportunities": build_opportunities(surface, model_inspections),
+            "recommendation_blockers": health["recommendation_blockers"],
+            "improvement_opportunities": build_opportunities(
+                surface,
+                model_inspections,
+                inventory_truncated=truncated,
+            ),
             "contribution_candidates": build_contribution_candidates(surface, model_inspections),
             "next_actions": build_next_actions(args, project),
             "limitations": [
@@ -474,13 +580,14 @@ def main() -> int:
                 "It does not execute local project code, import local modules, or validate numerical correctness by itself.",
                 "Optimization suggestions are hypotheses until parity, quality, benchmark metadata, and rollback evidence exist.",
                 "Contribution candidates are review leads; they must not auto-modify recommendation assets.",
+                "A truncated inventory blocks clean status because uninspected files may contain risks or missing proof.",
             ],
         }
         text = dump_json(report, args.output)
         if args.output is None:
             sys.stdout.write(text)
         if args.markdown:
-            Path(args.markdown).write_text(make_markdown(report), encoding="utf-8")
+            atomic_write_text(args.markdown, make_markdown(report))
         return 0
     except SkillError as exc:
         print(f"error: {exc}", file=sys.stderr)

@@ -10,5 +10,12 @@
   ],
   "optimization_must_include": "audio-streaming-and-cache",
   "optimization_must_exclude": "fast-sdpa",
+  "target_profile": {
+    "schema_version": 1,
+    "hardware": {},
+    "software": {},
+    "capabilities": ["api:stream-generate"],
+    "workloads": ["streaming-audio"]
+  },
   "seeded_parity_bug": {"shape": [2, 5], "delta": 4.0}
 }

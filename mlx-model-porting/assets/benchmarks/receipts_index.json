@@ -1,4 +1,5 @@
 {
+  "schema_version": 2,
   "receipts": [
     {
       "label": "kv-4bit-8k",
@@ -10,11 +11,25 @@
         "model": "mlx-community/Qwen2.5-Coder-7B-Instruct-4bit",
         "model_revision": "019cc73c45c770444708a6dd8690c66243cc5c80",
         "workload": "8058_chat_tokens_long_prompt_max_tokens_256_temp_0_seed_207",
-        "prompt_file": "/Users/amal/Downloads/mlx-porting-skill/mlx-model-porting/assets/benchmarks/prompts/t207-long-prompt-8k.txt",
+        "prompt_file": "<repo-root>/mlx-model-porting/assets/benchmarks/prompts/t207-long-prompt-8k.txt",
         "kv_flags": "--kv-bits_4_--kv-group-size_64_--quantized-kv-start_0",
         "baseline_basis": "kv-baseline-8k_same_8k_prompt_no_kv_quant",
         "quality_gate": "greedy_long_context_policy_prompt_no_formal_quality_eval"
-      }
+      },
+      "schema_version": 1,
+      "receipt_sha256": "1dc4551ff2e27d1183a159fccfdb7be4e498f03c9e9d92a917cc8f171f34a2ca",
+      "classification": "performance_observation",
+      "promotion_ready": false,
+      "reasons": [
+        "legacy-schema-1",
+        "missing-baseline-digest",
+        "missing-model-lineage",
+        "missing-output-digests",
+        "missing-quality-artifact",
+        "missing-rollback-condition",
+        "missing-target-hash",
+        "missing-workload-hash"
+      ]
     },
     {
       "label": "kv-baseline-8k",
@@ -26,74 +41,200 @@
         "model": "mlx-community/Qwen2.5-Coder-7B-Instruct-4bit",
         "model_revision": "019cc73c45c770444708a6dd8690c66243cc5c80",
         "workload": "8058_chat_tokens_long_prompt_max_tokens_256_temp_0_seed_207",
-        "prompt_file": "/Users/amal/Downloads/mlx-porting-skill/mlx-model-porting/assets/benchmarks/prompts/t207-long-prompt-8k.txt",
+        "prompt_file": "<repo-root>/mlx-model-porting/assets/benchmarks/prompts/t207-long-prompt-8k.txt",
         "cache_state": "no_prompt_cache",
         "kv_flags": "none",
         "quality_gate": "greedy_long_context_policy_prompt_no_formal_quality_eval"
-      }
+      },
+      "schema_version": 1,
+      "receipt_sha256": "c6c3b60be9b195a933fbeb1d89499a24e968cdaa9601593f4e7dac6fa1a991c1",
+      "classification": "performance_observation",
+      "promotion_ready": false,
+      "reasons": [
+        "legacy-schema-1",
+        "missing-model-lineage",
+        "missing-output-digests",
+        "missing-quality-artifact",
+        "missing-rollback-condition",
+        "missing-target-hash",
+        "missing-workload-hash",
+        "unstable-primary-metric"
+      ]
     },
     {
       "label": "pcache-cold",
       "file": "pcache-cold.json",
       "date": "2026-07-06T09:55:20.771132+00:00",
       "chip": "Apple M4 Pro",
-      "command_summary": "sh -lc 'cat /tmp/t206-benchmark/pcache_cold_prompt.txt | python3 -m mlx_lm generate --model mlx-community/Qwen3-1.7B-4bit --prompt - --max-tokens 256 --temp 0.0 --seed 206'",
+      "command_summary": "sh -lc 'cat <historical-ephemeral-input>/pcache_cold_prompt.txt | python3 -m mlx_lm generate --model mlx-community/Qwen3-1.7B-4bit --prompt - --max-tokens 256 --temp 0.0 --seed 206'",
       "config_notes": {
         "model": "mlx-community/Qwen3-1.7B-4bit",
         "model_revision": "3b1b1768f8f8cf8351c712464f906e86c2b8269e",
         "cache_state": "cold_no_prompt_cache",
         "workload": "4056_raw_qwen3_tokens_prompt_max_tokens_256_temp_0_seed_206",
-        "prefix_file": "/tmp/t206-benchmark/prefix_4k.txt",
-        "suffix_file": "/tmp/t206-benchmark/pcache_suffix.txt",
-        "cold_prompt_file": "/tmp/t206-benchmark/pcache_cold_prompt.txt"
-      }
+        "prefix_file": "<historical-ephemeral-input>/prefix_4k.txt",
+        "suffix_file": "<historical-ephemeral-input>/pcache_suffix.txt",
+        "cold_prompt_file": "<historical-ephemeral-input>/pcache_cold_prompt.txt"
+      },
+      "schema_version": 1,
+      "receipt_sha256": "2edbbedc36a86dda78ab6dc18d5c973b7cd89db43e1e8c819877f6e72069eb3c",
+      "classification": "performance_observation",
+      "promotion_ready": false,
+      "reasons": [
+        "legacy-schema-1",
+        "missing-checked-in-input",
+        "missing-model-lineage",
+        "missing-output-digests",
+        "missing-quality-artifact",
+        "missing-rollback-condition",
+        "missing-target-hash",
+        "missing-workload-hash",
+        "nonportable-ephemeral-path"
+      ]
     },
     {
       "label": "pcache-warm",
       "file": "pcache-warm.json",
       "date": "2026-07-06T09:56:26.308471+00:00",
       "chip": "Apple M4 Pro",
-      "command_summary": "sh -lc 'cat /tmp/t206-benchmark/pcache_suffix.txt | python3 -m mlx_lm generate --model mlx-community/Qwen3-1.7B-4bit --prompt - --prompt-cache-file /tmp/t206-pc.safetensors --max-tokens 256 --temp 0.0 --seed 206'",
+      "command_summary": "sh -lc 'cat <historical-ephemeral-input>/pcache_suffix.txt | python3 -m mlx_lm generate --model mlx-community/Qwen3-1.7B-4bit --prompt - --prompt-cache-file <historical-ephemeral-cache>/t206-pc.safetensors --max-tokens 256 --temp 0.0 --seed 206'",
       "config_notes": {
         "model": "mlx-community/Qwen3-1.7B-4bit",
         "model_revision": "3b1b1768f8f8cf8351c712464f906e86c2b8269e",
         "cache_state": "warm_prompt_cache_file",
-        "prompt_cache_file": "/tmp/t206-pc.safetensors",
-        "cached_prefix_file": "/tmp/t206-benchmark/prefix_4k.txt",
-        "suffix_file": "/tmp/t206-benchmark/pcache_suffix.txt",
+        "prompt_cache_file": "<historical-ephemeral-cache>/t206-pc.safetensors",
+        "cached_prefix_file": "<historical-ephemeral-input>/prefix_4k.txt",
+        "suffix_file": "<historical-ephemeral-input>/pcache_suffix.txt",
         "workload": "cached_4040_raw_token_prefix_plus_16_raw_token_suffix_max_tokens_256_temp_0_seed_206",
         "ttft_proxy_caveat": "compares_cold_full_prefix_prefill_to_warm_cached_prefix_suffix_prompt_processing"
-      }
+      },
+      "schema_version": 1,
+      "receipt_sha256": "47cfeba0fd66d45cfaa9c4343bad6573695304c00bc19ea5fc784202bf321c37",
+      "classification": "performance_observation",
+      "promotion_ready": false,
+      "reasons": [
+        "baseline-workload-incompatible",
+        "legacy-schema-1",
+        "missing-baseline-digest",
+        "missing-checked-in-input",
+        "missing-model-lineage",
+        "missing-output-digests",
+        "missing-quality-artifact",
+        "missing-rollback-condition",
+        "missing-target-hash",
+        "missing-workload-hash",
+        "nonportable-ephemeral-path"
+      ]
     },
     {
       "label": "quant-4bit",
       "file": "quant-4bit.json",
       "date": "2026-07-06T09:53:58.064014+00:00",
       "chip": "Apple M4 Pro",
-      "command_summary": "sh -lc 'cat /tmp/t206-benchmark/prompt_500.txt | python3 -m mlx_lm generate --model mlx-community/Qwen3-1.7B-4bit --prompt - --max-tokens 256 --temp 0.0 --seed 206'",
+      "command_summary": "sh -lc 'cat <historical-ephemeral-input>/prompt_500.txt | python3 -m mlx_lm generate --model mlx-community/Qwen3-1.7B-4bit --prompt - --max-tokens 256 --temp 0.0 --seed 206'",
       "config_notes": {
         "model": "mlx-community/Qwen3-1.7B-4bit",
         "model_revision": "3b1b1768f8f8cf8351c712464f906e86c2b8269e",
         "baseline_model": "mlx-community/Qwen3-1.7B-bf16",
         "baseline_revision": "9cd6692855d3e06772228e9a962b2606359b2d24",
         "workload": "539_raw_qwen3_tokens_prompt_max_tokens_256_temp_0_seed_206",
-        "prompt_file": "/tmp/t206-benchmark/prompt_500.txt",
+        "prompt_file": "<historical-ephemeral-input>/prompt_500.txt",
         "quality_note": "greedy_outputs_diverged_3_of_3_short_prompts_no_formal_eval"
-      }
+      },
+      "schema_version": 1,
+      "receipt_sha256": "ae6da36683617bff20cda370b1707c4b46b46874ad5ac41992d6046a8db77175",
+      "classification": "performance_observation",
+      "promotion_ready": false,
+      "reasons": [
+        "incompatible-quant-baseline",
+        "legacy-schema-1",
+        "missing-baseline-digest",
+        "missing-checked-in-input",
+        "missing-model-lineage",
+        "missing-output-digests",
+        "missing-quality-artifact",
+        "missing-rollback-condition",
+        "missing-target-hash",
+        "missing-workload-hash",
+        "nonportable-ephemeral-path",
+        "unstable-primary-metric"
+      ]
     },
     {
       "label": "quant-baseline-bf16",
       "file": "quant-baseline-bf16.json",
       "date": "2026-07-06T09:53:06.779778+00:00",
       "chip": "Apple M4 Pro",
-      "command_summary": "sh -lc 'cat /tmp/t206-benchmark/prompt_500.txt | python3 -m mlx_lm generate --model mlx-community/Qwen3-1.7B-bf16 --prompt - --max-tokens 256 --temp 0.0 --seed 206'",
+      "command_summary": "sh -lc 'cat <historical-ephemeral-input>/prompt_500.txt | python3 -m mlx_lm generate --model mlx-community/Qwen3-1.7B-bf16 --prompt - --max-tokens 256 --temp 0.0 --seed 206'",
       "config_notes": {
         "model": "mlx-community/Qwen3-1.7B-bf16",
         "model_revision": "9cd6692855d3e06772228e9a962b2606359b2d24",
         "workload": "539_raw_qwen3_tokens_prompt_max_tokens_256_temp_0_seed_206",
-        "prompt_file": "/tmp/t206-benchmark/prompt_500.txt",
+        "prompt_file": "<historical-ephemeral-input>/prompt_500.txt",
         "quality_note": "greedy_3_prompt_check_vs_4bit_diverged_3_of_3_no_formal_eval"
-      }
+      },
+      "schema_version": 1,
+      "receipt_sha256": "d299da6bdadcd525bbd10713673c2e6bc2b9a6f6d66f7707ee54cb859b53ed6c",
+      "classification": "performance_observation",
+      "promotion_ready": false,
+      "reasons": [
+        "legacy-schema-1",
+        "missing-checked-in-input",
+        "missing-model-lineage",
+        "missing-output-digests",
+        "missing-quality-artifact",
+        "missing-rollback-condition",
+        "missing-target-hash",
+        "missing-workload-hash",
+        "nonportable-ephemeral-path"
+      ]
+    },
+    {
+      "label": "qwen2.5-0.5b-port-bf16",
+      "file": "qwen2.5-0.5b-port-bf16.json",
+      "date": "2026-07-10T16:02:49.741348+00:00",
+      "chip": "Apple M4 Pro",
+      "command_summary": "python3.13 runners/attested_mlx_port.py --model local/Qwen2.5-0.5B-Instruct-standalone-mlx --revision 7d325703c071cbba116c2cbd2242f20510c797fb9d9384573e5f6ca370582c7f --input qwen2.5-0.5b/input.json --steps 6 --mode bf16 --output quality/outputs/qwen2.5-0.5b-port-bf16/result.json --attestation-challenge attestations/qwen2.5-0.5b-port-bf16/current-challenge.json --attestation-output attestations/qwen2.5-0.5b-port-bf16/current-evidence.json",
+      "config_notes": {
+        "dtype_policy": "bf16",
+        "mode": "bf16",
+        "quality_output_path": "quality/outputs/qwen2.5-0.5b-port-bf16/result.json",
+        "attestation_challenge_path": "attestations/qwen2.5-0.5b-port-bf16/current-challenge.json",
+        "attestation_output_path": "attestations/qwen2.5-0.5b-port-bf16/current-evidence.json",
+        "weights_bytes": 988097714,
+        "weights_sha256": "7d325703c071cbba116c2cbd2242f20510c797fb9d9384573e5f6ca370582c7f"
+      },
+      "schema_version": 2,
+      "receipt_sha256": "11ede57ed58d4623214f852bf7827fece79fd77daac70f2beb11d68d076f333d",
+      "classification": "performance_observation",
+      "promotion_ready": false,
+      "reasons": [
+        "missing-external-attestation-signature"
+      ]
+    },
+    {
+      "label": "qwen2.5-0.5b-port-f32",
+      "file": "qwen2.5-0.5b-port-f32.json",
+      "date": "2026-07-10T16:02:34.042907+00:00",
+      "chip": "Apple M4 Pro",
+      "command_summary": "python3.13 runners/attested_mlx_port.py --model local/Qwen2.5-0.5B-Instruct-standalone-mlx --revision 7df68182b704fb0933625cdb44cc4e89e8f4cfdb5cb75b3e2251f608807f65f0 --input qwen2.5-0.5b/input.json --steps 6 --mode f32 --output quality/outputs/qwen2.5-0.5b-port-f32/result.json --attestation-challenge attestations/qwen2.5-0.5b-port-f32/current-challenge.json --attestation-output attestations/qwen2.5-0.5b-port-f32/current-evidence.json",
+      "config_notes": {
+        "dtype_policy": "f32",
+        "mode": "f32",
+        "quality_output_path": "quality/outputs/qwen2.5-0.5b-port-f32/result.json",
+        "attestation_challenge_path": "attestations/qwen2.5-0.5b-port-f32/current-challenge.json",
+        "attestation_output_path": "attestations/qwen2.5-0.5b-port-f32/current-evidence.json",
+        "weights_bytes": 1976163149,
+        "weights_sha256": "7df68182b704fb0933625cdb44cc4e89e8f4cfdb5cb75b3e2251f608807f65f0"
+      },
+      "schema_version": 2,
+      "receipt_sha256": "c7775a8a3bce14dbbca143ca622ae14e1d7a81a986bae6304d6ea90c307ad04a",
+      "classification": "performance_observation",
+      "promotion_ready": false,
+      "reasons": [
+        "baseline-role-not-promotable",
+        "missing-external-attestation-signature"
+      ]
     },
     {
       "label": "spec-baseline",
@@ -105,10 +246,23 @@
         "model": "mlx-community/Qwen2.5-Coder-7B-Instruct-4bit",
         "model_revision": "019cc73c45c770444708a6dd8690c66243cc5c80",
         "workload": "552_chat_tokens_code_generation_prompt_max_tokens_256_temp_0_seed_207",
-        "prompt_file": "/Users/amal/Downloads/mlx-porting-skill/mlx-model-porting/assets/benchmarks/prompts/t207-code-prompt-500.txt",
+        "prompt_file": "<repo-root>/mlx-model-porting/assets/benchmarks/prompts/t207-code-prompt-500.txt",
         "cache_state": "no_prompt_cache",
         "quality_gate": "greedy_code_generation_fixed_prompt_no_formal_correctness_eval"
-      }
+      },
+      "schema_version": 1,
+      "receipt_sha256": "81d21b1e1849418f97b59e622fdb91fc50f335f706612eac973dbceb62566a9f",
+      "classification": "performance_observation",
+      "promotion_ready": false,
+      "reasons": [
+        "legacy-schema-1",
+        "missing-model-lineage",
+        "missing-output-digests",
+        "missing-quality-artifact",
+        "missing-rollback-condition",
+        "missing-target-hash",
+        "missing-workload-hash"
+      ]
     },
     {
       "label": "spec-draft-k2",
@@ -123,10 +277,25 @@
         "draft_revision": "b3252a2f97102b1fb1571fec2c9b27219a8536be",
         "num_draft_tokens": "2",
         "workload": "552_chat_tokens_code_generation_prompt_max_tokens_256_temp_0_seed_207",
-        "prompt_file": "/Users/amal/Downloads/mlx-porting-skill/mlx-model-porting/assets/benchmarks/prompts/t207-code-prompt-500.txt",
+        "prompt_file": "<repo-root>/mlx-model-porting/assets/benchmarks/prompts/t207-code-prompt-500.txt",
         "baseline_basis": "spec-baseline_plain_4bit_single_request_baseline",
         "quality_gate": "greedy_code_generation_fixed_prompt_no_formal_correctness_eval"
-      }
+      },
+      "schema_version": 1,
+      "receipt_sha256": "a16c7d6bba98fc0725ba78a8ef465d52cdec8a210eecc437a8f56dbd164220f3",
+      "classification": "performance_observation",
+      "promotion_ready": false,
+      "reasons": [
+        "legacy-schema-1",
+        "missing-baseline-digest",
+        "missing-model-lineage",
+        "missing-output-digests",
+        "missing-quality-artifact",
+        "missing-rollback-condition",
+        "missing-target-hash",
+        "missing-workload-hash",
+        "mlx-lm-0.31.1-speculative-correctness-fix"
+      ]
     },
     {
       "label": "spec-draft-k3",
@@ -141,10 +310,26 @@
         "draft_revision": "b3252a2f97102b1fb1571fec2c9b27219a8536be",
         "num_draft_tokens": "3",
         "workload": "552_chat_tokens_code_generation_prompt_max_tokens_256_temp_0_seed_207",
-        "prompt_file": "/Users/amal/Downloads/mlx-porting-skill/mlx-model-porting/assets/benchmarks/prompts/t207-code-prompt-500.txt",
+        "prompt_file": "<repo-root>/mlx-model-porting/assets/benchmarks/prompts/t207-code-prompt-500.txt",
         "baseline_basis": "spec-baseline_plain_4bit_single_request_baseline",
         "quality_gate": "greedy_code_generation_fixed_prompt_no_formal_correctness_eval"
-      }
+      },
+      "schema_version": 1,
+      "receipt_sha256": "065cf9b998d60aca0b31a7403d8f96f3fde918fa79b86fca7427166049b1f21c",
+      "classification": "performance_observation",
+      "promotion_ready": false,
+      "reasons": [
+        "legacy-schema-1",
+        "missing-baseline-digest",
+        "missing-model-lineage",
+        "missing-output-digests",
+        "missing-quality-artifact",
+        "missing-rollback-condition",
+        "missing-target-hash",
+        "missing-workload-hash",
+        "mlx-lm-0.31.1-speculative-correctness-fix",
+        "unstable-primary-metric"
+      ]
     },
     {
       "label": "spec-draft-k4",
@@ -159,17 +344,33 @@
         "draft_revision": "b3252a2f97102b1fb1571fec2c9b27219a8536be",
         "num_draft_tokens": "4",
         "workload": "552_chat_tokens_code_generation_prompt_max_tokens_256_temp_0_seed_207",
-        "prompt_file": "/Users/amal/Downloads/mlx-porting-skill/mlx-model-porting/assets/benchmarks/prompts/t207-code-prompt-500.txt",
+        "prompt_file": "<repo-root>/mlx-model-porting/assets/benchmarks/prompts/t207-code-prompt-500.txt",
         "baseline_basis": "spec-baseline_plain_4bit_single_request_baseline",
         "quality_gate": "greedy_code_generation_fixed_prompt_no_formal_correctness_eval"
-      }
+      },
+      "schema_version": 1,
+      "receipt_sha256": "a1ad234c72d15f97df7cc43920fd52441dd2141a126d984fa42d3e044452c6a4",
+      "classification": "performance_observation",
+      "promotion_ready": false,
+      "reasons": [
+        "legacy-schema-1",
+        "missing-baseline-digest",
+        "missing-model-lineage",
+        "missing-output-digests",
+        "missing-quality-artifact",
+        "missing-rollback-condition",
+        "missing-target-hash",
+        "missing-workload-hash",
+        "mlx-lm-0.31.1-speculative-correctness-fix",
+        "unstable-primary-metric"
+      ]
     },
     {
       "label": "stack-measured-together",
       "file": "stack-measured-together.json",
       "date": "2026-07-06T10:33:34.796522+00:00",
       "chip": "Apple M4 Pro",
-      "command_summary": "sh -lc 'cat mlx-model-porting/assets/benchmarks/prompts/t207-stack-suffix.txt | python3 -m mlx_lm generate --model mlx-community/Qwen2.5-Coder-7B-Instruct-4bit --prompt-cache-file /tmp/t207-stack-combined-kv-cache.safetensors --draft-model mlx-community/Qwen2.5-Coder-1.5B-Instruct-4bit --num-draft-tokens 2 --prompt - --max-tokens 256 --temp 0.0 --seed 207 --kv-bits 4 --kv-group-size 64 --quantized-kv-start 0'",
+      "command_summary": "sh -lc 'cat mlx-model-porting/assets/benchmarks/prompts/t207-stack-suffix.txt | python3 -m mlx_lm generate --model mlx-community/Qwen2.5-Coder-7B-Instruct-4bit --prompt-cache-file <historical-ephemeral-cache>/t207-stack-combined-kv-cache.safetensors --draft-model mlx-community/Qwen2.5-Coder-1.5B-Instruct-4bit --num-draft-tokens 2 --prompt - --max-tokens 256 --temp 0.0 --seed 207 --kv-bits 4 --kv-group-size 64 --quantized-kv-start 0'",
       "config_notes": {
         "model": "mlx-community/Qwen2.5-Coder-7B-Instruct-4bit",
         "model_revision": "019cc73c45c770444708a6dd8690c66243cc5c80",
@@ -178,15 +379,35 @@
         "num_draft_tokens": "2",
         "stack_steps": "plain_4bit_target_weights_plus_kv_4bit_plus_prompt_cache_plus_draft_model",
         "kv_flags": "--kv-bits_4_--kv-group-size_64_--quantized-kv-start_0",
-        "prompt_cache_file": "/tmp/t207-stack-combined-kv-cache.safetensors",
-        "cached_prefix_file": "/Users/amal/Downloads/mlx-porting-skill/mlx-model-porting/assets/benchmarks/prompts/t207-long-prompt-8k.txt",
-        "suffix_file": "/Users/amal/Downloads/mlx-porting-skill/mlx-model-porting/assets/benchmarks/prompts/t207-stack-suffix.txt",
+        "prompt_cache_file": "<historical-ephemeral-cache>/t207-stack-combined-kv-cache.safetensors",
+        "cached_prefix_file": "<repo-root>/mlx-model-porting/assets/benchmarks/prompts/t207-long-prompt-8k.txt",
+        "suffix_file": "<repo-root>/mlx-model-porting/assets/benchmarks/prompts/t207-stack-suffix.txt",
         "prompt_cache_build": "cache_prompt_target_first_then_combined_target_plus_draft_cache_for_mlx_lm_generate_draft_cache_requirement",
         "workload": "cached_8053_token_long_prompt_prefix_plus_34_token_suffix_max_tokens_256_temp_0_seed_207",
         "baseline_basis": "vs_plain_4bit_8k_baseline_kv-baseline-8k_matched_context_not_fp16",
         "compound_claim": "measured_together_vs_plain_4bit_8k_matched_context_baseline",
         "quality_gate": "greedy_cached_long_context_suffix_no_formal_quality_eval"
-      }
+      },
+      "schema_version": 1,
+      "receipt_sha256": "e21e6eb137d7521918b13f76ccfd7a823013d4f3b3927a9586ca82f2c1a2fe70",
+      "classification": "rejected",
+      "promotion_ready": false,
+      "reasons": [
+        "baseline-workload-incompatible",
+        "legacy-schema-1",
+        "missing-baseline-digest",
+        "missing-checked-in-input",
+        "missing-model-lineage",
+        "missing-output-digests",
+        "missing-quality-artifact",
+        "missing-rollback-condition",
+        "missing-target-hash",
+        "missing-workload-hash",
+        "mlx-lm-0.31.1-speculative-correctness-fix",
+        "nonportable-ephemeral-path",
+        "partial-invalid-stack-configuration",
+        "unstable-primary-metric"
+      ]
     }
   ]
 }

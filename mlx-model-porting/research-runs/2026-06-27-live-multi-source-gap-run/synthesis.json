@@ -400,19 +400,19 @@
       "sources": [
         {
           "title": "Local architectures registry",
-          "url": "file:///Users/amal/Downloads/mlx-porting-skill/mlx-model-porting/assets/architectures.yaml",
+          "url": "file://<repo-root>/mlx-model-porting/assets/architectures.yaml",
           "accessed": "2026-06-27",
           "kind": "repo-file"
         },
         {
           "title": "Local golden scenario harness",
-          "url": "file:///Users/amal/Downloads/mlx-porting-skill/tests/test_scenarios.py",
+          "url": "file://<repo-root>/tests/test_scenarios.py",
           "accessed": "2026-06-27",
           "kind": "repo-file"
         },
         {
           "title": "Local research backlog",
-          "url": "file:///Users/amal/Downloads/mlx-porting-skill/mlx-model-porting/assets/research_backlog.json",
+          "url": "file://<repo-root>/mlx-model-porting/assets/research_backlog.json",
           "accessed": "2026-06-27",
           "kind": "repo-file"
         }
