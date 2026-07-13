@@ -6,7 +6,7 @@ compatibility: Execution and performance validation require an Apple Silicon Mac
 metadata:
   author: mlx-porting-skill
   version: "0.6.0"
-  last-reviewed: "2026-07-11"
+  last-reviewed: "2026-07-12"
 ---
 
 # MLX model porting and optimization
@@ -147,8 +147,5 @@ Stop when license, remote code, unresolved parity, regressions, missing kernel f
 
 ## Maintenance
 
-Read [maintenance](references/maintenance-and-provenance.md) and the
-[research loop](references/deep-research-loop.md).
-Use `nightly_knowledge_curator.py` for review packets. Before distribution run
-`audit_skill.py --strict` and `validate_sources.py`.
+Maintenance: [maintenance](references/maintenance-and-provenance.md), [hypothesis-led learning](references/hypothesis-led-learning.md), [research loop](references/deep-research-loop.md). Run `scripts/audit_skill.py --strict` and `scripts/validate_sources.py` before distribution.
 When `assets/architectures.yaml` changes, keep the golden scenario gate in `tests/test_scenarios.py` at full family coverage.

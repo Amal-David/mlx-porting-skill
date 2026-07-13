@@ -3,15 +3,18 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Documentation — MLX Porter</title>
-  <meta name="description" content="Technical documentation for inspecting, routing, porting, validating, benchmarking, and publishing Apple MLX model ports.">
+  <title>Learn MLX model porting — MLX Porter</title>
+  <meta name="description" content="Learn the MLX mental model, translate PyTorch and CUDA semantics, simulate representative ports, and use the executable field manual.">
   <meta name="theme-color" content="#f4f1e9">
   <meta property="og:title" content="MLX Porter documentation">
-  <meta property="og:description" content="A source-first, evidence-aware workflow for model ports on Apple MLX.">
+  <meta property="og:description" content="A visual, source-first guide from MLX fundamentals through parity, optimization, and publication.">
   <link rel="canonical" href="https://mlx-porter.pages.dev/docs/">
   <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+  <script>document.documentElement.classList.add("js")</script>
   <link rel="stylesheet" href="../styles.css">
   <script src="../data.js" defer></script>
+  <script src="../atlas.js" defer></script>
+  <script src="../optimization.js" defer></script>
   <script src="../app.js" defer></script>
 </head>
 <body class="docs-page">
@@ -33,7 +36,24 @@
       <p class="docs-search-fallback">Use your browser’s Find command to search this page.</p>
 
       <div class="docs-nav-group">
-        <p class="docs-nav-title">Start</p>
+        <p class="docs-nav-title">Learn</p>
+        <ul class="docs-nav">
+          <li><a href="#mlx-fundamentals">MLX fundamentals</a></li>
+          <li><a href="#what-is-porting">What a port preserves</a></li>
+          <li><a href="#read-the-model">Read the model</a></li>
+          <li><a href="#pytorch-to-mlx">PyTorch/CUDA → MLX</a></li>
+          <li><a href="#correctness-rail">Correctness rail</a></li>
+          <li><a href="#porting-atlas">Interactive atlas</a></li>
+          <li><a href="#qwen-worked-port">Proven Qwen lab</a></li>
+          <li><a href="#profile-bottleneck">Profile the bottleneck</a></li>
+          <li><a href="#optimization-atlas">Optimization atlas</a></li>
+          <li><a href="#benchmark-honestly">Benchmark honestly</a></li>
+          <li><a href="#publish-proof">Publish the proof</a></li>
+          <li><a href="#glossary">Glossary</a></li>
+        </ul>
+      </div>
+      <div class="docs-nav-group">
+        <p class="docs-nav-title">Build</p>
         <ul class="docs-nav">
           <li><a href="#quick-start">Quick start</a></li>
           <li><a href="#install">Installation</a></li>
@@ -65,12 +85,13 @@
           <li><a href="#sources">Primary sources</a></li>
           <li><a href="#contribute">Contribution flow</a></li>
           <li><a href="#limitations">Limitations</a></li>
+          <li><a href="#advanced-workshop">Advanced workshop</a></li>
         </ul>
       </div>
     </aside>
     <div class="docs-backdrop" data-docs-backdrop aria-hidden="true"></div>
 
-    <main class="docs-main" id="docs-main">
+    <main class="docs-main" id="docs-main" tabindex="-1">
       <header class="docs-topbar">
         <button class="docs-menu-button" type="button" data-docs-nav-toggle aria-expanded="false" aria-controls="docs-sidebar">Contents</button>
         <a class="hide-small" href="https://github.com/Amal-David/mlx-porting-skill/blob/main/mlx-model-porting/SKILL.md">SKILL.md</a>
@@ -79,17 +100,526 @@
 
       <article class="docs-article">
         <header class="docs-hero">
-          <p class="docs-breadcrumb">Documentation / executable porting standard / v<span data-value="version">0.6.0</span></p>
-          <h1>Make the port <em>explain itself.</em></h1>
-          <p class="docs-lead">MLX Porter supplies executable scaffold, conversion, capture, and parity chains for six families. Real packets prove Qwen2.5, BGE, t5-small, and HuBERT-base; MoE and SSM are synthetic-only; the other 11 routes remain runbook-guided.</p>
+          <p class="docs-breadcrumb">Learning atlas / executable field manual / v<span data-value="version">0.6.0</span></p>
+          <h1>Learn MLX by reading a port <em>from the inside out.</em></h1>
+          <p class="docs-lead">Start with arrays, lazy execution, and unified memory. Then read a source model, translate PyTorch and CUDA assumptions, prove the first matching MLX path, and only then use the executable tools and optimization runbooks.</p>
+          <div class="docs-hero-actions">
+            <a class="button primary" href="#mlx-fundamentals">Begin with the mental model</a>
+            <a class="button" href="#quick-start">Jump to the field manual</a>
+          </div>
           <div class="docs-summary" aria-label="Generated documentation summary">
             <div><strong data-value="architectures.total">17</strong><span>declared routes with golden scenarios</span></div>
-            <div><strong data-value="local_docs.runbooks">17</strong><span>architecture runbooks</span></div>
-            <div><strong data-value="sources.total">350</strong><span>live sources at recorded review depths</span></div>
+            <div><strong>8</strong><span>shared proof checkpoints</span></div>
+            <div><strong data-value="sources.total">356</strong><span>live sources at recorded review depths</span></div>
           </div>
         </header>
 
         <div class="no-results" id="no-results" hidden>No sections match that search. Press Escape to clear it.</div>
+
+        <section class="doc-section learning-chapter" id="mlx-fundamentals" data-search="learn mlx fundamentals arrays unified memory lazy evaluation streams modules transforms compile">
+          <span class="label">Learn / 01</span>
+          <h2>What MLX is—and what changes</h2>
+          <p><dfn>MLX</dfn> is an array framework for machine learning on Apple silicon. Its Python surface is deliberately familiar, but its execution model matters more than the syntax: computations are lazy, CPU and GPU operate over unified memory, and function transforms compose with ordinary Python.</p>
+          <div class="doc-grid mlx-pillars">
+            <article class="doc-card"><span class="concept-index">Array</span><h3>NumPy-like foundations</h3><p><span class="inline-code">mx.array</span> and <span class="inline-code">mlx.nn</span> make the readable port feel familiar before optimization begins.</p></article>
+            <article class="doc-card"><span class="concept-index">Memory</span><h3>Unified, not magical</h3><p>Operations can use CPU or GPU without explicit tensor transfers. Interop boundaries may still copy or force evaluation.</p></article>
+            <article class="doc-card"><span class="concept-index">Execution</span><h3>Lazy by default</h3><p>Expressions build a graph. Place <span class="inline-code">mx.eval</span> where a dependency, comparison, or measurement needs realized values.</p></article>
+            <article class="doc-card"><span class="concept-index">Transform</span><h3>Compile stable work</h3><p><span class="inline-code">mx.compile</span> belongs around pure, stable, reused regions after the eager path is correct.</p></article>
+            <article class="doc-card"><span class="concept-index">Module</span><h3>Keep parameters inspectable</h3><p><span class="inline-code">mlx.nn.Module</span> organizes layers, parameters, and nested state so the readable graph and weight map stay reviewable.</p></article>
+            <article class="doc-card"><span class="concept-index">Function transforms</span><h3>Compose behavior around functions</h3><p>Gradient, value-and-gradient, vectorization, and related function transforms wrap ordinary functions instead of changing the model contract.</p></article>
+            <article class="doc-card"><span class="concept-index">Streams</span><h3>Place operations deliberately</h3><p>Devices and streams belong to operation placement. Extra streams are an explicit scheduling tool, not an automatic overlap or speed guarantee.</p></article>
+          </div>
+          <div class="official-learning-links" aria-label="Official MLX learning resources">
+            <a href="https://ml-explore.github.io/mlx/build/html/index.html">MLX documentation ↗</a>
+            <a href="https://ml-explore.github.io/mlx/build/html/usage/quick_start.html">Quick Start ↗</a>
+            <a href="https://ml-explore.github.io/mlx/build/html/usage/unified_memory.html">Unified memory ↗</a>
+            <a href="https://ml-explore.github.io/mlx/build/html/usage/lazy_evaluation.html">Lazy evaluation ↗</a>
+            <a href="https://ml-explore.github.io/mlx/build/html/usage/compile.html">Compilation ↗</a>
+            <a href="https://ml-explore.github.io/mlx/build/html/usage/function_transforms.html">Function transforms ↗</a>
+            <a href="https://ml-explore.github.io/mlx/build/html/python/nn.html">Neural networks ↗</a>
+            <a href="https://ml-explore.github.io/mlx/build/html/usage/using_streams.html">Using streams ↗</a>
+          </div>
+          <div class="learning-frame">
+            <article><strong>Definition</strong><p>MLX is an array framework for machine learning on Apple silicon with a NumPy-like API.</p></article>
+            <article><strong>Why it matters</strong><p>Lazy execution and unified memory change evaluation, state, placement, and measurement boundaries.</p></article>
+            <article><strong>PyTorch / CUDA</strong><p>Source projects commonly assume eager tensors plus explicit CPU-to-CUDA movement.</p></article>
+            <article><strong>MLX translation</strong><p>Build with arrays and modules; choose streams at operations and evaluate only at deliberate boundaries.</p></article>
+            <article><strong>Example</strong><p>Create an array expression, then call <span class="inline-code">mx.eval</span> only where its result becomes observable.</p></article>
+            <article class="trap"><strong>Common failure</strong><p>Treating unified memory as a promise that every framework bridge is zero-copy.</p></article>
+            <article><strong>Proof check</strong><p>Explain when an expression is built and when its result is actually needed.</p></article>
+            <article><strong>Next step</strong><p>Learn what a port must preserve beyond weights.</p></article>
+          </div>
+        </section>
+
+        <section class="doc-section learning-chapter" id="what-is-porting" data-search="what porting means conversion deployment semantics weights state behavior">
+          <span class="label">Learn / 02</span>
+          <h2>What is actually being ported?</h2>
+          <div class="callout proof"><strong>A port is not a file conversion</strong><p>It reproduces the source computation, preprocessing, state transitions, weight meaning, numerical policy, and user-visible outputs in a new runtime.</p></div>
+          <div class="port-boundaries" aria-label="Porting boundary comparison">
+            <article><span>Conversion</span><h3>Moves representation</h3><p>Renames, reshapes, transposes, splits, merges, or changes dtype. Necessary, never sufficient.</p></article>
+            <article><span>Port</span><h3>Reproduces behavior</h3><p>Rebuilds operators, control flow, masks, positions, cache or recurrent state, and task semantics in MLX.</p></article>
+            <article><span>Deployment</span><h3>Packages a proven path</h3><p>Adds serving, lifecycle, observability, and distribution after correctness and workload gates exist.</p></article>
+          </div>
+          <p>A checkpoint can load while the model is wrong. A tensor with the right shape can still be transposed incorrectly. Matching final text can hide a broken cache that fails on the next request. The proof must follow the computation.</p>
+          <div class="official-learning-links" aria-label="Official MLX implementation examples">
+            <a href="https://github.com/ml-explore/mlx/tree/96296e9c3075a2389bc5c0f078bf01b5aa377cd9">MLX source snapshot ↗</a>
+            <a href="https://github.com/ml-explore/mlx-examples">Official MLX examples ↗</a>
+          </div>
+          <div class="learning-frame">
+            <article><strong>Definition</strong><p>A port reproduces a source model's behavior in a new runtime.</p></article>
+            <article><strong>Why it matters</strong><p>Conversion alone cannot preserve control flow, layouts, masks, cache semantics, preprocessing, or generation.</p></article>
+            <article><strong>PyTorch / CUDA</strong><p>The pinned source implementation and its outputs are the contract, not only its <span class="inline-code">state_dict</span>.</p></article>
+            <article><strong>MLX translation</strong><p>Rebuild the computation, transform every weight explicitly, and compare staged outputs to a source oracle.</p></article>
+            <article><strong>Example</strong><p>Match inputs, one primitive, one block, full output, stateful decode, and task behavior in order.</p></article>
+            <article class="trap"><strong>Common failure</strong><p>Calling successfully loaded tensors a completed port before output parity exists.</p></article>
+            <article><strong>Proof check</strong><p>Name the semantics, transforms, state, and outputs that need evidence.</p></article>
+            <article><strong>Next step</strong><p>Read the model before choosing an implementation route.</p></article>
+          </div>
+        </section>
+
+        <section class="doc-section learning-chapter" id="read-the-model" data-search="read model choose architecture modality artifacts input output family state cache preprocessing source format">
+          <span class="label">Learn / 03</span>
+          <h2>Read the model before choosing a method</h2>
+          <p>Model selection starts with architecture recognition. A task label such as “speech” or “vision” describes the input and output; it does not describe the repeated graph. Keep <dfn>modality</dfn>, architecture family, source format, state, and workload as separate decisions.</p>
+          <div class="model-reading-grid">
+            <article><span>01</span><h3>What crosses the boundary?</h3><p>Text IDs, pixels, waveforms, mel features, graph nodes, latents, timestamps, or structured values.</p></article>
+            <article><span>02</span><h3>What repeats?</h3><p>Decoder blocks, encoder blocks, expert routing, recurrent scans, denoising steps, convolution stacks, or message passing.</p></article>
+            <article><span>03</span><h3>What state survives?</h3><p>KV cache, recurrent state, streaming buffers, scheduler state, prefix features, or no mutable inference state.</p></article>
+            <article><span>04</span><h3>What surrounds the network?</h3><p>Tokenizer, image processor, audio frontend, scheduler, codec, VAE, sampling loop, or task post-processing.</p></article>
+            <article><span>05</span><h3>What is the artifact?</h3><p>Safetensors, a local module, ONNX, GGUF, Keras, Flax/Orbax, TensorFlow, Core ML, or an executable-risk format.</p></article>
+            <article><span>06</span><h3>What must the workload do?</h3><p>Single request, long-context prefill, cached decode, batch serving, streaming, fixed-seed generation, or training support.</p></article>
+          </div>
+          <div class="callout"><strong>Composed models need composed routes</strong><p>Whisper combines speech preprocessing with an encoder-decoder Transformer. A LLaVA-style model combines an image processor, encoder Transformer, projector, and dense language decoder. Route every component through its native runbook.</p></div>
+          <div class="learning-frame">
+            <article><strong>Definition</strong><p>Inventory artifacts, inputs, outputs, repeated blocks, state, and the surrounding pipeline.</p></article>
+            <article><strong>Why it matters</strong><p>Modality, architecture, and workload are separate decisions with different runbooks and proof gates.</p></article>
+            <article><strong>PyTorch / CUDA</strong><p>A class name may hide a vision tower, audio frontend, decoder, scheduler, or custom cache.</p></article>
+            <article><strong>MLX translation</strong><p>Route every component through its native family and record uncertainty instead of forcing one label.</p></article>
+            <article><strong>Example</strong><p>Whisper is speech plus encoder-decoder; LLaVA composes vision, projection, and language components.</p></article>
+            <article class="trap"><strong>Common failure</strong><p>Using modality as the architecture family or treating a composition as one homogeneous block.</p></article>
+            <article><strong>Proof check</strong><p>The plan lists source format, modality, components, state, preprocessing, and output contract.</p></article>
+            <article><strong>Next step</strong><p>Translate runtime assumptions, then capture a source oracle.</p></article>
+          </div>
+        </section>
+
+        <section class="doc-section learning-chapter" id="pytorch-to-mlx" data-search="pytorch cuda mlx translation tensor device eager lazy state dict layout dtype autocast compile metal timing dlpack">
+          <span class="label">Learn / 04</span>
+          <h2>Translate PyTorch and CUDA thinking into MLX</h2>
+          <p>These are translation lenses, not one-to-one replacements. For every row, preserve the source behavior first and choose the MLX mechanism that makes the contract inspectable.</p>
+          <div class="route-table-wrap translation-table-wrap">
+            <table class="translation-table">
+              <thead><tr><th>Source habit</th><th>MLX translation</th><th>Proof question</th></tr></thead>
+              <tbody>
+                <tr><td><span class="inline-code">torch.Tensor</span> and <span class="inline-code">.to(&quot;cuda&quot;)</span></td><td><span class="inline-code">mx.array</span> in unified memory; select device or stream at the operation.</td><td>Do shape, dtype, value, placement, and interop-copy behavior match?</td></tr>
+                <tr><td>Eager execution</td><td>Lazy graph construction with deliberate <span class="inline-code">mx.eval</span> boundaries.</td><td>Did timing realize the intended work exactly once?</td></tr>
+                <tr><td><span class="inline-code">state_dict</span> loading</td><td>Deterministic implementation plus an explicit weight map for rename, transpose, reshape, split, merge, and dtype.</td><td>Is source-key coverage complete and every transform justified?</td></tr>
+                <tr><td>Global NCHW assumptions</td><td>Operation-specific layout with every transition visible at its consumer.</td><td>Are named axes correct at convolution, attention, and image boundaries?</td></tr>
+                <tr><td>AMP or <span class="inline-code">autocast</span></td><td>Explicit dtype and accumulation by numerical role.</td><td>Do norms, softmax, recurrence, FFT, and distances meet the declared policy?</td></tr>
+                <tr><td>Hidden module mutation</td><td>Thread cache and recurrent values as explicit state inputs and outputs.</td><td>Do update order, reset, positions, and reuse match?</td></tr>
+                <tr><td><span class="inline-code">torch.compile</span> or CUDA graphs</td><td><span class="inline-code">mx.compile</span> over pure, stable, reused regions after eager parity.</td><td>Do compiled and eager outputs match across representative shapes?</td></tr>
+                <tr><td>CUDA extensions</td><td>Native MLX operations first, then <span class="inline-code">mx.fast</span> or compilation, then custom Metal with a readable fallback.</td><td>Did profiling justify the maintenance and portability cost?</td></tr>
+                <tr><td>CUDA timing and synchronization</td><td>Synchronize through evaluation only at dependency or measurement boundaries.</td><td>Are construction, execution, warm state, and transfers charged consistently?</td></tr>
+                <tr><td>NumPy or DLPack bridges</td><td>Use documented framework conversion for oracle comparison, outside the measured native path.</td><td>Are copy, ownership, dtype, and forced-evaluation effects recorded?</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p><a href="https://ml-explore.github.io/mlx/build/html/usage/numpy.html">Read the official framework conversion and DLPack guidance ↗</a></p>
+          <div class="callout warning"><strong>Keep optimization categories separate</strong><p>Fast scaled-dot-product attention changes a compatible attention operator. Speculative decoding changes an autoregressive generation algorithm. Compilation changes graph execution. Caches change reusable state. None is a child of the other.</p></div>
+          <div class="learning-frame">
+            <article><strong>Definition</strong><p>A translation lens turns each source-runtime assumption into an explicit MLX choice.</p></article>
+            <article><strong>Why it matters</strong><p>Familiar syntax can hide different execution, layout, dtype, state, and synchronization behavior.</p></article>
+            <article><strong>PyTorch / CUDA</strong><p>Annotate device moves, eager boundaries, layouts, autocast, mutation, compilation, extensions, and timing.</p></article>
+            <article><strong>MLX translation</strong><p>Choose the inspectable MLX mechanism that preserves the behavior; do not force one-to-one API replacements.</p></article>
+            <article><strong>Example</strong><p>Replace implicit <span class="inline-code">state_dict</span> loading with a reviewed map of names, axes, shapes, and dtypes.</p></article>
+            <article class="trap"><strong>Common failure</strong><p>Porting a CUDA optimization before reproducing the semantics it accelerated.</p></article>
+            <article><strong>Proof check</strong><p>Compare at each translated boundary before moving to the next one.</p></article>
+            <article><strong>Next step</strong><p>Use the ordered correctness rail to localize the first mismatch.</p></article>
+          </div>
+        </section>
+
+        <section class="doc-section learning-chapter" id="correctness-rail" data-search="correctness rail inspect oracle implement map parity divergence profile optimize benchmark publish">
+          <span class="label">Learn / 05</span>
+          <h2>The correctness rail</h2>
+          <p>Every step earns the right to take the next. The stable rail is the same for a decoder, speech system, diffusion pipeline, or multimodal composition; the architecture-specific checkpoints change inside it.</p>
+          <ol class="learning-rail" aria-label="Eight shared porting checkpoints">
+            <li><span>01</span><div><h3>Inspect</h3><p>Pin the source and inventory artifacts, modality, architecture, state, preprocessing, and output contract.</p></div></li>
+            <li><span>02</span><div><h3>Capture oracle</h3><p>Freeze deterministic source inputs, intermediate tensors, state, and task output.</p></div></li>
+            <li><span>03</span><div><h3>Implement</h3><p>Build the smallest readable eager MLX graph with explicit axes, numerical roles, and state.</p></div></li>
+            <li><span>04</span><div><h3>Map weights</h3><p>Declare every source-to-target name, shape, layout, split, merge, and dtype transform.</p></div></li>
+            <li class="rail-gate"><span>05</span><div><h3>Prove parity</h3><p>Compare shapes → primitive → block → output → state → task. Stop at the first divergence.</p></div></li>
+            <li><span>06</span><div><h3>Profile</h3><p>Measure the representative workload with intentional evaluation and synchronization boundaries.</p></div></li>
+            <li class="rail-locked"><span>07</span><div><h3>Optimize</h3><p>Unlock one bottleneck-specific branch only after parity and quality gates exist.</p></div></li>
+            <li><span>08</span><div><h3>Publish</h3><p>Package provenance, transforms, validation, receipts, limitations, and rollback together.</p></div></li>
+          </ol>
+          <h3>Debug the first divergence</h3>
+          <p>Start at the earliest failed rung and move outward only when it passes: shapes and dtypes, primitive math, one block, full output, mutable state, then the task metric. Later failures contain every earlier error.</p>
+          <div class="learning-frame">
+            <article><strong>Definition</strong><p>Move from the smallest comparable value to the complete task and stop at the first divergence.</p></article>
+            <article><strong>Why it matters</strong><p>Later errors compound, so an end-to-end failure gives little help locating the original semantic mismatch.</p></article>
+            <article><strong>PyTorch / CUDA</strong><p>Capture deterministic source tensors, layouts, masks, positions, dtypes, and state at named checkpoints.</p></article>
+            <article><strong>MLX translation</strong><p>Compare the readable eager path at primitive, block, output, state, and task rungs before compilation.</p></article>
+            <article><strong>Example</strong><p>A wrong attention mask should fail at attention output before later residual blocks hide it.</p></article>
+            <article class="trap"><strong>Common failure</strong><p>Loosening tolerance, profiling, or compiling before explaining the earliest mismatch.</p></article>
+            <article><strong>Proof check</strong><p>The fixed rung passes with declared inputs and policy while every earlier rung remains green.</p></article>
+            <article><strong>Next step</strong><p>Trace the same rail through the pinned Qwen proof, then profile the target workload.</p></article>
+          </div>
+        </section>
+
+        <section class="doc-section learning-chapter" id="porting-atlas" data-search="interactive atlas simulation qwen whisper flux llava inspect oracle implement map parity profile optimize publish">
+          <span class="label">Learn / 06</span>
+          <h2>Trace one proof rail through four different models</h2>
+          <p>The eight checkpoints stay fixed while modality, architecture, state, proof, and workload decisions change. Choose a journey, inspect each node, compare the same checkpoint across routes, and export a port plan. Selection means navigation—not completion or validation.</p>
+          <div class="callout"><strong>Evidence status stays literal</strong><p><b>Proven</b> means this repository has a pinned, reproducible proof packet for the named checkpoint. <b>Simulation</b> means the path is assembled from canonical runbooks and evidence; it is not a completed checkpoint port.</p></div>
+
+          <div class="atlas-fallback" data-atlas-fallback>
+            <h3>Linear study guide</h3>
+            <p>JavaScript is optional. Every journey, checkpoint, proof boundary, and runbook remains available below.</p>
+
+            <details class="atlas-fallback-journey" data-journey="qwen25-dense-decoder" open>
+              <summary><span>Proven — pinned checkpoint proof</span><strong>Qwen2.5-0.5B-Instruct</strong></summary>
+              <p><b>Text · safetensors · dense decoder Transformer.</b> Tokenizer contract → Embedding → Decoder block loop → KV cache state → Norm, head, and generation.</p>
+              <ol class="atlas-fallback-steps">
+                <li data-atlas-fallback-step="inspect"><strong>Inspect</strong><span>Pin the exact Qwen2.5-0.5B-Instruct revision and identify the dense decoder route.</span></li>
+                <li data-atlas-fallback-step="oracle"><strong>Capture oracle</strong><span>Capture tokenizer IDs, primitive tensors, repeated blocks, logits, KV state, and greedy outputs.</span></li>
+                <li data-atlas-fallback-step="implement"><strong>Rebuild</strong><span>Build a readable standalone MLX decoder with explicit RoPE, GQA, RMSNorm, masks, and cache.</span></li>
+                <li data-atlas-fallback-step="map"><strong>Map weights</strong><span>Apply the checked-in schema-2 rename and transform contract with full source-key coverage.</span></li>
+                <li data-atlas-fallback-step="parity"><strong>Prove parity</strong><span>Run the ordered 29-rung ladder under its declared floating-point policy.</span></li>
+                <li data-atlas-fallback-step="profile"><strong>Profile</strong><span>Measure load, prefill, and cached decode separately; keep observations tied to the local receipt.</span></li>
+                <li data-atlas-fallback-step="optimize"><strong>Optimize</strong><span>Only after parity, test attention, compile, dtype, quantization, cache, or decode-algorithm branches independently.</span></li>
+                <li data-atlas-fallback-step="publish"><strong>Publish</strong><span>Publish the exact checkpoint boundary, parity packet, receipts, and limitations without generalizing to all Qwen models.</span></li>
+              </ol>
+              <p class="atlas-boundary"><strong>Proof boundary:</strong> Claim one pinned local real-model port, exact eight-token greedy agreement for the F32 artifact, and one held F32-versus-BF16 wall-time observation. Do not generalize the tolerance, BF16 quality window, performance ratio, longer-context behavior, batching, or publication readiness.</p>
+              <p><a href="https://github.com/Amal-David/mlx-porting-skill/blob/main/mlx-model-porting/references/runbook-decoder-transformer.md">Open the dense-decoder runbook ↗</a></p>
+            </details>
+
+            <details class="atlas-fallback-journey" data-journey="whisper-style-asr" open>
+              <summary><span>Simulation — not a completed checkpoint port</span><strong>Whisper-style ASR</strong></summary>
+              <p><b>Audio-to-text · safetensors · ASR plus encoder-decoder Transformer.</b> Waveform contract → Mel frontend → Audio encoder → Cross-attention decoder → Transcript and timestamps.</p>
+              <ol class="atlas-fallback-steps">
+                <li data-atlas-fallback-step="inspect"><strong>Inspect</strong><span>Classify speech modality separately from the encoder-decoder architecture and frontend.</span></li>
+                <li data-atlas-fallback-step="oracle"><strong>Capture oracle</strong><span>Capture waveform, mel features, encoder outputs, cross-attention decoder checkpoints, and timestamps.</span></li>
+                <li data-atlas-fallback-step="implement"><strong>Rebuild</strong><span>Rebuild the frontend, audio encoder, text decoder, masks, positions, and distinct cache lifetimes.</span></li>
+                <li data-atlas-fallback-step="map"><strong>Map weights</strong><span>Map convolution, encoder, decoder, cross-attention, embedding, and head tensors explicitly.</span></li>
+                <li data-atlas-fallback-step="parity"><strong>Prove parity</strong><span>Prove features, encoder, decoder, state, logits, transcript, and timestamp behavior in order.</span></li>
+                <li data-atlas-fallback-step="profile"><strong>Profile</strong><span>Separate frontend, encoder, autoregressive decoder, and task post-processing costs.</span></li>
+                <li data-atlas-fallback-step="optimize"><strong>Optimize</strong><span>For offline Whisper, start with attention, compilation, and evaluation boundaries only when their prerequisites hold.</span></li>
+                <li data-atlas-fallback-step="publish"><strong>Publish</strong><span>Keep this route labeled simulation until a pinned checkpoint and task-quality packet are reproduced.</span></li>
+              </ol>
+              <p class="atlas-boundary"><strong>Proof boundary:</strong> This is a runbook simulation, not a completed Whisper checkpoint port. The official MLX example proves an implementation path exists; it does not provide this repository's pinned parity and task-quality packet.</p>
+              <p><a href="https://github.com/Amal-David/mlx-porting-skill/blob/main/mlx-model-porting/references/runbook-asr.md">ASR runbook ↗</a> · <a href="https://github.com/Amal-David/mlx-porting-skill/blob/main/mlx-model-porting/references/runbook-encoder-decoder.md">encoder-decoder runbook ↗</a></p>
+            </details>
+
+            <details class="atlas-fallback-journey" data-journey="flux-style-diffusion" open>
+              <summary><span>Simulation — not a completed checkpoint port</span><strong>FLUX-style diffusion/flow</strong></summary>
+              <p><b>Text-to-image · safetensors · diffusion and flow.</b> Prompt encoder → Latent and scheduler → Repeated flow or denoiser step → Latent trajectory → VAE decode and image.</p>
+              <ol class="atlas-fallback-steps">
+                <li data-atlas-fallback-step="inspect"><strong>Inspect</strong><span>Inventory every pipeline component, scheduler, source artifact, and conditioning path.</span></li>
+                <li data-atlas-fallback-step="oracle"><strong>Capture oracle</strong><span>Capture conditioning, initial latent, schedule, selected denoiser blocks, latent steps, and final decode.</span></li>
+                <li data-atlas-fallback-step="implement"><strong>Rebuild</strong><span>Rebuild components independently, then compose a readable single-step pipeline before iteration.</span></li>
+                <li data-atlas-fallback-step="map"><strong>Map weights</strong><span>Keep encoder, denoiser, and VAE weight namespaces and transforms separately auditable.</span></li>
+                <li data-atlas-fallback-step="parity"><strong>Prove parity</strong><span>Compare scheduler identity, one-step updates, fixed latent checkpoints, VAE output, and quality.</span></li>
+                <li data-atlas-fallback-step="profile"><strong>Profile</strong><span>Separate prompt encoding, repeated denoiser work, scheduler overhead, transfers, and VAE decode.</span></li>
+                <li data-atlas-fallback-step="optimize"><strong>Optimize</strong><span>Current registry candidates are stable compilation, evaluation boundaries, block streaming, and the spatial grid-sample kernel.</span></li>
+                <li data-atlas-fallback-step="publish"><strong>Publish</strong><span>Label the route FLUX-style simulation until an exact model source and reproducible MLX proof are checked in.</span></li>
+              </ol>
+              <p class="atlas-boundary"><strong>Proof boundary:</strong> This is a generic FLUX-style teaching route, not an exact FLUX checkpoint claim. Fixed-seed output still requires declared image-quality checks; pixel identity is not promised by default.</p>
+              <p><a href="https://github.com/Amal-David/mlx-porting-skill/blob/main/mlx-model-porting/references/runbook-diffusion-flow.md">Open the diffusion and flow runbook ↗</a></p>
+            </details>
+
+            <details class="atlas-fallback-journey" data-journey="llava-style-vlm" open>
+              <summary><span>Simulation — not a completed checkpoint port</span><strong>LLaVA-style vision-language model</strong></summary>
+              <p><b>Image-to-text · safetensors · vision encoder, projector, and dense decoder.</b> Image processor → Vision encoder → Multimodal projector → Multimodal token assembly → Language decoder and output.</p>
+              <ol class="atlas-fallback-steps">
+                <li data-atlas-fallback-step="inspect"><strong>Inspect</strong><span>Route image processing, the encoder tower, projector, dense decoder, and KV state as separate components.</span></li>
+                <li data-atlas-fallback-step="oracle"><strong>Capture oracle</strong><span>Capture pixels, vision features, projected embeddings, token assembly, logits, cache, and final output.</span></li>
+                <li data-atlas-fallback-step="implement"><strong>Rebuild</strong><span>Rebuild each component through its native runbook before composing the multimodal path.</span></li>
+                <li data-atlas-fallback-step="map"><strong>Map weights</strong><span>Keep vision, projector, and language tensor transforms distinct with complete source-key coverage.</span></li>
+                <li data-atlas-fallback-step="parity"><strong>Prove parity</strong><span>Prove every modality boundary before evaluating the final image-conditioned task.</span></li>
+                <li data-atlas-fallback-step="profile"><strong>Profile</strong><span>Separate image processing, vision encoding, projection, language prefill, cached decode, and serving reuse.</span></li>
+                <li data-atlas-fallback-step="optimize"><strong>Optimize</strong><span>Select attention, compile, memory, cache, batching, spatial, or research branches only after their own gates.</span></li>
+                <li data-atlas-fallback-step="publish"><strong>Publish</strong><span>Keep Apple MLX, third-party MLX-VLM, paper-only research, and local reproduction states visibly distinct.</span></li>
+              </ol>
+              <p class="atlas-boundary"><strong>Proof boundary:</strong> This is a composed-route simulation with no pinned model outcome or local proof ladder. MLX-VLM evidence is third-party and must not be presented as Apple-official or locally reproduced.</p>
+              <p><a href="https://github.com/Amal-David/mlx-porting-skill/blob/main/mlx-model-porting/references/runbook-multimodal-omni.md">Multimodal runbook ↗</a> · <a href="https://github.com/Amal-David/mlx-porting-skill/blob/main/mlx-model-porting/references/runbook-encoder-transformer.md">encoder runbook ↗</a> · <a href="https://github.com/Amal-David/mlx-porting-skill/blob/main/mlx-model-porting/references/runbook-decoder-transformer.md">decoder runbook ↗</a></p>
+            </details>
+          </div>
+
+          <div class="interactive-atlas" data-atlas-root hidden>
+            <fieldset class="atlas-journey-picker">
+              <legend>Choose a model journey</legend>
+              <div class="atlas-journey-options">
+                <input type="radio" name="atlas-journey" id="atlas-qwen" value="qwen25-dense-decoder" checked>
+                <label for="atlas-qwen"><span>Text · proven</span>Qwen2.5 dense decoder</label>
+                <input type="radio" name="atlas-journey" id="atlas-whisper" value="whisper-style-asr">
+                <label for="atlas-whisper"><span>Audio · simulation</span>Whisper-style ASR</label>
+                <input type="radio" name="atlas-journey" id="atlas-flux" value="flux-style-diffusion">
+                <label for="atlas-flux"><span>Image · simulation</span>FLUX-style diffusion/flow</label>
+                <input type="radio" name="atlas-journey" id="atlas-llava" value="llava-style-vlm">
+                <label for="atlas-llava"><span>Multimodal · simulation</span>LLaVA-style VLM</label>
+              </div>
+            </fieldset>
+
+            <div class="atlas-workspace">
+              <div class="atlas-map-panel">
+                <header class="atlas-selected-header">
+                  <div><span class="atlas-status proven" data-atlas-status>Proven — pinned checkpoint proof</span><h3 data-atlas-journey-title>Qwen2.5-0.5B-Instruct</h3></div>
+                  <p data-atlas-component-path>Tokenizer → embedding → decoder blocks → KV state → logits</p>
+                </header>
+                <ol class="atlas-node-list" aria-label="Eight ordered porting checkpoints">
+                  <li><button type="button" data-atlas-node="inspect" data-node-state="required" aria-pressed="true" tabindex="0"><span>01</span><strong>Inspect</strong><small>Required · pin the semantic inventory</small></button><span class="atlas-connector" aria-hidden="true"></span></li>
+                  <li><button type="button" data-atlas-node="oracle" data-node-state="required" aria-pressed="false" tabindex="-1"><span>02</span><strong>Capture oracle</strong><small>Required · freeze source behavior</small></button><span class="atlas-connector" aria-hidden="true"></span></li>
+                  <li><button type="button" data-atlas-node="implement" data-node-state="required" aria-pressed="false" tabindex="-1"><span>03</span><strong>Rebuild</strong><small>Required · readable eager MLX</small></button><span class="atlas-connector" aria-hidden="true"></span></li>
+                  <li><button type="button" data-atlas-node="map" data-node-state="required" aria-pressed="false" tabindex="-1"><span>04</span><strong>Map weights</strong><small>Required · explicit transforms</small></button><span class="atlas-connector" aria-hidden="true"></span></li>
+                  <li><button type="button" data-atlas-node="parity" data-node-state="gate" aria-pressed="false" tabindex="-1"><span>05</span><strong>Prove parity</strong><small>Parity gate · stop at first divergence</small></button><span class="atlas-connector" aria-hidden="true"></span></li>
+                  <li><button type="button" data-atlas-node="profile" data-node-state="gate" aria-pressed="false" tabindex="-1"><span>06</span><strong>Profile</strong><small>Profile gate · measure the real workload</small></button><span class="atlas-connector" aria-hidden="true"></span></li>
+                  <li><button type="button" data-atlas-node="optimize" data-node-state="gated" aria-pressed="false" tabindex="-1"><span>07</span><strong>Optimize</strong><small>Gated — parity required</small></button><span class="atlas-connector" aria-hidden="true"></span></li>
+                  <li><button type="button" data-atlas-node="publish" data-node-state="required" aria-pressed="false" tabindex="-1"><span>08</span><strong>Publish</strong><small>Required · ship the proof boundary</small></button></li>
+                </ol>
+                <label class="atlas-path-filter"><input type="checkbox" data-atlas-path-only checked> Show only the selected journey</label>
+                <p class="atlas-filter-help">Clear the filter to compare this checkpoint across all four routes. Alternatives stay visible as teaching context; none becomes validated.</p>
+              </div>
+
+              <aside class="atlas-detail-panel" aria-labelledby="atlas-detail-title">
+                <span class="label" data-atlas-step-label>Checkpoint 01 / 08</span>
+                <h3 id="atlas-detail-title" data-atlas-step-title>Inspect</h3>
+                <p class="atlas-journey-note" data-atlas-journey-note>Pin the exact Qwen2.5-0.5B-Instruct revision and identify the dense decoder route.</p>
+                <div class="atlas-boundary"><strong>Exact proof boundary</strong><p data-atlas-proof-boundary>Claim one pinned local real-model port, exact eight-token greedy agreement for the F32 artifact, and one held F32-versus-BF16 wall-time observation. Do not generalize the tolerance, BF16 quality window, performance ratio, longer-context behavior, batching, or publication readiness.</p></div>
+                <dl class="atlas-detail-list">
+                  <div><dt>What this is</dt><dd data-atlas-field="concept">Identify artifacts, inputs, outputs, modality, architecture, state, and source format.</dd></div>
+                  <div><dt>Why MLX changes it</dt><dd data-atlas-field="why_mlx_differs">MLX route selection depends on the actual computation, not a filename or task label.</dd></div>
+                  <div><dt>What to inspect</dt><dd data-atlas-field="inspect">Config, class graph, tensor inventory, preprocessing, generation code, and custom operations.</dd></div>
+                  <div><dt>Proof before moving on</dt><dd data-atlas-field="proof">The port plan records evidence and uncertainty for every selected family.</dd></div>
+                  <div><dt>Prerequisite</dt><dd data-atlas-field="prerequisite">A pinned local source revision with remote model code disabled.</dd></div>
+                  <div><dt>Evidence state</dt><dd data-atlas-field="evidence_state">Required checkpoint inside a proven, pinned Qwen journey.</dd></div>
+                </dl>
+                <div class="atlas-runbooks" data-atlas-runbooks><a href="https://github.com/Amal-David/mlx-porting-skill/blob/main/mlx-model-porting/references/runbook-decoder-transformer.md">Open the dense-decoder runbook ↗</a></div>
+                <div class="atlas-comparison" data-atlas-comparison hidden>
+                  <h4>Same checkpoint, other routes</h4>
+                  <ul data-atlas-comparison-list></ul>
+                </div>
+                <div class="atlas-walk-controls">
+                  <button type="button" data-atlas-previous disabled>← Previous</button>
+                  <button type="button" data-atlas-next>Next →</button>
+                </div>
+              </aside>
+            </div>
+
+            <section class="atlas-export" aria-labelledby="atlas-export-title">
+              <div><span class="label">Executable handoff</span><h3 id="atlas-export-title">Export this journey as a text port plan</h3><p>The export preserves all eight gates, the model status, and the exact evidence boundary.</p></div>
+              <label for="atlas-export-output">Generated port plan</label>
+              <textarea id="atlas-export-output" data-atlas-export-output rows="18" readonly></textarea>
+              <button type="button" class="button" data-atlas-copy>Copy plan</button>
+            </section>
+            <p class="sr-only" role="status" aria-live="polite" aria-atomic="true" data-atlas-live></p>
+          </div>
+        </section>
+
+        <section class="doc-section learning-chapter" id="qwen-worked-port" data-search="qwen worked proven port dense decoder rope gqa rmsnorm kv cache 29 parity">
+          <span class="label">Learn / 07</span>
+          <h2>The proven lab: Qwen2.5-0.5B-Instruct</h2>
+          <p><span class="path-status proven">Proven guided lab</span></p>
+          <p>The repository's one complete guided port is bound to the pinned <span class="inline-code">Qwen/Qwen2.5-0.5B-Instruct</span> checkpoint. It teaches tokenizer identity, embeddings, RoPE, RMSNorm, grouped-query attention, repeated decoder blocks, KV state, the final head, and greedy generation.</p>
+          <div class="qwen-proof-path" aria-label="Qwen component path">
+            <span>Token IDs</span><i aria-hidden="true">→</i><span>Embedding</span><i aria-hidden="true">→</i><span>Decoder loop</span><i aria-hidden="true">→</i><span>KV state</span><i aria-hidden="true">→</i><span>Logits + IDs</span>
+          </div>
+          <div class="callout proof"><strong>What is proven</strong><p>The standalone MLX path passed all 29 ordered parity rungs under its declared floating-point policy. Input IDs and the eight greedy output token IDs matched exactly. Separate timing receipts remain scoped observations, not a portable speed claim.</p></div>
+          <div class="callout warning"><strong>What is not proven</strong><p>This result does not establish every Qwen variant, every dense decoder, or any Whisper, FLUX, or LLaVA checkpoint. Those routes remain simulations until their own artifacts and quality gates exist.</p></div>
+          <div class="official-learning-links" aria-label="Qwen implementation references">
+            <a href="https://github.com/Amal-David/mlx-porting-skill/tree/main/mlx-model-porting/examples/worked-port-qwen2.5-0.5b-instruct">Checked-in proof packet ↗</a>
+            <a href="https://github.com/ml-explore/mlx-lm/tree/2c008fd0252b2c569227d12568356ab88ab0560a">Official MLX-LM snapshot ↗</a>
+          </div>
+          <div class="learning-frame">
+            <article><strong>Definition</strong><p>This is one pinned dense-decoder checkpoint with a checked-in MLX proof packet.</p></article>
+            <article><strong>Why it matters</strong><p>A concrete port shows how component, weight, state, and task evidence connect.</p></article>
+            <article><strong>PyTorch / CUDA</strong><p>The source oracle supplies exact inputs plus ordered tensors, state, logits, and greedy IDs.</p></article>
+            <article><strong>MLX translation</strong><p>Readable embeddings, RoPE, RMSNorm, grouped-query attention, decoder blocks, KV state, and head are mapped explicitly.</p></article>
+            <article><strong>Example</strong><p>Tokens → embedding → decoder blocks → KV state → logits → eight greedy token IDs.</p></article>
+            <article class="trap"><strong>Common failure</strong><p>Generalizing one checkpoint result to every Qwen variant, dense decoder, or Apple target.</p></article>
+            <article><strong>Proof check</strong><p>Locate each of the 29 source and target rungs and the exact-token policy in the report.</p></article>
+            <article><strong>Next step</strong><p>Profile a declared target workload without turning its timing into a portable claim.</p></article>
+          </div>
+        </section>
+
+        <section class="doc-section learning-chapter" id="profile-bottleneck" data-search="profile optimize bottleneck prefill decode preprocessing denoising streaming memory serving lazy evaluation fast sdpa compile">
+          <span class="label">Learn / 08</span>
+          <h2>Profile the real bottleneck before choosing an optimization</h2>
+          <p>Parity earns permission to measure; measurement earns permission to optimize. Split the target workload into the phases a user actually experiences, place evaluation so lazy work is charged exactly once, and select a technique only from the measured branch.</p>
+          <div class="model-reading-grid" aria-label="Representative profiling phases">
+            <article><span>Input</span><h3>Preprocessing</h3><p>Tokenizer, image processor, audio frontend, scheduler setup, or feature extraction.</p></article>
+            <article><span>Build</span><h3>Prefill or encode</h3><p>Prompt prefill, vision or audio encoding, conditioning, or the first full graph realization.</p></article>
+            <article><span>Repeat</span><h3>Decode or denoise</h3><p>Cached token steps, recurrent scans, diffusion iterations, or another repeated state transition.</p></article>
+            <article><span>Memory</span><h3>State and residency</h3><p>KV cache, recurrent buffers, activations, weights, temporary arrays, and peak pressure.</p></article>
+            <article><span>Pipeline</span><h3>Serving and overlap</h3><p>Batching, queues, streams, transfers, post-processing, and end-to-end latency.</p></article>
+            <article><span>Gate</span><h3>Quality and rollback</h3><p>Every speed experiment keeps the parity and task-quality checks that can reject it.</p></article>
+          </div>
+          <div class="official-learning-links" aria-label="Official MLX profiling and optimization references">
+            <a href="https://ml-explore.github.io/mlx/build/html/usage/lazy_evaluation.html">Lazy evaluation ↗</a>
+            <a href="https://ml-explore.github.io/mlx/build/html/usage/compile.html">Compilation ↗</a>
+            <a href="https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.fast.scaled_dot_product_attention.html">Fast scaled-dot-product attention ↗</a>
+          </div>
+          <div class="callout warning"><strong>Technique follows bottleneck</strong><p>Fast attention is a native operator choice. Compilation changes graph execution. Quantization changes representation. Caching changes reusable state. Speculative decoding changes the inference algorithm. Batching changes serving. Keep them as separate branches with separate prerequisites, proof gates, and rollback conditions.</p></div>
+          <div class="learning-frame">
+            <article><strong>Definition</strong><p>Measure the phase that limits the target workload before choosing an optimization.</p></article>
+            <article><strong>Why it matters</strong><p>Prefill, decode, preprocessing, denoising, streaming, memory, and serving demand different techniques.</p></article>
+            <article><strong>PyTorch / CUDA</strong><p>CUDA intuition about a hot kernel does not prove the same bottleneck exists on MLX and Apple silicon.</p></article>
+            <article><strong>MLX translation</strong><p>Place evaluation around measured regions so lazy work is included exactly once and synchronization is intentional.</p></article>
+            <article><strong>Example</strong><p>Separate prompt prefill from cached token decode instead of reporting one blended generation time.</p></article>
+            <article class="trap"><strong>Common failure</strong><p>Timing graph construction while computation is realized outside the measured region.</p></article>
+            <article><strong>Proof check</strong><p>The receipt names workload, warm state, evaluation boundaries, hardware, software, and quality gate.</p></article>
+            <article><strong>Next step</strong><p>Select one technique from the measured bottleneck branch and keep a rollback.</p></article>
+          </div>
+        </section>
+
+        <section class="doc-section learning-chapter" id="optimization-atlas" data-search="optimization atlas parity profile fast sdpa speculative decoding cache quantization compile batching custom backend quality rollback">
+          <span class="label">Learn / 09</span>
+          <h2>Choose an optimization from the bottleneck—not from a buzzword</h2>
+          <p>Parity first. Profile second. One experiment at a time. The map below separates operator choices, graph execution, layout, state, compression, inference algorithms, serving, and custom backend work so a fast-attention kernel never gets confused with speculative decoding or a cache policy.</p>
+          <div class="callout warning"><strong>Planning is not validation</strong><p>Declaring parity here only unlocks an experiment plan. The page does not inspect your artifacts, prove the selected model supports a method, or promote a numeric claim.</p></div>
+
+          <div class="optimization-fallback" data-optimization-fallback>
+            <h3>Eight measured-bottleneck branches</h3>
+            <p>JavaScript is optional for the taxonomy. Open the canonical guidance registry for applicability, validation gates, evidence, trade-offs, and rollback details.</p>
+            <div class="optimization-fallback-grid">
+              <details open><summary>Evaluation and scheduling <span>1 method</span></summary><p>Lazy graph lifetime, synchronization, or misplaced evaluation.</p><ul><li data-optimization-fallback-method="lazy-eval-boundaries">Deliberate lazy evaluation boundaries <small>native MLX</small></li></ul></details>
+              <details open><summary>Native operators and compilation <span>2 methods</span></summary><p>Compatible repeated operators or stable graph regions.</p><ul><li data-optimization-fallback-method="fast-sdpa">MLX fast scaled-dot-product attention <small>native MLX operator</small></li><li data-optimization-fallback-method="compile-stable-region">Compile stable repeated regions <small>native MLX execution</small></li></ul></details>
+              <details open><summary>Layout and numerical representation <span>1 method</span></summary><p>Dispatch layout, gathers, dtype, or accumulation.</p><ul><li data-optimization-fallback-method="moe-gather-and-expert-batching">Gather matmul for indexed expert projections <small>native MLX</small></li></ul></details>
+              <details open><summary>State and memory <span>3 methods</span></summary><p>Weight residency or KV state exceeds the useful memory budget.</p><ul><li data-optimization-fallback-method="block-weight-streaming">Repeated-block weight streaming</li><li data-optimization-fallback-method="uniform-kv-quantization">Uniform KV cache quantization</li><li data-optimization-fallback-method="adaptive-kv-quantization">Adaptive mixed-precision KV <small>research</small></li></ul></details>
+              <details open><summary>Compression <span>4 methods</span></summary><p>Weight, state, or token representation dominates memory or bandwidth.</p><ul><li data-optimization-fallback-method="bf16-weight-cast">BF16 weight casting</li><li data-optimization-fallback-method="native-low-bit-weight-quantization">Native low-bit weight quantization</li><li data-optimization-fallback-method="visual-token-pruning-or-merge">Visual-token pruning or merging <small>research</small></li><li data-optimization-fallback-method="moe-expert-dispatch-and-quantization">MoE expert dispatch and quantization</li></ul></details>
+              <details open><summary>Inference algorithms <span>3 methods</span></summary><p>Autoregressive target-model calls dominate after decoder parity.</p><ul><li data-optimization-fallback-method="draft-model-speculation">Independent draft-model speculative decoding</li><li data-optimization-fallback-method="prompt-lookup-ngram-speculation">Prompt lookup / n-gram speculation <small>research</small></li><li data-optimization-fallback-method="eagle-medusa-mtp-drafters">EAGLE / trained drafters <small>research boundary</small></li></ul></details>
+              <details open><summary>Serving and pipeline <span>11 methods</span></summary><p>Batching, preprocessing, cache reuse, streaming, or scheduling.</p><ul><li data-optimization-fallback-method="prompt-prefix-cache">Prompt cache</li><li data-optimization-fallback-method="continuous-batching-serving">Continuous batching</li><li data-optimization-fallback-method="content-prefix-cache-vlm">Block-level automatic prefix caching <small>rejected / superseded</small></li><li data-optimization-fallback-method="audio-streaming-and-cache">Audio streaming and cache</li><li data-optimization-fallback-method="cache-privacy-and-isolation">Cache privacy and tenant isolation <small>research</small></li><li data-optimization-fallback-method="vision-feature-cache">Vision feature cache</li><li data-optimization-fallback-method="multimodal-content-prefix-cache">Multimodal prefix cache</li><li data-optimization-fallback-method="video-input-budgeting">Video input budgeting</li><li data-optimization-fallback-method="qwen3-tts-batch-generation">Qwen3-TTS batch generation</li><li data-optimization-fallback-method="audio-reference-conditioning-cache">Audio reference conditioning cache</li><li data-optimization-fallback-method="generic-audio-prefix-cache">Generic audio prefix cache <small>research</small></li></ul></details>
+              <details open><summary>Custom backend work <span>3 methods</span></summary><p>A proven hot operation has no adequate native path.</p><ul><li data-optimization-fallback-method="moe-gate-up-fusion">MoE gate/up projection fusion <small>research</small></li><li data-optimization-fallback-method="spatial-grid-sample-kernel">Grid-sample Metal kernel</li><li data-optimization-fallback-method="cuda-graphs-decode-capture">CUDA Graphs capture <small>rejected—NVIDIA-specific</small></li></ul></details>
+            </div>
+            <p><a href="https://github.com/Amal-David/mlx-porting-skill/blob/main/mlx-model-porting/assets/optimization_guidance.yaml">Open the canonical optimization guidance ↗</a></p>
+          </div>
+
+          <div class="optimization-atlas" data-optimization-root hidden>
+            <div class="optimization-gates">
+              <fieldset>
+                <legend>What proof do you actually have?</legend>
+                <label><input type="checkbox" data-optimization-parity> I have exact-model parity evidence for the readable baseline</label>
+                <p>This unlocks planning controls only. It does not validate the evidence.</p>
+              </fieldset>
+              <fieldset>
+                <legend>Research boundary</legend>
+                <label><input type="checkbox" data-optimization-research> Show experimental methods as selectable research hypotheses</label>
+                <p>Rejected or superseded methods remain unavailable.</p>
+              </fieldset>
+            </div>
+
+            <fieldset class="optimization-family-picker">
+              <legend>What did profiling find?</legend>
+              <div class="optimization-family-options">
+                <input type="radio" name="optimization-family" id="optimization-unmeasured" value="not-measured" checked><label for="optimization-unmeasured"><span>00</span>Not measured yet</label>
+                <input type="radio" name="optimization-family" id="optimization-evaluation" value="evaluation-scheduling"><label for="optimization-evaluation"><span>01</span>Evaluation + scheduling</label>
+                <input type="radio" name="optimization-family" id="optimization-native" value="native-operators-compilation"><label for="optimization-native"><span>02</span>Operators + compile</label>
+                <input type="radio" name="optimization-family" id="optimization-layout" value="layout-numerics"><label for="optimization-layout"><span>03</span>Layout + numerics</label>
+                <input type="radio" name="optimization-family" id="optimization-state" value="state-memory"><label for="optimization-state"><span>04</span>State + memory</label>
+                <input type="radio" name="optimization-family" id="optimization-compression" value="compression"><label for="optimization-compression"><span>05</span>Compression</label>
+                <input type="radio" name="optimization-family" id="optimization-inference" value="inference-algorithms"><label for="optimization-inference"><span>06</span>Inference algorithms</label>
+                <input type="radio" name="optimization-family" id="optimization-serving" value="serving-pipeline"><label for="optimization-serving"><span>07</span>Serving + pipeline</label>
+                <input type="radio" name="optimization-family" id="optimization-backend" value="custom-backend"><label for="optimization-backend"><span>08</span>Custom backend</label>
+              </div>
+            </fieldset>
+
+            <div class="optimization-family-panel">
+              <header><div><span class="optimization-lock" data-optimization-lock>Locked · measured bottleneck required</span><h3 data-optimization-family-title>Select what profiling found</h3></div><div><p class="optimization-journey" data-optimization-journey>Journey context: Qwen2.5-0.5B-Instruct</p><p data-optimization-bottleneck>Choose one measured branch before viewing or adding experiment hypotheses.</p><a href="#porting-atlas">Change the model journey in the atlas ↑</a></div></header>
+              <dl class="optimization-family-proof">
+                <div><dt>Family proof gate</dt><dd data-optimization-proof-gate>First select a measured bottleneck.</dd></div>
+                <div><dt>Family rollback</dt><dd data-optimization-family-rollback>Every selected experiment must retain the last parity-passing baseline.</dd></div>
+              </dl>
+              <div class="optimization-methods" data-optimization-methods></div>
+            </div>
+
+            <section class="optimization-plan" aria-labelledby="optimization-plan-title">
+              <div><span class="label">Experiment handoff</span><h3 id="optimization-plan-title">Selected hypotheses</h3><p>Each entry keeps its prerequisite, proof and quality gates, evidence state, canonical sources, and rollback. Nothing is described as enabled or recommended.</p></div>
+              <textarea rows="16" readonly data-optimization-plan-output aria-label="Selected optimization experiment plan"></textarea>
+              <button type="button" class="button" data-optimization-copy>Copy experiment plan</button>
+            </section>
+            <p class="sr-only" role="status" aria-live="polite" aria-atomic="true" data-optimization-live></p>
+          </div>
+        </section>
+
+        <section class="doc-section learning-chapter" id="benchmark-honestly" data-search="benchmark workload cold warm synchronization quality receipt provenance observation portable claim">
+          <span class="label">Learn / 10</span>
+          <h2>Benchmark without fooling yourself</h2>
+          <p>A benchmark is a scoped observation. Keep model revision, inputs, shapes, cache state, precision, warmup, evaluation boundaries, hardware, software, quality, and raw output together so another engineer can reproduce what the number actually means.</p>
+          <div class="port-boundaries" aria-label="Honest benchmark contract">
+            <article><span>Same work</span><h3>Bind the workload</h3><p>Use the same prompt or input, output length, batch, cache state, dtype policy, and task-quality gate.</p></article>
+            <article><span>Same clock</span><h3>Charge lazy work once</h3><p>Separate construction from execution and declare cold start, warmup, synchronization, repetitions, and aggregation.</p></article>
+            <article><span>Same scope</span><h3>Publish the boundary</h3><p>Preserve raw evidence, environment, baseline, limitations, rollback, and why a result is withheld or effective.</p></article>
+          </div>
+          <div class="learning-frame">
+            <article><strong>Definition</strong><p>A benchmark is a scoped observation, not a portable promise.</p></article>
+            <article><strong>Why it matters</strong><p>Shape, cache, dtype, model revision, quality, and measurement boundaries can change the result.</p></article>
+            <article><strong>PyTorch / CUDA</strong><p>Framework habits still need explicit warmup, synchronization, inputs, and quality checks.</p></article>
+            <article><strong>MLX translation</strong><p>Force the intended lazy work inside the timed region and preserve raw evidence plus rollback conditions.</p></article>
+            <article><strong>Example</strong><p>Compare the same prompt, decode length, cache state, dtype policy, and output-quality gate.</p></article>
+            <article class="trap"><strong>Common failure</strong><p>Publishing a source-reported or local range as an effective recommendation.</p></article>
+            <article><strong>Proof check</strong><p>Another engineer can reproduce the workload and see why the number is or is not promotion-ready.</p></article>
+            <article><strong>Next step</strong><p>Package the port and its proof boundary together.</p></article>
+          </div>
+        </section>
+
+        <section class="doc-section learning-chapter" id="publish-proof" data-search="publish proof boundary provenance validation limitations rollback source pin weight map parity report benchmark recipe">
+          <span class="label">Learn / 11</span>
+          <h2>Publish the proof boundary, not just the artifact</h2>
+          <p>Ship the readable implementation with its source pin, component route, weight map, parity report, benchmark metadata, supported workload, known gaps, and rollback. A user should be able to tell exactly what was reproduced and what remains a simulation.</p>
+          <div class="port-boundaries" aria-label="Publication packet">
+            <article><span>Provenance</span><h3>Name the source</h3><p>Checkpoint identity, immutable revision, artifact tree, license evidence, dependencies, and preprocessing.</p></article>
+            <article><span>Validation</span><h3>Attach the proof</h3><p>Weight-map coverage, staged parity, state behavior, task-quality gate, receipts, and tested environment.</p></article>
+            <article><span>Boundary</span><h3>Keep claims narrow</h3><p>Supported model and workload, limitations, unresolved risks, experimental paths, and rollback conditions.</p></article>
+          </div>
+          <div class="learning-frame">
+            <article><strong>Definition</strong><p>Ship implementation, provenance, validation, limitations, and a rollback story together.</p></article>
+            <article><strong>Why it matters</strong><p>Users need to know which checkpoint, workload, target, and behavior were reproduced.</p></article>
+            <article><strong>PyTorch / CUDA</strong><p>A converted artifact without source revision, transforms, and validation cannot be audited.</p></article>
+            <article><strong>MLX translation</strong><p>Record source pin, weight map, parity report, benchmark metadata, supported route, and known gaps.</p></article>
+            <article><strong>Example</strong><p>Label one pinned Qwen checkpoint proven while keeping neighboring Qwen architectures unclaimed.</p></article>
+            <article class="trap"><strong>Common failure</strong><p>Promoting indexed research or a passing smoke test into supported guidance.</p></article>
+            <article><strong>Proof check</strong><p>Every claim points to evidence and every risky change names a rollback condition.</p></article>
+            <article><strong>Next step</strong><p>Use the executable field manual to run the same rail on a real model.</p></article>
+          </div>
+        </section>
+
+        <section class="doc-section learning-chapter" id="glossary" data-search="glossary mlx eager graph source oracle parity route runbook checkpoint weight map kv cache schema golden receipt promotion attestation targetprofile coverage proof boundary">
+          <span class="label">Learn / 12</span>
+          <h2>Glossary: the proof vocabulary</h2>
+          <dl class="glossary-grid">
+            <div><dt>MLX</dt><dd>Apple's array framework for machine learning on Apple silicon, with lazy evaluation, transforms, and unified-memory operation.</dd></div>
+            <div><dt>Eager graph</dt><dd>The simplest readable MLX implementation used to prove semantics before compilation or specialized optimization.</dd></div>
+            <div><dt>Source oracle</dt><dd>Deterministic tensors, state, and outputs captured from the pinned source implementation.</dd></div>
+            <div><dt>Parity</dt><dd>Evidence that source and MLX behavior agree under a declared exact or numerical comparison policy.</dd></div>
+            <div><dt>Route</dt><dd>The selected architecture-family and capability path that determines runbooks, risks, and proof gates.</dd></div>
+            <div><dt>Runbook</dt><dd>Architecture-specific implementation and validation guidance with supported, experimental, and blocked boundaries.</dd></div>
+            <div><dt>Checkpoint</dt><dd>A named intermediate tensor, state, or output used to localize correctness.</dd></div>
+            <div><dt>Weight map</dt><dd>The explicit rename, transpose, reshape, split, merge, dtype, and destination contract for source tensors.</dd></div>
+            <div><dt>KV cache</dt><dd>Stored attention keys and values reused across autoregressive decoding steps.</dd></div>
+            <div><dt>Schema-2</dt><dd>The structured weight-map and conversion contract with explicit tensor transforms and coverage.</dd></div>
+            <div><dt>Golden scenario</dt><dd>A small representative input and expected behavior used as a stable end-to-end validation target.</dd></div>
+            <div><dt>Receipt</dt><dd>Structured raw evidence for one bounded benchmark or validation run, including its exact context.</dd></div>
+            <div><dt>Promotion-ready</dt><dd>An evidence state that has satisfied provenance, workload, quality, attestation, and scope gates.</dd></div>
+            <div><dt>Execution attestation</dt><dd>Evidence binding a measurement to its command, dependencies, outputs, and trusted verification boundary.</dd></div>
+            <div><dt>TargetProfile</dt><dd>The controlled hardware, software, model, workload, and capability context used for recommendation eligibility.</dd></div>
+            <div><dt>Source-key coverage</dt><dd>The disposition of every source checkpoint key under the weight-map contract.</dd></div>
+            <div><dt>Proof boundary</dt><dd>The exact model, revision, target, workload, behavior, and evidence scope a claim may cover.</dd></div>
+          </dl>
+          <div class="learning-frame">
+            <article><strong>Definition</strong><p>The glossary is the shared vocabulary for routes, checkpoints, evidence, and claims.</p></article>
+            <article><strong>Why it matters</strong><p>Precise terms keep source support, local proof, task quality, and promotion state from collapsing into “works.”</p></article>
+            <article><strong>PyTorch / CUDA</strong><p>Familiar framework labels do not replace this repository's explicit evidence and publication states.</p></article>
+            <article><strong>MLX translation</strong><p>Routes select runbooks; checkpoints establish parity; receipts bind measurements; proof boundaries scope claims.</p></article>
+            <article><strong>Example</strong><p>A promotion-ready receipt is narrower than “validated” and says exactly which experiment survived which gates.</p></article>
+            <article class="trap"><strong>Common failure</strong><p>Using “validated” without saying source, local, task, or promotion state.</p></article>
+            <article><strong>Proof check</strong><p>Every public claim uses a defined evidence state and names its boundary.</p></article>
+            <article><strong>Next step</strong><p>Keep the glossary nearby while using the executable field manual.</p></article>
+          </div>
+        </section>
+
+        <div class="field-manual-intro" id="field-manual">
+          <span class="label">Executable reference</span>
+          <h2>Port for real: the field manual</h2>
+          <p>The concepts above explain why each command exists. The reference below is the inspectable implementation path.</p>
+        </div>
 
         <section class="doc-section" id="quick-start" data-search="quick start inspect plan">
           <span class="label">01 / start</span>
@@ -139,7 +669,7 @@ python3 mlx-model-porting/scripts/make_port_plan.py inspection.json \
             <div class="route-node"><strong>Parity ladder</strong><span>Tensor → block → output → state → task.</span></div>
             <div class="route-node"><strong>Profile → publish</strong><span>One change, quality gate, benchmark receipt, rollback.</span></div>
           </div>
-          <div class="callout"><strong>Tooled scope</strong><p><span class="inline-code">scaffold_port.py</span> supports dense decoder, BERT encoder, T5 encoder-decoder, HuBERT/Wav2Vec2 acoustic encoder, sparse MoE, and selective SSM. Capture/parity modes are dense-decoder, encoder, encoder-decoder, ASR, and SSM. Exact output is the only controlled built-in task metric.</p></div>
+          <div class="callout"><strong>Tooled scope</strong><p>For an unblocked dense decoder, <span class="inline-code">capture_oracle.py</span>, <span class="inline-code">scaffold_port.py</span>, <span class="inline-code">convert_checkpoint.py</span>, <span class="inline-code">capture_mlx.py</span>, and <span class="inline-code">run_parity.py</span> implement the rail above. Other routed families still require the runbook-defined MLX module and model-specific capture wiring. Exact output is the only controlled built-in task metric.</p></div>
         </section>
 
         <section class="doc-section" id="routes" data-search="families runbook transformer moe vision language audio diffusion flow speech graph time series cv">
@@ -389,7 +919,7 @@ python3 -m unittest discover -s tests -v</code></pre>
         <section class="doc-section" id="sources" data-search="primary sources mlx release mlx-lm mlx-vlm mlx-audio vllm pinned snapshot">
           <span class="label">13 / sources</span>
           <h2>Registry-current primary sources</h2>
-          <p>“Current” means the pinned registry snapshot reviewed on 2026-07-09, not an unverified claim about live upstream latest versions.</p>
+          <p>“Current” means the pinned registry snapshot reviewed on 2026-07-12, not an unverified claim about live upstream latest versions.</p>
           <div class="route-table-wrap">
             <table data-audited-sources>
               <thead><tr><th>Surface</th><th>Recorded immutable reference</th><th>Scope</th></tr></thead>
@@ -424,7 +954,7 @@ python3 -m unittest discover -s tests -v</code></pre>
         <section class="doc-section" id="limitations" data-search="limitations offline real models conversion formats cv graph forecasting network apple silicon">
           <span class="label">15 / boundary</span>
           <h2>Limitations</h2>
-          <div class="callout warning"><strong>Four real ports are still four scopes</strong><p>Qwen2.5, BGE, t5-small, and HuBERT-base prove their supported subsets only. MoE and SSM remain synthetic-only. Golden scenarios prove routing and guards for all 17 families; exact output does not replace domain evaluation.</p></div>
+          <div class="callout warning"><strong>One real port is still one scope</strong><p>The Qwen2.5 packet proves one dense-decoder checkpoint, 29 parity rungs, and exact greedy-token output. Golden scenarios prove routing and guards for all 17 families; they do not prove end-to-end conversion across every family, and exact output does not replace domain evaluation.</p></div>
           <ul>
             <li>Forecasting coverage does not imply tabular, ranking, or recommender support.</li>
             <li>Current CV route coverage centers on backbone/classifier patterns; dense vision, promptable masks, OCR, depth, and pose remain candidate tracks.</li>
@@ -434,6 +964,19 @@ python3 -m unittest discover -s tests -v</code></pre>
             <li>Live Apple Silicon execution, external researcher agents, network collectors, URL health, and upstream revision drift are not proven by deterministic offline tests.</li>
           </ul>
           <p>For the complete boundary, read <a href="https://github.com/Amal-David/mlx-porting-skill/blob/main/VALIDATION.md">VALIDATION.md</a> and the generated <a href="https://github.com/Amal-David/mlx-porting-skill/blob/main/mlx-model-porting/assets/BENCHMARK_REPORT.md">benchmark assessment</a>.</p>
+        </section>
+
+        <section class="doc-section" id="advanced-workshop" data-search="advanced workshop custom metal experimental algorithm training fine tuning unsupported family">
+          <span class="label">Advanced workshop</span>
+          <h2>After the native path is exhausted</h2>
+          <p>Advanced work starts after a readable parity path and a measured bottleneck. It does not bypass them.</p>
+          <div class="doc-grid">
+            <article class="doc-card"><h3>Custom Metal</h3><p>Keep a readable native MLX fallback, compare representative shapes, and roll back on semantic mismatch, maintenance risk, or no end-to-end gain.</p></article>
+            <article class="doc-card"><h3>Experimental algorithms</h3><p>Speculative drafters, adaptive compression, token pruning, or new cache policies need explicit opt-in and task-quality gates.</p></article>
+            <article class="doc-card"><h3>Training and fine-tuning</h3><p>Use training only as a supporting path for adapters, distillation, quantization-aware artifacts, or architecture-specific work—not as proof of an inference port.</p></article>
+            <article class="doc-card"><h3>Unsupported families</h3><p>Contribute a reproducible source oracle, MLX implementation, validation ladder, benchmark metadata, limitations, and rollback before changing support language.</p></article>
+          </div>
+          <div class="callout warning"><strong>Escalation rule</strong><p>Native operations → stable compilation → measured custom backend. An unfamiliar CUDA kernel is evidence to inspect, not an instruction to rewrite it first.</p></div>
         </section>
 
         <footer class="doc-footer">

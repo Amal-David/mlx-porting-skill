@@ -1,14 +1,14 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-07-10T16:35:38+00:00",
-  "run_id": "2026-07-10-t-7007-offline-reconcile",
+  "generated_at": "2026-07-12T17:41:12+00:00",
+  "run_id": "2026-07-12-mlx-learning-atlas",
   "policy": {
     "review_only": true,
     "auto_promote_sources": false,
     "auto_modify_recommendations": false
   },
-  "node_count": 697,
-  "edge_count": 499,
+  "node_count": 703,
+  "edge_count": 501,
   "nodes": [
     {
       "id": "approach:adaptive-kv-quantization",
@@ -79,7 +79,7 @@
       "status": "native-mlx",
       "category": "quantization",
       "decision_state": "method_registry",
-      "summary": "Cast a controlled F32 MLX port to BF16 only when the exact target workload retains its declared quality window and the attested end-to-end measurement clears stability and noise gates.",
+      "summary": "Cast a controlled F32 MLX port to BF16 only when the exact target workload retains its declared quality window; keep timing results observation-only until every promotion gate, including external signed attestation, passes.",
       "validation_gate": "deterministic F32-to-BF16 conversion manifest",
       "rollback": "quality output leaves the declared window",
       "applies_to": [
@@ -4441,7 +4441,7 @@
       "status": "local_reproduced",
       "decision_state": "outcome_registry",
       "summary": "Revision 7ae557604adf67be50417f59c2c2f167def9a775 completed the offline static-intake, Torch-oracle, standalone MLX scaffold, schema-2 weight conversion, 29-rung parity, exact greedy-generation, MLX-LM cross-check, and schema-2 receipt flow on Apple M4 Pro.",
-      "validation_gate": "Add multiple prompts and boundary lengths, full-versus-incremental logit/cache parity, batch coverage, an independently attested runner, and a longer BF16 task-quality evaluation before widening the claim.",
+      "validation_gate": "Add multiple prompts and boundary lengths, full-versus-incremental logit/cache parity, batch coverage, an externally signed runner receipt with an out-of-repository trust root, and a longer BF16 task-quality evaluation before widening the claim.",
       "families": [
         "dense-decoder-transformer"
       ],
@@ -5477,6 +5477,42 @@
       "snapshot": "2026-06-24"
     },
     {
+      "id": "source:mlx-doc-framework-conversion",
+      "kind": "source",
+      "source_id": "mlx-doc-framework-conversion",
+      "label": "MLX framework conversion and DLPack documentation",
+      "locator": "https://ml-explore.github.io/mlx/build/html/usage/numpy.html",
+      "read_state": "already_read",
+      "review_depth": "synthesized",
+      "source_kind": "official-doc",
+      "owner": "Apple MLX",
+      "topics": [
+        "mlx",
+        "numpy",
+        "dlpack",
+        "interop"
+      ],
+      "snapshot": "2026-07-12"
+    },
+    {
+      "id": "source:mlx-doc-function-transforms",
+      "kind": "source",
+      "source_id": "mlx-doc-function-transforms",
+      "label": "MLX function transforms documentation",
+      "locator": "https://ml-explore.github.io/mlx/build/html/usage/function_transforms.html",
+      "read_state": "already_read",
+      "review_depth": "synthesized",
+      "source_kind": "official-doc",
+      "owner": "Apple MLX",
+      "topics": [
+        "mlx",
+        "function-transforms",
+        "autodiff",
+        "vectorization"
+      ],
+      "snapshot": "2026-07-12"
+    },
+    {
       "id": "source:mlx-doc-gather-mm",
       "kind": "source",
       "source_id": "mlx-doc-gather-mm",
@@ -5565,6 +5601,23 @@
       "snapshot": "2026-06-24"
     },
     {
+      "id": "source:mlx-doc-neural-networks",
+      "kind": "source",
+      "source_id": "mlx-doc-neural-networks",
+      "label": "MLX neural networks documentation",
+      "locator": "https://ml-explore.github.io/mlx/build/html/python/nn.html",
+      "read_state": "already_read",
+      "review_depth": "synthesized",
+      "source_kind": "official-doc",
+      "owner": "Apple MLX",
+      "topics": [
+        "mlx",
+        "neural-networks",
+        "modules"
+      ],
+      "snapshot": "2026-07-12"
+    },
+    {
       "id": "source:mlx-doc-nn-quantize",
       "kind": "source",
       "source_id": "mlx-doc-nn-quantize",
@@ -5599,6 +5652,23 @@
       "snapshot": "2026-06-24"
     },
     {
+      "id": "source:mlx-doc-quick-start",
+      "kind": "source",
+      "source_id": "mlx-doc-quick-start",
+      "label": "MLX quick start",
+      "locator": "https://ml-explore.github.io/mlx/build/html/usage/quick_start.html",
+      "read_state": "already_read",
+      "review_depth": "synthesized",
+      "source_kind": "official-doc",
+      "owner": "Apple MLX",
+      "topics": [
+        "mlx",
+        "arrays",
+        "quick-start"
+      ],
+      "snapshot": "2026-07-12"
+    },
+    {
       "id": "source:mlx-doc-set-memory-limit",
       "kind": "source",
       "source_id": "mlx-doc-set-memory-limit",
@@ -5630,7 +5700,24 @@
         "streams",
         "runtime"
       ],
-      "snapshot": "2026-06-24"
+      "snapshot": "2026-07-12"
+    },
+    {
+      "id": "source:mlx-doc-unified-memory",
+      "kind": "source",
+      "source_id": "mlx-doc-unified-memory",
+      "label": "MLX unified memory documentation",
+      "locator": "https://ml-explore.github.io/mlx/build/html/usage/unified_memory.html",
+      "read_state": "already_read",
+      "review_depth": "synthesized",
+      "source_kind": "official-doc",
+      "owner": "Apple MLX",
+      "topics": [
+        "mlx",
+        "unified-memory",
+        "devices"
+      ],
+      "snapshot": "2026-07-12"
     },
     {
       "id": "source:mlx-docs",
@@ -10451,6 +10538,24 @@
       "snapshot": "2026-06-27"
     },
     {
+      "id": "source:pytorch-doc-cuda-graphs",
+      "kind": "source",
+      "source_id": "pytorch-doc-cuda-graphs",
+      "label": "PyTorch CUDA Graphs semantics",
+      "locator": "https://docs.pytorch.org/docs/stable/notes/cuda.html",
+      "read_state": "already_read",
+      "review_depth": "synthesized",
+      "source_kind": "official-doc",
+      "owner": "PyTorch",
+      "topics": [
+        "pytorch",
+        "cuda",
+        "cuda-graphs",
+        "capture-replay"
+      ],
+      "snapshot": "2026-07-12"
+    },
+    {
       "id": "source:pytorch-repo",
       "kind": "source",
       "source_id": "pytorch-repo",
@@ -11090,18 +11195,6 @@
     },
     {
       "source": "candidate:paper:augcodec-a-low-bitrate-disentangled-neural-speech-codec-via-data-augmentation",
-      "target": "approach:audio-reference-conditioning-cache",
-      "relation": "candidate_relevant_to",
-      "score": 4,
-      "matched_terms": [
-        "audio",
-        "codec",
-        "speaker",
-        "voice"
-      ]
-    },
-    {
-      "source": "candidate:paper:augcodec-a-low-bitrate-disentangled-neural-speech-codec-via-data-augmentation",
       "target": "approach:audio-streaming-and-cache",
       "relation": "candidate_relevant_to",
       "score": 5,
@@ -11124,6 +11217,19 @@
         "each",
         "rate",
         "speaker"
+      ]
+    },
+    {
+      "source": "candidate:paper:augcodec-a-low-bitrate-disentangled-neural-speech-codec-via-data-augmentation",
+      "target": "outcome:qwen25-05b-instruct-local-worked-port",
+      "relation": "candidate_relevant_to",
+      "score": 5,
+      "matched_terms": [
+        "conversion",
+        "embeddings",
+        "target",
+        "token",
+        "tokens"
       ]
     },
     {
@@ -11334,10 +11440,10 @@
         "family",
         "following",
         "format",
-        "has",
         "long",
         "runs",
-        "state"
+        "state",
+        "through"
       ]
     },
     {
@@ -11394,6 +11500,20 @@
     },
     {
       "source": "candidate:paper:kernelcraft-benchmarking-for-agentic-close-to-metal-kernel-generation-on-emerging-hardware",
+      "target": "learning:grid-sample-spatial-kernel",
+      "relation": "candidate_relevant_to",
+      "score": 6,
+      "matched_terms": [
+        "benchmark",
+        "custom",
+        "kernel",
+        "kernels",
+        "level",
+        "metal"
+      ]
+    },
+    {
+      "source": "candidate:paper:kernelcraft-benchmarking-for-agentic-close-to-metal-kernel-generation-on-emerging-hardware",
       "target": "outcome:decoder-mlx-lm-working-route",
       "relation": "candidate_relevant_to",
       "score": 7,
@@ -11405,21 +11525,6 @@
         "llm",
         "not",
         "through"
-      ]
-    },
-    {
-      "source": "candidate:paper:kernelcraft-benchmarking-for-agentic-close-to-metal-kernel-generation-on-emerging-hardware",
-      "target": "outcome:qwen25-05b-instruct-local-worked-port",
-      "relation": "candidate_relevant_to",
-      "score": 7,
-      "matched_terms": [
-        "benchmark",
-        "generation",
-        "not",
-        "remains",
-        "targets",
-        "than",
-        "valid"
       ]
     },
     {
@@ -11534,15 +11639,14 @@
     },
     {
       "source": "candidate:paper:probing-neural-audio-codecs-for-distinctions-among-english-nuclear-tunes",
-      "target": "backlog:top1000-contributor-long-tail-rescreening",
+      "target": "approach:native-low-bit-weight-quantization",
       "relation": "candidate_relevant_to",
-      "score": 5,
+      "score": 4,
       "matched_terms": [
-        "each",
-        "results",
-        "state",
-        "test",
-        "top"
+        "audio",
+        "linear",
+        "transformer",
+        "use"
       ]
     },
     {
@@ -11594,7 +11698,7 @@
       "source": "candidate:paper:prosocodec-prosody-oriented-speech-codec-for-voice-conversion",
       "target": "outcome:qwen25-05b-instruct-local-worked-port",
       "relation": "candidate_relevant_to",
-      "score": 8,
+      "score": 9,
       "matched_terms": [
         "both",
         "conversion",
@@ -11603,7 +11707,7 @@
         "not",
         "rather",
         "than",
-        "use"
+        "tokens"
       ]
     },
     {
@@ -11684,14 +11788,13 @@
     },
     {
       "source": "candidate:paper:quantization-for-openai-s-whisper-models-a-comparative-analysis",
-      "target": "backlog:top1000-contributor-long-tail-rescreening",
+      "target": "backlog:graph-geometric-scientific",
       "relation": "candidate_relevant_to",
-      "score": 4,
+      "score": 3,
       "matched_terms": [
-        "live",
-        "next",
         "offline",
-        "open"
+        "one",
+        "such"
       ]
     },
     {
@@ -11823,13 +11926,14 @@
       "source": "candidate:paper:streamvoiceanon-emotion-preserving-streaming-speaker-anonymization-via-frame-level-acoustic-distillation",
       "target": "outcome:qwen25-05b-instruct-local-worked-port",
       "relation": "candidate_relevant_to",
-      "score": 5,
+      "score": 6,
       "matched_terms": [
         "all",
         "rather",
         "same",
         "than",
-        "token"
+        "token",
+        "tokens"
       ]
     },
     {
@@ -13646,6 +13750,11 @@
       "relation": "evidence_for"
     },
     {
+      "source": "source:mlx-doc-compile",
+      "target": "approach:cuda-graphs-decode-capture",
+      "relation": "evidence_for"
+    },
+    {
       "source": "source:mlx-doc-core-quantize",
       "target": "approach:native-low-bit-weight-quantization",
       "relation": "evidence_for"
@@ -14116,6 +14225,11 @@
       "relation": "evidence_for_outcome"
     },
     {
+      "source": "source:pytorch-doc-cuda-graphs",
+      "target": "approach:cuda-graphs-decode-capture",
+      "relation": "evidence_for"
+    },
+    {
       "source": "source:repo-stable-audio-tools",
       "target": "outcome:audio-tts-qwen3-and-vocoder-routes",
       "relation": "evidence_for_outcome"
@@ -14218,9 +14332,9 @@
   ],
   "latest_delta": {
     "schema_version": 1,
-    "run_id": "2026-07-10-t-7007-offline-reconcile",
-    "generated_at": "2026-07-10T16:35:38+00:00",
-    "previous_graph_generated_at": "2026-07-10T07:59:59+00:00",
+    "run_id": "2026-07-12-mlx-learning-atlas",
+    "generated_at": "2026-07-12T17:41:12+00:00",
+    "previous_graph_generated_at": "2026-07-12T11:08:23+00:00",
     "already_read_sources": [
       {
         "id": "candidate:repository:ml-explore-mlx-examples",
@@ -14856,10 +14970,10 @@
               "family",
               "following",
               "format",
-              "has",
               "long",
               "runs",
-              "state"
+              "state",
+              "through"
             ]
           },
           {
@@ -15265,13 +15379,14 @@
             ]
           },
           {
-            "target": "approach:audio-reference-conditioning-cache",
-            "score": 4,
+            "target": "outcome:qwen25-05b-instruct-local-worked-port",
+            "score": 5,
             "matched_terms": [
-              "audio",
-              "codec",
-              "speaker",
-              "voice"
+              "conversion",
+              "embeddings",
+              "target",
+              "token",
+              "tokens"
             ]
           }
         ]
@@ -15292,6 +15407,20 @@
         },
         "matches": [
           {
+            "target": "outcome:qwen25-05b-instruct-local-worked-port",
+            "score": 9,
+            "matched_terms": [
+              "both",
+              "conversion",
+              "embeddings",
+              "generation",
+              "not",
+              "rather",
+              "than",
+              "tokens"
+            ]
+          },
+          {
             "target": "outcome:audio-tts-qwen3-and-vocoder-routes",
             "score": 8,
             "matched_terms": [
@@ -15303,20 +15432,6 @@
               "speaker",
               "text",
               "transfer"
-            ]
-          },
-          {
-            "target": "outcome:qwen25-05b-instruct-local-worked-port",
-            "score": 8,
-            "matched_terms": [
-              "both",
-              "conversion",
-              "embeddings",
-              "generation",
-              "not",
-              "rather",
-              "than",
-              "use"
             ]
           },
           {
@@ -15469,14 +15584,13 @@
             ]
           },
           {
-            "target": "backlog:top1000-contributor-long-tail-rescreening",
-            "score": 5,
+            "target": "approach:native-low-bit-weight-quantization",
+            "score": 4,
             "matched_terms": [
-              "each",
-              "results",
-              "state",
-              "test",
-              "top"
+              "audio",
+              "linear",
+              "transformer",
+              "use"
             ]
           }
         ]
@@ -15497,6 +15611,18 @@
         },
         "matches": [
           {
+            "target": "outcome:qwen25-05b-instruct-local-worked-port",
+            "score": 6,
+            "matched_terms": [
+              "all",
+              "rather",
+              "same",
+              "than",
+              "token",
+              "tokens"
+            ]
+          },
+          {
             "target": "approach:audio-streaming-and-cache",
             "score": 5,
             "matched_terms": [
@@ -15505,17 +15631,6 @@
               "latency",
               "speech",
               "streaming"
-            ]
-          },
-          {
-            "target": "outcome:qwen25-05b-instruct-local-worked-port",
-            "score": 5,
-            "matched_terms": [
-              "all",
-              "rather",
-              "same",
-              "than",
-              "token"
             ]
           },
           {
@@ -15709,16 +15824,6 @@
         },
         "matches": [
           {
-            "target": "backlog:top1000-contributor-long-tail-rescreening",
-            "score": 4,
-            "matched_terms": [
-              "live",
-              "next",
-              "offline",
-              "open"
-            ]
-          },
-          {
             "target": "approach:audio-streaming-and-cache",
             "score": 3,
             "matched_terms": [
@@ -15734,6 +15839,15 @@
               "its",
               "latency",
               "quantization"
+            ]
+          },
+          {
+            "target": "backlog:graph-geometric-scientific",
+            "score": 3,
+            "matched_terms": [
+              "offline",
+              "one",
+              "such"
             ]
           }
         ]
@@ -15827,16 +15941,15 @@
             ]
           },
           {
-            "target": "outcome:qwen25-05b-instruct-local-worked-port",
-            "score": 7,
+            "target": "learning:grid-sample-spatial-kernel",
+            "score": 6,
             "matched_terms": [
               "benchmark",
-              "generation",
-              "not",
-              "remains",
-              "targets",
-              "than",
-              "valid"
+              "custom",
+              "kernel",
+              "kernels",
+              "level",
+              "metal"
             ]
           }
         ]
@@ -16064,9 +16177,9 @@
       "streaming",
       "prefix",
       "adaptive",
+      "weight",
       "route",
       "tts",
-      "weight",
       "working",
       "content",
       "multimodal"
