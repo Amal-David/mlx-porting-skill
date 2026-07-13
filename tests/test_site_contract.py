@@ -7,6 +7,8 @@ import re
 import shlex
 import stat
 import unittest
+import xml.etree.ElementTree as ET
+from html import unescape
 from html.parser import HTMLParser
 from pathlib import Path, PurePosixPath
 from urllib.parse import unquote, urlsplit
@@ -144,6 +146,36 @@ class SiteContractTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
         cls.pages = {path: parse_page(path) for path in PAGES}
+
+    def test_crawler_discovery_surfaces_are_well_formed_and_canonical(self) -> None:
+        origin = "https://mlx-porter.pages.dev"
+        robots = (SITE / "robots.txt").read_text(encoding="utf-8")
+        self.assertEqual(
+            robots,
+            "User-agent: *\nAllow: /\n\n"
+            f"Sitemap: {origin}/sitemap.xml\n",
+        )
+
+        namespace = {"sitemap": "http://www.sitemaps.org/schemas/sitemap/0.9"}
+        sitemap = ET.parse(SITE / "sitemap.xml").getroot()
+        self.assertEqual(sitemap.tag, f"{{{namespace['sitemap']}}}urlset")
+        locations = [
+            node.text for node in sitemap.findall("sitemap:url/sitemap:loc", namespace)
+        ]
+        self.assertEqual(locations, [f"{origin}/", f"{origin}/docs/"])
+
+        llms = (SITE / "llms.txt").read_text(encoding="utf-8")
+        self.assertTrue(llms.startswith("# MLX Porter\n\n> "))
+        self.assertIn("Apple MLX on Apple Silicon", llms.splitlines()[2])
+        links = re.findall(r"\[[^]]+\]\((https://[^)]+)\)", llms)
+        self.assertGreaterEqual(len(links), 10)
+        self.assertEqual(len(links), len(set(links)), "llms.txt contains duplicate links")
+        self.assertIn(f"{origin}/", links)
+        self.assertIn(f"{origin}/docs/", links)
+        self.assertTrue(
+            any(url.startswith("https://raw.githubusercontent.com/") for url in links),
+            "llms.txt should point agents to clean Markdown source documents",
+        )
 
     def test_all_local_href_and_src_references_resolve(self) -> None:
         parser_cache = dict(self.pages)
