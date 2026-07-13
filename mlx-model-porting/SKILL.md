@@ -43,7 +43,7 @@ synthetic; others are runbook-guided. Exact output is the built-in metric.
 | The user says "make it faster" but no profile, workload, or baseline exists yet. | [benchmarking](references/benchmarking.md) |
 | Speedup plan, how techniques combine, or expected compound gains. | [compound stacks](references/compound-stacks.md) |
 | KV cache, long context, recurrent state, attention memory, or prefill/decode memory is the bottleneck. | [attention and KV cache](references/attention-and-kv.md) |
-| Quantization, "fit in 16GB", "4-bit", mixed precision, or memory reduction is requested. | [quantization](references/quantization.md) |
+| Quantization or "4-bit". | [guide](references/quantization.md), [quality gate](references/quantization-quality-gate.md) |
 | Decoding, serving, speculative decoding, batching, streaming, or API runtime behavior is requested. | [decoding and serving](references/decoding-and-serving.md) |
 | Compile behavior, `mx.compile`, custom kernel, graph capture, Metal, or operation fusion comes up. | [compile and kernels](references/compile-and-kernels.md) |
 | Publish, release, checkpoint conversion, model card, provenance, or license packaging is requested. | [packaging and publication](references/packaging-and-publication.md) |
@@ -147,7 +147,7 @@ Stop when license, remote code, unresolved parity, regressions, missing kernel f
 ## Maintenance
 
 Read [maintenance](references/maintenance-and-provenance.md) and the
-[research loop](references/deep-research-loop.md). Version 0.6.0 has 31 scripts,
+[research loop](references/deep-research-loop.md). Version 0.6.0 has 32 scripts,
 66 techniques, and 13 receipts: 12 observations, 0 promotion-ready, 1 rejected.
 Use `nightly_knowledge_curator.py` for review packets. Before distribution run
 `audit_skill.py --strict` and `validate_sources.py`.

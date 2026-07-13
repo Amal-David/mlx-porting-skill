@@ -2,8 +2,8 @@
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
   "version": "0.6.0",
-  "generated_at": "2026-07-11T18:57:52.141056+00:00",
-  "file_count": 492,
+  "generated_at": "2026-07-13T09:32:14.169834+00:00",
+  "file_count": 495,
   "files": [
     {
       "path": ".agents/skills/mlx-model-porting",
@@ -171,8 +171,8 @@
     },
     {
       "path": "mlx-model-porting/SKILL.md",
-      "size_bytes": 13464,
-      "sha256": "1042a331aeebffd9abdc72d4b76e051bf81a01ddc63ae7591ad4510bcff2a52f",
+      "size_bytes": 13450,
+      "sha256": "814eb954b559a5dd60c3d995b75cafe5a41e76d7bd61cad06954a7e24c154f72",
       "executable": false
     },
     {
@@ -1262,9 +1262,15 @@
       "executable": false
     },
     {
+      "path": "mlx-model-porting/references/quantization-quality-gate.md",
+      "size_bytes": 4219,
+      "sha256": "cda47a8ed44dfaf18da39654d05a42c160931a64e514f636a45c31fa4b78fd05",
+      "executable": false
+    },
+    {
       "path": "mlx-model-porting/references/quantization.md",
-      "size_bytes": 3979,
-      "sha256": "0580bd6c1c401aa824011aa33d09ce5f5bb56f925de1112584e0c39cffcede57",
+      "size_bytes": 4369,
+      "sha256": "b35c3f1b8760b0d80f7200faec77617f089be9eadf7354a840fddd837dff30a1",
       "executable": false
     },
     {
@@ -2060,6 +2066,12 @@
       "executable": false
     },
     {
+      "path": "mlx-model-porting/scripts/quant_quality_gate.py",
+      "size_bytes": 27976,
+      "sha256": "c30620df052a50f86522ec565ecb5e5de070611f9647e732435294b916f1f809",
+      "executable": false
+    },
+    {
       "path": "mlx-model-porting/scripts/recommend_optimizations.py",
       "size_bytes": 76978,
       "sha256": "81b6b484cd02d66154b829759b2dfb3e7a59c6409c3a9e0b2f6594268de3f22c",
@@ -2122,7 +2134,7 @@
     {
       "path": "site/data.js",
       "size_bytes": 4430,
-      "sha256": "69fcd2e39e64b4bb92bb584b9164d97a25363917ae61b1273499702427d3e9d5",
+      "sha256": "8ef10028c512a603479001554bee159ce86584af27833c1cb8fb508870f976ab",
       "executable": false
     },
     {
@@ -2879,6 +2891,12 @@
       "path": "tests/test_public_claims_contract.py",
       "size_bytes": 6795,
       "sha256": "f0fbf551f77c5595596b0f27e56552e5ba7af2ffc054c67ee549756b024e6a6c",
+      "executable": false
+    },
+    {
+      "path": "tests/test_quant_quality_gate_contract.py",
+      "size_bytes": 14075,
+      "sha256": "cfd38e605197e554ed43de29c6e94c03e5241283f1b71089d836f01963168964",
       "executable": false
     },
     {
