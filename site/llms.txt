@@ -1,0 +1,29 @@
+# MLX Porter
+
+> MLX Porter is a public, evidence-gated field manual and Agent Skill for inspecting, porting, validating, and optimizing PyTorch and Hugging Face models for Apple MLX on Apple Silicon.
+
+The dense-decoder route is executable end to end and proven on pinned Qwen2.5-0.5B-Instruct. The remaining architecture routes provide tested intake, planning, generic validation, and runbooks; they are not claims of completed real-model ports.
+
+## Start here
+
+- [Project overview](https://mlx-porter.pages.dev/): Capabilities, workflow, architecture routes, and evidence policy.
+- [Public field manual](https://mlx-porter.pages.dev/docs/): MLX fundamentals, porting workflow, architecture atlas, parity gates, optimization guidance, and validation commands.
+
+## Core technical documentation
+
+- [Agent Skill contract](https://raw.githubusercontent.com/Amal-David/mlx-porting-skill/main/mlx-model-porting/SKILL.md): Compact trigger map and operating contract for MLX model-porting work.
+- [Porting core](https://raw.githubusercontent.com/Amal-David/mlx-porting-skill/main/mlx-model-porting/references/porting-core.md): Source inspection, graph translation, explicit weight conversion, and staged parity method.
+- [Model support map](https://raw.githubusercontent.com/Amal-David/mlx-porting-skill/main/mlx-model-porting/references/model-support-map.md): Controlled architecture families, support boundaries, and routing guidance.
+- [Parity and testing](https://raw.githubusercontent.com/Amal-David/mlx-porting-skill/main/mlx-model-porting/references/parity-and-testing.md): Correctness ladder and failure-localization guidance.
+- [Benchmarking](https://raw.githubusercontent.com/Amal-David/mlx-porting-skill/main/mlx-model-porting/references/benchmarking.md): Reproducible benchmark metadata, quality gates, and rollback conditions.
+
+## Evidence and limitations
+
+- [Validation contract](https://raw.githubusercontent.com/Amal-David/mlx-porting-skill/main/VALIDATION.md): What the checked-in validation proves and what remains outside its scope.
+- [Evidence index](https://raw.githubusercontent.com/Amal-David/mlx-porting-skill/main/EVIDENCE_INDEX.md): Audited primary sources and recorded review depth.
+- [Research report](https://raw.githubusercontent.com/Amal-David/mlx-porting-skill/main/RESEARCH_REPORT.md): Architecture, research method, current capability boundary, and extension paths.
+
+## Optional
+
+- [GitHub repository](https://github.com/Amal-David/mlx-porting-skill): Source, scripts, tests, examples, and release history.
+- [Contribution standard](https://raw.githubusercontent.com/Amal-David/mlx-porting-skill/main/CONTRIBUTING.md): Provenance, review, testing, and optimization requirements.
