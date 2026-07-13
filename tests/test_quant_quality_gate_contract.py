@@ -174,6 +174,11 @@ class QuantQualityGateContractTests(unittest.TestCase):
         self.assertTrue(looping["detected"])
         self.assertIn("repeated-character-cycle", looping["reasons"])
         self.assertFalse(gate.detect_degenerate_output([1, 2, 3, 4], "A normal answer.")["detected"])
+        # A short single-token loop (six copies + EOS) must be flagged, not slip
+        # through a length gate (regression for the escaped 7-token loop).
+        short_loop = gate.detect_degenerate_output([7, 7, 7, 7, 7, 7, 2], "aaaaaa")
+        self.assertTrue(short_loop["detected"])
+        self.assertIn("single-token-run", short_loop["reasons"])
 
     def test_strict_json_and_user_only_boundary_contract(self) -> None:
         with self.assertRaisesRegex(gate.SkillError, "strict JSON"):

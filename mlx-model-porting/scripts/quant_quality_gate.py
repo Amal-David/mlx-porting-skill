@@ -370,7 +370,7 @@ def detect_degenerate_output(tokens: list[int], text: str) -> dict[str, Any]:
     longest_run = _longest_token_run(tokens)
     character_cycle = _character_cycle(text)
     reasons: list[str] = []
-    if len(tokens) >= 8 and longest_run >= 6:
+    if len(tokens) >= 6 and longest_run >= 6:
         reasons.append("single-token-run")
     if len(tokens) >= 10 and bigram_fraction >= 0.60:
         reasons.append("repeated-bigrams")

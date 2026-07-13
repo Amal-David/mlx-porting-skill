@@ -2,7 +2,7 @@
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
   "version": "0.6.0",
-  "generated_at": "2026-07-13T09:12:51.908423+00:00",
+  "generated_at": "2026-07-13T09:32:14.169834+00:00",
   "file_count": 495,
   "files": [
     {
@@ -2068,7 +2068,7 @@
     {
       "path": "mlx-model-porting/scripts/quant_quality_gate.py",
       "size_bytes": 27976,
-      "sha256": "4924310b35f810b41cf3029bdf0f8777cd07418f5a14920c84cf2d7b1ceaccc6",
+      "sha256": "c30620df052a50f86522ec565ecb5e5de070611f9647e732435294b916f1f809",
       "executable": false
     },
     {
@@ -2895,8 +2895,8 @@
     },
     {
       "path": "tests/test_quant_quality_gate_contract.py",
-      "size_bytes": 13722,
-      "sha256": "b41b57b104a9bdff649411dfa51dd6363001c4f628de021b8a542980a5a7dbae",
+      "size_bytes": 14075,
+      "sha256": "cfd38e605197e554ed43de29c6e94c03e5241283f1b71089d836f01963168964",
       "executable": false
     },
     {
