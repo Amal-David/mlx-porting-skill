@@ -2,8 +2,8 @@
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
   "version": "0.6.0",
-  "generated_at": "2026-07-13T14:26:00.576901+00:00",
-  "file_count": 468,
+  "generated_at": "2026-07-13T20:15:58.146184+00:00",
+  "file_count": 471,
   "files": [
     {
       "path": ".agents/skills/mlx-model-porting",
@@ -2000,9 +2000,27 @@
       "executable": false
     },
     {
+      "path": "site/llms.txt",
+      "size_bytes": 2705,
+      "sha256": "b351e5d2337431dd07e5ad3e12dc6cf6ae96759dcb5e3c8fa970f7a3a1b7d49e",
+      "executable": false
+    },
+    {
       "path": "site/optimization.js",
       "size_bytes": 21873,
       "sha256": "8d71289dd8916ad0c5315eb08c9c8d16498ec1d9597675af6efd0a57bc5d3512",
+      "executable": false
+    },
+    {
+      "path": "site/robots.txt",
+      "size_bytes": 74,
+      "sha256": "8e2adce6ea1d51954636b16c289724ba8c568234ed066357a76034db8d0bd2ca",
+      "executable": false
+    },
+    {
+      "path": "site/sitemap.xml",
+      "size_bytes": 239,
+      "sha256": "8594ab1e36da0e4240a7b1ac248906ed4233a537f82785b730aadf1d6e3968c3",
       "executable": false
     },
     {
@@ -2751,8 +2769,8 @@
     },
     {
       "path": "tests/test_release_contract.py",
-      "size_bytes": 20877,
-      "sha256": "6fe5ac95e8f5c4d5d74cee7adfce7ec91897ad54304f60a7c144037e4e311065",
+      "size_bytes": 20969,
+      "sha256": "36c13e1759a98320d1f4b7123c14040d24b6901ac15691965f997a1cc6aa85f8",
       "executable": false
     },
     {
@@ -2775,8 +2793,8 @@
     },
     {
       "path": "tests/test_site_contract.py",
-      "size_bytes": 39570,
-      "sha256": "8c54eb8a17d8fb37e46ff83d95401b5b56c2ea81a557c73cf5a3b5747c65fd0a",
+      "size_bytes": 41056,
+      "sha256": "359d4dfb13abe0460687db8e25bfbce70885c1a1b3f4b1db5aff38a30c74bbdb",
       "executable": false
     },
     {

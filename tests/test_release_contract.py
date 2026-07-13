@@ -203,6 +203,9 @@ class ReleaseContractTests(unittest.TestCase):
             "site/data.js",
             "site/index.html",
             "site/docs/index.html",
+            "site/llms.txt",
+            "site/robots.txt",
+            "site/sitemap.xml",
             "tests/test_public_claims_contract.py",
         ):
             self.assertIn(required, by_path, f"release surface missing from manifest: {required}")
