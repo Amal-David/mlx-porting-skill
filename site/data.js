@@ -3953,34 +3953,35 @@ window.MLX_PORTING_SITE_DATA = {
   "sources": {
     "by_classification": {
       "official_api_doc": 14,
-      "primary_paper": 1,
+      "primary_paper": 4,
       "primary_source_code": 13,
       "release_note": 2,
+      "technical_blog": 2,
       "unclassified": 326
     },
     "by_kind": {
       "issue-report": 1,
       "official-doc": 38,
-      "paper": 227,
+      "paper": 230,
       "release": 8,
       "repository": 49,
       "source-code": 26,
-      "technical-blog": 7
+      "technical-blog": 9
     },
     "by_review_depth": {
       "indexed": 24,
       "screened": 190,
-      "synthesized": 142
+      "synthesized": 147
     },
     "by_support_scope": {
-      "context_only": 1,
+      "context_only": 3,
       "official_mlx": 14,
       "official_mlx_project": 4,
-      "paper_only": 1,
+      "paper_only": 4,
       "third_party_pinned": 10,
       "unspecified": 326
     },
-    "total": 356
+    "total": 361
   },
   "techniques": {
     "by_status": {
@@ -3988,9 +3989,9 @@ window.MLX_PORTING_SITE_DATA = {
       "official-mlx-project": 9,
       "proven-mlx-port": 22,
       "rejected-or-superseded": 1,
-      "research-candidate": 19
+      "research-candidate": 23
     },
-    "total": 66
+    "total": 70
   },
-  "version": "0.6.0"
+  "version": "0.6.1"
 };

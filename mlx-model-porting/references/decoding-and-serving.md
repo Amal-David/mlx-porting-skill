@@ -47,6 +47,25 @@ Use native auxiliary heads when supplied by the model. Verify head ordering, acc
 
 Use only where a tested MLX implementation and compatible drafter artifact exist. Measure drafting latency and verification geometry rather than relying on advertised theoretical speedup.
 
+### Confidence-scheduled block drafters such as DSpark
+
+DSpark combines a block drafter with lightweight semi-autoregressive refinement
+and confidence-based scheduling. Treat it as a distinct target/drafter/runtime
+contract, not as a drop-in DFlash or MTP switch. A base-model drafter can lose
+acceptance after target fine-tuning or adapter changes; pin the target and
+drafter revisions and validate them together.
+
+Measure acceptance survival by draft position, proposed and verified block
+lengths, confidence calibration, draft time, target verification time, cache
+update time, memory, and end-to-end latency. Run both single-user and intended
+concurrent serving loads. Warm-start or task-matched drafter training can be a
+useful experiment, but it is model training and does not establish MLX serving
+support by itself.
+
+`paper-2607-05147` and `fal-ideogram-dspark-2026-07-08` are algorithm and
+production-context evidence only. Their DeepSeek/SGLang/B200 results are not
+Apple Silicon performance claims.
+
 When package or model-card evidence names explicit target/drafter pairings, record those pairings as compatibility constraints. Validate acceptance rate, accepted tokens per verification step, drafter cache/window size, verification cache update, and memory overhead. A low acceptance setting or too-small drafter cache can make speculation slower than the baseline.
 
 ### Speech speculative decoding

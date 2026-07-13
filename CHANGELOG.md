@@ -1,5 +1,25 @@
 # Changelog
 
+## 0.6.1 — 2026-07-14
+
+- Added four evidence-gated research candidates from the Ideogram V4 serving
+  write-ups and primary papers: DSpark confidence-scheduled speculation,
+  diffusion quantization-aware distillation, classifier-free-guidance branch
+  distillation, and few-step diffusion/flow distillation.
+- Added a diffusion cost model that separates denoising steps, branches per
+  step, and cost per branch, with explicit quality gates and a prohibition on
+  multiplying unmeasured gains.
+- Added MLX-specific low-bit follow-through: re-profile norms, activations,
+  casts, layouts, and materialized intermediates after accelerating a matmul;
+  prefer native fast operations and stable-region compilation; and never
+  translate CUTLASS epilogue or Blackwell tile schedules directly to Metal.
+- Preserved every fal B200/NVFP4/CUTLASS performance number as context-only
+  evidence. No new numeric claim, supported-MLX status, optimization method, or
+  compound stack was promoted.
+- Expanded the corpus to 361 sources and 70 techniques and raised the offline
+  suite to 473 tests with focused provenance, status, gate, rollback, and
+  hardware-boundary contracts.
+
 ## 0.6.0 — 2026-07-12
 
 - Rebuilt the public documentation as a learning-first study guide covering

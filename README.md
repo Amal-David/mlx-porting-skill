@@ -32,15 +32,15 @@ in [`site/`](site/).
 | [`mlx-model-porting/examples/`](mlx-model-porting/examples/) | Porting patterns and no-weights worked examples. |
 | [`tests/`](tests/) | Synthetic scenarios and contract, security, determinism, and portability tests. |
 
-Current 0.6.0 corpus snapshot:
+Current 0.6.1 corpus snapshot:
 
 - 17 architecture-family routes with synthetic golden coverage;
-- 356 evidence sources with explicit review depth; 30 currently carry classified
+- 361 evidence sources with explicit review depth; 35 currently carry classified
   support scope and claim types, while 326 remain intentionally unclassified;
-- 66 technique records, 28 optimization-guidance methods, and 4 stack
+- 70 technique records, 28 optimization-guidance methods, and 4 stack
   definitions;
-- 33 inspectable Python scripts and 486 offline tests;
-- a 703-node, 501-edge research graph plus a deterministically reconciled
+- 33 inspectable Python scripts and 537 offline tests;
+- a 708-node, 501-edge research graph plus a deterministically reconciled
   backlog;
 - 13 checked-in benchmark receipts: 12 `performance_observation`, 0
   `promotion_ready`, and 1 `rejected`;
@@ -509,6 +509,6 @@ recommendations.
 
 ## Versioning
 
-The 0.6.0 release snapshot is dated 2026-07-12. The package version is recorded
+The 0.6.1 release snapshot is dated 2026-07-14. The package version is recorded
 in [`VERSION`](VERSION) and the skill frontmatter; release changes are recorded
 in [`CHANGELOG.md`](CHANGELOG.md).

@@ -1,13 +1,13 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-07-12T17:41:12+00:00",
-  "run_id": "2026-07-12-mlx-learning-atlas",
+  "generated_at": "2026-07-13T19:46:42+00:00",
+  "run_id": "2026-07-14-ideogram-optimizer-learnings",
   "policy": {
     "review_only": true,
     "auto_promote_sources": false,
     "auto_modify_recommendations": false
   },
-  "node_count": 703,
+  "node_count": 708,
   "edge_count": 501,
   "nodes": [
     {
@@ -4734,6 +4734,45 @@
       "snapshot": "2026-06-24"
     },
     {
+      "id": "source:fal-ideogram-dspark-2026-07-08",
+      "kind": "source",
+      "source_id": "fal-ideogram-dspark-2026-07-08",
+      "label": "How We Achieved ~1000 tok/s and 16x Throughput with DSpark for Ideogram V4 Prompt Expander",
+      "locator": "https://blog.fal.ai/how-we-achieved-1000-tok-s-and-16x-throughput-with-dspark-for-ideogram-v4-prompt-expander",
+      "read_state": "already_read",
+      "review_depth": "synthesized",
+      "source_kind": "technical-blog",
+      "owner": "fal",
+      "topics": [
+        "speculative-decoding",
+        "dspark",
+        "dflash",
+        "mtp",
+        "serving"
+      ],
+      "snapshot": "2026-07-08"
+    },
+    {
+      "id": "source:fal-ideogram-v4-serving-2026-07-09",
+      "kind": "source",
+      "source_id": "fal-ideogram-v4-serving-2026-07-09",
+      "label": "Serving sub-second Ideogram v4 without quality loss",
+      "locator": "https://blog.fal.ai/serving-sub-second-ideogram-v4-without-quality-loss",
+      "read_state": "already_read",
+      "review_depth": "synthesized",
+      "source_kind": "technical-blog",
+      "owner": "fal",
+      "topics": [
+        "diffusion",
+        "nvfp4",
+        "kernel-fusion",
+        "quantization-aware-distillation",
+        "guidance-distillation",
+        "timestep-distillation"
+      ],
+      "snapshot": "2026-07-09"
+    },
+    {
       "id": "source:fl33twood-mlx-conformer-repo",
       "kind": "source",
       "source_id": "fl33twood-mlx-conformer-repo",
@@ -8596,6 +8635,27 @@
       "immutable_locator": ""
     },
     {
+      "id": "source:paper-2405-14867",
+      "kind": "source",
+      "source_id": "paper-2405-14867",
+      "label": "Improved Distribution Matching Distillation for Fast Image Synthesis",
+      "locator": "https://arxiv.org/abs/2405.14867",
+      "read_state": "already_read",
+      "review_depth": "synthesized",
+      "source_kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "diffusion",
+        "distillation",
+        "few-step-generation",
+        "distribution-matching"
+      ],
+      "snapshot": "2405.14867",
+      "paper_id": "2405.14867",
+      "revision": "",
+      "immutable_locator": ""
+    },
+    {
       "id": "source:paper-2405-16406",
       "kind": "source",
       "source_id": "paper-2405-16406",
@@ -10043,6 +10103,27 @@
       "immutable_locator": ""
     },
     {
+      "id": "source:paper-2601-20088",
+      "kind": "source",
+      "source_id": "paper-2601-20088",
+      "label": "Quantization-Aware Distillation for NVFP4 Inference Accuracy Recovery",
+      "locator": "https://arxiv.org/abs/2601.20088",
+      "read_state": "already_read",
+      "review_depth": "synthesized",
+      "source_kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "quantization",
+        "distillation",
+        "nvfp4",
+        "qat"
+      ],
+      "snapshot": "2601.20088",
+      "paper_id": "2601.20088",
+      "revision": "",
+      "immutable_locator": ""
+    },
+    {
       "id": "source:paper-2601-20094",
       "kind": "source",
       "source_id": "paper-2601-20094",
@@ -10462,6 +10543,27 @@
       ],
       "snapshot": "2606.24033",
       "paper_id": "2606.24033",
+      "revision": "",
+      "immutable_locator": ""
+    },
+    {
+      "id": "source:paper-2607-05147",
+      "kind": "source",
+      "source_id": "paper-2607-05147",
+      "label": "DSpark: Confidence-Scheduled Speculative Decoding with Semi-Autoregressive Generation",
+      "locator": "https://arxiv.org/abs/2607.05147",
+      "read_state": "already_read",
+      "review_depth": "synthesized",
+      "source_kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "speculative-decoding",
+        "dspark",
+        "confidence-scheduling",
+        "block-drafting"
+      ],
+      "snapshot": "2607.05147",
+      "paper_id": "2607.05147",
       "revision": "",
       "immutable_locator": ""
     },
@@ -14332,9 +14434,9 @@
   ],
   "latest_delta": {
     "schema_version": 1,
-    "run_id": "2026-07-12-mlx-learning-atlas",
-    "generated_at": "2026-07-12T17:41:12+00:00",
-    "previous_graph_generated_at": "2026-07-12T11:08:23+00:00",
+    "run_id": "2026-07-14-ideogram-optimizer-learnings",
+    "generated_at": "2026-07-13T19:46:42+00:00",
+    "previous_graph_generated_at": "2026-07-12T17:41:12+00:00",
     "already_read_sources": [
       {
         "id": "candidate:repository:ml-explore-mlx-examples",

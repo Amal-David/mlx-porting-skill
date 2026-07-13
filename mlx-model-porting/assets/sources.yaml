@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "reviewed": "2026-07-12",
+  "reviewed": "2026-07-14",
   "review_depth_definitions": {
     "synthesized": "Directly informed a runbook, rule, or technique decision.",
     "screened": "Abstract/readme/code path reviewed for relevance and limits.",
@@ -32,7 +32,7 @@
     "A record note may narrow these boundaries. The narrowest applicable boundary always wins."
   ],
   "benchmark_assessment": "mlx-model-porting/assets/BENCHMARK_REPORT.md",
-  "count": 356,
+  "count": 361,
   "sources": [
     {
       "id": "agent-skills-spec",
@@ -5329,6 +5329,124 @@
       "review_depth": "screened",
       "snapshot": "2504.19874",
       "note": "Paper evidence for TurboQuant research context; not official MLX core support."
+    },
+    {
+      "id": "fal-ideogram-dspark-2026-07-08",
+      "title": "How We Achieved ~1000 tok/s and 16x Throughput with DSpark for Ideogram V4 Prompt Expander",
+      "url": "https://blog.fal.ai/how-we-achieved-1000-tok-s-and-16x-throughput-with-dspark-for-ideogram-v4-prompt-expander/",
+      "kind": "technical-blog",
+      "owner": "fal",
+      "topics": [
+        "speculative-decoding",
+        "dspark",
+        "dflash",
+        "mtp",
+        "serving"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2026-07-08",
+      "evidence_class": "technical_blog",
+      "support_scope": "context_only",
+      "claim_types": [
+        "algorithm_candidate",
+        "performance",
+        "quality",
+        "serving_semantics"
+      ],
+      "note": "Production context for task-matched speculative drafters, acceptance-versus-overhead, and latency-versus-throughput objectives. All B200, SGLang, and reported speed figures are non-MLX context only."
+    },
+    {
+      "id": "paper-2607-05147",
+      "title": "DSpark: Confidence-Scheduled Speculative Decoding with Semi-Autoregressive Generation",
+      "url": "https://arxiv.org/abs/2607.05147",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "speculative-decoding",
+        "dspark",
+        "confidence-scheduling",
+        "block-drafting"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2607.05147",
+      "evidence_class": "primary_paper",
+      "support_scope": "paper_only",
+      "claim_types": [
+        "algorithm_candidate",
+        "performance",
+        "serving_semantics"
+      ],
+      "note": "Primary algorithm evidence for confidence-scheduled semi-autoregressive drafting. It does not establish an MLX implementation or Apple Silicon speedup."
+    },
+    {
+      "id": "fal-ideogram-v4-serving-2026-07-09",
+      "title": "Serving sub-second Ideogram v4 without quality loss",
+      "url": "https://blog.fal.ai/serving-sub-second-ideogram-v4-without-quality-loss/",
+      "kind": "technical-blog",
+      "owner": "fal",
+      "topics": [
+        "diffusion",
+        "nvfp4",
+        "kernel-fusion",
+        "quantization-aware-distillation",
+        "guidance-distillation",
+        "timestep-distillation"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2026-07-09",
+      "evidence_class": "technical_blog",
+      "support_scope": "context_only",
+      "claim_types": [
+        "algorithm_candidate",
+        "performance",
+        "quality",
+        "risk_or_negative"
+      ],
+      "note": "Production context for decomposing diffusion cost into step count, guidance branches, and per-branch cost, plus low-bit quality failure modes. CUTLASS, Blackwell, NVFP4, and reported speed figures are not MLX claims."
+    },
+    {
+      "id": "paper-2601-20088",
+      "title": "Quantization-Aware Distillation for NVFP4 Inference Accuracy Recovery",
+      "url": "https://arxiv.org/abs/2601.20088",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "quantization",
+        "distillation",
+        "nvfp4",
+        "qat"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2601.20088",
+      "evidence_class": "primary_paper",
+      "support_scope": "paper_only",
+      "claim_types": [
+        "algorithm_candidate",
+        "quality"
+      ],
+      "note": "Primary QAD algorithm evidence for LLMs and VLMs. Adapting the objective to diffusion or flow models and executing the exported student on MLX remain experimental."
+    },
+    {
+      "id": "paper-2405-14867",
+      "title": "Improved Distribution Matching Distillation for Fast Image Synthesis",
+      "url": "https://arxiv.org/abs/2405.14867",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "diffusion",
+        "distillation",
+        "few-step-generation",
+        "distribution-matching"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2405.14867",
+      "evidence_class": "primary_paper",
+      "support_scope": "paper_only",
+      "claim_types": [
+        "algorithm_candidate",
+        "quality"
+      ],
+      "note": "Primary algorithm evidence for DMD2-style few-step generation. It does not establish a compatible MLX training or inference implementation."
     },
     {
       "id": "hf-mlx-model-search-2026-06-27",
