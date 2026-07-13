@@ -1,5 +1,7 @@
 # MLX model porting, inspection, and evidence-gated optimization
 
+[![skills.sh installs](https://skills.sh/b/Amal-David/mlx-porting-skill)](https://skills.sh/Amal-David/mlx-porting-skill)
+
 `mlx-model-porting` is a portable Agent Skill for taking an unfamiliar PyTorch
 or Hugging Face model through static intake, architecture routing, source
 capture, explicit weight conversion, staged MLX parity, profiling, and
@@ -94,12 +96,33 @@ do and do not prove.
 
 ## Install
 
-The distributable skill is the `mlx-model-porting/` directory. For a supported
-client preset:
+The distributable skill is the `mlx-model-porting/` directory. It is
+discoverable as a single skill by the [skills.sh](https://skills.sh/) CLI:
+
+```bash
+npx skills add Amal-David/mlx-porting-skill --skill mlx-model-porting
+```
+
+For a non-interactive Codex project install:
+
+```bash
+npx skills add Amal-David/mlx-porting-skill \
+  --skill mlx-model-porting \
+  --agent codex \
+  -y
+```
+
+The generic CLI path installs the skill for the selected agent, but it does not
+use this repository's manifest-attested release-artifact checks. For that
+stricter path, use a supported client preset:
 
 ```bash
 python3 mlx-model-porting/scripts/install_skill.py --client codex
 ```
+
+Native Windows users should use the generic CLI path above; manifest-attested
+copy mode requires WSL. See [`adapters/README.md`](adapters/README.md) for the
+platform-specific discovery and installation boundary.
 
 For an explicit destination:
 
