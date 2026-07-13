@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Study B — Parity trace</title>
+  <link rel="icon" href="../../site/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./motion.css">
+  <script src="./motion.js" defer></script>
+</head>
+<body class="study-page trace-study" data-duration="30">
+  <header class="study-toolbar">
+    <a class="study-brand" href="./index.html"><span>MX</span> Hero studies</a>
+    <div class="study-meta"><b>B / Parity trace</b><span>30 second loop</span></div>
+    <div class="study-controls">
+      <button type="button" data-restart>Restart</button>
+      <button type="button" data-pause aria-pressed="false">Pause</button>
+    </div>
+  </header>
+
+  <main class="study-viewport">
+    <figure class="motion-stage trace-stage" data-motion-root aria-labelledby="trace-title" aria-describedby="trace-description">
+      <svg class="stage-geometry trace-geometry" viewBox="0 0 1200 675" preserveAspectRatio="none" aria-hidden="true">
+        <path class="quiet-orbit" d="M78 430 C310 170 775 88 1122 300"></path>
+        <path class="quiet-orbit second" d="M160 560 C480 650 900 535 1104 175"></path>
+        <line class="trace-rail source-rail" x1="255" y1="265" x2="1040" y2="265"></line>
+        <line class="trace-rail target-rail" x1="255" y1="443" x2="1040" y2="443"></line>
+        <line class="checkpoint-link link-input" x1="300" y1="265" x2="300" y2="443"></line>
+        <line class="checkpoint-link link-embed" x1="470" y1="265" x2="470" y2="443"></line>
+        <line class="checkpoint-link link-attn" x1="650" y1="265" x2="650" y2="443"></line>
+        <line class="checkpoint-link link-mlp" x1="830" y1="265" x2="830" y2="443"></line>
+        <line class="checkpoint-link link-logits" x1="1005" y1="265" x2="1005" y2="443"></line>
+      </svg>
+
+      <div class="stage-heading trace-heading">
+        <span>SAME FIXTURE / CHECKPOINT BY CHECKPOINT</span>
+        <h1 id="trace-title">A port is a <em>proof of equivalence.</em></h1>
+      </div>
+
+      <ol class="chapter-track trace-chapters" aria-label="Animation chapters">
+        <li><span>01</span>run together</li>
+        <li><span>02</span>find first Δ</li>
+        <li><span>03</span>repair meaning</li>
+        <li><span>04</span>replay proof</li>
+      </ol>
+
+      <section class="fixture-card" aria-label="Shared deterministic test fixture">
+        <span>FIXTURE x</span>
+        <div class="token-row" aria-label="token ids 101, 314, 159, 265">
+          <i>101</i><i>314</i><i>159</i><i>265</i>
+        </div>
+        <small>seed 7 · fp32</small>
+      </section>
+
+      <section class="runtime-graph source-graph" aria-label="PyTorch reference graph">
+        <h2><span class="runtime-dot torch-dot"></span>PyTorch / reference</h2>
+        <ol>
+          <li class="graph-node input-node"><span>x</span><small>input</small></li>
+          <li class="graph-node embed-node"><span>E</span><small>embed</small></li>
+          <li class="graph-node attn-node"><span>A</span><small>attention</small></li>
+          <li class="graph-node mlp-node"><span>F</span><small>MLP</small></li>
+          <li class="graph-node logits-node"><span>ŷ</span><small>logits</small></li>
+        </ol>
+        <i class="trace-pulse source-pulse" aria-hidden="true"></i>
+      </section>
+
+      <section class="runtime-graph target-graph" aria-label="MLX candidate graph">
+        <h2><span class="runtime-dot mlx-dot"></span>MLX / candidate</h2>
+        <ol>
+          <li class="graph-node input-node"><span>x</span><small>input</small></li>
+          <li class="graph-node embed-node"><span>E</span><small>embed</small></li>
+          <li class="graph-node attn-node target-attn"><span>A′</span><small>attention</small></li>
+          <li class="graph-node mlp-node"><span>F</span><small>MLP</small></li>
+          <li class="graph-node logits-node"><span>ŷ</span><small>logits</small></li>
+        </ol>
+        <i class="trace-pulse target-pulse" aria-hidden="true"></i>
+      </section>
+
+      <div class="comparison-marks" aria-hidden="true">
+        <span class="compare-ok ok-input">=</span>
+        <span class="compare-ok ok-embed">=</span>
+        <span class="compare-break">≠</span>
+        <span class="compare-ok ok-attn">=</span>
+        <span class="compare-ok ok-mlp">=</span>
+        <span class="compare-ok ok-logits">=</span>
+      </div>
+
+      <aside class="divergence-card" aria-label="First divergent checkpoint">
+        <p>FIRST DIVERGENCE</p>
+        <div><span>Δ<sub>attention</sub></span><strong>2.7 × 10<sup>−2</sup></strong></div>
+        <small>Stop here. Later errors are consequences.</small>
+      </aside>
+
+      <aside class="contract-card" aria-label="Attention mask contract repair">
+        <p>SEMANTIC CONTRACT / MASK</p>
+        <div class="mask-shape wrong-mask">
+          <span>candidate</span><strong>[ B, T, T ]</strong><i>broadcast differs</i>
+        </div>
+        <div class="repair-operator"><b>expand_dims</b><span>axis = 1</span></div>
+        <div class="mask-shape right-mask">
+          <span>required</span><strong>[ B, 1, T, T ]</strong><i>same attention meaning</i>
+        </div>
+      </aside>
+
+      <section class="error-plot" aria-label="Error by checkpoint after repair">
+        <p>CHECKPOINT ERROR</p>
+        <div class="plot-bars">
+          <i style="--bar:0"><span>input</span></i>
+          <i style="--bar:1"><span>embed</span></i>
+          <i style="--bar:2"><span>attn</span></i>
+          <i style="--bar:3"><span>MLP</span></i>
+          <i style="--bar:4"><span>logits</span></i>
+        </div>
+        <div class="epsilon-line"><span>ε</span></div>
+        <strong>max Δ = 8.1 × 10<sup>−6</sup> ≤ ε</strong>
+      </section>
+
+      <div class="parity-seal trace-seal" aria-hidden="true">
+        <span>∀ checkpoints</span>
+        <strong>Δ ≤ ε</strong>
+        <small>port accepted</small>
+      </div>
+
+      <div class="narration trace-narration" aria-live="off">
+        <p class="caption caption-one">Freeze one fixture. Run the reference and the port side by side.</p>
+        <p class="caption caption-two">Compare intermediate states—not only the final answer.</p>
+        <p class="caption caption-three">The first mismatch exposes a semantic error in the attention-mask shape.</p>
+        <p class="caption caption-four">Repair the contract, replay every checkpoint, and accept only when Δ stays below ε.</p>
+      </div>
+
+      <div class="loop-progress" aria-hidden="true"><i></i></div>
+      <figcaption id="trace-description" class="sr-only">A 30 second mathematical animation. One deterministic input runs through matching PyTorch and MLX computation graphs. The first two checkpoints agree, then attention diverges because the MLX candidate mask broadcasts with the wrong shape. The mask gains an explicit singleton axis, the fixture replays, every checkpoint error falls below epsilon, and the port is accepted.</figcaption>
+    </figure>
+  </main>
+</body>
+</html>

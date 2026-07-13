@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Study A — Tensor morphism</title>
+  <link rel="icon" href="../../site/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./motion.css">
+  <script src="./motion.js" defer></script>
+</head>
+<body class="study-page matrix-study" data-duration="24">
+  <header class="study-toolbar">
+    <a class="study-brand" href="./index.html"><span>MX</span> Hero studies</a>
+    <div class="study-meta"><b>A / Tensor morphism</b><span>24 second loop</span></div>
+    <div class="study-controls">
+      <button type="button" data-restart>Restart</button>
+      <button type="button" data-pause aria-pressed="false">Pause</button>
+    </div>
+  </header>
+
+  <main class="study-viewport">
+    <figure class="motion-stage" data-motion-root aria-labelledby="matrix-title" aria-describedby="matrix-description">
+      <svg class="stage-geometry" viewBox="0 0 1200 675" preserveAspectRatio="none" aria-hidden="true">
+        <path class="quiet-orbit" d="M85 462 C240 165 720 95 1108 302"></path>
+        <path class="quiet-orbit second" d="M125 525 C455 670 890 556 1100 188"></path>
+        <line class="coordinate-axis" x1="82" y1="570" x2="1115" y2="570"></line>
+        <line class="coordinate-axis" x1="82" y1="570" x2="82" y2="92"></line>
+        <path class="mapping-curve curve-one" d="M390 295 C510 175 642 175 752 292"></path>
+        <path class="mapping-curve curve-two" d="M390 335 C515 245 640 245 752 332"></path>
+        <path class="mapping-curve curve-three" d="M390 375 C520 315 638 315 752 372"></path>
+      </svg>
+
+      <div class="stage-heading">
+        <span>ONE ARRAY / TWO RUNTIMES</span>
+        <h1 id="matrix-title">A port preserves <em>meaning</em>, not memory order.</h1>
+      </div>
+
+      <ol class="chapter-track" aria-label="Animation chapters">
+        <li><span>01</span>name the source</li>
+        <li><span>02</span>map every index</li>
+        <li><span>03</span>prove the output</li>
+      </ol>
+
+      <section class="tensor-panel source-tensor" aria-label="PyTorch convolution kernel">
+        <p class="runtime-label torch">PyTorch checkpoint</p>
+        <div class="tensor-name">W<sub>P</sub> ∈ ℝ<sup>O×I×H×W</sup></div>
+        <div class="axis-order" aria-label="axes output input height width">
+          <span class="axis-o">O</span><span class="axis-i">I</span><span class="axis-h">H</span><span class="axis-w">W</span>
+        </div>
+        <div class="matrix-grid source-grid" aria-hidden="true">
+          <i style="--cell:0">0.2</i><i style="--cell:1">−0.4</i><i style="--cell:2">0.7</i><i style="--cell:3">0.1</i>
+          <i style="--cell:4">0.5</i><i style="--cell:5">0.8</i><i style="--cell:6">−0.3</i><i style="--cell:7">0.6</i>
+          <i style="--cell:8">−0.2</i><i style="--cell:9">0.9</i><i style="--cell:10">0.4</i><i style="--cell:11">−0.1</i>
+        </div>
+        <p class="index-example">W<sub>P</sub>[o, i, h, w]</p>
+      </section>
+
+      <div class="mapping-rule" aria-label="Index mapping rule">
+        <span class="pi-symbol">π</span>
+        <p>(o, i, h, w)</p>
+        <strong>↦</strong>
+        <p>(o, h, w, i)</p>
+        <small>transpose the axes<br>not the values</small>
+      </div>
+
+      <div class="mapping-particles" aria-hidden="true">
+        <i class="particle p1">0.2</i><i class="particle p2">0.7</i><i class="particle p3">0.8</i>
+      </div>
+
+      <section class="tensor-panel target-tensor" aria-label="MLX convolution kernel">
+        <p class="runtime-label mlx">MLX module</p>
+        <div class="tensor-name">W<sub>M</sub> ∈ ℝ<sup>O×H×W×I</sup></div>
+        <div class="axis-order" aria-label="axes output height width input">
+          <span class="axis-o">O</span><span class="axis-h">H</span><span class="axis-w">W</span><span class="axis-i">I</span>
+        </div>
+        <div class="matrix-grid target-grid" aria-hidden="true">
+          <i style="--cell:0">0.2</i><i style="--cell:2">0.7</i><i style="--cell:4">0.5</i><i style="--cell:6">−0.3</i>
+          <i style="--cell:1">−0.4</i><i style="--cell:3">0.1</i><i style="--cell:5">0.8</i><i style="--cell:7">0.6</i>
+          <i style="--cell:8">−0.2</i><i style="--cell:10">0.4</i><i style="--cell:9">0.9</i><i style="--cell:11">−0.1</i>
+        </div>
+        <p class="index-example">W<sub>M</sub>[o, h, w, i] = W<sub>P</sub>[o, i, h, w]</p>
+      </section>
+
+      <section class="proof-plane" aria-label="Parity proof">
+        <div class="proof-expression source-proof"><span>y<sub>P</sub></span> = conv<sub>P</sub>(x, W<sub>P</sub>)</div>
+        <div class="proof-expression target-proof"><span>y<sub>M</sub></span> = conv<sub>M</sub>(x, W<sub>M</sub>)</div>
+        <div class="vector-pair" aria-label="matching output vectors">
+          <div><b>y<sub>P</sub></b><span>1.42</span><span>−0.08</span><span>0.63</span></div>
+          <div><b>y<sub>M</sub></b><span>1.42</span><span>−0.08</span><span>0.63</span></div>
+        </div>
+        <div class="delta-equation">Δ = ‖y<sub>P</sub> − y<sub>M</sub>‖<sub>2</sub> <strong>→ 0</strong></div>
+      </section>
+
+      <div class="parity-seal" aria-hidden="true">
+        <span>Δ ≤ ε</span>
+        <strong>PARITY</strong>
+        <small>optimization unlocked</small>
+      </div>
+
+      <div class="narration" aria-live="off">
+        <p class="caption caption-one">First, name the source tensor and every axis.</p>
+        <p class="caption caption-two">Then define one total mapping: every source index has exactly one destination.</p>
+        <p class="caption caption-three">The new layout is not trusted until both runtimes produce the same result.</p>
+        <p class="caption caption-four">Only the proof—not a successful load—unlocks optimization.</p>
+      </div>
+
+      <div class="loop-progress" aria-hidden="true"><i></i></div>
+      <figcaption id="matrix-description" class="sr-only">A 24 second mathematical animation. A PyTorch convolution kernel with output, input, height, and width axes is mapped into MLX output, height, width, and input order. Indexed values move without changing. Both runtimes then produce matching output vectors, the error norm falls to zero, and parity unlocks optimization.</figcaption>
+    </figure>
+  </main>
+</body>
+</html>

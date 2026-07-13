@@ -2,8 +2,8 @@
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
   "version": "0.6.0",
-  "generated_at": "2026-07-13T04:22:57.620134+00:00",
-  "file_count": 467,
+  "generated_at": "2026-07-13T05:22:48.383840+00:00",
+  "file_count": 473,
   "files": [
     {
       "path": ".agents/skills/mlx-model-porting",
@@ -1958,6 +1958,36 @@
       "executable": true
     },
     {
+      "path": "prototypes/hero-motion/index.html",
+      "size_bytes": 1688,
+      "sha256": "2bcac8c123562ad9ca1121048d15d9b18071e2b88b05b748adc207ab85c958f4",
+      "executable": false
+    },
+    {
+      "path": "prototypes/hero-motion/matrix-port.html",
+      "size_bytes": 6390,
+      "sha256": "32f52c306770335bcfba63424db845142add7283a02c0d735b85f5637e77828d",
+      "executable": false
+    },
+    {
+      "path": "prototypes/hero-motion/motion.css",
+      "size_bytes": 34472,
+      "sha256": "7e8592e567a89957d6ee1fbdd75b9e39fc525cb6418b989ae10b3f1fe63d98f7",
+      "executable": false
+    },
+    {
+      "path": "prototypes/hero-motion/motion.js",
+      "size_bytes": 792,
+      "sha256": "c73bf600b4ab53848d740cfe7daf7981bebc0d211afd16e92ced60d176945635",
+      "executable": false
+    },
+    {
+      "path": "prototypes/hero-motion/parity-trace.html",
+      "size_bytes": 7092,
+      "sha256": "527c918e626581e3c99a26759553f2f5b0ba7060b23b111006394224674f7788",
+      "executable": false
+    },
+    {
       "path": "site/app.js",
       "size_bytes": 12129,
       "sha256": "5da2919148a3cf09baf1ef47cab994e679e5c80c1806ab1f18d63a05367bf0e4",
@@ -2007,8 +2037,8 @@
     },
     {
       "path": "tasks/lessons.md",
-      "size_bytes": 8559,
-      "sha256": "bf3b62fdcc60662a37792334c10c9ccea2847e38c6d98d52ed1121be58d178c5",
+      "size_bytes": 8911,
+      "sha256": "a8ffca4c7d81f0f0f97b699a60360907036b1d8cee5cf24ec41d5801329a5357",
       "executable": false
     },
     {
@@ -2675,6 +2705,12 @@
       "path": "tests/test_hardening_project_inspection_contract.py",
       "size_bytes": 5120,
       "sha256": "935cab1ab9dcf13ce5e2bd1531ef1af86bf572b2efadd0c5e550f6d9442bbf96",
+      "executable": false
+    },
+    {
+      "path": "tests/test_hero_motion_studies.py",
+      "size_bytes": 5084,
+      "sha256": "f34d84cd2d36d769016720d4ad4a5a06c1799b51eeb29616f990572c8fe7395e",
       "executable": false
     },
     {
