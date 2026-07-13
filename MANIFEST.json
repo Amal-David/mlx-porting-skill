@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
-  "version": "0.6.0",
-  "generated_at": "2026-07-13T20:30:37.473559+00:00",
-  "file_count": 508,
+  "version": "0.6.1",
+  "generated_at": "2026-07-13T20:47:01.901923+00:00",
+  "file_count": 509,
   "files": [
     {
       "path": ".agents/skills/mlx-model-porting",
@@ -63,8 +63,8 @@
     },
     {
       "path": "CHANGELOG.md",
-      "size_bytes": 14826,
-      "sha256": "c30b73765828fce21591cc11a4caa172c85448b4ca5cc1ca66c2c858f57c8de9",
+      "size_bytes": 15996,
+      "sha256": "1cf50e12f4e46940b789479124f4aaa143ea8f47044c9a3bd0adc1530b5d8133",
       "executable": false
     },
     {
@@ -81,8 +81,8 @@
     },
     {
       "path": "EVIDENCE_INDEX.md",
-      "size_bytes": 116784,
-      "sha256": "67a6c44aa18c28486096117b6116cd6ce7124d6b1b29667582fdfa8993f34cb1",
+      "size_bytes": 119896,
+      "sha256": "92b110abb6e4a9d7c0bfab2e0b9ceaddf7967c597aad942767ab823ee629d4ad",
       "executable": false
     },
     {
@@ -94,73 +94,73 @@
     {
       "path": "README.md",
       "size_bytes": 24533,
-      "sha256": "abc10537300f92e66086b5a905f5f472e52e8f5155a04a7dff90f1ed9d079468",
+      "sha256": "c23d2396f35b2078a4165d4cbd7429ffc0bebe4a5266ecdfff9f1e35a5ae4f6c",
       "executable": false
     },
     {
       "path": "RESEARCH_REPORT.md",
       "size_bytes": 23254,
-      "sha256": "118c496ed77b3aa3a2f4e336b16b9afa27328f62c3bfd1314961b9bd40c20714",
+      "sha256": "76415eb2efd0332db5d007838524c507f62be07b39b6edca6ed23c8b53d9b4db",
       "executable": false
     },
     {
       "path": "VALIDATION.md",
       "size_bytes": 19060,
-      "sha256": "df4faf06c0345017c0c957e63229937390642c6b988b957b762c1e4a37e6d251",
+      "sha256": "35e296651beafe85651ef15180018cf70da57de61d3944b9c6446944e4428903",
       "executable": false
     },
     {
       "path": "VERSION",
       "size_bytes": 6,
-      "sha256": "97a5d6e540a6120d09c39ddb667e0e8e2bac7fcc2ffef813b82e08fd60365bce",
+      "sha256": "87b241b275c591694846560e9879f50c9da3150f854efdabd782c539772f3033",
       "executable": false
     },
     {
       "path": "adapters/README.md",
       "size_bytes": 3282,
-      "sha256": "d038aa5007fc88fc8ad276c08051d27cebf768200fda155a947fc3ce07bcf5b4",
+      "sha256": "aa654e7077098ec10e01e1671c3d3fdee35ac53e614803c8c388ac90197dedc8",
       "executable": false
     },
     {
       "path": "adapters/antigravity.md",
       "size_bytes": 468,
-      "sha256": "58f776d29716b40c1fae261b284a83644257d28728a82efe9080f904a853daff",
+      "sha256": "63a6df56de2f46de41f585b98fd6939bf645e308a0b9f55d2034f66d8a39e5a0",
       "executable": false
     },
     {
       "path": "adapters/claude-code.md",
       "size_bytes": 559,
-      "sha256": "e5d5a50dad1074a0c879e89c201f95b8b0334b70a369e1f76de40f15c5e1b0f4",
+      "sha256": "9553dce7e5843c13cd62db3b638ce9dbf43a4d22cd6acc135b939a982883424e",
       "executable": false
     },
     {
       "path": "adapters/codex.md",
       "size_bytes": 572,
-      "sha256": "758d54c638824828287ab1f584c42b2d975ae600ebd1446371f9ecaaae576792",
+      "sha256": "eb9931e878ff47e2a5a65020cbbb1abee9eed55b1e4d79f24a51fd7002db5a94",
       "executable": false
     },
     {
       "path": "adapters/cursor.md",
       "size_bytes": 549,
-      "sha256": "c9ddfdc71f8d39a38dc83b5f34fd489e469bdf8193a960e16c54032fe84219c2",
+      "sha256": "e0a7b8ea9e80e240c9b3d94e076e51b47adb176ee3ca765e26c0500861418452",
       "executable": false
     },
     {
       "path": "adapters/gemini-cli.md",
       "size_bytes": 553,
-      "sha256": "c0f4cc7bf641bdc320f4ee840210ae84e5f12fb25a07aee9e9ae5221fa7d6106",
+      "sha256": "4271d600b34fd2171f5b2e0eb6421f1f60a8e197ebbeb87278a51df33119ce90",
       "executable": false
     },
     {
       "path": "adapters/github-copilot.md",
       "size_bytes": 558,
-      "sha256": "add1dd37e988c256c7d951a91259fd62cf68e920f43b8439264f677661b54205",
+      "sha256": "41dd8c554307bc138a9d9bfd3c99f536f5760a95aa68784682cc1d7cd2e1c89f",
       "executable": false
     },
     {
       "path": "adapters/windsurf.md",
       "size_bytes": 553,
-      "sha256": "b8ddd25f3955394add084680aaf963b053e76e4dab092d72fe48d64114f4c4fb",
+      "sha256": "38d42c3ea0739e64fc4dba0e5b17d36be246c594820dc02831a4ae722a6531f3",
       "executable": false
     },
     {
@@ -172,7 +172,7 @@
     {
       "path": "mlx-model-porting/SKILL.md",
       "size_bytes": 13451,
-      "sha256": "469d03c1a2cddaafbd33f97cefbf65f327f447227ee3db83acee29adad5625a6",
+      "sha256": "bfa4b0f702380c0cee2f5e7150563f61ef18023c36a2f0ed75d7aab968d8b542",
       "executable": false
     },
     {
@@ -861,8 +861,8 @@
     },
     {
       "path": "mlx-model-porting/assets/knowledge_graph.json",
-      "size_bytes": 551302,
-      "sha256": "4282be0f76e7e7e292744104c6cccdebfb51f92b43e4ec8f14c9831c2407bced",
+      "size_bytes": 554567,
+      "sha256": "dadbc36cf08fd9ec3ba4aa763ad1301e761037cd64c051d7c9c0e60755b8a87c",
       "executable": false
     },
     {
@@ -897,8 +897,8 @@
     },
     {
       "path": "mlx-model-porting/assets/research_backlog.json",
-      "size_bytes": 11656,
-      "sha256": "12b2121cdddb12f161e2bc9c7b4f3b9668ef0f7605d9ccdbc2204631c6fe249d",
+      "size_bytes": 11666,
+      "sha256": "88a7dae459fc9b67f1bb61bf73544381d53428283a230f226a7c73015f330dce",
       "executable": false
     },
     {
@@ -909,14 +909,14 @@
     },
     {
       "path": "mlx-model-porting/assets/sources.yaml",
-      "size_bytes": 159334,
-      "sha256": "a1a4b9c62b4e54e105336c1a011a6cc43a94b719c7c4a95dfe8264f91ff61839",
+      "size_bytes": 163603,
+      "sha256": "fb5d8ba4314666ec8c25806ed903af9170937cf95dde8d72731e7af58c6f56dc",
       "executable": false
     },
     {
       "path": "mlx-model-porting/assets/techniques.yaml",
-      "size_bytes": 48460,
-      "sha256": "feec3b4a3f9c95a6d005cfef1d58f350b9f4bf1b43416c38ccb4c39b32f7d659",
+      "size_bytes": 53199,
+      "sha256": "3f61e459031e2745f8be785244ee59c62bd4e1c3e691dc2b8131efd0a87f5384",
       "executable": false
     },
     {
@@ -1191,8 +1191,8 @@
     },
     {
       "path": "mlx-model-porting/references/compile-and-kernels.md",
-      "size_bytes": 5266,
-      "sha256": "aadd4e09d5b4e63f2f9eba5734b811f5435c1513b3977b8c9c58de562ddefccb",
+      "size_bytes": 6287,
+      "sha256": "9a5d5bc3c3762da0fe8e2f38ce3b22161e4e94a08c5d2bacedb39b5f708ab402",
       "executable": false
     },
     {
@@ -1203,8 +1203,8 @@
     },
     {
       "path": "mlx-model-porting/references/decoding-and-serving.md",
-      "size_bytes": 4564,
-      "sha256": "c81244a8eca45e40930d75c47eaba4a44185acf123f356314d2355202c45bc1d",
+      "size_bytes": 5575,
+      "sha256": "4da3ccddd947e35e5460ed19e697b50049bad4828a000aef1364d4776fc8ac66",
       "executable": false
     },
     {
@@ -1287,8 +1287,8 @@
     },
     {
       "path": "mlx-model-porting/references/quantization.md",
-      "size_bytes": 4369,
-      "sha256": "b35c3f1b8760b0d80f7200faec77617f089be9eadf7354a840fddd837dff30a1",
+      "size_bytes": 6354,
+      "sha256": "43f68180a86e42cc288f7a10c95a9509457535941105e29052b775bb56f3ed5f",
       "executable": false
     },
     {
@@ -1317,8 +1317,8 @@
     },
     {
       "path": "mlx-model-porting/references/runbook-diffusion-flow.md",
-      "size_bytes": 3225,
-      "sha256": "69308633f5aada618a0fa373c66dd1dd3591b43292b87ba707b56973e813bc65",
+      "size_bytes": 5877,
+      "sha256": "c31c5c7962adde35a630b8687ea4363ece6f9e9cf189c70778fd37b05de3964f",
       "executable": false
     },
     {
@@ -2163,14 +2163,14 @@
     },
     {
       "path": "site/data.js",
-      "size_bytes": 184610,
-      "sha256": "b7775f62be5d4bf46f5fad1c7e9923c0138469a22f829797ebc33301ee12fbba",
+      "size_bytes": 184637,
+      "sha256": "a9deaf614c88bb034069a894bbcd965cfa0e774a79f8ade0652b394a70ecd8c9",
       "executable": false
     },
     {
       "path": "site/docs/index.html",
       "size_bytes": 106488,
-      "sha256": "7fa496bfe71c317ec4816e4d85af5fd1ff49d9ddf47b637f9fd3d03fb3131658",
+      "sha256": "dd6b73b0f1f83edae9421d495d429170bbdf85ff171376a3f02cf4511b0a4189",
       "executable": false
     },
     {
@@ -2182,7 +2182,7 @@
     {
       "path": "site/index.html",
       "size_bytes": 20788,
-      "sha256": "e56bfc664a949c418b581c2cafe9162d9ad8cbd2007f50d795da136c865997d5",
+      "sha256": "410e5059a7211c4956b060f64d69d9327c374a180f25732135c86d507d88a26e",
       "executable": false
     },
     {
@@ -2903,6 +2903,12 @@
       "path": "tests/test_hardening_project_inspection_contract.py",
       "size_bytes": 5120,
       "sha256": "935cab1ab9dcf13ce5e2bd1531ef1af86bf572b2efadd0c5e550f6d9442bbf96",
+      "executable": false
+    },
+    {
+      "path": "tests/test_ideogram_optimizer_learnings_contract.py",
+      "size_bytes": 4403,
+      "sha256": "e48816e7a4e47935cb04922c324fe803677b014db84a2f1def860ea0abf509e0",
       "executable": false
     },
     {

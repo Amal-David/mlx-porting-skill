@@ -5,8 +5,8 @@ license: Apache-2.0
 compatibility: Execution and performance validation require an Apple Silicon Mac with a supported MLX installation. Planning and static inspection can run elsewhere. Python 3.10+ and git are recommended; NumPy is required only for tensor parity and huggingface-hub only for explicitly enabled network intake (see requirements-tools.txt). Network access is optional and must be explicitly enabled.
 metadata:
   author: mlx-porting-skill
-  version: "0.6.0"
-  last-reviewed: "2026-07-12"
+  version: "0.6.1"
+  last-reviewed: "2026-07-14"
 ---
 
 # MLX model porting and optimization

@@ -1,8 +1,8 @@
 # Validation status
 
-**Release snapshot:** 0.6.0
+**Release snapshot:** 0.6.1
 
-**Review date:** 2026-07-12
+**Review date:** 2026-07-14
 
 This file separates repository-level proof from target-model proof. Offline
 tests can demonstrate deterministic routing, safety controls, evidence
@@ -17,8 +17,8 @@ optimization improves a particular Mac workload.
 | Architecture-family routes | 17 | `mlx-model-porting/assets/architectures.yaml` |
 | Executable scaffold families | 6 | `scaffold_port.py::FAMILY_GENERATORS` |
 | Checked-in real checkpoint ports | 4 | Qwen2.5, BGE base, t5-small, HuBERT base examples |
-| Evidence sources | 356 | `mlx-model-porting/assets/sources.yaml` |
-| Technique records | 66 | `mlx-model-porting/assets/techniques.yaml` |
+| Evidence sources | 361 | `mlx-model-porting/assets/sources.yaml` |
+| Technique records | 70 | `mlx-model-porting/assets/techniques.yaml` |
 | Optimization-guidance methods | 28 | `mlx-model-porting/assets/optimization_guidance.yaml` |
 | Optimization stacks | 4 | `mlx-model-porting/assets/optimization_stacks.yaml` |
 | Python scripts | 33 | `mlx-model-porting/scripts/*.py` |
@@ -28,8 +28,8 @@ optimization improves a particular Mac workload.
 | Rejected receipts | 1 | generated benchmark assessment |
 | Effective claims | 10 | `mlx-model-porting/assets/effective_claims.json` |
 | Promoted / withheld claims | 0 / 10 | generated effective-claim catalogue |
-| Knowledge-graph nodes / edges | 703 / 501 | `mlx-model-porting/assets/knowledge_graph.json` |
-| Offline tests | 486 | `python3 -m unittest discover -s tests` |
+| Knowledge-graph nodes / edges | 708 / 501 | `mlx-model-porting/assets/knowledge_graph.json` |
+| Offline tests | 537 | `python3 -m unittest discover -s tests` |
 
 The 17 routes are synthetic golden scenarios. They prove that every declared
 family has a fixture exercising route selection, expected weight coverage, a

@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "reviewed": "2026-07-10",
+  "reviewed": "2026-07-14",
   "statuses": [
     "native-mlx",
     "official-mlx-project",
@@ -237,6 +237,62 @@
       ],
       "reviewed": "2026-06-27",
       "rollback_condition": "Disable if streamed outputs drift, key coverage is incomplete, eviction reloads stale weights, or page-fault/disk overhead erases the intended memory win."
+    },
+    {
+      "id": "diffusion-quantization-aware-distillation",
+      "title": "Quantization-aware distillation for diffusion and flow models",
+      "category": "quantization",
+      "status": "research-candidate",
+      "applies_to": [
+        "diffusion-flow",
+        "flow-diffusion-tts"
+      ],
+      "use_when": "Post-training low-bit inference fails a representative visual or audio quality gate and a frozen full-precision teacher plus differentiable fake-quantization training path are available.",
+      "avoid_when": "The port has no task-level quality oracle, no straight-through or equivalent quantization-aware gradient path, or no matching real MLX low-bit inference kernel for the exported student.",
+      "validation_gate": "BF16 teacher baseline; fake-quantized training with explicit objective; exported real MLX quantized inference; latent-trajectory and task-quality comparison; end-to-end latency and memory benchmark.",
+      "evidence": [
+        "paper-2601-20088",
+        "fal-ideogram-v4-serving-2026-07-09",
+        "mlx-doc-core-quantize"
+      ],
+      "reviewed": "2026-07-14",
+      "rollback_condition": "Restore the full-precision or conservative quantized model if the real exported kernel differs from the training quantizer, quality drifts, or the end-to-end win disappears."
+    },
+    {
+      "id": "cfg-guidance-distillation",
+      "title": "Classifier-free guidance branch distillation",
+      "category": "diffusion",
+      "status": "research-candidate",
+      "applies_to": [
+        "diffusion-flow"
+      ],
+      "use_when": "Two-branch classifier-free guidance dominates denoiser cost and a trained single-branch student can target the guided teacher output.",
+      "avoid_when": "Treating guidance removal as a post-hoc runtime toggle, or when negative-prompt, control, edit, or guidance-scale behavior must remain independently adjustable.",
+      "validation_gate": "Compare the trained single-branch student with the original guided teacher on prompt adherence, negative-prompt and control behavior, diversity, artifacts, text and color fidelity, and one-branch MLX latency.",
+      "evidence": [
+        "fal-ideogram-v4-serving-2026-07-09"
+      ],
+      "reviewed": "2026-07-14",
+      "rollback_condition": "Restore explicit conditional and unconditional branches when guidance semantics, diversity, controllability, or task quality fall outside the declared product bound."
+    },
+    {
+      "id": "diffusion-step-distillation",
+      "title": "Few-step diffusion or flow distillation",
+      "category": "diffusion",
+      "status": "research-candidate",
+      "applies_to": [
+        "diffusion-flow",
+        "flow-diffusion-tts"
+      ],
+      "use_when": "Repeated denoiser steps dominate end-to-end latency and a separately trained student artifact targets the intended reduced-step schedule.",
+      "avoid_when": "Swapping a shorter schedule onto an untrained source model or treating reduced steps as a lossless solver change.",
+      "validation_gate": "Pinned teacher/student and scheduler; step-count sweep; fixed-seed trajectory diagnostics; representative perceptual or audio quality, adherence, diversity, text/color or intelligibility gates; end-to-end MLX benchmark.",
+      "evidence": [
+        "paper-2405-14867",
+        "fal-ideogram-v4-serving-2026-07-09"
+      ],
+      "reviewed": "2026-07-14",
+      "rollback_condition": "Restore the original model and schedule if quality, diversity, stability, controllability, or the target latency metric regresses."
     },
     {
       "id": "full-kv-cache",
@@ -496,6 +552,24 @@
         "mlx-vlm-readme"
       ],
       "reviewed": "2026-06-23"
+    },
+    {
+      "id": "dspark",
+      "title": "DSpark confidence-scheduled block speculative decoding",
+      "category": "decoding",
+      "status": "research-candidate",
+      "applies_to": [
+        "compatible-decoder"
+      ],
+      "use_when": "A pinned target-specific DSpark drafter and an MLX verification loop exist, and fixed-block verification wastes work on low-confidence suffixes.",
+      "avoid_when": "Using an unmatched base-model drafter for a fine-tuned target, omitting the confidence scheduler, or when draft and verification overhead exceed accepted-token savings.",
+      "validation_gate": "Exact or distribution-preserving MLX verification; target/drafter revision match; acceptance survival by position; scheduled block lengths; draft, verification and cache time; memory; single-user and concurrent end-to-end benchmarks.",
+      "evidence": [
+        "paper-2607-05147",
+        "fal-ideogram-dspark-2026-07-08"
+      ],
+      "reviewed": "2026-07-14",
+      "rollback_condition": "Return to the plain target or a simpler compatible drafter if acceptance, scheduler confidence, memory, cost efficiency, or tail latency misses the declared workload gate."
     },
     {
       "id": "mtp",
