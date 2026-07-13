@@ -2,7 +2,7 @@
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
   "version": "0.6.0",
-  "generated_at": "2026-07-12T18:31:52.155042+00:00",
+  "generated_at": "2026-07-13T10:39:11.211249+00:00",
   "file_count": 467,
   "files": [
     {
@@ -45,8 +45,8 @@
     },
     {
       "path": ".github/workflows/validate.yml",
-      "size_bytes": 5152,
-      "sha256": "75a7c47f37e722f211c28d3fd0fec0957424ae5a0268f1e85fc020c6a5d9bacc",
+      "size_bytes": 6608,
+      "sha256": "311e39f23c015b47c4c1624dc4a09bb7b6a71e5e2b3fc51b12252f375e9ae489",
       "executable": false
     },
     {
