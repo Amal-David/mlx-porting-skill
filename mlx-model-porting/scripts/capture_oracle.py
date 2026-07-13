@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Capture a deterministic PyTorch/Hugging Face causal-decoder source oracle.
+"""Capture deterministic causal-decoder or encoder-decoder source tensors.
 
 The stable NPZ tensor-key scheme is:
 
@@ -85,6 +85,12 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         ),
     )
     parser.add_argument("model", nargs="?", help="Local model directory; hub IDs are not accepted")
+    parser.add_argument(
+        "--mode",
+        choices=("dense-decoder", "encoder", "encoder-decoder", "ssm", "asr"),
+        default="dense-decoder",
+        help="Capture contract (default: dense-decoder)",
+    )
     parser.add_argument("--output", help="Destination .npz archive")
     parser.add_argument(
         "--manifest",
@@ -104,6 +110,17 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         "--token-ids",
         nargs="+",
         help="One tokenizer-free token sequence as space- or comma-separated integers",
+    )
+    parser.add_argument(
+        "--attention-mask",
+        nargs="+",
+        help="Encoder modes only: one 0/1 value per tokenizer-free token ID",
+    )
+    parser.add_argument(
+        "--waveform-samples",
+        type=int,
+        default=16000,
+        help="ASR waveform fixture length (default: 16000)",
     )
     parser.add_argument(
         "--generate-steps",
@@ -267,6 +284,19 @@ def parse_token_ids(values: list[str]) -> list[int]:
     return parse_shared_token_ids(values)
 
 
+def parse_attention_mask(values: list[str] | None, token_count: int) -> list[int] | None:
+    if values is None:
+        return None
+    pieces = [piece.strip() for value in values for piece in value.split(",")]
+    try:
+        mask = [int(piece, 10) for piece in pieces]
+    except ValueError as exc:
+        raise SkillError("--attention-mask must contain only 0/1 integers") from exc
+    if len(mask) != token_count or any(value not in (0, 1) for value in mask):
+        raise SkillError("--attention-mask must contain one 0/1 value per token ID")
+    return mask
+
+
 def collect_prompts(inline: list[str] | None, files: list[str] | None) -> list[str]:
     return collect_shared_prompts(inline, files)
 
@@ -419,13 +449,17 @@ def build_inputs(
     config: dict[str, Any],
     torch: Any,
     AutoTokenizer: Any,
+    explicit_attention_mask: list[int] | None = None,
+    encoder_mode: bool = False,
 ) -> tuple[Any, Any]:
     if token_ids is not None:
         vocab_size = config.get("vocab_size")
         if type(vocab_size) is int and any(value >= vocab_size for value in token_ids):
             raise SkillError(f"--token-ids values must be below config vocab_size={vocab_size}")
         input_ids = torch.tensor([token_ids], dtype=torch.long)
-        return input_ids, torch.ones_like(input_ids)
+        if explicit_attention_mask is None:
+            return input_ids, torch.ones_like(input_ids)
+        return input_ids, torch.tensor([explicit_attention_mask], dtype=torch.long)
 
     validate_tokenizer_json_files(model_dir)
     try:
@@ -442,7 +476,7 @@ def build_inputs(
     if len(prompts) > 1:
         if tokenizer.pad_token_id is None:
             raise SkillError("tokenizer has no pad token; use one prompt or --token-ids")
-        tokenizer.padding_side = "left"
+        tokenizer.padding_side = "right" if encoder_mode else "left"
     try:
         encoded = tokenizer(
             prompts,
@@ -463,8 +497,61 @@ def build_inputs(
     return input_ids, attention_mask
 
 
+def capture_encoder_tensors(
+    model: Any,
+    input_ids: Any,
+    attention_mask: Any,
+    config: dict[str, Any],
+    torch: Any,
+) -> dict[str, Any]:
+    with torch.inference_mode():
+        outputs = model(
+            input_ids=input_ids,
+            attention_mask=attention_mask,
+            output_hidden_states=True,
+            return_dict=True,
+        )
+    hidden_states = getattr(outputs, "hidden_states", None)
+    expected_layers = _expected_layer_count(config)
+    if (
+        not isinstance(hidden_states, (tuple, list))
+        or expected_layers is None
+        or len(hidden_states) != expected_layers + 1
+        or not all(torch.is_tensor(value) for value in hidden_states)
+    ):
+        raise SkillError("encoder forward did not return the complete hidden-state ladder")
+    final_hidden = getattr(outputs, "last_hidden_state", None)
+    if not torch.is_tensor(final_hidden):
+        raise SkillError("encoder forward did not return last_hidden_state")
+    pooled = getattr(outputs, "pooler_output", None)
+    if pooled is None:
+        pooled = final_hidden[:, 0]
+    if not torch.is_tensor(pooled) or pooled.ndim != 2:
+        raise SkillError("encoder forward did not return a rank-2 pooled/CLS tensor")
+    captures: dict[str, Any] = {
+        "input_ids": input_ids.detach(),
+        "attention_mask": attention_mask.detach(),
+        "embed": hidden_states[0].detach(),
+        "final_hidden": final_hidden.detach(),
+        "pooled": pooled.detach(),
+    }
+    captures.update({
+        f"layer.{index}.hidden": hidden_states[index + 1].detach()
+        for index in range(expected_layers)
+    })
+    return {
+        name: _zero_padded_query_rows(value, attention_mask, torch)
+        for name, value in captures.items()
+    }
+
+
 def _zero_padded_query_rows(value: Any, attention_mask: Any, torch: Any) -> Any:
-    if not torch.is_tensor(value) or value.ndim < 2 or value.shape[:2] != attention_mask.shape:
+    if (
+        not torch.is_tensor(value)
+        or not value.is_floating_point()
+        or value.ndim < 2
+        or value.shape[:2] != attention_mask.shape
+    ):
         return value
     query_mask = attention_mask.to(device=value.device, dtype=torch.bool)
     for _ in range(value.ndim - 2):
@@ -587,6 +674,227 @@ def capture_tensors(
     }
 
 
+def capture_encoder_decoder_tensors(
+    model: Any,
+    input_ids: Any,
+    attention_mask: Any,
+    config: dict[str, Any],
+    generate_steps: int,
+    torch: Any,
+) -> dict[str, Any]:
+    """Capture the T5-style encoder and first decoder step plus greedy IDs."""
+    start = config.get("decoder_start_token_id")
+    if type(start) is not int or start < 0:
+        raise SkillError("encoder-decoder config requires decoder_start_token_id")
+    decoder_input_ids = torch.full(
+        (input_ids.shape[0], 1), start, dtype=input_ids.dtype, device=input_ids.device
+    )
+    captures: dict[str, Any] = {}
+    handles: list[Any] = []
+    decoder = getattr(model, "decoder", None)
+    blocks = getattr(decoder, "block", None)
+    encoder = getattr(model, "encoder", None)
+    encoder_blocks = getattr(encoder, "block", None)
+    if (
+        blocks is None
+        or encoder_blocks is None
+        or len(blocks) != _expected_layer_count(config)
+        or len(encoder_blocks) != len(blocks)
+    ):
+        raise SkillError("could not locate the standard encoder-decoder decoder blocks")
+    try:
+        for index, block in enumerate(encoder_blocks):
+            handles.append(
+                block.register_forward_hook(
+                    _capture_hook(captures, f"encoder.layer.{index}.hidden", torch)
+                )
+            )
+        for index, block in enumerate(blocks):
+            layers = getattr(block, "layer", None)
+            if layers is None or len(layers) < 3:
+                raise SkillError("decoder block does not expose self/cross/FF layers")
+            handles.append(
+                layers[1].register_forward_hook(
+                    _capture_hook(captures, f"decoder.layer.{index}.cross_attention", torch)
+                )
+            )
+            handles.append(
+                block.register_forward_hook(
+                    _capture_hook(captures, f"decoder.layer.{index}.hidden", torch)
+                )
+            )
+        with torch.inference_mode():
+            outputs = model(
+                input_ids=input_ids,
+                attention_mask=attention_mask,
+                decoder_input_ids=decoder_input_ids,
+                use_cache=False,
+                output_hidden_states=True,
+                return_dict=True,
+            )
+    finally:
+        for handle in reversed(handles):
+            handle.remove()
+    encoder_states = getattr(outputs, "encoder_hidden_states", None)
+    decoder_states = getattr(outputs, "decoder_hidden_states", None)
+    logits = getattr(outputs, "logits", None)
+    expected = _expected_layer_count(config)
+    if (
+        not encoder_states
+        or not decoder_states
+        or expected is None
+        or len(encoder_states) != expected + 1
+        or len(decoder_states) != expected + 1
+        or logits is None
+        or not torch.is_tensor(logits)
+    ):
+        raise SkillError("encoder-decoder forward did not return complete hidden states and logits")
+    captures["encoder.embed"] = encoder_states[0].detach()
+    captures["decoder.embed"] = decoder_states[0].detach()
+    required_layers = {
+        *(f"encoder.layer.{index}.hidden" for index in range(expected)),
+        *(f"decoder.layer.{index}.hidden" for index in range(expected)),
+    }
+    missing_layers = sorted(required_layers - captures.keys())
+    if missing_layers:
+        raise SkillError("encoder-decoder block hooks did not capture: " + ", ".join(missing_layers))
+    captures["encoder.final_norm"] = encoder_states[-1].detach()
+    captures["decoder.final_norm"] = decoder_states[-1].detach()
+    captures["logits"] = logits.detach()
+    missing_cross = sorted(
+        f"decoder.layer.{index}.cross_attention"
+        for index in range(expected)
+        if f"decoder.layer.{index}.cross_attention" not in captures
+    )
+    if missing_cross:
+        raise SkillError("decoder cross-attention hooks did not capture: " + ", ".join(missing_cross))
+    captures = {
+        name: _zero_padded_query_rows(value, attention_mask, torch)
+        for name, value in captures.items()
+    }
+
+    generated: list[Any] = []
+    sequence = decoder_input_ids
+    with torch.inference_mode():
+        for _ in range(generate_steps):
+            step = model(
+                input_ids=input_ids,
+                attention_mask=attention_mask,
+                decoder_input_ids=sequence,
+                use_cache=False,
+                return_dict=True,
+            )
+            next_token = torch.argmax(step.logits[:, -1, :], dim=-1)
+            generated.append(next_token)
+            sequence = torch.cat((sequence, next_token[:, None]), dim=1)
+    generated_ids = (
+        torch.stack(generated, dim=1)
+        if generated
+        else torch.empty((input_ids.shape[0], 0), dtype=input_ids.dtype, device=input_ids.device)
+    )
+    return {
+        "input_ids": input_ids.detach(),
+        "attention_mask": attention_mask.detach(),
+        "decoder_input_ids": decoder_input_ids.detach(),
+        **captures,
+        "generated_token_ids": generated_ids.detach(),
+    }
+
+
+def capture_asr_tensors(
+    model: Any,
+    waveform_samples: int,
+    seed: int,
+    torch: Any,
+) -> dict[str, Any]:
+    """Capture the real source frontend output and every acoustic encoder rung."""
+    if waveform_samples < 400:
+        raise SkillError("--waveform-samples must be at least 400 for HuBERT/Wav2Vec2")
+    generator = torch.Generator(device="cpu").manual_seed(seed)
+    waveform = torch.randn((1, waveform_samples), generator=generator, dtype=torch.float32)
+    waveform = torch.clamp(waveform * 0.1, -1.0, 1.0)
+    required_modules = ("feature_extractor", "feature_projection", "encoder")
+    missing = [name for name in required_modules if not callable(getattr(model, name, None))]
+    layers = getattr(getattr(model, "encoder", None), "layers", None)
+    layer_count = len(layers) if layers is not None and hasattr(layers, "__len__") else 0
+    if (
+        missing
+        or layers is None
+        or layer_count <= 0
+        or layer_count != int(model.config.num_hidden_layers)
+    ):
+        detail = ", ".join(missing) if missing else "encoder.layers"
+        raise SkillError(
+            "--mode asr requires a built-in HuBERT/Wav2Vec2 base-model interface "
+            f"with feature_extractor, feature_projection, and encoder.layers; invalid: {detail}"
+        )
+    architectures = getattr(model.config, "architectures", None) or []
+    if any(isinstance(name, str) and name.endswith("ForCTC") for name in architectures):
+        raise SkillError(
+            "--mode asr rejects *ForCTC checkpoints; provide an encoder-only "
+            "HuBERTModel or Wav2Vec2Model checkpoint"
+        )
+
+    embed: list[Any] = []
+    layer_hidden: list[Any | None] = [None] * len(layers)
+
+    def capture_embed(_module: Any, inputs: tuple[Any, ...]) -> None:
+        if not inputs or not torch.is_tensor(inputs[0]):
+            raise SkillError("ASR encoder layer 0 did not receive a tensor hidden state")
+        embed.append(inputs[0].detach())
+
+    def capture_layer(index: int) -> Any:
+        def hook(_module: Any, _inputs: tuple[Any, ...], output: Any) -> None:
+            hidden = output[0] if isinstance(output, tuple) and output else None
+            if not torch.is_tensor(hidden):
+                raise SkillError(f"ASR encoder layer {index} did not return a tensor hidden state")
+            layer_hidden[index] = hidden.detach()
+        return hook
+
+    handles = [layers[0].register_forward_pre_hook(capture_embed)]
+    handles.extend(layer.register_forward_hook(capture_layer(index)) for index, layer in enumerate(layers))
+    with torch.inference_mode():
+        try:
+            input_features = model.feature_extractor(waveform).transpose(1, 2)
+            projection_output = model.feature_projection(input_features)
+            if torch.is_tensor(projection_output):
+                projected = projection_output
+            elif (
+                isinstance(projection_output, tuple)
+                and len(projection_output) == 2
+                and torch.is_tensor(projection_output[0])
+            ):
+                projected = projection_output[0]
+            else:
+                raise SkillError(
+                    "ASR feature_projection must return a tensor or the Wav2Vec2 "
+                    "(projected_hidden_state, normalized_features) tuple"
+                )
+            encoder_outputs = model.encoder(
+                projected,
+                attention_mask=None,
+                output_attentions=False,
+                output_hidden_states=False,
+                return_dict=True,
+            )
+        finally:
+            for handle in handles:
+                handle.remove()
+    if len(embed) != 1 or any(value is None for value in layer_hidden):
+        raise SkillError(
+            "ASR encoder hooks did not capture exactly one input and every source layer output"
+        )
+    captures: dict[str, Any] = {
+        "waveform": waveform.detach(),
+        "input_features": input_features.detach(),
+        "embed": embed[0],
+        "final_hidden": encoder_outputs.last_hidden_state.detach(),
+    }
+    for index, value in enumerate(layer_hidden):
+        captures[f"layer.{index}.hidden"] = value
+    return captures
+
+
 def to_numpy_tensors(tensors: dict[str, Any], *, keep_dtype: bool, np: Any) -> dict[str, Any]:
     arrays: dict[str, Any] = {}
     for key in sorted(tensors):
@@ -612,7 +920,22 @@ def _validate_capture_args(args: argparse.Namespace) -> tuple[list[str], list[in
         raise SkillError("model directory is required unless --validate-manifest is used")
     if args.output is None:
         raise SkillError("--output is required for oracle capture")
-    return validate_input_mode(args.token_ids, args.prompt, args.prompts_file)
+    if args.mode == "asr":
+        if args.prompt or args.prompts_file or args.token_ids or args.attention_mask:
+            raise SkillError("--mode asr cannot be combined with text/token inputs")
+        if args.generate_steps != DEFAULT_GENERATE_STEPS:
+            raise SkillError("--generate-steps is not valid with --mode asr")
+        if type(args.waveform_samples) is not int or args.waveform_samples < 400:
+            raise SkillError("--waveform-samples must be an integer of at least 400")
+        return [], None
+    if args.waveform_samples != 16000:
+        raise SkillError("--waveform-samples is only valid with --mode asr")
+    prompts, token_ids = validate_input_mode(args.token_ids, args.prompt, args.prompts_file)
+    if args.attention_mask and args.mode not in {"encoder", "encoder-decoder"}:
+        raise SkillError("--attention-mask is supported only with an encoder mode")
+    if args.attention_mask and token_ids is None:
+        raise SkillError("--attention-mask requires --token-ids")
+    return prompts, token_ids
 
 
 def _run_manifest_validation(path_value: str) -> int:
@@ -641,6 +964,9 @@ def main(argv: list[str] | None = None) -> int:
                 args.generate_steps != DEFAULT_GENERATE_STEPS,
                 args.seed != 0,
                 args.max_output_mb != DEFAULT_MAX_OUTPUT_MB,
+                args.mode != "dense-decoder",
+                bool(args.attention_mask),
+                args.waveform_samples != 16000,
             ))
             if conflicting:
                 raise SkillError("--validate-manifest cannot be combined with capture arguments")
@@ -648,6 +974,9 @@ def main(argv: list[str] | None = None) -> int:
 
         prompts, token_ids = _validate_capture_args(args)
         model_dir, config, model_record = inspect_local_model(args.model)
+        is_encoder_decoder = config.get("is_encoder_decoder") is True
+        if (args.mode == "encoder-decoder") != is_encoder_decoder:
+            raise SkillError("capture mode does not match source encoder-decoder identity")
 
         output = validate_output_path(Path(args.output), label="NPZ output")
         if output.suffix.lower() != ".npz":
@@ -687,7 +1016,13 @@ def main(argv: list[str] | None = None) -> int:
             ) from exc
         try:
             import transformers
-            from transformers import AutoConfig, AutoModelForCausalLM, AutoTokenizer
+            from transformers import (
+                AutoConfig,
+                AutoModel,
+                AutoModelForCausalLM,
+                AutoModelForSeq2SeqLM,
+                AutoTokenizer,
+            )
         except ImportError as exc:
             raise SkillError(
                 "capture_oracle.py requires optional package 'transformers'; "
@@ -708,7 +1043,14 @@ def main(argv: list[str] | None = None) -> int:
                 "capture_oracle.py refuses remote code"
             ) from exc
         try:
-            model = AutoModelForCausalLM.from_pretrained(
+            model_class = {
+                "dense-decoder": AutoModelForCausalLM,
+                "encoder": AutoModel,
+                "encoder-decoder": AutoModelForSeq2SeqLM,
+                "ssm": AutoModelForCausalLM,
+                "asr": AutoModel,
+            }[args.mode]
+            model = model_class.from_pretrained(
                 str(model_dir),
                 config=hf_config,
                 local_files_only=True,
@@ -721,25 +1063,64 @@ def main(argv: list[str] | None = None) -> int:
                     "model architecture requires remote code; capture_oracle.py supports only "
                     "built-in Transformers architectures"
                 ) from exc
-            raise SkillError(f"could not load built-in local causal language model: {exc}") from exc
+            model_kind = {
+                "dense-decoder": "causal language model",
+                "encoder": "encoder",
+                "encoder-decoder": "encoder-decoder language model",
+                "ssm": "state-space language model",
+                "asr": "ASR acoustic encoder",
+            }[args.mode]
+            raise SkillError(f"could not load built-in local {model_kind}: {exc}") from exc
         model.train(False)
 
-        input_ids, attention_mask = build_inputs(
-            model_dir,
-            prompts,
-            token_ids,
-            config,
-            torch,
-            AutoTokenizer,
-        )
-        captured = capture_tensors(
-            model,
-            input_ids,
-            attention_mask,
-            config,
-            args.generate_steps,
-            torch,
-        )
+        if args.mode == "asr":
+            model.config._attn_implementation = "eager"
+            captured = capture_asr_tensors(
+                model,
+                args.waveform_samples,
+                args.seed,
+                torch,
+            )
+        else:
+            explicit_attention_mask = (
+                parse_attention_mask(args.attention_mask, len(token_ids))
+                if token_ids is not None
+                else None
+            )
+            input_ids, attention_mask = build_inputs(
+                model_dir,
+                prompts,
+                token_ids,
+                config,
+                torch,
+                AutoTokenizer,
+                explicit_attention_mask,
+                args.mode in {"encoder", "encoder-decoder"},
+            )
+            if args.mode == "encoder":
+                if args.generate_steps != 0:
+                    raise SkillError("--mode encoder requires --generate-steps 0")
+                captured = capture_encoder_tensors(
+                    model, input_ids, attention_mask, config, torch
+                )
+            elif args.mode == "encoder-decoder":
+                captured = capture_encoder_decoder_tensors(
+                    model,
+                    input_ids,
+                    attention_mask,
+                    config,
+                    args.generate_steps,
+                    torch,
+                )
+            else:
+                captured = capture_tensors(
+                    model,
+                    input_ids,
+                    attention_mask,
+                    config,
+                    args.generate_steps,
+                    torch,
+                )
         arrays = to_numpy_tensors(captured, keep_dtype=args.keep_dtype, np=np)
         cap_bytes = int(args.max_output_mb * 1024 * 1024)
         bounded_size = raw_npz_bound(arrays)
@@ -752,13 +1133,21 @@ def main(argv: list[str] | None = None) -> int:
         manifest_payload = {
             "schema_version": SCHEMA_VERSION,
             "model": model_record,
-            "capture": {
+            "capture": ({
+                "mode": "asr",
+                "waveform_samples": args.waveform_samples,
+                "seed": args.seed,
+                "dtype_policy": "keep" if args.keep_dtype else "float32",
+            } if args.mode == "asr" else {
+                "mode": args.mode,
+                "input_mode": "token_ids" if token_ids is not None else "prompt",
                 "prompts": prompts if token_ids is None else None,
                 "token_ids": token_ids,
+                "attention_mask": arrays["attention_mask"].astype(np.int64).tolist(),
                 "generate_steps": args.generate_steps,
                 "seed": args.seed,
                 "dtype_policy": "keep" if args.keep_dtype else "float32",
-            },
+            }),
             "tensors": tensor_inventory(arrays),
             "libraries": {
                 "python": platform.python_version(),

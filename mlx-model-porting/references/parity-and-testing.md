@@ -31,10 +31,35 @@ stable cross-framework contract:
 | `logits` | Full prompt logits. |
 | `generated_token_ids` | Exactly N greedy continuation IDs; prompt IDs are not repeated. |
 
+Encoder mode uses `--mode encoder --generate-steps 0` and retains `input_ids`,
+`attention_mask`, `embed`, every `layer.{i}.hidden`, `final_hidden`, and
+`pooled`. It has no logits or generated-token rung. A tokenizer-free padded
+fixture may provide `--attention-mask` with one 0/1 value per token ID.
+
+Encoder-decoder mode uses `--mode encoder-decoder` and architecture-specific keys:
+`encoder.embed`, every `encoder.layer.{i}.hidden`, `encoder.final_norm`,
+`decoder_input_ids`, `decoder.embed`, every
+`decoder.layer.{i}.cross_attention` and `decoder.layer.{i}.hidden`,
+`decoder.final_norm`, first-step `logits`, and `generated_token_ids`. Source
+input IDs and the attention mask always describe the encoder input.
+
 Floating captures are saved as float32 unless `--keep-dtype` is explicit.
 Integer IDs and masks retain their integer dtype. Future target-side capture
 tools should mirror these names exactly; model-specific extra checkpoints may
 use additional keys without renaming the stable set.
+
+ASR acoustic-encoder mode is explicit and separate:
+
+```bash
+python3 mlx-model-porting/scripts/capture_oracle.py MODEL \
+  --mode asr --waveform-samples 16000 --seed 7006 \
+  --output source-oracle.npz
+```
+
+It records `waveform`, `input_features`, `embed`, every
+`layer.{i}.hidden`, and `final_hidden`. The MLX side receives
+`input_features` from the source archive, so this mode proves the generated
+feature projection and transformer encoder but not the raw-waveform frontend.
 
 ## Run the cross-framework ladder
 
@@ -57,6 +82,15 @@ tokenizer to `capture_mlx.py`. Token-ID mode never loads a tokenizer. The
 strict-JSON report compares same-name keys in this order and stops immediately
 after the first failure: `input_ids`, `embed`, every `layer.{i}.hidden` in
 ascending order, `final_norm`, `logits`, and exact `generated_token_ids`.
+Encoder mode instead orders exact IDs, exact attention mask, embedding, every
+encoder layer, final hidden state, and pooled/CLS output.
+Encoder-decoder order follows the encoder stack, then decoder start,
+cross-attention and block boundaries, decoder norm, logits, and exact generated
+IDs.
+
+With `--mode asr`, the ordered ladder is `input_features`, `embed`, every
+encoder layer, and `final_hidden`. Text prompts, token IDs, generation steps,
+and tokenizer loading are rejected in this mode.
 
 `capture_mlx.py` validates the scaffold generator header, config digest,
 execution-file digests, and converted target parameter contract before running

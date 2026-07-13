@@ -1,0 +1,3219 @@
+{
+  "draft": false,
+  "dtype_policy": "f32",
+  "entries": [
+    {
+      "source": "encoder.layer_norm.bias",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layer_norm.bias",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layer_norm.weight",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layer_norm.weight",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.0.attention.k_proj.bias",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layers.0.attention.k_proj.bias",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.0.attention.k_proj.weight",
+      "source_shape": [
+        768,
+        768
+      ],
+      "target": "encoder.layers.0.attention.k_proj.weight",
+      "target_shape": [
+        768,
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.0.attention.out_proj.bias",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layers.0.attention.out_proj.bias",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.0.attention.out_proj.weight",
+      "source_shape": [
+        768,
+        768
+      ],
+      "target": "encoder.layers.0.attention.out_proj.weight",
+      "target_shape": [
+        768,
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.0.attention.q_proj.bias",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layers.0.attention.q_proj.bias",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.0.attention.q_proj.weight",
+      "source_shape": [
+        768,
+        768
+      ],
+      "target": "encoder.layers.0.attention.q_proj.weight",
+      "target_shape": [
+        768,
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.0.attention.v_proj.bias",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layers.0.attention.v_proj.bias",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.0.attention.v_proj.weight",
+      "source_shape": [
+        768,
+        768
+      ],
+      "target": "encoder.layers.0.attention.v_proj.weight",
+      "target_shape": [
+        768,
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.0.feed_forward.intermediate_dense.bias",
+      "source_shape": [
+        3072
+      ],
+      "target": "encoder.layers.0.feed_forward.intermediate_dense.bias",
+      "target_shape": [
+        3072
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.0.feed_forward.intermediate_dense.weight",
+      "source_shape": [
+        3072,
+        768
+      ],
+      "target": "encoder.layers.0.feed_forward.intermediate_dense.weight",
+      "target_shape": [
+        3072,
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.0.feed_forward.output_dense.bias",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layers.0.feed_forward.output_dense.bias",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.0.feed_forward.output_dense.weight",
+      "source_shape": [
+        768,
+        3072
+      ],
+      "target": "encoder.layers.0.feed_forward.output_dense.weight",
+      "target_shape": [
+        768,
+        3072
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.0.final_layer_norm.bias",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layers.0.final_layer_norm.bias",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.0.final_layer_norm.weight",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layers.0.final_layer_norm.weight",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.0.layer_norm.bias",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layers.0.layer_norm.bias",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.0.layer_norm.weight",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layers.0.layer_norm.weight",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.1.attention.k_proj.bias",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layers.1.attention.k_proj.bias",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.1.attention.k_proj.weight",
+      "source_shape": [
+        768,
+        768
+      ],
+      "target": "encoder.layers.1.attention.k_proj.weight",
+      "target_shape": [
+        768,
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.1.attention.out_proj.bias",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layers.1.attention.out_proj.bias",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.1.attention.out_proj.weight",
+      "source_shape": [
+        768,
+        768
+      ],
+      "target": "encoder.layers.1.attention.out_proj.weight",
+      "target_shape": [
+        768,
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.1.attention.q_proj.bias",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layers.1.attention.q_proj.bias",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.1.attention.q_proj.weight",
+      "source_shape": [
+        768,
+        768
+      ],
+      "target": "encoder.layers.1.attention.q_proj.weight",
+      "target_shape": [
+        768,
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.1.attention.v_proj.bias",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layers.1.attention.v_proj.bias",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.1.attention.v_proj.weight",
+      "source_shape": [
+        768,
+        768
+      ],
+      "target": "encoder.layers.1.attention.v_proj.weight",
+      "target_shape": [
+        768,
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.1.feed_forward.intermediate_dense.bias",
+      "source_shape": [
+        3072
+      ],
+      "target": "encoder.layers.1.feed_forward.intermediate_dense.bias",
+      "target_shape": [
+        3072
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.1.feed_forward.intermediate_dense.weight",
+      "source_shape": [
+        3072,
+        768
+      ],
+      "target": "encoder.layers.1.feed_forward.intermediate_dense.weight",
+      "target_shape": [
+        3072,
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.1.feed_forward.output_dense.bias",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layers.1.feed_forward.output_dense.bias",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.1.feed_forward.output_dense.weight",
+      "source_shape": [
+        768,
+        3072
+      ],
+      "target": "encoder.layers.1.feed_forward.output_dense.weight",
+      "target_shape": [
+        768,
+        3072
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.1.final_layer_norm.bias",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layers.1.final_layer_norm.bias",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.1.final_layer_norm.weight",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layers.1.final_layer_norm.weight",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.1.layer_norm.bias",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layers.1.layer_norm.bias",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.1.layer_norm.weight",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layers.1.layer_norm.weight",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.10.attention.k_proj.bias",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layers.10.attention.k_proj.bias",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.10.attention.k_proj.weight",
+      "source_shape": [
+        768,
+        768
+      ],
+      "target": "encoder.layers.10.attention.k_proj.weight",
+      "target_shape": [
+        768,
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.10.attention.out_proj.bias",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layers.10.attention.out_proj.bias",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.10.attention.out_proj.weight",
+      "source_shape": [
+        768,
+        768
+      ],
+      "target": "encoder.layers.10.attention.out_proj.weight",
+      "target_shape": [
+        768,
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.10.attention.q_proj.bias",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layers.10.attention.q_proj.bias",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.10.attention.q_proj.weight",
+      "source_shape": [
+        768,
+        768
+      ],
+      "target": "encoder.layers.10.attention.q_proj.weight",
+      "target_shape": [
+        768,
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.10.attention.v_proj.bias",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layers.10.attention.v_proj.bias",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.10.attention.v_proj.weight",
+      "source_shape": [
+        768,
+        768
+      ],
+      "target": "encoder.layers.10.attention.v_proj.weight",
+      "target_shape": [
+        768,
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.10.feed_forward.intermediate_dense.bias",
+      "source_shape": [
+        3072
+      ],
+      "target": "encoder.layers.10.feed_forward.intermediate_dense.bias",
+      "target_shape": [
+        3072
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.10.feed_forward.intermediate_dense.weight",
+      "source_shape": [
+        3072,
+        768
+      ],
+      "target": "encoder.layers.10.feed_forward.intermediate_dense.weight",
+      "target_shape": [
+        3072,
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.10.feed_forward.output_dense.bias",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layers.10.feed_forward.output_dense.bias",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.10.feed_forward.output_dense.weight",
+      "source_shape": [
+        768,
+        3072
+      ],
+      "target": "encoder.layers.10.feed_forward.output_dense.weight",
+      "target_shape": [
+        768,
+        3072
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.10.final_layer_norm.bias",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layers.10.final_layer_norm.bias",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.10.final_layer_norm.weight",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layers.10.final_layer_norm.weight",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.10.layer_norm.bias",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layers.10.layer_norm.bias",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.10.layer_norm.weight",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layers.10.layer_norm.weight",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.11.attention.k_proj.bias",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layers.11.attention.k_proj.bias",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.11.attention.k_proj.weight",
+      "source_shape": [
+        768,
+        768
+      ],
+      "target": "encoder.layers.11.attention.k_proj.weight",
+      "target_shape": [
+        768,
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.11.attention.out_proj.bias",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layers.11.attention.out_proj.bias",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.11.attention.out_proj.weight",
+      "source_shape": [
+        768,
+        768
+      ],
+      "target": "encoder.layers.11.attention.out_proj.weight",
+      "target_shape": [
+        768,
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.11.attention.q_proj.bias",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layers.11.attention.q_proj.bias",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.11.attention.q_proj.weight",
+      "source_shape": [
+        768,
+        768
+      ],
+      "target": "encoder.layers.11.attention.q_proj.weight",
+      "target_shape": [
+        768,
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.11.attention.v_proj.bias",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layers.11.attention.v_proj.bias",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.11.attention.v_proj.weight",
+      "source_shape": [
+        768,
+        768
+      ],
+      "target": "encoder.layers.11.attention.v_proj.weight",
+      "target_shape": [
+        768,
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.11.feed_forward.intermediate_dense.bias",
+      "source_shape": [
+        3072
+      ],
+      "target": "encoder.layers.11.feed_forward.intermediate_dense.bias",
+      "target_shape": [
+        3072
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.11.feed_forward.intermediate_dense.weight",
+      "source_shape": [
+        3072,
+        768
+      ],
+      "target": "encoder.layers.11.feed_forward.intermediate_dense.weight",
+      "target_shape": [
+        3072,
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.11.feed_forward.output_dense.bias",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layers.11.feed_forward.output_dense.bias",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.11.feed_forward.output_dense.weight",
+      "source_shape": [
+        768,
+        3072
+      ],
+      "target": "encoder.layers.11.feed_forward.output_dense.weight",
+      "target_shape": [
+        768,
+        3072
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.11.final_layer_norm.bias",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layers.11.final_layer_norm.bias",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.11.final_layer_norm.weight",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layers.11.final_layer_norm.weight",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.11.layer_norm.bias",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layers.11.layer_norm.bias",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.11.layer_norm.weight",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layers.11.layer_norm.weight",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.2.attention.k_proj.bias",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layers.2.attention.k_proj.bias",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.2.attention.k_proj.weight",
+      "source_shape": [
+        768,
+        768
+      ],
+      "target": "encoder.layers.2.attention.k_proj.weight",
+      "target_shape": [
+        768,
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.2.attention.out_proj.bias",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layers.2.attention.out_proj.bias",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.2.attention.out_proj.weight",
+      "source_shape": [
+        768,
+        768
+      ],
+      "target": "encoder.layers.2.attention.out_proj.weight",
+      "target_shape": [
+        768,
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.2.attention.q_proj.bias",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layers.2.attention.q_proj.bias",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.2.attention.q_proj.weight",
+      "source_shape": [
+        768,
+        768
+      ],
+      "target": "encoder.layers.2.attention.q_proj.weight",
+      "target_shape": [
+        768,
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.2.attention.v_proj.bias",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layers.2.attention.v_proj.bias",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.2.attention.v_proj.weight",
+      "source_shape": [
+        768,
+        768
+      ],
+      "target": "encoder.layers.2.attention.v_proj.weight",
+      "target_shape": [
+        768,
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.2.feed_forward.intermediate_dense.bias",
+      "source_shape": [
+        3072
+      ],
+      "target": "encoder.layers.2.feed_forward.intermediate_dense.bias",
+      "target_shape": [
+        3072
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.2.feed_forward.intermediate_dense.weight",
+      "source_shape": [
+        3072,
+        768
+      ],
+      "target": "encoder.layers.2.feed_forward.intermediate_dense.weight",
+      "target_shape": [
+        3072,
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.2.feed_forward.output_dense.bias",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layers.2.feed_forward.output_dense.bias",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.2.feed_forward.output_dense.weight",
+      "source_shape": [
+        768,
+        3072
+      ],
+      "target": "encoder.layers.2.feed_forward.output_dense.weight",
+      "target_shape": [
+        768,
+        3072
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.2.final_layer_norm.bias",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layers.2.final_layer_norm.bias",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.2.final_layer_norm.weight",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layers.2.final_layer_norm.weight",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.2.layer_norm.bias",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layers.2.layer_norm.bias",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.2.layer_norm.weight",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layers.2.layer_norm.weight",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.3.attention.k_proj.bias",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layers.3.attention.k_proj.bias",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.3.attention.k_proj.weight",
+      "source_shape": [
+        768,
+        768
+      ],
+      "target": "encoder.layers.3.attention.k_proj.weight",
+      "target_shape": [
+        768,
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.3.attention.out_proj.bias",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layers.3.attention.out_proj.bias",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.3.attention.out_proj.weight",
+      "source_shape": [
+        768,
+        768
+      ],
+      "target": "encoder.layers.3.attention.out_proj.weight",
+      "target_shape": [
+        768,
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.3.attention.q_proj.bias",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layers.3.attention.q_proj.bias",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.3.attention.q_proj.weight",
+      "source_shape": [
+        768,
+        768
+      ],
+      "target": "encoder.layers.3.attention.q_proj.weight",
+      "target_shape": [
+        768,
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.3.attention.v_proj.bias",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layers.3.attention.v_proj.bias",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.3.attention.v_proj.weight",
+      "source_shape": [
+        768,
+        768
+      ],
+      "target": "encoder.layers.3.attention.v_proj.weight",
+      "target_shape": [
+        768,
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.3.feed_forward.intermediate_dense.bias",
+      "source_shape": [
+        3072
+      ],
+      "target": "encoder.layers.3.feed_forward.intermediate_dense.bias",
+      "target_shape": [
+        3072
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.3.feed_forward.intermediate_dense.weight",
+      "source_shape": [
+        3072,
+        768
+      ],
+      "target": "encoder.layers.3.feed_forward.intermediate_dense.weight",
+      "target_shape": [
+        3072,
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.3.feed_forward.output_dense.bias",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layers.3.feed_forward.output_dense.bias",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.3.feed_forward.output_dense.weight",
+      "source_shape": [
+        768,
+        3072
+      ],
+      "target": "encoder.layers.3.feed_forward.output_dense.weight",
+      "target_shape": [
+        768,
+        3072
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.3.final_layer_norm.bias",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layers.3.final_layer_norm.bias",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.3.final_layer_norm.weight",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layers.3.final_layer_norm.weight",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.3.layer_norm.bias",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layers.3.layer_norm.bias",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.3.layer_norm.weight",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layers.3.layer_norm.weight",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.4.attention.k_proj.bias",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layers.4.attention.k_proj.bias",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.4.attention.k_proj.weight",
+      "source_shape": [
+        768,
+        768
+      ],
+      "target": "encoder.layers.4.attention.k_proj.weight",
+      "target_shape": [
+        768,
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.4.attention.out_proj.bias",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layers.4.attention.out_proj.bias",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.4.attention.out_proj.weight",
+      "source_shape": [
+        768,
+        768
+      ],
+      "target": "encoder.layers.4.attention.out_proj.weight",
+      "target_shape": [
+        768,
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.4.attention.q_proj.bias",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layers.4.attention.q_proj.bias",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.4.attention.q_proj.weight",
+      "source_shape": [
+        768,
+        768
+      ],
+      "target": "encoder.layers.4.attention.q_proj.weight",
+      "target_shape": [
+        768,
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.4.attention.v_proj.bias",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layers.4.attention.v_proj.bias",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.4.attention.v_proj.weight",
+      "source_shape": [
+        768,
+        768
+      ],
+      "target": "encoder.layers.4.attention.v_proj.weight",
+      "target_shape": [
+        768,
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.4.feed_forward.intermediate_dense.bias",
+      "source_shape": [
+        3072
+      ],
+      "target": "encoder.layers.4.feed_forward.intermediate_dense.bias",
+      "target_shape": [
+        3072
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.4.feed_forward.intermediate_dense.weight",
+      "source_shape": [
+        3072,
+        768
+      ],
+      "target": "encoder.layers.4.feed_forward.intermediate_dense.weight",
+      "target_shape": [
+        3072,
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.4.feed_forward.output_dense.bias",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layers.4.feed_forward.output_dense.bias",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.4.feed_forward.output_dense.weight",
+      "source_shape": [
+        768,
+        3072
+      ],
+      "target": "encoder.layers.4.feed_forward.output_dense.weight",
+      "target_shape": [
+        768,
+        3072
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.4.final_layer_norm.bias",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layers.4.final_layer_norm.bias",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.4.final_layer_norm.weight",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layers.4.final_layer_norm.weight",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.4.layer_norm.bias",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layers.4.layer_norm.bias",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.4.layer_norm.weight",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layers.4.layer_norm.weight",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.5.attention.k_proj.bias",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layers.5.attention.k_proj.bias",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.5.attention.k_proj.weight",
+      "source_shape": [
+        768,
+        768
+      ],
+      "target": "encoder.layers.5.attention.k_proj.weight",
+      "target_shape": [
+        768,
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.5.attention.out_proj.bias",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layers.5.attention.out_proj.bias",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.5.attention.out_proj.weight",
+      "source_shape": [
+        768,
+        768
+      ],
+      "target": "encoder.layers.5.attention.out_proj.weight",
+      "target_shape": [
+        768,
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.5.attention.q_proj.bias",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layers.5.attention.q_proj.bias",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.5.attention.q_proj.weight",
+      "source_shape": [
+        768,
+        768
+      ],
+      "target": "encoder.layers.5.attention.q_proj.weight",
+      "target_shape": [
+        768,
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.5.attention.v_proj.bias",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layers.5.attention.v_proj.bias",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.5.attention.v_proj.weight",
+      "source_shape": [
+        768,
+        768
+      ],
+      "target": "encoder.layers.5.attention.v_proj.weight",
+      "target_shape": [
+        768,
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.5.feed_forward.intermediate_dense.bias",
+      "source_shape": [
+        3072
+      ],
+      "target": "encoder.layers.5.feed_forward.intermediate_dense.bias",
+      "target_shape": [
+        3072
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.5.feed_forward.intermediate_dense.weight",
+      "source_shape": [
+        3072,
+        768
+      ],
+      "target": "encoder.layers.5.feed_forward.intermediate_dense.weight",
+      "target_shape": [
+        3072,
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.5.feed_forward.output_dense.bias",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layers.5.feed_forward.output_dense.bias",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.5.feed_forward.output_dense.weight",
+      "source_shape": [
+        768,
+        3072
+      ],
+      "target": "encoder.layers.5.feed_forward.output_dense.weight",
+      "target_shape": [
+        768,
+        3072
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.5.final_layer_norm.bias",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layers.5.final_layer_norm.bias",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.5.final_layer_norm.weight",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layers.5.final_layer_norm.weight",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.5.layer_norm.bias",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layers.5.layer_norm.bias",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.5.layer_norm.weight",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layers.5.layer_norm.weight",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.6.attention.k_proj.bias",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layers.6.attention.k_proj.bias",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.6.attention.k_proj.weight",
+      "source_shape": [
+        768,
+        768
+      ],
+      "target": "encoder.layers.6.attention.k_proj.weight",
+      "target_shape": [
+        768,
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.6.attention.out_proj.bias",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layers.6.attention.out_proj.bias",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.6.attention.out_proj.weight",
+      "source_shape": [
+        768,
+        768
+      ],
+      "target": "encoder.layers.6.attention.out_proj.weight",
+      "target_shape": [
+        768,
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.6.attention.q_proj.bias",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layers.6.attention.q_proj.bias",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.6.attention.q_proj.weight",
+      "source_shape": [
+        768,
+        768
+      ],
+      "target": "encoder.layers.6.attention.q_proj.weight",
+      "target_shape": [
+        768,
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.6.attention.v_proj.bias",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layers.6.attention.v_proj.bias",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.6.attention.v_proj.weight",
+      "source_shape": [
+        768,
+        768
+      ],
+      "target": "encoder.layers.6.attention.v_proj.weight",
+      "target_shape": [
+        768,
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.6.feed_forward.intermediate_dense.bias",
+      "source_shape": [
+        3072
+      ],
+      "target": "encoder.layers.6.feed_forward.intermediate_dense.bias",
+      "target_shape": [
+        3072
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.6.feed_forward.intermediate_dense.weight",
+      "source_shape": [
+        3072,
+        768
+      ],
+      "target": "encoder.layers.6.feed_forward.intermediate_dense.weight",
+      "target_shape": [
+        3072,
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.6.feed_forward.output_dense.bias",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layers.6.feed_forward.output_dense.bias",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.6.feed_forward.output_dense.weight",
+      "source_shape": [
+        768,
+        3072
+      ],
+      "target": "encoder.layers.6.feed_forward.output_dense.weight",
+      "target_shape": [
+        768,
+        3072
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.6.final_layer_norm.bias",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layers.6.final_layer_norm.bias",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.6.final_layer_norm.weight",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layers.6.final_layer_norm.weight",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.6.layer_norm.bias",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layers.6.layer_norm.bias",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.6.layer_norm.weight",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layers.6.layer_norm.weight",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.7.attention.k_proj.bias",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layers.7.attention.k_proj.bias",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.7.attention.k_proj.weight",
+      "source_shape": [
+        768,
+        768
+      ],
+      "target": "encoder.layers.7.attention.k_proj.weight",
+      "target_shape": [
+        768,
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.7.attention.out_proj.bias",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layers.7.attention.out_proj.bias",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.7.attention.out_proj.weight",
+      "source_shape": [
+        768,
+        768
+      ],
+      "target": "encoder.layers.7.attention.out_proj.weight",
+      "target_shape": [
+        768,
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.7.attention.q_proj.bias",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layers.7.attention.q_proj.bias",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.7.attention.q_proj.weight",
+      "source_shape": [
+        768,
+        768
+      ],
+      "target": "encoder.layers.7.attention.q_proj.weight",
+      "target_shape": [
+        768,
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.7.attention.v_proj.bias",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layers.7.attention.v_proj.bias",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.7.attention.v_proj.weight",
+      "source_shape": [
+        768,
+        768
+      ],
+      "target": "encoder.layers.7.attention.v_proj.weight",
+      "target_shape": [
+        768,
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.7.feed_forward.intermediate_dense.bias",
+      "source_shape": [
+        3072
+      ],
+      "target": "encoder.layers.7.feed_forward.intermediate_dense.bias",
+      "target_shape": [
+        3072
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.7.feed_forward.intermediate_dense.weight",
+      "source_shape": [
+        3072,
+        768
+      ],
+      "target": "encoder.layers.7.feed_forward.intermediate_dense.weight",
+      "target_shape": [
+        3072,
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.7.feed_forward.output_dense.bias",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layers.7.feed_forward.output_dense.bias",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.7.feed_forward.output_dense.weight",
+      "source_shape": [
+        768,
+        3072
+      ],
+      "target": "encoder.layers.7.feed_forward.output_dense.weight",
+      "target_shape": [
+        768,
+        3072
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.7.final_layer_norm.bias",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layers.7.final_layer_norm.bias",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.7.final_layer_norm.weight",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layers.7.final_layer_norm.weight",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.7.layer_norm.bias",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layers.7.layer_norm.bias",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.7.layer_norm.weight",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layers.7.layer_norm.weight",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.8.attention.k_proj.bias",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layers.8.attention.k_proj.bias",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.8.attention.k_proj.weight",
+      "source_shape": [
+        768,
+        768
+      ],
+      "target": "encoder.layers.8.attention.k_proj.weight",
+      "target_shape": [
+        768,
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.8.attention.out_proj.bias",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layers.8.attention.out_proj.bias",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.8.attention.out_proj.weight",
+      "source_shape": [
+        768,
+        768
+      ],
+      "target": "encoder.layers.8.attention.out_proj.weight",
+      "target_shape": [
+        768,
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.8.attention.q_proj.bias",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layers.8.attention.q_proj.bias",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.8.attention.q_proj.weight",
+      "source_shape": [
+        768,
+        768
+      ],
+      "target": "encoder.layers.8.attention.q_proj.weight",
+      "target_shape": [
+        768,
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.8.attention.v_proj.bias",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layers.8.attention.v_proj.bias",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.8.attention.v_proj.weight",
+      "source_shape": [
+        768,
+        768
+      ],
+      "target": "encoder.layers.8.attention.v_proj.weight",
+      "target_shape": [
+        768,
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.8.feed_forward.intermediate_dense.bias",
+      "source_shape": [
+        3072
+      ],
+      "target": "encoder.layers.8.feed_forward.intermediate_dense.bias",
+      "target_shape": [
+        3072
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.8.feed_forward.intermediate_dense.weight",
+      "source_shape": [
+        3072,
+        768
+      ],
+      "target": "encoder.layers.8.feed_forward.intermediate_dense.weight",
+      "target_shape": [
+        3072,
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.8.feed_forward.output_dense.bias",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layers.8.feed_forward.output_dense.bias",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.8.feed_forward.output_dense.weight",
+      "source_shape": [
+        768,
+        3072
+      ],
+      "target": "encoder.layers.8.feed_forward.output_dense.weight",
+      "target_shape": [
+        768,
+        3072
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.8.final_layer_norm.bias",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layers.8.final_layer_norm.bias",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.8.final_layer_norm.weight",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layers.8.final_layer_norm.weight",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.8.layer_norm.bias",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layers.8.layer_norm.bias",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.8.layer_norm.weight",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layers.8.layer_norm.weight",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.9.attention.k_proj.bias",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layers.9.attention.k_proj.bias",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.9.attention.k_proj.weight",
+      "source_shape": [
+        768,
+        768
+      ],
+      "target": "encoder.layers.9.attention.k_proj.weight",
+      "target_shape": [
+        768,
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.9.attention.out_proj.bias",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layers.9.attention.out_proj.bias",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.9.attention.out_proj.weight",
+      "source_shape": [
+        768,
+        768
+      ],
+      "target": "encoder.layers.9.attention.out_proj.weight",
+      "target_shape": [
+        768,
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.9.attention.q_proj.bias",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layers.9.attention.q_proj.bias",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.9.attention.q_proj.weight",
+      "source_shape": [
+        768,
+        768
+      ],
+      "target": "encoder.layers.9.attention.q_proj.weight",
+      "target_shape": [
+        768,
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.9.attention.v_proj.bias",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layers.9.attention.v_proj.bias",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.9.attention.v_proj.weight",
+      "source_shape": [
+        768,
+        768
+      ],
+      "target": "encoder.layers.9.attention.v_proj.weight",
+      "target_shape": [
+        768,
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.9.feed_forward.intermediate_dense.bias",
+      "source_shape": [
+        3072
+      ],
+      "target": "encoder.layers.9.feed_forward.intermediate_dense.bias",
+      "target_shape": [
+        3072
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.9.feed_forward.intermediate_dense.weight",
+      "source_shape": [
+        3072,
+        768
+      ],
+      "target": "encoder.layers.9.feed_forward.intermediate_dense.weight",
+      "target_shape": [
+        3072,
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.9.feed_forward.output_dense.bias",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layers.9.feed_forward.output_dense.bias",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.9.feed_forward.output_dense.weight",
+      "source_shape": [
+        768,
+        3072
+      ],
+      "target": "encoder.layers.9.feed_forward.output_dense.weight",
+      "target_shape": [
+        768,
+        3072
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.9.final_layer_norm.bias",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layers.9.final_layer_norm.bias",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.9.final_layer_norm.weight",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layers.9.final_layer_norm.weight",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.9.layer_norm.bias",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layers.9.layer_norm.bias",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.layers.9.layer_norm.weight",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.layers.9.layer_norm.weight",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.pos_conv_embed.conv.bias",
+      "source_shape": [
+        768
+      ],
+      "target": "encoder.pos_conv_embed.conv.bias",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.pos_conv_embed.conv.weight_g",
+      "source_shape": [
+        1,
+        1,
+        128
+      ],
+      "target": "encoder.pos_conv_embed.conv.weight_g",
+      "target_shape": [
+        1,
+        1,
+        128
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.pos_conv_embed.conv.weight_v",
+      "source_shape": [
+        768,
+        48,
+        128
+      ],
+      "target": "encoder.pos_conv_embed.conv.weight_v",
+      "target_shape": [
+        768,
+        48,
+        128
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "feature_projection.layer_norm.bias",
+      "source_shape": [
+        512
+      ],
+      "target": "feature_projection.layer_norm.bias",
+      "target_shape": [
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "feature_projection.layer_norm.weight",
+      "source_shape": [
+        512
+      ],
+      "target": "feature_projection.layer_norm.weight",
+      "target_shape": [
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "feature_projection.projection.bias",
+      "source_shape": [
+        768
+      ],
+      "target": "feature_projection.projection.bias",
+      "target_shape": [
+        768
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "feature_projection.projection.weight",
+      "source_shape": [
+        768,
+        512
+      ],
+      "target": "feature_projection.projection.weight",
+      "target_shape": [
+        768,
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    }
+  ],
+  "ignore": [
+    {
+      "reason": "raw-waveform frontend or training-only masking is outside acoustic-encoder parity scope",
+      "source": "feature_extractor.conv_layers.0.conv.weight"
+    },
+    {
+      "reason": "raw-waveform frontend or training-only masking is outside acoustic-encoder parity scope",
+      "source": "feature_extractor.conv_layers.0.layer_norm.bias"
+    },
+    {
+      "reason": "raw-waveform frontend or training-only masking is outside acoustic-encoder parity scope",
+      "source": "feature_extractor.conv_layers.0.layer_norm.weight"
+    },
+    {
+      "reason": "raw-waveform frontend or training-only masking is outside acoustic-encoder parity scope",
+      "source": "feature_extractor.conv_layers.1.conv.weight"
+    },
+    {
+      "reason": "raw-waveform frontend or training-only masking is outside acoustic-encoder parity scope",
+      "source": "feature_extractor.conv_layers.2.conv.weight"
+    },
+    {
+      "reason": "raw-waveform frontend or training-only masking is outside acoustic-encoder parity scope",
+      "source": "feature_extractor.conv_layers.3.conv.weight"
+    },
+    {
+      "reason": "raw-waveform frontend or training-only masking is outside acoustic-encoder parity scope",
+      "source": "feature_extractor.conv_layers.4.conv.weight"
+    },
+    {
+      "reason": "raw-waveform frontend or training-only masking is outside acoustic-encoder parity scope",
+      "source": "feature_extractor.conv_layers.5.conv.weight"
+    },
+    {
+      "reason": "raw-waveform frontend or training-only masking is outside acoustic-encoder parity scope",
+      "source": "feature_extractor.conv_layers.6.conv.weight"
+    },
+    {
+      "reason": "raw-waveform frontend or training-only masking is outside acoustic-encoder parity scope",
+      "source": "masked_spec_embed"
+    }
+  ],
+  "schema_version": 2,
+  "unresolved": []
+}

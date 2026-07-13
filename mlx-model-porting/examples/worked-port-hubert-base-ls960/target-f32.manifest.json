@@ -1,0 +1,1491 @@
+{
+  "file": "model.safetensors",
+  "format": "safetensors",
+  "schema_version": 1,
+  "tensors": [
+    {
+      "dtype": "F32",
+      "key": "encoder.layer_norm.bias",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layer_norm.weight",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.0.attention.k_proj.bias",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.0.attention.k_proj.weight",
+      "shape": [
+        768,
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.0.attention.out_proj.bias",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.0.attention.out_proj.weight",
+      "shape": [
+        768,
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.0.attention.q_proj.bias",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.0.attention.q_proj.weight",
+      "shape": [
+        768,
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.0.attention.v_proj.bias",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.0.attention.v_proj.weight",
+      "shape": [
+        768,
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.0.feed_forward.intermediate_dense.bias",
+      "shape": [
+        3072
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.0.feed_forward.intermediate_dense.weight",
+      "shape": [
+        3072,
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.0.feed_forward.output_dense.bias",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.0.feed_forward.output_dense.weight",
+      "shape": [
+        768,
+        3072
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.0.final_layer_norm.bias",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.0.final_layer_norm.weight",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.0.layer_norm.bias",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.0.layer_norm.weight",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.1.attention.k_proj.bias",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.1.attention.k_proj.weight",
+      "shape": [
+        768,
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.1.attention.out_proj.bias",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.1.attention.out_proj.weight",
+      "shape": [
+        768,
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.1.attention.q_proj.bias",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.1.attention.q_proj.weight",
+      "shape": [
+        768,
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.1.attention.v_proj.bias",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.1.attention.v_proj.weight",
+      "shape": [
+        768,
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.1.feed_forward.intermediate_dense.bias",
+      "shape": [
+        3072
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.1.feed_forward.intermediate_dense.weight",
+      "shape": [
+        3072,
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.1.feed_forward.output_dense.bias",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.1.feed_forward.output_dense.weight",
+      "shape": [
+        768,
+        3072
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.1.final_layer_norm.bias",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.1.final_layer_norm.weight",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.1.layer_norm.bias",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.1.layer_norm.weight",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.10.attention.k_proj.bias",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.10.attention.k_proj.weight",
+      "shape": [
+        768,
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.10.attention.out_proj.bias",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.10.attention.out_proj.weight",
+      "shape": [
+        768,
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.10.attention.q_proj.bias",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.10.attention.q_proj.weight",
+      "shape": [
+        768,
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.10.attention.v_proj.bias",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.10.attention.v_proj.weight",
+      "shape": [
+        768,
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.10.feed_forward.intermediate_dense.bias",
+      "shape": [
+        3072
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.10.feed_forward.intermediate_dense.weight",
+      "shape": [
+        3072,
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.10.feed_forward.output_dense.bias",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.10.feed_forward.output_dense.weight",
+      "shape": [
+        768,
+        3072
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.10.final_layer_norm.bias",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.10.final_layer_norm.weight",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.10.layer_norm.bias",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.10.layer_norm.weight",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.11.attention.k_proj.bias",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.11.attention.k_proj.weight",
+      "shape": [
+        768,
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.11.attention.out_proj.bias",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.11.attention.out_proj.weight",
+      "shape": [
+        768,
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.11.attention.q_proj.bias",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.11.attention.q_proj.weight",
+      "shape": [
+        768,
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.11.attention.v_proj.bias",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.11.attention.v_proj.weight",
+      "shape": [
+        768,
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.11.feed_forward.intermediate_dense.bias",
+      "shape": [
+        3072
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.11.feed_forward.intermediate_dense.weight",
+      "shape": [
+        3072,
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.11.feed_forward.output_dense.bias",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.11.feed_forward.output_dense.weight",
+      "shape": [
+        768,
+        3072
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.11.final_layer_norm.bias",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.11.final_layer_norm.weight",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.11.layer_norm.bias",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.11.layer_norm.weight",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.2.attention.k_proj.bias",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.2.attention.k_proj.weight",
+      "shape": [
+        768,
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.2.attention.out_proj.bias",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.2.attention.out_proj.weight",
+      "shape": [
+        768,
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.2.attention.q_proj.bias",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.2.attention.q_proj.weight",
+      "shape": [
+        768,
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.2.attention.v_proj.bias",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.2.attention.v_proj.weight",
+      "shape": [
+        768,
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.2.feed_forward.intermediate_dense.bias",
+      "shape": [
+        3072
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.2.feed_forward.intermediate_dense.weight",
+      "shape": [
+        3072,
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.2.feed_forward.output_dense.bias",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.2.feed_forward.output_dense.weight",
+      "shape": [
+        768,
+        3072
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.2.final_layer_norm.bias",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.2.final_layer_norm.weight",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.2.layer_norm.bias",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.2.layer_norm.weight",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.3.attention.k_proj.bias",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.3.attention.k_proj.weight",
+      "shape": [
+        768,
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.3.attention.out_proj.bias",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.3.attention.out_proj.weight",
+      "shape": [
+        768,
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.3.attention.q_proj.bias",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.3.attention.q_proj.weight",
+      "shape": [
+        768,
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.3.attention.v_proj.bias",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.3.attention.v_proj.weight",
+      "shape": [
+        768,
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.3.feed_forward.intermediate_dense.bias",
+      "shape": [
+        3072
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.3.feed_forward.intermediate_dense.weight",
+      "shape": [
+        3072,
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.3.feed_forward.output_dense.bias",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.3.feed_forward.output_dense.weight",
+      "shape": [
+        768,
+        3072
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.3.final_layer_norm.bias",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.3.final_layer_norm.weight",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.3.layer_norm.bias",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.3.layer_norm.weight",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.4.attention.k_proj.bias",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.4.attention.k_proj.weight",
+      "shape": [
+        768,
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.4.attention.out_proj.bias",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.4.attention.out_proj.weight",
+      "shape": [
+        768,
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.4.attention.q_proj.bias",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.4.attention.q_proj.weight",
+      "shape": [
+        768,
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.4.attention.v_proj.bias",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.4.attention.v_proj.weight",
+      "shape": [
+        768,
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.4.feed_forward.intermediate_dense.bias",
+      "shape": [
+        3072
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.4.feed_forward.intermediate_dense.weight",
+      "shape": [
+        3072,
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.4.feed_forward.output_dense.bias",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.4.feed_forward.output_dense.weight",
+      "shape": [
+        768,
+        3072
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.4.final_layer_norm.bias",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.4.final_layer_norm.weight",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.4.layer_norm.bias",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.4.layer_norm.weight",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.5.attention.k_proj.bias",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.5.attention.k_proj.weight",
+      "shape": [
+        768,
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.5.attention.out_proj.bias",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.5.attention.out_proj.weight",
+      "shape": [
+        768,
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.5.attention.q_proj.bias",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.5.attention.q_proj.weight",
+      "shape": [
+        768,
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.5.attention.v_proj.bias",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.5.attention.v_proj.weight",
+      "shape": [
+        768,
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.5.feed_forward.intermediate_dense.bias",
+      "shape": [
+        3072
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.5.feed_forward.intermediate_dense.weight",
+      "shape": [
+        3072,
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.5.feed_forward.output_dense.bias",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.5.feed_forward.output_dense.weight",
+      "shape": [
+        768,
+        3072
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.5.final_layer_norm.bias",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.5.final_layer_norm.weight",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.5.layer_norm.bias",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.5.layer_norm.weight",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.6.attention.k_proj.bias",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.6.attention.k_proj.weight",
+      "shape": [
+        768,
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.6.attention.out_proj.bias",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.6.attention.out_proj.weight",
+      "shape": [
+        768,
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.6.attention.q_proj.bias",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.6.attention.q_proj.weight",
+      "shape": [
+        768,
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.6.attention.v_proj.bias",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.6.attention.v_proj.weight",
+      "shape": [
+        768,
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.6.feed_forward.intermediate_dense.bias",
+      "shape": [
+        3072
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.6.feed_forward.intermediate_dense.weight",
+      "shape": [
+        3072,
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.6.feed_forward.output_dense.bias",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.6.feed_forward.output_dense.weight",
+      "shape": [
+        768,
+        3072
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.6.final_layer_norm.bias",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.6.final_layer_norm.weight",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.6.layer_norm.bias",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.6.layer_norm.weight",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.7.attention.k_proj.bias",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.7.attention.k_proj.weight",
+      "shape": [
+        768,
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.7.attention.out_proj.bias",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.7.attention.out_proj.weight",
+      "shape": [
+        768,
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.7.attention.q_proj.bias",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.7.attention.q_proj.weight",
+      "shape": [
+        768,
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.7.attention.v_proj.bias",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.7.attention.v_proj.weight",
+      "shape": [
+        768,
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.7.feed_forward.intermediate_dense.bias",
+      "shape": [
+        3072
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.7.feed_forward.intermediate_dense.weight",
+      "shape": [
+        3072,
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.7.feed_forward.output_dense.bias",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.7.feed_forward.output_dense.weight",
+      "shape": [
+        768,
+        3072
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.7.final_layer_norm.bias",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.7.final_layer_norm.weight",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.7.layer_norm.bias",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.7.layer_norm.weight",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.8.attention.k_proj.bias",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.8.attention.k_proj.weight",
+      "shape": [
+        768,
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.8.attention.out_proj.bias",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.8.attention.out_proj.weight",
+      "shape": [
+        768,
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.8.attention.q_proj.bias",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.8.attention.q_proj.weight",
+      "shape": [
+        768,
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.8.attention.v_proj.bias",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.8.attention.v_proj.weight",
+      "shape": [
+        768,
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.8.feed_forward.intermediate_dense.bias",
+      "shape": [
+        3072
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.8.feed_forward.intermediate_dense.weight",
+      "shape": [
+        3072,
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.8.feed_forward.output_dense.bias",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.8.feed_forward.output_dense.weight",
+      "shape": [
+        768,
+        3072
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.8.final_layer_norm.bias",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.8.final_layer_norm.weight",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.8.layer_norm.bias",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.8.layer_norm.weight",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.9.attention.k_proj.bias",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.9.attention.k_proj.weight",
+      "shape": [
+        768,
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.9.attention.out_proj.bias",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.9.attention.out_proj.weight",
+      "shape": [
+        768,
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.9.attention.q_proj.bias",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.9.attention.q_proj.weight",
+      "shape": [
+        768,
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.9.attention.v_proj.bias",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.9.attention.v_proj.weight",
+      "shape": [
+        768,
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.9.feed_forward.intermediate_dense.bias",
+      "shape": [
+        3072
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.9.feed_forward.intermediate_dense.weight",
+      "shape": [
+        3072,
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.9.feed_forward.output_dense.bias",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.9.feed_forward.output_dense.weight",
+      "shape": [
+        768,
+        3072
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.9.final_layer_norm.bias",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.9.final_layer_norm.weight",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.9.layer_norm.bias",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.layers.9.layer_norm.weight",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.pos_conv_embed.conv.bias",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.pos_conv_embed.conv.weight_g",
+      "shape": [
+        1,
+        1,
+        128
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "encoder.pos_conv_embed.conv.weight_v",
+      "shape": [
+        768,
+        48,
+        128
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "feature_projection.layer_norm.bias",
+      "shape": [
+        512
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "feature_projection.layer_norm.weight",
+      "shape": [
+        512
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "feature_projection.projection.bias",
+      "shape": [
+        768
+      ]
+    },
+    {
+      "dtype": "F32",
+      "key": "feature_projection.projection.weight",
+      "shape": [
+        768,
+        512
+      ]
+    }
+  ]
+}

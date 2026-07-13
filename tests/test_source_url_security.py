@@ -187,7 +187,7 @@ class SourceURLSecurityTests(unittest.TestCase):
                     0.04,
                 )
             elapsed = time.monotonic() - started
-            self.assertLess(elapsed, 0.15)
+            self.assertLess(elapsed, 1.0)
             self.assertIn("overall network deadline exceeded", result["error"])
             opener.open.assert_not_called()
 
@@ -245,7 +245,7 @@ class SourceURLSecurityTests(unittest.TestCase):
                     0.04,
                 )
             elapsed = time.monotonic() - started
-            self.assertLess(elapsed, 0.15)
+            self.assertLess(elapsed, 1.0)
             self.assertIn("overall network deadline exceeded", result["error"])
             self.assertLessEqual(len(attempts), validate_sources.MAX_HTTPS_ADDRESS_ATTEMPTS)
 

@@ -1,0 +1,2479 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-07-11T13:11:59.543731+00:00",
+  "inspection_mode": "static-no-model-import",
+  "source": {
+    "kind": "local",
+    "input": "hubert-base-ls960",
+    "revision": null
+  },
+  "artifact_identity": {
+    "schema_version": 1,
+    "algorithm": "sha256-tree-v1",
+    "status": "verified",
+    "immutable": true,
+    "fingerprint": "sha256:63406f0a584fdf34cbb3603c999bf0fb8d25da6f977322c8593ffd332687d0d0",
+    "file_count": 2,
+    "total_bytes": 377511965,
+    "manifest": [
+      {
+        "path": "config.json",
+        "size_bytes": 1385,
+        "sha256": "56be398848bbd9cbc720172b0d45b2f01cac7652f2968f0f31f5faf9f2986acc"
+      },
+      {
+        "path": "model.safetensors",
+        "size_bytes": 377510580,
+        "sha256": "ec18ca2453e7cf3de5e4fc5b79e7484b27506ed0ad684282ddd10ecb9492f37f"
+      }
+    ],
+    "errors": []
+  },
+  "local_path": "hubert-base-ls960",
+  "configs": {
+    "config.json": {
+      "_name_or_path": "facebook/hubert-base-ls960",
+      "activation_dropout": 0.1,
+      "apply_spec_augment": true,
+      "architectures": [
+        "HubertModel"
+      ],
+      "attention_dropout": 0.1,
+      "bos_token_id": "[REDACTED]",
+      "conv_bias": false,
+      "conv_dim": [
+        512,
+        512,
+        512,
+        512,
+        512,
+        512,
+        512
+      ],
+      "conv_kernel": [
+        10,
+        3,
+        3,
+        3,
+        3,
+        2,
+        2
+      ],
+      "conv_stride": [
+        5,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "ctc_loss_reduction": "sum",
+      "ctc_zero_infinity": false,
+      "do_stable_layer_norm": false,
+      "eos_token_id": "[REDACTED]",
+      "feat_extract_activation": "gelu",
+      "feat_extract_dropout": 0.0,
+      "feat_extract_norm": "group",
+      "feat_proj_dropout": 0.1,
+      "final_dropout": 0.1,
+      "gradient_checkpointing": false,
+      "hidden_act": "gelu",
+      "hidden_dropout": 0.1,
+      "hidden_dropout_prob": 0.1,
+      "hidden_size": 768,
+      "initializer_range": 0.02,
+      "intermediate_size": 3072,
+      "layer_norm_eps": 1e-05,
+      "layerdrop": 0.1,
+      "mask_feature_length": 10,
+      "mask_feature_prob": 0.0,
+      "mask_time_length": 10,
+      "mask_time_prob": 0.05,
+      "model_type": "hubert",
+      "num_attention_heads": 12,
+      "num_conv_pos_embedding_groups": 16,
+      "num_conv_pos_embeddings": 128,
+      "num_feat_extract_layers": 7,
+      "num_hidden_layers": 12,
+      "pad_token_id": "[REDACTED]",
+      "transformers_version": "4.10.0.dev0",
+      "vocab_size": 32,
+      "tokenizer_class": "Wav2Vec2CTCTokenizer"
+    }
+  },
+  "file_summary": {
+    "count": 2,
+    "truncated": false,
+    "extensions": {
+      ".json": 1,
+      ".safetensors": 1
+    },
+    "files": [
+      {
+        "path": "config.json",
+        "size_bytes": 1385,
+        "suffix": ".json"
+      },
+      {
+        "path": "model.safetensors",
+        "size_bytes": 377510580,
+        "suffix": ".safetensors"
+      }
+    ]
+  },
+  "tensor_summary": {
+    "count": 211,
+    "parameters": 94371712,
+    "estimated_bytes": 377486848,
+    "dtypes": {
+      "F32": 211
+    },
+    "files": {
+      "model.safetensors": 211
+    },
+    "metadata": {
+      "model.safetensors": {
+        "format": "pt"
+      }
+    },
+    "errors": [],
+    "integrity_ok": true
+  },
+  "tensors": [
+    {
+      "key": "encoder.layer_norm.bias",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layer_norm.weight",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.0.attention.k_proj.bias",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.0.attention.k_proj.weight",
+      "shape": [
+        768,
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 589824,
+      "estimated_bytes": 2359296,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.0.attention.out_proj.bias",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.0.attention.out_proj.weight",
+      "shape": [
+        768,
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 589824,
+      "estimated_bytes": 2359296,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.0.attention.q_proj.bias",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.0.attention.q_proj.weight",
+      "shape": [
+        768,
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 589824,
+      "estimated_bytes": 2359296,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.0.attention.v_proj.bias",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.0.attention.v_proj.weight",
+      "shape": [
+        768,
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 589824,
+      "estimated_bytes": 2359296,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.0.feed_forward.intermediate_dense.bias",
+      "shape": [
+        3072
+      ],
+      "dtype": "F32",
+      "parameters": 3072,
+      "estimated_bytes": 12288,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.0.feed_forward.intermediate_dense.weight",
+      "shape": [
+        3072,
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 2359296,
+      "estimated_bytes": 9437184,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.0.feed_forward.output_dense.bias",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.0.feed_forward.output_dense.weight",
+      "shape": [
+        768,
+        3072
+      ],
+      "dtype": "F32",
+      "parameters": 2359296,
+      "estimated_bytes": 9437184,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.0.final_layer_norm.bias",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.0.final_layer_norm.weight",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.0.layer_norm.bias",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.0.layer_norm.weight",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.1.attention.k_proj.bias",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.1.attention.k_proj.weight",
+      "shape": [
+        768,
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 589824,
+      "estimated_bytes": 2359296,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.1.attention.out_proj.bias",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.1.attention.out_proj.weight",
+      "shape": [
+        768,
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 589824,
+      "estimated_bytes": 2359296,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.1.attention.q_proj.bias",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.1.attention.q_proj.weight",
+      "shape": [
+        768,
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 589824,
+      "estimated_bytes": 2359296,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.1.attention.v_proj.bias",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.1.attention.v_proj.weight",
+      "shape": [
+        768,
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 589824,
+      "estimated_bytes": 2359296,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.1.feed_forward.intermediate_dense.bias",
+      "shape": [
+        3072
+      ],
+      "dtype": "F32",
+      "parameters": 3072,
+      "estimated_bytes": 12288,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.1.feed_forward.intermediate_dense.weight",
+      "shape": [
+        3072,
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 2359296,
+      "estimated_bytes": 9437184,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.1.feed_forward.output_dense.bias",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.1.feed_forward.output_dense.weight",
+      "shape": [
+        768,
+        3072
+      ],
+      "dtype": "F32",
+      "parameters": 2359296,
+      "estimated_bytes": 9437184,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.1.final_layer_norm.bias",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.1.final_layer_norm.weight",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.1.layer_norm.bias",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.1.layer_norm.weight",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.10.attention.k_proj.bias",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.10.attention.k_proj.weight",
+      "shape": [
+        768,
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 589824,
+      "estimated_bytes": 2359296,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.10.attention.out_proj.bias",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.10.attention.out_proj.weight",
+      "shape": [
+        768,
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 589824,
+      "estimated_bytes": 2359296,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.10.attention.q_proj.bias",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.10.attention.q_proj.weight",
+      "shape": [
+        768,
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 589824,
+      "estimated_bytes": 2359296,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.10.attention.v_proj.bias",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.10.attention.v_proj.weight",
+      "shape": [
+        768,
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 589824,
+      "estimated_bytes": 2359296,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.10.feed_forward.intermediate_dense.bias",
+      "shape": [
+        3072
+      ],
+      "dtype": "F32",
+      "parameters": 3072,
+      "estimated_bytes": 12288,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.10.feed_forward.intermediate_dense.weight",
+      "shape": [
+        3072,
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 2359296,
+      "estimated_bytes": 9437184,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.10.feed_forward.output_dense.bias",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.10.feed_forward.output_dense.weight",
+      "shape": [
+        768,
+        3072
+      ],
+      "dtype": "F32",
+      "parameters": 2359296,
+      "estimated_bytes": 9437184,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.10.final_layer_norm.bias",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.10.final_layer_norm.weight",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.10.layer_norm.bias",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.10.layer_norm.weight",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.11.attention.k_proj.bias",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.11.attention.k_proj.weight",
+      "shape": [
+        768,
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 589824,
+      "estimated_bytes": 2359296,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.11.attention.out_proj.bias",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.11.attention.out_proj.weight",
+      "shape": [
+        768,
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 589824,
+      "estimated_bytes": 2359296,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.11.attention.q_proj.bias",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.11.attention.q_proj.weight",
+      "shape": [
+        768,
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 589824,
+      "estimated_bytes": 2359296,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.11.attention.v_proj.bias",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.11.attention.v_proj.weight",
+      "shape": [
+        768,
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 589824,
+      "estimated_bytes": 2359296,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.11.feed_forward.intermediate_dense.bias",
+      "shape": [
+        3072
+      ],
+      "dtype": "F32",
+      "parameters": 3072,
+      "estimated_bytes": 12288,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.11.feed_forward.intermediate_dense.weight",
+      "shape": [
+        3072,
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 2359296,
+      "estimated_bytes": 9437184,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.11.feed_forward.output_dense.bias",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.11.feed_forward.output_dense.weight",
+      "shape": [
+        768,
+        3072
+      ],
+      "dtype": "F32",
+      "parameters": 2359296,
+      "estimated_bytes": 9437184,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.11.final_layer_norm.bias",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.11.final_layer_norm.weight",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.11.layer_norm.bias",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.11.layer_norm.weight",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.2.attention.k_proj.bias",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.2.attention.k_proj.weight",
+      "shape": [
+        768,
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 589824,
+      "estimated_bytes": 2359296,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.2.attention.out_proj.bias",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.2.attention.out_proj.weight",
+      "shape": [
+        768,
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 589824,
+      "estimated_bytes": 2359296,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.2.attention.q_proj.bias",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.2.attention.q_proj.weight",
+      "shape": [
+        768,
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 589824,
+      "estimated_bytes": 2359296,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.2.attention.v_proj.bias",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.2.attention.v_proj.weight",
+      "shape": [
+        768,
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 589824,
+      "estimated_bytes": 2359296,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.2.feed_forward.intermediate_dense.bias",
+      "shape": [
+        3072
+      ],
+      "dtype": "F32",
+      "parameters": 3072,
+      "estimated_bytes": 12288,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.2.feed_forward.intermediate_dense.weight",
+      "shape": [
+        3072,
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 2359296,
+      "estimated_bytes": 9437184,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.2.feed_forward.output_dense.bias",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.2.feed_forward.output_dense.weight",
+      "shape": [
+        768,
+        3072
+      ],
+      "dtype": "F32",
+      "parameters": 2359296,
+      "estimated_bytes": 9437184,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.2.final_layer_norm.bias",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.2.final_layer_norm.weight",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.2.layer_norm.bias",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.2.layer_norm.weight",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.3.attention.k_proj.bias",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.3.attention.k_proj.weight",
+      "shape": [
+        768,
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 589824,
+      "estimated_bytes": 2359296,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.3.attention.out_proj.bias",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.3.attention.out_proj.weight",
+      "shape": [
+        768,
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 589824,
+      "estimated_bytes": 2359296,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.3.attention.q_proj.bias",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.3.attention.q_proj.weight",
+      "shape": [
+        768,
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 589824,
+      "estimated_bytes": 2359296,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.3.attention.v_proj.bias",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.3.attention.v_proj.weight",
+      "shape": [
+        768,
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 589824,
+      "estimated_bytes": 2359296,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.3.feed_forward.intermediate_dense.bias",
+      "shape": [
+        3072
+      ],
+      "dtype": "F32",
+      "parameters": 3072,
+      "estimated_bytes": 12288,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.3.feed_forward.intermediate_dense.weight",
+      "shape": [
+        3072,
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 2359296,
+      "estimated_bytes": 9437184,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.3.feed_forward.output_dense.bias",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.3.feed_forward.output_dense.weight",
+      "shape": [
+        768,
+        3072
+      ],
+      "dtype": "F32",
+      "parameters": 2359296,
+      "estimated_bytes": 9437184,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.3.final_layer_norm.bias",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.3.final_layer_norm.weight",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.3.layer_norm.bias",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.3.layer_norm.weight",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.4.attention.k_proj.bias",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.4.attention.k_proj.weight",
+      "shape": [
+        768,
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 589824,
+      "estimated_bytes": 2359296,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.4.attention.out_proj.bias",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.4.attention.out_proj.weight",
+      "shape": [
+        768,
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 589824,
+      "estimated_bytes": 2359296,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.4.attention.q_proj.bias",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.4.attention.q_proj.weight",
+      "shape": [
+        768,
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 589824,
+      "estimated_bytes": 2359296,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.4.attention.v_proj.bias",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.4.attention.v_proj.weight",
+      "shape": [
+        768,
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 589824,
+      "estimated_bytes": 2359296,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.4.feed_forward.intermediate_dense.bias",
+      "shape": [
+        3072
+      ],
+      "dtype": "F32",
+      "parameters": 3072,
+      "estimated_bytes": 12288,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.4.feed_forward.intermediate_dense.weight",
+      "shape": [
+        3072,
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 2359296,
+      "estimated_bytes": 9437184,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.4.feed_forward.output_dense.bias",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.4.feed_forward.output_dense.weight",
+      "shape": [
+        768,
+        3072
+      ],
+      "dtype": "F32",
+      "parameters": 2359296,
+      "estimated_bytes": 9437184,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.4.final_layer_norm.bias",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.4.final_layer_norm.weight",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.4.layer_norm.bias",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.4.layer_norm.weight",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.5.attention.k_proj.bias",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.5.attention.k_proj.weight",
+      "shape": [
+        768,
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 589824,
+      "estimated_bytes": 2359296,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.5.attention.out_proj.bias",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.5.attention.out_proj.weight",
+      "shape": [
+        768,
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 589824,
+      "estimated_bytes": 2359296,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.5.attention.q_proj.bias",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.5.attention.q_proj.weight",
+      "shape": [
+        768,
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 589824,
+      "estimated_bytes": 2359296,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.5.attention.v_proj.bias",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.5.attention.v_proj.weight",
+      "shape": [
+        768,
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 589824,
+      "estimated_bytes": 2359296,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.5.feed_forward.intermediate_dense.bias",
+      "shape": [
+        3072
+      ],
+      "dtype": "F32",
+      "parameters": 3072,
+      "estimated_bytes": 12288,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.5.feed_forward.intermediate_dense.weight",
+      "shape": [
+        3072,
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 2359296,
+      "estimated_bytes": 9437184,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.5.feed_forward.output_dense.bias",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.5.feed_forward.output_dense.weight",
+      "shape": [
+        768,
+        3072
+      ],
+      "dtype": "F32",
+      "parameters": 2359296,
+      "estimated_bytes": 9437184,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.5.final_layer_norm.bias",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.5.final_layer_norm.weight",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.5.layer_norm.bias",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.5.layer_norm.weight",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.6.attention.k_proj.bias",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.6.attention.k_proj.weight",
+      "shape": [
+        768,
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 589824,
+      "estimated_bytes": 2359296,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.6.attention.out_proj.bias",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.6.attention.out_proj.weight",
+      "shape": [
+        768,
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 589824,
+      "estimated_bytes": 2359296,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.6.attention.q_proj.bias",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.6.attention.q_proj.weight",
+      "shape": [
+        768,
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 589824,
+      "estimated_bytes": 2359296,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.6.attention.v_proj.bias",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.6.attention.v_proj.weight",
+      "shape": [
+        768,
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 589824,
+      "estimated_bytes": 2359296,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.6.feed_forward.intermediate_dense.bias",
+      "shape": [
+        3072
+      ],
+      "dtype": "F32",
+      "parameters": 3072,
+      "estimated_bytes": 12288,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.6.feed_forward.intermediate_dense.weight",
+      "shape": [
+        3072,
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 2359296,
+      "estimated_bytes": 9437184,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.6.feed_forward.output_dense.bias",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.6.feed_forward.output_dense.weight",
+      "shape": [
+        768,
+        3072
+      ],
+      "dtype": "F32",
+      "parameters": 2359296,
+      "estimated_bytes": 9437184,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.6.final_layer_norm.bias",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.6.final_layer_norm.weight",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.6.layer_norm.bias",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.6.layer_norm.weight",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.7.attention.k_proj.bias",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.7.attention.k_proj.weight",
+      "shape": [
+        768,
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 589824,
+      "estimated_bytes": 2359296,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.7.attention.out_proj.bias",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.7.attention.out_proj.weight",
+      "shape": [
+        768,
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 589824,
+      "estimated_bytes": 2359296,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.7.attention.q_proj.bias",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.7.attention.q_proj.weight",
+      "shape": [
+        768,
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 589824,
+      "estimated_bytes": 2359296,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.7.attention.v_proj.bias",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.7.attention.v_proj.weight",
+      "shape": [
+        768,
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 589824,
+      "estimated_bytes": 2359296,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.7.feed_forward.intermediate_dense.bias",
+      "shape": [
+        3072
+      ],
+      "dtype": "F32",
+      "parameters": 3072,
+      "estimated_bytes": 12288,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.7.feed_forward.intermediate_dense.weight",
+      "shape": [
+        3072,
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 2359296,
+      "estimated_bytes": 9437184,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.7.feed_forward.output_dense.bias",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.7.feed_forward.output_dense.weight",
+      "shape": [
+        768,
+        3072
+      ],
+      "dtype": "F32",
+      "parameters": 2359296,
+      "estimated_bytes": 9437184,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.7.final_layer_norm.bias",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.7.final_layer_norm.weight",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.7.layer_norm.bias",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.7.layer_norm.weight",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.8.attention.k_proj.bias",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.8.attention.k_proj.weight",
+      "shape": [
+        768,
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 589824,
+      "estimated_bytes": 2359296,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.8.attention.out_proj.bias",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.8.attention.out_proj.weight",
+      "shape": [
+        768,
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 589824,
+      "estimated_bytes": 2359296,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.8.attention.q_proj.bias",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.8.attention.q_proj.weight",
+      "shape": [
+        768,
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 589824,
+      "estimated_bytes": 2359296,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.8.attention.v_proj.bias",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.8.attention.v_proj.weight",
+      "shape": [
+        768,
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 589824,
+      "estimated_bytes": 2359296,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.8.feed_forward.intermediate_dense.bias",
+      "shape": [
+        3072
+      ],
+      "dtype": "F32",
+      "parameters": 3072,
+      "estimated_bytes": 12288,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.8.feed_forward.intermediate_dense.weight",
+      "shape": [
+        3072,
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 2359296,
+      "estimated_bytes": 9437184,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.8.feed_forward.output_dense.bias",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.8.feed_forward.output_dense.weight",
+      "shape": [
+        768,
+        3072
+      ],
+      "dtype": "F32",
+      "parameters": 2359296,
+      "estimated_bytes": 9437184,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.8.final_layer_norm.bias",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.8.final_layer_norm.weight",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.8.layer_norm.bias",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.8.layer_norm.weight",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.9.attention.k_proj.bias",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.9.attention.k_proj.weight",
+      "shape": [
+        768,
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 589824,
+      "estimated_bytes": 2359296,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.9.attention.out_proj.bias",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.9.attention.out_proj.weight",
+      "shape": [
+        768,
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 589824,
+      "estimated_bytes": 2359296,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.9.attention.q_proj.bias",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.9.attention.q_proj.weight",
+      "shape": [
+        768,
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 589824,
+      "estimated_bytes": 2359296,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.9.attention.v_proj.bias",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.9.attention.v_proj.weight",
+      "shape": [
+        768,
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 589824,
+      "estimated_bytes": 2359296,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.9.feed_forward.intermediate_dense.bias",
+      "shape": [
+        3072
+      ],
+      "dtype": "F32",
+      "parameters": 3072,
+      "estimated_bytes": 12288,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.9.feed_forward.intermediate_dense.weight",
+      "shape": [
+        3072,
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 2359296,
+      "estimated_bytes": 9437184,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.9.feed_forward.output_dense.bias",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.9.feed_forward.output_dense.weight",
+      "shape": [
+        768,
+        3072
+      ],
+      "dtype": "F32",
+      "parameters": 2359296,
+      "estimated_bytes": 9437184,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.9.final_layer_norm.bias",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.9.final_layer_norm.weight",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.9.layer_norm.bias",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.layers.9.layer_norm.weight",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.pos_conv_embed.conv.bias",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.pos_conv_embed.conv.weight_g",
+      "shape": [
+        1,
+        1,
+        128
+      ],
+      "dtype": "F32",
+      "parameters": 128,
+      "estimated_bytes": 512,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "encoder.pos_conv_embed.conv.weight_v",
+      "shape": [
+        768,
+        48,
+        128
+      ],
+      "dtype": "F32",
+      "parameters": 4718592,
+      "estimated_bytes": 18874368,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "feature_extractor.conv_layers.0.conv.weight",
+      "shape": [
+        512,
+        1,
+        10
+      ],
+      "dtype": "F32",
+      "parameters": 5120,
+      "estimated_bytes": 20480,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "feature_extractor.conv_layers.0.layer_norm.bias",
+      "shape": [
+        512
+      ],
+      "dtype": "F32",
+      "parameters": 512,
+      "estimated_bytes": 2048,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "feature_extractor.conv_layers.0.layer_norm.weight",
+      "shape": [
+        512
+      ],
+      "dtype": "F32",
+      "parameters": 512,
+      "estimated_bytes": 2048,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "feature_extractor.conv_layers.1.conv.weight",
+      "shape": [
+        512,
+        512,
+        3
+      ],
+      "dtype": "F32",
+      "parameters": 786432,
+      "estimated_bytes": 3145728,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "feature_extractor.conv_layers.2.conv.weight",
+      "shape": [
+        512,
+        512,
+        3
+      ],
+      "dtype": "F32",
+      "parameters": 786432,
+      "estimated_bytes": 3145728,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "feature_extractor.conv_layers.3.conv.weight",
+      "shape": [
+        512,
+        512,
+        3
+      ],
+      "dtype": "F32",
+      "parameters": 786432,
+      "estimated_bytes": 3145728,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "feature_extractor.conv_layers.4.conv.weight",
+      "shape": [
+        512,
+        512,
+        3
+      ],
+      "dtype": "F32",
+      "parameters": 786432,
+      "estimated_bytes": 3145728,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "feature_extractor.conv_layers.5.conv.weight",
+      "shape": [
+        512,
+        512,
+        2
+      ],
+      "dtype": "F32",
+      "parameters": 524288,
+      "estimated_bytes": 2097152,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "feature_extractor.conv_layers.6.conv.weight",
+      "shape": [
+        512,
+        512,
+        2
+      ],
+      "dtype": "F32",
+      "parameters": 524288,
+      "estimated_bytes": 2097152,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "feature_projection.layer_norm.bias",
+      "shape": [
+        512
+      ],
+      "dtype": "F32",
+      "parameters": 512,
+      "estimated_bytes": 2048,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "feature_projection.layer_norm.weight",
+      "shape": [
+        512
+      ],
+      "dtype": "F32",
+      "parameters": 512,
+      "estimated_bytes": 2048,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "feature_projection.projection.bias",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "feature_projection.projection.weight",
+      "shape": [
+        768,
+        512
+      ],
+      "dtype": "F32",
+      "parameters": 393216,
+      "estimated_bytes": 1572864,
+      "file": "model.safetensors"
+    },
+    {
+      "key": "masked_spec_embed",
+      "shape": [
+        768
+      ],
+      "dtype": "F32",
+      "parameters": 768,
+      "estimated_bytes": 3072,
+      "file": "model.safetensors"
+    }
+  ],
+  "source_format_summary": {
+    "count": 0,
+    "formats": [],
+    "errors": [],
+    "integrity_ok": true,
+    "aggregate": {
+      "artifact_count": 0,
+      "inspected_bytes": 0,
+      "artifact_limit": 256,
+      "byte_limit": 536870912
+    },
+    "manifests": []
+  },
+  "architecture_candidates": [
+    {
+      "family": "automatic-speech-recognition",
+      "score": 13.8,
+      "runbook": "references/runbook-asr.md",
+      "targets": [
+        "mlx-audio",
+        "standalone-mlx"
+      ],
+      "state": "encoder/cache plus decoder/search state",
+      "evidence": [
+        "exact model_type=hubert",
+        "config keys: ctc_loss_reduction",
+        "weight signals: feature_extractor, encoder"
+      ],
+      "notes": "Streaming variants should also use the streaming-speech runbook.",
+      "confidence": 0.46
+    },
+    {
+      "family": "encoder-transformer",
+      "score": 7.4,
+      "runbook": "references/runbook-encoder-transformer.md",
+      "targets": [
+        "standalone-mlx",
+        "mlx-vlm",
+        "mlx-audio"
+      ],
+      "state": "usually stateless full-sequence encoder",
+      "evidence": [
+        "partial model_type=hubert",
+        "config keys: hidden_size, num_hidden_layers, num_attention_heads"
+      ],
+      "notes": "Modality-specific frontends may require additional runbooks.",
+      "confidence": 0.247
+    },
+    {
+      "family": "dense-decoder-transformer",
+      "score": 3.2,
+      "runbook": "references/runbook-decoder-transformer.md",
+      "targets": [
+        "mlx-lm",
+        "mlx-vlm",
+        "standalone-mlx"
+      ],
+      "state": "per-layer KV cache",
+      "evidence": [
+        "config keys: num_hidden_layers, num_attention_heads, hidden_size, vocab_size"
+      ],
+      "notes": "Route models with routed experts, recurrent state, or multimodal projectors to a more specific family.",
+      "confidence": 0.107
+    },
+    {
+      "family": "separation-enhancement",
+      "score": 3.0,
+      "runbook": "references/runbook-separation-enhancement.md",
+      "targets": [
+        "mlx-audio",
+        "standalone-mlx"
+      ],
+      "state": "chunk/overlap state; usually offline full-context model",
+      "evidence": [
+        "weight signals: mask, encoder"
+      ],
+      "notes": "Validate complex layout and overlap-add.",
+      "confidence": 0.1
+    },
+    {
+      "family": "encoder-decoder-transformer",
+      "score": 1.5,
+      "runbook": "references/runbook-encoder-decoder.md",
+      "targets": [
+        "standalone-mlx",
+        "mlx-audio"
+      ],
+      "state": "encoder states plus decoder self/cross cache",
+      "evidence": [
+        "weight signals: encoder.layers.0"
+      ],
+      "notes": "Whisper and other ASR models should also use the ASR runbook.",
+      "confidence": 0.05
+    }
+  ],
+  "architecture_profile": null,
+  "architecture_traits": [],
+  "routing_decision": {
+    "status": "recommended",
+    "minimum_score": 8.0,
+    "minimum_margin": 2.0,
+    "winner_family": "automatic-speech-recognition",
+    "winner_score": 13.8,
+    "runner_up_family": "encoder-transformer",
+    "runner_up_score": 7.4,
+    "winner_margin": 6.4,
+    "reasons": []
+  },
+  "recommended_family": null,
+  "recommended_runbook": null,
+  "recommended_families": [],
+  "recommended_runbooks": [],
+  "recommendation_blockers": [
+    "license evidence is missing or unacceptable; provide an explicit non-placeholder license declaration or a readable artifact-bound license text"
+  ],
+  "license": {
+    "declared": [],
+    "license_files": [],
+    "file_evidence": [],
+    "accepted_evidence": [],
+    "status": "review-required",
+    "requires_review": true,
+    "compatibility_assessed": false,
+    "reasons": [
+      "no license declaration or top-level license text was found"
+    ]
+  },
+  "risks": [],
+  "limitations": [
+    "Static inspection does not prove model behavior or license compatibility.",
+    "Parameter totals may double-count tied tensors and omit non-safetensors weights.",
+    "Remote metadata-only inspection cannot see tensor keys without downloading weights."
+  ]
+}
