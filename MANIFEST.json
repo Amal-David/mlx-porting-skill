@@ -2,8 +2,8 @@
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
   "version": "0.6.0",
-  "generated_at": "2026-07-13T09:32:14.169834+00:00",
-  "file_count": 495,
+  "generated_at": "2026-07-13T13:15:13.633392+00:00",
+  "file_count": 499,
   "files": [
     {
       "path": ".agents/skills/mlx-model-porting",
@@ -171,8 +171,8 @@
     },
     {
       "path": "mlx-model-porting/SKILL.md",
-      "size_bytes": 13450,
-      "sha256": "814eb954b559a5dd60c3d995b75cafe5a41e76d7bd61cad06954a7e24c154f72",
+      "size_bytes": 13423,
+      "sha256": "3a186ff1dc8895e8ab5c9b51f4e8ceab984eab16729e853915964f398026121b",
       "executable": false
     },
     {
@@ -926,6 +926,12 @@
       "executable": false
     },
     {
+      "path": "mlx-model-porting/examples/optimized-port-qwen2.5-0.5b/README.md",
+      "size_bytes": 4284,
+      "sha256": "f915224efa4e7a179c8b0544b65785d43b8cfa23a9b637b4befa8e8f3515339b",
+      "executable": false
+    },
+    {
       "path": "mlx-model-porting/examples/porting-patterns.md",
       "size_bytes": 8556,
       "sha256": "ed8d1c628611f08f913ee26350a51f2d996cff00522b2cd6ca4f7115a7afb530",
@@ -1241,6 +1247,12 @@
       "path": "mlx-model-porting/references/model-support-map.md",
       "size_bytes": 4714,
       "sha256": "ea361ddd343a27cc28059e6027968b0336ec50d1d56a64d9a81b704282eb536f",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/references/optimization-loop.md",
+      "size_bytes": 4447,
+      "sha256": "a9e28a03e808c8dba10474dbbefa3bf3fa6298bfd053e263044e23b186ca40e0",
       "executable": false
     },
     {
@@ -2066,6 +2078,12 @@
       "executable": false
     },
     {
+      "path": "mlx-model-porting/scripts/optimize_port.py",
+      "size_bytes": 35820,
+      "sha256": "b7b8b91f4a028775885e00b9d15d47c3b8d80548d8d53fdab563fdf586f78a10",
+      "executable": false
+    },
+    {
       "path": "mlx-model-porting/scripts/quant_quality_gate.py",
       "size_bytes": 27976,
       "sha256": "c30620df052a50f86522ec565ecb5e5de070611f9647e732435294b916f1f809",
@@ -2134,7 +2152,7 @@
     {
       "path": "site/data.js",
       "size_bytes": 4430,
-      "sha256": "8ef10028c512a603479001554bee159ce86584af27833c1cb8fb508870f976ab",
+      "sha256": "286f07176102c30a2c7f3f37944749e88d4c8689a6d3db93d570de601977c2a7",
       "executable": false
     },
     {
@@ -2873,6 +2891,12 @@
       "path": "tests/test_model_intake_identity_contract.py",
       "size_bytes": 11029,
       "sha256": "c71c504a9a09f93234b02ece36bd96a4af956d11fff02adb4c45a3a21929af43",
+      "executable": false
+    },
+    {
+      "path": "tests/test_optimize_port_contract.py",
+      "size_bytes": 14112,
+      "sha256": "99ce88c266ddb8870d6bfb60d11967f30cf8620936bb6e0691edd4f59efd6507",
       "executable": false
     },
     {
