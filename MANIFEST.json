@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
-  "version": "0.5.0",
-  "generated_at": "2026-07-11T07:06:02.505293+00:00",
-  "file_count": 461,
+  "version": "0.6.0",
+  "generated_at": "2026-07-12T18:31:52.155042+00:00",
+  "file_count": 467,
   "files": [
     {
       "path": ".agents/skills/mlx-model-porting",
@@ -63,8 +63,8 @@
     },
     {
       "path": "CHANGELOG.md",
-      "size_bytes": 11173,
-      "sha256": "9ec020deb24b9126b85891bdbd1ce76076517ef2805b506fbac5f49c5fcde661",
+      "size_bytes": 13694,
+      "sha256": "dbcbb93cdd89e0b76626ec9529a48bd46adf9ff68c23c7fe962cf4a22aae60c8",
       "executable": false
     },
     {
@@ -75,14 +75,14 @@
     },
     {
       "path": "CONTRIBUTING.md",
-      "size_bytes": 14510,
-      "sha256": "7c0a011d8264b91ed86cf89ef728bb83ba68ba3386cba9d138c01882e552eda4",
+      "size_bytes": 16166,
+      "sha256": "3001bee966d61f3444c247d9bf1f16bd4a757495336ea8d903eab954cb946873",
       "executable": false
     },
     {
       "path": "EVIDENCE_INDEX.md",
-      "size_bytes": 113743,
-      "sha256": "2ac5ab84e526377289bd49051c1e267175802e796b8e63e2dd7b78417d5747a5",
+      "size_bytes": 116784,
+      "sha256": "67a6c44aa18c28486096117b6116cd6ce7124d6b1b29667582fdfa8993f34cb1",
       "executable": false
     },
     {
@@ -94,73 +94,73 @@
     {
       "path": "README.md",
       "size_bytes": 22151,
-      "sha256": "d142e070da5e5024eae621131c2b648a953f5f7d81b12a2f00ee05f2bf7a944c",
+      "sha256": "710e5cca34c171db12b58dd337e9d641f1730eb6ba7effb5f05baab2b203c879",
       "executable": false
     },
     {
       "path": "RESEARCH_REPORT.md",
-      "size_bytes": 22765,
-      "sha256": "b4ea5720efaedd51bbf32d4c31c7323f2d97d208804b1823bda6bab4723ab27e",
+      "size_bytes": 23254,
+      "sha256": "7f79c7453be0f4ca914d7329a8f98fd79b711e2a0a55695921900fbe68298a34",
       "executable": false
     },
     {
       "path": "VALIDATION.md",
       "size_bytes": 17814,
-      "sha256": "e3f7fdec87a88e77e5994e5eef75ff3137cf7dbff0f73df3082dcde52d13203e",
+      "sha256": "aabcbfcd8fb8e34b83aab76511f1873cae4302d2a06a70e45a4aa516d659f84c",
       "executable": false
     },
     {
       "path": "VERSION",
       "size_bytes": 6,
-      "sha256": "a0ad50640139a524f86591157145bf1d4674ea9c065bfea21558f0f7b04430c8",
+      "sha256": "97a5d6e540a6120d09c39ddb667e0e8e2bac7fcc2ffef813b82e08fd60365bce",
       "executable": false
     },
     {
       "path": "adapters/README.md",
       "size_bytes": 3282,
-      "sha256": "6b099c1af1ec4d3cccaac79c4e7671efb89de06d278a0cfd8d56ef7fe3f0e4a7",
+      "sha256": "d038aa5007fc88fc8ad276c08051d27cebf768200fda155a947fc3ce07bcf5b4",
       "executable": false
     },
     {
       "path": "adapters/antigravity.md",
       "size_bytes": 468,
-      "sha256": "e17eab2ee3c2d5c631299578252d2769738185b1cbf991f4b3a6c1eaad901f5a",
+      "sha256": "58f776d29716b40c1fae261b284a83644257d28728a82efe9080f904a853daff",
       "executable": false
     },
     {
       "path": "adapters/claude-code.md",
       "size_bytes": 559,
-      "sha256": "0802df6f487b7c9e37b6e5b13243a1b0205d42179f89e3a8b988a85d2c26bc19",
+      "sha256": "e5d5a50dad1074a0c879e89c201f95b8b0334b70a369e1f76de40f15c5e1b0f4",
       "executable": false
     },
     {
       "path": "adapters/codex.md",
       "size_bytes": 572,
-      "sha256": "be5040d0442d7dc7e0f30d33f2f2bcc57b4c02aa043b27147e2b300dfbc57dc2",
+      "sha256": "758d54c638824828287ab1f584c42b2d975ae600ebd1446371f9ecaaae576792",
       "executable": false
     },
     {
       "path": "adapters/cursor.md",
       "size_bytes": 549,
-      "sha256": "9220c18f234f41484cda0649a98a3b63cb8feb2149ff8a98b17bc573e08a7c16",
+      "sha256": "c9ddfdc71f8d39a38dc83b5f34fd489e469bdf8193a960e16c54032fe84219c2",
       "executable": false
     },
     {
       "path": "adapters/gemini-cli.md",
       "size_bytes": 553,
-      "sha256": "e51066ea67fc7946d533c64d688ed3ef072ae22ad0b17836d36ef62c3b94e40c",
+      "sha256": "c0f4cc7bf641bdc320f4ee840210ae84e5f12fb25a07aee9e9ae5221fa7d6106",
       "executable": false
     },
     {
       "path": "adapters/github-copilot.md",
       "size_bytes": 558,
-      "sha256": "467bd60f3af97c8045339821809d362ed06c6ecd972e047ed32302387512fed8",
+      "sha256": "add1dd37e988c256c7d951a91259fd62cf68e920f43b8439264f677661b54205",
       "executable": false
     },
     {
       "path": "adapters/windsurf.md",
       "size_bytes": 553,
-      "sha256": "873c946b36815703ab849e3e3ace05573491c3ae8ce6eb95f471251084752de0",
+      "sha256": "b8ddd25f3955394add084680aaf963b053e76e4dab092d72fe48d64114f4c4fb",
       "executable": false
     },
     {
@@ -172,7 +172,7 @@
     {
       "path": "mlx-model-porting/SKILL.md",
       "size_bytes": 13463,
-      "sha256": "05b749003a1e73189412e0c174236e782a24639fbf80c13704093feebf1d0c69",
+      "sha256": "9316eb9640653c8e846195f07fe6063e0156534b4b23aaefbf6f3467aa61b8dc",
       "executable": false
     },
     {
@@ -861,8 +861,14 @@
     },
     {
       "path": "mlx-model-porting/assets/knowledge_graph.json",
-      "size_bytes": 547808,
-      "sha256": "32454c6cf40ee0378c43a4ffe631a2c0ec8966cfe24408f2979ef20a7cdda266",
+      "size_bytes": 551302,
+      "sha256": "4282be0f76e7e7e292744104c6cccdebfb51f92b43e4ec8f14c9831c2407bced",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/assets/learning_paths.json",
+      "size_bytes": 56274,
+      "sha256": "abdf816bd965bfc773f0ca6b9e55b251ba0e14a60bc27b0dfdf8a9cca39de9ea",
       "executable": false
     },
     {
@@ -873,8 +879,8 @@
     },
     {
       "path": "mlx-model-porting/assets/optimization_guidance.yaml",
-      "size_bytes": 63064,
-      "sha256": "52ce67642553066f75fff2ef787c258ad75b8abe6226bd60e85c33097e3ae589",
+      "size_bytes": 63173,
+      "sha256": "d632875c77cc84ad3d1cc4fa528aac299ff441ff6b01fedc91c4fe2e77ff5972",
       "executable": false
     },
     {
@@ -891,8 +897,8 @@
     },
     {
       "path": "mlx-model-porting/assets/research_backlog.json",
-      "size_bytes": 11662,
-      "sha256": "d790dcf6fc71c87581a5eb30d1be40ab0103bf1b12ac760cd943891fcecaa436",
+      "size_bytes": 11656,
+      "sha256": "12b2121cdddb12f161e2bc9c7b4f3b9668ef0f7605d9ccdbc2204631c6fe249d",
       "executable": false
     },
     {
@@ -903,8 +909,8 @@
     },
     {
       "path": "mlx-model-porting/assets/sources.yaml",
-      "size_bytes": 154868,
-      "sha256": "b8577bc7f8c2757a9e90f08ab2bafe1947c710f78962ba6170b48b7c3580dd24",
+      "size_bytes": 159334,
+      "sha256": "a1a4b9c62b4e54e105336c1a011a6cc43a94b719c7c4a95dfe8264f91ff61839",
       "executable": false
     },
     {
@@ -1851,8 +1857,8 @@
     },
     {
       "path": "mlx-model-porting/scripts/generate_site_data.py",
-      "size_bytes": 10893,
-      "sha256": "87eceec4dcc048428adc5cd9861f5543d5c6d055c057af9e473a5d32287b7195",
+      "size_bytes": 30551,
+      "sha256": "5e7eba7e4606c47439b0633b36e1252ef5b54e37fe04e1041f2cd5e366191c3a",
       "executable": false
     },
     {
@@ -1899,8 +1905,8 @@
     },
     {
       "path": "mlx-model-porting/scripts/recommend_optimizations.py",
-      "size_bytes": 76978,
-      "sha256": "81b6b484cd02d66154b829759b2dfb3e7a59c6409c3a9e0b2f6594268de3f22c",
+      "size_bytes": 77432,
+      "sha256": "33dc0d41dfe1c50ed71e3ee2d8fa112378472dd7a476059330e7c21d74e5ad0f",
       "executable": true
     },
     {
@@ -1953,20 +1959,26 @@
     },
     {
       "path": "site/app.js",
-      "size_bytes": 11730,
-      "sha256": "c05999b5620116451c331f392e98a3eddf33a6b5e73a8cecaf00ca7634d72ab3",
+      "size_bytes": 12129,
+      "sha256": "5da2919148a3cf09baf1ef47cab994e679e5c80c1806ab1f18d63a05367bf0e4",
+      "executable": false
+    },
+    {
+      "path": "site/atlas.js",
+      "size_bytes": 16667,
+      "sha256": "466bc9bc82a1b3d0644d19847db5d3f7d064b4515567a7e9f7749eb723d94b78",
       "executable": false
     },
     {
       "path": "site/data.js",
-      "size_bytes": 4430,
-      "sha256": "eaf1e03ed5a7ce187d3ef9218b40178011774cbac1367c7df35fa172ee6aafb3",
+      "size_bytes": 184610,
+      "sha256": "d4803b0417348f581ae7e99f85817daa98fa27adedb379786bfbf76dc6f918b5",
       "executable": false
     },
     {
       "path": "site/docs/index.html",
-      "size_bytes": 35757,
-      "sha256": "533d785e54dd5e26664c421dc31de1543fa1113a2a192b510e266ab619710760",
+      "size_bytes": 106488,
+      "sha256": "7fa496bfe71c317ec4816e4d85af5fd1ff49d9ddf47b637f9fd3d03fb3131658",
       "executable": false
     },
     {
@@ -1977,20 +1989,26 @@
     },
     {
       "path": "site/index.html",
-      "size_bytes": 17042,
-      "sha256": "f9aa6bc392d742330ba1bdc1777126bbdfa9b71dd4ed606febd387eed4d4c57e",
+      "size_bytes": 29476,
+      "sha256": "6d5697a3af1372d77a0b6052d8094a92c382a60910c3d298dd1910fd893f138b",
+      "executable": false
+    },
+    {
+      "path": "site/optimization.js",
+      "size_bytes": 21873,
+      "sha256": "8d71289dd8916ad0c5315eb08c9c8d16498ec1d9597675af6efd0a57bc5d3512",
       "executable": false
     },
     {
       "path": "site/styles.css",
-      "size_bytes": 26348,
-      "sha256": "5e79cb1eac08c0202420f8281eecf5bb207f9d3780bf81c79300740641b3efc9",
+      "size_bytes": 61963,
+      "sha256": "632e72e8462fefb7d52fc0b0a7d23487ada7a8f378764eb1b2161acf672a0102",
       "executable": false
     },
     {
       "path": "tasks/lessons.md",
-      "size_bytes": 7989,
-      "sha256": "b6995183761baa6f7fd065088a8c3aa1145d9993fc17a6a9e76d935c1bac6b81",
+      "size_bytes": 8285,
+      "sha256": "263f0d712e750915b56f071a850e00dd6cdcfe905ca152c87ec3078eb8eb49cb",
       "executable": false
     },
     {
@@ -2541,8 +2559,14 @@
     },
     {
       "path": "tests/test_asset_consumer_contract.py",
-      "size_bytes": 3987,
-      "sha256": "0fc9f7eaee50a6ed17e060d9f35785669b07853121a896060673978338c2fb84",
+      "size_bytes": 4042,
+      "sha256": "33ea4f382cf36b7bedb318de699eaca683ac9add74168e7d6457158c9e9882cc",
+      "executable": false
+    },
+    {
+      "path": "tests/test_atlas_interaction_contract.py",
+      "size_bytes": 9997,
+      "sha256": "1f8c12a34007331d520ce8e6a01587bbd28aa9bee7ee6b1efaf208aad64b4a96",
       "executable": false
     },
     {
@@ -2660,6 +2684,12 @@
       "executable": false
     },
     {
+      "path": "tests/test_learning_atlas_contract.py",
+      "size_bytes": 22360,
+      "sha256": "5d67262663f43bcad77fe70bc5c0653ea8a2ba4497e5dd859157c9e6907fd6c1",
+      "executable": false
+    },
+    {
       "path": "tests/test_manifest_contract.py",
       "size_bytes": 24565,
       "sha256": "68915e188c5e5ca79e763d5049a8b78fcc98b877949ee792c8373371610a041c",
@@ -2681,6 +2711,12 @@
       "path": "tests/test_model_intake_identity_contract.py",
       "size_bytes": 11029,
       "sha256": "c71c504a9a09f93234b02ece36bd96a4af956d11fff02adb4c45a3a21929af43",
+      "executable": false
+    },
+    {
+      "path": "tests/test_optimization_atlas_contract.py",
+      "size_bytes": 16568,
+      "sha256": "966ef2b8580096e0bb56fc966da75890839661b1792bfb02d00b5ad8cdb8f7e7",
       "executable": false
     },
     {
@@ -2733,14 +2769,14 @@
     },
     {
       "path": "tests/test_site_contract.py",
-      "size_bytes": 19183,
-      "sha256": "0e7237b1e162459a29b2cfe3f8f215b19c5a2f366b526231529c80015d2bd4f2",
+      "size_bytes": 39570,
+      "sha256": "8c54eb8a17d8fb37e46ff83d95401b5b56c2ea81a557c73cf5a3b5747c65fd0a",
       "executable": false
     },
     {
       "path": "tests/test_site_data_contract.py",
-      "size_bytes": 10896,
-      "sha256": "d14bacdf6397201323e9efbbf2c06f5fcfa77bb6d18e92efff1a917f04b184a9",
+      "size_bytes": 10853,
+      "sha256": "d09554be8a2608f01678184dbd956fd2f2d9f2e054cd5f6db2128fa5c97afe1a",
       "executable": false
     },
     {

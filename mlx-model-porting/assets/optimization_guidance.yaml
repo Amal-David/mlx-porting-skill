@@ -1749,7 +1749,12 @@
       "rollback_conditions": [
         "Always: this method is rejected for MLX and must not be adopted."
       ],
-      "evidence_refs": {}
+      "evidence_refs": {
+        "official_docs": [
+          "mlx-doc-compile",
+          "pytorch-doc-cuda-graphs"
+        ]
+      }
     }
   ]
 }

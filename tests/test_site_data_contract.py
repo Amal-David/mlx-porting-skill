@@ -80,7 +80,6 @@ class SiteDataContractTests(unittest.TestCase):
         self.assertNotIn("fetch(", text)
         self.assertNotIn("import ", text)
         self.assertNotIn("http://", text)
-        self.assertNotIn("https://", text)
         self.assertEqual(json.loads(json.dumps(parse_site_data(SITE_DATA))), parse_site_data(SITE_DATA))
 
     def test_site_data_values_are_derived_from_canonical_assets(self) -> None:

@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "reviewed": "2026-07-09",
+  "reviewed": "2026-07-12",
   "review_depth_definitions": {
     "synthesized": "Directly informed a runbook, rule, or technique decision.",
     "screened": "Abstract/readme/code path reviewed for relevance and limits.",
@@ -32,7 +32,7 @@
     "A record note may narrow these boundaries. The narrowest applicable boundary always wins."
   ],
   "benchmark_assessment": "mlx-model-porting/assets/BENCHMARK_REPORT.md",
-  "count": 350,
+  "count": 356,
   "sources": [
     {
       "id": "agent-skills-spec",
@@ -126,6 +126,108 @@
         "api_support"
       ],
       "note": ""
+    },
+    {
+      "id": "mlx-doc-quick-start",
+      "title": "MLX quick start",
+      "url": "https://ml-explore.github.io/mlx/build/html/usage/quick_start.html",
+      "kind": "official-doc",
+      "owner": "Apple MLX",
+      "topics": [
+        "mlx",
+        "arrays",
+        "quick-start"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2026-07-12",
+      "evidence_class": "official_api_doc",
+      "support_scope": "official_mlx",
+      "claim_types": [
+        "api_support"
+      ],
+      "note": "Used by the learning atlas to introduce arrays, functions, transforms, and lazy evaluation; it does not establish model-specific performance."
+    },
+    {
+      "id": "mlx-doc-unified-memory",
+      "title": "MLX unified memory documentation",
+      "url": "https://ml-explore.github.io/mlx/build/html/usage/unified_memory.html",
+      "kind": "official-doc",
+      "owner": "Apple MLX",
+      "topics": [
+        "mlx",
+        "unified-memory",
+        "devices"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2026-07-12",
+      "evidence_class": "official_api_doc",
+      "support_scope": "official_mlx",
+      "claim_types": [
+        "api_support"
+      ],
+      "note": "Used by the learning atlas to explain operation placement without explicit tensor transfers; it does not imply zero-copy behavior for every interop path."
+    },
+    {
+      "id": "mlx-doc-framework-conversion",
+      "title": "MLX framework conversion and DLPack documentation",
+      "url": "https://ml-explore.github.io/mlx/build/html/usage/numpy.html",
+      "kind": "official-doc",
+      "owner": "Apple MLX",
+      "topics": [
+        "mlx",
+        "numpy",
+        "dlpack",
+        "interop"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2026-07-12",
+      "evidence_class": "official_api_doc",
+      "support_scope": "official_mlx",
+      "claim_types": [
+        "api_support"
+      ],
+      "note": "Used by the learning atlas for source-oracle interop guidance; conversions may copy or force evaluation depending on the boundary."
+    },
+    {
+      "id": "mlx-doc-function-transforms",
+      "title": "MLX function transforms documentation",
+      "url": "https://ml-explore.github.io/mlx/build/html/usage/function_transforms.html",
+      "kind": "official-doc",
+      "owner": "Apple MLX",
+      "topics": [
+        "mlx",
+        "function-transforms",
+        "autodiff",
+        "vectorization"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2026-07-12",
+      "evidence_class": "official_api_doc",
+      "support_scope": "official_mlx",
+      "claim_types": [
+        "api_support"
+      ],
+      "note": "Used by the learning atlas to explain composable grad, value_and_grad, jvp, vjp, and vmap transforms; it does not establish model-specific support or performance."
+    },
+    {
+      "id": "mlx-doc-neural-networks",
+      "title": "MLX neural networks documentation",
+      "url": "https://ml-explore.github.io/mlx/build/html/python/nn.html",
+      "kind": "official-doc",
+      "owner": "Apple MLX",
+      "topics": [
+        "mlx",
+        "neural-networks",
+        "modules"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2026-07-12",
+      "evidence_class": "official_api_doc",
+      "support_scope": "official_mlx",
+      "claim_types": [
+        "api_support"
+      ],
+      "note": "Used by the learning atlas to introduce mlx.nn.Module and documented neural-network building blocks; it does not prove a complete model port."
     },
     {
       "id": "mlx-doc-lazy",
@@ -830,6 +932,28 @@
       "review_depth": "indexed",
       "snapshot": "",
       "note": ""
+    },
+    {
+      "id": "pytorch-doc-cuda-graphs",
+      "title": "PyTorch CUDA Graphs semantics",
+      "url": "https://docs.pytorch.org/docs/stable/notes/cuda.html#cuda-graphs",
+      "kind": "official-doc",
+      "owner": "PyTorch",
+      "topics": [
+        "pytorch",
+        "cuda",
+        "cuda-graphs",
+        "capture-replay"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2026-07-12",
+      "evidence_class": "official_api_doc",
+      "support_scope": "context_only",
+      "claim_types": [
+        "api_support",
+        "risk_or_negative"
+      ],
+      "note": "Defines CUDA Graph capture and replay semantics used to explain why the mechanism is NVIDIA-specific; it does not establish MLX support."
     },
     {
       "id": "paper-1706-03762",
@@ -4274,9 +4398,6 @@
       ]
     },
     {
-      "review_depth": "synthesized",
-      "snapshot": "2026-06-24",
-      "note": "Runtime guide for stream overlap; not a speedup claim without local timeline evidence.",
       "id": "mlx-doc-streams",
       "title": "MLX using streams documentation",
       "url": "https://ml-explore.github.io/mlx/build/html/usage/using_streams.html",
@@ -4286,7 +4407,15 @@
         "mlx",
         "streams",
         "runtime"
-      ]
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2026-07-12",
+      "evidence_class": "official_api_doc",
+      "support_scope": "official_mlx",
+      "claim_types": [
+        "api_support"
+      ],
+      "note": "Used by the learning atlas to explain explicit operation and stream placement; overlap remains a target-specific experiment, not a speed promise."
     },
     {
       "review_depth": "synthesized",

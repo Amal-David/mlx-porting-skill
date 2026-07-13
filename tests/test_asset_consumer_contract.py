@@ -27,6 +27,7 @@ ASSET_CONSUMERS: dict[str, tuple[str, ...]] = {
     "contributor_learnings.json": ("knowledge_curator.py",),
     "effective_claims.json": ("recommend_optimizations.py",),
     "knowledge_graph.json": ("recommend_optimizations.py",),
+    "learning_paths.json": ("generate_site_data.py",),
     "model_outcomes.json": ("knowledge_curator.py",),
     "optimization_guidance.yaml": ("recommend_optimizations.py",),
     "optimization_stacks.yaml": ("recommend_optimizations.py",),

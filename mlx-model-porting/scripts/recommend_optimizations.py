@@ -714,6 +714,7 @@ def load_graph_advisory(
     taxonomy: dict[str, Any],
     *,
     per_relation_limit: int,
+    rejected_method_ids: set[str] | None = None,
 ) -> dict[str, Any]:
     try:
         graph = _load_bounded_graph_json(Path(path))
@@ -721,10 +722,14 @@ def load_graph_advisory(
     except (SkillError, OSError, json.JSONDecodeError) as exc:
         return _graph_unavailable(families, str(exc))
 
+    rejected_targets = {
+        f"approach:{method_id}" for method_id in (rejected_method_ids or set())
+    }
     relevant_targets = {
         node_id
         for node_id, node in nodes_by_id.items()
-        if _graph_node_matches_families(node, families, taxonomy)
+        if node_id not in rejected_targets
+        and _graph_node_matches_families(node, families, taxonomy)
     }
     relevant_candidates = {
         str(edge["source"])
@@ -1543,6 +1548,12 @@ def main() -> int:
             families,
             taxonomy,
             per_relation_limit=min(max(1, args.limit), 25),
+            rejected_method_ids={
+                str(method.get("id"))
+                for method in guidance.get("methods", [])
+                if method.get("status") == "rejected-or-superseded"
+                and method.get("id")
+            },
         )
         prepared_methods: list[dict[str, Any]] = []
         for method in guidance.get("methods", []):
