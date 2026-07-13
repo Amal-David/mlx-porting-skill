@@ -3,11 +3,11 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>MLX Porter — Port models to Apple MLX with proof</title>
-  <meta name="description" content="An executable, source-first standard for inspecting, routing, porting, validating, benchmarking, and publishing models on Apple MLX.">
+  <title>MLX Porter — Optimize MLX ports with measured proof</title>
+  <meta name="description" content="A coding-agent skill that turns MLX conversion and optimization from trial-and-error into a structured, measured loop with correctness and quality gates.">
   <meta name="theme-color" content="#090c0e">
   <meta property="og:title" content="MLX Porter">
-  <meta property="og:description" content="Port models to Apple MLX with proof at every step.">
+  <meta property="og:description" content="Turn a working MLX port into a measured, quality-held optimization.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://mlx-porter.pages.dev/">
   <link rel="canonical" href="https://mlx-porter.pages.dev/">
@@ -26,7 +26,8 @@
       </a>
       <button class="nav-menu-button" type="button" data-nav-toggle aria-expanded="false" aria-controls="primary-links">Menu</button>
       <div class="nav-links" id="primary-links">
-        <a href="#workflow">Workflow</a>
+        <a href="#workflow">Method</a>
+        <a href="#measured-proof">Measured proof</a>
         <a href="#routes">Routes</a>
         <a href="#evidence">Evidence</a>
         <a href="#limits">Limits</a>
@@ -42,29 +43,29 @@
     <section class="hero" aria-labelledby="hero-title">
       <div class="hero-shell">
         <div class="hero-copy">
-          <div class="status-kicker"><span class="status-dot" aria-hidden="true"></span>Executable standard · v<span data-value="version">0.6.0</span></div>
-          <h1 id="hero-title">Port models to MLX with <em>proof at every step.</em></h1>
-          <p class="hero-lead">Dense-decoder Transformers can run the full source-capture, scaffold, schema-2 conversion, and parity chain. Other families leave with an architecture route, implementation runbook, validation plan, and honest evidence boundary.</p>
+          <div class="status-kicker"><span class="status-dot" aria-hidden="true"></span>Coding-agent skill · v<span data-value="version">0.6.0</span></div>
+          <h1 id="hero-title">Don’t stop at “it runs.” <em>Make the MLX port fast.</em></h1>
+          <p class="hero-lead">A coding-agent skill that turns “convert this model to MLX and make it fast” into a structured, measured loop. Correctness and quality are the safety rails, so the agent can optimize aggressively—and prove which gains hold.</p>
           <div class="hero-actions">
-            <a class="button primary" href="./docs/index.html#quick-start">Start a port →</a>
-            <a class="button" href="https://github.com/Amal-David/mlx-porting-skill">Inspect the repository</a>
+            <a class="button primary" href="./docs/index.html#quick-start">Give your agent the skill →</a>
+            <a class="button" href="https://github.com/Amal-David/mlx-porting-skill">Inspect the method</a>
           </div>
         </div>
 
-        <div class="chip-stage" aria-label="Illustration of an auditable MLX porting pipeline">
+        <div class="chip-stage" aria-label="Illustration of a measured MLX port-and-optimize loop">
           <div class="chip-board">
             <span class="trace one" aria-hidden="true"></span>
             <span class="trace two" aria-hidden="true"></span>
             <span class="trace three" aria-hidden="true"></span>
             <div class="chip-core">
-              <strong>PORT / VALIDATE / PROFILE</strong>
+              <strong>PORT / PROVE / OPTIMIZE</strong>
               <div class="signal-list" aria-hidden="true">
-                <div class="signal"><span>lineage</span><span class="signal-track"><span style="--signal: 94%; --signal-color: var(--lime)"></span></span><b>pinned</b></div>
-                <div class="signal"><span>weights</span><span class="signal-track"><span style="--signal: 86%; --signal-color: var(--cyan)"></span></span><b>mapped</b></div>
-                <div class="signal"><span>parity</span><span class="signal-track"><span style="--signal: 78%; --signal-color: var(--blue)"></span></span><b>staged</b></div>
-                <div class="signal"><span>claims</span><span class="signal-track"><span style="--signal: 48%; --signal-color: var(--gold)"></span></span><b>gated</b></div>
+                <div class="signal"><span>source</span><span class="signal-track"><span style="--signal: 94%; --signal-color: var(--lime)"></span></span><b>pinned</b></div>
+                <div class="signal"><span>parity</span><span class="signal-track"><span style="--signal: 86%; --signal-color: var(--cyan)"></span></span><b>passed</b></div>
+                <div class="signal"><span>profile</span><span class="signal-track"><span style="--signal: 78%; --signal-color: var(--blue)"></span></span><b>measured</b></div>
+                <div class="signal"><span>quality</span><span class="signal-track"><span style="--signal: 48%; --signal-color: var(--gold)"></span></span><b>held</b></div>
               </div>
-              <div class="chip-foot"><span>APPLE SILICON</span><span>RECEIPT 01</span></div>
+              <div class="chip-foot"><span>APPLE SILICON</span><span>LOCAL RECEIPT</span></div>
             </div>
           </div>
         </div>
@@ -74,6 +75,21 @@
           <div class="stat"><strong data-value="sources.total">350</strong><span>catalogued live evidence sources with recorded review depth</span></div>
           <div class="stat"><strong data-value="techniques.total">66</strong><span>techniques separated by support status</span></div>
           <div class="stat"><strong data-value="benchmarks.promotion_ready">0</strong><span>promotion-ready local speed claims without an external trust root</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section alt" id="fit" aria-labelledby="fit-title">
+      <div class="section-shell">
+        <div class="section-heading">
+          <span class="section-kicker">Use the shortest honest path</span>
+          <h2 id="fit-title">Conversion can be one command. Optimization is the work.</h2>
+          <p>This project does not turn a solved conversion into ceremony. It gives a coding agent the stable method for the part that still becomes trial-and-error: reaching the best measured candidate that keeps the declared quality bar.</p>
+        </div>
+        <div class="limitation-box">
+          <h3>When is this for me?</h3>
+          <p><strong>Architecture already supported?</strong> Use <code class="inline-code">mlx_lm.convert</code>. <strong>Need a new architecture—or the optimized version, proven correct at a declared quality bar?</strong> This skill is for you.</p>
+          <p>A coding agent follows one inspectable loop instead of improvising: inspect, route, prove parity, profile, change one optimization at a time, then keep or roll back from measured evidence.</p>
         </div>
       </div>
     </section>
@@ -99,9 +115,9 @@
     <section class="section alt" id="workflow">
       <div class="section-shell">
         <div class="section-heading">
-          <span class="section-kicker">The porting rail</span>
-          <h2>Readable first. Fast only after parity.</h2>
-          <p>Every phase creates evidence for the next. Optimization does not get to rewrite the history of a port that never matched its source.</p>
+          <span class="section-kicker">The agent-followable loop</span>
+          <h2>One stable method, from working port to measured recommendation.</h2>
+          <p>Every phase creates evidence for the next. Parity and task quality are the safety rails: once they pass, the agent profiles the real bottleneck, changes one dimension, measures again, and keeps only a quality-held result.</p>
         </div>
         <div class="workflow" aria-label="Eight-step MLX porting workflow">
           <article class="workflow-step"><h3>Inspect</h3><p>Inventory metadata, formats, lineage, custom-code risk, tensors, and architecture signals.</p></article>
@@ -123,7 +139,29 @@
       </div>
     </section>
 
-    <section class="section" id="routes">
+    <section class="section" id="measured-proof" aria-labelledby="measured-proof-title">
+      <div class="section-shell">
+        <div class="section-heading">
+          <span class="section-kicker">A local measured observation</span>
+          <h2 id="measured-proof-title">The fastest candidate failed. The quality-held candidate won.</h2>
+          <p>On Qwen2.5-0.5B-Instruct, the structured loop rejected the obvious max-compression pick and recommended the candidate that improved the local runtime while staying inside the declared quality gate.</p>
+        </div>
+        <div class="proof-layout">
+          <div class="limitation-box">
+            <h3>Qwen2.5-0.5B-Instruct · Apple M4 Pro</h3>
+            <p>Measured locally with the same cached source, a fixed 14-token prompt, one warmup, and five timed 64-token greedy runs. The quality check used 72 held next-token positions and four fixed generation prompts.</p>
+            <p>These are local measured observations, not portable speed or memory claims. Different models, prompts, thermals, chips, and software versions can reorder the candidates. Promotion stays sealed: this diagnostic sets <code class="inline-code">promotable_claim=false</code> and remains outside the promotion-evidence pipeline.</p>
+          </div>
+          <div class="evidence-ledger" aria-label="Local Qwen optimization result">
+            <div class="ledger-row" style="--ledger-color: var(--aluminum-400)"><i class="ledger-mark" aria-hidden="true"></i><strong>bf16 baseline</strong><span>The local M4 Pro baseline observation measured 133 tok/s, 0.956 GiB peak Metal memory, and a reference perplexity ratio of 1.0000.</span></div>
+            <div class="ledger-row" style="--ledger-color: var(--coral)"><i class="ledger-mark" aria-hidden="true"></i><strong>Naive 4-bit · rejected</strong><span>This local M4 Pro observation reached ~2.2x the bf16 decode throughput—not a portable guarantee—but its perplexity ratio rose to 1.30 and failed the declared 1.10 quality gate.</span></div>
+            <div class="ledger-row" style="--ledger-color: var(--lime)"><i class="ledger-mark" aria-hidden="true"></i><strong>8-bit · recommended</strong><span>This local M4 Pro observation reached ~1.5x the bf16 decode throughput—not a portable guarantee—used ~46% less peak Metal memory, and held its perplexity ratio to 1.0009. It passed.</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section alt" id="routes">
       <div class="section-shell">
         <div class="section-heading">
           <span class="section-kicker">Architecture-specific routes</span>
@@ -136,7 +174,7 @@
       </div>
     </section>
 
-    <section class="section alt" id="evidence">
+    <section class="section" id="evidence">
       <div class="section-shell proof-layout">
         <div>
           <div class="section-heading">
@@ -161,7 +199,7 @@
       </div>
     </section>
 
-    <section class="section" id="limits">
+    <section class="section alt" id="limits">
       <div class="section-shell contribute-layout">
         <div>
           <div class="section-heading">
@@ -199,7 +237,7 @@
 
   <footer class="site-footer">
     <div class="footer-shell">
-      <div><strong>MLX Porter</strong><br><span>Evidence-aware model porting for Apple Silicon.</span></div>
+      <div><strong>MLX Porter</strong><br><span>Measured MLX optimization for coding agents.</span></div>
       <div class="footer-links">
         <a href="./docs/index.html">Documentation</a>
         <a href="https://github.com/Amal-David/mlx-porting-skill">Repository</a>
