@@ -2,7 +2,7 @@
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
   "version": "0.6.0",
-  "generated_at": "2026-07-13T20:47:20.738648+00:00",
+  "generated_at": "2026-07-13T20:54:59.344727+00:00",
   "file_count": 509,
   "files": [
     {
@@ -2769,14 +2769,14 @@
     },
     {
       "path": "tests/mlx_keystone.py",
-      "size_bytes": 1669,
-      "sha256": "f7ff0b61dfbfc8122bc7f582c6a6dc1957e1236ff553407a13092fb883abef54",
+      "size_bytes": 2340,
+      "sha256": "a347292f1efa31cbcf104c99e3111121664af00d8ee3676dc73d50e59dff986e",
       "executable": false
     },
     {
       "path": "tests/test_asr_encoder_contract.py",
-      "size_bytes": 17738,
-      "sha256": "af5d0890ba037ef0fd5f6785a5c8c5457afb51ad70839e4c4dbf53cbb763b072",
+      "size_bytes": 17765,
+      "sha256": "e732d31d55322d3ea29312212f9f0ca24d9f6bf5b92fd5895f9b4099e78313af",
       "executable": false
     },
     {
@@ -2841,14 +2841,14 @@
     },
     {
       "path": "tests/test_encoder_contract.py",
-      "size_bytes": 12575,
-      "sha256": "1de11d2bc4dee6b77d41cfb72fdc2b679e21a37422440767a289c06249bb4645",
+      "size_bytes": 12602,
+      "sha256": "51038aa59d4131bc2de56b99ef03730d54439040c56b836bb46c327d658248cb",
       "executable": false
     },
     {
       "path": "tests/test_encoder_decoder_contract.py",
-      "size_bytes": 16836,
-      "sha256": "7240167a9c9f45108244bc1c31b3962e25e3121893040bfd1ff6cc65d755433b",
+      "size_bytes": 16863,
+      "sha256": "6ea248dbaed90486e1eea115322df2359bf23f9afaf9b9f5d40f770d37eec987",
       "executable": false
     },
     {
@@ -2931,8 +2931,8 @@
     },
     {
       "path": "tests/test_mlx_keystone_guard.py",
-      "size_bytes": 1846,
-      "sha256": "138cc00c170c17fa944c04bc1856b62c80dd2b427621cffeef24590d9b4ac72b",
+      "size_bytes": 2674,
+      "sha256": "d31cc3699ae3c54ad94838f52a0c9e046baf5c16c531415b96d5dc711ef6f502",
       "executable": false
     },
     {

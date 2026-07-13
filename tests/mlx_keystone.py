@@ -22,13 +22,26 @@ def mlx_keystone_required() -> bool:
 def require_mlx_keystone(
     mlx_available: bool,
     reason: str,
+    *,
+    needs_real_model: bool = False,
 ) -> Callable[[TestCaseType], TestCaseType]:
-    """Skip normally, but replace MLX tests with failures on required lanes."""
+    """Skip normally, but replace MLX-math tests with failures on required lanes.
+
+    A required lane (``MLX_KEYSTONE_REQUIRED=1``) exists to catch a silently
+    skipped MLX-math keystone: pure MLX ops the runner can execute. When such a
+    keystone is unavailable there, its skip becomes a hard failure.
+
+    Real-checkpoint keystones (``needs_real_model=True``) additionally depend on
+    a multi-gigabyte downloaded model that a stock CI runner cannot provision.
+    Their unavailability is an environment gap, not an MLX-math regression, so
+    they always skip when unavailable -- even on a required lane. Enforcing them
+    belongs to a separate, model-provisioned lane.
+    """
 
     def decorate(test_case: TestCaseType) -> TestCaseType:
         if mlx_available:
             return test_case
-        if not mlx_keystone_required():
+        if needs_real_model or not mlx_keystone_required():
             return unittest.skip(reason)(test_case)
 
         message = (
