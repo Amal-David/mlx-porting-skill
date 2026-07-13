@@ -5,8 +5,8 @@ license: Apache-2.0
 compatibility: Execution and performance validation require an Apple Silicon Mac with a supported MLX installation. Planning and static inspection can run elsewhere. Python 3.10+ and git are recommended; NumPy is required only for tensor parity and huggingface-hub only for explicitly enabled network intake (see requirements-tools.txt). Network access is optional and must be explicitly enabled.
 metadata:
   author: mlx-porting-skill
-  version: "0.6.0"
-  last-reviewed: "2026-07-12"
+  version: "0.6.1"
+  last-reviewed: "2026-07-14"
 ---
 
 # MLX model porting and optimization
@@ -143,5 +143,5 @@ Stop when license, remote code, unresolved parity, regressions, missing kernel f
 
 ## Maintenance
 
-For maintenance, read [mnt](references/maintenance-and-provenance.md), [hyp](references/hypothesis-led-learning.md), [deep](references/deep-research-loop.md). The 0.6.0 payload has 30 scripts, 66 techniques, and 13 benchmark receipts: 12 observations, 0 promotion-ready, and 1 rejected. Use `scripts/nightly_knowledge_curator.py` for receipts, delta, packets; use hypothesis-led for 50-100/learn-flow/public-port/kernel/2x/5x targets. Keep flags/receipts/gates/matrices/dossiers/ledger in [deep](references/deep-research-loop.md); run `scripts/audit_skill.py --strict` and `scripts/validate_sources.py` before distribution.
+For maintenance, read [mnt](references/maintenance-and-provenance.md), [hyp](references/hypothesis-led-learning.md), [deep](references/deep-research-loop.md). The 0.6.1 payload has 30 scripts, 70 techniques, and 13 benchmark receipts: 12 observations, 0 promotion-ready, and 1 rejected. Use `scripts/nightly_knowledge_curator.py` for receipts, delta, packets; use hypothesis-led for 50-100/learn-flow/public-port/kernel/2x/5x targets. Keep flags/receipts/gates/matrices/dossiers/ledger in [deep](references/deep-research-loop.md); run `scripts/audit_skill.py --strict` and `scripts/validate_sources.py` before distribution.
 When `assets/architectures.yaml` changes, keep the golden scenario gate in `tests/test_scenarios.py` at full family coverage.

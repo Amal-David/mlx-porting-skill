@@ -2,7 +2,7 @@
 
 **Review date:** 2026-07-11
 
-**Artifact version:** 0.6.0
+**Artifact version:** 0.6.1
 
 ## Executive finding
 
@@ -75,20 +75,20 @@ guidance.
 
 ## Current corpus and proof boundary
 
-The 0.6.0 snapshot contains:
+The 0.6.1 snapshot contains:
 
 | Surface | Count | Boundary |
 |---|---:|---|
 | Architecture routes | 17 | Synthetic golden route and guard scenarios; one dense-decoder model has a completed real port. |
-| Evidence sources | 356 | Every source has review depth; 30 carry classified support scope and claim types, while 326 remain intentionally unclassified. |
-| Technique records | 66 | Status describes evidence maturity, not a portable performance guarantee. |
+| Evidence sources | 361 | Every source has review depth; 35 carry classified support scope and claim types, while 326 remain intentionally unclassified. |
+| Technique records | 70 | Status describes evidence maturity, not a portable performance guarantee. |
 | Guidance methods | 28 | Target matching and evidence gates determine whether advice can be surfaced. |
 | Optimization stacks | 4 | Planning structures; no positive compound number is implied. |
 | Python scripts | 30 | Inspectable intake, execution, validation, evidence, and packaging tools. |
 | Benchmark receipts | 13 | 12 performance observations, 0 promotion-ready, 1 rejected. |
 | Effective claims | 10 | All ten are withheld. |
-| Knowledge graph | 703 nodes / 501 edges | Review-only research memory with a reconciled backlog and bounded advisor projection. |
-| Offline tests | 468 | Contract, security, determinism, portability, generated-drift, learning-atlas, and gated execution coverage. |
+| Knowledge graph | 708 nodes / 501 edges | Review-only research memory with a reconciled backlog and bounded advisor projection. |
+| Offline tests | 473 | Contract, security, determinism, portability, generated-drift, learning-atlas, and gated execution coverage. |
 
 The `bf16-weight-cast` measurement is a reproducible observation for the
 captured Qwen load-plus-six-token workload. It is not promotion-ready because

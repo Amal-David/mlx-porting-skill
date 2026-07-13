@@ -32,6 +32,44 @@ For every recipe record:
 - packing/runtime version;
 - quality and performance metrics.
 
+## Re-profile after lowering the matmul
+
+Low-bit matrix multiplication can move the bottleneck instead of removing it.
+After quantizing a large projection, re-profile adjacent normalization,
+activation, cast, reshape, and materialization costs. Try MLX native fast
+operations and `mx.compile` on a stable region before a custom kernel. Treat
+GEMM epilogue fusion as a Metal-specific experiment only after the profile
+shows intermediate reads/writes or launches dominate; NVIDIA CUTLASS visitor,
+tile, register, and Tensor Core designs are not MLX implementations.
+
+The benchmark must cover the whole repeated block and the end-to-end workload,
+not only the quantized matmul. Roll back when the surrounding operations erase
+the gain, layout/packing work dominates, or a fused path changes accumulation
+or output quality beyond tolerance.
+
+## Quantization-aware distillation
+
+When post-training quantization fails a representative task-quality gate,
+quantization-aware distillation is an experimental model-training option, not
+a supported conversion shortcut. Require explicit opt-in before execution.
+
+A credible experiment needs:
+
+- a frozen full-precision teacher and pinned source/student revisions;
+- fake quantization whose format, group scaling, activation policy, and module
+  exclusions correspond to the intended real MLX inference recipe;
+- a differentiable straight-through or equivalent gradient path through the
+  simulated quantizer;
+- task-appropriate teacher/student and source-objective losses;
+- evaluation through the exported real MLX quantized kernels;
+- latent/intermediate checks plus representative perceptual, language, audio,
+  or task-quality metrics and an end-to-end latency/memory receipt.
+
+Training loss alone is not a quality gate. The NVFP4 QAD paper and fal's
+diffusion adaptation (`paper-2601-20088` and
+`fal-ideogram-v4-serving-2026-07-09`) are research evidence; neither proves
+that the recipe transfers to an MLX model or Apple Silicon workload.
+
 ## Mixed-bit policies
 
 Allocate precision by measured sensitivity, not parameter name folklore. Candidate signals include layerwise output error, Hessian/activation statistics, outlier magnitude, task-quality ablation, and module size. A mixed recipe must be deterministic and versioned.

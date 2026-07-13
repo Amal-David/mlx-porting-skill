@@ -20,4 +20,4 @@ User installation:
 python3 mlx-model-porting/scripts/install_skill.py --dest ~/.agents/skills
 ```
 
-Start a new Codex session or reload skills, then verify `mlx-model-porting` version `0.6.0`.
+Start a new Codex session or reload skills, then verify `mlx-model-porting` version `0.6.1`.

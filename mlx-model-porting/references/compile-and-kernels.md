@@ -14,6 +14,23 @@ Choose dtype by numerical role rather than applying one global cast. Check that 
 
 Prefer MLX-provided fused primitives where semantics match, including fast attention, normalization, RoPE, quantized matmul, and available segmented/gather/block-masked operations. Confirm masks, head grouping, sinks, and causal semantics.
 
+After making a large matmul cheaper, profile the operations around it again.
+Normalization, gated activation, casts, reshapes, and intermediate
+materialization can become the new bandwidth or launch bottleneck. Prefer a
+native fast operation or compilation of a stable region before custom Metal.
+
+Do not call a separate post-op Metal dispatch a fused quantized-matmul
+epilogue. That claim requires one implementation that keeps the accumulator or
+intermediate on chip across the combined operation, plus evidence that the
+built-in MLX path did not already fuse it. If a one-time weight permutation or
+packing change makes paired gate/up values contiguous, record a reversible
+conversion map and test load/save and unfused-reference parity.
+
+The CUTLASS visitor, tile-revisit, Tensor Core, register, and TMEM mechanisms in
+`fal-ideogram-v4-serving-2026-07-09` are NVIDIA-specific. The portable learning
+is to measure memory traffic around a newly cheap matmul; any Metal kernel must
+be redesigned and validated for MLX.
+
 ### 4. Stable-region compilation
 
 Compile pure, shape-stable, frequently repeated numerical regions. Return updated cache/state explicitly or capture it with `outputs=`. Keep I/O, logging, tokenizer work, dynamic strings, and irregular Python control flow outside. Token decode steps may be compiled only when cache containers, shapes, static arguments, dtype/device, and closure constants are stable enough to avoid retracing.
