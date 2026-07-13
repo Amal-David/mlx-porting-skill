@@ -407,10 +407,12 @@ class SiteContractTests(unittest.TestCase):
         self.assertIn("learn", section_ids)
         self.assertIn("atlas-preview", section_ids)
         self.assertLess(section_ids.index("atlas-preview"), section_ids.index("workflow"))
+        self.assertLess(section_ids.index("workflow"), section_ids.index("routes"))
         self.assertLess(section_ids.index("workflow"), section_ids.index("learn"))
         self.assertLess(section_ids.index("routes"), section_ids.index("learn"))
         self.assertLess(section_ids.index("learn"), section_ids.index("evidence"))
 
+        self.assertIn("<title>MLX Porter — Port models to Apple MLX with proof</title>", html)
         self.assertIn("Port the model. Prove the result.", landing.text)
         self.assertIn("Start a model port", landing.text)
         self.assertIn("LearnMLX · optional depth module", landing.text)
@@ -421,10 +423,13 @@ class SiteContractTests(unittest.TestCase):
         self.assertIn("FLUX-style diffusion/flow", landing.text)
         self.assertIn("Proven guided lab", landing.text)
         self.assertGreaterEqual(landing.text.count("Runbook simulation"), 2)
+        self.assertIn('<a href="#routes">Runbooks</a>', html)
+        self.assertIn('<a href="#learn">LearnMLX</a>', html)
         self.assertIn('./docs/index.html#quick-start', html)
         self.assertIn('./docs/index.html#mlx-fundamentals', html)
         self.assertGreaterEqual(html.count('./docs/index.html#porting-atlas'), 4)
         self.assertIn('./docs/index.html#qwen-worked-port', html)
+        self.assertIn('<span>© <span data-year></span></span>', html)
 
         radios = [
             attrs

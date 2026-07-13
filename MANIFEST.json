@@ -2,7 +2,7 @@
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
   "version": "0.6.0",
-  "generated_at": "2026-07-13T04:14:37.727617+00:00",
+  "generated_at": "2026-07-13T04:22:57.620134+00:00",
   "file_count": 467,
   "files": [
     {
@@ -2769,8 +2769,8 @@
     },
     {
       "path": "tests/test_site_contract.py",
-      "size_bytes": 39896,
-      "sha256": "65cb7a60e2bb94eeccea25015b7dca86983d068bc9f4c63c9d17f7db94844d4e",
+      "size_bytes": 40271,
+      "sha256": "84294bc2d12827f550c73af249accc77caf6eeee01af66255603ae34ac458c85",
       "executable": false
     },
     {
