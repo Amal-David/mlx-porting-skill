@@ -1,0 +1,224 @@
+{
+  "schema_version": 1,
+  "model": {
+    "directory": "source",
+    "fingerprint": "sha256:5287e9ded05dc44b36d87bcaac4d4ac1bf3af0a37aeb8214cf727c21499b5dff",
+    "config": {
+      "name": "config.json",
+      "size_bytes": 739,
+      "sha256": "d52aa27bd15b858d3a749f121d8073d0c78eda9b9c600f43455748cb3b2b5bae"
+    },
+    "weights": {
+      "algorithm": "sha256",
+      "file_count": 1,
+      "total_bytes": 437955512,
+      "max_listed_files": 256,
+      "truncated": false,
+      "omitted_file_count": 0,
+      "files": [
+        {
+          "name": "model.safetensors",
+          "size_bytes": 437955512,
+          "sha256": "4628723bc5928711fe915d2a089cd19fb76edca0a2b0e51a587e1b466d1e03a5"
+        }
+      ]
+    }
+  },
+  "capture": {
+    "mode": "encoder",
+    "input_mode": "token_ids",
+    "prompts": null,
+    "token_ids": [
+      101,
+      7592,
+      2088,
+      999
+    ],
+    "attention_mask": [
+      [
+        1,
+        1,
+        1,
+        0
+      ]
+    ],
+    "generate_steps": 0,
+    "seed": 0,
+    "dtype_policy": "float32"
+  },
+  "tensors": [
+    {
+      "name": "attention_mask",
+      "shape": [
+        1,
+        4
+      ],
+      "dtype": "int64",
+      "sha256": "1f6e031dd33eed75757df11b845fddc49b3e2f1604f9d7b19c9ae32be8d838c2"
+    },
+    {
+      "name": "embed",
+      "shape": [
+        1,
+        4,
+        768
+      ],
+      "dtype": "float32",
+      "sha256": "6baffc7a7371ce56f33aaf6f53469dddd69e57aaa886e12cdd24cb85a97abde5"
+    },
+    {
+      "name": "final_hidden",
+      "shape": [
+        1,
+        4,
+        768
+      ],
+      "dtype": "float32",
+      "sha256": "416f450b273a17981ad70b59a1a2b6cf9901acc0955de31e574b7812255f0817"
+    },
+    {
+      "name": "input_ids",
+      "shape": [
+        1,
+        4
+      ],
+      "dtype": "int64",
+      "sha256": "e58d608c8dbc4bbebd34fb83a3c95e2107cb5d2bd77ff06d95e22dccae88b14e"
+    },
+    {
+      "name": "layer.0.hidden",
+      "shape": [
+        1,
+        4,
+        768
+      ],
+      "dtype": "float32",
+      "sha256": "618d371adc94e6444ea22fe8c837db6f5e8d10365a1f877d8639f574dc5f871d"
+    },
+    {
+      "name": "layer.1.hidden",
+      "shape": [
+        1,
+        4,
+        768
+      ],
+      "dtype": "float32",
+      "sha256": "9a5912418c769ff70c5fb9fb6e0aa43c1652a360b4fb75a0adc283d70143108f"
+    },
+    {
+      "name": "layer.10.hidden",
+      "shape": [
+        1,
+        4,
+        768
+      ],
+      "dtype": "float32",
+      "sha256": "6428398bfff599732fb030bf1a9b5a8dfdb2e1629c4b12e6bfbaa8876392978f"
+    },
+    {
+      "name": "layer.11.hidden",
+      "shape": [
+        1,
+        4,
+        768
+      ],
+      "dtype": "float32",
+      "sha256": "416f450b273a17981ad70b59a1a2b6cf9901acc0955de31e574b7812255f0817"
+    },
+    {
+      "name": "layer.2.hidden",
+      "shape": [
+        1,
+        4,
+        768
+      ],
+      "dtype": "float32",
+      "sha256": "c1ee7ef9166c0d045ed08cdc83241b97f98580b8e8db681ea2967af899cfae0d"
+    },
+    {
+      "name": "layer.3.hidden",
+      "shape": [
+        1,
+        4,
+        768
+      ],
+      "dtype": "float32",
+      "sha256": "f10d695ea205da70a81dfa0e02477036a2c794604e88bb5839baae97eef7cfd5"
+    },
+    {
+      "name": "layer.4.hidden",
+      "shape": [
+        1,
+        4,
+        768
+      ],
+      "dtype": "float32",
+      "sha256": "7b570e6db5af548fbb70ce70dce0db5b07305e3497d2474c87afd276c52427b1"
+    },
+    {
+      "name": "layer.5.hidden",
+      "shape": [
+        1,
+        4,
+        768
+      ],
+      "dtype": "float32",
+      "sha256": "6472e03b459ae87b9b422f7cb12487707585197a100b7b7663b960569425dfcb"
+    },
+    {
+      "name": "layer.6.hidden",
+      "shape": [
+        1,
+        4,
+        768
+      ],
+      "dtype": "float32",
+      "sha256": "56f1114e21a9bbfe8379c536128ed84a2898911fd1cdb1f9cf1353758b553ca2"
+    },
+    {
+      "name": "layer.7.hidden",
+      "shape": [
+        1,
+        4,
+        768
+      ],
+      "dtype": "float32",
+      "sha256": "5fa0eaa9ca319de50e1a7610c4573d1e1db60961029c5365ff51bfe5662917bd"
+    },
+    {
+      "name": "layer.8.hidden",
+      "shape": [
+        1,
+        4,
+        768
+      ],
+      "dtype": "float32",
+      "sha256": "a3df103f80653c63aaaed92a252ff09d2e49053ca0b0e89af6cbe2ef45253b52"
+    },
+    {
+      "name": "layer.9.hidden",
+      "shape": [
+        1,
+        4,
+        768
+      ],
+      "dtype": "float32",
+      "sha256": "c4ac7305742c23903bc82399a70146e589669a4b6830eb96f532bc2cec608aa0"
+    },
+    {
+      "name": "pooled",
+      "shape": [
+        1,
+        768
+      ],
+      "dtype": "float32",
+      "sha256": "3546f739b0e769c96bde6b24f2af1e95ad51f3350e8bde07fded5f4b329ec03a"
+    }
+  ],
+  "libraries": {
+    "python": "3.14.4",
+    "numpy": "2.3.5",
+    "torch": "2.9.1",
+    "transformers": "5.3.0"
+  }
+}

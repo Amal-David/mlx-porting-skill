@@ -50,6 +50,20 @@ Capture:
 5. Implement deterministic greedy generation.
 6. Add beam/timestamp/sampling behavior only after token-logit parity.
 
+The built-in scaffolder currently implements the non-gated ReLU T5 path. It
+uses mean-square-only T5 LayerNorm, first-layer-owned relative-position bias
+shared across each self-attention stack, tied embeddings with T5 output
+scaling, causal decoder self-cache, and reusable encoder cross-attention K/V.
+BART, NLLB, Whisper, gated T5 variants, and other aliases still require their
+runbook-specific graph implementation and fail closed in the generator.
+
+The encoder-decoder capture contract orders `encoder.embed`,
+`encoder.layer.{i}.hidden`, `encoder.final_norm`, `decoder_input_ids`,
+`decoder.embed`, `decoder.layer.{i}.cross_attention`,
+`decoder.layer.{i}.hidden`, `decoder.final_norm`, `logits`, and exact greedy
+IDs. Decoder captures represent the fixed first step beginning at
+`decoder_start_token_id`; generation continues against the same encoder memory.
+
 ## Parity traps
 
 - encoder padding mask versus decoder causal mask confusion;

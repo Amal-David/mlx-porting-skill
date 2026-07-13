@@ -446,6 +446,12 @@ class TensorArchive:
             raise SkillError(f"could not read NPZ member {member.filename}: {exc}") from exc
 
 
+def _clamp_cosine(value: float) -> float:
+    if not math.isfinite(value):
+        return value
+    return max(-1.0, min(1.0, value))
+
+
 def compare_arrays(a: Any, b: Any, np: Any, *, atol: float, rtol: float) -> dict[str, Any]:
     if a.shape != b.shape:
         raise SkillError("compare_arrays requires equal tensor shapes")
@@ -524,7 +530,8 @@ def compare_arrays(a: Any, b: Any, np: Any, *, atol: float, rtol: float) -> dict
     norm_a = math.sqrt(norm_a_squared)
     norm_b = math.sqrt(norm_b_squared)
     norm = norm_a * norm_b
-    cosine = float(np.real(dot) / norm) if norm else (1.0 if arrays_equal else 0.0)
+    raw_cosine = float(np.real(dot) / norm) if norm else (1.0 if arrays_equal else 0.0)
+    cosine = _clamp_cosine(raw_cosine)
     return {
         "finite": finite,
         "max_abs": max_abs,
