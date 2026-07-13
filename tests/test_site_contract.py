@@ -395,7 +395,7 @@ class SiteContractTests(unittest.TestCase):
             with self.subTest(term=workflow_term):
                 self.assertIn(workflow_term, docs_text)
 
-    def test_homepage_leads_with_learning_and_a_semantic_atlas_preview(self) -> None:
+    def test_homepage_leads_with_porting_and_preserves_optional_learnmlx_module(self) -> None:
         path = SITE / "index.html"
         html = path.read_text(encoding="utf-8")
         landing = self.pages[path]
@@ -406,19 +406,23 @@ class SiteContractTests(unittest.TestCase):
         ]
         self.assertIn("learn", section_ids)
         self.assertIn("atlas-preview", section_ids)
-        self.assertLess(section_ids.index("learn"), section_ids.index("workflow"))
         self.assertLess(section_ids.index("atlas-preview"), section_ids.index("workflow"))
+        self.assertLess(section_ids.index("workflow"), section_ids.index("learn"))
+        self.assertLess(section_ids.index("routes"), section_ids.index("learn"))
+        self.assertLess(section_ids.index("learn"), section_ids.index("evidence"))
 
-        self.assertIn("Learn the system. Port the model.", landing.text)
-        self.assertIn("Learn MLX fundamentals", landing.text)
-        self.assertIn("Start a guided port", landing.text)
+        self.assertIn("Port the model. Prove the result.", landing.text)
+        self.assertIn("Start a model port", landing.text)
+        self.assertIn("LearnMLX · optional depth module", landing.text)
+        self.assertIn("Use it as a reference, not a prerequisite", landing.text)
         self.assertIn("See the whole port before you touch code.", landing.text)
         self.assertIn("Qwen2.5-0.5B-Instruct", landing.text)
         self.assertIn("Whisper-style ASR", landing.text)
         self.assertIn("FLUX-style diffusion/flow", landing.text)
         self.assertIn("Proven guided lab", landing.text)
         self.assertGreaterEqual(landing.text.count("Runbook simulation"), 2)
-        self.assertIn('./docs/index.html#what-is-porting', html)
+        self.assertIn('./docs/index.html#quick-start', html)
+        self.assertIn('./docs/index.html#mlx-fundamentals', html)
         self.assertGreaterEqual(html.count('./docs/index.html#porting-atlas'), 4)
         self.assertIn('./docs/index.html#qwen-worked-port', html)
 

@@ -3,11 +3,11 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>MLX Porter — Learn MLX by porting a model</title>
-  <meta name="description" content="Learn how PyTorch and CUDA model semantics translate to Apple MLX, then follow an evidence-gated path from source inspection to a proven port.">
+  <title>MLX Porter — Port models to Apple MLX with proof</title>
+  <meta name="description" content="Inspect, port, validate, and optimize models for Apple MLX with architecture runbooks, parity gates, benchmark receipts, and an optional LearnMLX fundamentals module.">
   <meta name="theme-color" content="#090c0e">
   <meta property="og:title" content="MLX Porter">
-  <meta property="og:description" content="Learn the system, simulate representative ports, and prove every MLX translation step.">
+  <meta property="og:description" content="A complete, evidence-gated path from source model to validated and optimized Apple MLX port.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://mlx-porter.pages.dev/">
   <link rel="canonical" href="https://mlx-porter.pages.dev/">
@@ -26,9 +26,10 @@
       </a>
       <button class="nav-menu-button" type="button" data-nav-toggle aria-expanded="false" aria-controls="primary-links">Menu</button>
       <div class="nav-links" id="primary-links">
-        <a href="#learn">Learn MLX</a>
         <a href="#atlas-preview">Atlas</a>
         <a href="#workflow">Workflow</a>
+        <a href="#routes">Runbooks</a>
+        <a href="#learn">LearnMLX</a>
         <a href="#evidence">Evidence</a>
       </div>
       <div class="nav-actions">
@@ -42,14 +43,14 @@
     <section class="hero" aria-labelledby="hero-title">
       <div class="hero-shell">
         <div class="hero-copy">
-          <div class="status-kicker"><span class="status-dot" aria-hidden="true"></span>Learning atlas · executable standard · v<span data-value="version">0.6.0</span></div>
-          <h1 id="hero-title">Learn the system. <em>Port the model.</em></h1>
-          <p class="hero-lead">See how a PyTorch or CUDA model becomes a readable MLX graph: identify the architecture, translate runtime semantics, map weights, prove the first matching path, then optimize only what the profile earns.</p>
+          <div class="status-kicker"><span class="status-dot" aria-hidden="true"></span>Porting system · executable standard · v<span data-value="version">0.6.0</span></div>
+          <h1 id="hero-title">Port the model. <em>Prove the result.</em></h1>
+          <p class="hero-lead">Take a PyTorch or CUDA model from source inspection to a readable MLX graph, explicit weight mapping, staged parity, measured optimization, and a reviewable proof packet.</p>
           <div class="hero-actions">
-            <a class="button primary" href="#learn">Learn MLX fundamentals</a>
-            <a class="button" href="./docs/index.html#porting-atlas">Start a guided port →</a>
+            <a class="button primary" href="./docs/index.html#quick-start">Start a model port</a>
+            <a class="button" href="./docs/index.html#porting-atlas">Explore the porting atlas →</a>
           </div>
-          <p class="hero-expert-link">Already know the terrain? <a href="./docs/index.html#quick-start">Open the executable field manual</a> or <a href="https://github.com/Amal-David/mlx-porting-skill">inspect the repository</a>.</p>
+          <p class="hero-expert-link">Need a fundamentals refresh? <a href="#learn">Use the LearnMLX module</a>. Ready to work? <a href="https://github.com/Amal-David/mlx-porting-skill">Inspect the repository</a>.</p>
         </div>
 
         <div class="chip-stage">
@@ -114,50 +115,6 @@
           <div class="stat"><strong data-value="sources.total">356</strong><span>catalogued live evidence sources with recorded review depth</span></div>
           <div class="stat"><strong data-value="techniques.total">66</strong><span>techniques separated by support status</span></div>
           <div class="stat"><strong data-value="benchmarks.promotion_ready">0</strong><span>promotion-ready local speed claims without an external trust root</span></div>
-        </div>
-      </div>
-    </section>
-
-    <section class="section learning-section" id="learn" aria-labelledby="learn-title">
-      <div class="section-shell">
-        <div class="learn-intro-layout">
-          <div class="section-heading">
-            <span class="section-kicker">Learn MLX</span>
-            <h2 id="learn-title">First, change the mental model.</h2>
-            <p>MLX feels familiar because its arrays look NumPy-like. The important differences are underneath: expressions are lazy, CPU and GPU operate over unified memory, and compilation works best around pure, stable, reused regions.</p>
-          </div>
-          <aside class="mlx-primer" aria-label="What an MLX port preserves">
-            <span class="primer-label">A port is not a file conversion</span>
-            <p>It preserves the source computation, preprocessing, state, weight meaning, numerical policy, and output behavior in a new runtime.</p>
-            <a href="./docs/index.html#what-is-porting">Understand what is being ported →</a>
-          </aside>
-        </div>
-
-        <div class="learn-grid">
-          <article class="learn-card">
-            <span class="card-index">01 / arrays</span>
-            <h3>NumPy-like, built for Apple silicon</h3>
-            <p><span class="inline-code">mx.array</span>, <span class="inline-code">mlx.nn</span>, and composable transforms give the port a readable native foundation.</p>
-            <a href="https://ml-explore.github.io/mlx/build/html/usage/quick_start.html">Official Quick Start ↗</a>
-          </article>
-          <article class="learn-card">
-            <span class="card-index">02 / memory</span>
-            <h3>One memory pool, explicit operations</h3>
-            <p>Unified memory removes the usual tensor-transfer choreography, but framework bridges may still copy or force evaluation.</p>
-            <a href="https://ml-explore.github.io/mlx/build/html/usage/unified_memory.html">Learn unified memory ↗</a>
-          </article>
-          <article class="learn-card">
-            <span class="card-index">03 / execution</span>
-            <h3>Build lazily, evaluate deliberately</h3>
-            <p>Place <span class="inline-code">mx.eval</span> at dependency, comparison, and measurement boundaries—not after every operation.</p>
-            <a href="https://ml-explore.github.io/mlx/build/html/usage/lazy_evaluation.html">Learn lazy evaluation ↗</a>
-          </article>
-          <article class="learn-card">
-            <span class="card-index">04 / graphs</span>
-            <h3>Compile the stable hot region</h3>
-            <p>Prove an eager path first. Then compile pure, repeatedly used regions while keeping mutable state visible.</p>
-            <a href="https://ml-explore.github.io/mlx/build/html/usage/compile.html">Learn compilation ↗</a>
-          </article>
         </div>
       </div>
     </section>
@@ -300,6 +257,50 @@
       </div>
     </section>
 
+    <section class="section learning-section" id="learn" aria-labelledby="learn-title">
+      <div class="section-shell">
+        <div class="learn-intro-layout">
+          <div class="section-heading">
+            <span class="section-kicker">LearnMLX · optional depth module</span>
+            <h2 id="learn-title">Refresh the fundamentals when the port demands it.</h2>
+            <p>The complete porting system works as a field manual. LearnMLX is the deeper companion for anyone who wants to revisit the execution model underneath it: lazy arrays, unified memory, modules, transforms, streams, and compilation.</p>
+          </div>
+          <aside class="mlx-primer" aria-label="How LearnMLX supports model porting">
+            <span class="primer-label">Use it as a reference, not a prerequisite</span>
+            <p>Drop into the fundamentals when an evaluation boundary, state update, device assumption, or compiled region stops being obvious.</p>
+            <a href="./docs/index.html#mlx-fundamentals">Open the complete LearnMLX module →</a>
+          </aside>
+        </div>
+
+        <div class="learn-grid">
+          <article class="learn-card">
+            <span class="card-index">01 / arrays</span>
+            <h3>NumPy-like, built for Apple silicon</h3>
+            <p><span class="inline-code">mx.array</span>, <span class="inline-code">mlx.nn</span>, and composable transforms give the port a readable native foundation.</p>
+            <a href="https://ml-explore.github.io/mlx/build/html/usage/quick_start.html">Official Quick Start ↗</a>
+          </article>
+          <article class="learn-card">
+            <span class="card-index">02 / memory</span>
+            <h3>One memory pool, explicit operations</h3>
+            <p>Unified memory removes the usual tensor-transfer choreography, but framework bridges may still copy or force evaluation.</p>
+            <a href="https://ml-explore.github.io/mlx/build/html/usage/unified_memory.html">Learn unified memory ↗</a>
+          </article>
+          <article class="learn-card">
+            <span class="card-index">03 / execution</span>
+            <h3>Build lazily, evaluate deliberately</h3>
+            <p>Place <span class="inline-code">mx.eval</span> at dependency, comparison, and measurement boundaries—not after every operation.</p>
+            <a href="https://ml-explore.github.io/mlx/build/html/usage/lazy_evaluation.html">Learn lazy evaluation ↗</a>
+          </article>
+          <article class="learn-card">
+            <span class="card-index">04 / graphs</span>
+            <h3>Compile the stable hot region</h3>
+            <p>Prove an eager path first. Then compile pure, repeatedly used regions while keeping mutable state visible.</p>
+            <a href="https://ml-explore.github.io/mlx/build/html/usage/compile.html">Learn compilation ↗</a>
+          </article>
+        </div>
+      </div>
+    </section>
+
     <section class="section alt" id="evidence">
       <div class="section-shell proof-layout">
         <div>
@@ -369,7 +370,7 @@
         <a href="https://github.com/Amal-David/mlx-porting-skill">Repository</a>
         <a href="https://github.com/ml-explore/mlx">Apple MLX</a>
       </div>
-      <span>© <span data-year></span></span>
+      <span>© <span data-year>2026</span></span>
     </div>
   </footer>
 </body>

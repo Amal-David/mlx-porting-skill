@@ -2,7 +2,7 @@
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
   "version": "0.6.0",
-  "generated_at": "2026-07-12T18:31:52.155042+00:00",
+  "generated_at": "2026-07-13T04:07:24.628151+00:00",
   "file_count": 467,
   "files": [
     {
@@ -1989,8 +1989,8 @@
     },
     {
       "path": "site/index.html",
-      "size_bytes": 29476,
-      "sha256": "6d5697a3af1372d77a0b6052d8094a92c382a60910c3d298dd1910fd893f138b",
+      "size_bytes": 29598,
+      "sha256": "f72d0370ccd9b480c831a145062241555b232f9b0b663de307125cb414695c01",
       "executable": false
     },
     {
@@ -2007,8 +2007,8 @@
     },
     {
       "path": "tasks/lessons.md",
-      "size_bytes": 8285,
-      "sha256": "263f0d712e750915b56f071a850e00dd6cdcfe905ca152c87ec3078eb8eb49cb",
+      "size_bytes": 8559,
+      "sha256": "bf3b62fdcc60662a37792334c10c9ccea2847e38c6d98d52ed1121be58d178c5",
       "executable": false
     },
     {
@@ -2769,8 +2769,8 @@
     },
     {
       "path": "tests/test_site_contract.py",
-      "size_bytes": 39570,
-      "sha256": "8c54eb8a17d8fb37e46ff83d95401b5b56c2ea81a557c73cf5a3b5747c65fd0a",
+      "size_bytes": 39896,
+      "sha256": "65cb7a60e2bb94eeccea25015b7dca86983d068bc9f4c63c9d17f7db94844d4e",
       "executable": false
     },
     {
