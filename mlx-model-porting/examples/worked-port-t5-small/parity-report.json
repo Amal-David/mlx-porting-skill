@@ -1,0 +1,340 @@
+{
+  "schema_version": 1,
+  "ok": true,
+  "inputs": {
+    "source_model": "$WORK/t5-small",
+    "package": "$WORK/t5-small-mlx",
+    "weights": "$WORK/t5-small-converted",
+    "mode": "token_ids",
+    "prompts": null,
+    "token_ids": [
+      13959,
+      1566,
+      12,
+      2968,
+      10,
+      37,
+      629,
+      19,
+      1627,
+      5,
+      1
+    ],
+    "generate_steps": 8,
+    "seed": 0,
+    "dtype_policy": "float32",
+    "allow_modified": false
+  },
+  "tolerances": {
+    "atol": 0.001,
+    "rtol": 0.0001,
+    "cosine_min": 0.999999
+  },
+  "rungs": [
+    {
+      "position": 0,
+      "name": "input_ids",
+      "source_key": "input_ids",
+      "target_key": "input_ids",
+      "exact": true,
+      "pass": true,
+      "max_abs": 0.0,
+      "max_rel": 0.0,
+      "cosine": 1.0
+    },
+    {
+      "position": 1,
+      "name": "attention_mask",
+      "source_key": "attention_mask",
+      "target_key": "attention_mask",
+      "exact": true,
+      "pass": true,
+      "max_abs": 0.0,
+      "max_rel": 0.0,
+      "cosine": 1.0
+    },
+    {
+      "position": 2,
+      "name": "encoder.embed",
+      "source_key": "encoder.embed",
+      "target_key": "encoder.embed",
+      "exact": false,
+      "pass": true,
+      "max_abs": 0.0,
+      "max_rel": 0.0,
+      "cosine": 1.0
+    },
+    {
+      "position": 3,
+      "name": "encoder.layer.0.hidden",
+      "source_key": "encoder.layer.0.hidden",
+      "target_key": "encoder.layer.0.hidden",
+      "exact": false,
+      "pass": true,
+      "max_abs": 0.00048828125,
+      "max_rel": 0.0036957950065703024,
+      "cosine": 0.99999999999999
+    },
+    {
+      "position": 4,
+      "name": "encoder.layer.1.hidden",
+      "source_key": "encoder.layer.1.hidden",
+      "target_key": "encoder.layer.1.hidden",
+      "exact": false,
+      "pass": true,
+      "max_abs": 0.00146484375,
+      "max_rel": 0.00042524017391455275,
+      "cosine": 0.9999999999999862
+    },
+    {
+      "position": 5,
+      "name": "encoder.layer.2.hidden",
+      "source_key": "encoder.layer.2.hidden",
+      "target_key": "encoder.layer.2.hidden",
+      "exact": false,
+      "pass": true,
+      "max_abs": 0.0029296875,
+      "max_rel": 0.003405572755417957,
+      "cosine": 0.999999999999986
+    },
+    {
+      "position": 6,
+      "name": "encoder.layer.3.hidden",
+      "source_key": "encoder.layer.3.hidden",
+      "target_key": "encoder.layer.3.hidden",
+      "exact": false,
+      "pass": true,
+      "max_abs": 0.001953125,
+      "max_rel": 0.002003500368459838,
+      "cosine": 0.9999999999999946
+    },
+    {
+      "position": 7,
+      "name": "encoder.layer.4.hidden",
+      "source_key": "encoder.layer.4.hidden",
+      "target_key": "encoder.layer.4.hidden",
+      "exact": false,
+      "pass": true,
+      "max_abs": 0.00390625,
+      "max_rel": 0.008882309400444115,
+      "cosine": 0.9999999999999888
+    },
+    {
+      "position": 8,
+      "name": "encoder.layer.5.hidden",
+      "source_key": "encoder.layer.5.hidden",
+      "target_key": "encoder.layer.5.hidden",
+      "exact": false,
+      "pass": true,
+      "max_abs": 0.0048828125,
+      "max_rel": 0.0007026733527100834,
+      "cosine": 0.9999999999999865
+    },
+    {
+      "position": 9,
+      "name": "encoder.final_norm",
+      "source_key": "encoder.final_norm",
+      "target_key": "encoder.final_norm",
+      "exact": false,
+      "pass": true,
+      "max_abs": 2.384185791015625E-7,
+      "max_rel": 0.0007029017173224035,
+      "cosine": 0.9999999999999092
+    },
+    {
+      "position": 10,
+      "name": "decoder_input_ids",
+      "source_key": "decoder_input_ids",
+      "target_key": "decoder_input_ids",
+      "exact": true,
+      "pass": true,
+      "max_abs": 0.0,
+      "max_rel": 0.0,
+      "cosine": 1.0
+    },
+    {
+      "position": 11,
+      "name": "decoder.embed",
+      "source_key": "decoder.embed",
+      "target_key": "decoder.embed",
+      "exact": false,
+      "pass": true,
+      "max_abs": 0.0,
+      "max_rel": 0.0,
+      "cosine": 1.0000000000000002
+    },
+    {
+      "position": 12,
+      "name": "decoder.layer.0.cross_attention",
+      "source_key": "decoder.layer.0.cross_attention",
+      "target_key": "decoder.layer.0.cross_attention",
+      "exact": false,
+      "pass": true,
+      "max_abs": 0.000030517578125,
+      "max_rel": 0.00035485320905585387,
+      "cosine": 0.9999999999999932
+    },
+    {
+      "position": 13,
+      "name": "decoder.layer.0.hidden",
+      "source_key": "decoder.layer.0.hidden",
+      "target_key": "decoder.layer.0.hidden",
+      "exact": false,
+      "pass": true,
+      "max_abs": 0.00048828125,
+      "max_rel": 0.0007847240387130526,
+      "cosine": 0.9999999999999968
+    },
+    {
+      "position": 14,
+      "name": "decoder.layer.1.cross_attention",
+      "source_key": "decoder.layer.1.cross_attention",
+      "target_key": "decoder.layer.1.cross_attention",
+      "exact": false,
+      "pass": true,
+      "max_abs": 0.00048828125,
+      "max_rel": 0.000047631939256640406,
+      "cosine": 0.9999999999999969
+    },
+    {
+      "position": 15,
+      "name": "decoder.layer.1.hidden",
+      "source_key": "decoder.layer.1.hidden",
+      "target_key": "decoder.layer.1.hidden",
+      "exact": false,
+      "pass": true,
+      "max_abs": 0.0009765625,
+      "max_rel": 0.00028171982425844247,
+      "cosine": 0.9999999999999991
+    },
+    {
+      "position": 16,
+      "name": "decoder.layer.2.cross_attention",
+      "source_key": "decoder.layer.2.cross_attention",
+      "target_key": "decoder.layer.2.cross_attention",
+      "exact": false,
+      "pass": true,
+      "max_abs": 0.0009765625,
+      "max_rel": 0.00018354739145345382,
+      "cosine": 0.9999999999999991
+    },
+    {
+      "position": 17,
+      "name": "decoder.layer.2.hidden",
+      "source_key": "decoder.layer.2.hidden",
+      "target_key": "decoder.layer.2.hidden",
+      "exact": false,
+      "pass": true,
+      "max_abs": 0.000244140625,
+      "max_rel": 0.0002956944319452837,
+      "cosine": 0.9999999999999994
+    },
+    {
+      "position": 18,
+      "name": "decoder.layer.3.cross_attention",
+      "source_key": "decoder.layer.3.cross_attention",
+      "target_key": "decoder.layer.3.cross_attention",
+      "exact": false,
+      "pass": true,
+      "max_abs": 0.000244140625,
+      "max_rel": 0.002583672378463457,
+      "cosine": 0.9999999999999988
+    },
+    {
+      "position": 19,
+      "name": "decoder.layer.3.hidden",
+      "source_key": "decoder.layer.3.hidden",
+      "target_key": "decoder.layer.3.hidden",
+      "exact": false,
+      "pass": true,
+      "max_abs": 0.000244140625,
+      "max_rel": 0.0000576699421057859,
+      "cosine": 0.9999999999999991
+    },
+    {
+      "position": 20,
+      "name": "decoder.layer.4.cross_attention",
+      "source_key": "decoder.layer.4.cross_attention",
+      "target_key": "decoder.layer.4.cross_attention",
+      "exact": false,
+      "pass": true,
+      "max_abs": 0.000244140625,
+      "max_rel": 0.000034639265724542784,
+      "cosine": 0.9999999999999974
+    },
+    {
+      "position": 21,
+      "name": "decoder.layer.4.hidden",
+      "source_key": "decoder.layer.4.hidden",
+      "target_key": "decoder.layer.4.hidden",
+      "exact": false,
+      "pass": true,
+      "max_abs": 0.000244140625,
+      "max_rel": 0.00005458419514629539,
+      "cosine": 0.9999999999999979
+    },
+    {
+      "position": 22,
+      "name": "decoder.layer.5.cross_attention",
+      "source_key": "decoder.layer.5.cross_attention",
+      "target_key": "decoder.layer.5.cross_attention",
+      "exact": false,
+      "pass": true,
+      "max_abs": 0.000244140625,
+      "max_rel": 0.00040013906472413364,
+      "cosine": 0.9999999999999932
+    },
+    {
+      "position": 23,
+      "name": "decoder.layer.5.hidden",
+      "source_key": "decoder.layer.5.hidden",
+      "target_key": "decoder.layer.5.hidden",
+      "exact": false,
+      "pass": true,
+      "max_abs": 0.000732421875,
+      "max_rel": 0.00023324760460848162,
+      "cosine": 0.9999999999999889
+    },
+    {
+      "position": 24,
+      "name": "decoder.final_norm",
+      "source_key": "decoder.final_norm",
+      "target_key": "decoder.final_norm",
+      "exact": false,
+      "pass": true,
+      "max_abs": 3.5762786865234375E-7,
+      "max_rel": 0.00023313199436664577,
+      "cosine": 0.9999999999999966
+    },
+    {
+      "position": 25,
+      "name": "logits",
+      "source_key": "logits",
+      "target_key": "logits",
+      "exact": false,
+      "pass": true,
+      "max_abs": 0.00000762939453125,
+      "max_rel": 0.0000012073649260488983,
+      "cosine": 0.9999999999999971
+    },
+    {
+      "position": 26,
+      "name": "generated_token_ids",
+      "source_key": "generated_token_ids",
+      "target_key": "generated_token_ids",
+      "exact": true,
+      "pass": true,
+      "max_abs": 0.0,
+      "max_rel": 0.0,
+      "cosine": 0.9999999999999999
+    }
+  ],
+  "summary": {
+    "status": "pass",
+    "evaluated_rungs": 27,
+    "total_rungs": 27,
+    "stopped_at": null,
+    "debug_target": null,
+    "message": "All parity rungs passed in runbook order."
+  }
+}

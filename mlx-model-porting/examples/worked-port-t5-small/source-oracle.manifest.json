@@ -1,0 +1,320 @@
+{
+  "schema_version": 1,
+  "model": {
+    "directory": "t5-small",
+    "fingerprint": "sha256:6c6abee0e12d970c0f23755c30d5ce8355fff91c755efe3af589391ff22d6792",
+    "config": {
+      "name": "config.json",
+      "size_bytes": 1240,
+      "sha256": "1231328a47348e402a66d60e21d401c3b33e667984a7b6d308588f5e24790d15"
+    },
+    "weights": {
+      "algorithm": "sha256",
+      "file_count": 1,
+      "total_bytes": 242043056,
+      "max_listed_files": 256,
+      "truncated": false,
+      "omitted_file_count": 0,
+      "files": [
+        {
+          "name": "model.safetensors",
+          "size_bytes": 242043056,
+          "sha256": "bd944e5f1b3ad9b70dd9d00010a517059e19265671076b8b0a4a58d9491842bc"
+        }
+      ]
+    }
+  },
+  "capture": {
+    "prompts": null,
+    "token_ids": [
+      13959,
+      1566,
+      12,
+      2968,
+      10,
+      37,
+      629,
+      19,
+      1627,
+      5,
+      1
+    ],
+    "generate_steps": 8,
+    "seed": 0,
+    "dtype_policy": "float32"
+  },
+  "tensors": [
+    {
+      "name": "attention_mask",
+      "shape": [
+        1,
+        11
+      ],
+      "dtype": "int64",
+      "sha256": "70358c29a3bdcd7f2f99db37283e95413a6ef04096f6fedffb8d3afa0ffab4e3"
+    },
+    {
+      "name": "decoder.embed",
+      "shape": [
+        1,
+        1,
+        512
+      ],
+      "dtype": "float32",
+      "sha256": "fc2eed59718ca0c7398b584e6bac72af14bde482a9ff5e426f94b51bb427abc0"
+    },
+    {
+      "name": "decoder.final_norm",
+      "shape": [
+        1,
+        1,
+        512
+      ],
+      "dtype": "float32",
+      "sha256": "206308dc2b34802fcea5ec7e451adce28da40717776f05a4e17613de8962cefa"
+    },
+    {
+      "name": "decoder.layer.0.cross_attention",
+      "shape": [
+        1,
+        1,
+        512
+      ],
+      "dtype": "float32",
+      "sha256": "8c42a1e097249d676e08bb271b12300041c870b308733f2cbc420c5a5d85c3cd"
+    },
+    {
+      "name": "decoder.layer.0.hidden",
+      "shape": [
+        1,
+        1,
+        512
+      ],
+      "dtype": "float32",
+      "sha256": "6ad5c3d705c5568d32c42ded434d69110b7406614207f873eee28202a3ad32d9"
+    },
+    {
+      "name": "decoder.layer.1.cross_attention",
+      "shape": [
+        1,
+        1,
+        512
+      ],
+      "dtype": "float32",
+      "sha256": "f5be65a98b12d0d999effc972ae2f0f918c8adf80e792be95b15908179558624"
+    },
+    {
+      "name": "decoder.layer.1.hidden",
+      "shape": [
+        1,
+        1,
+        512
+      ],
+      "dtype": "float32",
+      "sha256": "df01f737337a55420f8bc0f606608bceb07d729f31a0364bbaf61611ebacb2da"
+    },
+    {
+      "name": "decoder.layer.2.cross_attention",
+      "shape": [
+        1,
+        1,
+        512
+      ],
+      "dtype": "float32",
+      "sha256": "c2bc392f7672bb8b03f5f57b46a658f2740bfaa9cc04a2d57b6010235fa35d66"
+    },
+    {
+      "name": "decoder.layer.2.hidden",
+      "shape": [
+        1,
+        1,
+        512
+      ],
+      "dtype": "float32",
+      "sha256": "9bb1af55e8aadbe40cf66c7c9024f551cf3c8cdd6fa33a8afde42c3193b96753"
+    },
+    {
+      "name": "decoder.layer.3.cross_attention",
+      "shape": [
+        1,
+        1,
+        512
+      ],
+      "dtype": "float32",
+      "sha256": "22b1fb5195522b265aac35016f8010f1be3e986fa17473cedb1d91840b46f985"
+    },
+    {
+      "name": "decoder.layer.3.hidden",
+      "shape": [
+        1,
+        1,
+        512
+      ],
+      "dtype": "float32",
+      "sha256": "17e2172a6eb8d89105e317b9a6c627dabdcee2b7863281efb7b8494cb6332121"
+    },
+    {
+      "name": "decoder.layer.4.cross_attention",
+      "shape": [
+        1,
+        1,
+        512
+      ],
+      "dtype": "float32",
+      "sha256": "0fe57d02d5aa2172951f8b75122bc3e21b94bb6b0f88041752b8975c6cf3c1e3"
+    },
+    {
+      "name": "decoder.layer.4.hidden",
+      "shape": [
+        1,
+        1,
+        512
+      ],
+      "dtype": "float32",
+      "sha256": "5b713c0a72428e539a7a9fdb9e08e6c097dc44e05d56b1496550f7b76539e895"
+    },
+    {
+      "name": "decoder.layer.5.cross_attention",
+      "shape": [
+        1,
+        1,
+        512
+      ],
+      "dtype": "float32",
+      "sha256": "7facfba5aa939bddd52697f963cf8c7d9e9e8b17fbd87f987097d9e83c60fc21"
+    },
+    {
+      "name": "decoder.layer.5.hidden",
+      "shape": [
+        1,
+        1,
+        512
+      ],
+      "dtype": "float32",
+      "sha256": "d638e6495ebe8ed7621ca0b34f4c23c7fed7431910538cbed7295da6974e3aa2"
+    },
+    {
+      "name": "decoder_input_ids",
+      "shape": [
+        1,
+        1
+      ],
+      "dtype": "int64",
+      "sha256": "af5570f5a1810b7af78caf4bc70a660f0df51e42baf91d4de5b2328de0e83dfc"
+    },
+    {
+      "name": "encoder.embed",
+      "shape": [
+        1,
+        11,
+        512
+      ],
+      "dtype": "float32",
+      "sha256": "20fd75c6e0bd6669a4aa331cbc622571453e46c254ca557dbe496f1b270cdd5a"
+    },
+    {
+      "name": "encoder.final_norm",
+      "shape": [
+        1,
+        11,
+        512
+      ],
+      "dtype": "float32",
+      "sha256": "23477470d4d19a19f5189fff97742c91e589f10f1b1cdecda7ad3ad51bfef3b8"
+    },
+    {
+      "name": "encoder.layer.0.hidden",
+      "shape": [
+        1,
+        11,
+        512
+      ],
+      "dtype": "float32",
+      "sha256": "3db738b4b317f5b1a650f023e86b32c9254772878ed45184860bf59609844bc2"
+    },
+    {
+      "name": "encoder.layer.1.hidden",
+      "shape": [
+        1,
+        11,
+        512
+      ],
+      "dtype": "float32",
+      "sha256": "67f6c6f282ccd7b6ce5e85bb32bd67ffe31820935cdac8043ed392ffddbfbd5e"
+    },
+    {
+      "name": "encoder.layer.2.hidden",
+      "shape": [
+        1,
+        11,
+        512
+      ],
+      "dtype": "float32",
+      "sha256": "831991d9bf2878f91b0b39a1812ea98f41bbf8403c24ad376072d5908fe29f1d"
+    },
+    {
+      "name": "encoder.layer.3.hidden",
+      "shape": [
+        1,
+        11,
+        512
+      ],
+      "dtype": "float32",
+      "sha256": "972f605b80133dd824d8ff6030efc4a6c8d78afbecdf1dc8fb28eb2c422a1213"
+    },
+    {
+      "name": "encoder.layer.4.hidden",
+      "shape": [
+        1,
+        11,
+        512
+      ],
+      "dtype": "float32",
+      "sha256": "68a3b9ce4fb92a592dea39fe888b779825c6f0f39bfc3932d94495eda5a96878"
+    },
+    {
+      "name": "encoder.layer.5.hidden",
+      "shape": [
+        1,
+        11,
+        512
+      ],
+      "dtype": "float32",
+      "sha256": "4c9cfcdf9525664cd1976fe729ec4da6466d5f5f34b7a65547d2bd783a598ff1"
+    },
+    {
+      "name": "generated_token_ids",
+      "shape": [
+        1,
+        8
+      ],
+      "dtype": "int64",
+      "sha256": "8881e6ded98c9003b9a1b58aa5058d7f35c826bc81c4b482d8740d680716310e"
+    },
+    {
+      "name": "input_ids",
+      "shape": [
+        1,
+        11
+      ],
+      "dtype": "int64",
+      "sha256": "0bdfe31a5e9a2213402ef8c93315b6c9f78ab5cf04cbc5da20bdb94ee14ebb7a"
+    },
+    {
+      "name": "logits",
+      "shape": [
+        1,
+        1,
+        32128
+      ],
+      "dtype": "float32",
+      "sha256": "ba0827d378670d732f71c053e3dc05fa8a6c89950ba38de4ef0e41ccd016d6e6"
+    }
+  ],
+  "libraries": {
+    "python": "3.14.4",
+    "numpy": "2.3.5",
+    "torch": "2.9.1",
+    "transformers": "5.3.0"
+  }
+}

@@ -660,7 +660,7 @@
         "time_mix"
       ],
       "state": "recurrent/SSM state; sometimes mixed with KV cache",
-      "notes": "Require full-sequence versus recurrent equivalence tests."
+      "notes": "Require full-sequence versus recurrent equivalence tests. The scaffolder supports only the opt-in synthetic minimal_selective pure-SSM variant; real checkpoints and attention-mixed hybrids remain runbook-guided."
     },
     {
       "id": "diffusion-flow",

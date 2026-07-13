@@ -60,6 +60,23 @@
   regenerated the current graph, backlog, evidence index, site data, and
   release manifest without importing the stale conflicting snapshot from the
   closed nightly PR.
+- Expanded the executable scaffolder from one to six architecture families:
+  dense decoder plus BERT encoder, T5 encoder-decoder, HuBERT/Wav2Vec2 ASR
+  acoustic encoder, sparse MoE decoder, and selective SSM.
+- Added three checked-in real checkpoint ports beyond Qwen2.5:
+  BAAI/bge-base-en, t5-small, and facebook/hubert-base-ls960. Each includes a
+  pinned inspection/conversion/parity packet without model weights.
+- Added synthetic correctness gates for sparse MoE routing/experts and the
+  minimal selective-SSM recurrence. These do not claim real-checkpoint support.
+- Unified source capture, MLX capture, and parity under explicit
+  `dense-decoder` (default), `encoder`, `encoder-decoder`, `ssm`, and `asr`
+  modes while preserving dense-decoder behavior.
+- Reconciled fail-closed config identity, numeric-zero handling, decoder flags,
+  inspected tensor topology, conversion attestations, and the Whisper identity
+  guard across all generated families.
+- Kept the evidence boundary sealed: exact-output parity is the only built-in
+  task metric, and all 10 numeric claims remain withheld with 0
+  promotion-ready receipts.
 
 ## 0.5.0 — 2026-07-11
 

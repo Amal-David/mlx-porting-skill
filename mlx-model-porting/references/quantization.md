@@ -104,3 +104,11 @@ For MoE, quantize experts separately from routers, shared expert gates, norms, a
 ## Quantized publication gate
 
 Publish only with the unquantized source revision, exact recipe, exclusions, converter/library version, representative quality results, benchmark metadata, and a clear statement that performance varies by Mac and workload.
+
+For a local, non-promotable comparison of an already-supported `mlx_lm`
+conversion against its bf16 reference, use
+[`scripts/quant_quality_gate.py`](../scripts/quant_quality_gate.py) and follow
+the measured boundary in
+[`quantization-quality-gate.md`](quantization-quality-gate.md). Its output is a
+user diagnostic only and must not be ingested into the sealed claims or receipt
+pipeline.
