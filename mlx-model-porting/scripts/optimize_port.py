@@ -579,7 +579,9 @@ def recommend_candidate(candidates: list[dict[str, Any]]) -> dict[str, Any]:
             ),
         }
 
-    def degradation_key(candidate: dict[str, Any]) -> tuple[float, float, float, float]:
+    def degradation_key(
+        candidate: dict[str, Any],
+    ) -> tuple[float, float, float, float, float]:
         quality = candidate["quality"]
         ratio = quality["perplexity_ratio"]
         finite_ratio = float(ratio) if isinstance(ratio, (int, float)) and math.isfinite(ratio) else math.inf
@@ -587,6 +589,7 @@ def recommend_candidate(candidates: list[dict[str, Any]]) -> dict[str, Any]:
             float(quality["candidate_only_degenerate_rate"]),
             finite_ratio,
             -float(quality["exact_match_rate"]),
+            -float(quality["firsttoken_agreement_rate"]),
             -_selection_score(candidate),
         )
 

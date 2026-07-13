@@ -2,7 +2,7 @@
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
   "version": "0.6.0",
-  "generated_at": "2026-07-13T15:53:46.361202+00:00",
+  "generated_at": "2026-07-13T19:10:03.050619+00:00",
   "file_count": 505,
   "files": [
     {
@@ -93,8 +93,8 @@
     },
     {
       "path": "README.md",
-      "size_bytes": 23533,
-      "sha256": "d82f33bd301d23aec7fb4ac5ff2820cd4dd244818d0b84c6e8ec5090d1791fe5",
+      "size_bytes": 23705,
+      "sha256": "864663fce480eaa36755e28fba252413b613f3c34bc890a04205a05686720223",
       "executable": false
     },
     {
@@ -945,8 +945,8 @@
     },
     {
       "path": "mlx-model-porting/examples/worked-port-bge-base-en/README.md",
-      "size_bytes": 6451,
-      "sha256": "5d438da835f008ea8b7138603d0fcf036ca4e71f36b978886266a80a68b5f58a",
+      "size_bytes": 6638,
+      "sha256": "00eecbdac1bd5fe9c34512d9ad017bf09470ab4ffa280c3567faced56409cb6f",
       "executable": false
     },
     {
@@ -1005,8 +1005,8 @@
     },
     {
       "path": "mlx-model-porting/examples/worked-port-hubert-base-ls960/README.md",
-      "size_bytes": 3960,
-      "sha256": "f9f286a2a1a00166d383a89705b6d255363e1d44b07069ec4f5a5021d5b34396",
+      "size_bytes": 4118,
+      "sha256": "e98f70360c3ca67772e556f8f99fcc2de6ddcc0d2012bb39ab315fffc26b11b8",
       "executable": false
     },
     {
@@ -1371,8 +1371,8 @@
     },
     {
       "path": "mlx-model-porting/references/runbook-ssm-hybrid.md",
-      "size_bytes": 4004,
-      "sha256": "0b6bd9b9dc1d7062f5367f1c58fc54f969861a38c6eba4071099588cff0f2ea8",
+      "size_bytes": 4221,
+      "sha256": "747c65ca931f48c98e7ff2f7bf00378405a0c71a94c566a097344bfa3e49fd4b",
       "executable": false
     },
     {
@@ -1953,8 +1953,8 @@
     },
     {
       "path": "mlx-model-porting/scripts/_capture_common.py",
-      "size_bytes": 24030,
-      "sha256": "3ef1c8a559bc3b3aead674ba93601f5530f39ec8c59a939248fd747bdeecf067",
+      "size_bytes": 24880,
+      "sha256": "fe03ca30482c1b7e64a027089f73518b2387706c5ad3aa41f9b9979cf4ca7cb4",
       "executable": false
     },
     {
@@ -1995,8 +1995,8 @@
     },
     {
       "path": "mlx-model-porting/scripts/capture_mlx.py",
-      "size_bytes": 38427,
-      "sha256": "7335d8f17a8d20bdeb9d9f8fcef8796ce144438216d166f5ef67f9e2639ab304",
+      "size_bytes": 39466,
+      "sha256": "fd89dc6d78310ab09fe53a42369010a6da2dad15c1dbca5ebb2bafc6ee764eb8",
       "executable": true
     },
     {
@@ -2013,8 +2013,8 @@
     },
     {
       "path": "mlx-model-porting/scripts/compare_tensors.py",
-      "size_bytes": 28708,
-      "sha256": "f7e5c2c0e7162a9fd6a462054c063d3c2723eb35250917853df5bdfc2876adc0",
+      "size_bytes": 28887,
+      "sha256": "85c69511a98ffac788a9c2b6c3bf60074e9bdccc3c975b7cf0e079604e572edd",
       "executable": true
     },
     {
@@ -2085,8 +2085,8 @@
     },
     {
       "path": "mlx-model-porting/scripts/optimize_port.py",
-      "size_bytes": 35820,
-      "sha256": "b7b8b91f4a028775885e00b9d15d47c3b8d80548d8d53fdab563fdf586f78a10",
+      "size_bytes": 35900,
+      "sha256": "6721378668b5c4392eb54887721ecac4b12705ee9c71b96b127a7a0ab15e4da6",
       "executable": false
     },
     {
@@ -2109,8 +2109,8 @@
     },
     {
       "path": "mlx-model-porting/scripts/run_parity.py",
-      "size_bytes": 30558,
-      "sha256": "6401704ca84f759ab460ec3227408099cc463d6c715b4dea93f82c57cd764a47",
+      "size_bytes": 31552,
+      "sha256": "078d872882b62695b87fd686328dbd940c86303e0d9f2e538600f5e461238b61",
       "executable": true
     },
     {
@@ -2121,8 +2121,8 @@
     },
     {
       "path": "mlx-model-porting/scripts/scaffold_port.py",
-      "size_bytes": 155190,
-      "sha256": "9ac39584cf309e7d8ed2a9de46cfb5c60665f5344d4d502686661e1b8ff8e5f7",
+      "size_bytes": 156021,
+      "sha256": "76d81fe28034175661737f7b09e07412e8d67dfb222ff19bc254bc100d44a253",
       "executable": true
     },
     {
@@ -2181,8 +2181,8 @@
     },
     {
       "path": "site/index.html",
-      "size_bytes": 20741,
-      "sha256": "8b8b8aa5af2c3ecf4437106f81dc7cf41a56261b0033acb1ebeed513f31255ce",
+      "size_bytes": 20788,
+      "sha256": "e56bfc664a949c418b581c2cafe9162d9ad8cbd2007f50d795da136c865997d5",
       "executable": false
     },
     {
@@ -2193,8 +2193,8 @@
     },
     {
       "path": "site/styles.css",
-      "size_bytes": 88383,
-      "sha256": "d4d0935d97452ab69cf8ab4cf10b30c8047f7857f73420d6966711ea0554dfcb",
+      "size_bytes": 88337,
+      "sha256": "e79d8e3ea94ec09878fafcc1fefeb8a0618a5e96646182b4b31c23f2ddffb1d6",
       "executable": false
     },
     {
@@ -2751,8 +2751,8 @@
     },
     {
       "path": "tests/test_asr_encoder_contract.py",
-      "size_bytes": 16065,
-      "sha256": "877933da35ef99670456957eef7c7d18dc617eff06a78f8f1e4935421eb3e87d",
+      "size_bytes": 17738,
+      "sha256": "af5d0890ba037ef0fd5f6785a5c8c5457afb51ad70839e4c4dbf53cbb763b072",
       "executable": false
     },
     {
@@ -2787,8 +2787,8 @@
     },
     {
       "path": "tests/test_compare_tensors_boundedness.py",
-      "size_bytes": 9717,
-      "sha256": "c23c87fc89ba6901d98cd7cc50960be9591cff76b165b340e4657ee4a965a575",
+      "size_bytes": 10027,
+      "sha256": "3c2157a112ca143e5193f898bdc7eeeff79a9cb89aa0c88c3d3c3b6983fc173a",
       "executable": false
     },
     {
@@ -2817,8 +2817,8 @@
     },
     {
       "path": "tests/test_encoder_contract.py",
-      "size_bytes": 12510,
-      "sha256": "cea915cce1af5d4fe0c96293f5695f54326aafb4be8116316586d71b7d3b2984",
+      "size_bytes": 12575,
+      "sha256": "1de11d2bc4dee6b77d41cfb72fdc2b679e21a37422440767a289c06249bb4645",
       "executable": false
     },
     {
@@ -2931,14 +2931,14 @@
     },
     {
       "path": "tests/test_optimize_port_contract.py",
-      "size_bytes": 14112,
-      "sha256": "99ce88c266ddb8870d6bfb60d11967f30cf8620936bb6e0691edd4f59efd6507",
+      "size_bytes": 14912,
+      "sha256": "cb5811fe06a6832054b474939290550ea62144d52bff7a4854bd5a4b6fcdfa10",
       "executable": false
     },
     {
       "path": "tests/test_parity_runner_contract.py",
-      "size_bytes": 25571,
-      "sha256": "5935852e83cfd91bf61c34f9424329aed027f37abd8c759f5c7145c09040d78c",
+      "size_bytes": 28769,
+      "sha256": "ec9cccffacd7be1a08b4fad70a4345776ba00e336efb11788aa65201889d6fa8",
       "executable": false
     },
     {
@@ -2979,8 +2979,8 @@
     },
     {
       "path": "tests/test_scaffold_moe_contract.py",
-      "size_bytes": 23102,
-      "sha256": "910f3e4a86bd2d60d653e9e897133196de36b24aec9d484dbf0a7881b2771068",
+      "size_bytes": 24602,
+      "sha256": "7e146662a54da351a58900e68af8f25e806f616720cbdeb337cf77c4205dd270",
       "executable": false
     },
     {
@@ -2997,8 +2997,8 @@
     },
     {
       "path": "tests/test_site_contract.py",
-      "size_bytes": 19870,
-      "sha256": "ab35ca5b57952344a82759e0536cfadd097c5599263cf40a1602c8761e57e406",
+      "size_bytes": 19916,
+      "sha256": "9156c0623904128a4a78f3b4404473701ed2ebd0062b9c8241fdcab23d8a1d8d",
       "executable": false
     },
     {

@@ -58,6 +58,7 @@ class OptimizePortDependencyFreeContractTests(unittest.TestCase):
         peak: int,
         ratio: float,
         exact: float = 1.0,
+        firsttoken: float = 1.0,
         degenerate: float = 0.0,
     ) -> dict[str, object]:
         return {
@@ -70,6 +71,7 @@ class OptimizePortDependencyFreeContractTests(unittest.TestCase):
                 "passed": passed,
                 "perplexity_ratio": ratio,
                 "exact_match_rate": exact,
+                "firsttoken_agreement_rate": firsttoken,
                 "candidate_only_degenerate_rate": degenerate,
             },
         }
@@ -200,6 +202,32 @@ class OptimizePortDependencyFreeContractTests(unittest.TestCase):
         self.assertFalse(recommendation["quality_held"])
         self.assertEqual(recommendation["fallback_config_id"], "8bit")
         self.assertIn("not a quality-held recommendation", recommendation["warning"])
+
+    def test_fallback_ranking_includes_first_token_divergence(self) -> None:
+        first_token_failure = self.candidate(
+            "4bit-g64",
+            passed=False,
+            tps=200.0,
+            peak=500,
+            ratio=1.10,
+            exact=0.5,
+            firsttoken=0.5,
+        )
+        less_divergent = self.candidate(
+            "8bit",
+            passed=False,
+            tps=100.0,
+            peak=900,
+            ratio=1.10,
+            exact=0.5,
+            firsttoken=1.0,
+        )
+
+        recommendation = optimizer.recommend_candidate(
+            [first_token_failure, less_divergent]
+        )
+
+        self.assertEqual(recommendation["fallback_config_id"], "8bit")
 
     def test_strict_json_schema_boundary_and_table_contract(self) -> None:
         with self.assertRaisesRegex(optimizer.SkillError, "strict JSON"):

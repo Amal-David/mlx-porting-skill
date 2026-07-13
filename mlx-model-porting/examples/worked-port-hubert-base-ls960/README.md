@@ -53,6 +53,11 @@ With a provenance-complete copy of the same checkpoint, the normal scaffold
 command is:
 
 ```bash
+mkdir -p "$WORK/hubert-run"
+python3 mlx-model-porting/scripts/inspect_model.py \
+  "$WORK/hubert-base-ls960" \
+  --output "$WORK/hubert-run/inspection.json"
+
 python3 mlx-model-porting/scripts/scaffold_port.py \
   "$WORK/hubert-run/inspection.json" \
   --artifact-root "$WORK/hubert-base-ls960" \

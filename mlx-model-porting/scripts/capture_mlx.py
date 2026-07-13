@@ -15,6 +15,7 @@ import platform
 import re
 import stat
 import sys
+import zipfile
 from pathlib import Path
 from typing import Any
 
@@ -627,12 +628,33 @@ def _load_asr_features(path_value: str, max_bytes: int, np: Any) -> Any:
     if path.stat().st_size > max_bytes:
         raise SkillError("--features-npz exceeds --max-output-mb")
     try:
+        with zipfile.ZipFile(path, mode="r") as raw_archive:
+            feature_members = [
+                member
+                for member in raw_archive.infolist()
+                if member.filename == "input_features.npy"
+            ]
+            if len(feature_members) != 1:
+                raise SkillError(
+                    "--features-npz must contain exactly one input_features entry"
+                )
+            if feature_members[0].file_size > max_bytes:
+                raise SkillError(
+                    "--features-npz input_features uncompressed payload exceeds "
+                    "--max-output-mb"
+                )
         with np.load(path, allow_pickle=False) as archive:
             if "input_features" not in archive.files:
                 raise SkillError("--features-npz does not contain input_features")
             features = np.asarray(archive["input_features"], dtype=np.float32)
-    except (OSError, ValueError) as exc:
+    except SkillError:
+        raise
+    except (OSError, ValueError, zipfile.BadZipFile, zipfile.LargeZipFile) as exc:
         raise SkillError(f"could not read --features-npz: {exc}") from exc
+    if features.nbytes > max_bytes:
+        raise SkillError(
+            "input_features payload exceeds --max-output-mb after loading"
+        )
     if features.ndim != 3 or any(dimension <= 0 for dimension in features.shape):
         raise SkillError("input_features must be a non-empty rank-3 tensor")
     return np.ascontiguousarray(features)
@@ -645,6 +667,7 @@ def _capture_asr(
     keep_dtype: bool,
     np: Any,
     mx: Any,
+    fault_inject_target: str | None = None,
 ) -> dict[str, Any]:
     generated_model = _import_generated_model(package)
     try:
@@ -662,6 +685,7 @@ def _capture_asr(
             },
             "final_hidden": final_hidden,
         }
+        _inject_capture_fault(tensors, fault_inject_target, mx)
         getattr(mx, "eval")(*tensors.values())
         arrays: dict[str, Any] = {}
         for name, value in sorted(tensors.items()):
@@ -807,6 +831,7 @@ def main(argv: list[str] | None = None) -> int:
                 args.keep_dtype,
                 np,
                 mx,
+                args.fault_inject_target,
             )
         else:
             explicit_attention_mask = None

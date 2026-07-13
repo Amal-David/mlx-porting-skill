@@ -104,6 +104,29 @@ class ASREncoderContractTests(unittest.TestCase):
         }
         self.assertIs(validate_capture_manifest(fixture), fixture)
 
+    def test_asr_feature_npz_bounds_uncompressed_and_loaded_payloads(self) -> None:
+        import numpy as np
+
+        with tempfile.TemporaryDirectory() as raw_tmp:
+            root = Path(raw_tmp)
+            compressed = root / "compressed.npz"
+            np.savez_compressed(
+                compressed,
+                input_features=np.zeros((1, 4096, 8), dtype=np.float32),
+            )
+            compressed_limit = compressed.stat().st_size + 1
+            with self.assertRaisesRegex(capture_mlx.SkillError, "uncompressed payload"):
+                capture_mlx._load_asr_features(compressed, compressed_limit, np)
+
+            expanded_dtype = root / "expanded-dtype.npz"
+            np.savez(
+                expanded_dtype,
+                input_features=np.zeros((1, 256, 8), dtype=np.float16),
+            )
+            loaded_limit = expanded_dtype.stat().st_size + 1
+            with self.assertRaisesRegex(capture_mlx.SkillError, "after loading"):
+                capture_mlx._load_asr_features(expanded_dtype, loaded_limit, np)
+
 
 def _mlx_stack_available() -> bool:
     packages = ("mlx", "numpy", "safetensors", "torch", "transformers")
@@ -221,34 +244,28 @@ def _run_asr_parity(
     report: Path,
     *,
     seed: int,
+    fault_inject_target: str | None = None,
 ) -> subprocess.CompletedProcess[str]:
     environment = os.environ.copy()
     environment.update({"HF_HUB_OFFLINE": "1", "TRANSFORMERS_OFFLINE": "1"})
+    command = [
+        sys.executable,
+        str(SCRIPTS / "run_parity.py"),
+        "--source-model", str(source),
+        "--package", str(package),
+        "--weights", str(converted),
+        "--mode", "asr",
+        "--waveform-samples", "4000",
+        "--seed", str(seed),
+        "--atol", "1e-4",
+        "--rtol", "1e-4",
+        "--cosine-min", "0.99999",
+        "--output", str(report),
+    ]
+    if fault_inject_target is not None:
+        command.extend(("--fault-inject-target", fault_inject_target))
     return subprocess.run(
-        [
-            sys.executable,
-            str(SCRIPTS / "run_parity.py"),
-            "--source-model",
-            str(source),
-            "--package",
-            str(package),
-            "--weights",
-            str(converted),
-            "--mode",
-            "asr",
-            "--waveform-samples",
-            "4000",
-            "--seed",
-            str(seed),
-            "--atol",
-            "1e-4",
-            "--rtol",
-            "1e-4",
-            "--cosine-min",
-            "0.99999",
-            "--output",
-            str(report),
-        ],
+        command,
         cwd=ROOT,
         env=environment,
         capture_output=True,
@@ -424,6 +441,20 @@ class SyntheticWav2Vec2ParityTests(unittest.TestCase):
             )
             self.assertTrue(report["rungs"][0]["exact"])
             self.assertEqual(report["rungs"][0]["max_abs"], 0.0)
+
+            fault_report_path = work / "fault-injection.json"
+            faulted = _run_asr_parity(
+                source,
+                package,
+                converted,
+                fault_report_path,
+                seed=7011 if stable else 7008,
+                fault_inject_target="layer.0.hidden",
+            )
+            self.assertEqual(faulted.returncode, 1, faulted.stdout + faulted.stderr)
+            fault_report = json.loads(fault_report_path.read_text())
+            self.assertFalse(fault_report["ok"])
+            self.assertEqual(fault_report["summary"]["stopped_at"], "layer.0.hidden")
             return report
 
     def test_wav2vec2_tuple_projection_passes_real_parity(self) -> None:

@@ -18,6 +18,14 @@ SNAPSHOTS = (
     Path.home()
     / ".cache/huggingface/hub/models--BAAI--bge-base-en/snapshots"
 )
+REQUIRED_SNAPSHOT_FILES = (
+    "config.json",
+    "model.safetensors",
+    "special_tokens_map.json",
+    "tokenizer.json",
+    "tokenizer_config.json",
+    "vocab.txt",
+)
 if str(SCRIPTS) not in sys.path:
     sys.path.insert(0, str(SCRIPTS))
 if str(ROOT / "tests") not in sys.path:
@@ -34,7 +42,7 @@ def _snapshot() -> Path | None:
         return None
     candidates = sorted(path for path in SNAPSHOTS.iterdir() if path.is_dir())
     for candidate in candidates:
-        if (candidate / "config.json").exists() and (candidate / "model.safetensors").exists():
+        if all((candidate / name).is_file() for name in REQUIRED_SNAPSHOT_FILES):
             return candidate
     return None
 
@@ -132,13 +140,12 @@ class EncoderFailClosedContractTests(unittest.TestCase):
             ):
                 scaffold_port.validate_encoder_config(_config(**{flag: True}))
 
-    def test_supported_bert_task_identity_is_accepted(self) -> None:
-        self.assertEqual(
+    def test_bert_task_head_identity_fails_closed(self) -> None:
+        self.assertEqual(scaffold_port.SUPPORTED_BERT_ARCHITECTURES, {"BertModel"})
+        with self.assertRaisesRegex(scaffold_port.SkillError, "BertModel"):
             scaffold_port.validate_encoder_config(
                 _config(architectures=["BertForMaskedLM"])
-            )["model_type"],
-            "bert",
-        )
+            )
 
     def test_falsey_unknown_computation_value_fails_closed(self) -> None:
         with self.assertRaisesRegex(
@@ -180,14 +187,7 @@ class RealBgeEncoderParityTests(unittest.TestCase):
         cls.work = Path(cls._temporary.name)
         cls.model = cls.work / "bge-base-en"
         cls.model.mkdir()
-        for name in (
-            "config.json",
-            "model.safetensors",
-            "special_tokens_map.json",
-            "tokenizer.json",
-            "tokenizer_config.json",
-            "vocab.txt",
-        ):
+        for name in REQUIRED_SNAPSHOT_FILES:
             shutil.copy2(SOURCE_SNAPSHOT / name, cls.model / name, follow_symlinks=True)
         config = json.loads((cls.model / "config.json").read_text(encoding="utf-8"))
         config["license"] = "mit"

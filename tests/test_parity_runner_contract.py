@@ -452,6 +452,78 @@ class ParityRunnerDependencyFreeContractTests(unittest.TestCase):
         with self.assertRaisesRegex(run_parity.SkillError, "invalid field set"):
             run_parity.validate_parity_report(report)
 
+    def test_report_inputs_and_masks_remain_reproducible(self) -> None:
+        report = {
+            "schema_version": 1,
+            "ok": True,
+            "inputs": {
+                "source_model": "/source", "package": "/package", "weights": "/weights",
+                "mode": "encoder", "input_mode": "token_ids",
+                "prompts": None, "token_ids": [1, 2], "attention_mask": [[1, 1]],
+                "generate_steps": 0, "seed": 0, "dtype_policy": "float32",
+                "allow_modified": False, "fault_inject_target": None,
+            },
+            "tolerances": {"atol": 1e-5, "rtol": 1e-4, "cosine_min": -1.0},
+            "rungs": [{
+                "position": 0, "name": "input_ids", "source_key": "input_ids",
+                "target_key": "input_ids", "exact": True, "pass": True,
+                "max_abs": 0.0, "max_rel": 0.0, "cosine": 1.0,
+            }],
+            "summary": {
+                "status": "pass", "evaluated_rungs": 1, "total_rungs": 1,
+                "stopped_at": None, "debug_target": None,
+                "message": "All parity rungs passed in runbook order.",
+            },
+        }
+        invalid_token = json.loads(json.dumps(report))
+        invalid_token["inputs"]["token_ids"] = [1, -2]
+        with self.assertRaisesRegex(run_parity.SkillError, "token-ID input"):
+            run_parity.validate_parity_report(invalid_token)
+
+        wrong_width = json.loads(json.dumps(report))
+        wrong_width["inputs"]["attention_mask"] = [[1]]
+        with self.assertRaisesRegex(run_parity.SkillError, "width must match"):
+            run_parity.validate_parity_report(wrong_width)
+
+        wrong_cardinality = json.loads(json.dumps(report))
+        wrong_cardinality["inputs"].update({
+            "input_mode": "prompt",
+            "prompts": ["first", "second"],
+            "token_ids": None,
+            "attention_mask": [[1, 1]],
+        })
+        with self.assertRaisesRegex(run_parity.SkillError, "row count must match"):
+            run_parity.validate_parity_report(wrong_cardinality)
+
+        invalid_prompt = json.loads(json.dumps(report))
+        invalid_prompt["inputs"].update({
+            "input_mode": "prompt",
+            "prompts": [1],
+            "token_ids": None,
+        })
+        with self.assertRaisesRegex(run_parity.SkillError, "prompt input"):
+            run_parity.validate_parity_report(invalid_prompt)
+
+    def test_capture_manifest_binds_mask_shape_and_accepts_ssm_mode(self) -> None:
+        fixture = json.loads(
+            (ROOT / "tests" / "fixtures" / "manifests" / "oracle.json").read_text()
+        )
+        fixture["capture"] = {
+            "mode": "ssm",
+            "input_mode": "token_ids",
+            "prompts": None,
+            "token_ids": [1, 2],
+            "attention_mask": [[1, 1]],
+            "generate_steps": 2,
+            "seed": 0,
+            "dtype_policy": "float32",
+        }
+        self.assertIs(capture_mlx.validate_capture_manifest(fixture), fixture)
+
+        fixture["capture"]["attention_mask"] = [[1]]
+        with self.assertRaisesRegex(capture_mlx.SkillError, "input_ids tensor shape"):
+            capture_mlx.validate_capture_manifest(fixture)
+
     def test_capture_manifest_validation_reuses_oracle_schema_without_site_packages(self) -> None:
         fixture = ROOT / "tests" / "fixtures" / "manifests" / "oracle.json"
         completed = run_script(CAPTURE_MLX, "--validate-manifest", fixture, no_site=True)

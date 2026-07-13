@@ -188,6 +188,19 @@ class MoeScaffoldDependencyFreeContractTests(unittest.TestCase):
         self.assertEqual(profiles["granitemoe"]["renormalize"], "always")
         self.assertEqual(profiles["qwen2_moe"]["renormalize"], "config")
         self.assertEqual(profiles["phimoe"]["router"], "sparse-mixer")
+        self.assertEqual(
+            profiles["mixtral"]["architectures"],
+            {"MixtralForCausalLM"},
+        )
+        self.assertEqual(
+            profiles["granitemoe"]["architectures"],
+            {"GraniteMoeForCausalLM"},
+        )
+        with self.assertRaisesRegex(
+            scaffold_port.SkillError,
+            "architectures do not match model_type 'mixtral'",
+        ):
+            scaffold_port.validate_moe_config(tiny_moe_config(model_type="mixtral"))
         for alias in ("phimoe", "qwen3_moe", "olmoe", "deepseek_v2", "deepseek_v3"):
             with self.subTest(alias=alias):
                 with self.assertRaisesRegex(scaffold_port.SkillError, "is not supported"):
@@ -267,9 +280,17 @@ class MoeScaffoldDependencyFreeContractTests(unittest.TestCase):
             scaffold_port.generate_moe_decoder(inspection, config)
 
     def test_mixtral_and_granite_force_selected_probability_renormalization(self) -> None:
-        for alias in ("mixtral", "granitemoe"):
+        identities = {
+            "mixtral": "MixtralForCausalLM",
+            "granitemoe": "GraniteMoeForCausalLM",
+        }
+        for alias, architecture in identities.items():
             with self.subTest(alias=alias):
-                config = tiny_moe_config(model_type=alias, norm_topk_prob=False)
+                config = tiny_moe_config(
+                    model_type=alias,
+                    architectures=[architecture],
+                    norm_topk_prob=False,
+                )
                 generated = scaffold_port.generate_moe_decoder(
                     trusted_moe_inspection(config), config,
                 )
@@ -287,6 +308,25 @@ class MoeScaffoldDependencyFreeContractTests(unittest.TestCase):
                         sys.modules.pop("config", None)
                         if prior is not None:
                             sys.modules["config"] = prior
+
+    def test_packed_profiles_reject_unmapped_expert_biases(self) -> None:
+        qwen = tiny_moe_config(mlp_bias=True)
+        self.assertIs(scaffold_port.validate_moe_config(qwen), qwen)
+
+        identities = {
+            "mixtral": "MixtralForCausalLM",
+            "granitemoe": "GraniteMoeForCausalLM",
+        }
+        for alias, architecture in identities.items():
+            with self.subTest(alias=alias), self.assertRaisesRegex(
+                scaffold_port.SkillError,
+                "source expert-bias contract is not defined",
+            ):
+                scaffold_port.validate_moe_config(tiny_moe_config(
+                    model_type=alias,
+                    architectures=[architecture],
+                    mlp_bias=True,
+                ))
 
 
 @unittest.skipUnless(

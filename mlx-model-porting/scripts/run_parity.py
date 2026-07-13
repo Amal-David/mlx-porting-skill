@@ -279,10 +279,35 @@ def validate_parity_report(payload: Any) -> dict[str, Any]:
         if input_mode not in {"prompt", "token_ids"}:
             raise SkillError("parity report input mode is invalid")
         if input_mode == "token_ids":
-            if inputs["prompts"] is not None or not isinstance(inputs["token_ids"], list):
+            token_ids = inputs["token_ids"]
+            if (
+                inputs["prompts"] is not None
+                or not isinstance(token_ids, list)
+                or not token_ids
+                or not all(type(value) is int and value >= 0 for value in token_ids)
+            ):
                 raise SkillError("parity report token-ID input is invalid")
-        elif inputs["token_ids"] is not None or not isinstance(inputs["prompts"], list):
-            raise SkillError("parity report prompt input is invalid")
+            selected_input_count = 1
+        else:
+            prompts = inputs["prompts"]
+            if (
+                inputs["token_ids"] is not None
+                or not isinstance(prompts, list)
+                or not prompts
+                or not all(isinstance(value, str) for value in prompts)
+            ):
+                raise SkillError("parity report prompt input is invalid")
+            selected_input_count = len(prompts)
+        if reproducible:
+            attention_mask = inputs["attention_mask"]
+            if len(attention_mask) != selected_input_count:
+                raise SkillError(
+                    "parity report attention_mask row count must match the selected input"
+                )
+            if input_mode == "token_ids" and len(attention_mask[0]) != len(token_ids):
+                raise SkillError(
+                    "parity report attention_mask width must match the token-ID input"
+                )
         if type(inputs["generate_steps"]) is not int or inputs["generate_steps"] < 0:
             raise SkillError("parity report generate_steps is invalid")
 

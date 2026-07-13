@@ -413,6 +413,8 @@ def validate_capture_manifest(payload: Any) -> dict[str, Any]:
                 "dense-decoder",
                 "encoder",
                 "encoder-decoder",
+                "ssm",
+                "asr",
             }:
                 raise SkillError("oracle manifest capture.mode is invalid")
             if capture["input_mode"] != expected_input_mode:
@@ -441,6 +443,7 @@ def validate_capture_manifest(payload: Any) -> dict[str, Any]:
     if not isinstance(tensors, list) or not tensors:
         raise SkillError("oracle manifest tensors must be a non-empty array")
     tensor_names: list[str] = []
+    tensor_shapes: dict[str, list[int]] = {}
     for index, value in enumerate(tensors):
         record = _require_exact_fields(
             value,
@@ -458,8 +461,25 @@ def validate_capture_manifest(payload: Any) -> dict[str, Any]:
             raise SkillError(f"oracle manifest tensors[{index}].dtype must be non-empty")
         _validate_sha256(record["sha256"], label=f"oracle manifest tensors[{index}].sha256")
         tensor_names.append(record["name"])
+        tensor_shapes[record["name"]] = record["shape"]
     if tensor_names != sorted(tensor_names) or len(tensor_names) != len(set(tensor_names)):
         raise SkillError("oracle manifest tensor names must be sorted and unique")
+    attention_mask = capture.get("attention_mask")
+    if attention_mask is not None:
+        mask_shape = [len(attention_mask), len(attention_mask[0])]
+        if tensor_shapes.get("input_ids") != mask_shape:
+            raise SkillError(
+                "oracle manifest capture.attention_mask dimensions must match "
+                "the captured input_ids tensor shape"
+            )
+        if (
+            "attention_mask" in tensor_shapes
+            and tensor_shapes["attention_mask"] != mask_shape
+        ):
+            raise SkillError(
+                "oracle manifest capture.attention_mask dimensions must match "
+                "the captured attention_mask tensor shape"
+            )
 
     libraries = _require_exact_fields(
         manifest["libraries"],

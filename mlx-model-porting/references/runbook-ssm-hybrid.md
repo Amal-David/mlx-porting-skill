@@ -53,8 +53,11 @@ For a single layer capture:
 ## Scaffolder support boundary
 
 `scripts/scaffold_port.py` supports one deliberately narrow, synthetic-only
-`minimal_selective` variant for pure SSM recurrence tests. Its config must opt
-in explicitly and is limited to `d_model`, `d_state`, `d_conv`, `expand`,
+`minimal_selective` variant for pure SSM recurrence tests. The required identity
+fields are `ssm_variant="minimal_selective"`, `model_type` equal to `mamba` or
+`mamba2`, and `architectures` exactly `['MambaForCausalLM']` or
+`['Mamba2ForCausalLM']`, respectively. Beyond those identity fields, the
+allowed computation fields are `d_model`, `d_state`, `d_conv`, `expand`,
 `n_layer`, `vocab_size`, `rms_norm_eps`, convolution bias, and embedding tying.
 The block uses a direct per-channel dt, token-dependent B/C, `A=-exp(A_log)`,
 and exact zero-order-hold input discretization `dt * exprel(dt*A)` with a

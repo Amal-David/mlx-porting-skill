@@ -186,9 +186,11 @@ for local debugging; do not publish that form.
 For any of the six executable families, the chain runs in this order:
 
 1. `capture_oracle.py` loads only a pinned local Hugging Face model with remote
-   code disabled and records deterministic inputs, embeddings, every decoder
-   layer, final norm, logits, and greedy token IDs in a bounded NPZ plus a
-   content-addressed manifest.
+   code disabled and records the deterministic ladder selected by `--mode` in
+   a bounded NPZ plus a content-addressed manifest. Text modes capture their
+   IDs/masks and relevant encoder, decoder, or SSM boundaries; ASR captures
+   frozen input features and acoustic-encoder states. Only generative decoder
+   modes include logits and greedy token IDs.
 2. `scaffold_port.py` re-inspects the same artifact and generates the minimal
    eager MLX package. Family-specific config identity and tensor topology fail
    closed before code generation.

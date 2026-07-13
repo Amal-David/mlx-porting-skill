@@ -378,7 +378,7 @@ class SiteContractTests(unittest.TestCase):
         for phrase in (
             "Don’t stop at “it runs.” Make the MLX port fast.",
             "coding-agent skill",
-            "Use mlx_lm.convert",
+            "LLM architecture already supported by mlx_lm? Use mlx_lm.convert",
             "Need a new architecture—or the optimized version",
             "Qwen2.5-0.5B-Instruct · Apple M4 Pro",
             "These are local measured observations, not portable speed or memory claims.",

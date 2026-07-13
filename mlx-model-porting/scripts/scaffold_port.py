@@ -42,18 +42,21 @@ MOE_RUNBOOK = "references/runbook-moe-transformer.md"
 MOE_ROUTER_PROFILES: dict[str, dict[str, Any]] = {
     "mixtral": {
         "implemented": True,
+        "architectures": frozenset({"MixtralForCausalLM"}),
         "router": "softmax-top-k",
         "renormalize": "always",
         "topology": "mixtral-block-sparse",
     },
     "qwen2_moe": {
         "implemented": True,
+        "architectures": frozenset({"Qwen2MoeForCausalLM"}),
         "router": "softmax-top-k",
         "renormalize": "config",
         "topology": "qwen2-per-expert",
     },
     "granitemoe": {
         "implemented": True,
+        "architectures": frozenset({"GraniteMoeForCausalLM"}),
         "router": "softmax-top-k",
         "renormalize": "always",
         "topology": "granite-packed-experts",
@@ -201,14 +204,6 @@ ENCODER_INFERENCE_METADATA_KEYS = frozenset({
 })
 
 SUPPORTED_BERT_ARCHITECTURES = frozenset({
-    "BertForMaskedLM",
-    "BertForMultipleChoice",
-    "BertForNextSentencePrediction",
-    "BertForPreTraining",
-    "BertForQuestionAnswering",
-    "BertForSequenceClassification",
-    "BertForTokenClassification",
-    "BertLMHeadModel",
     "BertModel",
 })
 
@@ -659,6 +654,20 @@ def moe_router_profile(config: dict[str, Any]) -> dict[str, Any]:
         raise SkillError(
             f"config.json model_type {alias!r} is not supported: {profile['reason']}"
         )
+    architectures = config.get("architectures")
+    accepted_architectures = profile["architectures"]
+    if architectures is not None and (
+        not isinstance(architectures, list)
+        or not architectures
+        or not all(
+            isinstance(value, str) and value in accepted_architectures
+            for value in architectures
+        )
+    ):
+        raise SkillError(
+            f"config.json architectures do not match model_type {alias!r}; accepted: "
+            + ", ".join(sorted(accepted_architectures))
+        )
     return profile
 
 
@@ -809,7 +818,7 @@ def validate_moe_config(config: Any) -> dict[str, Any]:
             "Unsupported config features; no code was generated. "
             f"Consult {MOE_RUNBOOK}:\n- " + "\n- ".join(errors)
         )
-    moe_router_profile(config)
+    profile = moe_router_profile(config)
     hidden = _config_int(config, "hidden_size")
     heads = _config_int(config, "num_attention_heads")
     kv_heads = _config_int(config, "num_key_value_heads", default=heads)
@@ -841,6 +850,14 @@ def validate_moe_config(config: Any) -> dict[str, Any]:
     for key in ("attention_bias", "mlp_bias", "rope_traditional", "tie_word_embeddings"):
         if key in config and not isinstance(config[key], bool):
             raise SkillError(f"config.json {key} must be boolean")
+    if config.get("mlp_bias") is True and profile["topology"] in {
+        "mixtral-block-sparse",
+        "granite-packed-experts",
+    }:
+        raise SkillError(
+            f"config.json mlp_bias=True is not supported for model_type "
+            f"{config['model_type']!r}; its source expert-bias contract is not defined"
+        )
     rope_config = config.get("rope_scaling", rope_parameters)
     if isinstance(rope_config, dict) and _rope_type(rope_config) == "dynamic" and head_dim <= 2:
         raise SkillError("config.json dynamic RoPE requires head_dim greater than 2")

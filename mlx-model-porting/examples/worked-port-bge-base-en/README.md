@@ -27,7 +27,9 @@ materialized before inspection. The upstream model card declares MIT terms but
 places that declaration beyond the intake reader's bounded frontmatter window;
 the materialized config therefore records the same operator-verified
 `license: mit` declaration. This changes only the local intake sidecar, not the
-checkpoint tensors.
+checkpoint tensors. The checked-in inspection was generated after this overlay;
+its `sha256-tree-v1` artifact identity binds the resulting `config.json` digest
+alongside the unchanged weight digest.
 
 ```bash
 export WORK="$HOME/.cache/mlx-porting-work/bge-base-en-run"
@@ -56,9 +58,9 @@ python3 mlx-model-porting/scripts/scaffold_port.py \
 ```
 
 The version-locked `scaffold_port.py` 1.1.0 generator validates both config
-semantics and inspected tensors. It accepts only `model_type="bert"` with a
-supported BERT architecture identity, and rejects RoBERTa (whose padding-aware
-position offset is not implemented), decoder/cross-attention flags,
+semantics and inspected tensors. It accepts only `model_type="bert"` with
+`architectures=["BertModel"]`, and rejects BERT task heads, RoBERTa (whose
+padding-aware position offset is not implemented), decoder/cross-attention flags,
 relative/rotary positions, unknown computation keys even when falsey,
 incomplete BERT layer inventories, and decoder, cross-attention, expert,
 router, or unrecognized head tensors. The checked-in
