@@ -2,8 +2,8 @@
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
   "version": "0.6.0",
-  "generated_at": "2026-07-13T12:52:49.072093+00:00",
-  "file_count": 467,
+  "generated_at": "2026-07-13T13:58:48.121496+00:00",
+  "file_count": 468,
   "files": [
     {
       "path": ".agents/skills/mlx-model-porting",
@@ -32,6 +32,12 @@
       "executable": false
     },
     {
+      "path": ".github/requirements-mlx-keystones.txt",
+      "size_bytes": 52054,
+      "sha256": "3295c94124d730dc594258b54bb3b7ab302a096bf51b21dddbbfeb34816de0d3",
+      "executable": false
+    },
+    {
       "path": ".github/workflows/daily-research.yml",
       "size_bytes": 7497,
       "sha256": "075861cf671f0c92763d1afe5da61ede66651f34b4df65808e5fe5037f3850e9",
@@ -45,8 +51,8 @@
     },
     {
       "path": ".github/workflows/validate.yml",
-      "size_bytes": 6608,
-      "sha256": "311e39f23c015b47c4c1624dc4a09bb7b6a71e5e2b3fc51b12252f375e9ae489",
+      "size_bytes": 6860,
+      "sha256": "fb23b8bd499f808928eea10b39a37d8b516381b9cca101553d89b6e2cb7dfe2a",
       "executable": false
     },
     {
@@ -2745,8 +2751,8 @@
     },
     {
       "path": "tests/test_release_contract.py",
-      "size_bytes": 20355,
-      "sha256": "6733f2ba055d67af89d7f5cc71d5afe3cb53be7b0fc035c1a1644c6592915f93",
+      "size_bytes": 20877,
+      "sha256": "6fe5ac95e8f5c4d5d74cee7adfce7ec91897ad54304f60a7c144037e4e311065",
       "executable": false
     },
     {

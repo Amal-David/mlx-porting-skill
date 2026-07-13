@@ -137,11 +137,11 @@ jobs:
       - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
         with:
           python-version: "3.12"
-      - name: Install pinned MLX keystone dependencies
+      - name: Install hash-locked MLX keystone dependencies
         run: >-
-          python3 -m pip install --only-binary=:all:
-          "mlx==0.32.0" "mlx-lm==0.31.3" "numpy==2.2.6"
-          "torch==2.9.1" "transformers==5.3.0" "safetensors==0.7.0"
+          python3 -m pip install
+          --require-hashes --only-binary=:all:
+          -r .github/requirements-mlx-keystones.txt
       - name: Probe MLX Metal execution on the runner
         run: |
           python3 - <<'PY'
@@ -150,9 +150,13 @@ jobs:
           y = x @ x
           mx.eval(y)
           total = float(y.sum())
-          print("mlx default device:", mx.default_device())
+          device = mx.default_device()
+          print("mlx default device:", device)
           print("mlx matmul executed, checksum:", total)
           assert total == 512.0 * 512.0 * 512.0, "unexpected MLX matmul result"
+          # Fail loud if this runner is not actually executing on Metal/GPU, so a
+          # CPU-only runner cannot silently pass the keystones as if Metal ran.
+          assert device == mx.Device(mx.gpu), f"MLX keystones require a Metal GPU device, got {device}"
           PY
       - name: Run MLX keystones as a required gate
         env:
