@@ -97,6 +97,15 @@ discoverable as a single skill by the [skills.sh](https://skills.sh/) CLI:
 npx skills add Amal-David/mlx-porting-skill --skill mlx-model-porting
 ```
 
+For a non-interactive Codex project install:
+
+```bash
+npx skills add Amal-David/mlx-porting-skill \
+  --skill mlx-model-porting \
+  --agent codex \
+  -y
+```
+
 The generic CLI path installs the skill for the selected agent, but it does not
 use this repository's manifest-attested release-artifact checks. For that
 stricter path, use a supported client preset:
@@ -104,6 +113,10 @@ stricter path, use a supported client preset:
 ```bash
 python3 mlx-model-porting/scripts/install_skill.py --client codex
 ```
+
+Native Windows users should use the generic CLI path above; manifest-attested
+copy mode requires WSL. See [`adapters/README.md`](adapters/README.md) for the
+platform-specific discovery and installation boundary.
 
 For an explicit destination:
 
