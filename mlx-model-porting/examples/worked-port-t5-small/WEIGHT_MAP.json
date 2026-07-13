@@ -1,0 +1,2177 @@
+{
+  "draft": false,
+  "dtype_policy": "f32",
+  "entries": [
+    {
+      "source": "decoder.block.0.layer.0.SelfAttention.k.weight",
+      "source_shape": [
+        512,
+        512
+      ],
+      "target": "decoder.block.0.layer.0.SelfAttention.k.weight",
+      "target_shape": [
+        512,
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "decoder.block.0.layer.0.SelfAttention.o.weight",
+      "source_shape": [
+        512,
+        512
+      ],
+      "target": "decoder.block.0.layer.0.SelfAttention.o.weight",
+      "target_shape": [
+        512,
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "decoder.block.0.layer.0.SelfAttention.q.weight",
+      "source_shape": [
+        512,
+        512
+      ],
+      "target": "decoder.block.0.layer.0.SelfAttention.q.weight",
+      "target_shape": [
+        512,
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "decoder.block.0.layer.0.SelfAttention.relative_attention_bias.weight",
+      "source_shape": [
+        32,
+        8
+      ],
+      "target": "decoder.block.0.layer.0.SelfAttention.relative_attention_bias.weight",
+      "target_shape": [
+        32,
+        8
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "decoder.block.0.layer.0.SelfAttention.v.weight",
+      "source_shape": [
+        512,
+        512
+      ],
+      "target": "decoder.block.0.layer.0.SelfAttention.v.weight",
+      "target_shape": [
+        512,
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "decoder.block.0.layer.0.layer_norm.weight",
+      "source_shape": [
+        512
+      ],
+      "target": "decoder.block.0.layer.0.layer_norm.weight",
+      "target_shape": [
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "decoder.block.0.layer.1.EncDecAttention.k.weight",
+      "source_shape": [
+        512,
+        512
+      ],
+      "target": "decoder.block.0.layer.1.EncDecAttention.k.weight",
+      "target_shape": [
+        512,
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "decoder.block.0.layer.1.EncDecAttention.o.weight",
+      "source_shape": [
+        512,
+        512
+      ],
+      "target": "decoder.block.0.layer.1.EncDecAttention.o.weight",
+      "target_shape": [
+        512,
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "decoder.block.0.layer.1.EncDecAttention.q.weight",
+      "source_shape": [
+        512,
+        512
+      ],
+      "target": "decoder.block.0.layer.1.EncDecAttention.q.weight",
+      "target_shape": [
+        512,
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "decoder.block.0.layer.1.EncDecAttention.v.weight",
+      "source_shape": [
+        512,
+        512
+      ],
+      "target": "decoder.block.0.layer.1.EncDecAttention.v.weight",
+      "target_shape": [
+        512,
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "decoder.block.0.layer.1.layer_norm.weight",
+      "source_shape": [
+        512
+      ],
+      "target": "decoder.block.0.layer.1.layer_norm.weight",
+      "target_shape": [
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "decoder.block.0.layer.2.DenseReluDense.wi.weight",
+      "source_shape": [
+        2048,
+        512
+      ],
+      "target": "decoder.block.0.layer.2.DenseReluDense.wi.weight",
+      "target_shape": [
+        2048,
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "decoder.block.0.layer.2.DenseReluDense.wo.weight",
+      "source_shape": [
+        512,
+        2048
+      ],
+      "target": "decoder.block.0.layer.2.DenseReluDense.wo.weight",
+      "target_shape": [
+        512,
+        2048
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "decoder.block.0.layer.2.layer_norm.weight",
+      "source_shape": [
+        512
+      ],
+      "target": "decoder.block.0.layer.2.layer_norm.weight",
+      "target_shape": [
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "decoder.block.1.layer.0.SelfAttention.k.weight",
+      "source_shape": [
+        512,
+        512
+      ],
+      "target": "decoder.block.1.layer.0.SelfAttention.k.weight",
+      "target_shape": [
+        512,
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "decoder.block.1.layer.0.SelfAttention.o.weight",
+      "source_shape": [
+        512,
+        512
+      ],
+      "target": "decoder.block.1.layer.0.SelfAttention.o.weight",
+      "target_shape": [
+        512,
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "decoder.block.1.layer.0.SelfAttention.q.weight",
+      "source_shape": [
+        512,
+        512
+      ],
+      "target": "decoder.block.1.layer.0.SelfAttention.q.weight",
+      "target_shape": [
+        512,
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "decoder.block.1.layer.0.SelfAttention.v.weight",
+      "source_shape": [
+        512,
+        512
+      ],
+      "target": "decoder.block.1.layer.0.SelfAttention.v.weight",
+      "target_shape": [
+        512,
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "decoder.block.1.layer.0.layer_norm.weight",
+      "source_shape": [
+        512
+      ],
+      "target": "decoder.block.1.layer.0.layer_norm.weight",
+      "target_shape": [
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "decoder.block.1.layer.1.EncDecAttention.k.weight",
+      "source_shape": [
+        512,
+        512
+      ],
+      "target": "decoder.block.1.layer.1.EncDecAttention.k.weight",
+      "target_shape": [
+        512,
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "decoder.block.1.layer.1.EncDecAttention.o.weight",
+      "source_shape": [
+        512,
+        512
+      ],
+      "target": "decoder.block.1.layer.1.EncDecAttention.o.weight",
+      "target_shape": [
+        512,
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "decoder.block.1.layer.1.EncDecAttention.q.weight",
+      "source_shape": [
+        512,
+        512
+      ],
+      "target": "decoder.block.1.layer.1.EncDecAttention.q.weight",
+      "target_shape": [
+        512,
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "decoder.block.1.layer.1.EncDecAttention.v.weight",
+      "source_shape": [
+        512,
+        512
+      ],
+      "target": "decoder.block.1.layer.1.EncDecAttention.v.weight",
+      "target_shape": [
+        512,
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "decoder.block.1.layer.1.layer_norm.weight",
+      "source_shape": [
+        512
+      ],
+      "target": "decoder.block.1.layer.1.layer_norm.weight",
+      "target_shape": [
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "decoder.block.1.layer.2.DenseReluDense.wi.weight",
+      "source_shape": [
+        2048,
+        512
+      ],
+      "target": "decoder.block.1.layer.2.DenseReluDense.wi.weight",
+      "target_shape": [
+        2048,
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "decoder.block.1.layer.2.DenseReluDense.wo.weight",
+      "source_shape": [
+        512,
+        2048
+      ],
+      "target": "decoder.block.1.layer.2.DenseReluDense.wo.weight",
+      "target_shape": [
+        512,
+        2048
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "decoder.block.1.layer.2.layer_norm.weight",
+      "source_shape": [
+        512
+      ],
+      "target": "decoder.block.1.layer.2.layer_norm.weight",
+      "target_shape": [
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "decoder.block.2.layer.0.SelfAttention.k.weight",
+      "source_shape": [
+        512,
+        512
+      ],
+      "target": "decoder.block.2.layer.0.SelfAttention.k.weight",
+      "target_shape": [
+        512,
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "decoder.block.2.layer.0.SelfAttention.o.weight",
+      "source_shape": [
+        512,
+        512
+      ],
+      "target": "decoder.block.2.layer.0.SelfAttention.o.weight",
+      "target_shape": [
+        512,
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "decoder.block.2.layer.0.SelfAttention.q.weight",
+      "source_shape": [
+        512,
+        512
+      ],
+      "target": "decoder.block.2.layer.0.SelfAttention.q.weight",
+      "target_shape": [
+        512,
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "decoder.block.2.layer.0.SelfAttention.v.weight",
+      "source_shape": [
+        512,
+        512
+      ],
+      "target": "decoder.block.2.layer.0.SelfAttention.v.weight",
+      "target_shape": [
+        512,
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "decoder.block.2.layer.0.layer_norm.weight",
+      "source_shape": [
+        512
+      ],
+      "target": "decoder.block.2.layer.0.layer_norm.weight",
+      "target_shape": [
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "decoder.block.2.layer.1.EncDecAttention.k.weight",
+      "source_shape": [
+        512,
+        512
+      ],
+      "target": "decoder.block.2.layer.1.EncDecAttention.k.weight",
+      "target_shape": [
+        512,
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "decoder.block.2.layer.1.EncDecAttention.o.weight",
+      "source_shape": [
+        512,
+        512
+      ],
+      "target": "decoder.block.2.layer.1.EncDecAttention.o.weight",
+      "target_shape": [
+        512,
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "decoder.block.2.layer.1.EncDecAttention.q.weight",
+      "source_shape": [
+        512,
+        512
+      ],
+      "target": "decoder.block.2.layer.1.EncDecAttention.q.weight",
+      "target_shape": [
+        512,
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "decoder.block.2.layer.1.EncDecAttention.v.weight",
+      "source_shape": [
+        512,
+        512
+      ],
+      "target": "decoder.block.2.layer.1.EncDecAttention.v.weight",
+      "target_shape": [
+        512,
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "decoder.block.2.layer.1.layer_norm.weight",
+      "source_shape": [
+        512
+      ],
+      "target": "decoder.block.2.layer.1.layer_norm.weight",
+      "target_shape": [
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "decoder.block.2.layer.2.DenseReluDense.wi.weight",
+      "source_shape": [
+        2048,
+        512
+      ],
+      "target": "decoder.block.2.layer.2.DenseReluDense.wi.weight",
+      "target_shape": [
+        2048,
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "decoder.block.2.layer.2.DenseReluDense.wo.weight",
+      "source_shape": [
+        512,
+        2048
+      ],
+      "target": "decoder.block.2.layer.2.DenseReluDense.wo.weight",
+      "target_shape": [
+        512,
+        2048
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "decoder.block.2.layer.2.layer_norm.weight",
+      "source_shape": [
+        512
+      ],
+      "target": "decoder.block.2.layer.2.layer_norm.weight",
+      "target_shape": [
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "decoder.block.3.layer.0.SelfAttention.k.weight",
+      "source_shape": [
+        512,
+        512
+      ],
+      "target": "decoder.block.3.layer.0.SelfAttention.k.weight",
+      "target_shape": [
+        512,
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "decoder.block.3.layer.0.SelfAttention.o.weight",
+      "source_shape": [
+        512,
+        512
+      ],
+      "target": "decoder.block.3.layer.0.SelfAttention.o.weight",
+      "target_shape": [
+        512,
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "decoder.block.3.layer.0.SelfAttention.q.weight",
+      "source_shape": [
+        512,
+        512
+      ],
+      "target": "decoder.block.3.layer.0.SelfAttention.q.weight",
+      "target_shape": [
+        512,
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "decoder.block.3.layer.0.SelfAttention.v.weight",
+      "source_shape": [
+        512,
+        512
+      ],
+      "target": "decoder.block.3.layer.0.SelfAttention.v.weight",
+      "target_shape": [
+        512,
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "decoder.block.3.layer.0.layer_norm.weight",
+      "source_shape": [
+        512
+      ],
+      "target": "decoder.block.3.layer.0.layer_norm.weight",
+      "target_shape": [
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "decoder.block.3.layer.1.EncDecAttention.k.weight",
+      "source_shape": [
+        512,
+        512
+      ],
+      "target": "decoder.block.3.layer.1.EncDecAttention.k.weight",
+      "target_shape": [
+        512,
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "decoder.block.3.layer.1.EncDecAttention.o.weight",
+      "source_shape": [
+        512,
+        512
+      ],
+      "target": "decoder.block.3.layer.1.EncDecAttention.o.weight",
+      "target_shape": [
+        512,
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "decoder.block.3.layer.1.EncDecAttention.q.weight",
+      "source_shape": [
+        512,
+        512
+      ],
+      "target": "decoder.block.3.layer.1.EncDecAttention.q.weight",
+      "target_shape": [
+        512,
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "decoder.block.3.layer.1.EncDecAttention.v.weight",
+      "source_shape": [
+        512,
+        512
+      ],
+      "target": "decoder.block.3.layer.1.EncDecAttention.v.weight",
+      "target_shape": [
+        512,
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "decoder.block.3.layer.1.layer_norm.weight",
+      "source_shape": [
+        512
+      ],
+      "target": "decoder.block.3.layer.1.layer_norm.weight",
+      "target_shape": [
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "decoder.block.3.layer.2.DenseReluDense.wi.weight",
+      "source_shape": [
+        2048,
+        512
+      ],
+      "target": "decoder.block.3.layer.2.DenseReluDense.wi.weight",
+      "target_shape": [
+        2048,
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "decoder.block.3.layer.2.DenseReluDense.wo.weight",
+      "source_shape": [
+        512,
+        2048
+      ],
+      "target": "decoder.block.3.layer.2.DenseReluDense.wo.weight",
+      "target_shape": [
+        512,
+        2048
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "decoder.block.3.layer.2.layer_norm.weight",
+      "source_shape": [
+        512
+      ],
+      "target": "decoder.block.3.layer.2.layer_norm.weight",
+      "target_shape": [
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "decoder.block.4.layer.0.SelfAttention.k.weight",
+      "source_shape": [
+        512,
+        512
+      ],
+      "target": "decoder.block.4.layer.0.SelfAttention.k.weight",
+      "target_shape": [
+        512,
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "decoder.block.4.layer.0.SelfAttention.o.weight",
+      "source_shape": [
+        512,
+        512
+      ],
+      "target": "decoder.block.4.layer.0.SelfAttention.o.weight",
+      "target_shape": [
+        512,
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "decoder.block.4.layer.0.SelfAttention.q.weight",
+      "source_shape": [
+        512,
+        512
+      ],
+      "target": "decoder.block.4.layer.0.SelfAttention.q.weight",
+      "target_shape": [
+        512,
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "decoder.block.4.layer.0.SelfAttention.v.weight",
+      "source_shape": [
+        512,
+        512
+      ],
+      "target": "decoder.block.4.layer.0.SelfAttention.v.weight",
+      "target_shape": [
+        512,
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "decoder.block.4.layer.0.layer_norm.weight",
+      "source_shape": [
+        512
+      ],
+      "target": "decoder.block.4.layer.0.layer_norm.weight",
+      "target_shape": [
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "decoder.block.4.layer.1.EncDecAttention.k.weight",
+      "source_shape": [
+        512,
+        512
+      ],
+      "target": "decoder.block.4.layer.1.EncDecAttention.k.weight",
+      "target_shape": [
+        512,
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "decoder.block.4.layer.1.EncDecAttention.o.weight",
+      "source_shape": [
+        512,
+        512
+      ],
+      "target": "decoder.block.4.layer.1.EncDecAttention.o.weight",
+      "target_shape": [
+        512,
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "decoder.block.4.layer.1.EncDecAttention.q.weight",
+      "source_shape": [
+        512,
+        512
+      ],
+      "target": "decoder.block.4.layer.1.EncDecAttention.q.weight",
+      "target_shape": [
+        512,
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "decoder.block.4.layer.1.EncDecAttention.v.weight",
+      "source_shape": [
+        512,
+        512
+      ],
+      "target": "decoder.block.4.layer.1.EncDecAttention.v.weight",
+      "target_shape": [
+        512,
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "decoder.block.4.layer.1.layer_norm.weight",
+      "source_shape": [
+        512
+      ],
+      "target": "decoder.block.4.layer.1.layer_norm.weight",
+      "target_shape": [
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "decoder.block.4.layer.2.DenseReluDense.wi.weight",
+      "source_shape": [
+        2048,
+        512
+      ],
+      "target": "decoder.block.4.layer.2.DenseReluDense.wi.weight",
+      "target_shape": [
+        2048,
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "decoder.block.4.layer.2.DenseReluDense.wo.weight",
+      "source_shape": [
+        512,
+        2048
+      ],
+      "target": "decoder.block.4.layer.2.DenseReluDense.wo.weight",
+      "target_shape": [
+        512,
+        2048
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "decoder.block.4.layer.2.layer_norm.weight",
+      "source_shape": [
+        512
+      ],
+      "target": "decoder.block.4.layer.2.layer_norm.weight",
+      "target_shape": [
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "decoder.block.5.layer.0.SelfAttention.k.weight",
+      "source_shape": [
+        512,
+        512
+      ],
+      "target": "decoder.block.5.layer.0.SelfAttention.k.weight",
+      "target_shape": [
+        512,
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "decoder.block.5.layer.0.SelfAttention.o.weight",
+      "source_shape": [
+        512,
+        512
+      ],
+      "target": "decoder.block.5.layer.0.SelfAttention.o.weight",
+      "target_shape": [
+        512,
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "decoder.block.5.layer.0.SelfAttention.q.weight",
+      "source_shape": [
+        512,
+        512
+      ],
+      "target": "decoder.block.5.layer.0.SelfAttention.q.weight",
+      "target_shape": [
+        512,
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "decoder.block.5.layer.0.SelfAttention.v.weight",
+      "source_shape": [
+        512,
+        512
+      ],
+      "target": "decoder.block.5.layer.0.SelfAttention.v.weight",
+      "target_shape": [
+        512,
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "decoder.block.5.layer.0.layer_norm.weight",
+      "source_shape": [
+        512
+      ],
+      "target": "decoder.block.5.layer.0.layer_norm.weight",
+      "target_shape": [
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "decoder.block.5.layer.1.EncDecAttention.k.weight",
+      "source_shape": [
+        512,
+        512
+      ],
+      "target": "decoder.block.5.layer.1.EncDecAttention.k.weight",
+      "target_shape": [
+        512,
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "decoder.block.5.layer.1.EncDecAttention.o.weight",
+      "source_shape": [
+        512,
+        512
+      ],
+      "target": "decoder.block.5.layer.1.EncDecAttention.o.weight",
+      "target_shape": [
+        512,
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "decoder.block.5.layer.1.EncDecAttention.q.weight",
+      "source_shape": [
+        512,
+        512
+      ],
+      "target": "decoder.block.5.layer.1.EncDecAttention.q.weight",
+      "target_shape": [
+        512,
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "decoder.block.5.layer.1.EncDecAttention.v.weight",
+      "source_shape": [
+        512,
+        512
+      ],
+      "target": "decoder.block.5.layer.1.EncDecAttention.v.weight",
+      "target_shape": [
+        512,
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "decoder.block.5.layer.1.layer_norm.weight",
+      "source_shape": [
+        512
+      ],
+      "target": "decoder.block.5.layer.1.layer_norm.weight",
+      "target_shape": [
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "decoder.block.5.layer.2.DenseReluDense.wi.weight",
+      "source_shape": [
+        2048,
+        512
+      ],
+      "target": "decoder.block.5.layer.2.DenseReluDense.wi.weight",
+      "target_shape": [
+        2048,
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "decoder.block.5.layer.2.DenseReluDense.wo.weight",
+      "source_shape": [
+        512,
+        2048
+      ],
+      "target": "decoder.block.5.layer.2.DenseReluDense.wo.weight",
+      "target_shape": [
+        512,
+        2048
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "decoder.block.5.layer.2.layer_norm.weight",
+      "source_shape": [
+        512
+      ],
+      "target": "decoder.block.5.layer.2.layer_norm.weight",
+      "target_shape": [
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "decoder.final_layer_norm.weight",
+      "source_shape": [
+        512
+      ],
+      "target": "decoder.final_layer_norm.weight",
+      "target_shape": [
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.block.0.layer.0.SelfAttention.k.weight",
+      "source_shape": [
+        512,
+        512
+      ],
+      "target": "encoder.block.0.layer.0.SelfAttention.k.weight",
+      "target_shape": [
+        512,
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.block.0.layer.0.SelfAttention.o.weight",
+      "source_shape": [
+        512,
+        512
+      ],
+      "target": "encoder.block.0.layer.0.SelfAttention.o.weight",
+      "target_shape": [
+        512,
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.block.0.layer.0.SelfAttention.q.weight",
+      "source_shape": [
+        512,
+        512
+      ],
+      "target": "encoder.block.0.layer.0.SelfAttention.q.weight",
+      "target_shape": [
+        512,
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.block.0.layer.0.SelfAttention.relative_attention_bias.weight",
+      "source_shape": [
+        32,
+        8
+      ],
+      "target": "encoder.block.0.layer.0.SelfAttention.relative_attention_bias.weight",
+      "target_shape": [
+        32,
+        8
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.block.0.layer.0.SelfAttention.v.weight",
+      "source_shape": [
+        512,
+        512
+      ],
+      "target": "encoder.block.0.layer.0.SelfAttention.v.weight",
+      "target_shape": [
+        512,
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.block.0.layer.0.layer_norm.weight",
+      "source_shape": [
+        512
+      ],
+      "target": "encoder.block.0.layer.0.layer_norm.weight",
+      "target_shape": [
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.block.0.layer.1.DenseReluDense.wi.weight",
+      "source_shape": [
+        2048,
+        512
+      ],
+      "target": "encoder.block.0.layer.1.DenseReluDense.wi.weight",
+      "target_shape": [
+        2048,
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.block.0.layer.1.DenseReluDense.wo.weight",
+      "source_shape": [
+        512,
+        2048
+      ],
+      "target": "encoder.block.0.layer.1.DenseReluDense.wo.weight",
+      "target_shape": [
+        512,
+        2048
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.block.0.layer.1.layer_norm.weight",
+      "source_shape": [
+        512
+      ],
+      "target": "encoder.block.0.layer.1.layer_norm.weight",
+      "target_shape": [
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.block.1.layer.0.SelfAttention.k.weight",
+      "source_shape": [
+        512,
+        512
+      ],
+      "target": "encoder.block.1.layer.0.SelfAttention.k.weight",
+      "target_shape": [
+        512,
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.block.1.layer.0.SelfAttention.o.weight",
+      "source_shape": [
+        512,
+        512
+      ],
+      "target": "encoder.block.1.layer.0.SelfAttention.o.weight",
+      "target_shape": [
+        512,
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.block.1.layer.0.SelfAttention.q.weight",
+      "source_shape": [
+        512,
+        512
+      ],
+      "target": "encoder.block.1.layer.0.SelfAttention.q.weight",
+      "target_shape": [
+        512,
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.block.1.layer.0.SelfAttention.v.weight",
+      "source_shape": [
+        512,
+        512
+      ],
+      "target": "encoder.block.1.layer.0.SelfAttention.v.weight",
+      "target_shape": [
+        512,
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.block.1.layer.0.layer_norm.weight",
+      "source_shape": [
+        512
+      ],
+      "target": "encoder.block.1.layer.0.layer_norm.weight",
+      "target_shape": [
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.block.1.layer.1.DenseReluDense.wi.weight",
+      "source_shape": [
+        2048,
+        512
+      ],
+      "target": "encoder.block.1.layer.1.DenseReluDense.wi.weight",
+      "target_shape": [
+        2048,
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.block.1.layer.1.DenseReluDense.wo.weight",
+      "source_shape": [
+        512,
+        2048
+      ],
+      "target": "encoder.block.1.layer.1.DenseReluDense.wo.weight",
+      "target_shape": [
+        512,
+        2048
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.block.1.layer.1.layer_norm.weight",
+      "source_shape": [
+        512
+      ],
+      "target": "encoder.block.1.layer.1.layer_norm.weight",
+      "target_shape": [
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.block.2.layer.0.SelfAttention.k.weight",
+      "source_shape": [
+        512,
+        512
+      ],
+      "target": "encoder.block.2.layer.0.SelfAttention.k.weight",
+      "target_shape": [
+        512,
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.block.2.layer.0.SelfAttention.o.weight",
+      "source_shape": [
+        512,
+        512
+      ],
+      "target": "encoder.block.2.layer.0.SelfAttention.o.weight",
+      "target_shape": [
+        512,
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.block.2.layer.0.SelfAttention.q.weight",
+      "source_shape": [
+        512,
+        512
+      ],
+      "target": "encoder.block.2.layer.0.SelfAttention.q.weight",
+      "target_shape": [
+        512,
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.block.2.layer.0.SelfAttention.v.weight",
+      "source_shape": [
+        512,
+        512
+      ],
+      "target": "encoder.block.2.layer.0.SelfAttention.v.weight",
+      "target_shape": [
+        512,
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.block.2.layer.0.layer_norm.weight",
+      "source_shape": [
+        512
+      ],
+      "target": "encoder.block.2.layer.0.layer_norm.weight",
+      "target_shape": [
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.block.2.layer.1.DenseReluDense.wi.weight",
+      "source_shape": [
+        2048,
+        512
+      ],
+      "target": "encoder.block.2.layer.1.DenseReluDense.wi.weight",
+      "target_shape": [
+        2048,
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.block.2.layer.1.DenseReluDense.wo.weight",
+      "source_shape": [
+        512,
+        2048
+      ],
+      "target": "encoder.block.2.layer.1.DenseReluDense.wo.weight",
+      "target_shape": [
+        512,
+        2048
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.block.2.layer.1.layer_norm.weight",
+      "source_shape": [
+        512
+      ],
+      "target": "encoder.block.2.layer.1.layer_norm.weight",
+      "target_shape": [
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.block.3.layer.0.SelfAttention.k.weight",
+      "source_shape": [
+        512,
+        512
+      ],
+      "target": "encoder.block.3.layer.0.SelfAttention.k.weight",
+      "target_shape": [
+        512,
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.block.3.layer.0.SelfAttention.o.weight",
+      "source_shape": [
+        512,
+        512
+      ],
+      "target": "encoder.block.3.layer.0.SelfAttention.o.weight",
+      "target_shape": [
+        512,
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.block.3.layer.0.SelfAttention.q.weight",
+      "source_shape": [
+        512,
+        512
+      ],
+      "target": "encoder.block.3.layer.0.SelfAttention.q.weight",
+      "target_shape": [
+        512,
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.block.3.layer.0.SelfAttention.v.weight",
+      "source_shape": [
+        512,
+        512
+      ],
+      "target": "encoder.block.3.layer.0.SelfAttention.v.weight",
+      "target_shape": [
+        512,
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.block.3.layer.0.layer_norm.weight",
+      "source_shape": [
+        512
+      ],
+      "target": "encoder.block.3.layer.0.layer_norm.weight",
+      "target_shape": [
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.block.3.layer.1.DenseReluDense.wi.weight",
+      "source_shape": [
+        2048,
+        512
+      ],
+      "target": "encoder.block.3.layer.1.DenseReluDense.wi.weight",
+      "target_shape": [
+        2048,
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.block.3.layer.1.DenseReluDense.wo.weight",
+      "source_shape": [
+        512,
+        2048
+      ],
+      "target": "encoder.block.3.layer.1.DenseReluDense.wo.weight",
+      "target_shape": [
+        512,
+        2048
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.block.3.layer.1.layer_norm.weight",
+      "source_shape": [
+        512
+      ],
+      "target": "encoder.block.3.layer.1.layer_norm.weight",
+      "target_shape": [
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.block.4.layer.0.SelfAttention.k.weight",
+      "source_shape": [
+        512,
+        512
+      ],
+      "target": "encoder.block.4.layer.0.SelfAttention.k.weight",
+      "target_shape": [
+        512,
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.block.4.layer.0.SelfAttention.o.weight",
+      "source_shape": [
+        512,
+        512
+      ],
+      "target": "encoder.block.4.layer.0.SelfAttention.o.weight",
+      "target_shape": [
+        512,
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.block.4.layer.0.SelfAttention.q.weight",
+      "source_shape": [
+        512,
+        512
+      ],
+      "target": "encoder.block.4.layer.0.SelfAttention.q.weight",
+      "target_shape": [
+        512,
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.block.4.layer.0.SelfAttention.v.weight",
+      "source_shape": [
+        512,
+        512
+      ],
+      "target": "encoder.block.4.layer.0.SelfAttention.v.weight",
+      "target_shape": [
+        512,
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.block.4.layer.0.layer_norm.weight",
+      "source_shape": [
+        512
+      ],
+      "target": "encoder.block.4.layer.0.layer_norm.weight",
+      "target_shape": [
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.block.4.layer.1.DenseReluDense.wi.weight",
+      "source_shape": [
+        2048,
+        512
+      ],
+      "target": "encoder.block.4.layer.1.DenseReluDense.wi.weight",
+      "target_shape": [
+        2048,
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.block.4.layer.1.DenseReluDense.wo.weight",
+      "source_shape": [
+        512,
+        2048
+      ],
+      "target": "encoder.block.4.layer.1.DenseReluDense.wo.weight",
+      "target_shape": [
+        512,
+        2048
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.block.4.layer.1.layer_norm.weight",
+      "source_shape": [
+        512
+      ],
+      "target": "encoder.block.4.layer.1.layer_norm.weight",
+      "target_shape": [
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.block.5.layer.0.SelfAttention.k.weight",
+      "source_shape": [
+        512,
+        512
+      ],
+      "target": "encoder.block.5.layer.0.SelfAttention.k.weight",
+      "target_shape": [
+        512,
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.block.5.layer.0.SelfAttention.o.weight",
+      "source_shape": [
+        512,
+        512
+      ],
+      "target": "encoder.block.5.layer.0.SelfAttention.o.weight",
+      "target_shape": [
+        512,
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.block.5.layer.0.SelfAttention.q.weight",
+      "source_shape": [
+        512,
+        512
+      ],
+      "target": "encoder.block.5.layer.0.SelfAttention.q.weight",
+      "target_shape": [
+        512,
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.block.5.layer.0.SelfAttention.v.weight",
+      "source_shape": [
+        512,
+        512
+      ],
+      "target": "encoder.block.5.layer.0.SelfAttention.v.weight",
+      "target_shape": [
+        512,
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.block.5.layer.0.layer_norm.weight",
+      "source_shape": [
+        512
+      ],
+      "target": "encoder.block.5.layer.0.layer_norm.weight",
+      "target_shape": [
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.block.5.layer.1.DenseReluDense.wi.weight",
+      "source_shape": [
+        2048,
+        512
+      ],
+      "target": "encoder.block.5.layer.1.DenseReluDense.wi.weight",
+      "target_shape": [
+        2048,
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.block.5.layer.1.DenseReluDense.wo.weight",
+      "source_shape": [
+        512,
+        2048
+      ],
+      "target": "encoder.block.5.layer.1.DenseReluDense.wo.weight",
+      "target_shape": [
+        512,
+        2048
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.block.5.layer.1.layer_norm.weight",
+      "source_shape": [
+        512
+      ],
+      "target": "encoder.block.5.layer.1.layer_norm.weight",
+      "target_shape": [
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "encoder.final_layer_norm.weight",
+      "source_shape": [
+        512
+      ],
+      "target": "encoder.final_layer_norm.weight",
+      "target_shape": [
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    },
+    {
+      "source": "shared.weight",
+      "source_shape": [
+        32128,
+        512
+      ],
+      "target": "shared.weight",
+      "target_shape": [
+        32128,
+        512
+      ],
+      "transforms": [
+        {
+          "op": "rename"
+        }
+      ]
+    }
+  ],
+  "ignore": [
+    {
+      "reason": "unused legacy checkpoint key; T5 cross-attention has no relative position bias",
+      "source": "decoder.block.0.layer.1.EncDecAttention.relative_attention_bias.weight"
+    }
+  ],
+  "schema_version": 2,
+  "unresolved": []
+}

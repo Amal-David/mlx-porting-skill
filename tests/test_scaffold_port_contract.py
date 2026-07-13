@@ -7,6 +7,7 @@ import importlib.util
 import json
 import py_compile
 import shutil
+import struct
 import subprocess
 import sys
 import tempfile
@@ -77,6 +78,28 @@ def tiny_config(**overrides: object) -> dict[str, object]:
     return config
 
 
+def tiny_ssm_config(**overrides: object) -> dict[str, object]:
+    config: dict[str, object] = {
+        "architectures": ["MambaForCausalLM"],
+        "conv_bias": True,
+        "d_conv": 3,
+        "d_model": 4,
+        "d_state": 3,
+        "expand": 2,
+        "license": "apache-2.0",
+        "model_type": "mamba",
+        "n_layer": 2,
+        "rms_norm_eps": 1e-5,
+        "ssm_variant": "minimal_selective",
+        "tie_word_embeddings": True,
+        "torch_dtype": "float32",
+        "use_cache": True,
+        "vocab_size": 11,
+    }
+    config.update(overrides)
+    return config
+
+
 def write_model(root: Path, config: dict[str, object]) -> None:
     root.mkdir()
     (root / "config.json").write_text(
@@ -84,6 +107,30 @@ def write_model(root: Path, config: dict[str, object]) -> None:
         encoding="utf-8",
     )
     shutil.copyfile(DECODER_FIXTURE / "model.safetensors", root / "model.safetensors")
+
+
+def write_ssm_model(root: Path, config: dict[str, object]) -> None:
+    root.mkdir()
+    (root / "config.json").write_text(
+        json.dumps(config, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    specs = {
+        "backbone.layers.0.mixer.A_log": {
+            "dtype": "F32",
+            "shape": [8, 3],
+            "data_offsets": [0, 96],
+        },
+        "backbone.layers.0.mixer.conv1d.weight": {
+            "dtype": "F32",
+            "shape": [8, 1, 3],
+            "data_offsets": [96, 192],
+        },
+    }
+    header = json.dumps(specs, separators=(",", ":"), sort_keys=True).encode("utf-8")
+    (root / "model.safetensors").write_bytes(
+        struct.pack("<Q", len(header)) + header + (b"\0" * 192)
+    )
 
 
 def run_script(script: Path, *args: object, no_site: bool = False) -> subprocess.CompletedProcess[str]:
@@ -125,16 +172,138 @@ def scaffold(model: Path, inspection: Path, output: Path, *, no_site: bool = Fal
 
 
 class ScaffoldPortDependencyFreeContractTests(unittest.TestCase):
+    def test_meaningfully_set_treats_numeric_zero_as_explicit(self) -> None:
+        import scaffold_port
+
+        self.assertTrue(scaffold_port._meaningfully_set(0))
+        self.assertTrue(scaffold_port._meaningfully_set(0.0))
+        for value in (None, False, "", [], {}):
+            self.assertFalse(scaffold_port._meaningfully_set(value))
+
     def test_generator_registry_is_explicit_and_imports_no_ml_framework(self) -> None:
         import scaffold_port
 
         self.assertEqual(
             set(scaffold_port.FAMILY_GENERATORS),
-            {"dense-decoder-transformer"},
+            {
+                "automatic-speech-recognition",
+                "dense-decoder-transformer",
+                "encoder-decoder-transformer",
+                "encoder-transformer",
+                "moe-decoder-transformer",
+                "ssm-recurrent-hybrid",
+            },
+        )
+        self.assertEqual(
+            set(scaffold_port.FAMILY_FEATURE_ALLOWLISTS),
+            set(scaffold_port.FAMILY_GENERATORS),
         )
         self.assertIs(scaffold_port.FEATURE_ALLOWLIST, scaffold_port.DENSE_CONFIG_FEATURE_ALLOWLIST)
         self.assertNotIn("mlx", scaffold_port.__dict__)
         self.assertNotIn("torch", scaffold_port.__dict__)
+
+    def test_ssm_config_allowlist_and_hybrid_identity_fail_closed(self) -> None:
+        import scaffold_port
+
+        self.assertEqual(scaffold_port.validate_ssm_config(tiny_ssm_config())["d_state"], 3)
+        with self.assertRaisesRegex(
+            scaffold_port.SkillError,
+            "unrecognized computation-relevant config key 'mystery_scan_mode'",
+        ):
+            scaffold_port.validate_ssm_config(tiny_ssm_config(mystery_scan_mode="fast"))
+        with self.assertRaisesRegex(
+            scaffold_port.SkillError,
+            "hybrid/attention-mixed SSM config is not supported",
+        ):
+            scaffold_port.validate_ssm_config(tiny_ssm_config(
+                model_type="jamba",
+                architectures=["JambaForCausalLM"],
+                layer_types=["mamba", "attention"],
+            ))
+
+    def test_ssm_identity_and_decoder_bypasses_fail_closed_individually(self) -> None:
+        import scaffold_port
+
+        cases = (
+            (
+                {"architectures": "JambaForCausalLM"},
+                "architectures must be a list of strings for the pure-SSM generator",
+            ),
+            (
+                {"architectures": ["UnknownForCausalLM"]},
+                "architectures must be exactly ['MambaForCausalLM'] for model_type 'mamba'",
+            ),
+            (
+                {"architectures": ["MambaAttentionForCausalLM"]},
+                "architectures must be exactly ['MambaForCausalLM'] for model_type 'mamba'",
+            ),
+            (
+                {"architectures": ["JambaForCausalLM"]},
+                "hybrid/attention-mixed SSM config is not supported",
+            ),
+            (
+                {"architectures": ["MambaForCausalLM", 7]},
+                "architectures must be a list of strings for the pure-SSM generator",
+            ),
+            (
+                {"is_decoder": False},
+                "is_decoder must be true when set for the decoder-only SSM generator",
+            ),
+            (
+                {"is_encoder_decoder": True},
+                "is_encoder_decoder must be false when set for the decoder-only SSM generator",
+            ),
+        )
+        for overrides, message in cases:
+            with self.subTest(overrides=overrides):
+                with self.assertRaises(scaffold_port.SkillError) as raised:
+                    scaffold_port.validate_ssm_config(tiny_ssm_config(**overrides))
+                self.assertIn(message, str(raised.exception))
+
+    def test_ssm_attention_and_moe_tensor_inventory_fails_closed(self) -> None:
+        import scaffold_port
+
+        for key in (
+            "backbone.layers.0.self_attn.q_proj.weight",
+            "backbone.layers.0.moe.experts.0.up_proj.weight",
+            "backbone.layers.0.moe.router.weight",
+        ):
+            with self.subTest(key=key):
+                with self.assertRaisesRegex(
+                    scaffold_port.SkillError,
+                    "Pure-SSM generation rejects attention or MoE tensor namespaces",
+                ):
+                    scaffold_port.validate_ssm_inspection({"tensors": [{"key": key}]})
+
+    def test_generated_ssm_package_is_routed_and_attests_recurrent_weights(self) -> None:
+        with tempfile.TemporaryDirectory() as raw_tmp:
+            root = Path(raw_tmp)
+            model = root / "model"
+            inspection = root / "inspection.json"
+            generated = root / "generated"
+            write_ssm_model(model, tiny_ssm_config())
+            inspect_model(model, inspection, no_site=True)
+
+            result = scaffold(model, inspection, generated, no_site=True)
+
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+            self.assertEqual(json.loads(result.stdout)["family"], "ssm-recurrent-hybrid")
+            model_source = (generated / "model.py").read_text(encoding="utf-8")
+            ast.parse(model_source)
+            self.assertIn(
+                "input_coefficient = dt[:, :, None] * _exprel(mx, scaled_A)",
+                model_source,
+            )
+            self.assertNotIn("class Attention", model_source)
+            readme = (generated / "README.md").read_text(encoding="utf-8")
+            self.assertIn("Real-checkpoint weight conversion", readme)
+            manifest = json.loads(
+                (generated / "scaffold-manifest.json").read_text(encoding="utf-8")
+            )
+            target_keys = {record["key"] for record in manifest["tensors"]}
+            self.assertIn("model.layers.0.mixer.A_log", target_keys)
+            self.assertIn("model.layers.1.mixer.conv1d.weight", target_keys)
+            self.assertNotIn("model.layers.0.self_attn.q_proj.weight", target_keys)
 
     def test_help_is_dependency_free(self) -> None:
         result = run_script(SCRIPT, "--help", no_site=True)
@@ -345,7 +514,7 @@ class ScaffoldPortDependencyFreeContractTests(unittest.TestCase):
                 self.assertNotIn("TODO", source)
                 self.assertRegex(
                     source.splitlines()[0],
-                    r"\A# Generated by scaffold_port\.py 1\.0\.1 from inspection sha256:[0-9a-f]{64}\.\Z",
+                    r"\A# Generated by scaffold_port\.py 1\.1\.0 from inspection sha256:[0-9a-f]{64}\.\Z",
                 )
             readme = (first / "README.md").read_text(encoding="utf-8")
             self.assertIn("model.layers.{i}.self_attn.q_proj.weight", readme)
@@ -360,6 +529,88 @@ class ScaffoldPortDependencyFreeContractTests(unittest.TestCase):
                 {"key": "model.layers.0.self_attn.q_proj.weight", "shape": [8, 8]},
                 manifest["tensors"],
             )
+
+
+def numpy_ssm_forward(
+    input_ids: object,
+    weights: dict[str, object],
+    config: dict[str, object],
+    np: object,
+    *,
+    euler_bug: bool = False,
+) -> tuple[object, list[tuple[object, object]]]:
+    """Independent FP32 oracle for the generated synthetic selective recurrence."""
+    d_model = int(config["d_model"])
+    d_state = int(config["d_state"])
+    d_conv = int(config["d_conv"])
+    d_inner = d_model * int(config["expand"])
+    epsilon = float(config["rms_norm_eps"])
+    hidden = weights["model.embed_tokens.weight"][input_ids].astype(np.float32)
+    final_states = []
+    for layer in range(int(config["n_layer"])):
+        prefix = f"model.layers.{layer}"
+        norm_weight = weights[f"{prefix}.norm.weight"]
+        normalized = hidden * np.reciprocal(
+            np.sqrt(np.mean(hidden * hidden, axis=-1, keepdims=True) + epsilon)
+        ) * norm_weight
+        projected = normalized @ weights[f"{prefix}.mixer.in_proj.weight"].T
+        projected, gate = np.split(projected, 2, axis=-1)
+        conv_state = np.zeros(
+            (hidden.shape[0], d_conv - 1, d_inner),
+            dtype=np.float32,
+        )
+        ssm_state = np.zeros((hidden.shape[0], d_inner, d_state), dtype=np.float32)
+        branches = []
+        A = -np.exp(weights[f"{prefix}.mixer.A_log"])
+        for token in range(hidden.shape[1]):
+            window = np.concatenate((conv_state, projected[:, token : token + 1, :]), axis=1)
+            convolved = np.sum(
+                window * weights[f"{prefix}.mixer.conv1d.weight"].T[None, :, :],
+                axis=1,
+            )
+            if bool(config["conv_bias"]):
+                convolved = convolved + weights[f"{prefix}.mixer.conv1d.bias"]
+            activated = convolved / (1.0 + np.exp(-convolved))
+            parameters = activated @ weights[f"{prefix}.mixer.x_proj.weight"].T
+            dt_raw = parameters[:, :d_inner]
+            B = parameters[:, d_inner : d_inner + d_state]
+            C = parameters[:, d_inner + d_state :]
+            dt_input = dt_raw + weights[f"{prefix}.mixer.dt_bias"]
+            dt = np.logaddexp(dt_input, np.zeros_like(dt_input))
+            scaled_A = dt[:, :, None] * A[None, :, :]
+            decay = np.exp(scaled_A)
+            coefficient = (
+                dt[:, :, None]
+                if euler_bug
+                else dt[:, :, None] * numpy_exprel(scaled_A, np)
+            )
+            ssm_state = (
+                decay * ssm_state
+                + coefficient * B[:, None, :] * activated[:, :, None]
+            )
+            y = np.sum(ssm_state * C[:, None, :], axis=-1)
+            y = y + weights[f"{prefix}.mixer.D"] * activated
+            silu_gate = gate[:, token, :] / (1.0 + np.exp(-gate[:, token, :]))
+            branch = (y * silu_gate) @ weights[f"{prefix}.mixer.out_proj.weight"].T
+            branches.append(branch)
+            conv_state = window[:, 1:, :]
+        hidden = hidden + np.stack(branches, axis=1)
+        final_states.append((conv_state, ssm_state))
+    hidden = hidden * np.reciprocal(
+        np.sqrt(np.mean(hidden * hidden, axis=-1, keepdims=True) + epsilon)
+    ) * weights["model.norm.weight"]
+    logits = hidden @ weights["model.embed_tokens.weight"].T
+    return logits, final_states
+
+
+def numpy_exprel(value: object, np: object) -> object:
+    """Stable expm1(x) / x matching the generated MLX recurrence."""
+    small = np.abs(value) < 1e-4
+    square = value * value
+    series = 1.0 + value * 0.5 + square / 6.0 + square * value / 24.0
+    safe_value = np.where(small, np.ones_like(value), value)
+    quotient = np.expm1(value) / safe_value
+    return np.where(small, series, quotient)
 
 
 @require_mlx_keystone(
@@ -387,6 +638,250 @@ class ScaffoldPortMLXContractTests(unittest.TestCase):
                 f"{prefix}.mlp.down_proj.weight": (mx.random.normal((8, 16)) * scale).astype(dtype),
             })
         return weights
+
+    def test_ssm_exprel_zoh_is_finite_at_underflow_and_zero_limits(self) -> None:
+        import mlx.core as mx
+        import numpy as np
+
+        with tempfile.TemporaryDirectory() as raw_tmp:
+            root = Path(raw_tmp)
+            source = root / "source"
+            inspection = root / "inspection.json"
+            generated = root / "generated"
+            write_ssm_model(source, tiny_ssm_config())
+            inspect_model(source, inspection)
+            result = scaffold(source, inspection, generated)
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
+            previous_path = sys.path[:]
+            prior_modules = {name: sys.modules.pop(name, None) for name in ("config", "model")}
+            try:
+                sys.path.insert(0, str(generated))
+                from model import _exprel
+
+                dt_np = np.asarray([[0.125, 1e-8, 0.5, 2.0]], dtype=np.float32)
+                a_log_np = np.asarray([[-100.0, -80.0, -20.0, 0.0]], dtype=np.float32)
+                dt = mx.array(dt_np)
+                A = -mx.exp(mx.array(a_log_np))
+                scaled_A = dt * A
+                coefficient = dt * _exprel(mx, scaled_A)
+                mx.eval(A, scaled_A, coefficient)
+
+                coefficient_np = np.asarray(coefficient)
+                expected = dt_np * numpy_exprel(dt_np * -np.exp(a_log_np), np)
+                self.assertTrue(np.isfinite(np.asarray(A)).all())
+                self.assertTrue(np.isfinite(coefficient_np).all())
+                np.testing.assert_allclose(coefficient_np, expected, rtol=1e-6, atol=1e-8)
+                np.testing.assert_allclose(
+                    coefficient_np[:, :2],
+                    dt_np[:, :2],
+                    rtol=1e-6,
+                    atol=0.0,
+                )
+
+                near_zero = mx.array([0.0, -0.0, 1e-8, -1e-8], dtype=mx.float32)
+                limits = _exprel(mx, near_zero)
+                mx.eval(limits)
+                self.assertTrue(np.isfinite(np.asarray(limits)).all())
+                np.testing.assert_allclose(
+                    np.asarray(limits),
+                    np.ones((4,), dtype=np.float32),
+                    rtol=1e-6,
+                    atol=1e-7,
+                )
+            finally:
+                sys.path[:] = previous_path
+                for name, module in prior_modules.items():
+                    sys.modules.pop(name, None)
+                    if module is not None:
+                        sys.modules[name] = module
+
+    def test_selective_ssm_matches_numpy_recurrence_and_carried_state(self) -> None:
+        import mlx.core as mx
+        import numpy as np
+
+        with tempfile.TemporaryDirectory() as raw_tmp:
+            root = Path(raw_tmp)
+            source = root / "source"
+            inspection = root / "inspection.json"
+            generated = root / "generated"
+            config_data = tiny_ssm_config()
+            write_ssm_model(source, config_data)
+            inspect_model(source, inspection)
+            result = scaffold(source, inspection, generated)
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
+            rng = np.random.default_rng(7301)
+            d_model = int(config_data["d_model"])
+            d_state = int(config_data["d_state"])
+            d_conv = int(config_data["d_conv"])
+            d_inner = d_model * int(config_data["expand"])
+            numpy_weights: dict[str, np.ndarray] = {
+                "model.embed_tokens.weight": rng.normal(0.0, 0.25, (11, d_model)).astype(np.float32),
+                "model.norm.weight": rng.uniform(0.8, 1.2, d_model).astype(np.float32),
+            }
+            for layer in range(int(config_data["n_layer"])):
+                prefix = f"model.layers.{layer}"
+                numpy_weights.update({
+                    f"{prefix}.norm.weight": rng.uniform(0.8, 1.2, d_model).astype(np.float32),
+                    f"{prefix}.mixer.in_proj.weight": rng.normal(
+                        0.0, 0.35, (2 * d_inner, d_model)
+                    ).astype(np.float32),
+                    f"{prefix}.mixer.conv1d.weight": rng.normal(
+                        0.0, 0.3, (d_inner, d_conv)
+                    ).astype(np.float32),
+                    f"{prefix}.mixer.conv1d.bias": rng.normal(0.0, 0.05, d_inner).astype(np.float32),
+                    f"{prefix}.mixer.x_proj.weight": rng.normal(
+                        0.0, 0.3, (d_inner + 2 * d_state, d_inner)
+                    ).astype(np.float32),
+                    f"{prefix}.mixer.dt_bias": rng.uniform(-0.7, 0.2, d_inner).astype(np.float32),
+                    f"{prefix}.mixer.D": rng.uniform(0.5, 1.2, d_inner).astype(np.float32),
+                    f"{prefix}.mixer.out_proj.weight": rng.normal(
+                        0.0, 0.3, (d_model, d_inner)
+                    ).astype(np.float32),
+                })
+                a_log = rng.uniform(-1.0, 0.2, (d_inner, d_state)).astype(np.float32)
+                a_log[0, 0] = -100.0
+                a_log[1, 1] = -80.0
+                numpy_weights[f"{prefix}.mixer.A_log"] = a_log
+
+            previous_path = sys.path[:]
+            prior_modules = {name: sys.modules.pop(name, None) for name in ("config", "model")}
+            try:
+                sys.path.insert(0, str(generated))
+                from config import ModelConfig
+                from model import build_model, greedy_generate
+
+                model = build_model(ModelConfig.from_file(generated / "config.json"))
+                mlx_weights = {key: mx.array(value) for key, value in numpy_weights.items()}
+                model.load_weights(list(mlx_weights.items()), strict=True)
+                mx.eval(model.parameters())
+                token_ids_np = np.asarray(
+                    [[1, 4, 2, 7, 3], [6, 2, 9, 1, 5]],
+                    dtype=np.int32,
+                )
+                token_ids = mx.array(token_ids_np)
+
+                full_logits, full_state = model(token_ids)
+                self.assertTrue(np.isfinite(np.asarray(full_logits)).all())
+                for layer_state in full_state:
+                    for value in layer_state:
+                        self.assertTrue(np.isfinite(np.asarray(value)).all())
+                for split_point in (1, 3):
+                    prefix_logits, prefix_state = model(token_ids[:, :split_point])
+                    suffix_logits, carried_state = model(
+                        token_ids[:, split_point:],
+                        state=prefix_state,
+                    )
+                    recurrent_logits = mx.concatenate((prefix_logits, suffix_logits), axis=1)
+                    mx.eval(full_logits, recurrent_logits, full_state, carried_state)
+
+                    # Checks recurrence/recompute equivalence on deterministic FP32 fixtures.
+                    self.assertTrue(mx.allclose(
+                        full_logits,
+                        recurrent_logits,
+                        rtol=1e-6,
+                        atol=1e-6,
+                    ).item())
+                    for expected_layer, actual_layer in zip(
+                        full_state,
+                        carried_state,
+                        strict=True,
+                    ):
+                        for expected, actual in zip(expected_layer, actual_layer, strict=True):
+                            self.assertTrue(mx.allclose(
+                                expected,
+                                actual,
+                                rtol=1e-6,
+                                atol=1e-6,
+                            ).item())
+
+                cached_generation = greedy_generate(model, token_ids, max_new_tokens=4)
+                sequence = token_ids
+                recomputed_tokens = []
+                for _ in range(4):
+                    logits, _ = model(sequence)
+                    next_token = mx.argmax(logits[:, -1, :], axis=-1).astype(mx.int32)
+                    recomputed_tokens.append(next_token)
+                    sequence = mx.concatenate((sequence, next_token[:, None]), axis=1)
+                recomputed_generation = mx.stack(recomputed_tokens, axis=1)
+                mx.eval(cached_generation, recomputed_generation)
+                self.assertTrue(mx.array_equal(cached_generation, recomputed_generation).item())
+
+                reference_logits, reference_state = numpy_ssm_forward(
+                    token_ids_np,
+                    numpy_weights,
+                    config_data,
+                    np,
+                )
+                np.testing.assert_allclose(
+                    np.asarray(full_logits),
+                    reference_logits,
+                    rtol=2e-5,
+                    atol=2e-5,
+                )
+                for mlx_layer, numpy_layer in zip(full_state, reference_state, strict=True):
+                    for mlx_value, numpy_value in zip(mlx_layer, numpy_layer, strict=True):
+                        np.testing.assert_allclose(
+                            np.asarray(mlx_value),
+                            numpy_value,
+                            rtol=2e-5,
+                            atol=2e-5,
+                        )
+
+                bugged_logits, _ = numpy_ssm_forward(
+                    token_ids_np,
+                    numpy_weights,
+                    config_data,
+                    np,
+                    euler_bug=True,
+                )
+                bug_max_abs = float(np.max(np.abs(np.asarray(full_logits) - bugged_logits)))
+                self.assertGreater(
+                    bug_max_abs,
+                    1e-4,
+                    "seeded Euler-discretization bug must be detected by the FP32 parity gate",
+                )
+
+                weights_path = generated / "weights.safetensors"
+                capture_path = generated / "ssm-capture.npz"
+                mx.save_safetensors(str(weights_path), mlx_weights)
+                capture_result = subprocess.run(
+                    [
+                        sys.executable,
+                        str(generated / "capture.py"),
+                        "--weights",
+                        str(weights_path),
+                        "--token-ids",
+                        "1",
+                        "4",
+                        "2",
+                        "7",
+                        "3",
+                        "--generate-steps",
+                        "2",
+                        "--output",
+                        str(capture_path),
+                    ],
+                    cwd=generated,
+                    capture_output=True,
+                    text=True,
+                    check=False,
+                )
+                self.assertEqual(
+                    capture_result.returncode,
+                    0,
+                    capture_result.stdout + capture_result.stderr,
+                )
+                with np.load(capture_path, allow_pickle=False) as capture:
+                    self.assertIn("layer.0.ssm", capture.files)
+                    self.assertIn("layer.1.hidden", capture.files)
+            finally:
+                sys.path[:] = previous_path
+                for name in ("config", "model"):
+                    sys.modules.pop(name, None)
+                    if prior_modules[name] is not None:
+                        sys.modules[name] = prior_modules[name]
 
     def test_dynamic_ntk_greedy_cache_matches_full_recompute_across_threshold(self) -> None:
         import mlx.core as mx

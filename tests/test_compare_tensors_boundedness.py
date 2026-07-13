@@ -21,6 +21,11 @@ import compare_tensors  # noqa: E402
 
 
 class CompareTensorsBoundednessTests(unittest.TestCase):
+    def test_finite_cosine_is_clamped_to_its_mathematical_domain(self) -> None:
+        self.assertEqual(compare_tensors._clamp_cosine(1.0 + 1e-12), 1.0)
+        self.assertEqual(compare_tensors._clamp_cosine(-1.0 - 1e-12), -1.0)
+        self.assertTrue(np.isnan(compare_tensors._clamp_cosine(float("nan"))))
+
     def test_adjacent_uint64_values_cannot_collapse_through_float64(self) -> None:
         source = np.array([2**63], dtype=np.uint64)
         target = np.array([2**63 + 1], dtype=np.uint64)
