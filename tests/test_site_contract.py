@@ -353,7 +353,7 @@ class SiteContractTests(unittest.TestCase):
         docs_sections = {
             attrs.get("id") for tag, attrs in docs.tags if tag == "section" and attrs.get("id")
         }
-        self.assertTrue({"workflow", "evidence", "limits"}.issubset(landing_sections))
+        self.assertTrue({"fit", "workflow", "measured-proof", "evidence", "limits"}.issubset(landing_sections))
         self.assertTrue({"workflow", "evidence", "limitations"}.issubset(docs_sections))
 
         docs_text = docs.text.lower()
@@ -372,6 +372,20 @@ class SiteContractTests(unittest.TestCase):
         ):
             with self.subTest(term=workflow_term):
                 self.assertIn(workflow_term, docs_text)
+
+    def test_landing_leads_with_agent_native_measured_optimization(self) -> None:
+        landing_text = self.pages[SITE / "index.html"].text
+        for phrase in (
+            "Don’t stop at “it runs.” Make the MLX port fast.",
+            "coding-agent skill",
+            "Use mlx_lm.convert",
+            "Need a new architecture—or the optimized version",
+            "Qwen2.5-0.5B-Instruct · Apple M4 Pro",
+            "These are local measured observations, not portable speed or memory claims.",
+            "promotable_claim=false",
+        ):
+            with self.subTest(phrase=phrase):
+                self.assertIn(phrase, landing_text)
 
     def test_controlled_evidence_and_advisor_states_are_complete(self) -> None:
         docs_text = self.pages[SITE / "docs" / "index.html"].text
