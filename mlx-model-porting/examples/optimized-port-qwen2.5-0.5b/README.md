@@ -82,4 +82,3 @@ The tool creates `$WORK/bf16`, `$WORK/8bit`, `$WORK/4bit-g64`, and
 to stderr. The output carries `promotable_claim=false` and
 `writes_sealed_evidence=false`. It must not be placed in the benchmark-receipt,
 assessment, effective-claim, or sealed-evidence pipeline.
-

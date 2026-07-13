@@ -2,7 +2,7 @@
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
   "version": "0.6.0",
-  "generated_at": "2026-07-13T13:30:42.205904+00:00",
+  "generated_at": "2026-07-13T14:22:58.266726+00:00",
   "file_count": 499,
   "files": [
     {
@@ -927,8 +927,8 @@
     },
     {
       "path": "mlx-model-porting/examples/optimized-port-qwen2.5-0.5b/README.md",
-      "size_bytes": 4284,
-      "sha256": "f915224efa4e7a179c8b0544b65785d43b8cfa23a9b637b4befa8e8f3515339b",
+      "size_bytes": 4283,
+      "sha256": "ff5994ce7566d5409b54958f28cde5892a91e7b08345896a4c603f9e1aa6a864",
       "executable": false
     },
     {
@@ -1251,8 +1251,8 @@
     },
     {
       "path": "mlx-model-porting/references/optimization-loop.md",
-      "size_bytes": 4447,
-      "sha256": "a9e28a03e808c8dba10474dbbefa3bf3fa6298bfd053e263044e23b186ca40e0",
+      "size_bytes": 4446,
+      "sha256": "b6d77de27e36aacec0ce5233964c1ef4da370523cd5fce2d52b5ec1f8bd65054",
       "executable": false
     },
     {

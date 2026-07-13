@@ -97,4 +97,3 @@ table are printed to stderr. The JSON carries
 assessment. Throughput varies across runs, thermal state, prompt shape, model,
 and software version, so inspect both the median and CV and repeat the baseline
 when drift matters.
-
