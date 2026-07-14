@@ -199,6 +199,7 @@ def real_t5_available() -> bool:
 @require_mlx_keystone(
     real_t5_available(),
     "cached prepared t5-small plus MLX, Torch, and Transformers are required",
+    needs_real_model=True,
 )
 class EncoderDecoderRealMLXContractTests(unittest.TestCase):
     @classmethod

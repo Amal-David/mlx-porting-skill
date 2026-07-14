@@ -2,8 +2,8 @@
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
   "version": "0.6.1",
-  "generated_at": "2026-07-13T20:47:01.901923+00:00",
-  "file_count": 509,
+  "generated_at": "2026-07-13T20:55:49.116980+00:00",
+  "file_count": 510,
   "files": [
     {
       "path": ".agents/skills/mlx-model-porting",
@@ -32,6 +32,12 @@
       "executable": false
     },
     {
+      "path": ".github/requirements-mlx-keystones.txt",
+      "size_bytes": 52096,
+      "sha256": "b5a6a8b660101fd485fd63357a4e5487b42a6d9875ffd35a4080118c13248255",
+      "executable": false
+    },
+    {
       "path": ".github/workflows/daily-research.yml",
       "size_bytes": 7497,
       "sha256": "075861cf671f0c92763d1afe5da61ede66651f34b4df65808e5fe5037f3850e9",
@@ -45,8 +51,8 @@
     },
     {
       "path": ".github/workflows/validate.yml",
-      "size_bytes": 5152,
-      "sha256": "75a7c47f37e722f211c28d3fd0fec0957424ae5a0268f1e85fc020c6a5d9bacc",
+      "size_bytes": 6860,
+      "sha256": "fb23b8bd499f808928eea10b39a37d8b516381b9cca101553d89b6e2cb7dfe2a",
       "executable": false
     },
     {
@@ -2763,14 +2769,14 @@
     },
     {
       "path": "tests/mlx_keystone.py",
-      "size_bytes": 1669,
-      "sha256": "f7ff0b61dfbfc8122bc7f582c6a6dc1957e1236ff553407a13092fb883abef54",
+      "size_bytes": 2340,
+      "sha256": "a347292f1efa31cbcf104c99e3111121664af00d8ee3676dc73d50e59dff986e",
       "executable": false
     },
     {
       "path": "tests/test_asr_encoder_contract.py",
-      "size_bytes": 17738,
-      "sha256": "af5d0890ba037ef0fd5f6785a5c8c5457afb51ad70839e4c4dbf53cbb763b072",
+      "size_bytes": 17765,
+      "sha256": "e732d31d55322d3ea29312212f9f0ca24d9f6bf5b92fd5895f9b4099e78313af",
       "executable": false
     },
     {
@@ -2835,14 +2841,14 @@
     },
     {
       "path": "tests/test_encoder_contract.py",
-      "size_bytes": 12575,
-      "sha256": "1de11d2bc4dee6b77d41cfb72fdc2b679e21a37422440767a289c06249bb4645",
+      "size_bytes": 12602,
+      "sha256": "51038aa59d4131bc2de56b99ef03730d54439040c56b836bb46c327d658248cb",
       "executable": false
     },
     {
       "path": "tests/test_encoder_decoder_contract.py",
-      "size_bytes": 16836,
-      "sha256": "7240167a9c9f45108244bc1c31b3962e25e3121893040bfd1ff6cc65d755433b",
+      "size_bytes": 16863,
+      "sha256": "6ea248dbaed90486e1eea115322df2359bf23f9afaf9b9f5d40f770d37eec987",
       "executable": false
     },
     {
@@ -2931,8 +2937,8 @@
     },
     {
       "path": "tests/test_mlx_keystone_guard.py",
-      "size_bytes": 1846,
-      "sha256": "138cc00c170c17fa944c04bc1856b62c80dd2b427621cffeef24590d9b4ac72b",
+      "size_bytes": 2674,
+      "sha256": "d31cc3699ae3c54ad94838f52a0c9e046baf5c16c531415b96d5dc711ef6f502",
       "executable": false
     },
     {
@@ -2991,8 +2997,8 @@
     },
     {
       "path": "tests/test_release_contract.py",
-      "size_bytes": 20447,
-      "sha256": "fdebcc3c2440c20993e3122d845c27c4cdea9d2285f4bba3f44efb34d461ba53",
+      "size_bytes": 20969,
+      "sha256": "36c13e1759a98320d1f4b7123c14040d24b6901ac15691965f997a1cc6aa85f8",
       "executable": false
     },
     {

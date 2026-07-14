@@ -277,6 +277,7 @@ def _run_asr_parity(
 @require_mlx_keystone(
     _real_hubert_available(),
     "real local HuBERT checkpoint plus Torch, Transformers, safetensors, NumPy, and MLX are required",
+    needs_real_model=True,
 )
 class RealHubertEncoderParityTests(unittest.TestCase):
     def test_real_hubert_encoder_passes_every_rung(self) -> None:

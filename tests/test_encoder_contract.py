@@ -175,6 +175,7 @@ class EncoderFailClosedContractTests(unittest.TestCase):
 @require_mlx_keystone(
     HAS_EXECUTION_STACK,
     "cached BAAI/bge-base-en plus MLX, NumPy, PyTorch, and Transformers are required",
+    needs_real_model=True,
 )
 class RealBgeEncoderParityTests(unittest.TestCase):
     @classmethod

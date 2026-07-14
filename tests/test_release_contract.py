@@ -410,6 +410,15 @@ class ReleaseContractTests(unittest.TestCase):
             self.assertIn(acknowledgement, block)
             self.assertIn("MLX_KEYSTONE_REQUIRED=1", block)
 
+    def test_apple_silicon_lane_actually_enforces_the_keystones(self) -> None:
+        workflow = WORKFLOW.read_text(encoding="utf-8")
+        block = job_block(workflow, "apple-silicon-keystones")
+        # The lane must run on an Apple-Silicon runner and require the keystones,
+        # so the coverage gap the Ubuntu jobs acknowledge is actually closed.
+        self.assertIn("runs-on: macos-14", block)
+        self.assertIn("MLX_KEYSTONE_REQUIRED", block)
+        self.assertIn("unittest discover -s tests", block)
+
 
 if __name__ == "__main__":
     unittest.main()

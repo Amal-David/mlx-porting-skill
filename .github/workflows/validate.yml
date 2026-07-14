@@ -122,3 +122,43 @@ jobs:
         run: test "$RUNNER_OS" = "Linux"
       - name: Run the complete deterministic test suite
         run: python3 -m unittest discover -s tests -v
+
+  apple-silicon-keystones:
+    name: Apple Silicon MLX keystones
+    # macos-14 is an arm64 (M1) runner that exposes Metal, so the MLX parity and
+    # generated-model keystones actually execute instead of skipping. This closes
+    # the coverage gap the Ubuntu jobs only acknowledge.
+    runs-on: macos-14
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
+        with:
+          python-version: "3.12"
+      - name: Install hash-locked MLX keystone dependencies
+        run: >-
+          python3 -m pip install
+          --require-hashes --only-binary=:all:
+          -r .github/requirements-mlx-keystones.txt
+      - name: Probe MLX Metal execution on the runner
+        run: |
+          python3 - <<'PY'
+          import mlx.core as mx
+          x = mx.ones((512, 512))
+          y = x @ x
+          mx.eval(y)
+          total = float(y.sum())
+          device = mx.default_device()
+          print("mlx default device:", device)
+          print("mlx matmul executed, checksum:", total)
+          assert total == 512.0 * 512.0 * 512.0, "unexpected MLX matmul result"
+          # Fail loud if this runner is not actually executing on Metal/GPU, so a
+          # CPU-only runner cannot silently pass the keystones as if Metal ran.
+          assert device == mx.Device(mx.gpu), f"MLX keystones require a Metal GPU device, got {device}"
+          PY
+      - name: Run MLX keystones as a required gate
+        env:
+          MLX_KEYSTONE_REQUIRED: "1"
+        run: python3 -m unittest discover -s tests -v
