@@ -180,6 +180,23 @@ class ScaffoldPortDependencyFreeContractTests(unittest.TestCase):
         for value in (None, False, "", [], {}):
             self.assertFalse(scaffold_port._meaningfully_set(value))
 
+    def test_llama_rope_interleaving_is_value_gated(self) -> None:
+        import scaffold_port
+
+        standard_config = tiny_config(
+            is_llama_config=True,
+            rope_interleaved=False,
+        )
+        standard_config["transformers.js_config"] = {"dtype": "q4"}
+
+        self.assertIs(scaffold_port.validate_dense_config(standard_config), standard_config)
+
+        with self.assertRaisesRegex(
+            scaffold_port.SkillError,
+            "interleaved RoPE is not implemented",
+        ):
+            scaffold_port.validate_dense_config({**standard_config, "rope_interleaved": True})
+
     def test_generator_registry_is_explicit_and_imports_no_ml_framework(self) -> None:
         import scaffold_port
 

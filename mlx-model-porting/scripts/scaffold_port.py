@@ -119,6 +119,7 @@ DENSE_CONFIG_FEATURE_ALLOWLIST = frozenset({
     "num_key_value_heads",
     "pretraining_tp",
     "rms_norm_eps",
+    "rope_interleaved",
     "rope_scaling",
     "rope_theta",
     "rope_traditional",
@@ -257,6 +258,7 @@ KNOWN_METADATA_KEYS = frozenset({
     "initializer_range",
     "is_decoder",
     "is_encoder_decoder",
+    "is_llama_config",
     "label2id",
     "length_penalty",
     "license",
@@ -288,6 +290,7 @@ KNOWN_METADATA_KEYS = frozenset({
     "top_k",
     "top_p",
     "torch_dtype",
+    "transformers.js_config",
     "transformers_version",
     "typical_p",
     "use_bfloat16",
@@ -414,6 +417,10 @@ def unsupported_dense_features(config: dict[str, Any]) -> list[str]:
         errors.append("attention_dropout must be 0.0 for eager inference")
     if config.get("pretraining_tp", 1) != 1:
         errors.append("pretraining_tp must be 1")
+    if config.get("rope_interleaved") is True:
+        errors.append(
+            "rope_interleaved=True is not supported; interleaved RoPE is not implemented"
+        )
 
     for key in sorted(MOE_KEYS):
         if key in config and _meaningfully_set(config[key]):
@@ -516,7 +523,13 @@ def validate_dense_config(config: Any) -> dict[str, Any]:
         raise SkillError("config.json hidden_size must equal num_attention_heads * head_dim")
     if num_heads % num_kv_heads != 0:
         raise SkillError("config.json num_attention_heads must be divisible by num_key_value_heads")
-    for key in ("attention_bias", "mlp_bias", "rope_traditional", "tie_word_embeddings"):
+    for key in (
+        "attention_bias",
+        "mlp_bias",
+        "rope_interleaved",
+        "rope_traditional",
+        "tie_word_embeddings",
+    ):
         if key in config and not isinstance(config[key], bool):
             raise SkillError(f"config.json {key} must be boolean")
     dropout = config.get("attention_dropout", 0.0)
@@ -847,7 +860,13 @@ def validate_moe_config(config: Any) -> dict[str, Any]:
         raise SkillError("config.json hidden_size must equal num_attention_heads * head_dim")
     if heads % kv_heads:
         raise SkillError("config.json num_attention_heads must be divisible by num_key_value_heads")
-    for key in ("attention_bias", "mlp_bias", "rope_traditional", "tie_word_embeddings"):
+    for key in (
+        "attention_bias",
+        "mlp_bias",
+        "rope_interleaved",
+        "rope_traditional",
+        "tie_word_embeddings",
+    ):
         if key in config and not isinstance(config[key], bool):
             raise SkillError(f"config.json {key} must be boolean")
     if config.get("mlp_bias") is True and profile["topology"] in {
