@@ -1,0 +1,405 @@
+{
+  "diagnostics": {
+    "final_norm_max_abs": 0.0001163482666015625,
+    "hf_local_mask_exact_match": true,
+    "layer_11_exact_hf_input_attention_max_abs": 5.4836273193359375e-06,
+    "layer_11_exact_hf_input_block_max_abs": 0.00341796875,
+    "layer_11_full_run_hf_max_magnitude": 10673.1
+  },
+  "first_divergence": {
+    "cosine": 0.9999999999964307,
+    "failed_metrics": [
+      "maxabs"
+    ],
+    "max_abs_diff": 0.0400390625,
+    "passed": false,
+    "rung": "layer.11.hidden",
+    "shape": [
+      1,
+      160,
+      768
+    ]
+  },
+  "hardware": {
+    "active_memory_bytes": 607856136,
+    "capture_count": 24,
+    "capture_names": [
+      "embed",
+      "layer.0.hidden",
+      "layer.1.hidden",
+      "layer.2.hidden",
+      "layer.3.hidden",
+      "layer.4.hidden",
+      "layer.5.hidden",
+      "layer.6.hidden",
+      "layer.7.hidden",
+      "layer.8.hidden",
+      "layer.9.hidden",
+      "layer.10.hidden",
+      "layer.11.hidden",
+      "layer.12.hidden",
+      "layer.13.hidden",
+      "layer.14.hidden",
+      "layer.15.hidden",
+      "layer.16.hidden",
+      "layer.17.hidden",
+      "layer.18.hidden",
+      "layer.19.hidden",
+      "layer.20.hidden",
+      "layer.21.hidden",
+      "final_norm"
+    ],
+    "device": "Device(gpu, 0)",
+    "device_info": {
+      "architecture": "applegpu_g16s",
+      "device_name": "Apple M4 Pro",
+      "max_buffer_length": 30150672384,
+      "max_recommended_working_set_size": 40200896512,
+      "memory_size": 51539607552,
+      "resource_limit": 499000
+    },
+    "dtype": "mlx.core.float32",
+    "input_shape": [
+      1,
+      160
+    ],
+    "peak_memory_bytes": 631761080,
+    "valid_token_count": 147,
+    "weight_load": {
+      "checkpoint_tensor_count": 137,
+      "encoder_tensor_count": 134,
+      "ignored_tensor_names": [
+        "decoder.bias",
+        "head.dense.weight",
+        "head.norm.weight"
+      ],
+      "linear_checkpoint_layout": "out_in_loaded_directly_runtime_transpose",
+      "tensor_names_verified": true
+    }
+  },
+  "result": {
+    "max_layer_maxabs": 0.689453125,
+    "min_layer_cosine": 0.9999999997676421,
+    "n_layers_compared": 22,
+    "notes": "Real Metal Apple M4 Pro via mx.gpu; HF oracle and MLX path are eager FP32. The 160-token fixture has 147 valid tokenizer-produced ModernBERT tokens plus 13 pads, so local attention is exercised beyond one window. Local masks use inclusive abs(query-key)<=64 and mask key positions only, matching HF eager semantics; padding query/key-count checks are {'q0': 65, 'q64': 129, 'q100': 111, 'q146': 65, 'q159_padding_query': 52}; an exact array comparison against Transformers' eager sliding mask passed. RoPE duplicates the 32 half-dimension frequencies before rotate-half, with theta=160000 for layers i%3==0 and theta=10000 otherwise. MLX and PyTorch Linear weights are both stored [out,in], so the checkpoint loads directly and MLX performs the required transpose at call time. The first failing rung is numeric amplification rather than a local-attention mismatch: when layer 11 is fed the exact HF layer-10 input, its attention output max-abs is 5.4836273e-06 and its whole isolated block max-abs is 0.0034179688, but cumulative Metal reduction drift is amplified by a trained residual outlier (HF magnitude 10673.1) to 0.0400390625. Final LayerNorm returns to 0.0001163483 max-abs. Thresholds were not relaxed.",
+    "oracle_captured": true,
+    "parity_status": "first-divergence:layer.11.hidden:maxabs",
+    "tensor_names_verified": true
+  },
+  "rungs": [
+    {
+      "cosine": 0.9999999999999971,
+      "failed_metrics": [],
+      "max_abs_diff": 9.5367431640625e-07,
+      "passed": true,
+      "rung": "embed",
+      "shape": [
+        1,
+        160,
+        768
+      ]
+    },
+    {
+      "cosine": 0.9999999999994961,
+      "failed_metrics": [],
+      "max_abs_diff": 5.054473876953125e-05,
+      "passed": true,
+      "rung": "layer.0.hidden",
+      "shape": [
+        1,
+        160,
+        768
+      ]
+    },
+    {
+      "cosine": 0.9999999999988672,
+      "failed_metrics": [],
+      "max_abs_diff": 0.0001068115234375,
+      "passed": true,
+      "rung": "layer.1.hidden",
+      "shape": [
+        1,
+        160,
+        768
+      ]
+    },
+    {
+      "cosine": 0.999999999998352,
+      "failed_metrics": [],
+      "max_abs_diff": 6.4849853515625e-05,
+      "passed": true,
+      "rung": "layer.2.hidden",
+      "shape": [
+        1,
+        160,
+        768
+      ]
+    },
+    {
+      "cosine": 0.9999999999977311,
+      "failed_metrics": [],
+      "max_abs_diff": 8.7738037109375e-05,
+      "passed": true,
+      "rung": "layer.3.hidden",
+      "shape": [
+        1,
+        160,
+        768
+      ]
+    },
+    {
+      "cosine": 0.9999999999978924,
+      "failed_metrics": [],
+      "max_abs_diff": 0.00274658203125,
+      "passed": true,
+      "rung": "layer.4.hidden",
+      "shape": [
+        1,
+        160,
+        768
+      ]
+    },
+    {
+      "cosine": 0.9999999999978952,
+      "failed_metrics": [],
+      "max_abs_diff": 0.00274658203125,
+      "passed": true,
+      "rung": "layer.5.hidden",
+      "shape": [
+        1,
+        160,
+        768
+      ]
+    },
+    {
+      "cosine": 0.9999999999979586,
+      "failed_metrics": [],
+      "max_abs_diff": 0.0028076171875,
+      "passed": true,
+      "rung": "layer.6.hidden",
+      "shape": [
+        1,
+        160,
+        768
+      ]
+    },
+    {
+      "cosine": 0.9999999999978316,
+      "failed_metrics": [],
+      "max_abs_diff": 0.00274658203125,
+      "passed": true,
+      "rung": "layer.7.hidden",
+      "shape": [
+        1,
+        160,
+        768
+      ]
+    },
+    {
+      "cosine": 0.9999999999978121,
+      "failed_metrics": [],
+      "max_abs_diff": 0.0028076171875,
+      "passed": true,
+      "rung": "layer.8.hidden",
+      "shape": [
+        1,
+        160,
+        768
+      ]
+    },
+    {
+      "cosine": 0.9999999999959641,
+      "failed_metrics": [],
+      "max_abs_diff": 0.002044677734375,
+      "passed": true,
+      "rung": "layer.9.hidden",
+      "shape": [
+        1,
+        160,
+        768
+      ]
+    },
+    {
+      "cosine": 0.9999999999961939,
+      "failed_metrics": [],
+      "max_abs_diff": 0.0019683837890625,
+      "passed": true,
+      "rung": "layer.10.hidden",
+      "shape": [
+        1,
+        160,
+        768
+      ]
+    },
+    {
+      "cosine": 0.9999999999964307,
+      "failed_metrics": [
+        "maxabs"
+      ],
+      "max_abs_diff": 0.0400390625,
+      "passed": false,
+      "rung": "layer.11.hidden",
+      "shape": [
+        1,
+        160,
+        768
+      ]
+    },
+    {
+      "cosine": 0.9999999999964115,
+      "failed_metrics": [
+        "maxabs"
+      ],
+      "max_abs_diff": 0.041015625,
+      "passed": false,
+      "rung": "layer.12.hidden",
+      "shape": [
+        1,
+        160,
+        768
+      ]
+    },
+    {
+      "cosine": 0.999999999996436,
+      "failed_metrics": [
+        "maxabs"
+      ],
+      "max_abs_diff": 0.041015625,
+      "passed": false,
+      "rung": "layer.13.hidden",
+      "shape": [
+        1,
+        160,
+        768
+      ]
+    },
+    {
+      "cosine": 0.9999999999964277,
+      "failed_metrics": [
+        "maxabs"
+      ],
+      "max_abs_diff": 0.041015625,
+      "passed": false,
+      "rung": "layer.14.hidden",
+      "shape": [
+        1,
+        160,
+        768
+      ]
+    },
+    {
+      "cosine": 0.9999999997676421,
+      "failed_metrics": [
+        "maxabs"
+      ],
+      "max_abs_diff": 0.689453125,
+      "passed": false,
+      "rung": "layer.15.hidden",
+      "shape": [
+        1,
+        160,
+        768
+      ]
+    },
+    {
+      "cosine": 0.9999999997678651,
+      "failed_metrics": [
+        "maxabs"
+      ],
+      "max_abs_diff": 0.689453125,
+      "passed": false,
+      "rung": "layer.16.hidden",
+      "shape": [
+        1,
+        160,
+        768
+      ]
+    },
+    {
+      "cosine": 0.9999999997684129,
+      "failed_metrics": [
+        "maxabs"
+      ],
+      "max_abs_diff": 0.689453125,
+      "passed": false,
+      "rung": "layer.17.hidden",
+      "shape": [
+        1,
+        160,
+        768
+      ]
+    },
+    {
+      "cosine": 0.9999999997686793,
+      "failed_metrics": [
+        "maxabs"
+      ],
+      "max_abs_diff": 0.689453125,
+      "passed": false,
+      "rung": "layer.18.hidden",
+      "shape": [
+        1,
+        160,
+        768
+      ]
+    },
+    {
+      "cosine": 0.9999999997689537,
+      "failed_metrics": [
+        "maxabs"
+      ],
+      "max_abs_diff": 0.689453125,
+      "passed": false,
+      "rung": "layer.19.hidden",
+      "shape": [
+        1,
+        160,
+        768
+      ]
+    },
+    {
+      "cosine": 0.999999999769022,
+      "failed_metrics": [
+        "maxabs"
+      ],
+      "max_abs_diff": 0.689453125,
+      "passed": false,
+      "rung": "layer.20.hidden",
+      "shape": [
+        1,
+        160,
+        768
+      ]
+    },
+    {
+      "cosine": 0.9999999997689131,
+      "failed_metrics": [
+        "maxabs"
+      ],
+      "max_abs_diff": 0.689453125,
+      "passed": false,
+      "rung": "layer.21.hidden",
+      "shape": [
+        1,
+        160,
+        768
+      ]
+    },
+    {
+      "cosine": 0.9999999999918321,
+      "failed_metrics": [],
+      "max_abs_diff": 0.0001163482666015625,
+      "passed": true,
+      "rung": "final_norm",
+      "shape": [
+        1,
+        160,
+        768
+      ]
+    }
+  ],
+  "thresholds": {
+    "cosine": 0.9999,
+    "max_abs_diff": 0.02
+  }
+}

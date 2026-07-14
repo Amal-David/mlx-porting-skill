@@ -2,8 +2,8 @@
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
   "version": "0.6.1",
-  "generated_at": "2026-07-14T19:38:59.812722+00:00",
-  "file_count": 510,
+  "generated_at": "2026-07-14T19:53:44.137992+00:00",
+  "file_count": 516,
   "files": [
     {
       "path": ".agents/skills/mlx-model-porting",
@@ -167,6 +167,42 @@
       "path": "adapters/windsurf.md",
       "size_bytes": 553,
       "sha256": "38d42c3ea0739e64fc4dba0e5b17d36be246c594820dc02831a4ae722a6531f3",
+      "executable": false
+    },
+    {
+      "path": "arch-stress-artifacts/modernbert-base-mlx/README.md",
+      "size_bytes": 3483,
+      "sha256": "b6f616f08e33f0fdf5aac4e9d63722c1889cde23082c9e3e01c732d5b35125a3",
+      "executable": false
+    },
+    {
+      "path": "arch-stress-artifacts/modernbert-base-mlx/capture_oracle.py",
+      "size_bytes": 4893,
+      "sha256": "cecde0133e1411ef86a79b703575d023c146bca53fba42a823e5bedca5f7d80f",
+      "executable": false
+    },
+    {
+      "path": "arch-stress-artifacts/modernbert-base-mlx/mlx-capture-summary.json",
+      "size_bytes": 1338,
+      "sha256": "b89112e61a0f114120281e318212851c9320245ed756ae83662020807e11a45c",
+      "executable": false
+    },
+    {
+      "path": "arch-stress-artifacts/modernbert-base-mlx/model.py",
+      "size_bytes": 12531,
+      "sha256": "fc1fc1784ac15115d5d16210bcedf2831a46092899c9c0309d6698ecaaf079fa",
+      "executable": false
+    },
+    {
+      "path": "arch-stress-artifacts/modernbert-base-mlx/parity-details.json",
+      "size_bytes": 9389,
+      "sha256": "e26ab2321123e3be3c727701060e463f09eb6ad06a4cec783cea2ce044b8f978",
+      "executable": false
+    },
+    {
+      "path": "arch-stress-artifacts/modernbert-base-mlx/run_parity.py",
+      "size_bytes": 8385,
+      "sha256": "e1bf986b7086ed483c67935e1f22c0d97e799906dcc7195c0f634da37adf34eb",
       "executable": false
     },
     {

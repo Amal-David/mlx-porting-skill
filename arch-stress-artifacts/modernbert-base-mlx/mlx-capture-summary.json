@@ -1,0 +1,57 @@
+{
+  "active_memory_bytes": 607856136,
+  "capture_count": 24,
+  "capture_names": [
+    "embed",
+    "layer.0.hidden",
+    "layer.1.hidden",
+    "layer.2.hidden",
+    "layer.3.hidden",
+    "layer.4.hidden",
+    "layer.5.hidden",
+    "layer.6.hidden",
+    "layer.7.hidden",
+    "layer.8.hidden",
+    "layer.9.hidden",
+    "layer.10.hidden",
+    "layer.11.hidden",
+    "layer.12.hidden",
+    "layer.13.hidden",
+    "layer.14.hidden",
+    "layer.15.hidden",
+    "layer.16.hidden",
+    "layer.17.hidden",
+    "layer.18.hidden",
+    "layer.19.hidden",
+    "layer.20.hidden",
+    "layer.21.hidden",
+    "final_norm"
+  ],
+  "device": "Device(gpu, 0)",
+  "device_info": {
+    "architecture": "applegpu_g16s",
+    "device_name": "Apple M4 Pro",
+    "max_buffer_length": 30150672384,
+    "max_recommended_working_set_size": 40200896512,
+    "memory_size": 51539607552,
+    "resource_limit": 499000
+  },
+  "dtype": "mlx.core.float32",
+  "input_shape": [
+    1,
+    160
+  ],
+  "peak_memory_bytes": 631761080,
+  "valid_token_count": 147,
+  "weight_load": {
+    "checkpoint_tensor_count": 137,
+    "encoder_tensor_count": 134,
+    "ignored_tensor_names": [
+      "decoder.bias",
+      "head.dense.weight",
+      "head.norm.weight"
+    ],
+    "linear_checkpoint_layout": "out_in_loaded_directly_runtime_transpose",
+    "tensor_names_verified": true
+  }
+}
