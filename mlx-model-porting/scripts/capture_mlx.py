@@ -103,6 +103,12 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--generate-steps", type=int, default=DEFAULT_GENERATE_STEPS)
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument("--keep-dtype", action="store_true")
+    parser.add_argument(
+        "--compute-dtype",
+        choices=("source", "float32"),
+        default="source",
+        help="Compute with loaded source dtypes or in-memory float32 weights (default: source)",
+    )
     parser.add_argument("--max-output-mb", type=float, default=DEFAULT_MAX_OUTPUT_MB)
     parser.add_argument(
         "--allow-modified",
@@ -538,6 +544,15 @@ def _zero_padded_query_rows(value: Any, attention_mask: Any, mx: Any) -> Any:
     return mx.where(query_mask, value, mx.zeros_like(value))
 
 
+def _apply_compute_dtype(model: Any, compute_dtype: str, mx: Any) -> None:
+    if compute_dtype == "source":
+        return
+    if compute_dtype != "float32":
+        raise SkillError(f"unsupported compute dtype: {compute_dtype}")
+    model.set_dtype(mx.float32)
+    getattr(mx, "eval")(model.parameters())
+
+
 def _capture(
     package: Path,
     weights_path: Path,
@@ -549,10 +564,12 @@ def _capture(
     mx: Any,
     mode: str = "dense-decoder",
     fault_inject_target: str | None = None,
+    compute_dtype: str = "source",
 ) -> dict[str, Any]:
     generated_model = _import_generated_model(package)
     try:
         model = generated_model.load_model(package / "config.json", weights_path)
+        _apply_compute_dtype(model, compute_dtype, mx)
         input_ids = mx.array(input_ids_np, dtype=mx.int32)
         attention_mask = mx.array(attention_mask_np, dtype=mx.int32)
         config = _load_config(package)
@@ -684,10 +701,12 @@ def _capture_asr(
     np: Any,
     mx: Any,
     fault_inject_target: str | None = None,
+    compute_dtype: str = "source",
 ) -> dict[str, Any]:
     generated_model = _import_generated_model(package)
     try:
         model = generated_model.load_model(package / "config.json", weights_path)
+        _apply_compute_dtype(model, compute_dtype, mx)
         features = mx.array(features_np, dtype=mx.float32)
         attention_mask = mx.ones(features.shape[:2], dtype=mx.int32)
         final_hidden, captures = model(features, attention_mask=attention_mask, capture=True)
@@ -753,6 +772,7 @@ def main(argv: list[str] | None = None) -> int:
                 bool(args.token_ids),
                 args.tokenizer is not None,
                 args.keep_dtype,
+                args.compute_dtype != "source",
                 args.allow_modified,
                 args.fault_inject_target is not None,
                 args.generate_steps != DEFAULT_GENERATE_STEPS,
@@ -848,6 +868,7 @@ def main(argv: list[str] | None = None) -> int:
                 np,
                 mx,
                 args.fault_inject_target,
+                compute_dtype=args.compute_dtype,
             )
         else:
             explicit_attention_mask = None
@@ -889,6 +910,7 @@ def main(argv: list[str] | None = None) -> int:
                 mx,
                 args.mode,
                 args.fault_inject_target,
+                compute_dtype=args.compute_dtype,
             )
         manifest_payload = {
             "schema_version": SCHEMA_VERSION,
@@ -898,6 +920,7 @@ def main(argv: list[str] | None = None) -> int:
                 "waveform_samples": args.waveform_samples,
                 "seed": args.seed,
                 "dtype_policy": "keep" if args.keep_dtype else "float32",
+                **({"compute_dtype": args.compute_dtype} if args.compute_dtype != "source" else {}),
             } if args.mode == "asr" else {
                 "mode": args.mode,
                 "input_mode": "token_ids" if token_ids is not None else "prompt",
@@ -907,6 +930,7 @@ def main(argv: list[str] | None = None) -> int:
                 "generate_steps": args.generate_steps,
                 "seed": args.seed,
                 "dtype_policy": "keep" if args.keep_dtype else "float32",
+                **({"compute_dtype": args.compute_dtype} if args.compute_dtype != "source" else {}),
             }),
             "tensors": tensor_inventory(arrays),
             "libraries": {

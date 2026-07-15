@@ -2,7 +2,7 @@
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
   "version": "0.6.1",
-  "generated_at": "2026-07-15T16:43:54.947389+00:00",
+  "generated_at": "2026-07-15T20:56:41.788286+00:00",
   "file_count": 524,
   "files": [
     {
@@ -2043,8 +2043,8 @@
     },
     {
       "path": "mlx-model-porting/scripts/_capture_common.py",
-      "size_bytes": 24880,
-      "sha256": "fe03ca30482c1b7e64a027089f73518b2387706c5ad3aa41f9b9979cf4ca7cb4",
+      "size_bytes": 25616,
+      "sha256": "045f80a34b5b4b7dac15123f39f6246028cc843655468d8f9510c8921b050a24",
       "executable": false
     },
     {
@@ -2085,14 +2085,14 @@
     },
     {
       "path": "mlx-model-porting/scripts/capture_mlx.py",
-      "size_bytes": 40043,
-      "sha256": "88f697488034f1b33325950b54c0dc4681ac2fbb79bf2e35315fb827853b8c40",
+      "size_bytes": 41102,
+      "sha256": "910ecf2678bff1dd07b1aa4df4fb3b39aa8b427067dcc84ab96e2a9724ab2b6e",
       "executable": true
     },
     {
       "path": "mlx-model-porting/scripts/capture_oracle.py",
-      "size_bytes": 47292,
-      "sha256": "6de52bbfa5946f909172e27af1de5d0fbbd153d2644fe124900884fb67b640bc",
+      "size_bytes": 47881,
+      "sha256": "58abc4455f830413972edadca6f0234a3e5e114ceb9281ff59267cdd4bdc01fc",
       "executable": true
     },
     {
@@ -2199,8 +2199,8 @@
     },
     {
       "path": "mlx-model-porting/scripts/run_parity.py",
-      "size_bytes": 31552,
-      "sha256": "078d872882b62695b87fd686328dbd940c86303e0d9f2e538600f5e461238b61",
+      "size_bytes": 32567,
+      "sha256": "805ccda76909337209a6e44f3a0d1a34d0c1c9c6bf287acc706fd56c5d2d283a",
       "executable": true
     },
     {

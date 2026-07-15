@@ -84,6 +84,12 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--generate-steps", type=int, default=DEFAULT_GENERATE_STEPS)
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument("--keep-dtype", action="store_true")
+    parser.add_argument(
+        "--compute-dtype",
+        choices=("source", "float32"),
+        default="source",
+        help="Matched source or float32 compute policy for both capture sides (default: source)",
+    )
     parser.add_argument("--max-output-mb", type=float, default=DEFAULT_MAX_OUTPUT_MB)
     parser.add_argument("--atol", type=float, default=1e-5)
     parser.add_argument("--rtol", type=float, default=1e-4)
@@ -225,14 +231,16 @@ def validate_parity_report(payload: Any) -> dict[str, Any]:
     reproducible_input_fields = legacy_input_fields | {
         "input_mode", "attention_mask", "fault_inject_target",
     }
+    matched_input_fields = reproducible_input_fields | {"compute_dtype"}
     asr_input_fields = {
         "source_model", "package", "weights", "mode", "waveform_samples",
         "seed", "dtype_policy", "allow_modified", "fault_inject_target",
     }
+    matched_asr_input_fields = asr_input_fields | {"compute_dtype"}
     inputs_value = report["inputs"]
     if not isinstance(inputs_value, dict):
         raise SkillError("parity report inputs has an invalid field set")
-    if set(inputs_value) == asr_input_fields:
+    if set(inputs_value) in (asr_input_fields, matched_asr_input_fields):
         inputs = inputs_value
         reproducible = True
         input_mode = "asr"
@@ -246,11 +254,13 @@ def validate_parity_report(payload: Any) -> dict[str, Any]:
             raise SkillError("parity report fault injection target is invalid")
     else:
         if set(inputs_value) not in {
-            frozenset(legacy_input_fields), frozenset(reproducible_input_fields),
+            frozenset(legacy_input_fields),
+            frozenset(reproducible_input_fields),
+            frozenset(matched_input_fields),
         }:
             raise SkillError("parity report inputs has an invalid field set")
         inputs = inputs_value
-        reproducible = set(inputs) == reproducible_input_fields
+        reproducible = set(inputs) in (reproducible_input_fields, matched_input_fields)
         input_mode = inputs["input_mode"] if reproducible else inputs["mode"]
         if reproducible:
             if inputs["mode"] not in {
@@ -320,6 +330,8 @@ def validate_parity_report(payload: Any) -> dict[str, Any]:
         raise SkillError("parity report seed is invalid")
     if inputs["dtype_policy"] not in {"float32", "keep"}:
         raise SkillError("parity report dtype policy is invalid")
+    if inputs.get("compute_dtype", "source") not in {"source", "float32"}:
+        raise SkillError("parity report compute dtype is invalid")
     if not isinstance(inputs["allow_modified"], bool):
         raise SkillError("parity report allow_modified must be boolean")
     tolerances = _strict_fields(
@@ -403,6 +415,7 @@ def _input_arguments(args: argparse.Namespace) -> list[str]:
             "--waveform-samples", str(args.waveform_samples),
             "--seed", str(args.seed),
             "--max-output-mb", str(args.max_output_mb),
+            *(["--compute-dtype", args.compute_dtype] if args.compute_dtype != "source" else []),
             *(["--keep-dtype"] if args.keep_dtype else []),
         ]
     values: list[str] = []
@@ -419,6 +432,8 @@ def _input_arguments(args: argparse.Namespace) -> list[str]:
     values.extend(("--generate-steps", str(args.generate_steps)))
     values.extend(("--seed", str(args.seed)))
     values.extend(("--max-output-mb", str(args.max_output_mb)))
+    if args.compute_dtype != "source":
+        values.extend(("--compute-dtype", args.compute_dtype))
     if args.keep_dtype:
         values.append("--keep-dtype")
     return values
@@ -672,6 +687,7 @@ def main(argv: list[str] | None = None) -> int:
                 "waveform_samples": args.waveform_samples,
                 "seed": args.seed,
                 "dtype_policy": "keep" if args.keep_dtype else "float32",
+                **({"compute_dtype": args.compute_dtype} if args.compute_dtype != "source" else {}),
                 "allow_modified": args.allow_modified,
                 "fault_inject_target": args.fault_inject_target,
             } if args.mode == "asr" else {
@@ -686,6 +702,7 @@ def main(argv: list[str] | None = None) -> int:
                 "generate_steps": args.generate_steps,
                 "seed": args.seed,
                 "dtype_policy": "keep" if args.keep_dtype else "float32",
+                **({"compute_dtype": args.compute_dtype} if args.compute_dtype != "source" else {}),
                 "allow_modified": args.allow_modified,
                 "fault_inject_target": args.fault_inject_target,
             }),

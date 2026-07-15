@@ -135,6 +135,12 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         help="Keep representable source floating dtypes instead of casting floats to float32",
     )
     parser.add_argument(
+        "--compute-dtype",
+        choices=("source", "float32"),
+        default="source",
+        help="Compute with checkpoint dtypes or load/run the model in float32 (default: source)",
+    )
+    parser.add_argument(
         "--max-output-mb",
         type=float,
         default=DEFAULT_MAX_OUTPUT_MB,
@@ -995,6 +1001,7 @@ def main(argv: list[str] | None = None) -> int:
                 bool(args.prompts_file),
                 bool(args.token_ids),
                 args.keep_dtype,
+                args.compute_dtype != "source",
                 args.generate_steps != DEFAULT_GENERATE_STEPS,
                 args.seed != 0,
                 args.max_output_mb != DEFAULT_MAX_OUTPUT_MB,
@@ -1084,7 +1091,11 @@ def main(argv: list[str] | None = None) -> int:
                 "ssm": AutoModelForCausalLM,
                 "asr": AutoModel,
             }[args.mode]
-            checkpoint_dtype = homogeneous_safetensors_torch_dtype(model_dir, torch)
+            checkpoint_dtype = (
+                torch.float32
+                if args.compute_dtype == "float32"
+                else homogeneous_safetensors_torch_dtype(model_dir, torch)
+            )
             dtype_kwargs = {} if checkpoint_dtype is None else {"dtype": checkpoint_dtype}
             model = model_class.from_pretrained(
                 str(model_dir),
@@ -1175,6 +1186,7 @@ def main(argv: list[str] | None = None) -> int:
                 "waveform_samples": args.waveform_samples,
                 "seed": args.seed,
                 "dtype_policy": "keep" if args.keep_dtype else "float32",
+                **({"compute_dtype": args.compute_dtype} if args.compute_dtype != "source" else {}),
             } if args.mode == "asr" else {
                 "mode": args.mode,
                 "input_mode": "token_ids" if token_ids is not None else "prompt",
@@ -1184,6 +1196,7 @@ def main(argv: list[str] | None = None) -> int:
                 "generate_steps": args.generate_steps,
                 "seed": args.seed,
                 "dtype_policy": "keep" if args.keep_dtype else "float32",
+                **({"compute_dtype": args.compute_dtype} if args.compute_dtype != "source" else {}),
             }),
             "tensors": tensor_inventory(arrays),
             "libraries": {
