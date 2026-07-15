@@ -2,8 +2,8 @@
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
   "version": "0.6.1",
-  "generated_at": "2026-07-15T20:56:41.788286+00:00",
-  "file_count": 524,
+  "generated_at": "2026-07-15T21:01:34.718815+00:00",
+  "file_count": 525,
   "files": [
     {
       "path": ".agents/skills/mlx-model-porting",
@@ -203,6 +203,12 @@
       "path": "arch-stress-artifacts/modernbert-base-mlx/run_parity.py",
       "size_bytes": 8385,
       "sha256": "e1bf986b7086ed483c67935e1f22c0d97e799906dcc7195c0f634da37adf34eb",
+      "executable": false
+    },
+    {
+      "path": "arch-stress-artifacts/optimize-receipts/qwen2.5-0.5b-instruct-quant-receipt.json",
+      "size_bytes": 19962,
+      "sha256": "0a3083e8748152447ffa604aea6c361026edfd7e56b9d745b76b3f7b5cb7b716",
       "executable": false
     },
     {
