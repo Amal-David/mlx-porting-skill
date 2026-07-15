@@ -1,0 +1,22 @@
+{
+  "causal_depthwise_conv1d": {
+    "cosine": 0.9999999999999953,
+    "max_abs": 9.5367431640625e-07
+  },
+  "gated_delta_recurrence": {
+    "cosine": 0.9999999999999888,
+    "max_abs": 3.725290298461914e-08
+  },
+  "rms_norm_additive": {
+    "cosine": 0.9999999999999984,
+    "max_abs": 2.384185791015625e-07
+  },
+  "text_mrope_cos": {
+    "cosine": 0.9999999999999996,
+    "max_abs": 2.384185791015625e-07
+  },
+  "text_mrope_sin": {
+    "cosine": 0.9999999999999964,
+    "max_abs": 2.5331974029541016e-07
+  }
+}

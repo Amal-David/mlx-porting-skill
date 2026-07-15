@@ -2,8 +2,8 @@
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
   "version": "0.6.1",
-  "generated_at": "2026-07-15T10:37:55.581402+00:00",
-  "file_count": 516,
+  "generated_at": "2026-07-15T11:20:36.480785+00:00",
+  "file_count": 521,
   "files": [
     {
       "path": ".agents/skills/mlx-model-porting",
@@ -203,6 +203,36 @@
       "path": "arch-stress-artifacts/modernbert-base-mlx/run_parity.py",
       "size_bytes": 8385,
       "sha256": "e1bf986b7086ed483c67935e1f22c0d97e799906dcc7195c0f634da37adf34eb",
+      "executable": false
+    },
+    {
+      "path": "arch-stress-artifacts/qwen3_5-text-hybrid-mlx/README.md",
+      "size_bytes": 2688,
+      "sha256": "98937012c27523fbcdab98cc4eb3934a64a0c11bd8b4f9e04770eb3e3bb54341",
+      "executable": false
+    },
+    {
+      "path": "arch-stress-artifacts/qwen3_5-text-hybrid-mlx/model.py",
+      "size_bytes": 13532,
+      "sha256": "00355bad5e2ad297817011ac1942341e7742ac31e7bf0032501dd2756e9a38ba",
+      "executable": false
+    },
+    {
+      "path": "arch-stress-artifacts/qwen3_5-text-hybrid-mlx/oracle_manifest.json",
+      "size_bytes": 4736,
+      "sha256": "d0ac319be515bfa28df23978dd7a62e5f95d5383d9fae46edbd7a0d7b61eee34",
+      "executable": false
+    },
+    {
+      "path": "arch-stress-artifacts/qwen3_5-text-hybrid-mlx/parity.json",
+      "size_bytes": 18427,
+      "sha256": "0e6a0ba08129e956cc0518d0a190dcd8f0a668b778d64d58689aed3c03bbf042",
+      "executable": false
+    },
+    {
+      "path": "arch-stress-artifacts/qwen3_5-text-hybrid-mlx/primitive_parity.json",
+      "size_bytes": 512,
+      "sha256": "97e1d239a78371b1df9d6c638933e78c733b00ff16066dfba68ada2fcef58767",
       "executable": false
     },
     {
