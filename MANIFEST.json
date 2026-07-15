@@ -2,8 +2,8 @@
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
   "version": "0.6.1",
-  "generated_at": "2026-07-15T11:20:36.480785+00:00",
-  "file_count": 521,
+  "generated_at": "2026-07-15T16:43:54.947389+00:00",
+  "file_count": 524,
   "files": [
     {
       "path": ".agents/skills/mlx-model-porting",
@@ -233,6 +233,24 @@
       "path": "arch-stress-artifacts/qwen3_5-text-hybrid-mlx/primitive_parity.json",
       "size_bytes": 512,
       "sha256": "97e1d239a78371b1df9d6c638933e78c733b00ff16066dfba68ada2fcef58767",
+      "executable": false
+    },
+    {
+      "path": "arch-stress-artifacts/smolvlm-256m-mlx/README.md",
+      "size_bytes": 2212,
+      "sha256": "a34e7a556dd08c432d37e2d3bee33dba7eb95d5cc5d762ed37c318a522957a0a",
+      "executable": false
+    },
+    {
+      "path": "arch-stress-artifacts/smolvlm-256m-mlx/model.py",
+      "size_bytes": 15009,
+      "sha256": "fea8dca969bed7caa6f73f4c60eb48fc7d9d0dd1766a35bfde58b38786ba7158",
+      "executable": false
+    },
+    {
+      "path": "arch-stress-artifacts/smolvlm-256m-mlx/parity.json",
+      "size_bytes": 16159,
+      "sha256": "e6d86c896d84b474ad35a4f0d212e0cd1e4a8698f25beef7de6e34e595a1caf4",
       "executable": false
     },
     {
