@@ -219,6 +219,20 @@ class ScaffoldPortDependencyFreeContractTests(unittest.TestCase):
         ):
             scaffold_port.validate_dense_config({**standard_config, "rope_interleaved": True})
 
+    def test_use_mrope_is_value_gated(self) -> None:
+        import scaffold_port
+
+        # use_mrope=False is the standard 1D RoPE used by text-only Qwen2 models
+        # (e.g. DeepSeek-R1-Distill-Qwen-7B); it must be accepted, not blocked.
+        standard_config = tiny_config(use_mrope=False)
+        self.assertIs(scaffold_port.validate_dense_config(standard_config), standard_config)
+
+        with self.assertRaisesRegex(
+            scaffold_port.SkillError,
+            "M-RoPE.*not supported",
+        ):
+            scaffold_port.validate_dense_config({**standard_config, "use_mrope": True})
+
     def test_generator_registry_is_explicit_and_imports_no_ml_framework(self) -> None:
         import scaffold_port
 

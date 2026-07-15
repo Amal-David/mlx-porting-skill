@@ -124,6 +124,7 @@ DENSE_CONFIG_FEATURE_ALLOWLIST = frozenset({
     "rope_scaling",
     "rope_theta",
     "rope_traditional",
+    "use_mrope",
     "sliding_window",
     "tie_word_embeddings",
     "use_qk_norm",
@@ -421,6 +422,10 @@ def unsupported_dense_features(config: dict[str, Any]) -> list[str]:
         errors.append(
             "rope_interleaved=True is not supported; interleaved RoPE is not implemented"
         )
+    if config.get("use_mrope") is True:
+        errors.append(
+            "use_mrope=True (multimodal M-RoPE) is not supported; only standard 1D RoPE is implemented"
+        )
     qk_norm_flags: list[bool] = []
     for key in ("qk_norm", "use_qk_norm"):
         if key not in config:
@@ -540,6 +545,7 @@ def validate_dense_config(config: Any) -> dict[str, Any]:
         "rope_interleaved",
         "rope_traditional",
         "tie_word_embeddings",
+        "use_mrope",
     ):
         if key in config and not isinstance(config[key], bool):
             raise SkillError(f"config.json {key} must be boolean")
@@ -877,6 +883,7 @@ def validate_moe_config(config: Any) -> dict[str, Any]:
         "rope_interleaved",
         "rope_traditional",
         "tie_word_embeddings",
+        "use_mrope",
     ):
         if key in config and not isinstance(config[key], bool):
             raise SkillError(f"config.json {key} must be boolean")

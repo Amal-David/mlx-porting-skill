@@ -2,7 +2,7 @@
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
   "version": "0.6.1",
-  "generated_at": "2026-07-15T07:10:05.473433+00:00",
+  "generated_at": "2026-07-15T07:21:12.713440+00:00",
   "file_count": 516,
   "files": [
     {
@@ -2163,8 +2163,8 @@
     },
     {
       "path": "mlx-model-porting/scripts/scaffold_port.py",
-      "size_bytes": 160539,
-      "sha256": "8f38f4a79502ffbdbf68766d52685a36e7d0cf0edb9939079bc487e41ce1d93d",
+      "size_bytes": 160775,
+      "sha256": "8c2e901a74d9b32a0b9d9c2db75de36261e1ebba67abea33d8a92dd68647e34b",
       "executable": true
     },
     {
@@ -3051,8 +3051,8 @@
     },
     {
       "path": "tests/test_scaffold_port_contract.py",
-      "size_bytes": 56112,
-      "sha256": "f109cab3cfe5d957d755346fffa29120b2951181decb2eceed446b57c78057c6",
+      "size_bytes": 56717,
+      "sha256": "db1d648f8c32e4f3e9010197ef1f5840763cad58b95bce58b75c84b7c9285cd6",
       "executable": false
     },
     {
