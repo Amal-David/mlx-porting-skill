@@ -118,6 +118,7 @@ DENSE_CONFIG_FEATURE_ALLOWLIST = frozenset({
     "num_hidden_layers",
     "num_key_value_heads",
     "pretraining_tp",
+    "qk_norm",
     "rms_norm_eps",
     "rope_interleaved",
     "rope_scaling",
@@ -125,6 +126,7 @@ DENSE_CONFIG_FEATURE_ALLOWLIST = frozenset({
     "rope_traditional",
     "sliding_window",
     "tie_word_embeddings",
+    "use_qk_norm",
     "use_sliding_window",
     "vocab_size",
 })
@@ -346,11 +348,9 @@ ATTENTION_VARIANT_KEYS = frozenset({
     "logit_softcap",
     "partial_rotary_factor",
     "position_embedding_type",
-    "qk_norm",
     "query_pre_attn_scalar",
     "sliding_window",
     "use_alibi",
-    "use_qk_norm",
     "use_sliding_window",
 })
 SUPPORTED_ACTIVATIONS = frozenset({"gelu", "relu", "silu", "swish"})
@@ -421,6 +421,17 @@ def unsupported_dense_features(config: dict[str, Any]) -> list[str]:
         errors.append(
             "rope_interleaved=True is not supported; interleaved RoPE is not implemented"
         )
+    qk_norm_flags: list[bool] = []
+    for key in ("qk_norm", "use_qk_norm"):
+        if key not in config:
+            continue
+        value = config[key]
+        if not isinstance(value, bool):
+            errors.append(f"{key} must be boolean when present")
+        else:
+            qk_norm_flags.append(value)
+    if len(qk_norm_flags) == 2 and qk_norm_flags[0] != qk_norm_flags[1]:
+        errors.append("qk_norm and use_qk_norm must agree when both are present")
 
     for key in sorted(MOE_KEYS):
         if key in config and _meaningfully_set(config[key]):
@@ -470,7 +481,7 @@ def unsupported_dense_features(config: dict[str, Any]) -> list[str]:
     if "use_sliding_window" in config and not isinstance(use_sliding_window, bool):
         errors.append("use_sliding_window must be boolean when present")
     sliding_window = config.get("sliding_window")
-    if "sliding_window" in config and (
+    if sliding_window is not None and (
         type(sliding_window) is not int or sliding_window <= 0
     ):
         errors.append("sliding_window must be a positive integer when present")
@@ -1377,6 +1388,7 @@ def build_model(config: ModelConfig):
             self.k_proj = nn.Linear(config.hidden_size, kv_dims, bias=__K_PROJ_BIAS__)
             self.v_proj = nn.Linear(config.hidden_size, kv_dims, bias=__V_PROJ_BIAS__)
             self.o_proj = nn.Linear(query_dims, config.hidden_size, bias=__O_PROJ_BIAS__)
+__QK_NORM_INIT__
 
         def _apply_rope(self, value, offset: int, total_length: int):
             scaling = config.rope_scaling or {}
@@ -1401,6 +1413,7 @@ def build_model(config: ModelConfig):
             batch, length, _ = x.shape
             q = self.q_proj(x).reshape(batch, length, config.num_attention_heads, config.head_dim)
             k = self.k_proj(x).reshape(batch, length, config.num_key_value_heads, config.head_dim)
+__QK_NORM_APPLY__
             v = self.v_proj(x).reshape(batch, length, config.num_key_value_heads, config.head_dim)
             q = q.transpose(0, 2, 1, 3)
             k = k.transpose(0, 2, 1, 3)
@@ -2309,7 +2322,7 @@ called correct.
 
 - `config.json`: canonical copy of the inspected source config.
 - `config.py`: validated config parser.
-- `model.py`: lazy-imported eager MLX model, GQA/MHA attention, RoPE, growing KV cache, gated MLP, and greedy decode.
+- `model.py`: lazy-imported eager MLX model, GQA/MHA attention, optional per-head QK normalization, RoPE, growing KV cache, gated MLP, and greedy decode.
 - `generate.py`: tokenizer-free greedy token-ID CLI.
 - `capture.py`: target tensor capture in the source-oracle NPZ/manifest schema.
 - `scaffold-manifest.json`: generator/config/code digests plus the target parameter contract used by conversion and package validation.
@@ -2324,6 +2337,8 @@ Linear weights use MLX/Hugging Face layout `[output_dims, input_dims]`.
 - `model.layers.{i}.self_attn.k_proj.weight` — `[num_key_value_heads * head_dim, hidden_size]`
 - `model.layers.{i}.self_attn.v_proj.weight` — `[num_key_value_heads * head_dim, hidden_size]`
 - `model.layers.{i}.self_attn.o_proj.weight` — `[hidden_size, num_attention_heads * head_dim]`
+- `model.layers.{i}.self_attn.q_norm.weight` — `[head_dim]`, when QK normalization is present
+- `model.layers.{i}.self_attn.k_norm.weight` — `[head_dim]`, when QK normalization is present
 - `model.layers.{i}.post_attention_layernorm.weight` — `[hidden_size]`
 - `model.layers.{i}.mlp.gate_proj.weight` — `[intermediate_size, hidden_size]`
 - `model.layers.{i}.mlp.up_proj.weight` — `[intermediate_size, hidden_size]`
@@ -2341,9 +2356,10 @@ conversion must map the source tie owner to `model.embed_tokens.weight` and omit
 
 - decoder-only pre-RMSNorm blocks with separate Q/K/V/O projections;
 - causal attention, optional padding mask, MHA or GQA with a growing cache;
+- optional per-head Q/K RMSNorm over `head_dim` before RoPE when complete `q_norm`/`k_norm` weights are inspected;
 - standard, linear, or dynamic-NTK RoPE selected from the inspected config;
 - gated SiLU/SwiGLU, GELU/GeGLU, or ReLU/ReGLU MLP;
-- no dropout, active sliding window, QK normalization, MoE, quantization, soft caps, or custom attention variants;
+- no dropout, active sliding window, MoE, quantization, soft caps, or custom attention variants;
 - `use_sliding_window=false` explicitly selects full attention even when inert sliding-window metadata remains in the source config.
 
 For dynamic-NTK RoPE, the base changes once the sequence exceeds
@@ -2797,6 +2813,71 @@ def dense_attention_biases(
     return biases
 
 
+def dense_qk_norm_enabled(
+    inspection: dict[str, Any],
+    config: dict[str, Any],
+) -> bool:
+    """Derive exact per-head Q/K RMSNorm support from config and inspected weights."""
+    layers = _config_int(config, "num_hidden_layers")
+    head_dim = _config_int(
+        config,
+        "head_dim",
+        default=_config_int(config, "hidden_size") // _config_int(config, "num_attention_heads"),
+    )
+    tensor_shapes = _inspection_tensor_shapes(inspection)
+    expected = {
+        f"model.layers.{index}.self_attn.{name}_norm.weight"
+        for index in range(layers)
+        for name in ("q", "k")
+    }
+    qk_norm_tensors = {
+        key
+        for key in tensor_shapes
+        if ".self_attn.q_norm." in key or ".self_attn.k_norm." in key
+    }
+    unexpected = sorted(qk_norm_tensors - expected)
+    if unexpected:
+        raise SkillError(
+            "unsupported QK normalization tensors were inspected: "
+            + ", ".join(unexpected[:5])
+        )
+    present = expected & set(tensor_shapes)
+    if present and present != expected:
+        missing = sorted(expected - present)
+        raise SkillError(
+            "incomplete QK normalization weight coverage across decoder layers; missing "
+            + ", ".join(missing[:5])
+        )
+
+    has_weights = present == expected
+    if has_weights:
+        invalid_shapes = sorted(
+            key for key in expected if tensor_shapes[key] != [head_dim]
+        )
+        if invalid_shapes:
+            key = invalid_shapes[0]
+            raise SkillError(
+                f"QK normalization tensor {key!r} must have shape [{head_dim}], "
+                f"got {tensor_shapes[key]!r}"
+            )
+
+    declared_values = [
+        config[key]
+        for key in ("qk_norm", "use_qk_norm")
+        if key in config
+    ]
+    declared = declared_values[0] if declared_values else None
+    if declared is True and not has_weights:
+        raise SkillError(
+            "config enables QK normalization but complete q_norm/k_norm weights were not inspected"
+        )
+    if declared is False and has_weights:
+        raise SkillError(
+            "config disables QK normalization but q_norm/k_norm weights were inspected"
+        )
+    return has_weights
+
+
 def moe_attention_biases(
     inspection: dict[str, Any],
     config: dict[str, Any],
@@ -2813,6 +2894,7 @@ def moe_attention_biases(
 def dense_target_tensors(
     config: dict[str, Any],
     attention_biases: dict[str, bool] | None = None,
+    qk_norm: bool | None = None,
 ) -> list[dict[str, Any]]:
     """Return the deterministic parameter contract implemented by the generated graph."""
     hidden = _config_int(config, "hidden_size")
@@ -2827,6 +2909,8 @@ def dense_target_tensors(
             projection: bool(config.get("attention_bias", False))
             for projection in ATTENTION_PROJECTIONS
         }
+    if qk_norm is None:
+        qk_norm = any(config.get(key) is True for key in ("qk_norm", "use_qk_norm"))
     tensors: dict[str, list[int]] = {
         "model.embed_tokens.weight": [vocab, hidden],
         "model.norm.weight": [hidden],
@@ -2846,6 +2930,11 @@ def dense_target_tensors(
             f"{prefix}.mlp.up_proj.weight": [intermediate, hidden],
             f"{prefix}.mlp.down_proj.weight": [hidden, intermediate],
         })
+        if qk_norm:
+            tensors.update({
+                f"{prefix}.self_attn.q_norm.weight": [head_dim],
+                f"{prefix}.self_attn.k_norm.weight": [head_dim],
+            })
         attention_bias_shapes = {
             "q_proj": [heads * head_dim],
             "k_proj": [kv_heads * head_dim],
@@ -3113,9 +3202,30 @@ def generate_dense_decoder(
 ) -> dict[str, str]:
     validate_dense_config(config)
     attention_biases = dense_attention_biases(inspection, config)
+    qk_norm = dense_qk_norm_enabled(inspection, config)
     digest = trusted_inspection_sha256(inspection)
     header = _header(digest)
     model_source = MODEL_TEMPLATE.replace("__HEADER__", header)
+    model_source = _replace_template_once(
+        model_source,
+        "__QK_NORM_INIT__",
+        (
+            "            self.q_norm = nn.RMSNorm(config.head_dim, eps=config.rms_norm_eps)\n"
+            "            self.k_norm = nn.RMSNorm(config.head_dim, eps=config.rms_norm_eps)"
+            if qk_norm else ""
+        ),
+        label="dense QK norm initialization",
+    )
+    model_source = _replace_template_once(
+        model_source,
+        "__QK_NORM_APPLY__",
+        (
+            "            q = self.q_norm(q)\n"
+            "            k = self.k_norm(k)"
+            if qk_norm else ""
+        ),
+        label="dense QK norm application",
+    )
     for projection in ATTENTION_PROJECTIONS:
         placeholder = f"__{projection.upper()}_BIAS__"
         model_source = model_source.replace(
@@ -3142,7 +3252,7 @@ def generate_dense_decoder(
     files[SCAFFOLD_MANIFEST] = _scaffold_manifest(
         files,
         digest,
-        dense_target_tensors(config, attention_biases),
+        dense_target_tensors(config, attention_biases, qk_norm),
     )
     return files
 

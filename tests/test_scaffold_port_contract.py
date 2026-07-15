@@ -109,6 +109,28 @@ def write_model(root: Path, config: dict[str, object]) -> None:
     shutil.copyfile(DECODER_FIXTURE / "model.safetensors", root / "model.safetensors")
 
 
+def add_qk_norm_weights(model_path: Path, *, layers: int, head_dim: int) -> None:
+    raw = model_path.read_bytes()
+    header_length = struct.unpack("<Q", raw[:8])[0]
+    header = json.loads(raw[8 : 8 + header_length])
+    payload = raw[8 + header_length :]
+    offset = len(payload)
+    for layer in range(layers):
+        for name in ("q_norm", "k_norm"):
+            key = f"model.layers.{layer}.self_attn.{name}.weight"
+            byte_length = head_dim * 4
+            header[key] = {
+                "dtype": "F32",
+                "shape": [head_dim],
+                "data_offsets": [offset, offset + byte_length],
+            }
+            payload += b"\0" * byte_length
+            offset += byte_length
+    encoded_header = json.dumps(header, separators=(",", ":"), sort_keys=True).encode("utf-8")
+    encoded_header += b" " * (-len(encoded_header) % 8)
+    model_path.write_bytes(struct.pack("<Q", len(encoded_header)) + encoded_header + payload)
+
+
 def write_ssm_model(root: Path, config: dict[str, object]) -> None:
     root.mkdir()
     (root / "config.json").write_text(
@@ -418,13 +440,71 @@ class ScaffoldPortDependencyFreeContractTests(unittest.TestCase):
             "Consult references/runbook-decoder-transformer.md:\n"
             "- hidden_act='mish' is not supported; supported activations: gelu, relu, silu, swish\n"
             "- MoE config key 'num_local_experts' is set\n"
-            "- qk_norm=True is not supported\n"
             "- quantization_config is set\n"
             "- rope_scaling type 'yarn' is not supported; supported types: default, dynamic, linear\n"
             "- use_sliding_window=True is not supported\n"
             "- unrecognized computation-relevant config key 'mystery_attention_scale'\n",
         )
         self.assertFalse(output.exists())
+
+    def test_qwen3_qk_norm_scaffolds_and_normalizes_before_rope(self) -> None:
+        with tempfile.TemporaryDirectory() as raw_tmp:
+            root = Path(raw_tmp)
+            model = root / "model"
+            inspection = root / "inspection.json"
+            output = root / "generated"
+            write_model(model, tiny_config(
+                architectures=["Qwen3ForCausalLM"],
+                max_window_layers=2,
+                model_type="qwen3",
+                qk_norm=True,
+                sliding_window=None,
+                use_sliding_window=False,
+            ))
+            add_qk_norm_weights(model / "model.safetensors", layers=2, head_dim=4)
+            inspect_model(model, inspection, no_site=True)
+
+            result = scaffold(model, inspection, output, no_site=True)
+
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+            self.assertNotIn("QK normalization", result.stderr)
+            model_source = (output / "model.py").read_text(encoding="utf-8")
+            self.assertIn(
+                "self.q_norm = nn.RMSNorm(config.head_dim, eps=config.rms_norm_eps)",
+                model_source,
+            )
+            self.assertIn(
+                "self.k_norm = nn.RMSNorm(config.head_dim, eps=config.rms_norm_eps)",
+                model_source,
+            )
+            q_reshape = model_source.index("q = self.q_proj(x).reshape(")
+            q_norm = model_source.index("q = self.q_norm(q)")
+            k_norm = model_source.index("k = self.k_norm(k)")
+            rope = model_source.index("q = self._apply_rope(q, offset, total_length)")
+            self.assertLess(q_reshape, q_norm)
+            self.assertLess(q_norm, k_norm)
+            self.assertLess(k_norm, rope)
+            manifest = json.loads(
+                (output / "scaffold-manifest.json").read_text(encoding="utf-8")
+            )
+            target_keys = {record["key"] for record in manifest["tensors"]}
+            self.assertIn("model.layers.0.self_attn.q_norm.weight", target_keys)
+            self.assertIn("model.layers.1.self_attn.k_norm.weight", target_keys)
+            readme = (output / "README.md").read_text(encoding="utf-8")
+            self.assertIn("per-head Q/K RMSNorm over `head_dim` before RoPE", readme)
+            self.assertNotIn("QK normalization, MoE", readme)
+
+    def test_qk_norm_still_fails_closed_without_complete_weights(self) -> None:
+        import scaffold_port
+
+        with self.assertRaisesRegex(
+            scaffold_port.SkillError,
+            "complete q_norm/k_norm weights were not inspected",
+        ):
+            scaffold_port.dense_qk_norm_enabled(
+                {"tensors": []},
+                tiny_config(use_qk_norm=True),
+            )
 
     def test_explicitly_disabled_sliding_window_metadata_uses_full_attention(self) -> None:
         with tempfile.TemporaryDirectory() as raw_tmp:
@@ -533,6 +613,7 @@ class ScaffoldPortDependencyFreeContractTests(unittest.TestCase):
                     source.splitlines()[0],
                     r"\A# Generated by scaffold_port\.py 1\.1\.0 from inspection sha256:[0-9a-f]{64}\.\Z",
                 )
+            self.assertNotIn("self.q_norm =", (first / "model.py").read_text(encoding="utf-8"))
             readme = (first / "README.md").read_text(encoding="utf-8")
             self.assertIn("model.layers.{i}.self_attn.q_proj.weight", readme)
             self.assertIn("starting implementation", readme)

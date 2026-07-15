@@ -433,6 +433,22 @@ def _load_config(package: Path) -> dict[str, Any]:
     return config
 
 
+def _mlx_to_numpy(value: Any) -> Any:
+    """Convert an MLX array to numpy.
+
+    numpy has no bfloat16 dtype, so ``np.asarray`` on a bf16 MLX array raises a
+    PEP 3118 buffer error. Upcast bf16 to float32 first (the parity path already
+    casts floats to float32 unless ``--keep-dtype``, and numpy cannot represent
+    bf16 in any case); every other dtype passes through unchanged.
+    """
+    import mlx.core as mx
+    import numpy as np
+
+    if getattr(value, "dtype", None) == mx.bfloat16:
+        value = value.astype(mx.float32)
+    return np.asarray(value)
+
+
 def _build_numpy_inputs(
     prompts: list[str],
     token_ids: list[int] | None,
@@ -563,7 +579,7 @@ def _capture(
             getattr(mx, "eval")(*tensors.values())
             arrays: dict[str, Any] = {}
             for name, value in sorted(tensors.items()):
-                array = np.asarray(value)
+                array = _mlx_to_numpy(value)
                 if np.issubdtype(array.dtype, np.floating) and not keep_dtype:
                     array = array.astype(np.float32, copy=False)
                 if array.dtype.hasobject:
@@ -605,7 +621,7 @@ def _capture(
         getattr(mx, "eval")(*tensors.values())
         arrays: dict[str, Any] = {}
         for name, value in sorted(tensors.items()):
-            array = np.asarray(value)
+            array = _mlx_to_numpy(value)
             if np.issubdtype(array.dtype, np.floating) and not keep_dtype:
                 array = array.astype(np.float32, copy=False)
             if array.dtype.hasobject:
@@ -689,7 +705,7 @@ def _capture_asr(
         getattr(mx, "eval")(*tensors.values())
         arrays: dict[str, Any] = {}
         for name, value in sorted(tensors.items()):
-            array = np.asarray(value)
+            array = _mlx_to_numpy(value)
             if np.issubdtype(array.dtype, np.floating) and not keep_dtype:
                 array = array.astype(np.float32, copy=False)
             arrays[name] = np.ascontiguousarray(array)
