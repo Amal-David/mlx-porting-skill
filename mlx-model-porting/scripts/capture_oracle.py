@@ -202,6 +202,40 @@ def _is_weight_file(path: Path) -> bool:
     )
 
 
+def homogeneous_safetensors_torch_dtype(model_dir: Path, torch: Any) -> Any | None:
+    """Return the payload dtype when every checkpoint tensor uses one float dtype."""
+    entries = _model_root_entries(model_dir)
+    safetensors = [path for path in entries if path.name.lower().endswith(".safetensors")]
+    if not safetensors or any(
+        _is_weight_file(path) and not path.name.lower().endswith(".safetensors")
+        for path in entries
+    ):
+        return None
+    try:
+        from safetensors import safe_open
+    except ImportError:
+        return None
+
+    dtype_names: set[str] = set()
+    try:
+        for path in safetensors:
+            with safe_open(str(path), framework="pt", device="cpu") as checkpoint:
+                dtype_names.update(
+                    str(checkpoint.get_slice(key).get_dtype()).upper()
+                    for key in checkpoint.keys()
+                )
+    except Exception as exc:
+        raise SkillError(f"could not inspect safetensors checkpoint dtype: {exc}") from exc
+    if len(dtype_names) != 1:
+        return None
+    return {
+        "F16": torch.float16,
+        "BF16": torch.bfloat16,
+        "F32": torch.float32,
+        "F64": torch.float64,
+    }.get(next(iter(dtype_names)))
+
+
 def inspect_local_model(model_value: str) -> tuple[Path, dict[str, Any], dict[str, Any]]:
     model_dir = Path(os.path.abspath(os.path.expanduser(model_value)))
     if model_dir.is_symlink() or not model_dir.is_dir():
@@ -1050,11 +1084,14 @@ def main(argv: list[str] | None = None) -> int:
                 "ssm": AutoModelForCausalLM,
                 "asr": AutoModel,
             }[args.mode]
+            checkpoint_dtype = homogeneous_safetensors_torch_dtype(model_dir, torch)
+            dtype_kwargs = {} if checkpoint_dtype is None else {"dtype": checkpoint_dtype}
             model = model_class.from_pretrained(
                 str(model_dir),
                 config=hf_config,
                 local_files_only=True,
                 trust_remote_code=False,
+                **dtype_kwargs,
             )
         except Exception as exc:
             message = str(exc)

@@ -443,6 +443,50 @@ class CaptureOracleTorchContractTests(unittest.TestCase):
                 if record["name"] not in {"attention_mask", "generated_token_ids", "input_ids"}
             ))
 
+    def test_homogeneous_f32_safetensors_override_stale_bf16_config_dtype(self) -> None:
+        import numpy as np
+        import torch
+        from safetensors.torch import save_file
+
+        with tempfile.TemporaryDirectory() as raw_tmp:
+            root = Path(raw_tmp).resolve()
+            model = root / "model"
+            self.write_tiny_llama(model)
+            state = torch.load(model / "pytorch_model.bin", weights_only=True)
+            save_file(state, model / "model.safetensors", metadata={"format": "pt"})
+            (model / "pytorch_model.bin").unlink()
+            config_path = model / "config.json"
+            config = json.loads(config_path.read_text(encoding="utf-8"))
+            config["torch_dtype"] = "bfloat16"
+            config_path.write_text(
+                json.dumps(config, indent=2, sort_keys=True) + "\n",
+                encoding="utf-8",
+            )
+            output = root / "oracle.npz"
+
+            completed = run_tool(
+                model,
+                "--token-ids",
+                "1",
+                "5",
+                "7",
+                "--generate-steps",
+                "0",
+                "--keep-dtype",
+                "--output",
+                output,
+            )
+
+            self.assertEqual(completed.returncode, 0, completed.stdout + completed.stderr)
+            with np.load(output, allow_pickle=False) as archive:
+                floating = [
+                    value.dtype
+                    for value in archive.values()
+                    if np.issubdtype(value.dtype, np.floating)
+                ]
+            self.assertTrue(floating)
+            self.assertEqual(set(floating), {np.dtype(np.float32)})
+
     def test_repeated_capture_is_bitwise_deterministic(self) -> None:
         import numpy as np
 

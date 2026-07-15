@@ -469,13 +469,14 @@ class ScaffoldPortDependencyFreeContractTests(unittest.TestCase):
             output = root / "generated"
             write_model(model, tiny_config(
                 architectures=["Qwen3ForCausalLM"],
+                head_dim=6,
                 max_window_layers=2,
                 model_type="qwen3",
                 qk_norm=True,
                 sliding_window=None,
                 use_sliding_window=False,
             ))
-            add_qk_norm_weights(model / "model.safetensors", layers=2, head_dim=4)
+            add_qk_norm_weights(model / "model.safetensors", layers=2, head_dim=6)
             inspect_model(model, inspection, no_site=True)
 
             result = scaffold(model, inspection, output, no_site=True)
@@ -491,6 +492,12 @@ class ScaffoldPortDependencyFreeContractTests(unittest.TestCase):
                 "self.k_norm = nn.RMSNorm(config.head_dim, eps=config.rms_norm_eps)",
                 model_source,
             )
+            self.assertIn(
+                "attended.transpose(0, 2, 1, 3).reshape("
+                "\n                batch, length, config.num_attention_heads * config.head_dim\n"
+                "            )",
+                model_source,
+            )
             q_reshape = model_source.index("q = self.q_proj(x).reshape(")
             q_norm = model_source.index("q = self.q_norm(q)")
             k_norm = model_source.index("k = self.k_norm(k)")
@@ -501,9 +508,24 @@ class ScaffoldPortDependencyFreeContractTests(unittest.TestCase):
             manifest = json.loads(
                 (output / "scaffold-manifest.json").read_text(encoding="utf-8")
             )
-            target_keys = {record["key"] for record in manifest["tensors"]}
+            target_shapes = {
+                record["key"]: record["shape"] for record in manifest["tensors"]
+            }
+            target_keys = set(target_shapes)
             self.assertIn("model.layers.0.self_attn.q_norm.weight", target_keys)
             self.assertIn("model.layers.1.self_attn.k_norm.weight", target_keys)
+            self.assertEqual(
+                target_shapes["model.layers.0.self_attn.q_proj.weight"], [12, 8]
+            )
+            self.assertEqual(
+                target_shapes["model.layers.0.self_attn.o_proj.weight"], [8, 12]
+            )
+            self.assertEqual(
+                target_shapes["model.layers.0.self_attn.q_norm.weight"], [6]
+            )
+            self.assertNotIn(
+                "hidden_size must equal num_attention_heads * head_dim", model_source
+            )
             readme = (output / "README.md").read_text(encoding="utf-8")
             self.assertIn("per-head Q/K RMSNorm over `head_dim` before RoPE", readme)
             self.assertNotIn("QK normalization, MoE", readme)

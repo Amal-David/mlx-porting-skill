@@ -2,7 +2,7 @@
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
   "version": "0.6.1",
-  "generated_at": "2026-07-15T07:21:12.713440+00:00",
+  "generated_at": "2026-07-15T10:37:55.581402+00:00",
   "file_count": 516,
   "files": [
     {
@@ -2043,8 +2043,8 @@
     },
     {
       "path": "mlx-model-porting/scripts/capture_oracle.py",
-      "size_bytes": 45839,
-      "sha256": "dc1b0c45426932d9e7ed05fcff32ad837ae238ab35a644eb2cffcadc8fef1c05",
+      "size_bytes": 47292,
+      "sha256": "6de52bbfa5946f909172e27af1de5d0fbbd153d2644fe124900884fb67b640bc",
       "executable": true
     },
     {
@@ -2163,8 +2163,8 @@
     },
     {
       "path": "mlx-model-porting/scripts/scaffold_port.py",
-      "size_bytes": 160775,
-      "sha256": "8c2e901a74d9b32a0b9d9c2db75de36261e1ebba67abea33d8a92dd68647e34b",
+      "size_bytes": 161479,
+      "sha256": "2cf9289cf7e57559b79b38ccdf0970a05b78894d5a4d04cc18146e6b999adc30",
       "executable": true
     },
     {
@@ -2835,8 +2835,8 @@
     },
     {
       "path": "tests/test_capture_oracle_contract.py",
-      "size_bytes": 18555,
-      "sha256": "f0437ac86c32389e852f7caa93a974c25132add8181557a869c755170580d5e6",
+      "size_bytes": 20255,
+      "sha256": "399c040e48c385ca400379418fc9caaf351b2f774b9cb8ea31f6e03c3353608a",
       "executable": false
     },
     {
@@ -3051,8 +3051,8 @@
     },
     {
       "path": "tests/test_scaffold_port_contract.py",
-      "size_bytes": 56717,
-      "sha256": "db1d648f8c32e4f3e9010197ef1f5840763cad58b95bce58b75c84b7c9285cd6",
+      "size_bytes": 57600,
+      "sha256": "7c0734989e3095236297eb3ec1ede5545feb3e2fd4ede5ff05148189d1297891",
       "executable": false
     },
     {

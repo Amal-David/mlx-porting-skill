@@ -528,6 +528,11 @@ def validate_dense_config(config: Any) -> dict[str, Any]:
     hidden_size = _config_int(config, "hidden_size")
     num_heads = _config_int(config, "num_attention_heads")
     num_kv_heads = _config_int(config, "num_key_value_heads", default=num_heads)
+    if "head_dim" not in config and hidden_size % num_heads:
+        raise SkillError(
+            "config.json hidden_size must be divisible by num_attention_heads "
+            "when head_dim is omitted"
+        )
     head_dim = _config_int(config, "head_dim", default=hidden_size // num_heads)
     _config_int(config, "num_hidden_layers")
     _config_int(config, "intermediate_size")
@@ -535,8 +540,6 @@ def validate_dense_config(config: Any) -> dict[str, Any]:
     _config_int(config, "max_position_embeddings", default=2048)
     _config_float(config, "rms_norm_eps", default=1e-5)
     _config_float(config, "rope_theta", default=10000.0)
-    if hidden_size != num_heads * head_dim:
-        raise SkillError("config.json hidden_size must equal num_attention_heads * head_dim")
     if num_heads % num_kv_heads != 0:
         raise SkillError("config.json num_attention_heads must be divisible by num_key_value_heads")
     for key in (
@@ -1301,8 +1304,10 @@ class ModelConfig:
         heads = _positive_int(data, "num_attention_heads")
         kv_heads = _positive_int(data, "num_key_value_heads", heads)
         head_dim = _positive_int(data, "head_dim", hidden_size // heads)
-        if hidden_size != heads * head_dim:
-            raise ValueError("hidden_size must equal num_attention_heads * head_dim")
+        if "head_dim" not in data and hidden_size % heads:
+            raise ValueError(
+                "hidden_size must be divisible by num_attention_heads when head_dim is omitted"
+            )
         if heads % kv_heads:
             raise ValueError("num_attention_heads must be divisible by num_key_value_heads")
         rope_scaling = data.get("rope_scaling")
@@ -1463,7 +1468,9 @@ __QK_NORM_APPLY__
                     mx.zeros_like(probabilities),
                 )
             attended = probabilities @ expanded_v
-            attended = attended.transpose(0, 2, 1, 3).reshape(batch, length, config.hidden_size)
+            attended = attended.transpose(0, 2, 1, 3).reshape(
+                batch, length, config.num_attention_heads * config.head_dim
+            )
             return self.o_proj(attended), new_cache
 
     class MLP(nn.Module):
@@ -1623,6 +1630,16 @@ def moe_config_template() -> str:
         '            else _positive_int(data, "head_dim")\n'
         '        )\n',
         label="MoE nullable head_dim",
+    )
+    source = _replace_template_once(
+        source,
+        '        if "head_dim" not in data and hidden_size % heads:\n'
+        '            raise ValueError(\n'
+        '                "hidden_size must be divisible by num_attention_heads when head_dim is omitted"\n'
+        '            )\n',
+        '        if hidden_size != heads * head_dim:\n'
+        '            raise ValueError("hidden_size must equal num_attention_heads * head_dim")\n',
+        label="MoE head_dim equality",
     )
     source = _replace_template_once(
         source,
