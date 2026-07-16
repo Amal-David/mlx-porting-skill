@@ -2,8 +2,8 @@
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
   "version": "0.6.1",
-  "generated_at": "2026-07-15T21:01:34.718815+00:00",
-  "file_count": 525,
+  "generated_at": "2026-07-16T05:25:14.669352+00:00",
+  "file_count": 527,
   "files": [
     {
       "path": ".agents/skills/mlx-model-porting",
@@ -206,9 +206,21 @@
       "executable": false
     },
     {
+      "path": "arch-stress-artifacts/optimize-receipts/README.md",
+      "size_bytes": 1458,
+      "sha256": "72a48bb045e8c9fd9f64866efdd42792f758a71577fbe48f5baa2cfeb1d36202",
+      "executable": false
+    },
+    {
       "path": "arch-stress-artifacts/optimize-receipts/qwen2.5-0.5b-instruct-quant-receipt.json",
       "size_bytes": 19962,
       "sha256": "0a3083e8748152447ffa604aea6c361026edfd7e56b9d745b76b3f7b5cb7b716",
+      "executable": false
+    },
+    {
+      "path": "arch-stress-artifacts/optimize-receipts/smollm2-360m-quant-receipt.json",
+      "size_bytes": 17251,
+      "sha256": "285737aba4ada58aa58b5207219a76ce62d8812537bae7771669f6e683421e76",
       "executable": false
     },
     {
