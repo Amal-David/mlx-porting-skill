@@ -2,7 +2,7 @@
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
   "version": "0.6.1",
-  "generated_at": "2026-07-16T10:27:20.462407+00:00",
+  "generated_at": "2026-07-16T10:31:31.170998+00:00",
   "file_count": 532,
   "files": [
     {
@@ -189,8 +189,8 @@
     },
     {
       "path": "arch-stress-artifacts/modernbert-base-mlx/README.md",
-      "size_bytes": 3483,
-      "sha256": "b6f616f08e33f0fdf5aac4e9d63722c1889cde23082c9e3e01c732d5b35125a3",
+      "size_bytes": 3614,
+      "sha256": "c53bf350b1076acf0e8d034bd526a1167b60700e1652cb0eaa0fe9174f1c7b7c",
       "executable": false
     },
     {
@@ -219,8 +219,8 @@
     },
     {
       "path": "arch-stress-artifacts/modernbert-base-mlx/run_parity.py",
-      "size_bytes": 8385,
-      "sha256": "e1bf986b7086ed483c67935e1f22c0d97e799906dcc7195c0f634da37adf34eb",
+      "size_bytes": 8556,
+      "sha256": "31ca73f6cf922e379e7dfda03b297340858c98446071cff19cd127bfae238580",
       "executable": false
     },
     {
@@ -291,8 +291,8 @@
     },
     {
       "path": "arch-stress-artifacts/smolvlm-256m-mlx/model.py",
-      "size_bytes": 15009,
-      "sha256": "fea8dca969bed7caa6f73f4c60eb48fc7d9d0dd1766a35bfde58b38786ba7158",
+      "size_bytes": 15237,
+      "sha256": "7486685982c2fc2f5af9674a89c2456f73dc7ab5800e8bb4b32539bd5bbd2ef8",
       "executable": false
     },
     {
