@@ -2,7 +2,7 @@
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
   "version": "0.6.1",
-  "generated_at": "2026-07-16T06:52:57.275412+00:00",
+  "generated_at": "2026-07-16T10:27:20.462407+00:00",
   "file_count": 532,
   "files": [
     {
@@ -231,26 +231,26 @@
     },
     {
       "path": "arch-stress-artifacts/optimize-receipts/qwen2.5-0.5b-instruct-quant-receipt.json",
-      "size_bytes": 19962,
-      "sha256": "0a3083e8748152447ffa604aea6c361026edfd7e56b9d745b76b3f7b5cb7b716",
+      "size_bytes": 19757,
+      "sha256": "3123cfda0c009b4a5c8169c2609ca59a3308158f2ddbfd2c2016db8ba09c3537",
       "executable": false
     },
     {
       "path": "arch-stress-artifacts/optimize-receipts/qwen2.5-1.5b-quant-receipt.json",
-      "size_bytes": 19395,
-      "sha256": "f2b8e4b7d2998775fd299f9469ead3185281ce511136787e37f044cb556c11ac",
+      "size_bytes": 19175,
+      "sha256": "216d6bc6831b804f3cd7805e8ca2847cdd307fc7e528d83573adb851b4104bde",
       "executable": false
     },
     {
       "path": "arch-stress-artifacts/optimize-receipts/qwen3-1.7b-quant-receipt.json",
-      "size_bytes": 19994,
-      "sha256": "c94e1bc824b717555511ea48e800b9eba91df80454d8b5ef70da98649f33ccc3",
+      "size_bytes": 19794,
+      "sha256": "6bb16375344fc3b2b23402634c121c25936aeb62e7781e9922f89c6bbb9ddbb5",
       "executable": false
     },
     {
       "path": "arch-stress-artifacts/optimize-receipts/smollm2-360m-quant-receipt.json",
-      "size_bytes": 17251,
-      "sha256": "285737aba4ada58aa58b5207219a76ce62d8812537bae7771669f6e683421e76",
+      "size_bytes": 17051,
+      "sha256": "c5eb16ff682afcd0f81c113bcb3c3abcc68c988b9bbe5542de24ed9ac488681a",
       "executable": false
     },
     {
@@ -267,14 +267,14 @@
     },
     {
       "path": "arch-stress-artifacts/qwen3_5-text-hybrid-mlx/oracle_manifest.json",
-      "size_bytes": 4736,
-      "sha256": "d0ac319be515bfa28df23978dd7a62e5f95d5383d9fae46edbd7a0d7b61eee34",
+      "size_bytes": 4695,
+      "sha256": "25d147d74a2cce041d5765b07bc0ae9f062abfb9ee2defa6426491115ea810ff",
       "executable": false
     },
     {
       "path": "arch-stress-artifacts/qwen3_5-text-hybrid-mlx/parity.json",
-      "size_bytes": 18427,
-      "sha256": "0e6a0ba08129e956cc0518d0a190dcd8f0a668b778d64d58689aed3c03bbf042",
+      "size_bytes": 18386,
+      "sha256": "ae9114aad68b4049959e40901b00320152024eb4d7024b18a21f276ee0aa70c5",
       "executable": false
     },
     {
@@ -2259,8 +2259,8 @@
     },
     {
       "path": "mlx-model-porting/scripts/scaffold_port.py",
-      "size_bytes": 161479,
-      "sha256": "2cf9289cf7e57559b79b38ccdf0970a05b78894d5a4d04cc18146e6b999adc30",
+      "size_bytes": 162358,
+      "sha256": "366b5f4afcdf5d8d8a523ab7ca238682179a8daf86c67035d55ee8c0e9d92ae6",
       "executable": true
     },
     {

@@ -89,7 +89,7 @@
       "layer.22.hidden",
       "layer.23.hidden"
     ],
-    "path": "/Users/amal/.cache/mlx-porting-work/_b35/oracle.npz",
+    "path": "oracle.npz",
     "shapes": {
       "attention_mask": [
         1,

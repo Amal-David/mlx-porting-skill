@@ -533,7 +533,11 @@ def validate_dense_config(config: Any) -> dict[str, Any]:
             "config.json hidden_size must be divisible by num_attention_heads "
             "when head_dim is omitted"
         )
-    head_dim = _config_int(config, "head_dim", default=hidden_size // num_heads)
+    head_dim = (
+        hidden_size // num_heads
+        if config.get("head_dim") is None
+        else _config_int(config, "head_dim")
+    )
     _config_int(config, "num_hidden_layers")
     _config_int(config, "intermediate_size")
     _config_int(config, "vocab_size")
@@ -2843,10 +2847,10 @@ def dense_qk_norm_enabled(
 ) -> bool:
     """Derive exact per-head Q/K RMSNorm support from config and inspected weights."""
     layers = _config_int(config, "num_hidden_layers")
-    head_dim = _config_int(
-        config,
-        "head_dim",
-        default=_config_int(config, "hidden_size") // _config_int(config, "num_attention_heads"),
+    head_dim = (
+        _config_int(config, "hidden_size") // _config_int(config, "num_attention_heads")
+        if config.get("head_dim") is None
+        else _config_int(config, "head_dim")
     )
     tensor_shapes = _inspection_tensor_shapes(inspection)
     expected = {
@@ -2924,7 +2928,11 @@ def dense_target_tensors(
     hidden = _config_int(config, "hidden_size")
     heads = _config_int(config, "num_attention_heads")
     kv_heads = _config_int(config, "num_key_value_heads", default=heads)
-    head_dim = _config_int(config, "head_dim", default=hidden // heads)
+    head_dim = (
+        hidden // heads
+        if config.get("head_dim") is None
+        else _config_int(config, "head_dim")
+    )
     intermediate = _config_int(config, "intermediate_size")
     layers = _config_int(config, "num_hidden_layers")
     vocab = _config_int(config, "vocab_size")
@@ -3297,6 +3305,27 @@ def generate_moe_decoder(
             placeholder,
             "True" if attention_biases[projection] else "False",
         )
+    qk_norm = dense_qk_norm_enabled(inspection, config)
+    model_source = _replace_template_once(
+        model_source,
+        "__QK_NORM_INIT__",
+        (
+            "            self.q_norm = nn.RMSNorm(config.head_dim, eps=config.rms_norm_eps)\n"
+            "            self.k_norm = nn.RMSNorm(config.head_dim, eps=config.rms_norm_eps)"
+            if qk_norm else ""
+        ),
+        label="MoE QK norm initialization",
+    )
+    model_source = _replace_template_once(
+        model_source,
+        "__QK_NORM_APPLY__",
+        (
+            "            q = self.q_norm(q)\n"
+            "            k = self.k_norm(k)"
+            if qk_norm else ""
+        ),
+        label="MoE QK norm application",
+    )
     bias_summary = ", ".join(
         f"`{projection}`={'present' if attention_biases[projection] else 'absent'}"
         for projection in ATTENTION_PROJECTIONS

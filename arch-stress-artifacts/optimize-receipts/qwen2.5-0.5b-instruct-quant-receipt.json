@@ -10,7 +10,7 @@
   "measured_at": "2026-07-15T20:59:51.662630+00:00",
   "status": "complete",
   "source": {
-    "path": "/Users/amal/.cache/mlx-porting-work/_opt/qwen05b",
+    "path": "qwen05b",
     "model_type": "qwen2",
     "name_or_path": null,
     "config_sha256": "18e18afcaccafade98daf13a54092927904649e1dd4eba8299ab717d5d94ff45",
@@ -21,7 +21,7 @@
       }
     ]
   },
-  "work_dir": "/Users/amal/.cache/mlx-porting-work/_opt/run",
+  "work_dir": "run",
   "environment": {
     "hardware": {
       "platform": "macOS-26.3-arm64-arm-64bit-Mach-O",
@@ -72,7 +72,7 @@
       "quantized": false
     },
     "artifact": {
-      "path": "/Users/amal/.cache/mlx-porting-work/_opt/run/bf16",
+      "path": "run/bf16",
       "reused": false,
       "conversion_seconds": 1.7052531250519678
     },
@@ -374,7 +374,7 @@
         "naive_default": false
       },
       "artifact": {
-        "path": "/Users/amal/.cache/mlx-porting-work/_opt/run/8bit",
+        "path": "run/8bit",
         "reused": false,
         "conversion_seconds": 2.283183417050168,
         "quantization": {
@@ -548,7 +548,7 @@
         "naive_default": true
       },
       "artifact": {
-        "path": "/Users/amal/.cache/mlx-porting-work/_opt/run/4bit-g64",
+        "path": "run/4bit-g64",
         "reused": false,
         "conversion_seconds": 1.9188311659963802,
         "quantization": {

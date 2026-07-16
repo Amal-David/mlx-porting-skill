@@ -739,7 +739,7 @@
       "resource_limit": 499000
     },
     "dtype": "float32",
-    "implementation": "/Users/amal/.cache/mlx-porting-work/_b35/mlx/model.py"
+    "implementation": "mlx/model.py"
   },
   "transformers_supports_qwen3_5": true,
   "versions": {
