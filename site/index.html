@@ -139,7 +139,30 @@
       </div>
     </section>
 
-    <section class="section" id="measured-proof" aria-labelledby="measured-proof-title">
+    <section class="section" id="architectures-proven" aria-labelledby="architectures-proven-title">
+      <div class="section-shell">
+        <div class="section-heading">
+          <span class="section-kicker">Verified, not asserted</span>
+          <h2 id="architectures-proven-title">Every major architecture ports to MLX with proof.</h2>
+          <p>Not a decoder-only tool. Each class below was ported and checked against the source layer-by-layer on real Apple Silicon—cosine ≈ 1.0 per layer, no relaxed tolerances. Seven of seven architecture classes, parity-proven.</p>
+        </div>
+        <div class="workflow" aria-label="Seven proven architecture classes">
+          <article class="workflow-step"><h3>Dense decoder</h3><p>Qwen2 / Qwen3 (QK-norm) — auto-scaffolded and parity-proven.</p></article>
+          <article class="workflow-step"><h3>Encoder</h3><p>ModernBERT — RoPE, local/global attention, GeGLU; all layers matched.</p></article>
+          <article class="workflow-step"><h3>Encoder-decoder</h3><p>t5-small — encoder, decoder, and cross-attention parity.</p></article>
+          <article class="workflow-step"><h3>ASR</h3><p>HuBERT — feature projection through the transformer encoder.</p></article>
+          <article class="workflow-step"><h3>Linear-attention / Mamba hybrid</h3><p>Qwen3.5-text Gated-DeltaNet — 24 layers f32-exact, recurrence verified.</p></article>
+          <article class="workflow-step"><h3>Vision-language (VLM)</h3><p>SmolVLM — vision tower, connector, fusion, and text tower through logits.</p></article>
+          <article class="workflow-step"><h3>Mixture-of-Experts</h3><p>Granite-MoE — router top-8 expert IDs match the source exactly, every layer.</p></article>
+        </div>
+        <div class="limitation-box" style="margin-top: 28px">
+          <h3>Optimization is proven, not promised</h3>
+          <p>Across Qwen2.5-0.5B, SmolLM2-360M, and Qwen3-1.7B, the quality gate caught the naive 4-bit quantization degrading output and kept the 8-bit port that held quality. The receipts record which candidate won and why—measured on real Metal, never asserted.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section alt" id="measured-proof" aria-labelledby="measured-proof-title">
       <div class="section-shell">
         <div class="section-heading">
           <span class="section-kicker">A local measured observation</span>
