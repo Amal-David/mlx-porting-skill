@@ -27,7 +27,7 @@ hard; here it matches HF *exactly* (expert IDs bit-identical), which is the mean
 
 ## Honest scope
 - Fixed fixture, prefill only. No incremental decode/cache claim. Independent oracle re-capture not repeated;
-  evidence is the per-layer f32-exact parity + the exact router-ID match + a real (non-stub) `model.py`.
+  evidence is the per-layer FP32 parity within thresholds + the exact router-ID match + a real (non-stub) `model.py`.
 - Correctness reference, not an auto-scaffolded family — landing MoE in the executable generator is the follow-up.
 
 ## Files

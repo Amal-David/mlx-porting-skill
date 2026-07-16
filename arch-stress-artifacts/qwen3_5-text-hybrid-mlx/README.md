@@ -1,10 +1,9 @@
 # Qwen3.5-text (linear-attention hybrid) → MLX: verified worked port (arch stress-test, 2026-07-15)
 
-A standalone eager MLX port of the **text tower of `Qwen/Qwen3.5-2B`** (`qwen3_5_text`) — the
-newest top open <10B model on Artificial Analysis (its Intelligence score measures this reasoning
-tower; the full model is a vision-language model). This is the toolkit's **hardest** architecture
-family: a linear-attention / Mamba hybrid, not a dense transformer. Proof artifact, outside the
-skill payload.
+A standalone eager MLX port of the **text tower of `Qwen/Qwen3.5-2B`** (`qwen3_5_text`; the full
+model is a vision-language model). This is the toolkit's **hardest** architecture family: a
+linear-attention / Mamba hybrid, not a dense transformer. Proof artifact, outside the skill
+payload.
 
 ## Architecture (materially different from a dense decoder)
 - 24 layers: **18 `linear_attention` (Gated-DeltaNet / Mamba-style) + 6 `full_attention`** (every 4th).
@@ -20,7 +19,7 @@ Fixed 9-token full-sequence FP32 fixture; HF eager oracle vs eager MLX on `mx.gp
 
 | Rung | result |
 |---|---|
-| all 24 layers (linear + full) + embeddings + final norm | **cos ≥ 0.9999999999994, max_abs ~1e-6 — f32-exact** |
+| all 24 layers (linear + full) + embeddings + final norm | **cos ≥ 0.9999999999994, max_abs ~1e-6 — FP32 parity within thresholds** |
 | first divergence | **none** — `max_consecutive_pass = 24` |
 
 **Primitive-level cross-check** (independent, in `primitive_parity.json`) — rules out compensating errors:
@@ -33,7 +32,7 @@ So both the Gated-DeltaNet recurrence and the gated partial-M-RoPE attention are
 - Prefill only, on ONE fixed fixture. **Incremental decode / cache is not claimed.** Broader fixtures,
   the MTP head, and the vision tower are out of scope.
 - Independent host re-verification of the oracle capture was not repeated; the evidence here is the
-  per-rung f32-exact parity + the independent primitive checks + a real (non-stub) `model.py`.
+  per-rung FP32 threshold parity + the independent primitive checks + a real (non-stub) `model.py`.
 - This is a correctness reference, not an auto-scaffolded family — landing linear-attention hybrids in
   the executable generator is the follow-up this artifact de-risks.
 

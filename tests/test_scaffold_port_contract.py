@@ -530,6 +530,46 @@ class ScaffoldPortDependencyFreeContractTests(unittest.TestCase):
             self.assertIn("per-head Q/K RMSNorm over `head_dim` before RoPE", readme)
             self.assertNotIn("QK normalization, MoE", readme)
 
+    def test_explicit_null_head_dim_matches_missing_head_dim(self) -> None:
+        import scaffold_port
+
+        null_config = tiny_config(head_dim=None)
+        self.assertIs(scaffold_port.validate_dense_config(null_config), null_config)
+        with self.assertRaisesRegex(
+            scaffold_port.SkillError,
+            "divisible by num_attention_heads when head_dim is omitted",
+        ):
+            scaffold_port.validate_dense_config(tiny_config(head_dim=None, hidden_size=9))
+
+    def test_generated_config_treats_explicit_null_head_dim_as_omitted(self) -> None:
+        with tempfile.TemporaryDirectory() as raw_tmp:
+            root = Path(raw_tmp)
+            model = root / "model"
+            inspection = root / "inspection.json"
+            output = root / "generated"
+            write_model(model, tiny_config(head_dim=None))
+            inspect_model(model, inspection, no_site=True)
+
+            result = scaffold(model, inspection, output, no_site=True)
+
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+            spec = importlib.util.spec_from_file_location(
+                "generated_null_head_dim_config", output / "config.py"
+            )
+            module = importlib.util.module_from_spec(spec)
+            sys.modules[spec.name] = module
+            try:
+                spec.loader.exec_module(module)
+                parsed = module.ModelConfig.from_dict(tiny_config(head_dim=None))
+                self.assertEqual(parsed.head_dim, 4)
+                with self.assertRaisesRegex(
+                    ValueError,
+                    "divisible by num_attention_heads when head_dim is omitted",
+                ):
+                    module.ModelConfig.from_dict(tiny_config(head_dim=None, hidden_size=9))
+            finally:
+                sys.modules.pop(spec.name, None)
+
     def test_qk_norm_still_fails_closed_without_complete_weights(self) -> None:
         import scaffold_port
 

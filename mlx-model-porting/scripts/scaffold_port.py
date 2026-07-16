@@ -528,7 +528,7 @@ def validate_dense_config(config: Any) -> dict[str, Any]:
     hidden_size = _config_int(config, "hidden_size")
     num_heads = _config_int(config, "num_attention_heads")
     num_kv_heads = _config_int(config, "num_key_value_heads", default=num_heads)
-    if "head_dim" not in config and hidden_size % num_heads:
+    if config.get("head_dim") is None and hidden_size % num_heads:
         raise SkillError(
             "config.json hidden_size must be divisible by num_attention_heads "
             "when head_dim is omitted"
@@ -1307,11 +1307,15 @@ class ModelConfig:
         hidden_size = _positive_int(data, "hidden_size")
         heads = _positive_int(data, "num_attention_heads")
         kv_heads = _positive_int(data, "num_key_value_heads", heads)
-        head_dim = _positive_int(data, "head_dim", hidden_size // heads)
-        if "head_dim" not in data and hidden_size % heads:
+        if data.get("head_dim") is None and hidden_size % heads:
             raise ValueError(
                 "hidden_size must be divisible by num_attention_heads when head_dim is omitted"
             )
+        head_dim = (
+            hidden_size // heads
+            if data.get("head_dim") is None
+            else _positive_int(data, "head_dim")
+        )
         if heads % kv_heads:
             raise ValueError("num_attention_heads must be divisible by num_key_value_heads")
         rope_scaling = data.get("rope_scaling")
@@ -1627,20 +1631,20 @@ def moe_config_template() -> str:
     )
     source = _replace_template_once(
         source,
-        '        head_dim = _positive_int(data, "head_dim", hidden_size // heads)\n',
-        '        head_dim_value = data.get("head_dim")\n'
-        '        head_dim = (\n'
-        '            hidden_size // heads if head_dim_value is None\n'
-        '            else _positive_int(data, "head_dim")\n'
-        '        )\n',
-        label="MoE nullable head_dim",
-    )
-    source = _replace_template_once(
-        source,
-        '        if "head_dim" not in data and hidden_size % heads:\n'
+        '        if data.get("head_dim") is None and hidden_size % heads:\n'
         '            raise ValueError(\n'
         '                "hidden_size must be divisible by num_attention_heads when head_dim is omitted"\n'
-        '            )\n',
+        '            )\n'
+        '        head_dim = (\n'
+        '            hidden_size // heads\n'
+        '            if data.get("head_dim") is None\n'
+        '            else _positive_int(data, "head_dim")\n'
+        '        )\n',
+        '        head_dim = (\n'
+        '            hidden_size // heads\n'
+        '            if data.get("head_dim") is None\n'
+        '            else _positive_int(data, "head_dim")\n'
+        '        )\n'
         '        if hidden_size != heads * head_dim:\n'
         '            raise ValueError("hidden_size must equal num_attention_heads * head_dim")\n',
         label="MoE head_dim equality",

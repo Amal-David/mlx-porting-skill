@@ -2,7 +2,7 @@
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
   "version": "0.6.1",
-  "generated_at": "2026-07-16T10:31:31.360135+00:00",
+  "generated_at": "2026-07-16T11:00:23.716125+00:00",
   "file_count": 532,
   "files": [
     {
@@ -171,8 +171,8 @@
     },
     {
       "path": "arch-stress-artifacts/granite-moe-1b-mlx/README.md",
-      "size_bytes": 2113,
-      "sha256": "40cc60288579f64fc01eb009369f36c2a9d081223054b1216f2717e1b2b18fe7",
+      "size_bytes": 2126,
+      "sha256": "a52bc9474cc947e138e3e785700ec014db0d21d5d01ff78bce1a7039550ae11f",
       "executable": false
     },
     {
@@ -207,8 +207,8 @@
     },
     {
       "path": "arch-stress-artifacts/modernbert-base-mlx/model.py",
-      "size_bytes": 12531,
-      "sha256": "fc1fc1784ac15115d5d16210bcedf2831a46092899c9c0309d6698ecaaf079fa",
+      "size_bytes": 12552,
+      "sha256": "55d458e53a015139facc272f38588b873062e08f5af91027aebccb004065f9c3",
       "executable": false
     },
     {
@@ -225,8 +225,8 @@
     },
     {
       "path": "arch-stress-artifacts/optimize-receipts/README.md",
-      "size_bytes": 1576,
-      "sha256": "0f763d016e33abd82b5bc9f6522173c90e74c8e99a8f19fde88ee85a8fb60d8f",
+      "size_bytes": 1811,
+      "sha256": "590f283d62ea838aef115bde62bc49d2421e570b7fc0e12c44b574f821b7b808",
       "executable": false
     },
     {
@@ -237,8 +237,8 @@
     },
     {
       "path": "arch-stress-artifacts/optimize-receipts/qwen2.5-1.5b-quant-receipt.json",
-      "size_bytes": 19175,
-      "sha256": "216d6bc6831b804f3cd7805e8ca2847cdd307fc7e528d83573adb851b4104bde",
+      "size_bytes": 19135,
+      "sha256": "d51367e1c543b00b9e7a1b34aed5cb8cce4bfecd2b69738ebfebba952dbfc9ac",
       "executable": false
     },
     {
@@ -255,14 +255,14 @@
     },
     {
       "path": "arch-stress-artifacts/qwen3_5-text-hybrid-mlx/README.md",
-      "size_bytes": 2688,
-      "sha256": "98937012c27523fbcdab98cc4eb3934a64a0c11bd8b4f9e04770eb3e3bb54341",
+      "size_bytes": 2600,
+      "sha256": "0c5700a63322aa3db775db68911afbba42ea16a7b34b8890f025690298c5f2c5",
       "executable": false
     },
     {
       "path": "arch-stress-artifacts/qwen3_5-text-hybrid-mlx/model.py",
-      "size_bytes": 13532,
-      "sha256": "00355bad5e2ad297817011ac1942341e7742ac31e7bf0032501dd2756e9a38ba",
+      "size_bytes": 13833,
+      "sha256": "3a781a93aa2e3e073fe415222ce705e5989914804304c3389331d20407d20f45",
       "executable": false
     },
     {
@@ -2259,8 +2259,8 @@
     },
     {
       "path": "mlx-model-porting/scripts/scaffold_port.py",
-      "size_bytes": 162358,
-      "sha256": "366b5f4afcdf5d8d8a523ab7ca238682179a8daf86c67035d55ee8c0e9d92ae6",
+      "size_bytes": 162464,
+      "sha256": "ad858be1a2cc7aa193cef034cf6157b1cf7b27cdf385c90dd2e3da2166ba5ca3",
       "executable": true
     },
     {
@@ -3147,8 +3147,8 @@
     },
     {
       "path": "tests/test_scaffold_port_contract.py",
-      "size_bytes": 57600,
-      "sha256": "7c0734989e3095236297eb3ec1ede5545feb3e2fd4ede5ff05148189d1297891",
+      "size_bytes": 59450,
+      "sha256": "45f10f698cd7fb5c072449228f29f9a72a02d0b71fddde2d123c402081501dec",
       "executable": false
     },
     {

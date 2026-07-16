@@ -40,7 +40,7 @@ class ModernBertConfig:
             num_hidden_layers=int(raw["num_hidden_layers"]),
             num_attention_heads=int(raw["num_attention_heads"]),
             intermediate_size=int(raw["intermediate_size"]),
-            norm_eps=float(raw.get("norm_eps", raw["layer_norm_eps"])),
+            norm_eps=float(raw["norm_eps"] if "norm_eps" in raw else raw["layer_norm_eps"]),
             global_attn_every_n_layers=int(raw["global_attn_every_n_layers"]),
             local_attention=int(raw["local_attention"]),
             global_rope_theta=float(raw["global_rope_theta"]),

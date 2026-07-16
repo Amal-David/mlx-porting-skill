@@ -305,6 +305,12 @@ class Qwen35TextTower:
         return linear(hidden_states, self.weight("embed_tokens.weight"))
 
     def __call__(self, input_ids: mx.array, capture: bool = False):
+        """Full-sequence prefill over real tokens only.
+
+        There is no attention-mask or padding support: every position updates
+        the recurrent state and attends causally, so a padded batch would
+        corrupt downstream hidden states. Callers must pass unpadded sequences.
+        """
         hidden_states = self.embed(input_ids)
         mx.eval(hidden_states)
         captures = [hidden_states] if capture else None
