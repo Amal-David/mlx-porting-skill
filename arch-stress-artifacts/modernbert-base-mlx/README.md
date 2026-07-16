@@ -44,6 +44,8 @@ python3 capture_oracle.py --model <local ModernBERT-base dir> --output oracle.np
 python3 run_parity.py --model <local ModernBERT-base dir> --oracle oracle.npz \
   --result result.json --status status.txt --details details.json
 ```
+Pass `--delete-oracle` to remove the large NPZ after the result is written; by
+default a caller-supplied oracle is kept for reuse.
 `parity-details.json` here is the checked-in per-rung evidence from the verified run. Model weights are
 not included; point `--model` at a local dereferenced ModernBERT-base checkout (the repo also ships an
 `onnx/` subdir — ignore it; use only `model.safetensors`).

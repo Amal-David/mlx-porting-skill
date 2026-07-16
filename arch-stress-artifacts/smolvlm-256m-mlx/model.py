@@ -72,6 +72,11 @@ class VisionTransformer:
         )
         count_h = patch_mask[:, :, 0].sum(axis=1)
         count_w = patch_mask[:, 0, :].sum(axis=1)
+        empty = np.flatnonzero((count_h == 0) | (count_w == 0))
+        if empty.size:
+            raise ValueError(
+                f"patch_mask batch entries {empty.tolist()} have no valid patch rows or columns"
+            )
         fractional_h = np.arange(max_h, dtype=np.float32)[None, :] / count_h[:, None]
         fractional_w = np.arange(max_w, dtype=np.float32)[None, :] / count_w[:, None]
         fractional_h = np.minimum(fractional_h, np.float32(1.0 - 1e-6))

@@ -40,6 +40,7 @@ def main() -> None:
     parser.add_argument("--result", type=Path, required=True)
     parser.add_argument("--status", type=Path, required=True)
     parser.add_argument("--details", type=Path, required=True)
+    parser.add_argument("--delete-oracle", action="store_true")
     args = parser.parse_args()
 
     if not mx.metal.is_available():
@@ -196,11 +197,14 @@ def main() -> None:
     write_json(args.details, detail_payload)
     write_json(args.result, result)
 
-    # The user requested deleting the large source capture only after the result exists.
-    args.oracle.unlink()
+    # Opt-in cleanup of the large capture; must stay after the result artifacts exist.
+    oracle_note = "oracle npz retained"
+    if args.delete_oracle:
+        args.oracle.unlink()
+        oracle_note = "oracle npz deleted"
     append_status(
         args.status,
-        f"step 3 done compared embeddings plus 22 layers plus final norm; parity_status={parity_status}; oracle npz deleted",
+        f"step 3 done compared embeddings plus 22 layers plus final norm; parity_status={parity_status}; {oracle_note}",
     )
     print(json.dumps(result, sort_keys=True))
 
