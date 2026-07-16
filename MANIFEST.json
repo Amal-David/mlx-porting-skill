@@ -2,8 +2,8 @@
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
   "version": "0.6.1",
-  "generated_at": "2026-07-16T05:56:23.173919+00:00",
-  "file_count": 529,
+  "generated_at": "2026-07-16T06:52:57.275412+00:00",
+  "file_count": 532,
   "files": [
     {
       "path": ".agents/skills/mlx-model-porting",
@@ -167,6 +167,24 @@
       "path": "adapters/windsurf.md",
       "size_bytes": 553,
       "sha256": "38d42c3ea0739e64fc4dba0e5b17d36be246c594820dc02831a4ae722a6531f3",
+      "executable": false
+    },
+    {
+      "path": "arch-stress-artifacts/granite-moe-1b-mlx/README.md",
+      "size_bytes": 2113,
+      "sha256": "40cc60288579f64fc01eb009369f36c2a9d081223054b1216f2717e1b2b18fe7",
+      "executable": false
+    },
+    {
+      "path": "arch-stress-artifacts/granite-moe-1b-mlx/model.py",
+      "size_bytes": 15834,
+      "sha256": "8ac93efd991f2fda260842f21fe6c963756b7262e13bc070ef059d8b95957357",
+      "executable": false
+    },
+    {
+      "path": "arch-stress-artifacts/granite-moe-1b-mlx/parity.json",
+      "size_bytes": 105429,
+      "sha256": "a65ba816d392d6aa4686a2c30a0641153a163cf0b3b1735a2b5c90ab3c303b9b",
       "executable": false
     },
     {

@@ -1,0 +1,4179 @@
+{
+  "elapsed_seconds": 5.473143815994263,
+  "fixture": {
+    "attention_mask": [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+    ],
+    "input_ids": [
+      1,
+      42,
+      17,
+      9,
+      314,
+      2718
+    ]
+  },
+  "layers": [
+    {
+      "attention_passes": true,
+      "combine_reconstruction": {
+        "hf_max_abs": 0.0,
+        "mlx_max_abs": 0.0
+      },
+      "layer": 0,
+      "layer_passes": true,
+      "metrics": {
+        "attention.input_norm": {
+          "cosine": 0.9999999999999996,
+          "max_abs": 7.62939453125e-06,
+          "mean_abs": 5.363100896715878e-08,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "attention.output": {
+          "cosine": 0.9999999999996717,
+          "max_abs": 9.5367431640625e-06,
+          "mean_abs": 4.5967451001160953e-07,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "attention.residual": {
+          "cosine": 0.9999999999997491,
+          "max_abs": 2.086162567138672e-06,
+          "mean_abs": 1.0108931292052148e-07,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "attention.weights": {
+          "cosine": 0.9999999999989714,
+          "max_abs": 4.719942808151245e-06,
+          "mean_abs": 1.4315077123683295e-07,
+          "passes": true,
+          "shape": [
+            1,
+            16,
+            6,
+            6
+          ]
+        },
+        "hidden": {
+          "cosine": 0.999999999998384,
+          "max_abs": 5.364418029785156e-06,
+          "mean_abs": 4.606389438777114e-07,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "moe.input_norm": {
+          "cosine": 0.9999999999994433,
+          "max_abs": 0.00011444091796875,
+          "mean_abs": 1.9003254010385717e-06,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "moe.output": {
+          "cosine": 0.9999999999984973,
+          "max_abs": 2.002716064453125e-05,
+          "mean_abs": 2.055108325293986e-06,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "moe.router_input": {
+          "cosine": 0.9999999999994433,
+          "max_abs": 0.00011444091796875,
+          "mean_abs": 1.9003254010385717e-06,
+          "passes": true,
+          "shape": [
+            6,
+            1024
+          ]
+        },
+        "moe.router_logits": {
+          "cosine": 0.9999999999998194,
+          "max_abs": 9.5367431640625e-06,
+          "mean_abs": 2.2156164050102234e-06,
+          "passes": true,
+          "shape": [
+            6,
+            32
+          ]
+        },
+        "moe.selected_expert_outputs": {
+          "cosine": 0.9999999999983477,
+          "max_abs": 7.82012939453125e-05,
+          "mean_abs": 3.8377261262212414e-06,
+          "passes": true,
+          "shape": [
+            6,
+            8,
+            1024
+          ]
+        },
+        "moe.topk_weights": {
+          "cosine": 0.9999999999996444,
+          "max_abs": 8.046627044677734e-07,
+          "mean_abs": 1.1586234904825687e-07,
+          "passes": true,
+          "shape": [
+            6,
+            8
+          ]
+        },
+        "moe.weighted_expert_outputs": {
+          "cosine": 0.9999999999982919,
+          "max_abs": 2.574920654296875e-05,
+          "mean_abs": 4.316407000715117e-07,
+          "passes": true,
+          "shape": [
+            6,
+            8,
+            1024
+          ]
+        }
+      },
+      "moe_passes": true,
+      "router_passes": true,
+      "routing": {
+        "first_mismatch": null,
+        "minimum_hf_top8_boundary_margin": 0.004024028778076172,
+        "mismatching_token_count": 0,
+        "ordered_indices_equal": true,
+        "router_logits": {
+          "cosine": 0.9999999999998194,
+          "max_abs": 9.5367431640625e-06,
+          "mean_abs": 2.2156164050102234e-06,
+          "passes": true,
+          "shape": [
+            6,
+            32
+          ]
+        },
+        "sets_equal": true,
+        "topk_weights": {
+          "cosine": 0.9999999999996444,
+          "max_abs": 8.046627044677734e-07,
+          "mean_abs": 1.1586234904825687e-07,
+          "passes": true,
+          "shape": [
+            6,
+            8
+          ]
+        }
+      }
+    },
+    {
+      "attention_passes": true,
+      "combine_reconstruction": {
+        "hf_max_abs": 0.0,
+        "mlx_max_abs": 0.0
+      },
+      "layer": 1,
+      "layer_passes": true,
+      "metrics": {
+        "attention.input_norm": {
+          "cosine": 0.9999999999986391,
+          "max_abs": 5.340576171875e-05,
+          "mean_abs": 3.2818486488395138e-06,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "attention.output": {
+          "cosine": 0.99999999999826,
+          "max_abs": 5.4836273193359375e-06,
+          "mean_abs": 6.711237006129522e-07,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "attention.residual": {
+          "cosine": 0.9999999999981926,
+          "max_abs": 4.827976226806641e-06,
+          "mean_abs": 4.2720549231489713e-07,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "attention.weights": {
+          "cosine": 0.9999999999994991,
+          "max_abs": 2.5033950805664062e-06,
+          "mean_abs": 1.432409248991462e-07,
+          "passes": true,
+          "shape": [
+            1,
+            16,
+            6,
+            6
+          ]
+        },
+        "hidden": {
+          "cosine": 0.9999999999980215,
+          "max_abs": 5.0067901611328125e-06,
+          "mean_abs": 4.0816948398969544e-07,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "moe.input_norm": {
+          "cosine": 0.9999999999981962,
+          "max_abs": 5.5789947509765625e-05,
+          "mean_abs": 7.148109943955205e-06,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "moe.output": {
+          "cosine": 0.9999999999957573,
+          "max_abs": 1.5497207641601562e-05,
+          "mean_abs": 9.015279829327483e-07,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "moe.router_input": {
+          "cosine": 0.9999999999981962,
+          "max_abs": 5.5789947509765625e-05,
+          "mean_abs": 7.148109943955205e-06,
+          "passes": true,
+          "shape": [
+            6,
+            1024
+          ]
+        },
+        "moe.router_logits": {
+          "cosine": 0.9999999999990438,
+          "max_abs": 7.3909759521484375e-06,
+          "mean_abs": 1.1998371292065713e-06,
+          "passes": true,
+          "shape": [
+            6,
+            32
+          ]
+        },
+        "moe.selected_expert_outputs": {
+          "cosine": 0.9999999999964766,
+          "max_abs": 3.1948089599609375e-05,
+          "mean_abs": 2.1007604118494783e-06,
+          "passes": true,
+          "shape": [
+            6,
+            8,
+            1024
+          ]
+        },
+        "moe.topk_weights": {
+          "cosine": 0.9999999999985497,
+          "max_abs": 9.5367431640625e-07,
+          "mean_abs": 1.735364349997326e-07,
+          "passes": true,
+          "shape": [
+            6,
+            8
+          ]
+        },
+        "moe.weighted_expert_outputs": {
+          "cosine": 0.9999999999950874,
+          "max_abs": 6.616115570068359e-06,
+          "mean_abs": 2.685966933313466e-07,
+          "passes": true,
+          "shape": [
+            6,
+            8,
+            1024
+          ]
+        }
+      },
+      "moe_passes": true,
+      "router_passes": true,
+      "routing": {
+        "first_mismatch": null,
+        "minimum_hf_top8_boundary_margin": 0.002293705940246582,
+        "mismatching_token_count": 0,
+        "ordered_indices_equal": true,
+        "router_logits": {
+          "cosine": 0.9999999999990438,
+          "max_abs": 7.3909759521484375e-06,
+          "mean_abs": 1.1998371292065713e-06,
+          "passes": true,
+          "shape": [
+            6,
+            32
+          ]
+        },
+        "sets_equal": true,
+        "topk_weights": {
+          "cosine": 0.9999999999985497,
+          "max_abs": 9.5367431640625e-07,
+          "mean_abs": 1.735364349997326e-07,
+          "passes": true,
+          "shape": [
+            6,
+            8
+          ]
+        }
+      }
+    },
+    {
+      "attention_passes": true,
+      "combine_reconstruction": {
+        "hf_max_abs": 0.0,
+        "mlx_max_abs": 0.0
+      },
+      "layer": 2,
+      "layer_passes": true,
+      "metrics": {
+        "attention.input_norm": {
+          "cosine": 0.9999999999984622,
+          "max_abs": 6.4849853515625e-05,
+          "mean_abs": 3.912299234798411e-06,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "attention.output": {
+          "cosine": 0.9999999999974165,
+          "max_abs": 3.0994415283203125e-06,
+          "mean_abs": 3.7675567909900565e-07,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "attention.residual": {
+          "cosine": 0.9999999999979529,
+          "max_abs": 4.76837158203125e-06,
+          "mean_abs": 3.9915559568726167e-07,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "attention.weights": {
+          "cosine": 0.999999999999142,
+          "max_abs": 2.384185791015625e-06,
+          "mean_abs": 2.0650554688472766e-07,
+          "passes": true,
+          "shape": [
+            1,
+            16,
+            6,
+            6
+          ]
+        },
+        "hidden": {
+          "cosine": 0.99999999999777,
+          "max_abs": 6.079673767089844e-06,
+          "mean_abs": 3.8956582670834905e-07,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "moe.input_norm": {
+          "cosine": 0.9999999999974041,
+          "max_abs": 4.00543212890625e-05,
+          "mean_abs": 6.9125167101447005e-06,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "moe.output": {
+          "cosine": 0.999999999993708,
+          "max_abs": 1.1444091796875e-05,
+          "mean_abs": 5.578033324127318e-07,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "moe.router_input": {
+          "cosine": 0.9999999999974041,
+          "max_abs": 4.00543212890625e-05,
+          "mean_abs": 6.9125167101447005e-06,
+          "passes": true,
+          "shape": [
+            6,
+            1024
+          ]
+        },
+        "moe.router_logits": {
+          "cosine": 0.9999999999986302,
+          "max_abs": 5.0067901611328125e-06,
+          "mean_abs": 1.1123969443360693e-06,
+          "passes": true,
+          "shape": [
+            6,
+            32
+          ]
+        },
+        "moe.selected_expert_outputs": {
+          "cosine": 0.9999999999942244,
+          "max_abs": 3.0517578125e-05,
+          "mean_abs": 1.4478424645858468e-06,
+          "passes": true,
+          "shape": [
+            6,
+            8,
+            1024
+          ]
+        },
+        "moe.topk_weights": {
+          "cosine": 0.9999999999990076,
+          "max_abs": 5.21540641784668e-07,
+          "mean_abs": 1.5700545930030785e-07,
+          "passes": true,
+          "shape": [
+            6,
+            8
+          ]
+        },
+        "moe.weighted_expert_outputs": {
+          "cosine": 0.9999999999929126,
+          "max_abs": 1.0251998901367188e-05,
+          "mean_abs": 1.7249836048449652e-07,
+          "passes": true,
+          "shape": [
+            6,
+            8,
+            1024
+          ]
+        }
+      },
+      "moe_passes": true,
+      "router_passes": true,
+      "routing": {
+        "first_mismatch": null,
+        "minimum_hf_top8_boundary_margin": 0.01163029670715332,
+        "mismatching_token_count": 0,
+        "ordered_indices_equal": true,
+        "router_logits": {
+          "cosine": 0.9999999999986302,
+          "max_abs": 5.0067901611328125e-06,
+          "mean_abs": 1.1123969443360693e-06,
+          "passes": true,
+          "shape": [
+            6,
+            32
+          ]
+        },
+        "sets_equal": true,
+        "topk_weights": {
+          "cosine": 0.9999999999990076,
+          "max_abs": 5.21540641784668e-07,
+          "mean_abs": 1.5700545930030785e-07,
+          "passes": true,
+          "shape": [
+            6,
+            8
+          ]
+        }
+      }
+    },
+    {
+      "attention_passes": true,
+      "combine_reconstruction": {
+        "hf_max_abs": 0.0,
+        "mlx_max_abs": 0.0
+      },
+      "layer": 3,
+      "layer_passes": true,
+      "metrics": {
+        "attention.input_norm": {
+          "cosine": 0.9999999999978031,
+          "max_abs": 8.20159912109375e-05,
+          "mean_abs": 5.5830992096161935e-06,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "attention.output": {
+          "cosine": 0.9999999999962972,
+          "max_abs": 3.2186508178710938e-06,
+          "mean_abs": 3.9036356724864163e-07,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "attention.residual": {
+          "cosine": 0.9999999999977012,
+          "max_abs": 5.4836273193359375e-06,
+          "mean_abs": 3.935628001272562e-07,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "attention.weights": {
+          "cosine": 0.9999999999986314,
+          "max_abs": 3.2782554626464844e-06,
+          "mean_abs": 2.6574772959975235e-07,
+          "passes": true,
+          "shape": [
+            1,
+            16,
+            6,
+            6
+          ]
+        },
+        "hidden": {
+          "cosine": 0.9999999999974503,
+          "max_abs": 1.0967254638671875e-05,
+          "mean_abs": 3.9878008806226717e-07,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "moe.input_norm": {
+          "cosine": 0.9999999999970401,
+          "max_abs": 4.303455352783203e-05,
+          "mean_abs": 7.158039352361811e-06,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "moe.output": {
+          "cosine": 0.9999999999934965,
+          "max_abs": 2.47955322265625e-05,
+          "mean_abs": 5.61877698146418e-07,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "moe.router_input": {
+          "cosine": 0.9999999999970401,
+          "max_abs": 4.303455352783203e-05,
+          "mean_abs": 7.158039352361811e-06,
+          "passes": true,
+          "shape": [
+            6,
+            1024
+          ]
+        },
+        "moe.router_logits": {
+          "cosine": 0.9999999999984769,
+          "max_abs": 4.76837158203125e-06,
+          "mean_abs": 1.371373741676507e-06,
+          "passes": true,
+          "shape": [
+            6,
+            32
+          ]
+        },
+        "moe.selected_expert_outputs": {
+          "cosine": 0.999999999993499,
+          "max_abs": 4.76837158203125e-05,
+          "mean_abs": 1.4461746786764706e-06,
+          "passes": true,
+          "shape": [
+            6,
+            8,
+            1024
+          ]
+        },
+        "moe.topk_weights": {
+          "cosine": 0.999999999999079,
+          "max_abs": 5.066394805908203e-07,
+          "mean_abs": 1.5102948225376167e-07,
+          "passes": true,
+          "shape": [
+            6,
+            8
+          ]
+        },
+        "moe.weighted_expert_outputs": {
+          "cosine": 0.9999999999925493,
+          "max_abs": 1.1920928955078125e-05,
+          "mean_abs": 1.7504022764569527e-07,
+          "passes": true,
+          "shape": [
+            6,
+            8,
+            1024
+          ]
+        }
+      },
+      "moe_passes": true,
+      "router_passes": true,
+      "routing": {
+        "first_mismatch": null,
+        "minimum_hf_top8_boundary_margin": 0.03695780038833618,
+        "mismatching_token_count": 0,
+        "ordered_indices_equal": true,
+        "router_logits": {
+          "cosine": 0.9999999999984769,
+          "max_abs": 4.76837158203125e-06,
+          "mean_abs": 1.371373741676507e-06,
+          "passes": true,
+          "shape": [
+            6,
+            32
+          ]
+        },
+        "sets_equal": true,
+        "topk_weights": {
+          "cosine": 0.999999999999079,
+          "max_abs": 5.066394805908203e-07,
+          "mean_abs": 1.5102948225376167e-07,
+          "passes": true,
+          "shape": [
+            6,
+            8
+          ]
+        }
+      }
+    },
+    {
+      "attention_passes": true,
+      "combine_reconstruction": {
+        "hf_max_abs": 0.0,
+        "mlx_max_abs": 0.0
+      },
+      "layer": 4,
+      "layer_passes": true,
+      "metrics": {
+        "attention.input_norm": {
+          "cosine": 0.9999999999971223,
+          "max_abs": 6.401538848876953e-05,
+          "mean_abs": 5.021237939217826e-06,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "attention.output": {
+          "cosine": 0.9999999999956778,
+          "max_abs": 1.2695789337158203e-05,
+          "mean_abs": 3.938090458177612e-07,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "attention.residual": {
+          "cosine": 0.9999999999975264,
+          "max_abs": 9.298324584960938e-06,
+          "mean_abs": 3.9542132412861974e-07,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "attention.weights": {
+          "cosine": 0.9999999999987946,
+          "max_abs": 3.4570693969726562e-06,
+          "mean_abs": 2.326818844267109e-07,
+          "passes": true,
+          "shape": [
+            1,
+            16,
+            6,
+            6
+          ]
+        },
+        "hidden": {
+          "cosine": 0.9999999999966066,
+          "max_abs": 1.621246337890625e-05,
+          "mean_abs": 4.410302665291965e-07,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "moe.input_norm": {
+          "cosine": 0.9999999999967902,
+          "max_abs": 6.103515625e-05,
+          "mean_abs": 6.849964847788215e-06,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "moe.output": {
+          "cosine": 0.9999999999980161,
+          "max_abs": 8.20159912109375e-05,
+          "mean_abs": 9.857968734650058e-07,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "moe.router_input": {
+          "cosine": 0.9999999999967902,
+          "max_abs": 6.103515625e-05,
+          "mean_abs": 6.849964847788215e-06,
+          "passes": true,
+          "shape": [
+            6,
+            1024
+          ]
+        },
+        "moe.router_logits": {
+          "cosine": 0.9999999999987421,
+          "max_abs": 7.62939453125e-06,
+          "mean_abs": 2.010647904171492e-06,
+          "passes": true,
+          "shape": [
+            6,
+            32
+          ]
+        },
+        "moe.selected_expert_outputs": {
+          "cosine": 0.999999999994483,
+          "max_abs": 8.7738037109375e-05,
+          "mean_abs": 1.5209270713967271e-06,
+          "passes": true,
+          "shape": [
+            6,
+            8,
+            1024
+          ]
+        },
+        "moe.topk_weights": {
+          "cosine": 0.9999999999987618,
+          "max_abs": 1.0132789611816406e-06,
+          "mean_abs": 1.7175140953895607e-07,
+          "passes": true,
+          "shape": [
+            6,
+            8
+          ]
+        },
+        "moe.weighted_expert_outputs": {
+          "cosine": 0.9999999999976479,
+          "max_abs": 8.392333984375e-05,
+          "mean_abs": 2.387854749485996e-07,
+          "passes": true,
+          "shape": [
+            6,
+            8,
+            1024
+          ]
+        }
+      },
+      "moe_passes": true,
+      "router_passes": true,
+      "routing": {
+        "first_mismatch": null,
+        "minimum_hf_top8_boundary_margin": 0.005231499671936035,
+        "mismatching_token_count": 0,
+        "ordered_indices_equal": true,
+        "router_logits": {
+          "cosine": 0.9999999999987421,
+          "max_abs": 7.62939453125e-06,
+          "mean_abs": 2.010647904171492e-06,
+          "passes": true,
+          "shape": [
+            6,
+            32
+          ]
+        },
+        "sets_equal": true,
+        "topk_weights": {
+          "cosine": 0.9999999999987618,
+          "max_abs": 1.0132789611816406e-06,
+          "mean_abs": 1.7175140953895607e-07,
+          "passes": true,
+          "shape": [
+            6,
+            8
+          ]
+        }
+      }
+    },
+    {
+      "attention_passes": true,
+      "combine_reconstruction": {
+        "hf_max_abs": 0.0,
+        "mlx_max_abs": 0.0
+      },
+      "layer": 5,
+      "layer_passes": true,
+      "metrics": {
+        "attention.input_norm": {
+          "cosine": 0.9999999999969832,
+          "max_abs": 0.0001659393310546875,
+          "mean_abs": 4.6744567043788265e-06,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "attention.output": {
+          "cosine": 0.9999999999922323,
+          "max_abs": 2.0742416381835938e-05,
+          "mean_abs": 4.082288285189861e-07,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "attention.residual": {
+          "cosine": 0.9999999999963416,
+          "max_abs": 1.811981201171875e-05,
+          "mean_abs": 4.467434564503492e-07,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "attention.weights": {
+          "cosine": 0.999999999996726,
+          "max_abs": 1.049041748046875e-05,
+          "mean_abs": 3.012786464751116e-07,
+          "passes": true,
+          "shape": [
+            1,
+            16,
+            6,
+            6
+          ]
+        },
+        "hidden": {
+          "cosine": 0.9999999999818807,
+          "max_abs": 0.003143310546875,
+          "mean_abs": 2.267098807351431e-06,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "moe.input_norm": {
+          "cosine": 0.9999999999957586,
+          "max_abs": 5.817413330078125e-05,
+          "mean_abs": 6.619746727665188e-06,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "moe.output": {
+          "cosine": 0.9999999999816113,
+          "max_abs": 0.0142822265625,
+          "mean_abs": 9.59304361458635e-06,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "moe.router_input": {
+          "cosine": 0.9999999999957586,
+          "max_abs": 5.817413330078125e-05,
+          "mean_abs": 6.619746727665188e-06,
+          "passes": true,
+          "shape": [
+            6,
+            1024
+          ]
+        },
+        "moe.router_logits": {
+          "cosine": 0.999999999995956,
+          "max_abs": 2.1457672119140625e-05,
+          "mean_abs": 2.2421493213187205e-06,
+          "passes": true,
+          "shape": [
+            6,
+            32
+          ]
+        },
+        "moe.selected_expert_outputs": {
+          "cosine": 0.9999999999928617,
+          "max_abs": 0.013671875,
+          "mean_abs": 2.3874893031461397e-06,
+          "passes": true,
+          "shape": [
+            6,
+            8,
+            1024
+          ]
+        },
+        "moe.topk_weights": {
+          "cosine": 0.9999999999879043,
+          "max_abs": 5.424022674560547e-06,
+          "mean_abs": 4.96511347591877e-07,
+          "passes": true,
+          "shape": [
+            6,
+            8
+          ]
+        },
+        "moe.weighted_expert_outputs": {
+          "cosine": 0.9999999999816201,
+          "max_abs": 0.0142822265625,
+          "mean_abs": 1.3344711078389082e-06,
+          "passes": true,
+          "shape": [
+            6,
+            8,
+            1024
+          ]
+        }
+      },
+      "moe_passes": true,
+      "router_passes": true,
+      "routing": {
+        "first_mismatch": null,
+        "minimum_hf_top8_boundary_margin": 0.011539280414581299,
+        "mismatching_token_count": 0,
+        "ordered_indices_equal": true,
+        "router_logits": {
+          "cosine": 0.999999999995956,
+          "max_abs": 2.1457672119140625e-05,
+          "mean_abs": 2.2421493213187205e-06,
+          "passes": true,
+          "shape": [
+            6,
+            32
+          ]
+        },
+        "sets_equal": true,
+        "topk_weights": {
+          "cosine": 0.9999999999879043,
+          "max_abs": 5.424022674560547e-06,
+          "mean_abs": 4.96511347591877e-07,
+          "passes": true,
+          "shape": [
+            6,
+            8
+          ]
+        }
+      }
+    },
+    {
+      "attention_passes": true,
+      "combine_reconstruction": {
+        "hf_max_abs": 0.0,
+        "mlx_max_abs": 0.0
+      },
+      "layer": 6,
+      "layer_passes": true,
+      "metrics": {
+        "attention.input_norm": {
+          "cosine": 0.999999999994985,
+          "max_abs": 0.00010824203491210938,
+          "mean_abs": 5.586020506598288e-06,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "attention.output": {
+          "cosine": 0.9999999999418897,
+          "max_abs": 8.07642936706543e-06,
+          "mean_abs": 5.796811706204608e-07,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "attention.residual": {
+          "cosine": 0.9999999999818747,
+          "max_abs": 0.003143310546875,
+          "mean_abs": 2.286010158059071e-06,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "attention.weights": {
+          "cosine": 0.9999999999982416,
+          "max_abs": 3.635883331298828e-06,
+          "mean_abs": 2.560327629907988e-07,
+          "passes": true,
+          "shape": [
+            1,
+            16,
+            6,
+            6
+          ]
+        },
+        "hidden": {
+          "cosine": 0.9999999999825733,
+          "max_abs": 0.003173828125,
+          "mean_abs": 2.3370428152702516e-06,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "moe.input_norm": {
+          "cosine": 0.9999999999978054,
+          "max_abs": 0.00014257431030273438,
+          "mean_abs": 6.2685412558494136e-06,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "moe.output": {
+          "cosine": 0.999999999986807,
+          "max_abs": 0.000637054443359375,
+          "mean_abs": 1.0941713526335661e-06,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "moe.router_input": {
+          "cosine": 0.9999999999978054,
+          "max_abs": 0.00014257431030273438,
+          "mean_abs": 6.2685412558494136e-06,
+          "passes": true,
+          "shape": [
+            6,
+            1024
+          ]
+        },
+        "moe.router_logits": {
+          "cosine": 0.9999999999979206,
+          "max_abs": 9.238719940185547e-06,
+          "mean_abs": 1.4824296385995694e-06,
+          "passes": true,
+          "shape": [
+            6,
+            32
+          ]
+        },
+        "moe.selected_expert_outputs": {
+          "cosine": 0.9999999999948338,
+          "max_abs": 0.0006561279296875,
+          "mean_abs": 1.4886031749483664e-06,
+          "passes": true,
+          "shape": [
+            6,
+            8,
+            1024
+          ]
+        },
+        "moe.topk_weights": {
+          "cosine": 0.9999999999997856,
+          "max_abs": 6.92903995513916e-07,
+          "mean_abs": 9.952540125368614e-08,
+          "passes": true,
+          "shape": [
+            6,
+            8
+          ]
+        },
+        "moe.weighted_expert_outputs": {
+          "cosine": 0.9999999999868172,
+          "max_abs": 0.000637054443359375,
+          "mean_abs": 1.899843624642017e-07,
+          "passes": true,
+          "shape": [
+            6,
+            8,
+            1024
+          ]
+        }
+      },
+      "moe_passes": true,
+      "router_passes": true,
+      "routing": {
+        "first_mismatch": null,
+        "minimum_hf_top8_boundary_margin": 0.010438382625579834,
+        "mismatching_token_count": 0,
+        "ordered_indices_equal": true,
+        "router_logits": {
+          "cosine": 0.9999999999979206,
+          "max_abs": 9.238719940185547e-06,
+          "mean_abs": 1.4824296385995694e-06,
+          "passes": true,
+          "shape": [
+            6,
+            32
+          ]
+        },
+        "sets_equal": true,
+        "topk_weights": {
+          "cosine": 0.9999999999997856,
+          "max_abs": 6.92903995513916e-07,
+          "mean_abs": 9.952540125368614e-08,
+          "passes": true,
+          "shape": [
+            6,
+            8
+          ]
+        }
+      }
+    },
+    {
+      "attention_passes": true,
+      "combine_reconstruction": {
+        "hf_max_abs": 0.0,
+        "mlx_max_abs": 0.0
+      },
+      "layer": 7,
+      "layer_passes": true,
+      "metrics": {
+        "attention.input_norm": {
+          "cosine": 0.9999999999925769,
+          "max_abs": 0.00016021728515625,
+          "mean_abs": 6.539727564813802e-06,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "attention.output": {
+          "cosine": 0.9999999999636541,
+          "max_abs": 1.52587890625e-05,
+          "mean_abs": 4.830237685382599e-07,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "attention.residual": {
+          "cosine": 0.9999999999825671,
+          "max_abs": 0.003173828125,
+          "mean_abs": 2.3566039999423083e-06,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "attention.weights": {
+          "cosine": 0.9999999999991304,
+          "max_abs": 2.9802322387695312e-06,
+          "mean_abs": 1.832972600368521e-07,
+          "passes": true,
+          "shape": [
+            1,
+            16,
+            6,
+            6
+          ]
+        },
+        "hidden": {
+          "cosine": 0.9999999999859575,
+          "max_abs": 0.003143310546875,
+          "mean_abs": 2.39112137023767e-06,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "moe.input_norm": {
+          "cosine": 0.9999999999966348,
+          "max_abs": 0.00019741058349609375,
+          "mean_abs": 7.62085846872651e-06,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "moe.output": {
+          "cosine": 0.9999999999993093,
+          "max_abs": 0.00023651123046875,
+          "mean_abs": 7.664219197067723e-07,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "moe.router_input": {
+          "cosine": 0.9999999999966348,
+          "max_abs": 0.00019741058349609375,
+          "mean_abs": 7.62085846872651e-06,
+          "passes": true,
+          "shape": [
+            6,
+            1024
+          ]
+        },
+        "moe.router_logits": {
+          "cosine": 0.999999999998161,
+          "max_abs": 6.67572021484375e-06,
+          "mean_abs": 1.2277038194952183e-06,
+          "passes": true,
+          "shape": [
+            6,
+            32
+          ]
+        },
+        "moe.selected_expert_outputs": {
+          "cosine": 0.9999999999978527,
+          "max_abs": 0.00023651123046875,
+          "mean_abs": 1.4052229744265787e-06,
+          "passes": true,
+          "shape": [
+            6,
+            8,
+            1024
+          ]
+        },
+        "moe.topk_weights": {
+          "cosine": 0.9999999999997502,
+          "max_abs": 6.258487701416016e-07,
+          "mean_abs": 1.0428872343481999e-07,
+          "passes": true,
+          "shape": [
+            6,
+            8
+          ]
+        },
+        "moe.weighted_expert_outputs": {
+          "cosine": 0.9999999999993129,
+          "max_abs": 0.00023651123046875,
+          "mean_abs": 1.6399350499796128e-07,
+          "passes": true,
+          "shape": [
+            6,
+            8,
+            1024
+          ]
+        }
+      },
+      "moe_passes": true,
+      "router_passes": true,
+      "routing": {
+        "first_mismatch": null,
+        "minimum_hf_top8_boundary_margin": 0.0037183761596679688,
+        "mismatching_token_count": 0,
+        "ordered_indices_equal": true,
+        "router_logits": {
+          "cosine": 0.999999999998161,
+          "max_abs": 6.67572021484375e-06,
+          "mean_abs": 1.2277038194952183e-06,
+          "passes": true,
+          "shape": [
+            6,
+            32
+          ]
+        },
+        "sets_equal": true,
+        "topk_weights": {
+          "cosine": 0.9999999999997502,
+          "max_abs": 6.258487701416016e-07,
+          "mean_abs": 1.0428872343481999e-07,
+          "passes": true,
+          "shape": [
+            6,
+            8
+          ]
+        }
+      }
+    },
+    {
+      "attention_passes": true,
+      "combine_reconstruction": {
+        "hf_max_abs": 0.0,
+        "mlx_max_abs": 0.0
+      },
+      "layer": 8,
+      "layer_passes": true,
+      "metrics": {
+        "attention.input_norm": {
+          "cosine": 0.9999999999881923,
+          "max_abs": 0.0002040863037109375,
+          "mean_abs": 7.530908987973817e-06,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "attention.output": {
+          "cosine": 0.9999999999734309,
+          "max_abs": 3.8370490074157715e-06,
+          "mean_abs": 4.1626853430898336e-07,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "attention.residual": {
+          "cosine": 0.9999999999859531,
+          "max_abs": 0.003143310546875,
+          "mean_abs": 2.407187139397138e-06,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "attention.weights": {
+          "cosine": 0.9999999999991037,
+          "max_abs": 3.4570693969726562e-06,
+          "mean_abs": 1.893058936275338e-07,
+          "passes": true,
+          "shape": [
+            1,
+            16,
+            6,
+            6
+          ]
+        },
+        "hidden": {
+          "cosine": 0.9999999999859577,
+          "max_abs": 0.003143310546875,
+          "mean_abs": 2.421332965241163e-06,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "moe.input_norm": {
+          "cosine": 0.9999999999949709,
+          "max_abs": 0.00018596649169921875,
+          "mean_abs": 8.506383892381564e-06,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "moe.output": {
+          "cosine": 0.9999999999677321,
+          "max_abs": 6.4373016357421875e-06,
+          "mean_abs": 4.7174526685012097e-07,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "moe.router_input": {
+          "cosine": 0.9999999999949709,
+          "max_abs": 0.00018596649169921875,
+          "mean_abs": 8.506383892381564e-06,
+          "passes": true,
+          "shape": [
+            6,
+            1024
+          ]
+        },
+        "moe.router_logits": {
+          "cosine": 0.9999999999962232,
+          "max_abs": 8.702278137207031e-06,
+          "mean_abs": 1.5269228015313274e-06,
+          "passes": true,
+          "shape": [
+            6,
+            32
+          ]
+        },
+        "moe.selected_expert_outputs": {
+          "cosine": 0.9999999999852626,
+          "max_abs": 4.124641418457031e-05,
+          "mean_abs": 1.3348284255698672e-06,
+          "passes": true,
+          "shape": [
+            6,
+            8,
+            1024
+          ]
+        },
+        "moe.topk_weights": {
+          "cosine": 0.9999999999995723,
+          "max_abs": 5.960464477539062e-07,
+          "mean_abs": 1.2980308383703232e-07,
+          "passes": true,
+          "shape": [
+            6,
+            8
+          ]
+        },
+        "moe.weighted_expert_outputs": {
+          "cosine": 0.9999999999627674,
+          "max_abs": 3.4943222999572754e-06,
+          "mean_abs": 1.4716894725097518e-07,
+          "passes": true,
+          "shape": [
+            6,
+            8,
+            1024
+          ]
+        }
+      },
+      "moe_passes": true,
+      "router_passes": true,
+      "routing": {
+        "first_mismatch": null,
+        "minimum_hf_top8_boundary_margin": 0.004055142402648926,
+        "mismatching_token_count": 0,
+        "ordered_indices_equal": true,
+        "router_logits": {
+          "cosine": 0.9999999999962232,
+          "max_abs": 8.702278137207031e-06,
+          "mean_abs": 1.5269228015313274e-06,
+          "passes": true,
+          "shape": [
+            6,
+            32
+          ]
+        },
+        "sets_equal": true,
+        "topk_weights": {
+          "cosine": 0.9999999999995723,
+          "max_abs": 5.960464477539062e-07,
+          "mean_abs": 1.2980308383703232e-07,
+          "passes": true,
+          "shape": [
+            6,
+            8
+          ]
+        }
+      }
+    },
+    {
+      "attention_passes": true,
+      "combine_reconstruction": {
+        "hf_max_abs": 0.0,
+        "mlx_max_abs": 0.0
+      },
+      "layer": 9,
+      "layer_passes": true,
+      "metrics": {
+        "attention.input_norm": {
+          "cosine": 0.9999999999862966,
+          "max_abs": 0.0003204345703125,
+          "mean_abs": 8.245658136729617e-06,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "attention.output": {
+          "cosine": 0.9999999999676493,
+          "max_abs": 6.735324859619141e-06,
+          "mean_abs": 3.669678108053631e-07,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "attention.residual": {
+          "cosine": 0.9999999999859575,
+          "max_abs": 0.003143310546875,
+          "mean_abs": 2.4218963972089114e-06,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "attention.weights": {
+          "cosine": 0.999999999999085,
+          "max_abs": 2.384185791015625e-06,
+          "mean_abs": 1.9374621729184582e-07,
+          "passes": true,
+          "shape": [
+            1,
+            16,
+            6,
+            6
+          ]
+        },
+        "hidden": {
+          "cosine": 0.9999999999859595,
+          "max_abs": 0.003143310546875,
+          "mean_abs": 2.437015609757509e-06,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "moe.input_norm": {
+          "cosine": 0.9999999999924543,
+          "max_abs": 0.00010442733764648438,
+          "mean_abs": 7.89205569162732e-06,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "moe.output": {
+          "cosine": 0.9999999999707541,
+          "max_abs": 6.735324859619141e-06,
+          "mean_abs": 4.806818765246135e-07,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "moe.router_input": {
+          "cosine": 0.9999999999924543,
+          "max_abs": 0.00010442733764648438,
+          "mean_abs": 7.89205569162732e-06,
+          "passes": true,
+          "shape": [
+            6,
+            1024
+          ]
+        },
+        "moe.router_logits": {
+          "cosine": 0.9999999999968212,
+          "max_abs": 7.987022399902344e-06,
+          "mean_abs": 1.4298857422545552e-06,
+          "passes": true,
+          "shape": [
+            6,
+            32
+          ]
+        },
+        "moe.selected_expert_outputs": {
+          "cosine": 0.9999999999873995,
+          "max_abs": 3.552436828613281e-05,
+          "mean_abs": 1.2754690033034422e-06,
+          "passes": true,
+          "shape": [
+            6,
+            8,
+            1024
+          ]
+        },
+        "moe.topk_weights": {
+          "cosine": 0.9999999999994383,
+          "max_abs": 8.344650268554688e-07,
+          "mean_abs": 1.3702083379030228e-07,
+          "passes": true,
+          "shape": [
+            6,
+            8
+          ]
+        },
+        "moe.weighted_expert_outputs": {
+          "cosine": 0.9999999999665442,
+          "max_abs": 4.708766937255859e-06,
+          "mean_abs": 1.4412317739243008e-07,
+          "passes": true,
+          "shape": [
+            6,
+            8,
+            1024
+          ]
+        }
+      },
+      "moe_passes": true,
+      "router_passes": true,
+      "routing": {
+        "first_mismatch": null,
+        "minimum_hf_top8_boundary_margin": 0.011180758476257324,
+        "mismatching_token_count": 0,
+        "ordered_indices_equal": true,
+        "router_logits": {
+          "cosine": 0.9999999999968212,
+          "max_abs": 7.987022399902344e-06,
+          "mean_abs": 1.4298857422545552e-06,
+          "passes": true,
+          "shape": [
+            6,
+            32
+          ]
+        },
+        "sets_equal": true,
+        "topk_weights": {
+          "cosine": 0.9999999999994383,
+          "max_abs": 8.344650268554688e-07,
+          "mean_abs": 1.3702083379030228e-07,
+          "passes": true,
+          "shape": [
+            6,
+            8
+          ]
+        }
+      }
+    },
+    {
+      "attention_passes": true,
+      "combine_reconstruction": {
+        "hf_max_abs": 0.0,
+        "mlx_max_abs": 0.0
+      },
+      "layer": 10,
+      "layer_passes": true,
+      "metrics": {
+        "attention.input_norm": {
+          "cosine": 0.9999999999899009,
+          "max_abs": 0.0002231597900390625,
+          "mean_abs": 7.6136598181619775e-06,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "attention.output": {
+          "cosine": 0.9999999999607505,
+          "max_abs": 6.012618541717529e-06,
+          "mean_abs": 4.955258532390872e-07,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "attention.residual": {
+          "cosine": 0.9999999999859595,
+          "max_abs": 0.003143310546875,
+          "mean_abs": 2.4368516733375145e-06,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "attention.weights": {
+          "cosine": 0.9999999999987981,
+          "max_abs": 3.6954879760742188e-06,
+          "mean_abs": 2.0450518434245168e-07,
+          "passes": true,
+          "shape": [
+            1,
+            16,
+            6,
+            6
+          ]
+        },
+        "hidden": {
+          "cosine": 0.9999999999859706,
+          "max_abs": 0.003143310546875,
+          "mean_abs": 2.4473226858390262e-06,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "moe.input_norm": {
+          "cosine": 0.9999999999912512,
+          "max_abs": 0.00010776519775390625,
+          "mean_abs": 7.892414032539818e-06,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "moe.output": {
+          "cosine": 0.9999999999696425,
+          "max_abs": 1.2755393981933594e-05,
+          "mean_abs": 5.108737468617619e-07,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "moe.router_input": {
+          "cosine": 0.9999999999912512,
+          "max_abs": 0.00010776519775390625,
+          "mean_abs": 7.892414032539818e-06,
+          "passes": true,
+          "shape": [
+            6,
+            1024
+          ]
+        },
+        "moe.router_logits": {
+          "cosine": 0.9999999999960524,
+          "max_abs": 7.987022399902344e-06,
+          "mean_abs": 1.3796025086776353e-06,
+          "passes": true,
+          "shape": [
+            6,
+            32
+          ]
+        },
+        "moe.selected_expert_outputs": {
+          "cosine": 0.9999999999831367,
+          "max_abs": 3.8623809814453125e-05,
+          "mean_abs": 1.2012993693133467e-06,
+          "passes": true,
+          "shape": [
+            6,
+            8,
+            1024
+          ]
+        },
+        "moe.topk_weights": {
+          "cosine": 0.999999999999699,
+          "max_abs": 3.5762786865234375e-07,
+          "mean_abs": 1.0454095900058746e-07,
+          "passes": true,
+          "shape": [
+            6,
+            8
+          ]
+        },
+        "moe.weighted_expert_outputs": {
+          "cosine": 0.9999999999701903,
+          "max_abs": 6.705522537231445e-06,
+          "mean_abs": 1.444613957346519e-07,
+          "passes": true,
+          "shape": [
+            6,
+            8,
+            1024
+          ]
+        }
+      },
+      "moe_passes": true,
+      "router_passes": true,
+      "routing": {
+        "first_mismatch": null,
+        "minimum_hf_top8_boundary_margin": 0.022183775901794434,
+        "mismatching_token_count": 0,
+        "ordered_indices_equal": true,
+        "router_logits": {
+          "cosine": 0.9999999999960524,
+          "max_abs": 7.987022399902344e-06,
+          "mean_abs": 1.3796025086776353e-06,
+          "passes": true,
+          "shape": [
+            6,
+            32
+          ]
+        },
+        "sets_equal": true,
+        "topk_weights": {
+          "cosine": 0.999999999999699,
+          "max_abs": 3.5762786865234375e-07,
+          "mean_abs": 1.0454095900058746e-07,
+          "passes": true,
+          "shape": [
+            6,
+            8
+          ]
+        }
+      }
+    },
+    {
+      "attention_passes": true,
+      "combine_reconstruction": {
+        "hf_max_abs": 0.0,
+        "mlx_max_abs": 0.0
+      },
+      "layer": 11,
+      "layer_passes": true,
+      "metrics": {
+        "attention.input_norm": {
+          "cosine": 0.99999999998313,
+          "max_abs": 0.00038623809814453125,
+          "mean_abs": 9.790924195840489e-06,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "attention.output": {
+          "cosine": 0.9999999999456352,
+          "max_abs": 6.198883056640625e-06,
+          "mean_abs": 5.516372425518057e-07,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "attention.residual": {
+          "cosine": 0.9999999999859647,
+          "max_abs": 0.003143310546875,
+          "mean_abs": 2.468489583407063e-06,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "attention.weights": {
+          "cosine": 0.999999999997744,
+          "max_abs": 4.991888999938965e-06,
+          "mean_abs": 2.6929930641017563e-07,
+          "passes": true,
+          "shape": [
+            1,
+            16,
+            6,
+            6
+          ]
+        },
+        "hidden": {
+          "cosine": 0.9999999999859729,
+          "max_abs": 0.003143310546875,
+          "mean_abs": 2.4857365588104585e-06,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "moe.input_norm": {
+          "cosine": 0.9999999999899413,
+          "max_abs": 0.00011599063873291016,
+          "mean_abs": 8.565652933612e-06,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "moe.output": {
+          "cosine": 0.9999999999688464,
+          "max_abs": 7.033348083496094e-06,
+          "mean_abs": 6.157223992886429e-07,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "moe.router_input": {
+          "cosine": 0.9999999999899413,
+          "max_abs": 0.00011599063873291016,
+          "mean_abs": 8.565652933612e-06,
+          "passes": true,
+          "shape": [
+            6,
+            1024
+          ]
+        },
+        "moe.router_logits": {
+          "cosine": 0.9999999999954959,
+          "max_abs": 1.4781951904296875e-05,
+          "mean_abs": 1.495478841206932e-06,
+          "passes": true,
+          "shape": [
+            6,
+            32
+          ]
+        },
+        "moe.selected_expert_outputs": {
+          "cosine": 0.9999999999837037,
+          "max_abs": 4.2825937271118164e-05,
+          "mean_abs": 1.5065044181028497e-06,
+          "passes": true,
+          "shape": [
+            6,
+            8,
+            1024
+          ]
+        },
+        "moe.topk_weights": {
+          "cosine": 0.9999999999995139,
+          "max_abs": 1.1175870895385742e-06,
+          "mean_abs": 1.1742425698457737e-07,
+          "passes": true,
+          "shape": [
+            6,
+            8
+          ]
+        },
+        "moe.weighted_expert_outputs": {
+          "cosine": 0.9999999999647311,
+          "max_abs": 5.997717380523682e-06,
+          "mean_abs": 1.6955748094460432e-07,
+          "passes": true,
+          "shape": [
+            6,
+            8,
+            1024
+          ]
+        }
+      },
+      "moe_passes": true,
+      "router_passes": true,
+      "routing": {
+        "first_mismatch": null,
+        "minimum_hf_top8_boundary_margin": 0.004067540168762207,
+        "mismatching_token_count": 0,
+        "ordered_indices_equal": true,
+        "router_logits": {
+          "cosine": 0.9999999999954959,
+          "max_abs": 1.4781951904296875e-05,
+          "mean_abs": 1.495478841206932e-06,
+          "passes": true,
+          "shape": [
+            6,
+            32
+          ]
+        },
+        "sets_equal": true,
+        "topk_weights": {
+          "cosine": 0.9999999999995139,
+          "max_abs": 1.1175870895385742e-06,
+          "mean_abs": 1.1742425698457737e-07,
+          "passes": true,
+          "shape": [
+            6,
+            8
+          ]
+        }
+      }
+    },
+    {
+      "attention_passes": true,
+      "combine_reconstruction": {
+        "hf_max_abs": 0.0,
+        "mlx_max_abs": 0.0
+      },
+      "layer": 12,
+      "layer_passes": true,
+      "metrics": {
+        "attention.input_norm": {
+          "cosine": 0.9999999999891411,
+          "max_abs": 0.00024127960205078125,
+          "mean_abs": 8.157417141774204e-06,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "attention.output": {
+          "cosine": 0.9999999999598334,
+          "max_abs": 1.3232231140136719e-05,
+          "mean_abs": 5.986934752399975e-07,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "attention.residual": {
+          "cosine": 0.9999999999859724,
+          "max_abs": 0.003143310546875,
+          "mean_abs": 2.4945793484221213e-06,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "attention.weights": {
+          "cosine": 0.999999999998884,
+          "max_abs": 2.4437904357910156e-06,
+          "mean_abs": 2.1128593630237447e-07,
+          "passes": true,
+          "shape": [
+            1,
+            16,
+            6,
+            6
+          ]
+        },
+        "hidden": {
+          "cosine": 0.9999999999862552,
+          "max_abs": 0.003143310546875,
+          "mean_abs": 2.5003130303957732e-06,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "moe.input_norm": {
+          "cosine": 0.9999999999898274,
+          "max_abs": 0.00011396408081054688,
+          "mean_abs": 7.960424227348994e-06,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "moe.output": {
+          "cosine": 0.9999999999928918,
+          "max_abs": 0.0001544952392578125,
+          "mean_abs": 8.995136226985778e-07,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "moe.router_input": {
+          "cosine": 0.9999999999898274,
+          "max_abs": 0.00011396408081054688,
+          "mean_abs": 7.960424227348994e-06,
+          "passes": true,
+          "shape": [
+            6,
+            1024
+          ]
+        },
+        "moe.router_logits": {
+          "cosine": 0.9999999999938494,
+          "max_abs": 1.621246337890625e-05,
+          "mean_abs": 1.5781837419126532e-06,
+          "passes": true,
+          "shape": [
+            6,
+            32
+          ]
+        },
+        "moe.selected_expert_outputs": {
+          "cosine": 0.9999999999889484,
+          "max_abs": 0.00019073486328125,
+          "mean_abs": 1.4052807273401413e-06,
+          "passes": true,
+          "shape": [
+            6,
+            8,
+            1024
+          ]
+        },
+        "moe.topk_weights": {
+          "cosine": 0.9999999999987719,
+          "max_abs": 2.1010637283325195e-06,
+          "mean_abs": 1.5157274901866913e-07,
+          "passes": true,
+          "shape": [
+            6,
+            8
+          ]
+        },
+        "moe.weighted_expert_outputs": {
+          "cosine": 0.9999999999927339,
+          "max_abs": 0.000156402587890625,
+          "mean_abs": 1.9665401396196103e-07,
+          "passes": true,
+          "shape": [
+            6,
+            8,
+            1024
+          ]
+        }
+      },
+      "moe_passes": true,
+      "router_passes": true,
+      "routing": {
+        "first_mismatch": null,
+        "minimum_hf_top8_boundary_margin": 0.016376003623008728,
+        "mismatching_token_count": 0,
+        "ordered_indices_equal": true,
+        "router_logits": {
+          "cosine": 0.9999999999938494,
+          "max_abs": 1.621246337890625e-05,
+          "mean_abs": 1.5781837419126532e-06,
+          "passes": true,
+          "shape": [
+            6,
+            32
+          ]
+        },
+        "sets_equal": true,
+        "topk_weights": {
+          "cosine": 0.9999999999987719,
+          "max_abs": 2.1010637283325195e-06,
+          "mean_abs": 1.5157274901866913e-07,
+          "passes": true,
+          "shape": [
+            6,
+            8
+          ]
+        }
+      }
+    },
+    {
+      "attention_passes": true,
+      "combine_reconstruction": {
+        "hf_max_abs": 0.0,
+        "mlx_max_abs": 0.0
+      },
+      "layer": 13,
+      "layer_passes": true,
+      "metrics": {
+        "attention.input_norm": {
+          "cosine": 0.9999999999875825,
+          "max_abs": 0.0003147125244140625,
+          "mean_abs": 1.1411003470129799e-05,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "attention.output": {
+          "cosine": 0.9999999999410311,
+          "max_abs": 1.6927719116210938e-05,
+          "mean_abs": 7.827405283933331e-07,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "attention.residual": {
+          "cosine": 0.9999999999862512,
+          "max_abs": 0.003143310546875,
+          "mean_abs": 2.53927805715648e-06,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "attention.weights": {
+          "cosine": 0.9999999999958776,
+          "max_abs": 7.510185241699219e-06,
+          "mean_abs": 3.045909977572592e-07,
+          "passes": true,
+          "shape": [
+            1,
+            16,
+            6,
+            6
+          ]
+        },
+        "hidden": {
+          "cosine": 0.9999999999862611,
+          "max_abs": 0.003143310546875,
+          "mean_abs": 2.550560793679324e-06,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "moe.input_norm": {
+          "cosine": 0.9999999999887602,
+          "max_abs": 0.00012004375457763672,
+          "mean_abs": 9.26827488001436e-06,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "moe.output": {
+          "cosine": 0.9999999999559276,
+          "max_abs": 1.1354684829711914e-05,
+          "mean_abs": 6.974482857913245e-07,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "moe.router_input": {
+          "cosine": 0.9999999999887602,
+          "max_abs": 0.00012004375457763672,
+          "mean_abs": 9.26827488001436e-06,
+          "passes": true,
+          "shape": [
+            6,
+            1024
+          ]
+        },
+        "moe.router_logits": {
+          "cosine": 0.9999999999961385,
+          "max_abs": 9.655952453613281e-06,
+          "mean_abs": 1.4520823015118367e-06,
+          "passes": true,
+          "shape": [
+            6,
+            32
+          ]
+        },
+        "moe.selected_expert_outputs": {
+          "cosine": 0.9999999999782359,
+          "max_abs": 2.968311309814453e-05,
+          "mean_abs": 1.713675374048762e-06,
+          "passes": true,
+          "shape": [
+            6,
+            8,
+            1024
+          ]
+        },
+        "moe.topk_weights": {
+          "cosine": 0.999999999999381,
+          "max_abs": 6.705522537231445e-07,
+          "mean_abs": 1.4943846338155709e-07,
+          "passes": true,
+          "shape": [
+            6,
+            8
+          ]
+        },
+        "moe.weighted_expert_outputs": {
+          "cosine": 0.9999999999507218,
+          "max_abs": 1.1101365089416504e-05,
+          "mean_abs": 2.043786224703581e-07,
+          "passes": true,
+          "shape": [
+            6,
+            8,
+            1024
+          ]
+        }
+      },
+      "moe_passes": true,
+      "router_passes": true,
+      "routing": {
+        "first_mismatch": null,
+        "minimum_hf_top8_boundary_margin": 0.016027510166168213,
+        "mismatching_token_count": 0,
+        "ordered_indices_equal": true,
+        "router_logits": {
+          "cosine": 0.9999999999961385,
+          "max_abs": 9.655952453613281e-06,
+          "mean_abs": 1.4520823015118367e-06,
+          "passes": true,
+          "shape": [
+            6,
+            32
+          ]
+        },
+        "sets_equal": true,
+        "topk_weights": {
+          "cosine": 0.999999999999381,
+          "max_abs": 6.705522537231445e-07,
+          "mean_abs": 1.4943846338155709e-07,
+          "passes": true,
+          "shape": [
+            6,
+            8
+          ]
+        }
+      }
+    },
+    {
+      "attention_passes": true,
+      "combine_reconstruction": {
+        "hf_max_abs": 0.0,
+        "mlx_max_abs": 0.0
+      },
+      "layer": 14,
+      "layer_passes": true,
+      "metrics": {
+        "attention.input_norm": {
+          "cosine": 0.9999999999825903,
+          "max_abs": 0.000316619873046875,
+          "mean_abs": 1.0101369298354257e-05,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "attention.output": {
+          "cosine": 0.9999999999615037,
+          "max_abs": 5.415081977844238e-05,
+          "mean_abs": 8.008496479305904e-07,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "attention.residual": {
+          "cosine": 0.9999999999862509,
+          "max_abs": 0.003143310546875,
+          "mean_abs": 2.5739307147887303e-06,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "attention.weights": {
+          "cosine": 0.9999999999955994,
+          "max_abs": 6.556510925292969e-06,
+          "mean_abs": 3.5234336337452987e-07,
+          "passes": true,
+          "shape": [
+            1,
+            16,
+            6,
+            6
+          ]
+        },
+        "hidden": {
+          "cosine": 0.999999999986256,
+          "max_abs": 0.003143310546875,
+          "mean_abs": 2.6165325834881514e-06,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "moe.input_norm": {
+          "cosine": 0.99999999998742,
+          "max_abs": 0.00013399124145507812,
+          "mean_abs": 9.926548045768868e-06,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "moe.output": {
+          "cosine": 0.9999999999530415,
+          "max_abs": 3.509223461151123e-05,
+          "mean_abs": 1.0042346048066975e-06,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "moe.router_input": {
+          "cosine": 0.99999999998742,
+          "max_abs": 0.00013399124145507812,
+          "mean_abs": 9.926548045768868e-06,
+          "passes": true,
+          "shape": [
+            6,
+            1024
+          ]
+        },
+        "moe.router_logits": {
+          "cosine": 0.999999999994654,
+          "max_abs": 1.6927719116210938e-05,
+          "mean_abs": 1.6590129234828055e-06,
+          "passes": true,
+          "shape": [
+            6,
+            32
+          ]
+        },
+        "moe.selected_expert_outputs": {
+          "cosine": 0.9999999999614193,
+          "max_abs": 0.00012159347534179688,
+          "mean_abs": 2.2653923679172294e-06,
+          "passes": true,
+          "shape": [
+            6,
+            8,
+            1024
+          ]
+        },
+        "moe.topk_weights": {
+          "cosine": 0.9999999999985729,
+          "max_abs": 1.1920928955078125e-06,
+          "mean_abs": 1.812198462403103e-07,
+          "passes": true,
+          "shape": [
+            6,
+            8
+          ]
+        },
+        "moe.weighted_expert_outputs": {
+          "cosine": 0.9999999999533556,
+          "max_abs": 1.5079975128173828e-05,
+          "mean_abs": 2.772554807961569e-07,
+          "passes": true,
+          "shape": [
+            6,
+            8,
+            1024
+          ]
+        }
+      },
+      "moe_passes": true,
+      "router_passes": true,
+      "routing": {
+        "first_mismatch": null,
+        "minimum_hf_top8_boundary_margin": 0.041630227118730545,
+        "mismatching_token_count": 0,
+        "ordered_indices_equal": true,
+        "router_logits": {
+          "cosine": 0.999999999994654,
+          "max_abs": 1.6927719116210938e-05,
+          "mean_abs": 1.6590129234828055e-06,
+          "passes": true,
+          "shape": [
+            6,
+            32
+          ]
+        },
+        "sets_equal": true,
+        "topk_weights": {
+          "cosine": 0.9999999999985729,
+          "max_abs": 1.1920928955078125e-06,
+          "mean_abs": 1.812198462403103e-07,
+          "passes": true,
+          "shape": [
+            6,
+            8
+          ]
+        }
+      }
+    },
+    {
+      "attention_passes": true,
+      "combine_reconstruction": {
+        "hf_max_abs": 0.0,
+        "mlx_max_abs": 0.0
+      },
+      "layer": 15,
+      "layer_passes": true,
+      "metrics": {
+        "attention.input_norm": {
+          "cosine": 0.9999999999857885,
+          "max_abs": 0.00031280517578125,
+          "mean_abs": 1.2705539120361209e-05,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "attention.output": {
+          "cosine": 0.9999999999492254,
+          "max_abs": 1.5974044799804688e-05,
+          "mean_abs": 9.436253662897798e-07,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "attention.residual": {
+          "cosine": 0.9999999999862551,
+          "max_abs": 0.003143310546875,
+          "mean_abs": 2.656990318428143e-06,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "attention.weights": {
+          "cosine": 0.9999999999941388,
+          "max_abs": 9.238719940185547e-06,
+          "mean_abs": 3.836234441223496e-07,
+          "passes": true,
+          "shape": [
+            1,
+            16,
+            6,
+            6
+          ]
+        },
+        "hidden": {
+          "cosine": 0.999999999986269,
+          "max_abs": 0.003143310546875,
+          "mean_abs": 2.701233597690589e-06,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "moe.input_norm": {
+          "cosine": 0.9999999999868566,
+          "max_abs": 0.00012636184692382812,
+          "mean_abs": 1.0300028407073114e-05,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "moe.output": {
+          "cosine": 0.9999999999470068,
+          "max_abs": 1.5050172805786133e-05,
+          "mean_abs": 1.1652354032776202e-06,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "moe.router_input": {
+          "cosine": 0.9999999999868566,
+          "max_abs": 0.00012636184692382812,
+          "mean_abs": 1.0300028407073114e-05,
+          "passes": true,
+          "shape": [
+            6,
+            1024
+          ]
+        },
+        "moe.router_logits": {
+          "cosine": 0.9999999999958786,
+          "max_abs": 1.5854835510253906e-05,
+          "mean_abs": 1.5684818208683282e-06,
+          "passes": true,
+          "shape": [
+            6,
+            32
+          ]
+        },
+        "moe.selected_expert_outputs": {
+          "cosine": 0.9999999999609817,
+          "max_abs": 8.869171142578125e-05,
+          "mean_abs": 2.487088067937293e-06,
+          "passes": true,
+          "shape": [
+            6,
+            8,
+            1024
+          ]
+        },
+        "moe.topk_weights": {
+          "cosine": 0.9999999999996457,
+          "max_abs": 4.76837158203125e-07,
+          "mean_abs": 1.1703620117486935e-07,
+          "passes": true,
+          "shape": [
+            6,
+            8
+          ]
+        },
+        "moe.weighted_expert_outputs": {
+          "cosine": 0.9999999999358898,
+          "max_abs": 1.1652708053588867e-05,
+          "mean_abs": 3.16543378175993e-07,
+          "passes": true,
+          "shape": [
+            6,
+            8,
+            1024
+          ]
+        }
+      },
+      "moe_passes": true,
+      "router_passes": true,
+      "routing": {
+        "first_mismatch": null,
+        "minimum_hf_top8_boundary_margin": 0.04915919899940491,
+        "mismatching_token_count": 0,
+        "ordered_indices_equal": true,
+        "router_logits": {
+          "cosine": 0.9999999999958786,
+          "max_abs": 1.5854835510253906e-05,
+          "mean_abs": 1.5684818208683282e-06,
+          "passes": true,
+          "shape": [
+            6,
+            32
+          ]
+        },
+        "sets_equal": true,
+        "topk_weights": {
+          "cosine": 0.9999999999996457,
+          "max_abs": 4.76837158203125e-07,
+          "mean_abs": 1.1703620117486935e-07,
+          "passes": true,
+          "shape": [
+            6,
+            8
+          ]
+        }
+      }
+    },
+    {
+      "attention_passes": true,
+      "combine_reconstruction": {
+        "hf_max_abs": 0.0,
+        "mlx_max_abs": 0.0
+      },
+      "layer": 16,
+      "layer_passes": true,
+      "metrics": {
+        "attention.input_norm": {
+          "cosine": 0.999999999977085,
+          "max_abs": 0.0003337860107421875,
+          "mean_abs": 1.530651206849143e-05,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "attention.output": {
+          "cosine": 0.9999999999207977,
+          "max_abs": 3.746151924133301e-05,
+          "mean_abs": 1.8988063175129355e-06,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "attention.residual": {
+          "cosine": 0.9999999999862632,
+          "max_abs": 0.003143310546875,
+          "mean_abs": 2.8039694370818324e-06,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "attention.weights": {
+          "cosine": 0.9999999999943203,
+          "max_abs": 8.404254913330078e-06,
+          "mean_abs": 3.8728390450160077e-07,
+          "passes": true,
+          "shape": [
+            1,
+            16,
+            6,
+            6
+          ]
+        },
+        "hidden": {
+          "cosine": 0.9999999999862587,
+          "max_abs": 0.003143310546875,
+          "mean_abs": 2.8431798000383424e-06,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "moe.input_norm": {
+          "cosine": 0.9999999999857561,
+          "max_abs": 0.00016546249389648438,
+          "mean_abs": 1.2444372259778902e-05,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "moe.output": {
+          "cosine": 0.9999999999517512,
+          "max_abs": 1.7464160919189453e-05,
+          "mean_abs": 1.2440603995855781e-06,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "moe.router_input": {
+          "cosine": 0.9999999999857561,
+          "max_abs": 0.00016546249389648438,
+          "mean_abs": 1.2444372259778902e-05,
+          "passes": true,
+          "shape": [
+            6,
+            1024
+          ]
+        },
+        "moe.router_logits": {
+          "cosine": 0.9999999999965595,
+          "max_abs": 1.097656786441803e-05,
+          "mean_abs": 1.4426817642743117e-06,
+          "passes": true,
+          "shape": [
+            6,
+            32
+          ]
+        },
+        "moe.selected_expert_outputs": {
+          "cosine": 0.999999999981833,
+          "max_abs": 5.602836608886719e-05,
+          "mean_abs": 2.989291488120216e-06,
+          "passes": true,
+          "shape": [
+            6,
+            8,
+            1024
+          ]
+        },
+        "moe.topk_weights": {
+          "cosine": 0.9999999999993292,
+          "max_abs": 9.685754776000977e-07,
+          "mean_abs": 1.5322196134093247e-07,
+          "passes": true,
+          "shape": [
+            6,
+            8
+          ]
+        },
+        "moe.weighted_expert_outputs": {
+          "cosine": 0.9999999999507776,
+          "max_abs": 1.2099742889404297e-05,
+          "mean_abs": 3.509755117647728e-07,
+          "passes": true,
+          "shape": [
+            6,
+            8,
+            1024
+          ]
+        }
+      },
+      "moe_passes": true,
+      "router_passes": true,
+      "routing": {
+        "first_mismatch": null,
+        "minimum_hf_top8_boundary_margin": 0.0024089179933071136,
+        "mismatching_token_count": 0,
+        "ordered_indices_equal": true,
+        "router_logits": {
+          "cosine": 0.9999999999965595,
+          "max_abs": 1.097656786441803e-05,
+          "mean_abs": 1.4426817642743117e-06,
+          "passes": true,
+          "shape": [
+            6,
+            32
+          ]
+        },
+        "sets_equal": true,
+        "topk_weights": {
+          "cosine": 0.9999999999993292,
+          "max_abs": 9.685754776000977e-07,
+          "mean_abs": 1.5322196134093247e-07,
+          "passes": true,
+          "shape": [
+            6,
+            8
+          ]
+        }
+      }
+    },
+    {
+      "attention_passes": true,
+      "combine_reconstruction": {
+        "hf_max_abs": 0.0,
+        "mlx_max_abs": 0.0
+      },
+      "layer": 17,
+      "layer_passes": true,
+      "metrics": {
+        "attention.input_norm": {
+          "cosine": 0.9999999999704986,
+          "max_abs": 0.0005512237548828125,
+          "mean_abs": 1.6660689652781002e-05,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "attention.output": {
+          "cosine": 0.9999999998968736,
+          "max_abs": 2.3603439331054688e-05,
+          "mean_abs": 1.6929099047047202e-06,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "attention.residual": {
+          "cosine": 0.999999999986243,
+          "max_abs": 0.003143310546875,
+          "mean_abs": 2.953868943222915e-06,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "attention.weights": {
+          "cosine": 0.9999999999914875,
+          "max_abs": 9.059906005859375e-06,
+          "mean_abs": 4.2577721615089104e-07,
+          "passes": true,
+          "shape": [
+            1,
+            16,
+            6,
+            6
+          ]
+        },
+        "hidden": {
+          "cosine": 0.9999999999862267,
+          "max_abs": 0.003143310546875,
+          "mean_abs": 3.057391950278543e-06,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "moe.input_norm": {
+          "cosine": 0.999999999983117,
+          "max_abs": 0.00017261505126953125,
+          "mean_abs": 1.4642496353189927e-05,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "moe.output": {
+          "cosine": 0.9999999999550762,
+          "max_abs": 2.771615982055664e-05,
+          "mean_abs": 2.0358795609354274e-06,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "moe.router_input": {
+          "cosine": 0.999999999983117,
+          "max_abs": 0.00017261505126953125,
+          "mean_abs": 1.4642496353189927e-05,
+          "passes": true,
+          "shape": [
+            6,
+            1024
+          ]
+        },
+        "moe.router_logits": {
+          "cosine": 0.9999999999971045,
+          "max_abs": 8.732080459594727e-06,
+          "mean_abs": 1.6265499880319112e-06,
+          "passes": true,
+          "shape": [
+            6,
+            32
+          ]
+        },
+        "moe.selected_expert_outputs": {
+          "cosine": 0.9999999999784726,
+          "max_abs": 0.00013887882232666016,
+          "mean_abs": 3.8568755371670704e-06,
+          "passes": true,
+          "shape": [
+            6,
+            8,
+            1024
+          ]
+        },
+        "moe.topk_weights": {
+          "cosine": 0.9999999999991321,
+          "max_abs": 1.2516975402832031e-06,
+          "mean_abs": 1.6336950636741676e-07,
+          "passes": true,
+          "shape": [
+            6,
+            8
+          ]
+        },
+        "moe.weighted_expert_outputs": {
+          "cosine": 0.9999999999480297,
+          "max_abs": 3.3795833587646484e-05,
+          "mean_abs": 5.186658995626203e-07,
+          "passes": true,
+          "shape": [
+            6,
+            8,
+            1024
+          ]
+        }
+      },
+      "moe_passes": true,
+      "router_passes": true,
+      "routing": {
+        "first_mismatch": null,
+        "minimum_hf_top8_boundary_margin": 0.010195612907409668,
+        "mismatching_token_count": 0,
+        "ordered_indices_equal": true,
+        "router_logits": {
+          "cosine": 0.9999999999971045,
+          "max_abs": 8.732080459594727e-06,
+          "mean_abs": 1.6265499880319112e-06,
+          "passes": true,
+          "shape": [
+            6,
+            32
+          ]
+        },
+        "sets_equal": true,
+        "topk_weights": {
+          "cosine": 0.9999999999991321,
+          "max_abs": 1.2516975402832031e-06,
+          "mean_abs": 1.6336950636741676e-07,
+          "passes": true,
+          "shape": [
+            6,
+            8
+          ]
+        }
+      }
+    },
+    {
+      "attention_passes": true,
+      "combine_reconstruction": {
+        "hf_max_abs": 0.0,
+        "mlx_max_abs": 0.0
+      },
+      "layer": 18,
+      "layer_passes": true,
+      "metrics": {
+        "attention.input_norm": {
+          "cosine": 0.9999999999734127,
+          "max_abs": 0.00032806396484375,
+          "mean_abs": 1.694502861937508e-05,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "attention.output": {
+          "cosine": 0.9999999999433941,
+          "max_abs": 2.4318695068359375e-05,
+          "mean_abs": 1.7150156281786622e-06,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "attention.residual": {
+          "cosine": 0.9999999999862127,
+          "max_abs": 0.003143310546875,
+          "mean_abs": 3.135388624286861e-06,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "attention.weights": {
+          "cosine": 0.9999999999973971,
+          "max_abs": 3.516674041748047e-06,
+          "mean_abs": 3.340796297379711e-07,
+          "passes": true,
+          "shape": [
+            1,
+            16,
+            6,
+            6
+          ]
+        },
+        "hidden": {
+          "cosine": 0.9999999999859162,
+          "max_abs": 0.003143310546875,
+          "mean_abs": 3.2536790968151763e-06,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "moe.input_norm": {
+          "cosine": 0.9999999999841949,
+          "max_abs": 0.0002460479736328125,
+          "mean_abs": 1.6219026292674243e-05,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "moe.output": {
+          "cosine": 0.9999999999851861,
+          "max_abs": 5.340576171875e-05,
+          "mean_abs": 2.5206009013345465e-06,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "moe.router_input": {
+          "cosine": 0.9999999999841949,
+          "max_abs": 0.0002460479736328125,
+          "mean_abs": 1.6219026292674243e-05,
+          "passes": true,
+          "shape": [
+            6,
+            1024
+          ]
+        },
+        "moe.router_logits": {
+          "cosine": 0.9999999999952227,
+          "max_abs": 1.0408461093902588e-05,
+          "mean_abs": 1.5543264453299344e-06,
+          "passes": true,
+          "shape": [
+            6,
+            32
+          ]
+        },
+        "moe.selected_expert_outputs": {
+          "cosine": 0.9999999999840228,
+          "max_abs": 0.0001220703125,
+          "mean_abs": 4.942279247188708e-06,
+          "passes": true,
+          "shape": [
+            6,
+            8,
+            1024
+          ]
+        },
+        "moe.topk_weights": {
+          "cosine": 0.9999999999994689,
+          "max_abs": 8.344650268554688e-07,
+          "mean_abs": 1.3907749973895989e-07,
+          "passes": true,
+          "shape": [
+            6,
+            8
+          ]
+        },
+        "moe.weighted_expert_outputs": {
+          "cosine": 0.999999999985387,
+          "max_abs": 5.245208740234375e-05,
+          "mean_abs": 6.163201646813832e-07,
+          "passes": true,
+          "shape": [
+            6,
+            8,
+            1024
+          ]
+        }
+      },
+      "moe_passes": true,
+      "router_passes": true,
+      "routing": {
+        "first_mismatch": null,
+        "minimum_hf_top8_boundary_margin": 0.00020682811737060547,
+        "mismatching_token_count": 0,
+        "ordered_indices_equal": true,
+        "router_logits": {
+          "cosine": 0.9999999999952227,
+          "max_abs": 1.0408461093902588e-05,
+          "mean_abs": 1.5543264453299344e-06,
+          "passes": true,
+          "shape": [
+            6,
+            32
+          ]
+        },
+        "sets_equal": true,
+        "topk_weights": {
+          "cosine": 0.9999999999994689,
+          "max_abs": 8.344650268554688e-07,
+          "mean_abs": 1.3907749973895989e-07,
+          "passes": true,
+          "shape": [
+            6,
+            8
+          ]
+        }
+      }
+    },
+    {
+      "attention_passes": true,
+      "combine_reconstruction": {
+        "hf_max_abs": 0.0,
+        "mlx_max_abs": 0.0
+      },
+      "layer": 19,
+      "layer_passes": true,
+      "metrics": {
+        "attention.input_norm": {
+          "cosine": 0.9999999999702746,
+          "max_abs": 0.0003490447998046875,
+          "mean_abs": 1.6518803022336215e-05,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "attention.output": {
+          "cosine": 0.9999999999223069,
+          "max_abs": 2.1818617824465036e-05,
+          "mean_abs": 2.136389412044082e-06,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "attention.residual": {
+          "cosine": 0.9999999999858956,
+          "max_abs": 0.003143310546875,
+          "mean_abs": 3.3674393762339605e-06,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "attention.weights": {
+          "cosine": 0.9999999999928895,
+          "max_abs": 7.62939453125e-06,
+          "mean_abs": 4.280639984699519e-07,
+          "passes": true,
+          "shape": [
+            1,
+            16,
+            6,
+            6
+          ]
+        },
+        "hidden": {
+          "cosine": 0.9999999999858722,
+          "max_abs": 0.003143310546875,
+          "mean_abs": 3.4640745525393868e-06,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "moe.input_norm": {
+          "cosine": 0.9999999999829953,
+          "max_abs": 0.00023126602172851562,
+          "mean_abs": 1.7847089111455716e-05,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "moe.output": {
+          "cosine": 0.9999999999439867,
+          "max_abs": 6.158649921417236e-05,
+          "mean_abs": 2.2168746909301262e-06,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "moe.router_input": {
+          "cosine": 0.9999999999829953,
+          "max_abs": 0.00023126602172851562,
+          "mean_abs": 1.7847089111455716e-05,
+          "passes": true,
+          "shape": [
+            6,
+            1024
+          ]
+        },
+        "moe.router_logits": {
+          "cosine": 0.9999999999954379,
+          "max_abs": 1.1444091796875e-05,
+          "mean_abs": 1.923087666000356e-06,
+          "passes": true,
+          "shape": [
+            6,
+            32
+          ]
+        },
+        "moe.selected_expert_outputs": {
+          "cosine": 0.999999999984358,
+          "max_abs": 0.00014972686767578125,
+          "mean_abs": 5.921936008235207e-06,
+          "passes": true,
+          "shape": [
+            6,
+            8,
+            1024
+          ]
+        },
+        "moe.topk_weights": {
+          "cosine": 0.9999999999987146,
+          "max_abs": 1.5050172805786133e-06,
+          "mean_abs": 2.2594274184939422e-07,
+          "passes": true,
+          "shape": [
+            6,
+            8
+          ]
+        },
+        "moe.weighted_expert_outputs": {
+          "cosine": 0.9999999999374632,
+          "max_abs": 2.2232532501220703e-05,
+          "mean_abs": 6.482261483142793e-07,
+          "passes": true,
+          "shape": [
+            6,
+            8,
+            1024
+          ]
+        }
+      },
+      "moe_passes": true,
+      "router_passes": true,
+      "routing": {
+        "first_mismatch": null,
+        "minimum_hf_top8_boundary_margin": 0.005828648805618286,
+        "mismatching_token_count": 0,
+        "ordered_indices_equal": true,
+        "router_logits": {
+          "cosine": 0.9999999999954379,
+          "max_abs": 1.1444091796875e-05,
+          "mean_abs": 1.923087666000356e-06,
+          "passes": true,
+          "shape": [
+            6,
+            32
+          ]
+        },
+        "sets_equal": true,
+        "topk_weights": {
+          "cosine": 0.9999999999987146,
+          "max_abs": 1.5050172805786133e-06,
+          "mean_abs": 2.2594274184939422e-07,
+          "passes": true,
+          "shape": [
+            6,
+            8
+          ]
+        }
+      }
+    },
+    {
+      "attention_passes": true,
+      "combine_reconstruction": {
+        "hf_max_abs": 0.0,
+        "mlx_max_abs": 0.0
+      },
+      "layer": 20,
+      "layer_passes": true,
+      "metrics": {
+        "attention.input_norm": {
+          "cosine": 0.9999999999650416,
+          "max_abs": 0.000499725341796875,
+          "mean_abs": 1.9077548131463118e-05,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "attention.output": {
+          "cosine": 0.9999999999101832,
+          "max_abs": 2.7894973754882812e-05,
+          "mean_abs": 3.1565161862090463e-06,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "attention.residual": {
+          "cosine": 0.999999999985844,
+          "max_abs": 0.003143310546875,
+          "mean_abs": 3.6295762129157083e-06,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "attention.weights": {
+          "cosine": 0.9999999999920192,
+          "max_abs": 9.834766387939453e-06,
+          "mean_abs": 4.2371701169940934e-07,
+          "passes": true,
+          "shape": [
+            1,
+            16,
+            6,
+            6
+          ]
+        },
+        "hidden": {
+          "cosine": 0.999999999985804,
+          "max_abs": 0.003143310546875,
+          "mean_abs": 3.791449671552982e-06,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "moe.input_norm": {
+          "cosine": 0.9999999999838443,
+          "max_abs": 0.0003323554992675781,
+          "mean_abs": 2.0376364773255773e-05,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "moe.output": {
+          "cosine": 0.9999999999202394,
+          "max_abs": 4.649162292480469e-05,
+          "mean_abs": 3.316026777611114e-06,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "moe.router_input": {
+          "cosine": 0.9999999999838443,
+          "max_abs": 0.0003323554992675781,
+          "mean_abs": 2.0376364773255773e-05,
+          "passes": true,
+          "shape": [
+            6,
+            1024
+          ]
+        },
+        "moe.router_logits": {
+          "cosine": 0.9999999999976757,
+          "max_abs": 1.1801719665527344e-05,
+          "mean_abs": 2.21319601223513e-06,
+          "passes": true,
+          "shape": [
+            6,
+            32
+          ]
+        },
+        "moe.selected_expert_outputs": {
+          "cosine": 0.9999999999863173,
+          "max_abs": 0.00021529197692871094,
+          "mean_abs": 8.459212949674111e-06,
+          "passes": true,
+          "shape": [
+            6,
+            8,
+            1024
+          ]
+        },
+        "moe.topk_weights": {
+          "cosine": 0.9999999999993686,
+          "max_abs": 1.0579824447631836e-06,
+          "mean_abs": 1.4520871616241493e-07,
+          "passes": true,
+          "shape": [
+            6,
+            8
+          ]
+        },
+        "moe.weighted_expert_outputs": {
+          "cosine": 0.9999999999081302,
+          "max_abs": 2.8967857360839844e-05,
+          "mean_abs": 9.405898708791938e-07,
+          "passes": true,
+          "shape": [
+            6,
+            8,
+            1024
+          ]
+        }
+      },
+      "moe_passes": true,
+      "router_passes": true,
+      "routing": {
+        "first_mismatch": null,
+        "minimum_hf_top8_boundary_margin": 0.005408287048339844,
+        "mismatching_token_count": 0,
+        "ordered_indices_equal": true,
+        "router_logits": {
+          "cosine": 0.9999999999976757,
+          "max_abs": 1.1801719665527344e-05,
+          "mean_abs": 2.21319601223513e-06,
+          "passes": true,
+          "shape": [
+            6,
+            32
+          ]
+        },
+        "sets_equal": true,
+        "topk_weights": {
+          "cosine": 0.9999999999993686,
+          "max_abs": 1.0579824447631836e-06,
+          "mean_abs": 1.4520871616241493e-07,
+          "passes": true,
+          "shape": [
+            6,
+            8
+          ]
+        }
+      }
+    },
+    {
+      "attention_passes": true,
+      "combine_reconstruction": {
+        "hf_max_abs": 0.0,
+        "mlx_max_abs": 0.0
+      },
+      "layer": 21,
+      "layer_passes": true,
+      "metrics": {
+        "attention.input_norm": {
+          "cosine": 0.9999999999626162,
+          "max_abs": 0.00048828125,
+          "mean_abs": 1.979443186428398e-05,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "attention.output": {
+          "cosine": 0.9999999999219711,
+          "max_abs": 4.482269287109375e-05,
+          "mean_abs": 3.997664862254169e-06,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "attention.residual": {
+          "cosine": 0.9999999999857315,
+          "max_abs": 0.003143310546875,
+          "mean_abs": 4.1092025639954954e-06,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "attention.weights": {
+          "cosine": 0.9999999999940398,
+          "max_abs": 9.775161743164062e-06,
+          "mean_abs": 4.396358974645409e-07,
+          "passes": true,
+          "shape": [
+            1,
+            16,
+            6,
+            6
+          ]
+        },
+        "hidden": {
+          "cosine": 0.9999999999852274,
+          "max_abs": 0.003143310546875,
+          "mean_abs": 4.34232833868009e-06,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "moe.input_norm": {
+          "cosine": 0.999999999984276,
+          "max_abs": 0.00030803680419921875,
+          "mean_abs": 2.372260314587038e-05,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "moe.output": {
+          "cosine": 0.9999999999701266,
+          "max_abs": 0.00011777877807617188,
+          "mean_abs": 5.10577046952676e-06,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "moe.router_input": {
+          "cosine": 0.999999999984276,
+          "max_abs": 0.00030803680419921875,
+          "mean_abs": 2.372260314587038e-05,
+          "passes": true,
+          "shape": [
+            6,
+            1024
+          ]
+        },
+        "moe.router_logits": {
+          "cosine": 0.9999999999990927,
+          "max_abs": 1.233816146850586e-05,
+          "mean_abs": 1.4888840951243765e-06,
+          "passes": true,
+          "shape": [
+            6,
+            32
+          ]
+        },
+        "moe.selected_expert_outputs": {
+          "cosine": 0.9999999999926243,
+          "max_abs": 0.0002613067626953125,
+          "mean_abs": 1.0651633601810317e-05,
+          "passes": true,
+          "shape": [
+            6,
+            8,
+            1024
+          ]
+        },
+        "moe.topk_weights": {
+          "cosine": 0.9999999999993925,
+          "max_abs": 8.195638656616211e-07,
+          "mean_abs": 1.725275069475174e-07,
+          "passes": true,
+          "shape": [
+            6,
+            8
+          ]
+        },
+        "moe.weighted_expert_outputs": {
+          "cosine": 0.999999999969538,
+          "max_abs": 7.867813110351562e-05,
+          "mean_abs": 1.1508337820487213e-06,
+          "passes": true,
+          "shape": [
+            6,
+            8,
+            1024
+          ]
+        }
+      },
+      "moe_passes": true,
+      "router_passes": true,
+      "routing": {
+        "first_mismatch": null,
+        "minimum_hf_top8_boundary_margin": 0.0008334815502166748,
+        "mismatching_token_count": 0,
+        "ordered_indices_equal": true,
+        "router_logits": {
+          "cosine": 0.9999999999990927,
+          "max_abs": 1.233816146850586e-05,
+          "mean_abs": 1.4888840951243765e-06,
+          "passes": true,
+          "shape": [
+            6,
+            32
+          ]
+        },
+        "sets_equal": true,
+        "topk_weights": {
+          "cosine": 0.9999999999993925,
+          "max_abs": 8.195638656616211e-07,
+          "mean_abs": 1.725275069475174e-07,
+          "passes": true,
+          "shape": [
+            6,
+            8
+          ]
+        }
+      }
+    },
+    {
+      "attention_passes": true,
+      "combine_reconstruction": {
+        "hf_max_abs": 0.0,
+        "mlx_max_abs": 0.0
+      },
+      "layer": 22,
+      "layer_passes": true,
+      "metrics": {
+        "attention.input_norm": {
+          "cosine": 0.9999999999532323,
+          "max_abs": 0.00048065185546875,
+          "mean_abs": 2.3170352505985647e-05,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "attention.output": {
+          "cosine": 0.9999999998695772,
+          "max_abs": 5.340576171875e-05,
+          "mean_abs": 7.163429017964518e-06,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "attention.residual": {
+          "cosine": 0.9999999999850756,
+          "max_abs": 0.003143310546875,
+          "mean_abs": 5.020882326789433e-06,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "attention.weights": {
+          "cosine": 0.9999999999880438,
+          "max_abs": 1.0460615158081055e-05,
+          "mean_abs": 6.043753728590673e-07,
+          "passes": true,
+          "shape": [
+            1,
+            16,
+            6,
+            6
+          ]
+        },
+        "hidden": {
+          "cosine": 0.9999999999809998,
+          "max_abs": 0.0030517578125,
+          "mean_abs": 6.945921541046118e-06,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "moe.input_norm": {
+          "cosine": 0.9999999999871924,
+          "max_abs": 0.0003446340560913086,
+          "mean_abs": 2.701178891584277e-05,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "moe.output": {
+          "cosine": 0.9999999999920217,
+          "max_abs": 0.00045013427734375,
+          "mean_abs": 1.8306722267880104e-05,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "moe.router_input": {
+          "cosine": 0.9999999999871924,
+          "max_abs": 0.0003446340560913086,
+          "mean_abs": 2.701178891584277e-05,
+          "passes": true,
+          "shape": [
+            6,
+            1024
+          ]
+        },
+        "moe.router_logits": {
+          "cosine": 0.9999999999990705,
+          "max_abs": 1.4901161193847656e-05,
+          "mean_abs": 2.1604257653962122e-06,
+          "passes": true,
+          "shape": [
+            6,
+            32
+          ]
+        },
+        "moe.selected_expert_outputs": {
+          "cosine": 0.9999999999905033,
+          "max_abs": 0.00046539306640625,
+          "mean_abs": 1.762814645189792e-05,
+          "passes": true,
+          "shape": [
+            6,
+            8,
+            1024
+          ]
+        },
+        "moe.topk_weights": {
+          "cosine": 0.999999999999744,
+          "max_abs": 6.109476089477539e-07,
+          "mean_abs": 1.1285616352552097e-07,
+          "passes": true,
+          "shape": [
+            6,
+            8
+          ]
+        },
+        "moe.weighted_expert_outputs": {
+          "cosine": 0.999999999992017,
+          "max_abs": 0.00045013427734375,
+          "mean_abs": 3.0579133181163343e-06,
+          "passes": true,
+          "shape": [
+            6,
+            8,
+            1024
+          ]
+        }
+      },
+      "moe_passes": true,
+      "router_passes": true,
+      "routing": {
+        "first_mismatch": null,
+        "minimum_hf_top8_boundary_margin": 0.010510444641113281,
+        "mismatching_token_count": 0,
+        "ordered_indices_equal": true,
+        "router_logits": {
+          "cosine": 0.9999999999990705,
+          "max_abs": 1.4901161193847656e-05,
+          "mean_abs": 2.1604257653962122e-06,
+          "passes": true,
+          "shape": [
+            6,
+            32
+          ]
+        },
+        "sets_equal": true,
+        "topk_weights": {
+          "cosine": 0.999999999999744,
+          "max_abs": 6.109476089477539e-07,
+          "mean_abs": 1.1285616352552097e-07,
+          "passes": true,
+          "shape": [
+            6,
+            8
+          ]
+        }
+      }
+    },
+    {
+      "attention_passes": true,
+      "combine_reconstruction": {
+        "hf_max_abs": 0.0,
+        "mlx_max_abs": 0.0
+      },
+      "layer": 23,
+      "layer_passes": true,
+      "metrics": {
+        "attention.input_norm": {
+          "cosine": 0.9999999999595302,
+          "max_abs": 0.00113677978515625,
+          "mean_abs": 3.37492092512548e-05,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "attention.output": {
+          "cosine": 0.9999999999622398,
+          "max_abs": 0.0002574920654296875,
+          "mean_abs": 1.159996918431716e-05,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "attention.residual": {
+          "cosine": 0.9999999999806143,
+          "max_abs": 0.0030517578125,
+          "mean_abs": 7.791078132868279e-06,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "attention.weights": {
+          "cosine": 0.999999999981568,
+          "max_abs": 1.0848045349121094e-05,
+          "mean_abs": 8.421427537541604e-07,
+          "passes": true,
+          "shape": [
+            1,
+            16,
+            6,
+            6
+          ]
+        },
+        "hidden": {
+          "cosine": 0.9999999999740494,
+          "max_abs": 0.0157470703125,
+          "mean_abs": 0.00015445910685230047,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "moe.input_norm": {
+          "cosine": 0.9999999999810725,
+          "max_abs": 0.003814697265625,
+          "mean_abs": 4.219686161377467e-05,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "moe.output": {
+          "cosine": 0.9999999999738931,
+          "max_abs": 0.0595703125,
+          "mean_abs": 0.0006949231028556824,
+          "passes": true,
+          "shape": [
+            1,
+            6,
+            1024
+          ]
+        },
+        "moe.router_input": {
+          "cosine": 0.9999999999810725,
+          "max_abs": 0.003814697265625,
+          "mean_abs": 4.219686161377467e-05,
+          "passes": true,
+          "shape": [
+            6,
+            1024
+          ]
+        },
+        "moe.router_logits": {
+          "cosine": 0.9999999999953263,
+          "max_abs": 0.000118255615234375,
+          "mean_abs": 1.62075648404425e-05,
+          "passes": true,
+          "shape": [
+            6,
+            32
+          ]
+        },
+        "moe.selected_expert_outputs": {
+          "cosine": 0.999999999969354,
+          "max_abs": 0.2744140625,
+          "mean_abs": 0.0003256303316447884,
+          "passes": true,
+          "shape": [
+            6,
+            8,
+            1024
+          ]
+        },
+        "moe.topk_weights": {
+          "cosine": 0.9999999999530532,
+          "max_abs": 1.2755393981933594e-05,
+          "mean_abs": 7.346000643337902e-07,
+          "passes": true,
+          "shape": [
+            6,
+            8
+          ]
+        },
+        "moe.weighted_expert_outputs": {
+          "cosine": 0.9999999999741439,
+          "max_abs": 0.0576171875,
+          "mean_abs": 9.430961654288694e-05,
+          "passes": true,
+          "shape": [
+            6,
+            8,
+            1024
+          ]
+        }
+      },
+      "moe_passes": true,
+      "router_passes": true,
+      "routing": {
+        "first_mismatch": null,
+        "minimum_hf_top8_boundary_margin": 0.001661062240600586,
+        "mismatching_token_count": 0,
+        "ordered_indices_equal": true,
+        "router_logits": {
+          "cosine": 0.9999999999953263,
+          "max_abs": 0.000118255615234375,
+          "mean_abs": 1.62075648404425e-05,
+          "passes": true,
+          "shape": [
+            6,
+            32
+          ]
+        },
+        "sets_equal": true,
+        "topk_weights": {
+          "cosine": 0.9999999999530532,
+          "max_abs": 1.2755393981933594e-05,
+          "mean_abs": 7.346000643337902e-07,
+          "passes": true,
+          "shape": [
+            6,
+            8
+          ]
+        }
+      }
+    }
+  ],
+  "source": {
+    "model": "ibm-granite/granite-3.0-1b-a400m-instruct",
+    "oracle_runtime": "torch CPU eager float32",
+    "revision": "ffec3c35bdfd97a06f0b4cd5fcc92cd9b1584445",
+    "weight_dtype": "BF16",
+    "weight_file": "model.safetensors",
+    "weight_sha256": "f7ae1cee56a9ea6c5360437b1c0407f8d84816b2cc75470f4e7e5236fa2a07dc",
+    "weight_tensor_count": 218
+  },
+  "stages": {
+    "embed": {
+      "cosine": 1.0000000000000002,
+      "max_abs": 0.0,
+      "mean_abs": 0.0,
+      "passes": true,
+      "shape": [
+        1,
+        6,
+        1024
+      ]
+    },
+    "final_norm": {
+      "cosine": 0.9999999999425304,
+      "max_abs": 0.0057830810546875,
+      "mean_abs": 0.00011526469461387023,
+      "passes": true,
+      "shape": [
+        1,
+        6,
+        1024
+      ]
+    },
+    "logits": {
+      "cosine": 0.9999999999870446,
+      "max_abs": 0.00024366378784179688,
+      "mean_abs": 1.754902405082248e-05,
+      "passes": true,
+      "shape": [
+        1,
+        6,
+        49155
+      ]
+    }
+  },
+  "summary": {
+    "attention_matches": true,
+    "first_divergence": "none",
+    "min_cosine": 0.9999999998695772,
+    "moe_mlp_matches": true,
+    "moe_router_matches": true,
+    "n_layers_pass": 24,
+    "notes": "Router top-8 expert IDs match exactly in order for every token in all 24 layers; renormalized top-8 weights match at cosine>=0.9999. Selected expert outputs and weighted combine match; minimum MoE combine cosine=0.9999999999, MLX combine self-reconstruction max_abs=0.",
+    "oracle_captured": true,
+    "transformers_supports_granitemoe": true
+  },
+  "target": {
+    "device": {
+      "default_device": "Device(gpu, 0)",
+      "gpu": {
+        "architecture": "applegpu_g16s",
+        "device_name": "Apple M4 Pro",
+        "max_buffer_length": 30150672384,
+        "max_recommended_working_set_size": 40200896512,
+        "memory_size": 51539607552,
+        "resource_limit": 499000
+      },
+      "metal_available": true
+    },
+    "mlx_model_py_sha256": "8ac93efd991f2fda260842f21fe6c963756b7262e13bc070ef059d8b95957357",
+    "mlx_version": "0.32.0",
+    "runtime": "standalone eager MLX float32"
+  },
+  "thresholds": {
+    "cosine": 0.9999,
+    "integer_indices": "exact"
+  }
+}
