@@ -8,6 +8,7 @@ with the full quality gate (perplexity ratio, first-token agreement, degenerate-
 |---|---|---|---|
 | Qwen2.5-0.5B-Instruct | 70.6 tok/s — **quality FAIL** | 56.0 tok/s — **quality PASS** | 8-bit chosen (held quality) |
 | SmolLM2-360M-Instruct | 94.2 tok/s — **quality FAIL** | 87.7 tok/s — **quality PASS** | 8-bit chosen (held quality) |
+| Qwen3-1.7B | 35.5 tok/s — **quality FAIL** | 37.2 tok/s — **quality PASS** | 8-bit chosen (held *and* faster) |
 
 **Consistent finding:** the naive default (4-bit-g64) is faster/smaller but **fails the quality gate** on
 these small models; the structured pick is 8-bit, the highest throughput-per-peak-memory config that

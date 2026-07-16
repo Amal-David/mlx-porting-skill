@@ -1,0 +1,716 @@
+{
+  "schema_version": 1,
+  "kind": "mlx-port-optimization-loop",
+  "boundary": {
+    "classification": "user_diagnostic_only",
+    "promotable_claim": false,
+    "writes_sealed_evidence": false,
+    "note": "These are local observations for this model, Mac, and workload. The report is not a benchmark receipt, receipt assessment, effective claim, or promotion input."
+  },
+  "measured_at": "2026-07-16T05:55:16.011442+00:00",
+  "status": "complete",
+  "source": {
+    "path": "/Users/amal/.cache/mlx-porting-work/_r_qwen2.5-1.5b/model",
+    "model_type": "qwen2",
+    "name_or_path": null,
+    "config_sha256": "98d2ff8cc47488d08a2b0b3acf4eb99ef210779b42bd48605f6b8e36acdbf670",
+    "weight_files": [
+      {
+        "name": "model.safetensors",
+        "size_bytes": 3087467144
+      }
+    ]
+  },
+  "work_dir": "/Users/amal/.cache/mlx-porting-work/_r_qwen2.5-1.5b/run",
+  "environment": {
+    "hardware": {
+      "platform": "macOS-26.3-arm64-arm-64bit-Mach-O",
+      "machine": "arm64",
+      "metal_available": true,
+      "mlx_default_device": "Device(gpu, 0)",
+      "device": {
+        "device_name": "Apple M4 Pro",
+        "max_recommended_working_set_size": 40200896512,
+        "memory_size": 51539607552,
+        "architecture": "applegpu_g16s",
+        "max_buffer_length": 30150672384
+      }
+    },
+    "software": {
+      "python": "3.14.4",
+      "mlx": "0.32.0",
+      "mlx_lm": "0.31.3"
+    }
+  },
+  "methodology": {
+    "config_sweep": [
+      "8bit",
+      "4bit-g64"
+    ],
+    "seed": 7,
+    "benchmark": {
+      "prompt_sha256": "d5d20d0ae2cdd19a110c96d575e5db3b42b26736092cfaf003d6fb5509f92290",
+      "warmup_runs": 1,
+      "timed_runs": 5,
+      "generated_tokens_per_run": 64,
+      "timing_boundary": "generation after the first yielded token; excludes prefill and reports the median of timed runs",
+      "variance_note": "Decode throughput is a local observation with run-to-run variance; inspect CV and raw timed-run values."
+    },
+    "quality": {
+      "implementation": "quant_quality_gate.py",
+      "max_perplexity_ratio": 1.1,
+      "min_firsttoken_agreement": 0.0,
+      "max_candidate_only_degenerate_output_rate": 0.0,
+      "max_tokens_per_prompt": 32
+    },
+    "recommendation_objective": "maximum measured decode tokens per second per peak Metal byte among quality passes"
+  },
+  "baseline": {
+    "config": {
+      "id": "bf16",
+      "dtype": "bfloat16",
+      "quantized": false
+    },
+    "artifact": {
+      "path": "/Users/amal/.cache/mlx-porting-work/_r_qwen2.5-1.5b/run/bf16",
+      "reused": false,
+      "conversion_seconds": 6.6632250000257045
+    },
+    "performance": {
+      "decode_tokens_per_second_median": 21.756253409789874,
+      "decode_tokens_per_second_mean": 21.56912307365697,
+      "decode_tokens_per_second_cv": 0.16989027608713303,
+      "decode_tokens_per_second_runs": [
+        22.720431802830156,
+        20.673396799030446,
+        21.756253409789874,
+        15.652254931494758,
+        27.04327842513962
+      ],
+      "warmup_runs": 1,
+      "timed_runs": 5,
+      "generated_tokens_per_run": 64,
+      "timed_decode_tokens_per_run": 63,
+      "prompt_tokens_with_bos": 14,
+      "peak_memory_bytes": 3134976240,
+      "peak_memory_gib": 2.9196741431951523,
+      "active_memory_bytes_after_runs": 3087428616,
+      "greedy_output_token_ids": [
+        2157,
+        39312,
+        25262,
+        374,
+        29449,
+        1091,
+        46476,
+        1576,
+        432,
+        5711,
+        821,
+        323,
+        6358,
+        311,
+        1281,
+        11181,
+        11,
+        17719,
+        279,
+        5214,
+        315,
+        3259,
+        20643,
+        476,
+        52224,
+        2989,
+        9363,
+        13,
+        151643,
+        33975,
+        25,
+        81917,
+        304,
+        825,
+        11652,
+        3170,
+        16878,
+        25262,
+        374,
+        29449,
+        1091,
+        46476,
+        13,
+        2157,
+        39312,
+        25262,
+        374,
+        29449,
+        1091,
+        46476,
+        1576,
+        432,
+        5711,
+        821,
+        323,
+        6358,
+        311,
+        1281,
+        11181,
+        11,
+        17719,
+        279,
+        5214,
+        315
+      ]
+    },
+    "quality_reference": {
+      "workload_source": "builtin-v1",
+      "held_text_sha256": "9bed667bc76c0bbc7f502e5a6d47c332f1e6ef7476cef414f799e1dec1317e5f",
+      "held_text_tokens_with_bos": 73,
+      "perplexity": {
+        "nll": 3.8220367431640625,
+        "perplexity": 45.697187035136935,
+        "scored_tokens": 72,
+        "finite": true
+      },
+      "greedy_outputs": [
+        {
+          "prompt_index": 0,
+          "prompt_sha256": "483f4d8a6e95a4d047017fdfae70bace91ba1f55bd1deb3e6bb984bc9e38e053",
+          "token_ids": [
+            32671,
+            18725,
+            2014,
+            4583,
+            279,
+            11652,
+            11,
+            582,
+            1184,
+            311,
+            3410,
+            264,
+            2874,
+            476,
+            28674,
+            429,
+            11017,
+            73045,
+            504,
+            279,
+            4522,
+            429,
+            16585,
+            21595,
+            4925,
+            13,
+            5692,
+            594,
+            264,
+            3204,
+            9755,
+            1447
+          ],
+          "text": " ________. To complete the sentence, we need to provide a reason or consequence that follows logically from the idea that careful measurements matter. Here's a possible completion:\n\n",
+          "degenerate": {
+            "detected": false,
+            "reasons": [],
+            "longest_token_run": 1,
+            "repeated_bigram_fraction": 0.0,
+            "repeated_trigram_fraction": 0.0,
+            "character_cycle": null
+          }
+        },
+        {
+          "prompt_index": 1,
+          "prompt_sha256": "3588414269d493308bc8e8682abe00be2fb19a5d85ec0c193a751674f90f1405",
+          "token_ids": [
+            220,
+            16,
+            15,
+            17,
+            13,
+            151643
+          ],
+          "text": " 102.<|endoftext|>",
+          "degenerate": {
+            "detected": false,
+            "reasons": [],
+            "longest_token_run": 1,
+            "repeated_bigram_fraction": 0.0,
+            "repeated_trigram_fraction": 0.0,
+            "character_cycle": null
+          }
+        },
+        {
+          "prompt_index": 2,
+          "prompt_sha256": "f9f2c9c90805409cee5cd291adeda40f71f84be79af8945d99db6e5d02584c3f",
+          "token_ids": [
+            362,
+            11340,
+            6733,
+            374,
+            264,
+            1992,
+            1380,
+            825,
+            646,
+            1349,
+            11,
+            3920,
+            11,
+            476,
+            11967,
+            2041,
+            33873,
+            3800,
+            13,
+            4710,
+            1986,
+            11652,
+            16555,
+            264,
+            11340,
+            6733,
+            553,
+            38586,
+            279,
+            25650,
+            323,
+            94763
+          ],
+          "text": " A quiet library is a place where one can read, study, or relax without disturbing others. \n\nThis sentence describes a quiet library by highlighting the peaceful and serene",
+          "degenerate": {
+            "detected": false,
+            "reasons": [],
+            "longest_token_run": 1,
+            "repeated_bigram_fraction": 0.03225806451612903,
+            "repeated_trigram_fraction": 0.0,
+            "character_cycle": null
+          }
+        },
+        {
+          "prompt_index": 3,
+          "prompt_sha256": "bbaff4d2ecd5892d4a442b0f53131641bf6e6f284761dd20fc0664bc97145762",
+          "token_ids": [
+            12095,
+            13,
+            576,
+            6722,
+            315,
+            9625,
+            374,
+            1083,
+            279,
+            6722,
+            315,
+            892,
+            3146,
+            5267,
+            32,
+            8,
+            9856,
+            198,
+            33,
+            8,
+            15344,
+            198,
+            34,
+            8,
+            17689,
+            198,
+            35,
+            8,
+            32961,
+            198,
+            36,
+            8
+          ],
+          "text": " Paris. The capital of France is also the capital of which country?\nA) Germany\nB) Italy\nC) Spain\nD) Belgium\nE)",
+          "degenerate": {
+            "detected": false,
+            "reasons": [],
+            "longest_token_run": 1,
+            "repeated_bigram_fraction": 0.03225806451612903,
+            "repeated_trigram_fraction": 0.0,
+            "character_cycle": null
+          }
+        }
+      ]
+    }
+  },
+  "candidates": [
+    {
+      "config": {
+        "id": "8bit",
+        "bits": 8,
+        "group_size": 64,
+        "mode": "affine",
+        "naive_default": false
+      },
+      "artifact": {
+        "path": "/Users/amal/.cache/mlx-porting-work/_r_qwen2.5-1.5b/run/8bit",
+        "reused": false,
+        "conversion_seconds": 3.8875160419847816,
+        "quantization": {
+          "group_size": 64,
+          "bits": 8,
+          "mode": "affine"
+        }
+      },
+      "performance": {
+        "decode_tokens_per_second_median": 22.015663593686906,
+        "decode_tokens_per_second_mean": 22.61830410709566,
+        "decode_tokens_per_second_cv": 0.1842351894342472,
+        "decode_tokens_per_second_runs": [
+          20.485759633351254,
+          30.18616538341495,
+          22.747773008505256,
+          17.656158916519953,
+          22.015663593686906
+        ],
+        "warmup_runs": 1,
+        "timed_runs": 5,
+        "generated_tokens_per_run": 64,
+        "timed_decode_tokens_per_run": 63,
+        "prompt_tokens_with_bos": 14,
+        "peak_memory_bytes": 1681050484,
+        "peak_memory_gib": 1.5656002648174763,
+        "active_memory_bytes_after_runs": 1643342856,
+        "greedy_output_token_ids": [
+          2157,
+          39312,
+          25262,
+          374,
+          29449,
+          1091,
+          46476,
+          1576,
+          432,
+          5711,
+          821,
+          323,
+          6358,
+          311,
+          1281,
+          11181,
+          11,
+          17719,
+          279,
+          5214,
+          315,
+          3259,
+          20643,
+          476,
+          52224,
+          2989,
+          9363,
+          13,
+          151643,
+          33975,
+          25,
+          2980,
+          498,
+          3410,
+          458,
+          3110,
+          315,
+          1246,
+          16878,
+          25262,
+          646,
+          387,
+          9251,
+          304,
+          264,
+          2562,
+          6243,
+          30,
+          22555,
+          0,
+          6771,
+          594,
+          1977,
+          264,
+          2813,
+          6801,
+          311,
+          7269,
+          1181,
+          3910,
+          594,
+          14409,
+          4379,
+          13
+        ]
+      },
+      "comparison_vs_bf16": {
+        "speedup_vs_bf16": 1.011923476851042,
+        "memory_reduction_bytes_vs_bf16": 1453925756,
+        "memory_reduction_fraction_vs_bf16": 0.463775685904401,
+        "peak_memory_ratio_vs_bf16": 0.536224314095599
+      },
+      "quality": {
+        "verdict": "pass",
+        "passed": true,
+        "perplexity_reference": 45.697187035136935,
+        "perplexity_candidate": 45.487981089824906,
+        "perplexity_ratio": 0.9954219075858833,
+        "exact_match_count": 2,
+        "exact_match_rate": 0.5,
+        "firsttoken_agreement_rate": 1.0,
+        "prompt_count": 4,
+        "candidate_degenerate_count": 0,
+        "candidate_only_degenerate_count": 0,
+        "candidate_only_degenerate_rate": 0.0,
+        "exact_output_divergence": [
+          {
+            "prompt_index": 0,
+            "prompt_sha256": "483f4d8a6e95a4d047017fdfae70bace91ba1f55bd1deb3e6bb984bc9e38e053",
+            "exact_match": false,
+            "firsttoken_agreement": true,
+            "first_divergence_token_index": 6
+          },
+          {
+            "prompt_index": 1,
+            "prompt_sha256": "3588414269d493308bc8e8682abe00be2fb19a5d85ec0c193a751674f90f1405",
+            "exact_match": true,
+            "firsttoken_agreement": true,
+            "first_divergence_token_index": null
+          },
+          {
+            "prompt_index": 2,
+            "prompt_sha256": "f9f2c9c90805409cee5cd291adeda40f71f84be79af8945d99db6e5d02584c3f",
+            "exact_match": false,
+            "firsttoken_agreement": true,
+            "first_divergence_token_index": 7
+          },
+          {
+            "prompt_index": 3,
+            "prompt_sha256": "bbaff4d2ecd5892d4a442b0f53131641bf6e6f284761dd20fc0664bc97145762",
+            "exact_match": true,
+            "firsttoken_agreement": true,
+            "first_divergence_token_index": null
+          }
+        ],
+        "checks": {
+          "perplexity_ratio": {
+            "passed": true,
+            "value": 0.9954219075858833,
+            "maximum": 1.1
+          },
+          "firsttoken_agreement": {
+            "passed": true,
+            "value": 1.0,
+            "minimum": 0.0
+          },
+          "candidate_only_degenerate_output_rate": {
+            "passed": true,
+            "value": 0.0,
+            "maximum": 0.0
+          }
+        },
+        "quality_gate_run_id": "0d50685a10d2c130b28a2552bf619df9e87b4a17a2d019bddf54f5a6b4f35e6b"
+      },
+      "selection_score_tokens_per_second_per_byte": 1.3096372656995651e-08
+    },
+    {
+      "config": {
+        "id": "4bit-g64",
+        "bits": 4,
+        "group_size": 64,
+        "mode": "affine",
+        "naive_default": true
+      },
+      "artifact": {
+        "path": "/Users/amal/.cache/mlx-porting-work/_r_qwen2.5-1.5b/run/4bit-g64",
+        "reused": false,
+        "conversion_seconds": 2.639125082991086,
+        "quantization": {
+          "group_size": 64,
+          "bits": 4,
+          "mode": "affine"
+        }
+      },
+      "performance": {
+        "decode_tokens_per_second_median": 32.791913969363975,
+        "decode_tokens_per_second_mean": 32.713892583153296,
+        "decode_tokens_per_second_cv": 0.13954363141452347,
+        "decode_tokens_per_second_runs": [
+          32.65320438699197,
+          33.57228122121699,
+          32.791913969363975,
+          25.097355580254067,
+          39.454707757939474
+        ],
+        "warmup_runs": 1,
+        "timed_runs": 5,
+        "generated_tokens_per_run": 64,
+        "timed_decode_tokens_per_run": 63,
+        "prompt_tokens_with_bos": 14,
+        "peak_memory_bytes": 909170804,
+        "peak_memory_gib": 0.8467312939465046,
+        "active_memory_bytes_after_runs": 871558152,
+        "greedy_output_token_ids": [
+          2157,
+          39312,
+          25262,
+          17601,
+          59726,
+          7497,
+          323,
+          37563,
+          5248,
+          9904,
+          311,
+          1477,
+          279,
+          1850,
+          825,
+          11,
+          1393,
+          46476,
+          17601,
+          3259,
+          4194,
+          476,
+          650,
+          74936,
+          11181,
+          13,
+          2157,
+          39312,
+          25262,
+          374,
+          29449,
+          1576,
+          432,
+          25271,
+          279,
+          5214,
+          315,
+          3259,
+          7852,
+          11181,
+          553,
+          59726,
+          37563,
+          5248,
+          2606,
+          11,
+          1393,
+          46476,
+          12703,
+          279,
+          5214,
+          315,
+          3259,
+          15114,
+          476,
+          1186,
+          2912,
+          2861,
+          11181,
+          13,
+          22406,
+          11,
+          16878,
+          25262
+        ]
+      },
+      "comparison_vs_bf16": {
+        "speedup_vs_bf16": 1.5072408540069806,
+        "memory_reduction_bytes_vs_bf16": 2225805436,
+        "memory_reduction_fraction_vs_bf16": 0.7099911659936535,
+        "peak_memory_ratio_vs_bf16": 0.2900088340063464
+      },
+      "quality": {
+        "verdict": "fail",
+        "passed": false,
+        "perplexity_reference": 45.697187035136935,
+        "perplexity_candidate": 60.9664327001526,
+        "perplexity_ratio": 1.3341397284098695,
+        "exact_match_count": 0,
+        "exact_match_rate": 0.0,
+        "firsttoken_agreement_rate": 0.75,
+        "prompt_count": 4,
+        "candidate_degenerate_count": 1,
+        "candidate_only_degenerate_count": 1,
+        "candidate_only_degenerate_rate": 0.25,
+        "exact_output_divergence": [
+          {
+            "prompt_index": 0,
+            "prompt_sha256": "483f4d8a6e95a4d047017fdfae70bace91ba1f55bd1deb3e6bb984bc9e38e053",
+            "exact_match": false,
+            "firsttoken_agreement": true,
+            "first_divergence_token_index": 6
+          },
+          {
+            "prompt_index": 1,
+            "prompt_sha256": "3588414269d493308bc8e8682abe00be2fb19a5d85ec0c193a751674f90f1405",
+            "exact_match": false,
+            "firsttoken_agreement": true,
+            "first_divergence_token_index": 4
+          },
+          {
+            "prompt_index": 2,
+            "prompt_sha256": "f9f2c9c90805409cee5cd291adeda40f71f84be79af8945d99db6e5d02584c3f",
+            "exact_match": false,
+            "firsttoken_agreement": false,
+            "first_divergence_token_index": 0
+          },
+          {
+            "prompt_index": 3,
+            "prompt_sha256": "bbaff4d2ecd5892d4a442b0f53131641bf6e6f284761dd20fc0664bc97145762",
+            "exact_match": false,
+            "firsttoken_agreement": true,
+            "first_divergence_token_index": 2
+          }
+        ],
+        "checks": {
+          "perplexity_ratio": {
+            "passed": false,
+            "value": 1.3341397284098695,
+            "maximum": 1.1
+          },
+          "firsttoken_agreement": {
+            "passed": true,
+            "value": 0.75,
+            "minimum": 0.0
+          },
+          "candidate_only_degenerate_output_rate": {
+            "passed": false,
+            "value": 0.25,
+            "maximum": 0.0
+          }
+        },
+        "quality_gate_run_id": "60c279d4d30f87144b9c665a06f8b660fc0ab63a5d40ce2eba1e20fc3e31f201"
+      },
+      "selection_score_tokens_per_second_per_byte": 3.606793555742467e-08
+    }
+  ],
+  "recommendation": {
+    "recommended_config_id": "8bit",
+    "quality_held": true,
+    "objective": "maximum measured decode tokens per second per peak Metal byte",
+    "selection_score_tokens_per_second_per_byte": 1.3096372656995651e-08,
+    "fallback_config_id": null,
+    "warning": null,
+    "reason": "Selected the highest throughput-per-peak-memory candidate among configurations that passed every configured quality check."
+  },
+  "naive_default_vs_structured_optimal": {
+    "naive_default_config_id": "4bit-g64",
+    "naive_default_definition": "mlx_lm.convert affine 4-bit group-size 64 default",
+    "structured_optimal_config_id": "8bit",
+    "quality_held": true,
+    "naive_default": {
+      "quality_verdict": "fail",
+      "decode_tokens_per_second_median": 32.791913969363975,
+      "peak_memory_bytes": 909170804
+    },
+    "structured_optimal": {
+      "quality_verdict": "pass",
+      "decode_tokens_per_second_median": 22.015663593686906,
+      "peak_memory_bytes": 1681050484
+    }
+  }
+}

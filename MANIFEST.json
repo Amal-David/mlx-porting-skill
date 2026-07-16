@@ -2,8 +2,8 @@
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
   "version": "0.6.1",
-  "generated_at": "2026-07-16T05:25:14.669352+00:00",
-  "file_count": 527,
+  "generated_at": "2026-07-16T05:56:23.173919+00:00",
+  "file_count": 529,
   "files": [
     {
       "path": ".agents/skills/mlx-model-porting",
@@ -207,14 +207,26 @@
     },
     {
       "path": "arch-stress-artifacts/optimize-receipts/README.md",
-      "size_bytes": 1458,
-      "sha256": "72a48bb045e8c9fd9f64866efdd42792f758a71577fbe48f5baa2cfeb1d36202",
+      "size_bytes": 1576,
+      "sha256": "0f763d016e33abd82b5bc9f6522173c90e74c8e99a8f19fde88ee85a8fb60d8f",
       "executable": false
     },
     {
       "path": "arch-stress-artifacts/optimize-receipts/qwen2.5-0.5b-instruct-quant-receipt.json",
       "size_bytes": 19962,
       "sha256": "0a3083e8748152447ffa604aea6c361026edfd7e56b9d745b76b3f7b5cb7b716",
+      "executable": false
+    },
+    {
+      "path": "arch-stress-artifacts/optimize-receipts/qwen2.5-1.5b-quant-receipt.json",
+      "size_bytes": 19395,
+      "sha256": "f2b8e4b7d2998775fd299f9469ead3185281ce511136787e37f044cb556c11ac",
+      "executable": false
+    },
+    {
+      "path": "arch-stress-artifacts/optimize-receipts/qwen3-1.7b-quant-receipt.json",
+      "size_bytes": 19994,
+      "sha256": "c94e1bc824b717555511ea48e800b9eba91df80454d8b5ef70da98649f33ccc3",
       "executable": false
     },
     {
