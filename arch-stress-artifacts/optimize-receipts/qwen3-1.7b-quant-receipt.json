@@ -1,0 +1,746 @@
+{
+  "schema_version": 1,
+  "kind": "mlx-port-optimization-loop",
+  "boundary": {
+    "classification": "user_diagnostic_only",
+    "promotable_claim": false,
+    "writes_sealed_evidence": false,
+    "note": "These are local observations for this model, Mac, and workload. The report is not a benchmark receipt, receipt assessment, effective claim, or promotion input."
+  },
+  "measured_at": "2026-07-16T05:55:33.654117+00:00",
+  "status": "complete",
+  "source": {
+    "path": "model",
+    "model_type": "qwen3",
+    "name_or_path": null,
+    "config_sha256": "1ddb5b89ebc90dcb417a45c213d818577e65976454d29385c8f6140771d95197",
+    "weight_files": [
+      {
+        "name": "model-00001-of-00002.safetensors",
+        "size_bytes": 3441185608
+      },
+      {
+        "name": "model-00002-of-00002.safetensors",
+        "size_bytes": 622329984
+      }
+    ]
+  },
+  "work_dir": "run",
+  "environment": {
+    "hardware": {
+      "platform": "macOS-26.3-arm64-arm-64bit-Mach-O",
+      "machine": "arm64",
+      "metal_available": true,
+      "mlx_default_device": "Device(gpu, 0)",
+      "device": {
+        "device_name": "Apple M4 Pro",
+        "max_recommended_working_set_size": 40200896512,
+        "memory_size": 51539607552,
+        "architecture": "applegpu_g16s",
+        "max_buffer_length": 30150672384
+      }
+    },
+    "software": {
+      "python": "3.14.4",
+      "mlx": "0.32.0",
+      "mlx_lm": "0.31.3"
+    }
+  },
+  "methodology": {
+    "config_sweep": [
+      "8bit",
+      "4bit-g64"
+    ],
+    "seed": 7,
+    "benchmark": {
+      "prompt_sha256": "d5d20d0ae2cdd19a110c96d575e5db3b42b26736092cfaf003d6fb5509f92290",
+      "warmup_runs": 1,
+      "timed_runs": 5,
+      "generated_tokens_per_run": 64,
+      "timing_boundary": "generation after the first yielded token; excludes prefill and reports the median of timed runs",
+      "variance_note": "Decode throughput is a local observation with run-to-run variance; inspect CV and raw timed-run values."
+    },
+    "quality": {
+      "implementation": "quant_quality_gate.py",
+      "max_perplexity_ratio": 1.1,
+      "min_firsttoken_agreement": 0.0,
+      "max_candidate_only_degenerate_output_rate": 0.0,
+      "max_tokens_per_prompt": 32
+    },
+    "recommendation_objective": "maximum measured decode tokens per second per peak Metal byte among quality passes"
+  },
+  "baseline": {
+    "config": {
+      "id": "bf16",
+      "dtype": "bfloat16",
+      "quantized": false
+    },
+    "artifact": {
+      "path": "run/bf16",
+      "reused": false,
+      "conversion_seconds": 5.55772512499243
+    },
+    "performance": {
+      "decode_tokens_per_second_median": 19.036941283523348,
+      "decode_tokens_per_second_mean": 19.471463538416298,
+      "decode_tokens_per_second_cv": 0.24803831528792641,
+      "decode_tokens_per_second_runs": [
+        13.380477569904121,
+        22.859615427742657,
+        26.649888516704383,
+        15.430394894206986,
+        19.036941283523348
+      ],
+      "warmup_runs": 1,
+      "timed_runs": 5,
+      "generated_tokens_per_run": 64,
+      "timed_decode_tokens_per_run": 63,
+      "prompt_tokens_with_bos": 14,
+      "peak_memory_bytes": 3503409368,
+      "peak_memory_gib": 3.2628042325377464,
+      "active_memory_bytes_after_runs": 3441149960,
+      "greedy_output_token_ids": [
+        2157,
+        39312,
+        25262,
+        374,
+        29449,
+        1091,
+        46476,
+        1576,
+        432,
+        5711,
+        821,
+        323,
+        36438,
+        5413,
+        311,
+        10542,
+        323,
+        4211,
+        279,
+        1429,
+        7373,
+        14830,
+        11,
+        17719,
+        279,
+        5214,
+        315,
+        33248,
+        5975,
+        323,
+        22573,
+        17189,
+        448,
+        65203,
+        8845,
+        13,
+        4710,
+        334,
+        14190,
+        11,
+        429,
+        594,
+        264,
+        2699,
+        1293,
+        13,
+        334,
+        6771,
+        752,
+        1281,
+        432,
+        1496,
+        803,
+        63594,
+        13,
+        4710,
+        334,
+        19357,
+        21806,
+        66963,
+        1124,
+        79075,
+        90,
+        85355
+      ]
+    },
+    "quality_reference": {
+      "workload_source": "builtin-v1",
+      "held_text_sha256": "9bed667bc76c0bbc7f502e5a6d47c332f1e6ef7476cef414f799e1dec1317e5f",
+      "held_text_tokens_with_bos": 73,
+      "perplexity": {
+        "nll": 4.448084831237793,
+        "perplexity": 85.46311088795218,
+        "scored_tokens": 72,
+        "finite": true
+      },
+      "greedy_outputs": [
+        {
+          "prompt_index": 0,
+          "prompt_sha256": "483f4d8a6e95a4d047017fdfae70bace91ba1f55bd1deb3e6bb984bc9e38e053",
+          "token_ids": [
+            807,
+            5978,
+            429,
+            279,
+            3059,
+            525,
+            13382,
+            323,
+            14720,
+            11,
+            892,
+            374,
+            7565,
+            369,
+            3259,
+            15987,
+            11181,
+            382,
+            31999,
+            1262,
+            21595,
+            4925,
+            1576,
+            807,
+            5978,
+            429,
+            279,
+            3059,
+            525,
+            13382,
+            323,
+            14720
+          ],
+          "text": " they ensure that the results are accurate and reliable, which is essential for making informed decisions.\n\nCareful measurements matter because they ensure that the results are accurate and reliable",
+          "degenerate": {
+            "detected": false,
+            "reasons": [],
+            "longest_token_run": 1,
+            "repeated_bigram_fraction": 0.25806451612903225,
+            "repeated_trigram_fraction": 0.23333333333333334,
+            "character_cycle": null
+          }
+        },
+        {
+          "prompt_index": 1,
+          "prompt_sha256": "3588414269d493308bc8e8682abe00be2fb19a5d85ec0c193a751674f90f1405",
+          "token_ids": [
+            220,
+            16,
+            22,
+            9,
+            21,
+            284,
+            220,
+            16,
+            15,
+            17,
+            13,
+            220,
+            16,
+            15,
+            17,
+            374,
+            279,
+            1985,
+            315,
+            220,
+            16,
+            22,
+            323,
+            220,
+            21,
+            13,
+            220,
+            16,
+            15,
+            17,
+            374,
+            279
+          ],
+          "text": " 17*6 = 102. 102 is the product of 17 and 6. 102 is the",
+          "degenerate": {
+            "detected": false,
+            "reasons": [],
+            "longest_token_run": 1,
+            "repeated_bigram_fraction": 0.3870967741935484,
+            "repeated_trigram_fraction": 0.26666666666666666,
+            "character_cycle": null
+          }
+        },
+        {
+          "prompt_index": 2,
+          "prompt_sha256": "f9f2c9c90805409cee5cd291adeda40f71f84be79af8945d99db6e5d02584c3f",
+          "token_ids": [
+            576,
+            11652,
+            1969,
+            2924,
+            279,
+            3409,
+            330,
+            43650,
+            1,
+            323,
+            614,
+            518,
+            3245,
+            220,
+            16,
+            15,
+            4244,
+            13,
+            576,
+            11652,
+            1969,
+            537,
+            2924,
+            894,
+            50494,
+            13,
+            576,
+            11652,
+            1969,
+            537,
+            2924,
+            894
+          ],
+          "text": " The sentence must include the word \"quiet\" and have at least 10 words. The sentence must not include any markdown. The sentence must not include any",
+          "degenerate": {
+            "detected": false,
+            "reasons": [],
+            "longest_token_run": 1,
+            "repeated_bigram_fraction": 0.25806451612903225,
+            "repeated_trigram_fraction": 0.2,
+            "character_cycle": null
+          }
+        },
+        {
+          "prompt_index": 3,
+          "prompt_sha256": "bbaff4d2ecd5892d4a442b0f53131641bf6e6f284761dd20fc0664bc97145762",
+          "token_ids": [
+            12095,
+            13,
+            576,
+            6722,
+            315,
+            279,
+            3639,
+            4180,
+            374,
+            6515,
+            11,
+            422,
+            727,
+            13,
+            576,
+            6722,
+            315,
+            279,
+            3639,
+            15072,
+            374,
+            7148,
+            13,
+            576,
+            6722,
+            315,
+            279,
+            8522,
+            27232,
+            374,
+            22415,
+            13
+          ],
+          "text": " Paris. The capital of the United States is Washington, D.C. The capital of the United Kingdom is London. The capital of the Russian Federation is Moscow.",
+          "degenerate": {
+            "detected": false,
+            "reasons": [],
+            "longest_token_run": 1,
+            "repeated_bigram_fraction": 0.2903225806451613,
+            "repeated_trigram_fraction": 0.23333333333333334,
+            "character_cycle": null
+          }
+        }
+      ]
+    }
+  },
+  "candidates": [
+    {
+      "config": {
+        "id": "8bit",
+        "bits": 8,
+        "group_size": 64,
+        "mode": "affine",
+        "naive_default": false
+      },
+      "artifact": {
+        "path": "run/8bit",
+        "reused": false,
+        "conversion_seconds": 4.813187415944412,
+        "quantization": {
+          "group_size": 64,
+          "bits": 8,
+          "mode": "affine"
+        }
+      },
+      "performance": {
+        "decode_tokens_per_second_median": 37.24577724178826,
+        "decode_tokens_per_second_mean": 41.14995804001339,
+        "decode_tokens_per_second_cv": 0.3785818722245697,
+        "decode_tokens_per_second_runs": [
+          37.18023247488473,
+          21.732353450276264,
+          37.24577724178826,
+          40.08159997871447,
+          69.50982705440322
+        ],
+        "warmup_runs": 1,
+        "timed_runs": 5,
+        "generated_tokens_per_run": 64,
+        "timed_decode_tokens_per_run": 63,
+        "prompt_tokens_with_bos": 14,
+        "peak_memory_bytes": 1902922076,
+        "peak_memory_gib": 1.7722342871129513,
+        "active_memory_bytes_after_runs": 1828243464,
+        "greedy_output_token_ids": [
+          2157,
+          39312,
+          25262,
+          374,
+          29449,
+          1091,
+          46476,
+          1576,
+          432,
+          5711,
+          821,
+          323,
+          16734,
+          311,
+          10542,
+          279,
+          1429,
+          7373,
+          14830,
+          11,
+          17719,
+          279,
+          5214,
+          315,
+          3259,
+          11181,
+          3118,
+          389,
+          32143,
+          476,
+          49404,
+          1995,
+          13,
+          4710,
+          334,
+          14190,
+          11,
+          429,
+          594,
+          537,
+          5008,
+          1290,
+          13,
+          334,
+          6771,
+          752,
+          312,
+          27710,
+          432,
+          304,
+          264,
+          803,
+          63594,
+          323,
+          13382,
+          1616,
+          624,
+          334,
+          19357,
+          21806,
+          1019,
+          59,
+          79075,
+          90
+        ]
+      },
+      "comparison_vs_bf16": {
+        "speedup_vs_bf16": 1.9565000851279,
+        "memory_reduction_bytes_vs_bf16": 1600487292,
+        "memory_reduction_fraction_vs_bf16": 0.4568370760833108,
+        "peak_memory_ratio_vs_bf16": 0.5431629239166892
+      },
+      "quality": {
+        "verdict": "pass",
+        "passed": true,
+        "perplexity_reference": 85.46311088795218,
+        "perplexity_candidate": 85.68725497054062,
+        "perplexity_ratio": 1.002622699785435,
+        "exact_match_count": 1,
+        "exact_match_rate": 0.25,
+        "firsttoken_agreement_rate": 1.0,
+        "prompt_count": 4,
+        "candidate_degenerate_count": 0,
+        "candidate_only_degenerate_count": 0,
+        "candidate_only_degenerate_rate": 0.0,
+        "exact_output_divergence": [
+          {
+            "prompt_index": 0,
+            "prompt_sha256": "483f4d8a6e95a4d047017fdfae70bace91ba1f55bd1deb3e6bb984bc9e38e053",
+            "exact_match": false,
+            "firsttoken_agreement": true,
+            "first_divergence_token_index": 4
+          },
+          {
+            "prompt_index": 1,
+            "prompt_sha256": "3588414269d493308bc8e8682abe00be2fb19a5d85ec0c193a751674f90f1405",
+            "exact_match": false,
+            "firsttoken_agreement": true,
+            "first_divergence_token_index": 11
+          },
+          {
+            "prompt_index": 2,
+            "prompt_sha256": "f9f2c9c90805409cee5cd291adeda40f71f84be79af8945d99db6e5d02584c3f",
+            "exact_match": false,
+            "firsttoken_agreement": true,
+            "first_divergence_token_index": 7
+          },
+          {
+            "prompt_index": 3,
+            "prompt_sha256": "bbaff4d2ecd5892d4a442b0f53131641bf6e6f284761dd20fc0664bc97145762",
+            "exact_match": true,
+            "firsttoken_agreement": true,
+            "first_divergence_token_index": null
+          }
+        ],
+        "checks": {
+          "perplexity_ratio": {
+            "passed": true,
+            "value": 1.002622699785435,
+            "maximum": 1.1
+          },
+          "firsttoken_agreement": {
+            "passed": true,
+            "value": 1.0,
+            "minimum": 0.0
+          },
+          "candidate_only_degenerate_output_rate": {
+            "passed": true,
+            "value": 0.0,
+            "maximum": 0.0
+          }
+        },
+        "quality_gate_run_id": "4fc81fce2af885a3f9441414419d880ee92c181e6e2120588ec6476bb01f2c78"
+      },
+      "selection_score_tokens_per_second_per_byte": 1.9572938751165268e-08
+    },
+    {
+      "config": {
+        "id": "4bit-g64",
+        "bits": 4,
+        "group_size": 64,
+        "mode": "affine",
+        "naive_default": true
+      },
+      "artifact": {
+        "path": "run/4bit-g64",
+        "reused": false,
+        "conversion_seconds": 3.232410499942489,
+        "quantization": {
+          "group_size": 64,
+          "bits": 4,
+          "mode": "affine"
+        }
+      },
+      "performance": {
+        "decode_tokens_per_second_median": 35.54796697358692,
+        "decode_tokens_per_second_mean": 37.07469516171135,
+        "decode_tokens_per_second_cv": 0.3099113503817899,
+        "decode_tokens_per_second_runs": [
+          34.78132929995949,
+          35.54796697358692,
+          21.423459674160444,
+          57.249888054231185,
+          36.37083180661868
+        ],
+        "warmup_runs": 1,
+        "timed_runs": 5,
+        "generated_tokens_per_run": 64,
+        "timed_decode_tokens_per_run": 63,
+        "prompt_tokens_with_bos": 14,
+        "peak_memory_bytes": 1041942888,
+        "peak_memory_gib": 0.9703849330544472,
+        "active_memory_bytes_after_runs": 968017928,
+        "greedy_output_token_ids": [
+          7281,
+          11,
+          10339,
+          304,
+          825,
+          63594,
+          11652,
+          3170,
+          16878,
+          25262,
+          374,
+          803,
+          11050,
+          1091,
+          46476,
+          13,
+          22406,
+          11,
+          10339,
+          304,
+          825,
+          63594,
+          11652,
+          3170,
+          16878,
+          25262,
+          374,
+          803,
+          7373,
+          1091,
+          46476,
+          13,
+          17375,
+          11,
+          10339,
+          304,
+          825,
+          63594,
+          11652,
+          3170,
+          16878,
+          25262,
+          374,
+          803,
+          2783,
+          52321,
+          1091,
+          46476,
+          13,
+          5209,
+          1281,
+          2704,
+          429,
+          279,
+          22870,
+          525,
+          304,
+          279,
+          1852,
+          16232,
+          438,
+          279,
+          4024,
+          3405
+        ]
+      },
+      "comparison_vs_bf16": {
+        "speedup_vs_bf16": 1.8673150504673783,
+        "memory_reduction_bytes_vs_bf16": 2461466480,
+        "memory_reduction_fraction_vs_bf16": 0.7025917389166495,
+        "peak_memory_ratio_vs_bf16": 0.2974082610833505
+      },
+      "quality": {
+        "verdict": "fail",
+        "passed": false,
+        "perplexity_reference": 85.46311088795218,
+        "perplexity_candidate": 106.25740161327887,
+        "perplexity_ratio": 1.2433130564670105,
+        "exact_match_count": 0,
+        "exact_match_rate": 0.0,
+        "firsttoken_agreement_rate": 0.5,
+        "prompt_count": 4,
+        "candidate_degenerate_count": 1,
+        "candidate_only_degenerate_count": 1,
+        "candidate_only_degenerate_rate": 0.25,
+        "exact_output_divergence": [
+          {
+            "prompt_index": 0,
+            "prompt_sha256": "483f4d8a6e95a4d047017fdfae70bace91ba1f55bd1deb3e6bb984bc9e38e053",
+            "exact_match": false,
+            "firsttoken_agreement": true,
+            "first_divergence_token_index": 1
+          },
+          {
+            "prompt_index": 1,
+            "prompt_sha256": "3588414269d493308bc8e8682abe00be2fb19a5d85ec0c193a751674f90f1405",
+            "exact_match": false,
+            "firsttoken_agreement": true,
+            "first_divergence_token_index": 10
+          },
+          {
+            "prompt_index": 2,
+            "prompt_sha256": "f9f2c9c90805409cee5cd291adeda40f71f84be79af8945d99db6e5d02584c3f",
+            "exact_match": false,
+            "firsttoken_agreement": false,
+            "first_divergence_token_index": 0
+          },
+          {
+            "prompt_index": 3,
+            "prompt_sha256": "bbaff4d2ecd5892d4a442b0f53131641bf6e6f284761dd20fc0664bc97145762",
+            "exact_match": false,
+            "firsttoken_agreement": false,
+            "first_divergence_token_index": 0
+          }
+        ],
+        "checks": {
+          "perplexity_ratio": {
+            "passed": false,
+            "value": 1.2433130564670105,
+            "maximum": 1.1
+          },
+          "firsttoken_agreement": {
+            "passed": true,
+            "value": 0.5,
+            "minimum": 0.0
+          },
+          "candidate_only_degenerate_output_rate": {
+            "passed": false,
+            "value": 0.25,
+            "maximum": 0.0
+          }
+        },
+        "quality_gate_run_id": "17bc0ed4f5cb9e4b29f06294de2d1695d79087f33bb3462b87b1c761d3f11014"
+      },
+      "selection_score_tokens_per_second_per_byte": 3.411700140477077e-08
+    }
+  ],
+  "recommendation": {
+    "recommended_config_id": "8bit",
+    "quality_held": true,
+    "objective": "maximum measured decode tokens per second per peak Metal byte",
+    "selection_score_tokens_per_second_per_byte": 1.9572938751165268e-08,
+    "fallback_config_id": null,
+    "warning": null,
+    "reason": "Selected the highest throughput-per-peak-memory candidate among configurations that passed every configured quality check."
+  },
+  "naive_default_vs_structured_optimal": {
+    "naive_default_config_id": "4bit-g64",
+    "naive_default_definition": "mlx_lm.convert affine 4-bit group-size 64 default",
+    "structured_optimal_config_id": "8bit",
+    "quality_held": true,
+    "naive_default": {
+      "quality_verdict": "fail",
+      "decode_tokens_per_second_median": 35.54796697358692,
+      "peak_memory_bytes": 1041942888
+    },
+    "structured_optimal": {
+      "quality_verdict": "pass",
+      "decode_tokens_per_second_median": 37.24577724178826,
+      "peak_memory_bytes": 1902922076
+    }
+  }
+}

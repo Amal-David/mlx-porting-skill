@@ -2,8 +2,8 @@
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
   "version": "0.6.1",
-  "generated_at": "2026-07-18T18:24:18.906226+00:00",
-  "file_count": 538,
+  "generated_at": "2026-07-18T18:30:37.404404+00:00",
+  "file_count": 560,
   "files": [
     {
       "path": ".agents/skills/mlx-model-porting",
@@ -167,6 +167,138 @@
       "path": "adapters/windsurf.md",
       "size_bytes": 553,
       "sha256": "38d42c3ea0739e64fc4dba0e5b17d36be246c594820dc02831a4ae722a6531f3",
+      "executable": false
+    },
+    {
+      "path": "arch-stress-artifacts/granite-moe-1b-mlx/README.md",
+      "size_bytes": 2126,
+      "sha256": "a52bc9474cc947e138e3e785700ec014db0d21d5d01ff78bce1a7039550ae11f",
+      "executable": false
+    },
+    {
+      "path": "arch-stress-artifacts/granite-moe-1b-mlx/model.py",
+      "size_bytes": 15834,
+      "sha256": "8ac93efd991f2fda260842f21fe6c963756b7262e13bc070ef059d8b95957357",
+      "executable": false
+    },
+    {
+      "path": "arch-stress-artifacts/granite-moe-1b-mlx/parity.json",
+      "size_bytes": 105429,
+      "sha256": "a65ba816d392d6aa4686a2c30a0641153a163cf0b3b1735a2b5c90ab3c303b9b",
+      "executable": false
+    },
+    {
+      "path": "arch-stress-artifacts/modernbert-base-mlx/README.md",
+      "size_bytes": 3614,
+      "sha256": "c53bf350b1076acf0e8d034bd526a1167b60700e1652cb0eaa0fe9174f1c7b7c",
+      "executable": false
+    },
+    {
+      "path": "arch-stress-artifacts/modernbert-base-mlx/capture_oracle.py",
+      "size_bytes": 4893,
+      "sha256": "cecde0133e1411ef86a79b703575d023c146bca53fba42a823e5bedca5f7d80f",
+      "executable": false
+    },
+    {
+      "path": "arch-stress-artifacts/modernbert-base-mlx/mlx-capture-summary.json",
+      "size_bytes": 1338,
+      "sha256": "b89112e61a0f114120281e318212851c9320245ed756ae83662020807e11a45c",
+      "executable": false
+    },
+    {
+      "path": "arch-stress-artifacts/modernbert-base-mlx/model.py",
+      "size_bytes": 12552,
+      "sha256": "55d458e53a015139facc272f38588b873062e08f5af91027aebccb004065f9c3",
+      "executable": false
+    },
+    {
+      "path": "arch-stress-artifacts/modernbert-base-mlx/parity-details.json",
+      "size_bytes": 9389,
+      "sha256": "e26ab2321123e3be3c727701060e463f09eb6ad06a4cec783cea2ce044b8f978",
+      "executable": false
+    },
+    {
+      "path": "arch-stress-artifacts/modernbert-base-mlx/run_parity.py",
+      "size_bytes": 8556,
+      "sha256": "31ca73f6cf922e379e7dfda03b297340858c98446071cff19cd127bfae238580",
+      "executable": false
+    },
+    {
+      "path": "arch-stress-artifacts/optimize-receipts/README.md",
+      "size_bytes": 1811,
+      "sha256": "590f283d62ea838aef115bde62bc49d2421e570b7fc0e12c44b574f821b7b808",
+      "executable": false
+    },
+    {
+      "path": "arch-stress-artifacts/optimize-receipts/qwen2.5-0.5b-instruct-quant-receipt.json",
+      "size_bytes": 19757,
+      "sha256": "3123cfda0c009b4a5c8169c2609ca59a3308158f2ddbfd2c2016db8ba09c3537",
+      "executable": false
+    },
+    {
+      "path": "arch-stress-artifacts/optimize-receipts/qwen2.5-1.5b-quant-receipt.json",
+      "size_bytes": 19135,
+      "sha256": "d51367e1c543b00b9e7a1b34aed5cb8cce4bfecd2b69738ebfebba952dbfc9ac",
+      "executable": false
+    },
+    {
+      "path": "arch-stress-artifacts/optimize-receipts/qwen3-1.7b-quant-receipt.json",
+      "size_bytes": 19794,
+      "sha256": "6bb16375344fc3b2b23402634c121c25936aeb62e7781e9922f89c6bbb9ddbb5",
+      "executable": false
+    },
+    {
+      "path": "arch-stress-artifacts/optimize-receipts/smollm2-360m-quant-receipt.json",
+      "size_bytes": 17051,
+      "sha256": "c5eb16ff682afcd0f81c113bcb3c3abcc68c988b9bbe5542de24ed9ac488681a",
+      "executable": false
+    },
+    {
+      "path": "arch-stress-artifacts/qwen3_5-text-hybrid-mlx/README.md",
+      "size_bytes": 2600,
+      "sha256": "0c5700a63322aa3db775db68911afbba42ea16a7b34b8890f025690298c5f2c5",
+      "executable": false
+    },
+    {
+      "path": "arch-stress-artifacts/qwen3_5-text-hybrid-mlx/model.py",
+      "size_bytes": 13833,
+      "sha256": "3a781a93aa2e3e073fe415222ce705e5989914804304c3389331d20407d20f45",
+      "executable": false
+    },
+    {
+      "path": "arch-stress-artifacts/qwen3_5-text-hybrid-mlx/oracle_manifest.json",
+      "size_bytes": 4695,
+      "sha256": "25d147d74a2cce041d5765b07bc0ae9f062abfb9ee2defa6426491115ea810ff",
+      "executable": false
+    },
+    {
+      "path": "arch-stress-artifacts/qwen3_5-text-hybrid-mlx/parity.json",
+      "size_bytes": 18386,
+      "sha256": "ae9114aad68b4049959e40901b00320152024eb4d7024b18a21f276ee0aa70c5",
+      "executable": false
+    },
+    {
+      "path": "arch-stress-artifacts/qwen3_5-text-hybrid-mlx/primitive_parity.json",
+      "size_bytes": 512,
+      "sha256": "97e1d239a78371b1df9d6c638933e78c733b00ff16066dfba68ada2fcef58767",
+      "executable": false
+    },
+    {
+      "path": "arch-stress-artifacts/smolvlm-256m-mlx/README.md",
+      "size_bytes": 2212,
+      "sha256": "a34e7a556dd08c432d37e2d3bee33dba7eb95d5cc5d762ed37c318a522957a0a",
+      "executable": false
+    },
+    {
+      "path": "arch-stress-artifacts/smolvlm-256m-mlx/model.py",
+      "size_bytes": 15237,
+      "sha256": "7486685982c2fc2f5af9674a89c2456f73dc7ab5800e8bb4b32539bd5bbd2ef8",
+      "executable": false
+    },
+    {
+      "path": "arch-stress-artifacts/smolvlm-256m-mlx/parity.json",
+      "size_bytes": 16159,
+      "sha256": "e6d86c896d84b474ad35a4f0d212e0cd1e4a8698f25beef7de6e34e595a1caf4",
       "executable": false
     },
     {
@@ -1317,8 +1449,8 @@
     },
     {
       "path": "mlx-model-porting/references/runbook-decoder-transformer.md",
-      "size_bytes": 6293,
-      "sha256": "63696a922a57f38ca74e34884614430f14bfe30d92bc3043e58224354c691a52",
+      "size_bytes": 6388,
+      "sha256": "b0d378959c7dcb2a8b829d91938d2a94bc1ce1b442d84471a9dec0bdd6255e64",
       "executable": false
     },
     {
@@ -2127,8 +2259,8 @@
     },
     {
       "path": "mlx-model-porting/scripts/_capture_common.py",
-      "size_bytes": 24880,
-      "sha256": "fe03ca30482c1b7e64a027089f73518b2387706c5ad3aa41f9b9979cf4ca7cb4",
+      "size_bytes": 25616,
+      "sha256": "045f80a34b5b4b7dac15123f39f6246028cc843655468d8f9510c8921b050a24",
       "executable": false
     },
     {
@@ -2169,14 +2301,14 @@
     },
     {
       "path": "mlx-model-porting/scripts/capture_mlx.py",
-      "size_bytes": 39466,
-      "sha256": "fd89dc6d78310ab09fe53a42369010a6da2dad15c1dbca5ebb2bafc6ee764eb8",
+      "size_bytes": 41102,
+      "sha256": "910ecf2678bff1dd07b1aa4df4fb3b39aa8b427067dcc84ab96e2a9724ab2b6e",
       "executable": true
     },
     {
       "path": "mlx-model-porting/scripts/capture_oracle.py",
-      "size_bytes": 45839,
-      "sha256": "dc1b0c45426932d9e7ed05fcff32ad837ae238ab35a644eb2cffcadc8fef1c05",
+      "size_bytes": 47881,
+      "sha256": "58abc4455f830413972edadca6f0234a3e5e114ceb9281ff59267cdd4bdc01fc",
       "executable": true
     },
     {
@@ -2283,8 +2415,8 @@
     },
     {
       "path": "mlx-model-porting/scripts/run_parity.py",
-      "size_bytes": 31552,
-      "sha256": "078d872882b62695b87fd686328dbd940c86303e0d9f2e538600f5e461238b61",
+      "size_bytes": 32567,
+      "sha256": "805ccda76909337209a6e44f3a0d1a34d0c1c9c6bf287acc706fd56c5d2d283a",
       "executable": true
     },
     {
@@ -2295,8 +2427,8 @@
     },
     {
       "path": "mlx-model-porting/scripts/scaffold_port.py",
-      "size_bytes": 156021,
-      "sha256": "76d81fe28034175661737f7b09e07412e8d67dfb222ff19bc254bc100d44a253",
+      "size_bytes": 162464,
+      "sha256": "ad858be1a2cc7aa193cef034cf6157b1cf7b27cdf385c90dd2e3da2166ba5ca3",
       "executable": true
     },
     {
@@ -2967,8 +3099,8 @@
     },
     {
       "path": "tests/test_capture_oracle_contract.py",
-      "size_bytes": 18555,
-      "sha256": "f0437ac86c32389e852f7caa93a974c25132add8181557a869c755170580d5e6",
+      "size_bytes": 20255,
+      "sha256": "399c040e48c385ca400379418fc9caaf351b2f774b9cb8ea31f6e03c3353608a",
       "executable": false
     },
     {
@@ -3183,8 +3315,8 @@
     },
     {
       "path": "tests/test_scaffold_port_contract.py",
-      "size_bytes": 51741,
-      "sha256": "f1b36fcf873d4a029a1236de37d31cd5604206dffb73a11f8278f66e5cfea4f5",
+      "size_bytes": 59450,
+      "sha256": "45f10f698cd7fb5c072449228f29f9a72a02d0b71fddde2d123c402081501dec",
       "executable": false
     },
     {

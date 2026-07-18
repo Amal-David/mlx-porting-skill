@@ -1,0 +1,837 @@
+{
+  "connector_pass": true,
+  "cosine_threshold": 0.9999,
+  "diagnostics": {
+    "vision_patch_conv": {
+      "cosine": 0.9999999999995255,
+      "max_abs": 4.567205905914307e-06,
+      "mlx_shape": [
+        1,
+        768,
+        32,
+        32
+      ],
+      "oracle_shape": [
+        1,
+        768,
+        32,
+        32
+      ],
+      "pass": true,
+      "stage": "vision_patch_conv"
+    }
+  },
+  "environment": {
+    "architecture": "applegpu_g16s",
+    "default_device": "Device(gpu, 0)",
+    "device_name": "Apple M4 Pro",
+    "metal_available": true,
+    "mlx": "0.32.0"
+  },
+  "first_divergence": "none",
+  "fixture_sha256": "04f9e1c91d20ca4dfef3ae8ef102181c3ef8bc3044561c16ecf447f1eb82ef94",
+  "fused_embeds_pass": true,
+  "logits_pass": true,
+  "min_cosine": 0.9999999999396901,
+  "n_text_layers_pass": 30,
+  "n_vision_layers_pass": 12,
+  "notes": "All requested stages passed cosine >= 0.9999 on the frozen single-image fixture; minimum cosine was 0.9999999999 at vision_final. Largest max_abs was 0.0068359375 at text_layer_11 and is benign under the specified cosine rule.",
+  "oracle_captured": true,
+  "oracle_sha256": "07b92048936aafb1e1983a3dc04e9cf8c562ecb88a043ffca5b8f29f2155f2f1",
+  "stages": {
+    "connector": {
+      "pass": true,
+      "pixel_shuffle": {
+        "cosine": 0.9999999999396906,
+        "max_abs": 0.0002384185791015625,
+        "mlx_shape": [
+          1,
+          64,
+          12288
+        ],
+        "oracle_shape": [
+          1,
+          64,
+          12288
+        ],
+        "pass": true,
+        "stage": "connector_pixel_shuffle"
+      },
+      "projector": {
+        "cosine": 0.9999999999882172,
+        "max_abs": 0.000316619873046875,
+        "mlx_shape": [
+          1,
+          64,
+          576
+        ],
+        "oracle_shape": [
+          1,
+          64,
+          576
+        ],
+        "pass": true,
+        "stage": "connector_projector"
+      }
+    },
+    "fused_embeds": {
+      "cosine": 0.9999999999882183,
+      "max_abs": 0.000316619873046875,
+      "mlx_shape": [
+        1,
+        80,
+        576
+      ],
+      "oracle_shape": [
+        1,
+        80,
+        576
+      ],
+      "pass": true,
+      "stage": "fused_embeds"
+    },
+    "logits": {
+      "cosine": 0.9999999999689145,
+      "max_abs": 0.00029850006103515625,
+      "mlx_shape": [
+        1,
+        80,
+        49280
+      ],
+      "oracle_shape": [
+        1,
+        80,
+        49280
+      ],
+      "pass": true,
+      "stage": "logits"
+    },
+    "text_final": {
+      "cosine": 0.9999999999494957,
+      "max_abs": 0.00023746490478515625,
+      "mlx_shape": [
+        1,
+        80,
+        576
+      ],
+      "oracle_shape": [
+        1,
+        80,
+        576
+      ],
+      "pass": true,
+      "stage": "text_final"
+    },
+    "text_layers": [
+      {
+        "cosine": 0.9999999999899175,
+        "max_abs": 0.00029754638671875,
+        "mlx_shape": [
+          1,
+          80,
+          576
+        ],
+        "oracle_shape": [
+          1,
+          80,
+          576
+        ],
+        "pass": true,
+        "stage": "text_layer_0"
+      },
+      {
+        "cosine": 0.9999999999921518,
+        "max_abs": 0.0002899169921875,
+        "mlx_shape": [
+          1,
+          80,
+          576
+        ],
+        "oracle_shape": [
+          1,
+          80,
+          576
+        ],
+        "pass": true,
+        "stage": "text_layer_1"
+      },
+      {
+        "cosine": 0.9999999999941194,
+        "max_abs": 0.00042724609375,
+        "mlx_shape": [
+          1,
+          80,
+          576
+        ],
+        "oracle_shape": [
+          1,
+          80,
+          576
+        ],
+        "pass": true,
+        "stage": "text_layer_2"
+      },
+      {
+        "cosine": 0.9999999999938867,
+        "max_abs": 0.00042724609375,
+        "mlx_shape": [
+          1,
+          80,
+          576
+        ],
+        "oracle_shape": [
+          1,
+          80,
+          576
+        ],
+        "pass": true,
+        "stage": "text_layer_3"
+      },
+      {
+        "cosine": 0.9999999999934269,
+        "max_abs": 0.00042724609375,
+        "mlx_shape": [
+          1,
+          80,
+          576
+        ],
+        "oracle_shape": [
+          1,
+          80,
+          576
+        ],
+        "pass": true,
+        "stage": "text_layer_4"
+      },
+      {
+        "cosine": 0.9999999999930103,
+        "max_abs": 0.00042724609375,
+        "mlx_shape": [
+          1,
+          80,
+          576
+        ],
+        "oracle_shape": [
+          1,
+          80,
+          576
+        ],
+        "pass": true,
+        "stage": "text_layer_5"
+      },
+      {
+        "cosine": 0.9999999999928276,
+        "max_abs": 0.00042724609375,
+        "mlx_shape": [
+          1,
+          80,
+          576
+        ],
+        "oracle_shape": [
+          1,
+          80,
+          576
+        ],
+        "pass": true,
+        "stage": "text_layer_6"
+      },
+      {
+        "cosine": 0.9999999999923823,
+        "max_abs": 0.00042724609375,
+        "mlx_shape": [
+          1,
+          80,
+          576
+        ],
+        "oracle_shape": [
+          1,
+          80,
+          576
+        ],
+        "pass": true,
+        "stage": "text_layer_7"
+      },
+      {
+        "cosine": 0.9999999999924736,
+        "max_abs": 0.000457763671875,
+        "mlx_shape": [
+          1,
+          80,
+          576
+        ],
+        "oracle_shape": [
+          1,
+          80,
+          576
+        ],
+        "pass": true,
+        "stage": "text_layer_8"
+      },
+      {
+        "cosine": 0.9999999999909163,
+        "max_abs": 0.00054931640625,
+        "mlx_shape": [
+          1,
+          80,
+          576
+        ],
+        "oracle_shape": [
+          1,
+          80,
+          576
+        ],
+        "pass": true,
+        "stage": "text_layer_9"
+      },
+      {
+        "cosine": 0.9999999999894875,
+        "max_abs": 0.000762939453125,
+        "mlx_shape": [
+          1,
+          80,
+          576
+        ],
+        "oracle_shape": [
+          1,
+          80,
+          576
+        ],
+        "pass": true,
+        "stage": "text_layer_10"
+      },
+      {
+        "cosine": 0.9999999999999316,
+        "max_abs": 0.0068359375,
+        "mlx_shape": [
+          1,
+          80,
+          576
+        ],
+        "oracle_shape": [
+          1,
+          80,
+          576
+        ],
+        "pass": true,
+        "stage": "text_layer_11"
+      },
+      {
+        "cosine": 0.9999999999999293,
+        "max_abs": 0.0068359375,
+        "mlx_shape": [
+          1,
+          80,
+          576
+        ],
+        "oracle_shape": [
+          1,
+          80,
+          576
+        ],
+        "pass": true,
+        "stage": "text_layer_12"
+      },
+      {
+        "cosine": 0.9999999999999273,
+        "max_abs": 0.0068359375,
+        "mlx_shape": [
+          1,
+          80,
+          576
+        ],
+        "oracle_shape": [
+          1,
+          80,
+          576
+        ],
+        "pass": true,
+        "stage": "text_layer_13"
+      },
+      {
+        "cosine": 0.9999999999999234,
+        "max_abs": 0.0068359375,
+        "mlx_shape": [
+          1,
+          80,
+          576
+        ],
+        "oracle_shape": [
+          1,
+          80,
+          576
+        ],
+        "pass": true,
+        "stage": "text_layer_14"
+      },
+      {
+        "cosine": 0.9999999999999194,
+        "max_abs": 0.0068359375,
+        "mlx_shape": [
+          1,
+          80,
+          576
+        ],
+        "oracle_shape": [
+          1,
+          80,
+          576
+        ],
+        "pass": true,
+        "stage": "text_layer_15"
+      },
+      {
+        "cosine": 0.9999999999999142,
+        "max_abs": 0.0068359375,
+        "mlx_shape": [
+          1,
+          80,
+          576
+        ],
+        "oracle_shape": [
+          1,
+          80,
+          576
+        ],
+        "pass": true,
+        "stage": "text_layer_16"
+      },
+      {
+        "cosine": 0.9999999999999081,
+        "max_abs": 0.0068359375,
+        "mlx_shape": [
+          1,
+          80,
+          576
+        ],
+        "oracle_shape": [
+          1,
+          80,
+          576
+        ],
+        "pass": true,
+        "stage": "text_layer_17"
+      },
+      {
+        "cosine": 0.999999999999907,
+        "max_abs": 0.0068359375,
+        "mlx_shape": [
+          1,
+          80,
+          576
+        ],
+        "oracle_shape": [
+          1,
+          80,
+          576
+        ],
+        "pass": true,
+        "stage": "text_layer_18"
+      },
+      {
+        "cosine": 0.999999999999896,
+        "max_abs": 0.0068359375,
+        "mlx_shape": [
+          1,
+          80,
+          576
+        ],
+        "oracle_shape": [
+          1,
+          80,
+          576
+        ],
+        "pass": true,
+        "stage": "text_layer_19"
+      },
+      {
+        "cosine": 0.9999999999998784,
+        "max_abs": 0.0068359375,
+        "mlx_shape": [
+          1,
+          80,
+          576
+        ],
+        "oracle_shape": [
+          1,
+          80,
+          576
+        ],
+        "pass": true,
+        "stage": "text_layer_20"
+      },
+      {
+        "cosine": 0.9999999999998601,
+        "max_abs": 0.0068359375,
+        "mlx_shape": [
+          1,
+          80,
+          576
+        ],
+        "oracle_shape": [
+          1,
+          80,
+          576
+        ],
+        "pass": true,
+        "stage": "text_layer_21"
+      },
+      {
+        "cosine": 0.9999999999998272,
+        "max_abs": 0.0068359375,
+        "mlx_shape": [
+          1,
+          80,
+          576
+        ],
+        "oracle_shape": [
+          1,
+          80,
+          576
+        ],
+        "pass": true,
+        "stage": "text_layer_22"
+      },
+      {
+        "cosine": 0.9999999999997429,
+        "max_abs": 0.0068359375,
+        "mlx_shape": [
+          1,
+          80,
+          576
+        ],
+        "oracle_shape": [
+          1,
+          80,
+          576
+        ],
+        "pass": true,
+        "stage": "text_layer_23"
+      },
+      {
+        "cosine": 0.9999999999996838,
+        "max_abs": 0.0068359375,
+        "mlx_shape": [
+          1,
+          80,
+          576
+        ],
+        "oracle_shape": [
+          1,
+          80,
+          576
+        ],
+        "pass": true,
+        "stage": "text_layer_24"
+      },
+      {
+        "cosine": 0.9999999999996236,
+        "max_abs": 0.0068359375,
+        "mlx_shape": [
+          1,
+          80,
+          576
+        ],
+        "oracle_shape": [
+          1,
+          80,
+          576
+        ],
+        "pass": true,
+        "stage": "text_layer_25"
+      },
+      {
+        "cosine": 0.9999999999995459,
+        "max_abs": 0.0068359375,
+        "mlx_shape": [
+          1,
+          80,
+          576
+        ],
+        "oracle_shape": [
+          1,
+          80,
+          576
+        ],
+        "pass": true,
+        "stage": "text_layer_26"
+      },
+      {
+        "cosine": 0.9999999999994158,
+        "max_abs": 0.0068359375,
+        "mlx_shape": [
+          1,
+          80,
+          576
+        ],
+        "oracle_shape": [
+          1,
+          80,
+          576
+        ],
+        "pass": true,
+        "stage": "text_layer_27"
+      },
+      {
+        "cosine": 0.9999999999982796,
+        "max_abs": 0.005859375,
+        "mlx_shape": [
+          1,
+          80,
+          576
+        ],
+        "oracle_shape": [
+          1,
+          80,
+          576
+        ],
+        "pass": true,
+        "stage": "text_layer_28"
+      },
+      {
+        "cosine": 0.9999999999933648,
+        "max_abs": 0.00439453125,
+        "mlx_shape": [
+          1,
+          80,
+          576
+        ],
+        "oracle_shape": [
+          1,
+          80,
+          576
+        ],
+        "pass": true,
+        "stage": "text_layer_29"
+      }
+    ],
+    "vision_final": {
+      "cosine": 0.9999999999396901,
+      "max_abs": 0.0002384185791015625,
+      "mlx_shape": [
+        1,
+        1024,
+        768
+      ],
+      "oracle_shape": [
+        1,
+        1024,
+        768
+      ],
+      "pass": true,
+      "stage": "vision_final"
+    },
+    "vision_layers": [
+      {
+        "cosine": 0.9999999999984078,
+        "max_abs": 1.3828277587890625e-05,
+        "mlx_shape": [
+          1,
+          1024,
+          768
+        ],
+        "oracle_shape": [
+          1,
+          1024,
+          768
+        ],
+        "pass": true,
+        "stage": "vision_layer_0"
+      },
+      {
+        "cosine": 0.9999999999933527,
+        "max_abs": 1.963973045349121e-05,
+        "mlx_shape": [
+          1,
+          1024,
+          768
+        ],
+        "oracle_shape": [
+          1,
+          1024,
+          768
+        ],
+        "pass": true,
+        "stage": "vision_layer_1"
+      },
+      {
+        "cosine": 0.9999999999912319,
+        "max_abs": 1.958012580871582e-05,
+        "mlx_shape": [
+          1,
+          1024,
+          768
+        ],
+        "oracle_shape": [
+          1,
+          1024,
+          768
+        ],
+        "pass": true,
+        "stage": "vision_layer_2"
+      },
+      {
+        "cosine": 0.9999999999877117,
+        "max_abs": 1.9758939743041992e-05,
+        "mlx_shape": [
+          1,
+          1024,
+          768
+        ],
+        "oracle_shape": [
+          1,
+          1024,
+          768
+        ],
+        "pass": true,
+        "stage": "vision_layer_3"
+      },
+      {
+        "cosine": 0.9999999999886529,
+        "max_abs": 7.62939453125e-05,
+        "mlx_shape": [
+          1,
+          1024,
+          768
+        ],
+        "oracle_shape": [
+          1,
+          1024,
+          768
+        ],
+        "pass": true,
+        "stage": "vision_layer_4"
+      },
+      {
+        "cosine": 0.9999999999939173,
+        "max_abs": 0.0007658004760742188,
+        "mlx_shape": [
+          1,
+          1024,
+          768
+        ],
+        "oracle_shape": [
+          1,
+          1024,
+          768
+        ],
+        "pass": true,
+        "stage": "vision_layer_5"
+      },
+      {
+        "cosine": 0.9999999999939515,
+        "max_abs": 0.0011577606201171875,
+        "mlx_shape": [
+          1,
+          1024,
+          768
+        ],
+        "oracle_shape": [
+          1,
+          1024,
+          768
+        ],
+        "pass": true,
+        "stage": "vision_layer_6"
+      },
+      {
+        "cosine": 0.999999999993864,
+        "max_abs": 0.0012264251708984375,
+        "mlx_shape": [
+          1,
+          1024,
+          768
+        ],
+        "oracle_shape": [
+          1,
+          1024,
+          768
+        ],
+        "pass": true,
+        "stage": "vision_layer_7"
+      },
+      {
+        "cosine": 0.9999999999933509,
+        "max_abs": 0.00122833251953125,
+        "mlx_shape": [
+          1,
+          1024,
+          768
+        ],
+        "oracle_shape": [
+          1,
+          1024,
+          768
+        ],
+        "pass": true,
+        "stage": "vision_layer_8"
+      },
+      {
+        "cosine": 0.9999999999909316,
+        "max_abs": 0.001239776611328125,
+        "mlx_shape": [
+          1,
+          1024,
+          768
+        ],
+        "oracle_shape": [
+          1,
+          1024,
+          768
+        ],
+        "pass": true,
+        "stage": "vision_layer_9"
+      },
+      {
+        "cosine": 0.999999999985382,
+        "max_abs": 0.001251220703125,
+        "mlx_shape": [
+          1,
+          1024,
+          768
+        ],
+        "oracle_shape": [
+          1,
+          1024,
+          768
+        ],
+        "pass": true,
+        "stage": "vision_layer_10"
+      },
+      {
+        "cosine": 0.9999999999877197,
+        "max_abs": 0.005523681640625,
+        "mlx_shape": [
+          1,
+          1024,
+          768
+        ],
+        "oracle_shape": [
+          1,
+          1024,
+          768
+        ],
+        "pass": true,
+        "stage": "vision_layer_11"
+      }
+    ],
+    "vision_patch_embed": {
+      "cosine": 0.9999999999997526,
+      "max_abs": 4.567205905914307e-06,
+      "mlx_shape": [
+        1,
+        1024,
+        768
+      ],
+      "oracle_shape": [
+        1,
+        1024,
+        768
+      ],
+      "pass": true,
+      "stage": "vision_patch_embed"
+    }
+  },
+  "text_tower_pass": true,
+  "transformers_supports_idefics3": true,
+  "vision_tower_pass": true
+}

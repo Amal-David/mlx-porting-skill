@@ -363,11 +363,13 @@ def validate_capture_manifest(payload: Any) -> dict[str, Any]:
 
     capture_value = manifest["capture"]
     if isinstance(capture_value, dict) and capture_value.get("mode") == "asr":
-        capture = _require_exact_fields(
-            capture_value,
-            {"mode", "waveform_samples", "seed", "dtype_policy"},
-            label="oracle manifest capture",
-        )
+        asr_capture_fields = {"mode", "waveform_samples", "seed", "dtype_policy"}
+        if set(capture_value) not in {
+            frozenset(asr_capture_fields),
+            frozenset(asr_capture_fields | {"compute_dtype"}),
+        }:
+            raise SkillError("oracle manifest capture has an invalid field set")
+        capture = capture_value
         if type(capture["waveform_samples"]) is not int or capture["waveform_samples"] < 400:
             raise SkillError(
                 "oracle manifest capture.waveform_samples must be at least 400"
@@ -378,6 +380,10 @@ def validate_capture_manifest(payload: Any) -> dict[str, Any]:
             raise SkillError(
                 "oracle manifest capture.dtype_policy must be 'float32' or 'keep'"
             )
+        if capture.get("compute_dtype", "source") not in {"source", "float32"}:
+            raise SkillError(
+                "oracle manifest capture.compute_dtype must be 'source' or 'float32'"
+            )
     else:
         legacy_capture_fields = {
             "prompts", "token_ids", "generate_steps", "seed", "dtype_policy",
@@ -385,9 +391,11 @@ def validate_capture_manifest(payload: Any) -> dict[str, Any]:
         reproducible_capture_fields = legacy_capture_fields | {
             "mode", "input_mode", "attention_mask",
         }
+        matched_capture_fields = reproducible_capture_fields | {"compute_dtype"}
         if not isinstance(capture_value, dict) or set(capture_value) not in {
             frozenset(legacy_capture_fields),
             frozenset(reproducible_capture_fields),
+            frozenset(matched_capture_fields),
         }:
             raise SkillError("oracle manifest capture has an invalid field set")
         capture = capture_value
@@ -407,7 +415,7 @@ def validate_capture_manifest(payload: Any) -> dict[str, Any]:
             raise SkillError("oracle manifest capture.token_ids must be null or non-negative integers")
         if (prompts is None) == (token_ids is None):
             raise SkillError("oracle manifest capture must record exactly one input mode")
-        if set(capture) == reproducible_capture_fields:
+        if set(capture) in (reproducible_capture_fields, matched_capture_fields):
             expected_input_mode = "token_ids" if token_ids is not None else "prompt"
             if capture["mode"] not in {
                 "dense-decoder",
@@ -438,6 +446,10 @@ def validate_capture_manifest(payload: Any) -> dict[str, Any]:
             raise SkillError("oracle manifest capture.seed must be an integer")
         if capture["dtype_policy"] not in {"float32", "keep"}:
             raise SkillError("oracle manifest capture.dtype_policy must be 'float32' or 'keep'")
+        if capture.get("compute_dtype", "source") not in {"source", "float32"}:
+            raise SkillError(
+                "oracle manifest capture.compute_dtype must be 'source' or 'float32'"
+            )
 
     tensors = manifest["tensors"]
     if not isinstance(tensors, list) or not tensors:
