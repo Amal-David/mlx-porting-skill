@@ -1,14 +1,14 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-07-13T19:46:42+00:00",
-  "run_id": "2026-07-14-ideogram-optimizer-learnings",
+  "generated_at": "2026-07-18T22:03:25+00:00",
+  "run_id": "2026-07-18-nightly-knowledge-curator",
   "policy": {
     "review_only": true,
     "auto_promote_sources": false,
     "auto_modify_recommendations": false
   },
-  "node_count": 708,
-  "edge_count": 501,
+  "node_count": 709,
+  "edge_count": 497,
   "nodes": [
     {
       "id": "approach:adaptive-kv-quantization",
@@ -692,7 +692,7 @@
       "status": "needs-validation",
       "priority": "P1",
       "decision_state": "needs-review",
-      "summary": "The current MLX contributor refresh requested 1000 contributors, captured 262 linked contributors and 268 anon=true author buckets through 2026-07-08. Collection remains source-selection evidence only; repository/code-search rescreening and implementation review remain open.",
+      "summary": "The current MLX contributor refresh requested 1000 contributors, captured 263 linked contributors and 269 anon=true author buckets through 2026-07-18. Collection remains source-selection evidence only; repository/code-search rescreening and implementation review remain open.",
       "validation_gate": "Refresh contributors with `scripts/collect_contributors.py`, following GitHub Link headers until no rel=\"next\" remains or the explicit cap is reached; record requested count, linked count, anon=true count without raw anonymous identities, status codes, ETags, Last-Modified headers, rate-limit state, repository/code search total_count and incomplete_results, replay missed queries, inspect newly matched repos by architecture/source-format family, and record each result as adopted, held, rejected, or backlog.",
       "source": "mlx-model-porting/research-runs/2026-06-27-top1000-contributor-loop/synthesis.json",
       "affected": [
@@ -706,10 +706,10 @@
       "families": [],
       "current_state": {
         "source_node": "review-queue:contributors:ml-explore-mlx",
-        "retrieved": "2026-07-08",
+        "retrieved": "2026-07-18",
         "requested_count": 1000,
-        "linked_user_count": 262,
-        "anonymous_author_count": 268,
+        "linked_user_count": 263,
+        "anonymous_author_count": 269,
         "review_only": true
       }
     },
@@ -2652,6 +2652,16 @@
       "source_collection_node": "review-queue:contributors:ml-explore-mlx"
     },
     {
+      "id": "candidate:contributor:pierre427",
+      "kind": "contributor_candidate",
+      "label": "pierre427",
+      "locator": "https://github.com/pierre427",
+      "read_state": "review_queue",
+      "review_status": "unreviewed-source-selection",
+      "decision_state": "source-selection-only",
+      "source_collection_node": "review-queue:contributors:ml-explore-mlx"
+    },
+    {
       "id": "candidate:contributor:plpxsk",
       "kind": "contributor_candidate",
       "label": "plpxsk",
@@ -3352,6 +3362,28 @@
       "source_collection_node": "review-queue:contributors:ml-explore-mlx"
     },
     {
+      "id": "candidate:paper:a-jolt-for-the-kv-cache-near-lossless-kv-cache-compression-via-joint-tucker-and-jl-residual-allocation-for-llms",
+      "kind": "source_candidate",
+      "candidate_kind": "paper",
+      "label": "A JoLT for the KV Cache: Near-Lossless KV Cache Compression via Joint Tucker and JL-Residual Allocation for LLMs",
+      "locator": "https://arxiv.org/abs/2607.12550",
+      "immutable_locator": "https://arxiv.org/abs/2607.12550v1",
+      "paper_id": "2607.12550",
+      "revision": "v1",
+      "revision_comparison": null,
+      "read_state": "unread_candidate",
+      "known_source_id": "",
+      "query": "KV cache quantization long context",
+      "updated": "2026-07-14T09:23:20Z",
+      "published": "2026-07-14T09:23:20Z",
+      "authors": [
+        "Rahul Krishnan",
+        "Volker Schulz"
+      ],
+      "summary": "The key-value (KV) cache has become the dominant memory cost of transformer inference. It grows with batch size, context length, and depth, and at long context it, rather than the model weights, sets the ceiling on throughput. Two families of methods reduce it. Low-rank methods factor two-dimensional slices of the cache, either per-head matrices or cross-layer feature blocks, and quantization methods lower the bit-width of every entry. Neither family exploits the fact that the cache at a layer is naturally a third-order tensor whose three axes, the heads, the tokens, and the features, carry very different amounts of redundancy. We take this tensor view directly. Our method, JoLT, applies a partial Tucker decomposition that compresses only the token and feature axes while leaving the head a",
+      "review_status": "candidate-unreviewed"
+    },
+    {
       "id": "candidate:paper:affectcodec-emotion-preserving-neural-speech-codec-with-block-diagonal-residual-fsq",
       "kind": "source_candidate",
       "candidate_kind": "paper",
@@ -3379,37 +3411,6 @@
         "Ya Li"
       ],
       "summary": "Neural speech codecs have become the discrete interface between raw audio and speech language models, yet they remain optimized primarily for acoustic reconstruction fidelity, which leaves emotion-relevant cues vulnerable to being discarded during quantization, limiting the affective capacity of downstream models. We trace this degradation to two mechanisms: reconstruction-driven bit allocation under limited bitrate and cross-stream leakage in concatenation-based codecs, where acoustic gradients can overwrite nominally emotion-reserved dimensions. We propose AffectCodec, an emotion-preserving neural speech codec built on Block-Diagonal Residual Finite Scalar Quantization (BD-RFSQ). By imposing block-diagonal input and output projections over emotion and acoustic subspaces, BD-RFSQ transfor",
-      "review_status": "candidate-unreviewed"
-    },
-    {
-      "id": "candidate:paper:agent-assisted-side-channel-attacks-on-non-prefix-kv-cache-in-rag",
-      "kind": "source_candidate",
-      "candidate_kind": "paper",
-      "label": "Agent-Assisted Side-Channel Attacks on Non-Prefix KV Cache in RAG",
-      "locator": "https://arxiv.org/abs/2606.21842",
-      "immutable_locator": "https://arxiv.org/abs/2606.21842v1",
-      "paper_id": "2606.21842",
-      "revision": "v1",
-      "revision_comparison": {
-        "before": null,
-        "after": "v1",
-        "status": "comparison_unpinned",
-        "basis": "source_registry"
-      },
-      "read_state": "updated_candidate",
-      "known_source_id": "source:paper-2606-21842",
-      "query": "KV cache quantization long context",
-      "updated": "2026-06-20T02:28:28Z",
-      "published": "2026-06-20T02:28:28Z",
-      "authors": [
-        "He Sun",
-        "Shinan Liu",
-        "Siyuan Ma",
-        "Junhao Li",
-        "Mingjun Xiao",
-        "Wenhao Jiang"
-      ],
-      "summary": "Modern Large Language Model (LLM) serving engines increasingly rely on Retrieval-Augmented Generation (RAG) and non-prefix Key-Value (KV) cache fusion to accelerate long-context, multi-tenant inference. While existing KV cache side-channel attacks require strict linear prefix alignment--rendering them ineffective against real-world RAG queries that contain unique, user-specific private prefixes--we uncover a critical class of structural vulnerabilities inherent to chunk-aware memory scheduling. We demonstrate that the deterministic micro-architectural mechanisms used to align and fuse disjoint memory chunks inadvertently leak a continuous \"Step-Wave\" timing signature. Exploiting this physical observation, we introduce SpliceLeak, the first end-to-end side-channel attack targeting non-prefi",
       "review_status": "candidate-unreviewed"
     },
     {
@@ -3758,6 +3759,36 @@
       "review_status": "candidate-unreviewed"
     },
     {
+      "id": "candidate:paper:pm-kvq-progressive-mixed-precision-kv-cache-quantization-for-long-cot-llms",
+      "kind": "source_candidate",
+      "candidate_kind": "paper",
+      "label": "PM-KVQ: Progressive Mixed-precision KV Cache Quantization for Long-CoT LLMs",
+      "locator": "https://arxiv.org/abs/2505.18610",
+      "immutable_locator": "https://arxiv.org/abs/2505.18610v2",
+      "paper_id": "2505.18610",
+      "revision": "v2",
+      "revision_comparison": null,
+      "read_state": "unread_candidate",
+      "known_source_id": "",
+      "query": "KV cache quantization long context",
+      "updated": "2026-07-11T08:07:07Z",
+      "published": "2025-05-24T09:18:11Z",
+      "authors": [
+        "Tengxuan Liu",
+        "Shiyao Li",
+        "Jiayi Yang",
+        "Tianchen Zhao",
+        "Feng Zhou",
+        "Xiaohui Song",
+        "Guohao Dai",
+        "Shengen Yan",
+        "Huazhong Yang",
+        "Yu Wang"
+      ],
+      "summary": "Recently, significant progress has been made in developing reasoning-capable Large Language Models (LLMs) through long Chain-of-Thought (CoT) techniques. However, this long-CoT reasoning process imposes substantial memory overhead due to the large Key-Value (KV) Cache memory overhead. Post-training KV Cache quantization has emerged as a promising compression technique and has been extensively studied in short-context scenarios. However, directly applying existing methods to long-CoT LLMs causes significant performance degradation due to the following two reasons: (1) Large cumulative error: Existing methods fail to adequately leverage available memory, and they directly quantize the KV Cache during each decoding step, leading to large cumulative quantization error. (2) Short-context calibr",
+      "review_status": "candidate-unreviewed"
+    },
+    {
       "id": "candidate:paper:probing-neural-audio-codecs-for-distinctions-among-english-nuclear-tunes",
       "kind": "source_candidate",
       "candidate_kind": "paper",
@@ -3960,38 +3991,6 @@
       "review_status": "candidate-unreviewed"
     },
     {
-      "id": "candidate:paper:ultraquant-4-bit-kv-caching-for-context-heavy-agents",
-      "kind": "source_candidate",
-      "candidate_kind": "paper",
-      "label": "UltraQuant: 4-bit KV Caching for Context-Heavy Agents",
-      "locator": "https://arxiv.org/abs/2606.20474",
-      "immutable_locator": "https://arxiv.org/abs/2606.20474v2",
-      "paper_id": "2606.20474",
-      "revision": "v2",
-      "revision_comparison": {
-        "before": null,
-        "after": "v2",
-        "status": "comparison_unpinned",
-        "basis": "source_registry"
-      },
-      "read_state": "updated_candidate",
-      "known_source_id": "source:paper-2606-20474",
-      "query": "KV cache quantization long context",
-      "updated": "2026-06-19T08:02:54Z",
-      "published": "2026-06-18T16:54:07Z",
-      "authors": [
-        "Inesh Chakrabarti",
-        "David Limpus",
-        "Aditi Ghai Rana",
-        "Bowen Bao",
-        "Spandan Tiwari",
-        "Thiago Crepaldi",
-        "Ashish Sirasao"
-      ],
-      "summary": "Context-heavy agents place unusual pressure on the key-value (KV) cache: long prefixes are reused across many short turns, while concurrency determines whether the serving system can keep GPUs utilized. We study 4-bit KV-cache compression for this setting, using TurboQuant-style rotation and codebook quantization as a quality anchor and vLLM FP8 KV caching as the deployment anchor. We report three contributions. First, we frame 4-bit KV caching around multi-round agent workloads where task quality, cache residency, and serving throughput must be measured jointly. Second, we describe the practical design choices needed to make the 4-bit path robust, including asymmetric K/V treatment, Walsh-Hadamard rotation, QJL removal, and block-scale variants. Third, we present serving optimizations on ",
-      "review_status": "candidate-unreviewed"
-    },
-    {
       "id": "candidate:paper:what-to-keep-what-to-forget-a-rate-distortion-view-of-memory-compaction-in-llms-and-agents",
       "kind": "source_candidate",
       "candidate_kind": "paper",
@@ -4026,19 +4025,19 @@
       "locator": "https://github.com/anthropics/skills",
       "read_state": "updated_candidate",
       "known_source_id": "source:agent-skills-repo",
-      "head_sha": "9d2f1ae187231d8199c64b5b762e1bdf2244733d",
+      "head_sha": "fa0fa64bdc967915dc8399e803be67759e1e62b8",
       "revision_comparison": {
         "before": "57546260929473d4e0d1c1bb75297be2fdfa1949",
-        "after": "9d2f1ae187231d8199c64b5b762e1bdf2244733d",
+        "after": "fa0fa64bdc967915dc8399e803be67759e1e62b8",
         "status": "changed",
         "basis": "source_registry"
       },
-      "head_date": "2026-07-01T18:11:23Z",
-      "head_message": "Update claude-api skill: Claude Sonnet 5 and Managed Agents July updates (#1373)",
+      "head_date": "2026-07-17T02:47:37Z",
+      "head_message": "Update docx, pptx, and xlsx skills (#1447)",
       "topics": [
         "agent-skills"
       ],
-      "summary": "Update claude-api skill: Claude Sonnet 5 and Managed Agents July updates (#1373)",
+      "summary": "Update docx, pptx, and xlsx skills (#1447)",
       "review_status": "candidate-unreviewed"
     },
     {
@@ -4075,21 +4074,21 @@
       "locator": "https://github.com/Blaizzy/mlx-vlm",
       "read_state": "updated_candidate",
       "known_source_id": "source:mlx-vlm-repo",
-      "head_sha": "05440cc57c62799fe8d4d79079fb8d281f149b4b",
+      "head_sha": "6d5603b36902e0742a8273f0b0e6fa4a60d2a201",
       "revision_comparison": {
         "before": "6a8cdff6a1f53f46a15d4adb997c3b2d5f621263",
-        "after": "05440cc57c62799fe8d4d79079fb8d281f149b4b",
+        "after": "6d5603b36902e0742a8273f0b0e6fa4a60d2a201",
         "status": "changed",
         "basis": "source_registry"
       },
-      "head_date": "2026-07-09T18:01:14Z",
-      "head_message": "Merge pull request #1522 from sxy-trans-n/codex/qwen3-omni-incremental-audio",
+      "head_date": "2026-07-18T10:23:08Z",
+      "head_message": "Speed up llguidance structured decoding (#1628)",
       "topics": [
         "multimodal",
         "serving",
         "speculative"
       ],
-      "summary": "Merge pull request #1522 from sxy-trans-n/codex/qwen3-omni-incremental-audio",
+      "summary": "Speed up llguidance structured decoding (#1628)",
       "review_status": "candidate-unreviewed"
     },
     {
@@ -4100,21 +4099,21 @@
       "locator": "https://github.com/ml-explore/mlx",
       "read_state": "updated_candidate",
       "known_source_id": "source:mlx-repo",
-      "head_sha": "4367c73b60541ddd5a266ce4644fd93d20223b6e",
+      "head_sha": "b7c3dd6d27f45b5365b08a840310187dc503f1db",
       "revision_comparison": {
         "before": "96296e9c3075a2389bc5c0f078bf01b5aa377cd9",
-        "after": "4367c73b60541ddd5a266ce4644fd93d20223b6e",
+        "after": "b7c3dd6d27f45b5365b08a840310187dc503f1db",
         "status": "changed",
         "basis": "source_registry"
       },
-      "head_date": "2026-07-10T00:37:28Z",
-      "head_message": "Warn at configure time when NAX kernels are disabled (#3824)",
+      "head_date": "2026-07-17T16:53:03Z",
+      "head_message": "[CUDA][Improvement] RMSNorm forward speed up (#3850)",
       "topics": [
         "runtime",
         "kernels",
         "quantization"
       ],
-      "summary": "Warn at configure time when NAX kernels are disabled (#3824)",
+      "summary": "[CUDA][Improvement] RMSNorm forward speed up (#3850)",
       "review_status": "candidate-unreviewed"
     },
     {
@@ -4150,22 +4149,22 @@
       "locator": "https://github.com/ml-explore/mlx-lm",
       "read_state": "updated_candidate",
       "known_source_id": "source:mlx-lm-repo",
-      "head_sha": "a790972f0f844d81067ed45c28b524220a10c019",
+      "head_sha": "15b522f593b7ca5fbc0cac6f7572d40859d2d8fe",
       "revision_comparison": {
         "before": "2c008fd0252b2c569227d12568356ab88ab0560a",
-        "after": "a790972f0f844d81067ed45c28b524220a10c019",
+        "after": "15b522f593b7ca5fbc0cac6f7572d40859d2d8fe",
         "status": "changed",
         "basis": "source_registry"
       },
-      "head_date": "2026-07-09T00:03:19Z",
-      "head_message": "Fix broadcast crash in quantized SDPA with GQA + batched padding mask (batch >= 2) (#1467)",
+      "head_date": "2026-07-11T20:42:55Z",
+      "head_message": "Lc/fix xtc special tokens server (#1176)",
       "topics": [
         "language",
         "conversion",
         "decoding",
         "cache"
       ],
-      "summary": "Fix broadcast crash in quantized SDPA with GQA + batched padding mask (batch >= 2) (#1467)",
+      "summary": "Lc/fix xtc special tokens server (#1176)",
       "review_status": "candidate-unreviewed"
     },
     {
@@ -4176,20 +4175,20 @@
       "locator": "https://github.com/openai/codex",
       "read_state": "updated_candidate",
       "known_source_id": "",
-      "head_sha": "1f0566d3f59298d1bb88820a0d35294f1eeb07ea",
+      "head_sha": "312caf176a8fd3a5897a3d1fd3ed0a283bd1b5ac",
       "revision_comparison": {
         "before": "1f0566d3f59298d1bb88820a0d35294f1eeb07ea",
-        "after": "1f0566d3f59298d1bb88820a0d35294f1eeb07ea",
-        "status": "same",
+        "after": "312caf176a8fd3a5897a3d1fd3ed0a283bd1b5ac",
+        "status": "changed",
         "basis": "previous_graph"
       },
-      "head_date": "2026-07-10T01:28:55Z",
-      "head_message": "exec-server: expose process helper to outer sandbox (#31937)",
+      "head_date": "2026-07-18T20:59:57Z",
+      "head_message": "Seed realtime V3 sessions with initial text items (#34067)",
       "topics": [
         "agent-skills",
         "codex"
       ],
-      "summary": "exec-server: expose process helper to outer sandbox (#31937)",
+      "summary": "Seed realtime V3 sessions with initial text items (#34067)",
       "review_status": "candidate-unreviewed"
     },
     {
@@ -4501,11 +4500,11 @@
       "decision_state": "review_queue",
       "review_only": true,
       "repo": "ml-explore/mlx",
-      "generated_at": "2026-07-08T22:09:09.928177+00:00",
-      "retrieved": "2026-07-08",
+      "generated_at": "2026-07-18T22:03:08.318458+00:00",
+      "retrieved": "2026-07-18",
       "requested_count": 1000,
-      "linked_user_count": 262,
-      "anonymous_author_count": 268
+      "linked_user_count": 263,
+      "anonymous_author_count": 269
     },
     {
       "id": "source:agent-skills-repo",
@@ -11166,6 +11165,52 @@
   ],
   "edges": [
     {
+      "source": "candidate:paper:a-jolt-for-the-kv-cache-near-lossless-kv-cache-compression-via-joint-tucker-and-jl-residual-allocation-for-llms",
+      "target": "approach:adaptive-kv-quantization",
+      "relation": "candidate_relevant_to",
+      "score": 10,
+      "matched_terms": [
+        "allocation",
+        "bit",
+        "cache",
+        "context",
+        "key",
+        "long",
+        "memory",
+        "quantization"
+      ]
+    },
+    {
+      "source": "candidate:paper:a-jolt-for-the-kv-cache-near-lossless-kv-cache-compression-via-joint-tucker-and-jl-residual-allocation-for-llms",
+      "target": "approach:native-low-bit-weight-quantization",
+      "relation": "candidate_relevant_to",
+      "score": 7,
+      "matched_terms": [
+        "bit",
+        "low",
+        "memory",
+        "quantization",
+        "size",
+        "throughput",
+        "transformer"
+      ]
+    },
+    {
+      "source": "candidate:paper:a-jolt-for-the-kv-cache-near-lossless-kv-cache-compression-via-joint-tucker-and-jl-residual-allocation-for-llms",
+      "target": "outcome:qwen25-05b-instruct-local-worked-port",
+      "relation": "candidate_relevant_to",
+      "score": 7,
+      "matched_terms": [
+        "cache",
+        "cross",
+        "rather",
+        "tensor",
+        "than",
+        "token",
+        "tokens"
+      ]
+    },
+    {
       "source": "candidate:paper:affectcodec-emotion-preserving-neural-speech-codec-with-block-diagonal-residual-fsq",
       "target": "approach:audio-streaming-and-cache",
       "relation": "candidate_relevant_to",
@@ -11201,63 +11246,6 @@
         "quantization",
         "where"
       ]
-    },
-    {
-      "source": "candidate:paper:agent-assisted-side-channel-attacks-on-non-prefix-kv-cache-in-rag",
-      "target": "approach:adaptive-kv-quantization",
-      "relation": "candidate_relevant_to",
-      "score": 8,
-      "matched_terms": [
-        "aware",
-        "cache",
-        "context",
-        "key",
-        "long",
-        "memory",
-        "quantization",
-        "value"
-      ]
-    },
-    {
-      "source": "candidate:paper:agent-assisted-side-channel-attacks-on-non-prefix-kv-cache-in-rag",
-      "target": "approach:multimodal-content-prefix-cache",
-      "relation": "candidate_relevant_to",
-      "score": 7,
-      "matched_terms": [
-        "aware",
-        "cache",
-        "context",
-        "language",
-        "long",
-        "prefix",
-        "serving"
-      ]
-    },
-    {
-      "source": "candidate:paper:agent-assisted-side-channel-attacks-on-non-prefix-kv-cache-in-rag",
-      "target": "outcome:vlm-mlx-vlm-working-route",
-      "relation": "candidate_relevant_to",
-      "score": 7,
-      "matched_terms": [
-        "alignment",
-        "cache",
-        "generation",
-        "prefix",
-        "serving",
-        "specific",
-        "tenant"
-      ]
-    },
-    {
-      "source": "candidate:paper:agent-assisted-side-channel-attacks-on-non-prefix-kv-cache-in-rag",
-      "target": "source:paper-2606-21842",
-      "relation": "candidate_version_of",
-      "revision_comparison": {
-        "before": null,
-        "after": "v1",
-        "status": "comparison_unpinned",
-        "basis": "source_registry"
-      }
     },
     {
       "source": "candidate:paper:attention-based-on-device-streaming-speech-recognition-with-large-speech-corpus",
@@ -11727,6 +11715,49 @@
       }
     },
     {
+      "source": "candidate:paper:pm-kvq-progressive-mixed-precision-kv-cache-quantization-for-long-cot-llms",
+      "target": "approach:adaptive-kv-quantization",
+      "relation": "candidate_relevant_to",
+      "score": 9,
+      "matched_terms": [
+        "cache",
+        "context",
+        "key",
+        "long",
+        "memory",
+        "mixed",
+        "precision",
+        "quantization"
+      ]
+    },
+    {
+      "source": "candidate:paper:pm-kvq-progressive-mixed-precision-kv-cache-quantization-for-long-cot-llms",
+      "target": "approach:uniform-kv-quantization",
+      "relation": "candidate_relevant_to",
+      "score": 5,
+      "matched_terms": [
+        "cache",
+        "context",
+        "long",
+        "memory",
+        "quantization"
+      ]
+    },
+    {
+      "source": "candidate:paper:pm-kvq-progressive-mixed-precision-kv-cache-quantization-for-long-cot-llms",
+      "target": "backlog:training-as-port-target",
+      "relation": "candidate_relevant_to",
+      "score": 6,
+      "matched_terms": [
+        "been",
+        "cache",
+        "has",
+        "key",
+        "memory",
+        "training"
+      ]
+    },
+    {
       "source": "candidate:paper:probing-neural-audio-codecs-for-distinctions-among-english-nuclear-tunes",
       "target": "approach:audio-streaming-and-cache",
       "relation": "candidate_relevant_to",
@@ -12039,61 +12070,6 @@
       ]
     },
     {
-      "source": "candidate:paper:ultraquant-4-bit-kv-caching-for-context-heavy-agents",
-      "target": "approach:adaptive-kv-quantization",
-      "relation": "candidate_relevant_to",
-      "score": 7,
-      "matched_terms": [
-        "bit",
-        "cache",
-        "context",
-        "key",
-        "long",
-        "quantization",
-        "value"
-      ]
-    },
-    {
-      "source": "candidate:paper:ultraquant-4-bit-kv-caching-for-context-heavy-agents",
-      "target": "approach:multimodal-content-prefix-cache",
-      "relation": "candidate_relevant_to",
-      "score": 6,
-      "matched_terms": [
-        "block",
-        "cache",
-        "context",
-        "long",
-        "serving",
-        "throughput"
-      ]
-    },
-    {
-      "source": "candidate:paper:ultraquant-4-bit-kv-caching-for-context-heavy-agents",
-      "target": "backlog:structured-timeseries-recsys",
-      "relation": "candidate_relevant_to",
-      "score": 7,
-      "matched_terms": [
-        "context",
-        "first",
-        "keep",
-        "must",
-        "style",
-        "task",
-        "value"
-      ]
-    },
-    {
-      "source": "candidate:paper:ultraquant-4-bit-kv-caching-for-context-heavy-agents",
-      "target": "source:paper-2606-20474",
-      "relation": "candidate_version_of",
-      "revision_comparison": {
-        "before": null,
-        "after": "v2",
-        "status": "comparison_unpinned",
-        "basis": "source_registry"
-      }
-    },
-    {
       "source": "candidate:paper:what-to-keep-what-to-forget-a-rate-distortion-view-of-memory-compaction-in-llms-and-agents",
       "target": "approach:adaptive-kv-quantization",
       "relation": "candidate_relevant_to",
@@ -12139,7 +12115,7 @@
       "relation": "candidate_version_of",
       "revision_comparison": {
         "before": "57546260929473d4e0d1c1bb75297be2fdfa1949",
-        "after": "9d2f1ae187231d8199c64b5b762e1bdf2244733d",
+        "after": "fa0fa64bdc967915dc8399e803be67759e1e62b8",
         "status": "changed",
         "basis": "source_registry"
       }
@@ -12191,36 +12167,33 @@
     },
     {
       "source": "candidate:repository:blaizzy-mlx-vlm",
+      "target": "approach:draft-model-speculation",
+      "relation": "candidate_relevant_to",
+      "score": 2,
+      "matched_terms": [
+        "decoding",
+        "speculative"
+      ]
+    },
+    {
+      "source": "candidate:repository:blaizzy-mlx-vlm",
       "target": "approach:multimodal-content-prefix-cache",
       "relation": "candidate_relevant_to",
-      "score": 4,
+      "score": 3,
       "matched_terms": [
         "multimodal",
-        "omni",
         "serving",
         "vlm"
       ]
     },
     {
       "source": "candidate:repository:blaizzy-mlx-vlm",
-      "target": "approach:qwen3-tts-batch-generation",
-      "relation": "candidate_relevant_to",
-      "score": 4,
-      "matched_terms": [
-        "audio",
-        "qwen3",
-        "request",
-        "serving"
-      ]
-    },
-    {
-      "source": "candidate:repository:blaizzy-mlx-vlm",
-      "target": "approach:video-input-budgeting",
+      "target": "outcome:vlm-mlx-vlm-working-route",
       "relation": "candidate_relevant_to",
       "score": 3,
       "matched_terms": [
         "multimodal",
-        "omni",
+        "serving",
         "vlm"
       ]
     },
@@ -12230,40 +12203,10 @@
       "relation": "candidate_version_of",
       "revision_comparison": {
         "before": "6a8cdff6a1f53f46a15d4adb997c3b2d5f621263",
-        "after": "05440cc57c62799fe8d4d79079fb8d281f149b4b",
+        "after": "6d5603b36902e0742a8273f0b0e6fa4a60d2a201",
         "status": "changed",
         "basis": "source_registry"
       }
-    },
-    {
-      "source": "candidate:repository:ml-explore-mlx",
-      "target": "approach:bf16-weight-cast",
-      "relation": "candidate_relevant_to",
-      "score": 2,
-      "matched_terms": [
-        "quantization",
-        "when"
-      ]
-    },
-    {
-      "source": "candidate:repository:ml-explore-mlx",
-      "target": "approach:prompt-prefix-cache",
-      "relation": "candidate_relevant_to",
-      "score": 2,
-      "matched_terms": [
-        "quantization",
-        "when"
-      ]
-    },
-    {
-      "source": "candidate:repository:ml-explore-mlx",
-      "target": "approach:spatial-grid-sample-kernel",
-      "relation": "candidate_relevant_to",
-      "score": 2,
-      "matched_terms": [
-        "kernels",
-        "when"
-      ]
     },
     {
       "source": "candidate:repository:ml-explore-mlx",
@@ -12271,7 +12214,7 @@
       "relation": "candidate_version_of",
       "revision_comparison": {
         "before": "96296e9c3075a2389bc5c0f078bf01b5aa377cd9",
-        "after": "4367c73b60541ddd5a266ce4644fd93d20223b6e",
+        "after": "b7c3dd6d27f45b5365b08a840310187dc503f1db",
         "status": "changed",
         "basis": "source_registry"
       }
@@ -12326,30 +12269,28 @@
       "matched_terms": [
         "cache",
         "language",
-        "padding"
+        "server"
       ]
     },
     {
       "source": "candidate:repository:ml-explore-mlx-lm",
-      "target": "approach:fast-sdpa",
+      "target": "approach:continuous-batching-serving",
       "relation": "candidate_relevant_to",
-      "score": 4,
+      "score": 2,
       "matched_terms": [
-        "gqa",
         "language",
-        "mask",
-        "sdpa"
+        "server"
       ]
     },
     {
       "source": "candidate:repository:ml-explore-mlx-lm",
-      "target": "learning:rwkv-ssm-conformer-prototypes",
+      "target": "outcome:qwen25-05b-instruct-local-worked-port",
       "relation": "candidate_relevant_to",
       "score": 3,
       "matched_terms": [
+        "cache",
         "conversion",
-        "mask",
-        "padding"
+        "tokens"
       ]
     },
     {
@@ -12358,7 +12299,7 @@
       "relation": "candidate_version_of",
       "revision_comparison": {
         "before": "2c008fd0252b2c569227d12568356ab88ab0560a",
-        "after": "a790972f0f844d81067ed45c28b524220a10c019",
+        "after": "15b522f593b7ca5fbc0cac6f7572d40859d2d8fe",
         "status": "changed",
         "basis": "source_registry"
       }
@@ -13364,6 +13305,11 @@
     {
       "source": "review-queue:contributors:ml-explore-mlx",
       "target": "candidate:contributor:phequals7",
+      "relation": "contributor_in_refresh"
+    },
+    {
+      "source": "review-queue:contributors:ml-explore-mlx",
+      "target": "candidate:contributor:pierre427",
       "relation": "contributor_in_refresh"
     },
     {
@@ -14434,9 +14380,9 @@
   ],
   "latest_delta": {
     "schema_version": 1,
-    "run_id": "2026-07-14-ideogram-optimizer-learnings",
-    "generated_at": "2026-07-13T19:46:42+00:00",
-    "previous_graph_generated_at": "2026-07-12T17:41:12+00:00",
+    "run_id": "2026-07-18-nightly-knowledge-curator",
+    "generated_at": "2026-07-18T22:03:25+00:00",
+    "previous_graph_generated_at": "2026-07-13T19:46:42+00:00",
     "already_read_sources": [
       {
         "id": "candidate:repository:ml-explore-mlx-examples",
@@ -14453,7 +14399,26 @@
         }
       }
     ],
-    "new_unread_sources": [],
+    "new_unread_sources": [
+      {
+        "id": "candidate:paper:a-jolt-for-the-kv-cache-near-lossless-kv-cache-compression-via-joint-tucker-and-jl-residual-allocation-for-llms",
+        "label": "A JoLT for the KV Cache: Near-Lossless KV Cache Compression via Joint Tucker and JL-Residual Allocation for LLMs",
+        "locator": "https://arxiv.org/abs/2607.12550",
+        "read_state": "unread_candidate",
+        "kind": "paper",
+        "immutable_locator": "https://arxiv.org/abs/2607.12550v1",
+        "revision": "v1"
+      },
+      {
+        "id": "candidate:paper:pm-kvq-progressive-mixed-precision-kv-cache-quantization-for-long-cot-llms",
+        "label": "PM-KVQ: Progressive Mixed-precision KV Cache Quantization for Long-CoT LLMs",
+        "locator": "https://arxiv.org/abs/2505.18610",
+        "read_state": "unread_candidate",
+        "kind": "paper",
+        "immutable_locator": "https://arxiv.org/abs/2505.18610v2",
+        "revision": "v2"
+      }
+    ],
     "updated_sources": [
       {
         "id": "candidate:paper:native-llm-and-mllm-inference-at-scale-on-apple-silicon",
@@ -14573,38 +14538,6 @@
         "revision_comparison": {
           "before": null,
           "after": "v1",
-          "status": "comparison_unpinned",
-          "basis": "source_registry"
-        }
-      },
-      {
-        "id": "candidate:paper:agent-assisted-side-channel-attacks-on-non-prefix-kv-cache-in-rag",
-        "label": "Agent-Assisted Side-Channel Attacks on Non-Prefix KV Cache in RAG",
-        "locator": "https://arxiv.org/abs/2606.21842",
-        "read_state": "updated_candidate",
-        "kind": "paper",
-        "known_source_id": "source:paper-2606-21842",
-        "immutable_locator": "https://arxiv.org/abs/2606.21842v1",
-        "revision": "v1",
-        "revision_comparison": {
-          "before": null,
-          "after": "v1",
-          "status": "comparison_unpinned",
-          "basis": "source_registry"
-        }
-      },
-      {
-        "id": "candidate:paper:ultraquant-4-bit-kv-caching-for-context-heavy-agents",
-        "label": "UltraQuant: 4-bit KV Caching for Context-Heavy Agents",
-        "locator": "https://arxiv.org/abs/2606.20474",
-        "read_state": "updated_candidate",
-        "kind": "paper",
-        "known_source_id": "source:paper-2606-20474",
-        "immutable_locator": "https://arxiv.org/abs/2606.20474v2",
-        "revision": "v2",
-        "revision_comparison": {
-          "before": null,
-          "after": "v2",
           "status": "comparison_unpinned",
           "basis": "source_registry"
         }
@@ -14799,11 +14732,11 @@
         "known_source_id": "source:mlx-repo",
         "revision_comparison": {
           "before": "96296e9c3075a2389bc5c0f078bf01b5aa377cd9",
-          "after": "4367c73b60541ddd5a266ce4644fd93d20223b6e",
+          "after": "b7c3dd6d27f45b5365b08a840310187dc503f1db",
           "status": "changed",
           "basis": "source_registry"
         },
-        "head_sha": "4367c73b60541ddd5a266ce4644fd93d20223b6e"
+        "head_sha": "b7c3dd6d27f45b5365b08a840310187dc503f1db"
       },
       {
         "id": "candidate:repository:ml-explore-mlx-lm",
@@ -14814,11 +14747,11 @@
         "known_source_id": "source:mlx-lm-repo",
         "revision_comparison": {
           "before": "2c008fd0252b2c569227d12568356ab88ab0560a",
-          "after": "a790972f0f844d81067ed45c28b524220a10c019",
+          "after": "15b522f593b7ca5fbc0cac6f7572d40859d2d8fe",
           "status": "changed",
           "basis": "source_registry"
         },
-        "head_sha": "a790972f0f844d81067ed45c28b524220a10c019"
+        "head_sha": "15b522f593b7ca5fbc0cac6f7572d40859d2d8fe"
       },
       {
         "id": "candidate:repository:blaizzy-mlx-vlm",
@@ -14829,11 +14762,11 @@
         "known_source_id": "source:mlx-vlm-repo",
         "revision_comparison": {
           "before": "6a8cdff6a1f53f46a15d4adb997c3b2d5f621263",
-          "after": "05440cc57c62799fe8d4d79079fb8d281f149b4b",
+          "after": "6d5603b36902e0742a8273f0b0e6fa4a60d2a201",
           "status": "changed",
           "basis": "source_registry"
         },
-        "head_sha": "05440cc57c62799fe8d4d79079fb8d281f149b4b"
+        "head_sha": "6d5603b36902e0742a8273f0b0e6fa4a60d2a201"
       },
       {
         "id": "candidate:repository:blaizzy-mlx-audio",
@@ -14874,11 +14807,11 @@
         "known_source_id": "source:agent-skills-repo",
         "revision_comparison": {
           "before": "57546260929473d4e0d1c1bb75297be2fdfa1949",
-          "after": "9d2f1ae187231d8199c64b5b762e1bdf2244733d",
+          "after": "fa0fa64bdc967915dc8399e803be67759e1e62b8",
           "status": "changed",
           "basis": "source_registry"
         },
-        "head_sha": "9d2f1ae187231d8199c64b5b762e1bdf2244733d"
+        "head_sha": "fa0fa64bdc967915dc8399e803be67759e1e62b8"
       },
       {
         "id": "candidate:repository:openai-codex",
@@ -14888,11 +14821,11 @@
         "kind": "repository",
         "revision_comparison": {
           "before": "1f0566d3f59298d1bb88820a0d35294f1eeb07ea",
-          "after": "1f0566d3f59298d1bb88820a0d35294f1eeb07ea",
-          "status": "same",
+          "after": "312caf176a8fd3a5897a3d1fd3ed0a283bd1b5ac",
+          "status": "changed",
           "basis": "previous_graph"
         },
-        "head_sha": "1f0566d3f59298d1bb88820a0d35294f1eeb07ea"
+        "head_sha": "312caf176a8fd3a5897a3d1fd3ed0a283bd1b5ac"
       }
     ],
     "new_approach_leads": [
@@ -14994,6 +14927,105 @@
               "large",
               "latency",
               "transformer"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "candidate:paper:a-jolt-for-the-kv-cache-near-lossless-kv-cache-compression-via-joint-tucker-and-jl-residual-allocation-for-llms",
+        "label": "A JoLT for the KV Cache: Near-Lossless KV Cache Compression via Joint Tucker and JL-Residual Allocation for LLMs",
+        "locator": "https://arxiv.org/abs/2607.12550",
+        "read_state": "unread_candidate",
+        "kind": "paper",
+        "immutable_locator": "https://arxiv.org/abs/2607.12550v1",
+        "revision": "v1",
+        "matches": [
+          {
+            "target": "approach:adaptive-kv-quantization",
+            "score": 10,
+            "matched_terms": [
+              "allocation",
+              "bit",
+              "cache",
+              "context",
+              "key",
+              "long",
+              "memory",
+              "quantization"
+            ]
+          },
+          {
+            "target": "approach:native-low-bit-weight-quantization",
+            "score": 7,
+            "matched_terms": [
+              "bit",
+              "low",
+              "memory",
+              "quantization",
+              "size",
+              "throughput",
+              "transformer"
+            ]
+          },
+          {
+            "target": "outcome:qwen25-05b-instruct-local-worked-port",
+            "score": 7,
+            "matched_terms": [
+              "cache",
+              "cross",
+              "rather",
+              "tensor",
+              "than",
+              "token",
+              "tokens"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "candidate:paper:pm-kvq-progressive-mixed-precision-kv-cache-quantization-for-long-cot-llms",
+        "label": "PM-KVQ: Progressive Mixed-precision KV Cache Quantization for Long-CoT LLMs",
+        "locator": "https://arxiv.org/abs/2505.18610",
+        "read_state": "unread_candidate",
+        "kind": "paper",
+        "immutable_locator": "https://arxiv.org/abs/2505.18610v2",
+        "revision": "v2",
+        "matches": [
+          {
+            "target": "approach:adaptive-kv-quantization",
+            "score": 9,
+            "matched_terms": [
+              "cache",
+              "context",
+              "key",
+              "long",
+              "memory",
+              "mixed",
+              "precision",
+              "quantization"
+            ]
+          },
+          {
+            "target": "backlog:training-as-port-target",
+            "score": 6,
+            "matched_terms": [
+              "been",
+              "cache",
+              "has",
+              "key",
+              "memory",
+              "training"
+            ]
+          },
+          {
+            "target": "approach:uniform-kv-quantization",
+            "score": 5,
+            "matched_terms": [
+              "cache",
+              "context",
+              "long",
+              "memory",
+              "quantization"
             ]
           }
         ]
@@ -15325,120 +15357,6 @@
               "matched",
               "preserves",
               "rope"
-            ]
-          }
-        ]
-      },
-      {
-        "id": "candidate:paper:agent-assisted-side-channel-attacks-on-non-prefix-kv-cache-in-rag",
-        "label": "Agent-Assisted Side-Channel Attacks on Non-Prefix KV Cache in RAG",
-        "locator": "https://arxiv.org/abs/2606.21842",
-        "read_state": "updated_candidate",
-        "kind": "paper",
-        "known_source_id": "source:paper-2606-21842",
-        "immutable_locator": "https://arxiv.org/abs/2606.21842v1",
-        "revision": "v1",
-        "revision_comparison": {
-          "before": null,
-          "after": "v1",
-          "status": "comparison_unpinned",
-          "basis": "source_registry"
-        },
-        "matches": [
-          {
-            "target": "approach:adaptive-kv-quantization",
-            "score": 8,
-            "matched_terms": [
-              "aware",
-              "cache",
-              "context",
-              "key",
-              "long",
-              "memory",
-              "quantization",
-              "value"
-            ]
-          },
-          {
-            "target": "approach:multimodal-content-prefix-cache",
-            "score": 7,
-            "matched_terms": [
-              "aware",
-              "cache",
-              "context",
-              "language",
-              "long",
-              "prefix",
-              "serving"
-            ]
-          },
-          {
-            "target": "outcome:vlm-mlx-vlm-working-route",
-            "score": 7,
-            "matched_terms": [
-              "alignment",
-              "cache",
-              "generation",
-              "prefix",
-              "serving",
-              "specific",
-              "tenant"
-            ]
-          }
-        ]
-      },
-      {
-        "id": "candidate:paper:ultraquant-4-bit-kv-caching-for-context-heavy-agents",
-        "label": "UltraQuant: 4-bit KV Caching for Context-Heavy Agents",
-        "locator": "https://arxiv.org/abs/2606.20474",
-        "read_state": "updated_candidate",
-        "kind": "paper",
-        "known_source_id": "source:paper-2606-20474",
-        "immutable_locator": "https://arxiv.org/abs/2606.20474v2",
-        "revision": "v2",
-        "revision_comparison": {
-          "before": null,
-          "after": "v2",
-          "status": "comparison_unpinned",
-          "basis": "source_registry"
-        },
-        "matches": [
-          {
-            "target": "approach:adaptive-kv-quantization",
-            "score": 7,
-            "matched_terms": [
-              "bit",
-              "cache",
-              "context",
-              "key",
-              "long",
-              "quantization",
-              "value"
-            ]
-          },
-          {
-            "target": "backlog:structured-timeseries-recsys",
-            "score": 7,
-            "matched_terms": [
-              "context",
-              "first",
-              "keep",
-              "must",
-              "style",
-              "task",
-              "value"
-            ]
-          },
-          {
-            "target": "approach:multimodal-content-prefix-cache",
-            "score": 6,
-            "matched_terms": [
-              "block",
-              "cache",
-              "context",
-              "long",
-              "serving",
-              "throughput"
             ]
           }
         ]
@@ -16057,46 +15975,6 @@
         ]
       },
       {
-        "id": "candidate:repository:ml-explore-mlx",
-        "label": "ml-explore/mlx",
-        "locator": "https://github.com/ml-explore/mlx",
-        "read_state": "updated_candidate",
-        "kind": "repository",
-        "known_source_id": "source:mlx-repo",
-        "revision_comparison": {
-          "before": "96296e9c3075a2389bc5c0f078bf01b5aa377cd9",
-          "after": "4367c73b60541ddd5a266ce4644fd93d20223b6e",
-          "status": "changed",
-          "basis": "source_registry"
-        },
-        "matches": [
-          {
-            "target": "approach:bf16-weight-cast",
-            "score": 2,
-            "matched_terms": [
-              "quantization",
-              "when"
-            ]
-          },
-          {
-            "target": "approach:prompt-prefix-cache",
-            "score": 2,
-            "matched_terms": [
-              "quantization",
-              "when"
-            ]
-          },
-          {
-            "target": "approach:spatial-grid-sample-kernel",
-            "score": 2,
-            "matched_terms": [
-              "kernels",
-              "when"
-            ]
-          }
-        ]
-      },
-      {
         "id": "candidate:repository:ml-explore-mlx-lm",
         "label": "ml-explore/mlx-lm",
         "locator": "https://github.com/ml-explore/mlx-lm",
@@ -16105,37 +15983,35 @@
         "known_source_id": "source:mlx-lm-repo",
         "revision_comparison": {
           "before": "2c008fd0252b2c569227d12568356ab88ab0560a",
-          "after": "a790972f0f844d81067ed45c28b524220a10c019",
+          "after": "15b522f593b7ca5fbc0cac6f7572d40859d2d8fe",
           "status": "changed",
           "basis": "source_registry"
         },
         "matches": [
-          {
-            "target": "approach:fast-sdpa",
-            "score": 4,
-            "matched_terms": [
-              "gqa",
-              "language",
-              "mask",
-              "sdpa"
-            ]
-          },
           {
             "target": "approach:cache-privacy-and-isolation",
             "score": 3,
             "matched_terms": [
               "cache",
               "language",
-              "padding"
+              "server"
             ]
           },
           {
-            "target": "learning:rwkv-ssm-conformer-prototypes",
+            "target": "outcome:qwen25-05b-instruct-local-worked-port",
             "score": 3,
             "matched_terms": [
+              "cache",
               "conversion",
-              "mask",
-              "padding"
+              "tokens"
+            ]
+          },
+          {
+            "target": "approach:continuous-batching-serving",
+            "score": 2,
+            "matched_terms": [
+              "language",
+              "server"
             ]
           }
         ]
@@ -16149,38 +16025,35 @@
         "known_source_id": "source:mlx-vlm-repo",
         "revision_comparison": {
           "before": "6a8cdff6a1f53f46a15d4adb997c3b2d5f621263",
-          "after": "05440cc57c62799fe8d4d79079fb8d281f149b4b",
+          "after": "6d5603b36902e0742a8273f0b0e6fa4a60d2a201",
           "status": "changed",
           "basis": "source_registry"
         },
         "matches": [
           {
             "target": "approach:multimodal-content-prefix-cache",
-            "score": 4,
+            "score": 3,
             "matched_terms": [
               "multimodal",
-              "omni",
               "serving",
               "vlm"
             ]
           },
           {
-            "target": "approach:qwen3-tts-batch-generation",
-            "score": 4,
-            "matched_terms": [
-              "audio",
-              "qwen3",
-              "request",
-              "serving"
-            ]
-          },
-          {
-            "target": "approach:video-input-budgeting",
+            "target": "outcome:vlm-mlx-vlm-working-route",
             "score": 3,
             "matched_terms": [
               "multimodal",
-              "omni",
+              "serving",
               "vlm"
+            ]
+          },
+          {
+            "target": "approach:draft-model-speculation",
+            "score": 2,
+            "matched_terms": [
+              "decoding",
+              "speculative"
             ]
           }
         ]
@@ -16277,14 +16150,14 @@
       "audio",
       "quantization",
       "streaming",
-      "prefix",
       "adaptive",
       "weight",
       "route",
-      "tts",
       "working",
-      "content",
-      "multimodal"
+      "low",
+      "port",
+      "prefix",
+      "tts"
     ],
     "policy": {
       "review_only": true,

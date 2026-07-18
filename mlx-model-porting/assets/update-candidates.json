@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-07-10T06:03:53.487812+00:00",
+  "generated_at": "2026-07-18T22:03:25.311625+00:00",
   "policy": {
     "auto_modify_recommendations": false,
     "auto_merge": false,
@@ -16,9 +16,9 @@
         "quantization"
       ],
       "default_branch": "main",
-      "head_sha": "4367c73b60541ddd5a266ce4644fd93d20223b6e",
-      "head_date": "2026-07-10T00:37:28Z",
-      "head_message": "Warn at configure time when NAX kernels are disabled (#3824)",
+      "head_sha": "b7c3dd6d27f45b5365b08a840310187dc503f1db",
+      "head_date": "2026-07-17T16:53:03Z",
+      "head_message": "[CUDA][Improvement] RMSNorm forward speed up (#3850)",
       "url": "https://github.com/ml-explore/mlx",
       "latest_release": {
         "tag": "v0.32.0",
@@ -37,9 +37,9 @@
         "cache"
       ],
       "default_branch": "main",
-      "head_sha": "a790972f0f844d81067ed45c28b524220a10c019",
-      "head_date": "2026-07-09T00:03:19Z",
-      "head_message": "Fix broadcast crash in quantized SDPA with GQA + batched padding mask (batch >= 2) (#1467)",
+      "head_sha": "15b522f593b7ca5fbc0cac6f7572d40859d2d8fe",
+      "head_date": "2026-07-11T20:42:55Z",
+      "head_message": "Lc/fix xtc special tokens server (#1176)",
       "url": "https://github.com/ml-explore/mlx-lm",
       "latest_release": {
         "tag": "v0.31.3",
@@ -73,14 +73,14 @@
         "speculative"
       ],
       "default_branch": "main",
-      "head_sha": "05440cc57c62799fe8d4d79079fb8d281f149b4b",
-      "head_date": "2026-07-09T18:01:14Z",
-      "head_message": "Merge pull request #1522 from sxy-trans-n/codex/qwen3-omni-incremental-audio",
+      "head_sha": "6d5603b36902e0742a8273f0b0e6fa4a60d2a201",
+      "head_date": "2026-07-18T10:23:08Z",
+      "head_message": "Speed up llguidance structured decoding (#1628)",
       "url": "https://github.com/Blaizzy/mlx-vlm",
       "latest_release": {
-        "tag": "v0.6.4",
-        "published_at": "2026-07-06T21:10:34Z",
-        "url": "https://github.com/Blaizzy/mlx-vlm/releases/tag/v0.6.4"
+        "tag": "v0.6.5",
+        "published_at": "2026-07-16T21:39:52Z",
+        "url": "https://github.com/Blaizzy/mlx-vlm/releases/tag/v0.6.5"
       },
       "known_snapshot": false
     },
@@ -132,9 +132,9 @@
         "agent-skills"
       ],
       "default_branch": "main",
-      "head_sha": "9d2f1ae187231d8199c64b5b762e1bdf2244733d",
-      "head_date": "2026-07-01T18:11:23Z",
-      "head_message": "Update claude-api skill: Claude Sonnet 5 and Managed Agents July updates (#1373)",
+      "head_sha": "fa0fa64bdc967915dc8399e803be67759e1e62b8",
+      "head_date": "2026-07-17T02:47:37Z",
+      "head_message": "Update docx, pptx, and xlsx skills (#1447)",
       "url": "https://github.com/anthropics/skills",
       "latest_release": null,
       "known_snapshot": false
@@ -147,14 +147,14 @@
         "codex"
       ],
       "default_branch": "main",
-      "head_sha": "1f0566d3f59298d1bb88820a0d35294f1eeb07ea",
-      "head_date": "2026-07-10T01:28:55Z",
-      "head_message": "exec-server: expose process helper to outer sandbox (#31937)",
+      "head_sha": "312caf176a8fd3a5897a3d1fd3ed0a283bd1b5ac",
+      "head_date": "2026-07-18T20:59:57Z",
+      "head_message": "Seed realtime V3 sessions with initial text items (#34067)",
       "url": "https://github.com/openai/codex",
       "latest_release": {
-        "tag": "rust-v0.144.1",
-        "published_at": "2026-07-09T23:02:40Z",
-        "url": "https://github.com/openai/codex/releases/tag/rust-v0.144.1"
+        "tag": "rust-v0.144.6",
+        "published_at": "2026-07-18T13:51:52Z",
+        "url": "https://github.com/openai/codex/releases/tag/rust-v0.144.6"
       },
       "known_snapshot": false
     }
@@ -172,7 +172,12 @@
       ],
       "summary": "The growing adoption of Apple Silicon for machine learning development has created demand for efficient inference solutions that leverage its unique unified memory architecture. However, existing tools either lack native optimization (PyTorch MPS) or focus solely on text models, leaving multimodal workloads underserved. We present vllm-mlx, a framework for efficient LLM and MLLM inference on Apple Silicon built natively on MLX. For text models, we achieve 21\\% to 87\\% higher throughput than llama-cpp across models ranging from Qwen3-0.6B to Nemotron-30B, while providing continuous batching that scales to 4.3x aggregate throughput at 16 concurrent requests. For multimodal models, we introduce content-based prefix caching that eliminates redundant vision encoding by identifying identical ima",
       "review_status": "candidate-unreviewed",
+      "canonical_url": "https://arxiv.org/abs/2601.19139",
+      "arxiv_id": "2601.19139",
+      "revision": "v2",
+      "immutable_url": "https://arxiv.org/abs/2601.19139v2",
       "known_url": true,
+      "known_revision": null,
       "candidate_id": "candidate-native-llm-and-mllm-inference-at-scale-on-apple-silicon"
     },
     {
@@ -188,8 +193,63 @@
       ],
       "summary": "The recent widespread adoption of Large Language Models (LLMs) and machine learning in general has sparked research interest in exploring the possibilities of deploying these models on smaller devices such as laptops and mobile phones. This creates a need for frameworks and approaches that are capable of taking advantage of on-device hardware. The MLX framework was created to address this need. It is a framework optimized for machine learning (ML) computations on Apple silicon devices, facilitating easier research, experimentation, and prototyping. This paper presents a performance evaluation of MLX, focusing on inference latency of transformer models. We compare the performance of different transformer architecture implementations in MLX with their Pytorch counterparts. For this research ",
       "review_status": "candidate-unreviewed",
+      "canonical_url": "https://arxiv.org/abs/2510.18921",
+      "arxiv_id": "2510.18921",
+      "revision": "v1",
+      "immutable_url": "https://arxiv.org/abs/2510.18921v1",
       "known_url": false,
+      "known_revision": null,
       "candidate_id": "candidate-benchmarking-on-device-machine-learning-on-apple-silicon-with-mlx"
+    },
+    {
+      "kind": "paper",
+      "query": "KV cache quantization long context",
+      "id": "http://arxiv.org/abs/2607.12550v1",
+      "title": "A JoLT for the KV Cache: Near-Lossless KV Cache Compression via Joint Tucker and JL-Residual Allocation for LLMs",
+      "updated": "2026-07-14T09:23:20Z",
+      "published": "2026-07-14T09:23:20Z",
+      "authors": [
+        "Rahul Krishnan",
+        "Volker Schulz"
+      ],
+      "summary": "The key-value (KV) cache has become the dominant memory cost of transformer inference. It grows with batch size, context length, and depth, and at long context it, rather than the model weights, sets the ceiling on throughput. Two families of methods reduce it. Low-rank methods factor two-dimensional slices of the cache, either per-head matrices or cross-layer feature blocks, and quantization methods lower the bit-width of every entry. Neither family exploits the fact that the cache at a layer is naturally a third-order tensor whose three axes, the heads, the tokens, and the features, carry very different amounts of redundancy. We take this tensor view directly. Our method, JoLT, applies a partial Tucker decomposition that compresses only the token and feature axes while leaving the head a",
+      "review_status": "candidate-unreviewed",
+      "canonical_url": "https://arxiv.org/abs/2607.12550",
+      "arxiv_id": "2607.12550",
+      "revision": "v1",
+      "immutable_url": "https://arxiv.org/abs/2607.12550v1",
+      "known_url": false,
+      "known_revision": null,
+      "candidate_id": "candidate-a-jolt-for-the-kv-cache-near-lossless-kv-cache-compression-via-joint-tucker-and-jl-residual-allocation-for-llms"
+    },
+    {
+      "kind": "paper",
+      "query": "KV cache quantization long context",
+      "id": "http://arxiv.org/abs/2505.18610v2",
+      "title": "PM-KVQ: Progressive Mixed-precision KV Cache Quantization for Long-CoT LLMs",
+      "updated": "2026-07-11T08:07:07Z",
+      "published": "2025-05-24T09:18:11Z",
+      "authors": [
+        "Tengxuan Liu",
+        "Shiyao Li",
+        "Jiayi Yang",
+        "Tianchen Zhao",
+        "Feng Zhou",
+        "Xiaohui Song",
+        "Guohao Dai",
+        "Shengen Yan",
+        "Huazhong Yang",
+        "Yu Wang"
+      ],
+      "summary": "Recently, significant progress has been made in developing reasoning-capable Large Language Models (LLMs) through long Chain-of-Thought (CoT) techniques. However, this long-CoT reasoning process imposes substantial memory overhead due to the large Key-Value (KV) Cache memory overhead. Post-training KV Cache quantization has emerged as a promising compression technique and has been extensively studied in short-context scenarios. However, directly applying existing methods to long-CoT LLMs causes significant performance degradation due to the following two reasons: (1) Large cumulative error: Existing methods fail to adequately leverage available memory, and they directly quantize the KV Cache during each decoding step, leading to large cumulative quantization error. (2) Short-context calibr",
+      "review_status": "candidate-unreviewed",
+      "canonical_url": "https://arxiv.org/abs/2505.18610",
+      "arxiv_id": "2505.18610",
+      "revision": "v2",
+      "immutable_url": "https://arxiv.org/abs/2505.18610v2",
+      "known_url": false,
+      "known_revision": null,
+      "candidate_id": "candidate-pm-kvq-progressive-mixed-precision-kv-cache-quantization-for-long-cot-llms"
     },
     {
       "kind": "paper",
@@ -204,7 +264,12 @@
       ],
       "summary": "Large language models, and the agents built on them, spend an ever-growing share of their compute and memory on remembering: caching attention keys and values, carrying long prompts, maintaining recurrent state, and storing what happened in previous turns and sessions. Because none of this memory is free, four largely separate research communities have each learned to compact it. They evict or quantize the KV cache, prune or distill prompts, bound architectural state, and consolidate agent memory. We argue that these are instances of one problem: a rate--distortion decision about what context-derived information to retain versus discard, at what fidelity, under a resource budget, so as to preserve downstream task utility. We make this lens precise with a single compaction objective and a l",
       "review_status": "candidate-unreviewed",
+      "canonical_url": "https://arxiv.org/abs/2607.08032",
+      "arxiv_id": "2607.08032",
+      "revision": "v1",
+      "immutable_url": "https://arxiv.org/abs/2607.08032v1",
       "known_url": false,
+      "known_revision": null,
       "candidate_id": "candidate-what-to-keep-what-to-forget-a-rate-distortion-view-of-memory-compaction-in-llms-and-agents"
     },
     {
@@ -219,7 +284,12 @@
       ],
       "summary": "The key-value (KV) cache dominates the memory cost of long-context autoregressive inference, and a growing body of work compresses it through quantization, eviction, or offloading. We study a complementary question: once a position's KV state has been quantized to codebook indices, how should the resulting symbol stream be stored, and can the storage layer do more than store? A family of contractive iterated-map codes that serialize a symbol sequence into a sequence of low-dimensional real vectors is revisited, and it is shown that they form a natural archive format for a quantized KV cache with the following features. The method provides exactly the access pattern a growing cache requires. It is lossless, it runs in linear time, and supports O(1) random access and O(1) amortized append. A",
       "review_status": "candidate-unreviewed",
+      "canonical_url": "https://arxiv.org/abs/2607.07144",
+      "arxiv_id": "2607.07144",
+      "revision": "v1",
+      "immutable_url": "https://arxiv.org/abs/2607.07144v1",
       "known_url": false,
+      "known_revision": null,
       "candidate_id": "candidate-fractal-kv-cache-archives-lossless-symbolic-storage-with-in-place-retrieval-for-long-context-llm-inference"
     },
     {
@@ -236,7 +306,12 @@
       ],
       "summary": "Transformer blocks are prevalent in large language model (LLM) but present deployment challenges due to their challenging computational and memory demands. While prior work has typically optimized attention mechanisms or feed-forward networks (FFNs) separately, few hardware (HW) architecture have jointly addressed both components with co-designed hardware acceleration. We present ELiTeFormer (Efficient Linear Ternary Transformer), the first Transformer model architecture that unifies hybrid linear attention with ultra-low-precision (ternary) linear projections, specifically co-designed for field-programmable gate array (FPGA) deployment. ELiTeFormer achieves 10x model weight compression and 12.8x key-value (KV) cache compression compared to LLaMA 3, while maintaining competitive accuracy (",
       "review_status": "candidate-unreviewed",
+      "canonical_url": "https://arxiv.org/abs/2607.03652",
+      "arxiv_id": "2607.03652",
+      "revision": "v1",
+      "immutable_url": "https://arxiv.org/abs/2607.03652v1",
       "known_url": false,
+      "known_revision": null,
       "candidate_id": "candidate-eliteformer-an-efficient-transformer-for-fpgas"
     },
     {
@@ -256,7 +331,12 @@
       ],
       "summary": "Long-context inference is increasingly common in large language model (LLM) serving, driven by retrieval-augmented generation and agentic systems. In disaggregated inference, these workloads require transferring large Key-Value (KV) caches across the network, where decoding cannot begin until the transfer completes. Recent KV quantization techniques reduce data volume and alleviate this bottleneck, but existing schemes fail to achieve both low network-exposed latency and high inference accuracy. We challenge the assumption that the KV cache is an indivisible unit that must be fully received before use. We leverage the observation that different bits in the KV cache contribute unequally to attention computation and inference precision: the most significant bits capture the coarse structure ",
       "review_status": "candidate-unreviewed",
+      "canonical_url": "https://arxiv.org/abs/2607.01831",
+      "arxiv_id": "2607.01831",
+      "revision": "v1",
+      "immutable_url": "https://arxiv.org/abs/2607.01831v1",
       "known_url": false,
+      "known_revision": null,
       "candidate_id": "candidate-lynx-progressive-speculative-quantization-for-accelerating-kv-transfer-in-long-context-inference"
     },
     {
@@ -276,7 +356,12 @@
       ],
       "summary": "Long-context Large Language Model inference is severely bottlenecked by the massive Key-Value (KV) cache, yet existing sparse attention methods often suffer from static fixed-budget (Top-k) retrieval or rely on proxy scores that are computationally expensive and biased. To address these limitations, we propose RaBitQCache, a novel sparse attention framework that utilizes randomized rotated binary quantization and high-throughput binary-INT4 arithmetic to efficiently estimate attention weights. Our proxy score serves as an unbiased estimator with a proven error bound, enabling adaptive Top-p retrieval that dynamically adjusts the token budget based on actual attention sparsity. We further implement a hardware-aware system with asynchronous pipelining and lazy updates to mask overhead. Evalu",
       "review_status": "candidate-unreviewed",
+      "canonical_url": "https://arxiv.org/abs/2606.31519",
+      "arxiv_id": "2606.31519",
+      "revision": "v1",
+      "immutable_url": "https://arxiv.org/abs/2606.31519v1",
       "known_url": false,
+      "known_revision": null,
       "candidate_id": "candidate-rabitqcache-rotated-binary-quantization-for-kvcache-in-long-context-llm-inference"
     },
     {
@@ -293,49 +378,13 @@
       ],
       "summary": "Existing low-bit KV-cache quantizers often treat each cached key as a flat vector. Under RoPE, however, a key's contribution to a future attention logit decomposes into a position-dependent sum over two-dimensional frequency blocks. This makes key-cache quantization a block-wise bit-allocation problem: high-energy RoPE blocks are more sensitive to quantization error and should receive more bits. We introduce Block-GTQ, a RoPE-aware bit allocator for key-cache quantization built on TurboQuant-MSE(TQ-MSE). For each layer and KV head, Block-GTQ computes a label-free energy score for each RoPE block and greedily allocates integer bit widths by marginal gain. Under matched K/V bit budgets, Block-GTQ better preserves RoPE query-key logits on a ten-model diagnostic panel, cutting per-layer MAE by",
       "review_status": "candidate-unreviewed",
+      "canonical_url": "https://arxiv.org/abs/2606.24033",
+      "arxiv_id": "2606.24033",
+      "revision": "v1",
+      "immutable_url": "https://arxiv.org/abs/2606.24033v1",
       "known_url": true,
+      "known_revision": null,
       "candidate_id": "candidate-rope-aware-bit-allocation-for-kv-cache-quantization"
-    },
-    {
-      "kind": "paper",
-      "query": "KV cache quantization long context",
-      "id": "http://arxiv.org/abs/2606.21842v1",
-      "title": "Agent-Assisted Side-Channel Attacks on Non-Prefix KV Cache in RAG",
-      "updated": "2026-06-20T02:28:28Z",
-      "published": "2026-06-20T02:28:28Z",
-      "authors": [
-        "He Sun",
-        "Shinan Liu",
-        "Siyuan Ma",
-        "Junhao Li",
-        "Mingjun Xiao",
-        "Wenhao Jiang"
-      ],
-      "summary": "Modern Large Language Model (LLM) serving engines increasingly rely on Retrieval-Augmented Generation (RAG) and non-prefix Key-Value (KV) cache fusion to accelerate long-context, multi-tenant inference. While existing KV cache side-channel attacks require strict linear prefix alignment--rendering them ineffective against real-world RAG queries that contain unique, user-specific private prefixes--we uncover a critical class of structural vulnerabilities inherent to chunk-aware memory scheduling. We demonstrate that the deterministic micro-architectural mechanisms used to align and fuse disjoint memory chunks inadvertently leak a continuous \"Step-Wave\" timing signature. Exploiting this physical observation, we introduce SpliceLeak, the first end-to-end side-channel attack targeting non-prefi",
-      "review_status": "candidate-unreviewed",
-      "known_url": true,
-      "candidate_id": "candidate-agent-assisted-side-channel-attacks-on-non-prefix-kv-cache-in-rag"
-    },
-    {
-      "kind": "paper",
-      "query": "KV cache quantization long context",
-      "id": "http://arxiv.org/abs/2606.20474v2",
-      "title": "UltraQuant: 4-bit KV Caching for Context-Heavy Agents",
-      "updated": "2026-06-19T08:02:54Z",
-      "published": "2026-06-18T16:54:07Z",
-      "authors": [
-        "Inesh Chakrabarti",
-        "David Limpus",
-        "Aditi Ghai Rana",
-        "Bowen Bao",
-        "Spandan Tiwari",
-        "Thiago Crepaldi",
-        "Ashish Sirasao"
-      ],
-      "summary": "Context-heavy agents place unusual pressure on the key-value (KV) cache: long prefixes are reused across many short turns, while concurrency determines whether the serving system can keep GPUs utilized. We study 4-bit KV-cache compression for this setting, using TurboQuant-style rotation and codebook quantization as a quality anchor and vLLM FP8 KV caching as the deployment anchor. We report three contributions. First, we frame 4-bit KV caching around multi-round agent workloads where task quality, cache residency, and serving throughput must be measured jointly. Second, we describe the practical design choices needed to make the 4-bit path robust, including asymmetric K/V treatment, Walsh-Hadamard rotation, QJL removal, and block-scale variants. Third, we present serving optimizations on ",
-      "review_status": "candidate-unreviewed",
-      "known_url": true,
-      "candidate_id": "candidate-ultraquant-4-bit-kv-caching-for-context-heavy-agents"
     },
     {
       "kind": "paper",
@@ -361,7 +410,12 @@
       ],
       "summary": "We propose AugCodec, a low-bitrate disentangled neural speech codec that leverages data augmentation to decompose speech into three distinct components: semantic, speaker, and prosody tokens. Specifically, we employ tailored augmenta tion strategies to transform speech into distinct variants, each serving as input for extracting tokens that preserve the target attribute while suppressing others. This disentanglement strategy enables substantial reduction in token rate. Further more, we introduce an augmentation loss that aligns semantic encoder outputs between source and voice-converted speech, encouraging speaker-agnostic embeddings while mitigating the acoustic mismatch induced by voice conversion. Experiments on LibriSpeech test-clean demonstrate that AugCodec significantly outperforms ",
       "review_status": "candidate-unreviewed",
+      "canonical_url": "https://arxiv.org/abs/2606.21893",
+      "arxiv_id": "2606.21893",
+      "revision": "v1",
+      "immutable_url": "https://arxiv.org/abs/2606.21893v1",
       "known_url": false,
+      "known_revision": null,
       "candidate_id": "candidate-augcodec-a-low-bitrate-disentangled-neural-speech-codec-via-data-augmentation"
     },
     {
@@ -379,7 +433,12 @@
       ],
       "summary": "Neural speech codecs efficiently compress speech and have become a foundation for speech generation, but they are typically learned as holistic representations that intertwine linguistic content, speaker identity, and prosody. While this design is effective for zero-shot voice cloning, it hinders downstream tasks that require prosody preservation or transfer, such as voice conversion. To address this, we introduce ProsoCodec, a prosody-oriented speech codec that models prosody as a conditional residual rather than as a disentangled stream. Specifically, by conditioning both the encoder and decoder on text and speaker embeddings as prefix tokens, the discrete bottleneck is encouraged to capture prosodic variation not explained by content and speaker. To further preserve prosody, we use the ",
       "review_status": "candidate-unreviewed",
+      "canonical_url": "https://arxiv.org/abs/2606.21888",
+      "arxiv_id": "2606.21888",
+      "revision": "v1",
+      "immutable_url": "https://arxiv.org/abs/2606.21888v1",
       "known_url": false,
+      "known_revision": null,
       "candidate_id": "candidate-prosocodec-prosody-oriented-speech-codec-for-voice-conversion"
     },
     {
@@ -395,7 +454,12 @@
       ],
       "summary": "The popularity of neural audio codecs as speech tokenizers has surged with the advent of Multimodal Large Language Models. New codec architectures with semantic and acoustic disentanglement have emerged. There are two main approaches to introduce semantic information into codec models: one distills semantic information from SSL representations into the first RVQ layer, while the other maintains separate streams for semantic and acoustic features. We propose HybridCodec, a unified architecture that combines both paradigms. It employs separate semantic and acoustic branches while distilling SSL representations into the semantic stream. This design ensures strong disentanglement without requiring an SSL model during inference. HybridCodec shows superior semantic specialization (RVQ-1) on in-d",
       "review_status": "candidate-unreviewed",
+      "canonical_url": "https://arxiv.org/abs/2606.06743",
+      "arxiv_id": "2606.06743",
+      "revision": "v1",
+      "immutable_url": "https://arxiv.org/abs/2606.06743v1",
       "known_url": false,
+      "known_revision": null,
       "candidate_id": "candidate-hybridcodec-fast-dual-stream-semantically-enhanced-neural-audio-codec"
     },
     {
@@ -414,7 +478,12 @@
       ],
       "summary": "Neural speech codecs have become the discrete interface between raw audio and speech language models, yet they remain optimized primarily for acoustic reconstruction fidelity, which leaves emotion-relevant cues vulnerable to being discarded during quantization, limiting the affective capacity of downstream models. We trace this degradation to two mechanisms: reconstruction-driven bit allocation under limited bitrate and cross-stream leakage in concatenation-based codecs, where acoustic gradients can overwrite nominally emotion-reserved dimensions. We propose AffectCodec, an emotion-preserving neural speech codec built on Block-Diagonal Residual Finite Scalar Quantization (BD-RFSQ). By imposing block-diagonal input and output projections over emotion and acoustic subspaces, BD-RFSQ transfor",
       "review_status": "candidate-unreviewed",
+      "canonical_url": "https://arxiv.org/abs/2605.23373",
+      "arxiv_id": "2605.23373",
+      "revision": "v1",
+      "immutable_url": "https://arxiv.org/abs/2605.23373v1",
       "known_url": false,
+      "known_revision": null,
       "candidate_id": "candidate-affectcodec-emotion-preserving-neural-speech-codec-with-block-diagonal-residual-fsq"
     },
     {
@@ -430,7 +499,12 @@
       ],
       "summary": "State-of-the-art spoken dialogue models (Défossez et al. 2024; Schalkwyk et al. 2025) use neural audio codecs to \"tokenize\" audio signals into a lower-frequency stream of vectorial latent representations, each quantized using a hierarchy of vector codebooks. A transformer layer allows these representations to reflect some time- and context-dependent patterns. We train probes on labeled audio data from Cole et al. (2023) to test whether the pitch trajectories that characterize English phrase-final (nuclear) intonational tunes are among these patterns. Results: Linear probes trained on the unquantized latents or some of the associated codewords yield above-chance accuracy in distinguishing eight phonologically specified nuclear tunes with monotonal pitch accents (top average test accuracy (T",
       "review_status": "candidate-unreviewed",
+      "canonical_url": "https://arxiv.org/abs/2603.14035",
+      "arxiv_id": "2603.14035",
+      "revision": "v1",
+      "immutable_url": "https://arxiv.org/abs/2603.14035v1",
       "known_url": false,
+      "known_revision": null,
       "candidate_id": "candidate-probing-neural-audio-codecs-for-distinctions-among-english-nuclear-tunes"
     },
     {
@@ -447,7 +521,12 @@
       ],
       "summary": "We address the challenge of preserving emotional content in streaming speaker anonymization (SA). Neural audio codec language models trained for audio continuation tend to degrade source emotion: content tokens discard emotional information, and the model defaults to dominant acoustic patterns rather than preserving paralinguistic attributes. We propose supervised finetuning with neutral-emotion utterance pairs from the same speaker, combined with frame-level emotion distillation on acoustic token hidden states. All modifications are confined to finetuning, which takes less than 2 hours on 4 GPUs and adds zero inference latency overhead, while maintaining a competitive 180ms streaming latency. On the VoicePrivacy 2024 protocol, our approach achieves a 49.2% UAR (emotion preservation) with ",
       "review_status": "candidate-unreviewed",
+      "canonical_url": "https://arxiv.org/abs/2603.06079",
+      "arxiv_id": "2603.06079",
+      "revision": "v1",
+      "immutable_url": "https://arxiv.org/abs/2603.06079v1",
       "known_url": false,
+      "known_revision": null,
       "candidate_id": "candidate-streamvoiceanon-emotion-preserving-streaming-speaker-anonymization-via-frame-level-acoustic-distillation"
     },
     {
@@ -471,7 +550,12 @@
       ],
       "summary": "Neural audio codecs are foundational to speech language models. It is expected to have a low frame rate and decoupled semantic and acoustic information. A lower frame rate codec can reduce the computational cost of speech language models by shortening the sequence length. Recent studies have developed 12.5Hz low-frame-rate audio codecs, but even lower frame rate codecs remain underexplored. We find that a major challenge for very low frame rate tokens is missing semantic information. This paper introduces FlexiCodec to address this limitation. FlexiCodec improves semantic preservation with a dynamic frame rate approach and introduces a novel architecture featuring an ASR feature-assisted dual stream encoding and Transformer bottlenecks. With dynamic frame rates, it uses less frames at info",
       "review_status": "candidate-unreviewed",
+      "canonical_url": "https://arxiv.org/abs/2510.00981",
+      "arxiv_id": "2510.00981",
+      "revision": "v3",
+      "immutable_url": "https://arxiv.org/abs/2510.00981v3",
       "known_url": false,
+      "known_revision": null,
       "candidate_id": "candidate-flexicodec-a-dynamic-neural-audio-codec-for-low-frame-rates"
     },
     {
@@ -492,7 +576,12 @@
       ],
       "summary": "Recent end-to-end spoken dialogue systems leverage speech tokenizers and neural audio codecs to enable LLMs to operate directly on discrete speech representations. However, these models often exhibit limited speaker identity preservation, hindering personalized voice interaction. In this work, we present Chroma 1.0, the first open-source, real-time, end-to-end spoken dialogue model that achieves both low-latency interaction and high-fidelity personalized voice cloning. Chroma achieves sub-second end-to-end latency through an interleaved text-audio token schedule (1:2) that supports streaming generation, while maintaining high-quality personalized voice synthesis across multi-turn conversations. Our experimental results demonstrate that Chroma achieves a 10.96% relative improvement in speak",
       "review_status": "candidate-unreviewed",
+      "canonical_url": "https://arxiv.org/abs/2601.11141",
+      "arxiv_id": "2601.11141",
+      "revision": "v1",
+      "immutable_url": "https://arxiv.org/abs/2601.11141v1",
       "known_url": false,
+      "known_revision": null,
       "candidate_id": "candidate-flashlabs-chroma-1-0-a-real-time-end-to-end-spoken-dialogue-model-with-personalized-voice-cloning"
     },
     {
@@ -514,7 +603,12 @@
       ],
       "summary": "Deploying high-quality automatic speech recognition (ASR) on edge devices requires models that jointly optimize accuracy, latency, and memory footprint while operating entirely on CPU without GPU acceleration. We conduct a systematic empirical study of state-of-the-art ASR architectures, encompassing encoder-decoder, transducer, and LLM-based paradigms, evaluated across batch, chunked, and streaming inference modes. Through a comprehensive benchmark of over 50 configurations spanning OpenAI Whisper, NVIDIA Nemotron, Parakeet TDT, Canary, Conformer Transducer, and Qwen3-ASR, we identify NVIDIA's Nemotron Speech Streaming as the strongest candidate for real-time English streaming on resource-constrained hardware. We then re-implement the complete streaming inference pipeline in ONNX Runtime ",
       "review_status": "candidate-unreviewed",
+      "canonical_url": "https://arxiv.org/abs/2604.14493",
+      "arxiv_id": "2604.14493",
+      "revision": "v2",
+      "immutable_url": "https://arxiv.org/abs/2604.14493v2",
       "known_url": true,
+      "known_revision": null,
       "candidate_id": "candidate-pushing-the-limits-of-on-device-streaming-asr-a-compact-high-accuracy-english-model-for-low-latency-inference"
     },
     {
@@ -529,7 +623,12 @@
       ],
       "summary": "Automated speech recognition (ASR) models have gained prominence for applications such as captioning, speech translation, and live transcription. This paper studies Whisper and two model variants: one optimized for live speech streaming and another for offline transcription. Notably, these models have been found to generate hallucinated content, reducing transcription reliability. Furthermore, larger model variants exhibit increased latency and pose challenges for deployment on resource-constrained devices. This study analyzes the similarities and differences between three Whisper models, qualitatively examining their distinct capabilities. Next, this study quantifies the impact of model quantization on latency and evaluates its viability for edge deployment. Using the open source LibriSpe",
       "review_status": "candidate-unreviewed",
+      "canonical_url": "https://arxiv.org/abs/2503.09905",
+      "arxiv_id": "2503.09905",
+      "revision": "v1",
+      "immutable_url": "https://arxiv.org/abs/2503.09905v1",
       "known_url": false,
+      "known_revision": null,
       "candidate_id": "candidate-quantization-for-openai-s-whisper-models-a-comparative-analysis"
     },
     {
@@ -556,7 +655,12 @@
       ],
       "summary": "In this paper, we present a new on-device automatic speech recognition (ASR) system based on monotonic chunk-wise attention (MoChA) models trained with large (> 10K hours) corpus. We attained around 90% of a word recognition rate for general domain mainly by using joint training of connectionist temporal classifier (CTC) and cross entropy (CE) losses, minimum word error rate (MWER) training, layer-wise pre-training and data augmentation methods. In addition, we compressed our models by more than 3.4 times smaller using an iterative hyper low-rank approximation (LRA) method while minimizing the degradation in recognition accuracy. The memory footprint was further reduced with 8-bit quantization to bring down the final model size to lower than 39 MB. For on-demand adaptation, we fused the Mo",
       "review_status": "candidate-unreviewed",
+      "canonical_url": "https://arxiv.org/abs/2001.00577",
+      "arxiv_id": "2001.00577",
+      "revision": "v1",
+      "immutable_url": "https://arxiv.org/abs/2001.00577v1",
       "known_url": false,
+      "known_revision": null,
       "candidate_id": "candidate-attention-based-on-device-streaming-speech-recognition-with-large-speech-corpus"
     },
     {
@@ -582,7 +686,12 @@
       ],
       "summary": "New AI accelerators with novel instruction set architectures (ISAs) often require developers to manually craft low-level kernels, a time-consuming and error-prone process that does not scale across hardware targets. This delays emerging hardware platforms from reaching the market. While prior LLM-based code generation has shown promise in mature GPU ecosystems, it remains unclear whether agentic LLM systems can quickly produce valid and efficient kernels for emerging hardware with new ISAs. We present KernelCraft: the first benchmark for evaluating an LLM agent's ability to generate and optimize low-level kernels for customized accelerators through a function-calling, feedback-driven workflow. We evaluate agent performance across three emerging accelerators on more than 20 machine-learning",
       "review_status": "candidate-unreviewed",
+      "canonical_url": "https://arxiv.org/abs/2603.08721",
+      "arxiv_id": "2603.08721",
+      "revision": "v2",
+      "immutable_url": "https://arxiv.org/abs/2603.08721v2",
       "known_url": false,
+      "known_revision": null,
       "candidate_id": "candidate-kernelcraft-benchmarking-for-agentic-close-to-metal-kernel-generation-on-emerging-hardware"
     }
   ],
