@@ -1,0 +1,742 @@
+{
+  "schema_version": 1,
+  "kind": "mlx-port-optimization-loop",
+  "boundary": {
+    "classification": "user_diagnostic_only",
+    "promotable_claim": false,
+    "writes_sealed_evidence": false,
+    "note": "These are local observations for this model, Mac, and workload. The report is not a benchmark receipt, receipt assessment, effective claim, or promotion input."
+  },
+  "measured_at": "2026-07-15T20:59:51.662630+00:00",
+  "status": "complete",
+  "source": {
+    "path": "qwen05b",
+    "model_type": "qwen2",
+    "name_or_path": null,
+    "config_sha256": "18e18afcaccafade98daf13a54092927904649e1dd4eba8299ab717d5d94ff45",
+    "weight_files": [
+      {
+        "name": "model.safetensors",
+        "size_bytes": 988097824
+      }
+    ]
+  },
+  "work_dir": "run",
+  "environment": {
+    "hardware": {
+      "platform": "macOS-26.3-arm64-arm-64bit-Mach-O",
+      "machine": "arm64",
+      "metal_available": true,
+      "mlx_default_device": "Device(gpu, 0)",
+      "device": {
+        "device_name": "Apple M4 Pro",
+        "max_recommended_working_set_size": 40200896512,
+        "memory_size": 51539607552,
+        "architecture": "applegpu_g16s",
+        "max_buffer_length": 30150672384
+      }
+    },
+    "software": {
+      "python": "3.14.4",
+      "mlx": "0.32.0",
+      "mlx_lm": "0.31.3"
+    }
+  },
+  "methodology": {
+    "config_sweep": [
+      "8bit",
+      "4bit-g64"
+    ],
+    "seed": 7,
+    "benchmark": {
+      "prompt_sha256": "d5d20d0ae2cdd19a110c96d575e5db3b42b26736092cfaf003d6fb5509f92290",
+      "warmup_runs": 1,
+      "timed_runs": 5,
+      "generated_tokens_per_run": 64,
+      "timing_boundary": "generation after the first yielded token; excludes prefill and reports the median of timed runs",
+      "variance_note": "Decode throughput is a local observation with run-to-run variance; inspect CV and raw timed-run values."
+    },
+    "quality": {
+      "implementation": "quant_quality_gate.py",
+      "max_perplexity_ratio": 1.1,
+      "min_firsttoken_agreement": 0.0,
+      "max_candidate_only_degenerate_output_rate": 0.0,
+      "max_tokens_per_prompt": 32
+    },
+    "recommendation_objective": "maximum measured decode tokens per second per peak Metal byte among quality passes"
+  },
+  "baseline": {
+    "config": {
+      "id": "bf16",
+      "dtype": "bfloat16",
+      "quantized": false
+    },
+    "artifact": {
+      "path": "run/bf16",
+      "reused": false,
+      "conversion_seconds": 1.7052531250519678
+    },
+    "performance": {
+      "decode_tokens_per_second_median": 34.10565037190703,
+      "decode_tokens_per_second_mean": 36.70491731740874,
+      "decode_tokens_per_second_cv": 0.1777091903963408,
+      "decode_tokens_per_second_runs": [
+        34.10565037190703,
+        40.10500827966964,
+        29.90274546450046,
+        31.63898610955598,
+        47.77219636141059
+      ],
+      "warmup_runs": 1,
+      "timed_runs": 5,
+      "generated_tokens_per_run": 64,
+      "timed_decode_tokens_per_run": 63,
+      "prompt_tokens_with_bos": 14,
+      "peak_memory_bytes": 1030150236,
+      "peak_memory_gib": 0.9594021700322628,
+      "active_memory_bytes_after_runs": 988065544,
+      "greedy_output_token_ids": [
+        2157,
+        39312,
+        25262,
+        374,
+        29449,
+        1091,
+        46476,
+        1576,
+        432,
+        5707,
+        264,
+        803,
+        14720,
+        323,
+        44107,
+        15274,
+        553,
+        1667,
+        821,
+        323,
+        25185,
+        311,
+        8474,
+        279,
+        1882,
+        11,
+        17719,
+        279,
+        5214,
+        315,
+        5975,
+        323,
+        91822,
+        13,
+        2157,
+        39312,
+        25262,
+        1083,
+        6147,
+        369,
+        803,
+        11050,
+        323,
+        7373,
+        990,
+        315,
+        4963,
+        11,
+        438,
+        432,
+        4990,
+        1119,
+        2692,
+        279,
+        4650,
+        19554,
+        315,
+        2155,
+        9904,
+        11,
+        4751,
+        1091,
+        38561,
+        21063
+      ]
+    },
+    "quality_reference": {
+      "workload_source": "builtin-v1",
+      "held_text_sha256": "9bed667bc76c0bbc7f502e5a6d47c332f1e6ef7476cef414f799e1dec1317e5f",
+      "held_text_tokens_with_bos": 73,
+      "perplexity": {
+        "nll": 4.411217212677002,
+        "perplexity": 82.36966390833875,
+        "scored_tokens": 72,
+        "finite": true
+      },
+      "greedy_outputs": [
+        {
+          "prompt_index": 0,
+          "prompt_sha256": "483f4d8a6e95a4d047017fdfae70bace91ba1f55bd1deb3e6bb984bc9e38e053",
+          "token_ids": [
+            807,
+            5978,
+            429,
+            279,
+            1590,
+            1985,
+            374,
+            7436,
+            624,
+            10645,
+            1064,
+            13,
+            4710,
+            31999,
+            1262,
+            21595,
+            4925,
+            1576,
+            807,
+            5978,
+            429,
+            279,
+            1590,
+            1985,
+            374,
+            23560,
+            13,
+            4710,
+            785,
+            11652,
+            374,
+            63594
+          ],
+          "text": " they ensure that the final product is ___.\nprecise. \n\nCareful measurements matter because they ensure that the final product is precise. \n\nThe sentence is concise",
+          "degenerate": {
+            "detected": false,
+            "reasons": [],
+            "longest_token_run": 1,
+            "repeated_bigram_fraction": 0.22580645161290322,
+            "repeated_trigram_fraction": 0.16666666666666666,
+            "character_cycle": null
+          }
+        },
+        {
+          "prompt_index": 1,
+          "prompt_sha256": "3588414269d493308bc8e8682abe00be2fb19a5d85ec0c193a751674f90f1405",
+          "token_ids": [
+            220,
+            16,
+            15,
+            17,
+            13,
+            4710,
+            1249,
+            11625,
+            419,
+            3491,
+            11,
+            582,
+            646,
+            990,
+            279,
+            46444,
+            12111,
+            13,
+            1205,
+            646,
+            1438,
+            1495,
+            279,
+            46444,
+            1119,
+            9155,
+            7354,
+            1447,
+            16,
+            13,
+            71059,
+            220
+          ],
+          "text": " 102. \n\nTo solve this problem, we can use the multiplication algorithm. We can break down the multiplication into smaller steps:\n\n1. Multiply ",
+          "degenerate": {
+            "detected": false,
+            "reasons": [],
+            "longest_token_run": 1,
+            "repeated_bigram_fraction": 0.03225806451612903,
+            "repeated_trigram_fraction": 0.0,
+            "character_cycle": null
+          }
+        },
+        {
+          "prompt_index": 2,
+          "prompt_sha256": "f9f2c9c90805409cee5cd291adeda40f71f84be79af8945d99db6e5d02584c3f",
+          "token_ids": [
+            362,
+            11340,
+            6733,
+            374,
+            264,
+            1992,
+            1380,
+            1251,
+            646,
+            1349,
+            323,
+            3960,
+            304,
+            8919,
+            13,
+            4710,
+            1986,
+            11652,
+            42569,
+            23156,
+            279,
+            27491,
+            315,
+            264,
+            11340,
+            6733,
+            553,
+            38586,
+            1181,
+            25650,
+            16566,
+            11
+          ],
+          "text": " A quiet library is a place where people can read and learn in peace. \n\nThis sentence encapsulates the essence of a quiet library by highlighting its peaceful atmosphere,",
+          "degenerate": {
+            "detected": false,
+            "reasons": [],
+            "longest_token_run": 1,
+            "repeated_bigram_fraction": 0.03225806451612903,
+            "repeated_trigram_fraction": 0.0,
+            "character_cycle": null
+          }
+        },
+        {
+          "prompt_index": 3,
+          "prompt_sha256": "bbaff4d2ecd5892d4a442b0f53131641bf6e6f284761dd20fc0664bc97145762",
+          "token_ids": [
+            12095,
+            13,
+            1084,
+            374,
+            279,
+            7772,
+            3283,
+            304,
+            279,
+            1879,
+            553,
+            7042,
+            13,
+            1084,
+            374,
+            1083,
+            279,
+            6722,
+            315,
+            279,
+            3146,
+            315,
+            9625,
+            13,
+            1084,
+            374,
+            7407,
+            304,
+            279,
+            9806,
+            315,
+            9625
+          ],
+          "text": " Paris. It is the largest city in the world by population. It is also the capital of the country of France. It is located in the south of France",
+          "degenerate": {
+            "detected": false,
+            "reasons": [],
+            "longest_token_run": 1,
+            "repeated_bigram_fraction": 0.1935483870967742,
+            "repeated_trigram_fraction": 0.06666666666666667,
+            "character_cycle": null
+          }
+        }
+      ]
+    }
+  },
+  "candidates": [
+    {
+      "config": {
+        "id": "8bit",
+        "bits": 8,
+        "group_size": 64,
+        "mode": "affine",
+        "naive_default": false
+      },
+      "artifact": {
+        "path": "run/8bit",
+        "reused": false,
+        "conversion_seconds": 2.283183417050168,
+        "quantization": {
+          "group_size": 64,
+          "bits": 8,
+          "mode": "affine"
+        }
+      },
+      "performance": {
+        "decode_tokens_per_second_median": 56.03719211033839,
+        "decode_tokens_per_second_mean": 55.24917714821051,
+        "decode_tokens_per_second_cv": 0.28357779596539523,
+        "decode_tokens_per_second_runs": [
+          49.824030893713015,
+          56.03719211033839,
+          75.72006555203863,
+          29.26466206955917,
+          65.39993511540334
+        ],
+        "warmup_runs": 1,
+        "timed_runs": 5,
+        "generated_tokens_per_run": 64,
+        "timed_decode_tokens_per_run": 63,
+        "prompt_tokens_with_bos": 14,
+        "peak_memory_bytes": 555144372,
+        "peak_memory_gib": 0.517018485814333,
+        "active_memory_bytes_after_runs": 527347464,
+        "greedy_output_token_ids": [
+          2157,
+          39312,
+          25262,
+          374,
+          29449,
+          1091,
+          46476,
+          1576,
+          432,
+          5707,
+          264,
+          803,
+          14720,
+          323,
+          44107,
+          15274,
+          553,
+          1667,
+          821,
+          323,
+          25185,
+          311,
+          8474,
+          279,
+          1882,
+          11,
+          17719,
+          279,
+          5214,
+          315,
+          5975,
+          323,
+          91822,
+          13,
+          2157,
+          39312,
+          25262,
+          1083,
+          6147,
+          369,
+          803,
+          11050,
+          323,
+          7373,
+          5480,
+          27746,
+          553,
+          8241,
+          264,
+          2797,
+          323,
+          16538,
+          8037,
+          369,
+          3259,
+          11181,
+          11,
+          17719,
+          279,
+          28636,
+          315,
+          3259,
+          20643,
+          476
+        ]
+      },
+      "comparison_vs_bf16": {
+        "speedup_vs_bf16": 1.6430471637185509,
+        "memory_reduction_bytes_vs_bf16": 475005864,
+        "memory_reduction_fraction_vs_bf16": 0.4611034851037009,
+        "peak_memory_ratio_vs_bf16": 0.5388965148962991
+      },
+      "quality": {
+        "verdict": "pass",
+        "passed": true,
+        "perplexity_reference": 82.36966390833875,
+        "perplexity_candidate": 82.44314449803827,
+        "perplexity_ratio": 1.0008920831555326,
+        "exact_match_count": 1,
+        "exact_match_rate": 0.25,
+        "firsttoken_agreement_rate": 0.75,
+        "prompt_count": 4,
+        "candidate_degenerate_count": 0,
+        "candidate_only_degenerate_count": 0,
+        "candidate_only_degenerate_rate": 0.0,
+        "exact_output_divergence": [
+          {
+            "prompt_index": 0,
+            "prompt_sha256": "483f4d8a6e95a4d047017fdfae70bace91ba1f55bd1deb3e6bb984bc9e38e053",
+            "exact_match": false,
+            "firsttoken_agreement": true,
+            "first_divergence_token_index": 31
+          },
+          {
+            "prompt_index": 1,
+            "prompt_sha256": "3588414269d493308bc8e8682abe00be2fb19a5d85ec0c193a751674f90f1405",
+            "exact_match": true,
+            "firsttoken_agreement": true,
+            "first_divergence_token_index": null
+          },
+          {
+            "prompt_index": 2,
+            "prompt_sha256": "f9f2c9c90805409cee5cd291adeda40f71f84be79af8945d99db6e5d02584c3f",
+            "exact_match": false,
+            "firsttoken_agreement": false,
+            "first_divergence_token_index": 0
+          },
+          {
+            "prompt_index": 3,
+            "prompt_sha256": "bbaff4d2ecd5892d4a442b0f53131641bf6e6f284761dd20fc0664bc97145762",
+            "exact_match": false,
+            "firsttoken_agreement": true,
+            "first_divergence_token_index": 8
+          }
+        ],
+        "checks": {
+          "perplexity_ratio": {
+            "passed": true,
+            "value": 1.0008920831555326,
+            "maximum": 1.1
+          },
+          "firsttoken_agreement": {
+            "passed": true,
+            "value": 0.75,
+            "minimum": 0.0
+          },
+          "candidate_only_degenerate_output_rate": {
+            "passed": true,
+            "value": 0.0,
+            "maximum": 0.0
+          }
+        },
+        "quality_gate_run_id": "1b5d0341a44cda111f55bfe741dfbe59146ac10a01b17dc9190a75ba08459aa4"
+      },
+      "selection_score_tokens_per_second_per_byte": 1.0094165578668316e-07
+    },
+    {
+      "config": {
+        "id": "4bit-g64",
+        "bits": 4,
+        "group_size": 64,
+        "mode": "affine",
+        "naive_default": true
+      },
+      "artifact": {
+        "path": "run/4bit-g64",
+        "reused": false,
+        "conversion_seconds": 1.9188311659963802,
+        "quantization": {
+          "group_size": 64,
+          "bits": 4,
+          "mode": "affine"
+        }
+      },
+      "performance": {
+        "decode_tokens_per_second_median": 70.63478104340976,
+        "decode_tokens_per_second_mean": 81.44016968844029,
+        "decode_tokens_per_second_cv": 0.3704812148703919,
+        "decode_tokens_per_second_runs": [
+          59.52356820521798,
+          70.63478104340976,
+          51.949385217897465,
+          88.5700159723182,
+          136.52309800335806
+        ],
+        "warmup_runs": 1,
+        "timed_runs": 5,
+        "generated_tokens_per_run": 64,
+        "timed_decode_tokens_per_run": 63,
+        "prompt_tokens_with_bos": 14,
+        "peak_memory_bytes": 308952564,
+        "peak_memory_gib": 0.2877344973385334,
+        "active_memory_bytes_after_runs": 281161480,
+        "greedy_output_token_ids": [
+          2157,
+          39312,
+          25262,
+          374,
+          29449,
+          1091,
+          46476,
+          1576,
+          432,
+          5707,
+          264,
+          2797,
+          323,
+          16538,
+          1616,
+          311,
+          5978,
+          429,
+          264,
+          1849,
+          374,
+          6092,
+          323,
+          14720,
+          13,
+          2157,
+          39312,
+          25262,
+          374,
+          3118,
+          389,
+          279,
+          990,
+          315,
+          35972,
+          4119,
+          323,
+          25185,
+          429,
+          525,
+          6188,
+          311,
+          7023,
+          279,
+          7709,
+          315,
+          264,
+          1849,
+          1212,
+          2155,
+          4682,
+          323,
+          25283,
+          13,
+          3216,
+          1667,
+          419,
+          5486,
+          11,
+          582,
+          646,
+          5978,
+          429,
+          279
+        ]
+      },
+      "comparison_vs_bf16": {
+        "speedup_vs_bf16": 2.0710580291877947,
+        "memory_reduction_bytes_vs_bf16": 721197672,
+        "memory_reduction_fraction_vs_bf16": 0.7000897993290369,
+        "peak_memory_ratio_vs_bf16": 0.2999102006709631
+      },
+      "quality": {
+        "verdict": "fail",
+        "passed": false,
+        "perplexity_reference": 82.36966390833875,
+        "perplexity_candidate": 106.78274975666714,
+        "perplexity_ratio": 1.29638442953337,
+        "exact_match_count": 0,
+        "exact_match_rate": 0.0,
+        "firsttoken_agreement_rate": 0.5,
+        "prompt_count": 4,
+        "candidate_degenerate_count": 0,
+        "candidate_only_degenerate_count": 0,
+        "candidate_only_degenerate_rate": 0.0,
+        "exact_output_divergence": [
+          {
+            "prompt_index": 0,
+            "prompt_sha256": "483f4d8a6e95a4d047017fdfae70bace91ba1f55bd1deb3e6bb984bc9e38e053",
+            "exact_match": false,
+            "firsttoken_agreement": true,
+            "first_divergence_token_index": 1
+          },
+          {
+            "prompt_index": 1,
+            "prompt_sha256": "3588414269d493308bc8e8682abe00be2fb19a5d85ec0c193a751674f90f1405",
+            "exact_match": false,
+            "firsttoken_agreement": false,
+            "first_divergence_token_index": 0
+          },
+          {
+            "prompt_index": 2,
+            "prompt_sha256": "f9f2c9c90805409cee5cd291adeda40f71f84be79af8945d99db6e5d02584c3f",
+            "exact_match": false,
+            "firsttoken_agreement": false,
+            "first_divergence_token_index": 0
+          },
+          {
+            "prompt_index": 3,
+            "prompt_sha256": "bbaff4d2ecd5892d4a442b0f53131641bf6e6f284761dd20fc0664bc97145762",
+            "exact_match": false,
+            "firsttoken_agreement": true,
+            "first_divergence_token_index": 5
+          }
+        ],
+        "checks": {
+          "perplexity_ratio": {
+            "passed": false,
+            "value": 1.29638442953337,
+            "maximum": 1.1
+          },
+          "firsttoken_agreement": {
+            "passed": true,
+            "value": 0.5,
+            "minimum": 0.0
+          },
+          "candidate_only_degenerate_output_rate": {
+            "passed": true,
+            "value": 0.0,
+            "maximum": 0.0
+          }
+        },
+        "quality_gate_run_id": "dd65a0b66f0d165e715d4d0a7250148bfac4a4b9187db5629d646fafdd966b19"
+      },
+      "selection_score_tokens_per_second_per_byte": 2.2862662192830923e-07
+    }
+  ],
+  "recommendation": {
+    "recommended_config_id": "8bit",
+    "quality_held": true,
+    "objective": "maximum measured decode tokens per second per peak Metal byte",
+    "selection_score_tokens_per_second_per_byte": 1.0094165578668316e-07,
+    "fallback_config_id": null,
+    "warning": null,
+    "reason": "Selected the highest throughput-per-peak-memory candidate among configurations that passed every configured quality check."
+  },
+  "naive_default_vs_structured_optimal": {
+    "naive_default_config_id": "4bit-g64",
+    "naive_default_definition": "mlx_lm.convert affine 4-bit group-size 64 default",
+    "structured_optimal_config_id": "8bit",
+    "quality_held": true,
+    "naive_default": {
+      "quality_verdict": "fail",
+      "decode_tokens_per_second_median": 70.63478104340976,
+      "peak_memory_bytes": 308952564
+    },
+    "structured_optimal": {
+      "quality_verdict": "pass",
+      "decode_tokens_per_second_median": 56.03719211033839,
+      "peak_memory_bytes": 555144372
+    }
+  }
+}
