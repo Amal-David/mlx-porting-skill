@@ -34,8 +34,8 @@ checked-in gates do and do not prove.
 
 The 0.6.1 corpus behind the skill:
 
-- 361 evidence sources with explicit review depth; 35 currently carry classified
-  support scope and claim types, while 326 remain intentionally unclassified;
+- 363 evidence sources with explicit review depth; 35 currently carry classified
+  support scope and claim types, while 328 remain intentionally unclassified;
 - 33 inspectable Python scripts and 537 offline tests;
 - 13 benchmark receipts (12 observations, 1 rejected) and 10 effective claims,
   all withheld.

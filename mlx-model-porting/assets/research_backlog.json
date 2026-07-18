@@ -1,20 +1,20 @@
 {
   "schema_version": 1,
-  "reviewed": "2026-07-13",
+  "reviewed": "2026-07-18",
   "objective": "Track deep-research gaps needed before the MLX porting skill can credibly claim comprehensive coverage.",
   "generated_from": {
-    "knowledge_graph_run_id": "2026-07-14-ideogram-optimizer-learnings",
-    "knowledge_graph_generated_at": "2026-07-13T19:46:42+00:00",
-    "knowledge_graph_sha256": "b5a3e4241732bf8af08c75c2592a35206b0826be7193be8daf03178faab36e04",
-    "knowledge_graph_node_count": 708,
-    "knowledge_graph_edge_count": 501,
-    "update_candidates_generated_at": "2026-07-10T06:03:53.487812+00:00",
-    "update_candidates_sha256": "5ebec6e26c3022919545cdf84d4a1b5344cad902392ffb6c9ff47b9ec55f5bc9",
+    "knowledge_graph_run_id": "2026-07-18-nightly-knowledge-curator",
+    "knowledge_graph_generated_at": "2026-07-18T17:59:10+00:00",
+    "knowledge_graph_sha256": "65a03dbc28fe31cf1f24a229f996a9ecd530b0535dbe87d3da35ca6181c0d92b",
+    "knowledge_graph_node_count": 711,
+    "knowledge_graph_edge_count": 499,
+    "update_candidates_generated_at": "2026-07-18T17:52:38.809882+00:00",
+    "update_candidates_sha256": "d05864fa50a52469e5e7d3acb958d31c18d2470ad74628b8159b22d12bea18ee",
     "paper_candidate_count": 22,
     "repository_candidate_count": 8,
     "candidate_read_states": {
-      "already_read": 1,
-      "updated_candidate": 29
+      "already_read": 3,
+      "updated_candidate": 27
     }
   },
   "advisor_status_mapping": {
@@ -129,7 +129,7 @@
       "id": "top1000-contributor-long-tail-rescreening",
       "priority": "P1",
       "status": "needs-validation",
-      "summary": "The current MLX contributor refresh requested 1000 contributors, captured 262 linked contributors and 268 anon=true author buckets through 2026-07-08. Collection remains source-selection evidence only; repository/code-search rescreening and implementation review remain open.",
+      "summary": "The current MLX contributor refresh requested 1000 contributors, captured 263 linked contributors and 269 anon=true author buckets through 2026-07-18. Collection remains source-selection evidence only; repository/code-search rescreening and implementation review remain open.",
       "required_gate": "Refresh contributors with `scripts/collect_contributors.py`, following GitHub Link headers until no rel=\"next\" remains or the explicit cap is reached; record requested count, linked count, anon=true count without raw anonymous identities, status codes, ETags, Last-Modified headers, rate-limit state, repository/code search total_count and incomplete_results, replay missed queries, inspect newly matched repos by architecture/source-format family, and record each result as adopted, held, rejected, or backlog.",
       "source": "mlx-model-porting/research-runs/2026-06-27-top1000-contributor-loop/synthesis.json",
       "affected": [
@@ -142,10 +142,10 @@
       ],
       "current_state": {
         "source_node": "review-queue:contributors:ml-explore-mlx",
-        "retrieved": "2026-07-08",
+        "retrieved": "2026-07-18",
         "requested_count": 1000,
-        "linked_user_count": 262,
-        "anonymous_author_count": 268,
+        "linked_user_count": 263,
+        "anonymous_author_count": 269,
         "review_only": true
       }
     },

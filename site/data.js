@@ -3957,12 +3957,12 @@ window.MLX_PORTING_SITE_DATA = {
       "primary_source_code": 13,
       "release_note": 2,
       "technical_blog": 2,
-      "unclassified": 326
+      "unclassified": 328
     },
     "by_kind": {
       "issue-report": 1,
       "official-doc": 38,
-      "paper": 230,
+      "paper": 232,
       "release": 8,
       "repository": 49,
       "source-code": 26,
@@ -3970,7 +3970,7 @@ window.MLX_PORTING_SITE_DATA = {
     },
     "by_review_depth": {
       "indexed": 24,
-      "screened": 190,
+      "screened": 192,
       "synthesized": 147
     },
     "by_support_scope": {
@@ -3979,9 +3979,9 @@ window.MLX_PORTING_SITE_DATA = {
       "official_mlx_project": 4,
       "paper_only": 4,
       "third_party_pinned": 10,
-      "unspecified": 326
+      "unspecified": 328
     },
-    "total": 361
+    "total": 363
   },
   "techniques": {
     "by_status": {
