@@ -219,7 +219,7 @@
     "title": "Coverage Skeptic",
     "rank": 1,
     "config_order": 6,
-    "score": 11,
+    "score": 14,
     "source_lanes": [
       "official_docs",
       "papers",
@@ -239,10 +239,11 @@
     ],
     "matched_gap_terms": [
       "audio",
-      "quantization"
+      "quantization",
+      "vlm"
     ],
     "reasons": [
-      "Matched gap terms: audio, quantization.",
+      "Matched gap terms: audio, quantization, vlm.",
       "Matched objective terms: blogs, cli, model, package, papers.",
       "Covers source lanes: official_docs, papers, hugging_face, packages, technical_blogs, community_discussions, repositories, repo_local_audit."
     ]

@@ -75,7 +75,7 @@
     "title": "Package Registry Scout",
     "rank": 2,
     "config_order": 4,
-    "score": 10,
+    "score": 13,
     "source_lanes": [
       "packages",
       "repositories"
@@ -87,10 +87,11 @@
     ],
     "matched_gap_terms": [
       "audio",
-      "quantization"
+      "quantization",
+      "vlm"
     ],
     "reasons": [
-      "Matched gap terms: audio, quantization.",
+      "Matched gap terms: audio, quantization, vlm.",
       "Matched objective terms: cli, model, package.",
       "Covers source lanes: packages, repositories."
     ]

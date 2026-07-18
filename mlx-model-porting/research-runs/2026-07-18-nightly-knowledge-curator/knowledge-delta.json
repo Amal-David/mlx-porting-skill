@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
   "run_id": "2026-07-18-nightly-knowledge-curator",
-  "generated_at": "2026-07-18T17:59:10+00:00",
-  "previous_graph_generated_at": "2026-07-18T17:52:38+00:00",
+  "generated_at": "2026-07-18T18:23:37+00:00",
+  "previous_graph_generated_at": "2026-07-18T17:59:10+00:00",
   "already_read_sources": [
     {
       "id": "candidate:paper:a-jolt-for-the-kv-cache-near-lossless-kv-cache-compression-via-joint-tucker-and-jl-residual-allocation-for-llms",

@@ -1,7 +1,7 @@
 # MLX Knowledge Curator Delta
 
 - Run id: `2026-07-18-nightly-knowledge-curator`
-- Generated at: `2026-07-18T17:59:10+00:00`
+- Generated at: `2026-07-18T18:23:37+00:00`
 - Graph nodes: 711
 - Graph edges: 499
 

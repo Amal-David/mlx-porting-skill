@@ -2,7 +2,7 @@
   "schema_version": 1,
   "run_id": "2026-07-18-nightly-knowledge-curator-research-loop",
   "objective": "Nightly MLX knowledge curator: top contributors, papers, blogs, package releases, model outcomes, speedup ranges, and app/CLI skill deltas",
-  "generated_at": "2026-07-18T17:52:39+00:00",
+  "generated_at": "2026-07-18T18:23:37+00:00",
   "iteration": 1,
   "iteration_count": 1,
   "gap_hints": [
@@ -10,10 +10,14 @@
     "audio",
     "quantization",
     "streaming",
-    "adaptive",
-    "weight",
     "route",
-    "working"
+    "weight",
+    "working",
+    "adaptive",
+    "prefix",
+    "tts",
+    "vocoder",
+    "vlm"
   ],
   "next_gap_hints": [
     "https",
@@ -55,18 +59,26 @@
       "audio",
       "quantization",
       "streaming",
-      "adaptive",
-      "weight",
       "route",
-      "working"
+      "weight",
+      "working",
+      "adaptive",
+      "prefix",
+      "tts",
+      "vocoder",
+      "vlm"
     ],
     "gap_terms": [
       "adaptive",
       "audio",
       "cache",
+      "prefix",
       "quantization",
       "route",
       "streaming",
+      "tts",
+      "vlm",
+      "vocoder",
       "weight",
       "working"
     ],
@@ -76,7 +88,7 @@
         "title": "Coverage Skeptic",
         "rank": 1,
         "config_order": 6,
-        "score": 11,
+        "score": 14,
         "source_lanes": [
           "official_docs",
           "papers",
@@ -96,10 +108,11 @@
         ],
         "matched_gap_terms": [
           "audio",
-          "quantization"
+          "quantization",
+          "vlm"
         ],
         "reasons": [
-          "Matched gap terms: audio, quantization.",
+          "Matched gap terms: audio, quantization, vlm.",
           "Matched objective terms: blogs, cli, model, package, papers.",
           "Covers source lanes: official_docs, papers, hugging_face, packages, technical_blogs, community_discussions, repositories, repo_local_audit."
         ]
@@ -109,7 +122,7 @@
         "title": "Package Registry Scout",
         "rank": 2,
         "config_order": 4,
-        "score": 10,
+        "score": 13,
         "source_lanes": [
           "packages",
           "repositories"
@@ -121,10 +134,11 @@
         ],
         "matched_gap_terms": [
           "audio",
-          "quantization"
+          "quantization",
+          "vlm"
         ],
         "reasons": [
-          "Matched gap terms: audio, quantization.",
+          "Matched gap terms: audio, quantization, vlm.",
           "Matched objective terms: cli, model, package.",
           "Covers source lanes: packages, repositories."
         ]
@@ -134,7 +148,7 @@
         "title": "Official Docs Cartographer",
         "rank": 3,
         "config_order": 1,
-        "score": 9,
+        "score": 12,
         "source_lanes": [
           "official_docs",
           "packages"
@@ -146,10 +160,11 @@
         ],
         "matched_gap_terms": [
           "audio",
-          "quantization"
+          "quantization",
+          "vlm"
         ],
         "reasons": [
-          "Matched gap terms: audio, quantization.",
+          "Matched gap terms: audio, quantization, vlm.",
           "Matched objective terms: cli, model, package.",
           "Covers source lanes: official_docs, packages."
         ]
@@ -453,7 +468,7 @@
         "title": "Coverage Skeptic",
         "rank": 1,
         "config_order": 6,
-        "score": 11,
+        "score": 14,
         "source_lanes": [
           "official_docs",
           "papers",
@@ -473,10 +488,11 @@
         ],
         "matched_gap_terms": [
           "audio",
-          "quantization"
+          "quantization",
+          "vlm"
         ],
         "reasons": [
-          "Matched gap terms: audio, quantization.",
+          "Matched gap terms: audio, quantization, vlm.",
           "Matched objective terms: blogs, cli, model, package, papers.",
           "Covers source lanes: official_docs, papers, hugging_face, packages, technical_blogs, community_discussions, repositories, repo_local_audit."
         ]
@@ -866,7 +882,7 @@
         "title": "Package Registry Scout",
         "rank": 2,
         "config_order": 4,
-        "score": 10,
+        "score": 13,
         "source_lanes": [
           "packages",
           "repositories"
@@ -878,10 +894,11 @@
         ],
         "matched_gap_terms": [
           "audio",
-          "quantization"
+          "quantization",
+          "vlm"
         ],
         "reasons": [
-          "Matched gap terms: audio, quantization.",
+          "Matched gap terms: audio, quantization, vlm.",
           "Matched objective terms: cli, model, package.",
           "Covers source lanes: packages, repositories."
         ]
@@ -1105,7 +1122,7 @@
         "title": "Official Docs Cartographer",
         "rank": 3,
         "config_order": 1,
-        "score": 9,
+        "score": 12,
         "source_lanes": [
           "official_docs",
           "packages"
@@ -1117,10 +1134,11 @@
         ],
         "matched_gap_terms": [
           "audio",
-          "quantization"
+          "quantization",
+          "vlm"
         ],
         "reasons": [
-          "Matched gap terms: audio, quantization.",
+          "Matched gap terms: audio, quantization, vlm.",
           "Matched objective terms: cli, model, package.",
           "Covers source lanes: official_docs, packages."
         ]

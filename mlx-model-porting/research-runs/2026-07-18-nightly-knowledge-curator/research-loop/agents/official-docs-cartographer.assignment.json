@@ -75,7 +75,7 @@
     "title": "Official Docs Cartographer",
     "rank": 3,
     "config_order": 1,
-    "score": 9,
+    "score": 12,
     "source_lanes": [
       "official_docs",
       "packages"
@@ -87,10 +87,11 @@
     ],
     "matched_gap_terms": [
       "audio",
-      "quantization"
+      "quantization",
+      "vlm"
     ],
     "reasons": [
-      "Matched gap terms: audio, quantization.",
+      "Matched gap terms: audio, quantization, vlm.",
       "Matched objective terms: cli, model, package.",
       "Covers source lanes: official_docs, packages."
     ]

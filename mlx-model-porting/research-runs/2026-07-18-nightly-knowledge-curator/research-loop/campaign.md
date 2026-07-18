@@ -16,9 +16,9 @@ Stop reason: single_iteration
   - output: .
   - subagents: subagents.json
   - assignment mode: dynamic
-  - gap hints: cache, audio, quantization, streaming, adaptive, weight, route, working
+  - gap hints: cache, audio, quantization, streaming, route, weight, working, adaptive, prefix, tts, vocoder, vlm
   - next gap hints: https, packages, papers, repositories, github, search, explore, ml, hugging_face, metadata
-  - ingest command args: python3 scripts/research_loop.py --run-id 2026-07-18-nightly-knowledge-curator-research-loop --objective 'Nightly MLX knowledge curator: top contributors, papers, blogs, package releases, model outcomes, speedup ranges, and app/CLI skill deltas' --agent-count 6 --assignment-mode dynamic --gap-hint cache --gap-hint audio --gap-hint quantization --gap-hint streaming --gap-hint adaptive --gap-hint weight --gap-hint route --gap-hint working --min-sampled-targets 6 --min-non-github-lanes 4 --require-source-lane papers --require-source-lane repositories --require-source-lane repo_local_audit --ingest-subagent-results --output-dir research-runs/2026-07-18-nightly-knowledge-curator/research-loop
+  - ingest command args: python3 scripts/research_loop.py --run-id 2026-07-18-nightly-knowledge-curator-research-loop --objective 'Nightly MLX knowledge curator: top contributors, papers, blogs, package releases, model outcomes, speedup ranges, and app/CLI skill deltas' --agent-count 6 --assignment-mode dynamic --gap-hint cache --gap-hint audio --gap-hint quantization --gap-hint streaming --gap-hint route --gap-hint weight --gap-hint working --gap-hint adaptive --gap-hint prefix --gap-hint tts --gap-hint vocoder --gap-hint vlm --min-sampled-targets 6 --min-non-github-lanes 4 --require-source-lane papers --require-source-lane repositories --require-source-lane repo_local_audit --ingest-subagent-results --output-dir research-runs/2026-07-18-nightly-knowledge-curator/research-loop
   - dependency: Single-wave campaign.
   - coverage-skeptic: agents/coverage-skeptic.assignment.json -> agents/coverage-skeptic.result.json
   - package-registry-scout: agents/package-registry-scout.assignment.json -> agents/package-registry-scout.result.json

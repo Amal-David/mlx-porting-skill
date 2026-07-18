@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
   "run_id": "2026-07-18-nightly-knowledge-curator",
-  "started_at": "2026-07-18T17:52:18+00:00",
-  "finished_at": "2026-07-18T17:52:39+00:00",
+  "started_at": "2026-07-18T18:23:37+00:00",
+  "finished_at": "2026-07-18T18:23:38+00:00",
   "review_only": true,
   "graph_output": "mlx-model-porting/assets/knowledge_graph.json",
   "delta_output": "mlx-model-porting/research-runs/2026-07-18-nightly-knowledge-curator/knowledge-delta.json",
@@ -13,47 +13,16 @@
     "audio",
     "quantization",
     "streaming",
-    "adaptive",
-    "weight",
     "route",
-    "working"
+    "weight",
+    "working",
+    "adaptive",
+    "prefix",
+    "tts",
+    "vocoder",
+    "vlm"
   ],
   "commands": [
-    {
-      "command": [
-        "python3",
-        "mlx-model-porting/scripts/collect_contributors.py",
-        "--repo",
-        "ml-explore/mlx",
-        "--requested-count",
-        "1000",
-        "--output",
-        "mlx-model-porting/assets/contributor-refresh.json"
-      ],
-      "cwd": ".",
-      "started_at": "2026-07-18T17:52:18+00:00",
-      "finished_at": "2026-07-18T17:52:22+00:00",
-      "returncode": 0,
-      "timed_out": false,
-      "stdout": "wrote ./mlx-model-porting/assets/contributor-refresh.json: 263 linked contributors, 269 anon=true author buckets, 3 linked pages\n",
-      "stderr": ""
-    },
-    {
-      "command": [
-        "python3",
-        "mlx-model-porting/scripts/update_sources.py",
-        "--output",
-        "mlx-model-porting/assets/update-candidates.json",
-        "--fail-on-network-error"
-      ],
-      "cwd": ".",
-      "started_at": "2026-07-18T17:52:22+00:00",
-      "finished_at": "2026-07-18T17:52:38+00:00",
-      "returncode": 0,
-      "timed_out": false,
-      "stdout": "wrote ./mlx-model-porting/assets/update-candidates.json: 8 repositories, 22 paper candidates, 0 errors\n",
-      "stderr": ""
-    },
     {
       "command": [
         "python3",
@@ -76,11 +45,11 @@
         "mlx-model-porting/research-runs/2026-07-18-nightly-knowledge-curator/knowledge-delta.md"
       ],
       "cwd": ".",
-      "started_at": "2026-07-18T17:52:38+00:00",
-      "finished_at": "2026-07-18T17:52:39+00:00",
+      "started_at": "2026-07-18T18:23:37+00:00",
+      "finished_at": "2026-07-18T18:23:37+00:00",
       "returncode": 0,
       "timed_out": false,
-      "stdout": "wrote ./mlx-model-porting/assets/knowledge_graph.json: 709 nodes, 497 edges\nwrote ./mlx-model-porting/research-runs/2026-07-18-nightly-knowledge-curator/knowledge-delta.json\nwrote ./mlx-model-porting/research-runs/2026-07-18-nightly-knowledge-curator/knowledge-delta.md\n",
+      "stdout": "wrote ./mlx-model-porting/assets/knowledge_graph.json: 711 nodes, 499 edges\nwrote ./mlx-model-porting/research-runs/2026-07-18-nightly-knowledge-curator/knowledge-delta.json\nwrote ./mlx-model-porting/research-runs/2026-07-18-nightly-knowledge-curator/knowledge-delta.md\n",
       "stderr": ""
     },
     {
@@ -96,8 +65,8 @@
         "mlx-model-porting/assets/research_backlog.json"
       ],
       "cwd": ".",
-      "started_at": "2026-07-18T17:52:39+00:00",
-      "finished_at": "2026-07-18T17:52:39+00:00",
+      "started_at": "2026-07-18T18:23:37+00:00",
+      "finished_at": "2026-07-18T18:23:37+00:00",
       "returncode": 0,
       "timed_out": false,
       "stdout": "wrote ./mlx-model-porting/assets/research_backlog.json: 8 items from graph 2026-07-18-nightly-knowledge-curator\n",
@@ -136,17 +105,25 @@
         "--gap-hint",
         "streaming",
         "--gap-hint",
-        "adaptive",
+        "route",
         "--gap-hint",
         "weight",
         "--gap-hint",
-        "route",
+        "working",
         "--gap-hint",
-        "working"
+        "adaptive",
+        "--gap-hint",
+        "prefix",
+        "--gap-hint",
+        "tts",
+        "--gap-hint",
+        "vocoder",
+        "--gap-hint",
+        "vlm"
       ],
       "cwd": ".",
-      "started_at": "2026-07-18T17:52:39+00:00",
-      "finished_at": "2026-07-18T17:52:39+00:00",
+      "started_at": "2026-07-18T18:23:37+00:00",
+      "finished_at": "2026-07-18T18:23:38+00:00",
       "returncode": 0,
       "timed_out": false,
       "stdout": "wrote research loop 2026-07-18-nightly-knowledge-curator-research-loop to ./mlx-model-porting/research-runs/2026-07-18-nightly-knowledge-curator/research-loop: 0 findings\n",

@@ -4,7 +4,7 @@ Objective: Nightly MLX knowledge curator: top contributors, papers, blogs, packa
 
 Review only: True
 Iteration: 1 of 1
-Gap hints used: cache, audio, quantization, streaming, adaptive, weight, route, working
+Gap hints used: cache, audio, quantization, streaming, route, weight, working, adaptive, prefix, tts, vocoder, vlm
 Next gap hints: https, packages, papers, repositories, github, search, explore, ml, hugging_face, metadata
 Findings: 0
 Sampling coverage: 0/49 planned targets
@@ -16,9 +16,9 @@ Non-GitHub lanes covered: none
 Planned non-GitHub sample targets: 20
 
 ## Selected Agents
-- coverage-skeptic: score 11 - Matched gap terms: audio, quantization.; Matched objective terms: blogs, cli, model, package, papers.; Covers source lanes: official_docs, papers, hugging_face, packages, technical_blogs, community_discussions, repositories, repo_local_audit.
-- package-registry-scout: score 10 - Matched gap terms: audio, quantization.; Matched objective terms: cli, model, package.; Covers source lanes: packages, repositories.
-- official-docs-cartographer: score 9 - Matched gap terms: audio, quantization.; Matched objective terms: cli, model, package.; Covers source lanes: official_docs, packages.
+- coverage-skeptic: score 14 - Matched gap terms: audio, quantization, vlm.; Matched objective terms: blogs, cli, model, package, papers.; Covers source lanes: official_docs, papers, hugging_face, packages, technical_blogs, community_discussions, repositories, repo_local_audit.
+- package-registry-scout: score 13 - Matched gap terms: audio, quantization, vlm.; Matched objective terms: cli, model, package.; Covers source lanes: packages, repositories.
+- official-docs-cartographer: score 12 - Matched gap terms: audio, quantization, vlm.; Matched objective terms: cli, model, package.; Covers source lanes: official_docs, packages.
 - paper-architecture-scout: score 6 - Matched objective terms: blogs, model, papers, skill.; Covers source lanes: papers, technical_blogs.
 - huggingface-ecosystem-sampler: score 2 - Matched objective terms: model.; Covers source lanes: hugging_face.
 - practitioner-blog-miner: score 1 - Matched objective terms: blogs.; Covers source lanes: technical_blogs, community_discussions.
@@ -59,6 +59,9 @@ Planned non-GitHub sample targets: 20
 - None
 
 ### Thin Source Lanes
+- None
+
+### Uncited Source Lanes
 - official_docs: 0/6 sampled targets, 0 source citations (uncited)
 - papers: 0/6 sampled targets, 0 source citations (uncited)
 - hugging_face: 0/6 sampled targets, 0 source citations (uncited)

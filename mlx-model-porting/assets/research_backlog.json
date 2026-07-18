@@ -4,8 +4,8 @@
   "objective": "Track deep-research gaps needed before the MLX porting skill can credibly claim comprehensive coverage.",
   "generated_from": {
     "knowledge_graph_run_id": "2026-07-18-nightly-knowledge-curator",
-    "knowledge_graph_generated_at": "2026-07-18T17:59:10+00:00",
-    "knowledge_graph_sha256": "65a03dbc28fe31cf1f24a229f996a9ecd530b0535dbe87d3da35ca6181c0d92b",
+    "knowledge_graph_generated_at": "2026-07-18T18:23:37+00:00",
+    "knowledge_graph_sha256": "e1eb0ce03dc0445a5ae5321e3aa7d1f840b47e0e129d88aaa29a427a112b11e9",
     "knowledge_graph_node_count": 711,
     "knowledge_graph_edge_count": 499,
     "update_candidates_generated_at": "2026-07-18T17:52:38.809882+00:00",

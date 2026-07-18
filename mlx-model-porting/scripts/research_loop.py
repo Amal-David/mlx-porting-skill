@@ -2411,7 +2411,7 @@ def write_markdown_summary(output_dir: Path, summary: dict[str, Any]) -> None:
     lines.append(markdown_list(top_rows))
     lines.extend(["", "### Thin Source Lanes"])
     thin_rows = []
-    for lane in evidence_matrix.get("thin_source_lanes", []) + evidence_matrix.get("uncited_source_lanes", []):
+    for lane in evidence_matrix.get("thin_source_lanes", []):
         thin_rows.append(
             (
                 f"{lane['source_lane']}: {lane['sampled_target_count']}/"
@@ -2420,6 +2420,17 @@ def write_markdown_summary(output_dir: Path, summary: dict[str, Any]) -> None:
             )
         )
     lines.append(markdown_list(thin_rows))
+    lines.extend(["", "### Uncited Source Lanes"])
+    uncited_rows = []
+    for lane in evidence_matrix.get("uncited_source_lanes", []):
+        uncited_rows.append(
+            (
+                f"{lane['source_lane']}: {lane['sampled_target_count']}/"
+                f"{lane['planned_target_count']} sampled targets, "
+                f"{lane['source_citation_count']} source citations ({lane['status']})"
+            )
+        )
+    lines.append(markdown_list(uncited_rows))
     lines.extend([
         "",
         "## Promotion Review",

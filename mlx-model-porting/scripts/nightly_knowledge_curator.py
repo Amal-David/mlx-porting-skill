@@ -159,7 +159,7 @@ def read_gap_hints(delta_path: Path) -> list[str]:
     except SkillError:
         return []
     hints = delta.get("gap_hints")
-    return [str(item) for item in hints[:8]] if isinstance(hints, list) else []
+    return [str(item) for item in hints] if isinstance(hints, list) else []
 
 
 def research_loop_command(run_id: str, run_dir: Path, gap_hints: list[str], agent_count: int) -> list[str]:
