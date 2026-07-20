@@ -1,10 +1,10 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-07-18T17:52:22.420119+00:00",
+  "generated_at": "2026-07-20T22:03:29.867141+00:00",
   "review_only": true,
   "repo": "ml-explore/mlx",
   "source": "https://api.github.com/repos/ml-explore/mlx/contributors?per_page=100&page=1",
-  "retrieved": "2026-07-18",
+  "retrieved": "2026-07-20",
   "requested_count": 1000,
   "per_page": 100,
   "linked_user_count": 263,
@@ -290,13 +290,13 @@
         "count": 100,
         "retained_count": 100,
         "link_header": "<https://api.github.com/repositories/724854743/contributors?per_page=100&page=2>; rel=\"next\", <https://api.github.com/repositories/724854743/contributors?per_page=100&page=3>; rel=\"last\"",
-        "etag": "W/\"a24453627db3646eff54d5bc6940a821ebcbf9ceee3ece08d17d2fa3f3f6a0a4\"",
-        "last_modified": "Sat, 18 Jul 2026 17:23:28 GMT",
+        "etag": "W/\"30232e89e1fc6cfdacce7076acb5a2cb8927892ccea866ae9383d68c4f343b86\"",
+        "last_modified": "Mon, 20 Jul 2026 20:10:13 GMT",
         "rate_limit": {
           "limit": "60",
-          "remaining": "58",
-          "used": "2",
-          "reset": "1784399903",
+          "remaining": "59",
+          "used": "1",
+          "reset": "1784588606",
           "resource": "core"
         },
         "link_rels": [
@@ -313,12 +313,12 @@
         "retained_count": 100,
         "link_header": "<https://api.github.com/repositories/724854743/contributors?per_page=100&page=1>; rel=\"prev\", <https://api.github.com/repositories/724854743/contributors?per_page=100&page=3>; rel=\"next\", <https://api.github.com/repositories/724854743/contributors?per_page=100&page=3>; rel=\"last\", <https://api.github.com/repositories/724854743/contributors?per_page=100&page=1>; rel=\"first\"",
         "etag": "W/\"af79eb4bffa1396788de40006b6570d56b6afe7e5ef415cab9a9fbf946cacbcf\"",
-        "last_modified": "Sat, 18 Jul 2026 17:23:28 GMT",
+        "last_modified": "Mon, 20 Jul 2026 20:10:13 GMT",
         "rate_limit": {
           "limit": "60",
-          "remaining": "57",
-          "used": "3",
-          "reset": "1784399903",
+          "remaining": "58",
+          "used": "2",
+          "reset": "1784588606",
           "resource": "core"
         },
         "link_rels": [
@@ -337,12 +337,12 @@
         "retained_count": 63,
         "link_header": "<https://api.github.com/repositories/724854743/contributors?per_page=100&page=2>; rel=\"prev\", <https://api.github.com/repositories/724854743/contributors?per_page=100&page=1>; rel=\"first\"",
         "etag": "W/\"60e831c9369fd23854177541df4c5053f7484ea2a12360e46eba315352732a83\"",
-        "last_modified": "Sat, 18 Jul 2026 17:23:28 GMT",
+        "last_modified": "Mon, 20 Jul 2026 20:10:13 GMT",
         "rate_limit": {
           "limit": "60",
-          "remaining": "56",
-          "used": "4",
-          "reset": "1784399903",
+          "remaining": "57",
+          "used": "3",
+          "reset": "1784588606",
           "resource": "core"
         },
         "link_rels": [
@@ -360,13 +360,13 @@
         "count": 100,
         "retained_count": 100,
         "link_header": "<https://api.github.com/repositories/724854743/contributors?per_page=100&page=2&anon=true>; rel=\"next\", <https://api.github.com/repositories/724854743/contributors?per_page=100&page=3&anon=true>; rel=\"last\"",
-        "etag": "W/\"50d37d3a9be550d6492752db736bda539fb681354c28ae6d25200d0f8e11303b\"",
-        "last_modified": "Sat, 18 Jul 2026 17:23:28 GMT",
+        "etag": "W/\"1f741be327f76b0049dc6a553ab058d40c2bacb3ddab47f22595d3ca6404774c\"",
+        "last_modified": "Mon, 20 Jul 2026 20:10:13 GMT",
         "rate_limit": {
           "limit": "60",
-          "remaining": "55",
-          "used": "5",
-          "reset": "1784399903",
+          "remaining": "56",
+          "used": "4",
+          "reset": "1784588606",
           "resource": "core"
         },
         "link_rels": [
@@ -383,12 +383,12 @@
         "retained_count": 100,
         "link_header": "<https://api.github.com/repositories/724854743/contributors?per_page=100&page=1&anon=true>; rel=\"prev\", <https://api.github.com/repositories/724854743/contributors?per_page=100&page=3&anon=true>; rel=\"next\", <https://api.github.com/repositories/724854743/contributors?per_page=100&page=3&anon=true>; rel=\"last\", <https://api.github.com/repositories/724854743/contributors?per_page=100&page=1&anon=true>; rel=\"first\"",
         "etag": "W/\"7a3f083519de9a0e793260cfd828be5ba69a74f1d4537ad83356772cbc30b8b6\"",
-        "last_modified": "Sat, 18 Jul 2026 17:23:28 GMT",
+        "last_modified": "Mon, 20 Jul 2026 20:10:13 GMT",
         "rate_limit": {
           "limit": "60",
-          "remaining": "54",
-          "used": "6",
-          "reset": "1784399903",
+          "remaining": "55",
+          "used": "5",
+          "reset": "1784588606",
           "resource": "core"
         },
         "link_rels": [
@@ -407,12 +407,12 @@
         "retained_count": 69,
         "link_header": "<https://api.github.com/repositories/724854743/contributors?per_page=100&page=2&anon=true>; rel=\"prev\", <https://api.github.com/repositories/724854743/contributors?per_page=100&page=1&anon=true>; rel=\"first\"",
         "etag": "W/\"1f5559ca2df4b30f24779d3c9af38b2ca845fac396520ac7ef27f84c39d66872\"",
-        "last_modified": "Sat, 18 Jul 2026 17:23:28 GMT",
+        "last_modified": "Mon, 20 Jul 2026 20:10:13 GMT",
         "rate_limit": {
           "limit": "60",
-          "remaining": "53",
-          "used": "7",
-          "reset": "1784399903",
+          "remaining": "54",
+          "used": "6",
+          "reset": "1784588606",
           "resource": "core"
         },
         "link_rels": [

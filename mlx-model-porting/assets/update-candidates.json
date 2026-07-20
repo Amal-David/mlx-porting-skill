@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-07-18T17:52:38.809882+00:00",
+  "generated_at": "2026-07-20T22:03:44.855773+00:00",
   "policy": {
     "auto_modify_recommendations": false,
     "auto_merge": false,
@@ -16,9 +16,9 @@
         "quantization"
       ],
       "default_branch": "main",
-      "head_sha": "b7c3dd6d27f45b5365b08a840310187dc503f1db",
-      "head_date": "2026-07-17T16:53:03Z",
-      "head_message": "[CUDA][Improvement] RMSNorm forward speed up (#3850)",
+      "head_sha": "ce3073389e92d8f7b7ecd3d7697523795786e046",
+      "head_date": "2026-07-20T20:09:32Z",
+      "head_message": "Fix captured random state in compile (#3828)",
       "url": "https://github.com/ml-explore/mlx",
       "latest_release": {
         "tag": "v0.32.0",
@@ -73,14 +73,14 @@
         "speculative"
       ],
       "default_branch": "main",
-      "head_sha": "6d5603b36902e0742a8273f0b0e6fa4a60d2a201",
-      "head_date": "2026-07-18T10:23:08Z",
-      "head_message": "Speed up llguidance structured decoding (#1628)",
+      "head_sha": "c9e27b08311f9c1f38690c46034b04c7598d73ee",
+      "head_date": "2026-07-20T14:02:10Z",
+      "head_message": "Merge pull request #1642 from Blaizzy/pc/qwen3-vl-pil-video-frames",
       "url": "https://github.com/Blaizzy/mlx-vlm",
       "latest_release": {
-        "tag": "v0.6.5",
-        "published_at": "2026-07-16T21:39:52Z",
-        "url": "https://github.com/Blaizzy/mlx-vlm/releases/tag/v0.6.5"
+        "tag": "v0.6.6",
+        "published_at": "2026-07-20T16:41:21Z",
+        "url": "https://github.com/Blaizzy/mlx-vlm/releases/tag/v0.6.6"
       },
       "known_snapshot": false
     },
@@ -147,9 +147,9 @@
         "codex"
       ],
       "default_branch": "main",
-      "head_sha": "b8b61bc692517adcd18622df260f2ddd80635122",
-      "head_date": "2026-07-18T16:14:48Z",
-      "head_message": "Handle compressed rollouts in doctor thread inventory (#34038)",
+      "head_sha": "cf821e8ec850c6d8380feea0e84859dd8ff54cd0",
+      "head_date": "2026-07-20T21:41:17Z",
+      "head_message": "Show completed hook warnings in TUI headers (#34416)",
       "url": "https://github.com/openai/codex",
       "latest_release": {
         "tag": "rust-v0.144.6",
@@ -204,23 +204,44 @@
     {
       "kind": "paper",
       "query": "KV cache quantization long context",
-      "id": "http://arxiv.org/abs/2607.12550v1",
+      "id": "http://arxiv.org/abs/2607.12550v2",
       "title": "A JoLT for the KV Cache: Near-Lossless KV Cache Compression via Joint Tucker and JL-Residual Allocation for LLMs",
-      "updated": "2026-07-14T09:23:20Z",
+      "updated": "2026-07-17T17:45:07Z",
       "published": "2026-07-14T09:23:20Z",
       "authors": [
         "Rahul Krishnan",
         "Volker Schulz"
       ],
-      "summary": "The key-value (KV) cache has become the dominant memory cost of transformer inference. It grows with batch size, context length, and depth, and at long context it, rather than the model weights, sets the ceiling on throughput. Two families of methods reduce it. Low-rank methods factor two-dimensional slices of the cache, either per-head matrices or cross-layer feature blocks, and quantization methods lower the bit-width of every entry. Neither family exploits the fact that the cache at a layer is naturally a third-order tensor whose three axes, the heads, the tokens, and the features, carry very different amounts of redundancy. We take this tensor view directly. Our method, JoLT, applies a partial Tucker decomposition that compresses only the token and feature axes while leaving the head a",
+      "summary": "The key-value (KV) cache has become the dominant memory cost of transformer inference: it grows with batch size, context length, and depth, and at long context it, rather than the model weights, sets the throughput ceiling. Existing reductions fall into two families. Low-rank methods factor two-dimensional slices of the cache, either per-head matrices or cross-layer feature blocks, and quantization methods lower the bit-width of every entry. Neither exploits the fact that the cache at a layer is naturally a third-order tensor whose three axes, the heads, the tokens, and the features, carry very different amounts of redundancy. We take this tensor view directly. Our method, JoLT (Joint Lagrangian Tucker), applies a partial Tucker decomposition that compresses only the token and feature axes",
       "review_status": "candidate-unreviewed",
       "canonical_url": "https://arxiv.org/abs/2607.12550",
       "arxiv_id": "2607.12550",
-      "revision": "v1",
-      "immutable_url": "https://arxiv.org/abs/2607.12550v1",
+      "revision": "v2",
+      "immutable_url": "https://arxiv.org/abs/2607.12550v2",
       "known_url": false,
       "known_revision": null,
       "candidate_id": "candidate-a-jolt-for-the-kv-cache-near-lossless-kv-cache-compression-via-joint-tucker-and-jl-residual-allocation-for-llms"
+    },
+    {
+      "kind": "paper",
+      "query": "KV cache quantization long context",
+      "id": "http://arxiv.org/abs/2607.15456v1",
+      "title": "Looped Latent Attention: Cross-Loop KV Compression for Looped Transformers",
+      "updated": "2026-07-16T20:58:16Z",
+      "published": "2026-07-16T20:58:16Z",
+      "authors": [
+        "James O' Neill",
+        "Fergal Reid"
+      ],
+      "summary": "Looped, weight-tied Transformers reduce parameters by reusing a block, but decoding still stores a separate K/V cache for every recurrence step. We show that this loop-indexed cache is highly structured. For a fixed token, layer and head, K/V vectors trace a short low-rank trajectory across loops, while the head and layer axes remain much flatter. We introduce Looped Latent Attention (LLA), a post-training cache codec that stores compact K and V latents and reconstructs loop-specific K/V vectors only when attention reads them. The default per-head codec compresses recurrence, while LLA-2D also folds heads into one latent for the extreme-compression regime. The codec is initialized from SVD of teacher activations and refined with KL and attention-output distillation. At matched cache budget",
+      "review_status": "candidate-unreviewed",
+      "canonical_url": "https://arxiv.org/abs/2607.15456",
+      "arxiv_id": "2607.15456",
+      "revision": "v1",
+      "immutable_url": "https://arxiv.org/abs/2607.15456v1",
+      "known_url": false,
+      "known_revision": null,
+      "candidate_id": "candidate-looped-latent-attention-cross-loop-kv-compression-for-looped-transformers"
     },
     {
       "kind": "paper",
@@ -363,28 +384,6 @@
       "known_url": false,
       "known_revision": null,
       "candidate_id": "candidate-rabitqcache-rotated-binary-quantization-for-kvcache-in-long-context-llm-inference"
-    },
-    {
-      "kind": "paper",
-      "query": "KV cache quantization long context",
-      "id": "http://arxiv.org/abs/2606.24033v1",
-      "title": "RoPE-Aware Bit Allocation for KV-Cache Quantization",
-      "updated": "2026-06-23T00:17:48Z",
-      "published": "2026-06-23T00:17:48Z",
-      "authors": [
-        "Fengfeng Liang",
-        "Yuechen Zhang",
-        "Jiaya Jia"
-      ],
-      "summary": "Existing low-bit KV-cache quantizers often treat each cached key as a flat vector. Under RoPE, however, a key's contribution to a future attention logit decomposes into a position-dependent sum over two-dimensional frequency blocks. This makes key-cache quantization a block-wise bit-allocation problem: high-energy RoPE blocks are more sensitive to quantization error and should receive more bits. We introduce Block-GTQ, a RoPE-aware bit allocator for key-cache quantization built on TurboQuant-MSE(TQ-MSE). For each layer and KV head, Block-GTQ computes a label-free energy score for each RoPE block and greedily allocates integer bit widths by marginal gain. Under matched K/V bit budgets, Block-GTQ better preserves RoPE query-key logits on a ten-model diagnostic panel, cutting per-layer MAE by",
-      "review_status": "candidate-unreviewed",
-      "canonical_url": "https://arxiv.org/abs/2606.24033",
-      "arxiv_id": "2606.24033",
-      "revision": "v1",
-      "immutable_url": "https://arxiv.org/abs/2606.24033v1",
-      "known_url": true,
-      "known_revision": null,
-      "candidate_id": "candidate-rope-aware-bit-allocation-for-kv-cache-quantization"
     },
     {
       "kind": "paper",
