@@ -1,14 +1,14 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-07-23T17:25:10+00:00",
+  "generated_at": "2026-07-23T17:25:58+00:00",
   "run_id": "2026-07-20-nightly-knowledge-curator",
   "policy": {
     "review_only": true,
     "auto_promote_sources": false,
     "auto_modify_recommendations": false
   },
-  "node_count": 711,
-  "edge_count": 501,
+  "node_count": 712,
+  "edge_count": 505,
   "nodes": [
     {
       "id": "approach:adaptive-kv-quantization",
@@ -3964,6 +3964,34 @@
         "Xiaoyong Du"
       ],
       "summary": "Long-context Large Language Model inference is severely bottlenecked by the massive Key-Value (KV) cache, yet existing sparse attention methods often suffer from static fixed-budget (Top-k) retrieval or rely on proxy scores that are computationally expensive and biased. To address these limitations, we propose RaBitQCache, a novel sparse attention framework that utilizes randomized rotated binary quantization and high-throughput binary-INT4 arithmetic to efficiently estimate attention weights. Our proxy score serves as an unbiased estimator with a proven error bound, enabling adaptive Top-p retrieval that dynamically adjusts the token budget based on actual attention sparsity. We further implement a hardware-aware system with asynchronous pipelining and lazy updates to mask overhead. Evalu",
+      "review_status": "candidate-unreviewed"
+    },
+    {
+      "id": "candidate:paper:rope-aware-bit-allocation-for-kv-cache-quantization",
+      "kind": "source_candidate",
+      "candidate_kind": "paper",
+      "label": "RoPE-Aware Bit Allocation for KV-Cache Quantization",
+      "locator": "https://arxiv.org/abs/2606.24033",
+      "immutable_locator": "https://arxiv.org/abs/2606.24033v1",
+      "paper_id": "2606.24033",
+      "revision": "v1",
+      "revision_comparison": {
+        "before": null,
+        "after": "v1",
+        "status": "comparison_unpinned",
+        "basis": "source_registry"
+      },
+      "read_state": "updated_candidate",
+      "known_source_id": "source:paper-2606-24033",
+      "query": "KV cache quantization long context",
+      "updated": "2026-06-23T00:17:48Z",
+      "published": "2026-06-23T00:17:48Z",
+      "authors": [
+        "Fengfeng Liang",
+        "Yuechen Zhang",
+        "Jiaya Jia"
+      ],
+      "summary": "Existing low-bit KV-cache quantizers often treat each cached key as a flat vector. Under RoPE, however, a key's contribution to a future attention logit decomposes into a position-dependent sum over two-dimensional frequency blocks. This makes key-cache quantization a block-wise bit-allocation problem: high-energy RoPE blocks are more sensitive to quantization error and should receive more bits. We introduce Block-GTQ, a RoPE-aware bit allocator for key-cache quantization built on TurboQuant-MSE(TQ-MSE). For each layer and KV head, Block-GTQ computes a label-free energy score for each RoPE block and greedily allocates integer bit widths by marginal gain. Under matched K/V bit budgets, Block-GTQ better preserves RoPE query-key logits on a ten-model diagnostic panel, cutting per-layer MAE by",
       "review_status": "candidate-unreviewed"
     },
     {
@@ -12088,6 +12116,59 @@
       ]
     },
     {
+      "source": "candidate:paper:rope-aware-bit-allocation-for-kv-cache-quantization",
+      "target": "approach:adaptive-kv-quantization",
+      "relation": "candidate_relevant_to",
+      "score": 10,
+      "matched_terms": [
+        "allocation",
+        "aware",
+        "bit",
+        "cache",
+        "context",
+        "key",
+        "long",
+        "quantization"
+      ]
+    },
+    {
+      "source": "candidate:paper:rope-aware-bit-allocation-for-kv-cache-quantization",
+      "target": "approach:multimodal-content-prefix-cache",
+      "relation": "candidate_relevant_to",
+      "score": 5,
+      "matched_terms": [
+        "aware",
+        "block",
+        "cache",
+        "context",
+        "long"
+      ]
+    },
+    {
+      "source": "candidate:paper:rope-aware-bit-allocation-for-kv-cache-quantization",
+      "target": "outcome:qwen25-05b-instruct-local-worked-port",
+      "relation": "candidate_relevant_to",
+      "score": 5,
+      "matched_terms": [
+        "attention",
+        "cache",
+        "matched",
+        "preserves",
+        "rope"
+      ]
+    },
+    {
+      "source": "candidate:paper:rope-aware-bit-allocation-for-kv-cache-quantization",
+      "target": "source:paper-2606-24033",
+      "relation": "candidate_version_of",
+      "revision_comparison": {
+        "before": null,
+        "after": "v1",
+        "status": "comparison_unpinned",
+        "basis": "source_registry"
+      }
+    },
+    {
       "source": "candidate:paper:streamvoiceanon-emotion-preserving-streaming-speaker-anonymization-via-frame-level-acoustic-distillation",
       "target": "approach:audio-reference-conditioning-cache",
       "relation": "candidate_relevant_to",
@@ -14472,7 +14553,7 @@
   "latest_delta": {
     "schema_version": 1,
     "run_id": "2026-07-20-nightly-knowledge-curator",
-    "generated_at": "2026-07-23T17:25:10+00:00",
+    "generated_at": "2026-07-23T17:25:58+00:00",
     "previous_graph_generated_at": "2026-07-18T18:23:37+00:00",
     "already_read_sources": [
       {

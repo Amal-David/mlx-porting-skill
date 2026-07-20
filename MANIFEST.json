@@ -2,7 +2,7 @@
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
   "version": "0.6.1",
-  "generated_at": "2026-07-23T17:25:26.393374+00:00",
+  "generated_at": "2026-07-23T17:25:59.258174+00:00",
   "file_count": 588,
   "files": [
     {
@@ -999,8 +999,8 @@
     },
     {
       "path": "mlx-model-porting/assets/knowledge_graph.json",
-      "size_bytes": 554426,
-      "sha256": "2b7b4808131d7a9a405105ce1b9cd61a834e7ea2ff01d3c3b583d054fb2ed543",
+      "size_bytes": 557622,
+      "sha256": "4dc1e663ab320a699a8511a0b328f2d9041aa5ce03f96c247e17dd800834d758",
       "executable": false
     },
     {
@@ -1036,7 +1036,7 @@
     {
       "path": "mlx-model-porting/assets/research_backlog.json",
       "size_bytes": 11692,
-      "sha256": "178b741bea83be0ce820e5d12b1ca5ef8769b95111fdcc06b3dceeee0747be9d",
+      "sha256": "972b0384e825628323c0d0161371228a166876d3ed4bc879c051362698fcfc7f",
       "executable": false
     },
     {
@@ -2260,13 +2260,13 @@
     {
       "path": "mlx-model-porting/research-runs/2026-07-20-nightly-knowledge-curator/knowledge-delta.json",
       "size_bytes": 53610,
-      "sha256": "cdf1e144122a0031f06bce0e619de3150d8627a2e083a35dc3ce90d61c412467",
+      "sha256": "4c5c80599c81271ed2513ed239b65d944113e0e76df6fef0e1c560a00e67942d",
       "executable": false
     },
     {
       "path": "mlx-model-porting/research-runs/2026-07-20-nightly-knowledge-curator/knowledge-delta.md",
       "size_bytes": 13234,
-      "sha256": "36cea1d163688d98d261f5ef7c151962d5b0efb3f86e3f603c2f0efd38cd662e",
+      "sha256": "b9355913d56c4e345afc5568a8fe62696057bf846ed7a36ee51cbcc89aeb6422",
       "executable": false
     },
     {
@@ -2535,8 +2535,8 @@
     },
     {
       "path": "mlx-model-porting/scripts/knowledge_curator.py",
-      "size_bytes": 40015,
-      "sha256": "c573cdfea3c6d58a319c5024ddfd37bd7059f0e05cb4305e8a7afeaad8ad21e4",
+      "size_bytes": 41512,
+      "sha256": "21d5e436f37bf46b59d09c9db2dc22089c7c836eec450723fc8c7f9e08c25300",
       "executable": false
     },
     {
@@ -3513,8 +3513,8 @@
     },
     {
       "path": "tests/test_tooling.py",
-      "size_bytes": 196125,
-      "sha256": "25032e030927c53a630eae25d7c983c8e52e32acbe989d20d5d24655b7a5199a",
+      "size_bytes": 199566,
+      "sha256": "93fec45919342909ebc3ff1d9b6fc4730d81c39c80c8ff922c4cf0f17e1c89ac",
       "executable": true
     },
     {

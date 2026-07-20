@@ -443,6 +443,51 @@ def previous_index(path: Path) -> tuple[dict[str, Any], set[str], dict[str, dict
     return graph, locators, nodes
 
 
+def retain_prior_candidates(
+    nodes: dict[str, dict[str, Any]],
+    edges: list[dict[str, Any]],
+    previous_graph: dict[str, Any],
+) -> None:
+    """Keep candidate memory when a bounded collector no longer returns it."""
+    retained_ids: set[str] = set()
+    for node in previous_graph.get("nodes", []):
+        if not isinstance(node, dict):
+            continue
+        node_id = node.get("id")
+        if (
+            not isinstance(node_id, str)
+            or node_id in nodes
+            or node.get("kind") != "source_candidate"
+            or node.get("candidate_kind") not in {"paper", "repository"}
+        ):
+            continue
+        add_node(nodes, dict(node))
+        retained_ids.add(node_id)
+
+    for edge in previous_graph.get("edges", []):
+        if not isinstance(edge, dict):
+            continue
+        source = edge.get("source")
+        target = edge.get("target")
+        relation = edge.get("relation")
+        if (
+            not isinstance(source, str)
+            or source not in retained_ids
+            or not isinstance(target, str)
+            or target not in nodes
+            or not isinstance(relation, str)
+            or not relation
+        ):
+            continue
+        add_edge(
+            edges,
+            source,
+            target,
+            relation,
+            **{key: value for key, value in edge.items() if key not in {"source", "target", "relation"}},
+        )
+
+
 def compare_revisions(before: str | None, after: str | None, basis: str) -> dict[str, Any]:
     before_value = str(before or "").strip() or None
     after_value = str(after or "").strip() or None
@@ -923,6 +968,7 @@ def main() -> int:
             append_candidate(nodes, edges, node, approach_terms, delta)
             add_candidate_lineage(edges, node)
 
+        retain_prior_candidates(nodes, edges, previous_graph)
         delta["gap_hints"] = derive_gap_hints(delta)
         graph = {
             "schema_version": 1,

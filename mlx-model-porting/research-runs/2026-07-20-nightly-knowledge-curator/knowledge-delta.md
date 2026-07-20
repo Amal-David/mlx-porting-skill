@@ -1,9 +1,9 @@
 # MLX Knowledge Curator Delta
 
 - Run id: `2026-07-20-nightly-knowledge-curator`
-- Generated at: `2026-07-23T17:25:10+00:00`
-- Graph nodes: 711
-- Graph edges: 501
+- Generated at: `2026-07-23T17:25:58+00:00`
+- Graph nodes: 712
+- Graph edges: 505
 
 ## New Unread Sources
 - `candidate:paper:looped-latent-attention-cross-loop-kv-compression-for-looped-transformers` - Looped Latent Attention: Cross-Loop KV Compression for Looped Transformers (https://arxiv.org/abs/2607.15456)
