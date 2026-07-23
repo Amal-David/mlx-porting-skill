@@ -1742,6 +1742,86 @@ class ToolingTests(unittest.TestCase):
             self.assertIn("approach:draft-model-speculation", lead_targets)
             self.assertIn("New Approach Leads", markdown_path.read_text())
 
+    def test_knowledge_curator_retains_candidates_missing_from_bounded_refresh(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_path = Path(tmp)
+            candidates = {"repositories": [], "papers": []}
+            previous = {
+                "nodes": [
+                    {
+                        "id": "candidate:paper:retained-paper",
+                        "kind": "source_candidate",
+                        "candidate_kind": "paper",
+                        "label": "Retained paper",
+                        "locator": "https://arxiv.org/abs/2601.00001",
+                        "read_state": "unread_candidate",
+                    }
+                ],
+                "edges": [
+                    {
+                        "source": "candidate:paper:retained-paper",
+                        "target": "approach:retained-approach",
+                        "relation": "candidate_relevant_to",
+                        "score": 3,
+                    },
+                    {
+                        "source": "candidate:paper:retained-paper",
+                        "target": "source:retained-paper",
+                        "relation": "candidate_version_of",
+                    },
+                ],
+            }
+            inputs = {
+                "sources.json": {
+                    "sources": [{
+                        "id": "retained-paper",
+                        "title": "Retained paper",
+                        "url": "https://arxiv.org/abs/2601.00001v1",
+                        "kind": "paper",
+                        "review_depth": "indexed",
+                    }],
+                },
+                "candidates.json": candidates,
+                "guidance.json": {"methods": [{"id": "retained-approach"}]},
+                "learnings.json": {"learnings": []},
+                "backlog.json": {"items": []},
+                "outcomes.json": {"records": []},
+                "previous.json": previous,
+            }
+            for name, payload in inputs.items():
+                (tmp_path / name).write_text(json.dumps(payload), encoding="utf-8")
+
+            graph_path = tmp_path / "knowledge_graph.json"
+            run_script(
+                "knowledge_curator.py",
+                "--sources", tmp_path / "sources.json",
+                "--update-candidates", tmp_path / "candidates.json",
+                "--optimization-guidance", tmp_path / "guidance.json",
+                "--contributor-learnings", tmp_path / "learnings.json",
+                "--research-backlog", tmp_path / "backlog.json",
+                "--model-outcomes", tmp_path / "outcomes.json",
+                "--previous-graph", tmp_path / "previous.json",
+                "--graph-output", graph_path,
+                "--delta-output", tmp_path / "knowledge-delta.json",
+                "--markdown-output", tmp_path / "knowledge-delta.md",
+            )
+
+            graph = json.loads(graph_path.read_text())
+            node_ids = {node["id"] for node in graph["nodes"]}
+            self.assertIn("candidate:paper:retained-paper", node_ids)
+            edges = {
+                (edge["source"], edge["target"], edge["relation"])
+                for edge in graph["edges"]
+            }
+            self.assertIn(
+                ("candidate:paper:retained-paper", "approach:retained-approach", "candidate_relevant_to"),
+                edges,
+            )
+            self.assertIn(
+                ("candidate:paper:retained-paper", "source:retained-paper", "candidate_version_of"),
+                edges,
+            )
+
     def test_knowledge_curator_ingests_contributor_refresh_as_review_queue(self) -> None:
         import knowledge_curator
 

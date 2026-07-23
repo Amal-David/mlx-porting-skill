@@ -1,14 +1,14 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-07-18T18:23:37+00:00",
-  "run_id": "2026-07-18-nightly-knowledge-curator",
+  "generated_at": "2026-07-23T17:25:58+00:00",
+  "run_id": "2026-07-20-nightly-knowledge-curator",
   "policy": {
     "review_only": true,
     "auto_promote_sources": false,
     "auto_modify_recommendations": false
   },
-  "node_count": 711,
-  "edge_count": 499,
+  "node_count": 712,
+  "edge_count": 505,
   "nodes": [
     {
       "id": "approach:adaptive-kv-quantization",
@@ -692,7 +692,7 @@
       "status": "needs-validation",
       "priority": "P1",
       "decision_state": "needs-review",
-      "summary": "The current MLX contributor refresh requested 1000 contributors, captured 263 linked contributors and 269 anon=true author buckets through 2026-07-18. Collection remains source-selection evidence only; repository/code-search rescreening and implementation review remain open.",
+      "summary": "The current MLX contributor refresh requested 1000 contributors, captured 263 linked contributors and 269 anon=true author buckets through 2026-07-20. Collection remains source-selection evidence only; repository/code-search rescreening and implementation review remain open.",
       "validation_gate": "Refresh contributors with `scripts/collect_contributors.py`, following GitHub Link headers until no rel=\"next\" remains or the explicit cap is reached; record requested count, linked count, anon=true count without raw anonymous identities, status codes, ETags, Last-Modified headers, rate-limit state, repository/code search total_count and incomplete_results, replay missed queries, inspect newly matched repos by architecture/source-format family, and record each result as adopted, held, rejected, or backlog.",
       "source": "mlx-model-porting/research-runs/2026-06-27-top1000-contributor-loop/synthesis.json",
       "affected": [
@@ -706,7 +706,7 @@
       "families": [],
       "current_state": {
         "source_node": "review-queue:contributors:ml-explore-mlx",
-        "retrieved": "2026-07-18",
+        "retrieved": "2026-07-20",
         "requested_count": 1000,
         "linked_user_count": 263,
         "anonymous_author_count": 269,
@@ -3367,25 +3367,25 @@
       "candidate_kind": "paper",
       "label": "A JoLT for the KV Cache: Near-Lossless KV Cache Compression via Joint Tucker and JL-Residual Allocation for LLMs",
       "locator": "https://arxiv.org/abs/2607.12550",
-      "immutable_locator": "https://arxiv.org/abs/2607.12550v1",
+      "immutable_locator": "https://arxiv.org/abs/2607.12550v2",
       "paper_id": "2607.12550",
-      "revision": "v1",
+      "revision": "v2",
       "revision_comparison": {
         "before": "v1",
-        "after": "v1",
-        "status": "same",
+        "after": "v2",
+        "status": "changed",
         "basis": "source_registry"
       },
-      "read_state": "already_read",
+      "read_state": "updated_candidate",
       "known_source_id": "source:paper-2607-12550",
       "query": "KV cache quantization long context",
-      "updated": "2026-07-14T09:23:20Z",
+      "updated": "2026-07-17T17:45:07Z",
       "published": "2026-07-14T09:23:20Z",
       "authors": [
         "Rahul Krishnan",
         "Volker Schulz"
       ],
-      "summary": "The key-value (KV) cache has become the dominant memory cost of transformer inference. It grows with batch size, context length, and depth, and at long context it, rather than the model weights, sets the ceiling on throughput. Two families of methods reduce it. Low-rank methods factor two-dimensional slices of the cache, either per-head matrices or cross-layer feature blocks, and quantization methods lower the bit-width of every entry. Neither family exploits the fact that the cache at a layer is naturally a third-order tensor whose three axes, the heads, the tokens, and the features, carry very different amounts of redundancy. We take this tensor view directly. Our method, JoLT, applies a partial Tucker decomposition that compresses only the token and feature axes while leaving the head a",
+      "summary": "The key-value (KV) cache has become the dominant memory cost of transformer inference: it grows with batch size, context length, and depth, and at long context it, rather than the model weights, sets the throughput ceiling. Existing reductions fall into two families. Low-rank methods factor two-dimensional slices of the cache, either per-head matrices or cross-layer feature blocks, and quantization methods lower the bit-width of every entry. Neither exploits the fact that the cache at a layer is naturally a third-order tensor whose three axes, the heads, the tokens, and the features, carry very different amounts of redundancy. We take this tensor view directly. Our method, JoLT (Joint Lagrangian Tucker), applies a partial Tucker decomposition that compresses only the token and feature axes",
       "review_status": "candidate-unreviewed"
     },
     {
@@ -3704,6 +3704,28 @@
         "Yiren Zhao"
       ],
       "summary": "New AI accelerators with novel instruction set architectures (ISAs) often require developers to manually craft low-level kernels, a time-consuming and error-prone process that does not scale across hardware targets. This delays emerging hardware platforms from reaching the market. While prior LLM-based code generation has shown promise in mature GPU ecosystems, it remains unclear whether agentic LLM systems can quickly produce valid and efficient kernels for emerging hardware with new ISAs. We present KernelCraft: the first benchmark for evaluating an LLM agent's ability to generate and optimize low-level kernels for customized accelerators through a function-calling, feedback-driven workflow. We evaluate agent performance across three emerging accelerators on more than 20 machine-learning",
+      "review_status": "candidate-unreviewed"
+    },
+    {
+      "id": "candidate:paper:looped-latent-attention-cross-loop-kv-compression-for-looped-transformers",
+      "kind": "source_candidate",
+      "candidate_kind": "paper",
+      "label": "Looped Latent Attention: Cross-Loop KV Compression for Looped Transformers",
+      "locator": "https://arxiv.org/abs/2607.15456",
+      "immutable_locator": "https://arxiv.org/abs/2607.15456v1",
+      "paper_id": "2607.15456",
+      "revision": "v1",
+      "revision_comparison": null,
+      "read_state": "unread_candidate",
+      "known_source_id": "",
+      "query": "KV cache quantization long context",
+      "updated": "2026-07-16T20:58:16Z",
+      "published": "2026-07-16T20:58:16Z",
+      "authors": [
+        "James O' Neill",
+        "Fergal Reid"
+      ],
+      "summary": "Looped, weight-tied Transformers reduce parameters by reusing a block, but decoding still stores a separate K/V cache for every recurrence step. We show that this loop-indexed cache is highly structured. For a fixed token, layer and head, K/V vectors trace a short low-rank trajectory across loops, while the head and layer axes remain much flatter. We introduce Looped Latent Attention (LLA), a post-training cache codec that stores compact K and V latents and reconstructs loop-specific K/V vectors only when attention reads them. The default per-head codec compresses recurrence, while LLA-2D also folds heads into one latent for the extreme-compression regime. The codec is initialized from SVD of teacher activations and refined with KL and attention-output distillation. At matched cache budget",
       "review_status": "candidate-unreviewed"
     },
     {
@@ -4084,21 +4106,21 @@
       "locator": "https://github.com/Blaizzy/mlx-vlm",
       "read_state": "updated_candidate",
       "known_source_id": "source:mlx-vlm-repo",
-      "head_sha": "6d5603b36902e0742a8273f0b0e6fa4a60d2a201",
+      "head_sha": "c9e27b08311f9c1f38690c46034b04c7598d73ee",
       "revision_comparison": {
         "before": "6a8cdff6a1f53f46a15d4adb997c3b2d5f621263",
-        "after": "6d5603b36902e0742a8273f0b0e6fa4a60d2a201",
+        "after": "c9e27b08311f9c1f38690c46034b04c7598d73ee",
         "status": "changed",
         "basis": "source_registry"
       },
-      "head_date": "2026-07-18T10:23:08Z",
-      "head_message": "Speed up llguidance structured decoding (#1628)",
+      "head_date": "2026-07-20T14:02:10Z",
+      "head_message": "Merge pull request #1642 from Blaizzy/pc/qwen3-vl-pil-video-frames",
       "topics": [
         "multimodal",
         "serving",
         "speculative"
       ],
-      "summary": "Speed up llguidance structured decoding (#1628)",
+      "summary": "Merge pull request #1642 from Blaizzy/pc/qwen3-vl-pil-video-frames",
       "review_status": "candidate-unreviewed"
     },
     {
@@ -4109,21 +4131,21 @@
       "locator": "https://github.com/ml-explore/mlx",
       "read_state": "updated_candidate",
       "known_source_id": "source:mlx-repo",
-      "head_sha": "b7c3dd6d27f45b5365b08a840310187dc503f1db",
+      "head_sha": "ce3073389e92d8f7b7ecd3d7697523795786e046",
       "revision_comparison": {
         "before": "96296e9c3075a2389bc5c0f078bf01b5aa377cd9",
-        "after": "b7c3dd6d27f45b5365b08a840310187dc503f1db",
+        "after": "ce3073389e92d8f7b7ecd3d7697523795786e046",
         "status": "changed",
         "basis": "source_registry"
       },
-      "head_date": "2026-07-17T16:53:03Z",
-      "head_message": "[CUDA][Improvement] RMSNorm forward speed up (#3850)",
+      "head_date": "2026-07-20T20:09:32Z",
+      "head_message": "Fix captured random state in compile (#3828)",
       "topics": [
         "runtime",
         "kernels",
         "quantization"
       ],
-      "summary": "[CUDA][Improvement] RMSNorm forward speed up (#3850)",
+      "summary": "Fix captured random state in compile (#3828)",
       "review_status": "candidate-unreviewed"
     },
     {
@@ -4185,20 +4207,20 @@
       "locator": "https://github.com/openai/codex",
       "read_state": "updated_candidate",
       "known_source_id": "",
-      "head_sha": "b8b61bc692517adcd18622df260f2ddd80635122",
+      "head_sha": "cf821e8ec850c6d8380feea0e84859dd8ff54cd0",
       "revision_comparison": {
         "before": "b8b61bc692517adcd18622df260f2ddd80635122",
-        "after": "b8b61bc692517adcd18622df260f2ddd80635122",
-        "status": "same",
+        "after": "cf821e8ec850c6d8380feea0e84859dd8ff54cd0",
+        "status": "changed",
         "basis": "previous_graph"
       },
-      "head_date": "2026-07-18T16:14:48Z",
-      "head_message": "Handle compressed rollouts in doctor thread inventory (#34038)",
+      "head_date": "2026-07-20T21:41:17Z",
+      "head_message": "Show completed hook warnings in TUI headers (#34416)",
       "topics": [
         "agent-skills",
         "codex"
       ],
-      "summary": "Handle compressed rollouts in doctor thread inventory (#34038)",
+      "summary": "Show completed hook warnings in TUI headers (#34416)",
       "review_status": "candidate-unreviewed"
     },
     {
@@ -4510,8 +4532,8 @@
       "decision_state": "review_queue",
       "review_only": true,
       "repo": "ml-explore/mlx",
-      "generated_at": "2026-07-18T17:52:22.420119+00:00",
-      "retrieved": "2026-07-18",
+      "generated_at": "2026-07-20T22:03:29.867141+00:00",
+      "retrieved": "2026-07-20",
       "requested_count": 1000,
       "linked_user_count": 263,
       "anonymous_author_count": 269
@@ -11266,8 +11288,8 @@
       "relation": "candidate_version_of",
       "revision_comparison": {
         "before": "v1",
-        "after": "v1",
-        "status": "same",
+        "after": "v2",
+        "status": "changed",
         "basis": "source_registry"
       }
     },
@@ -11676,6 +11698,50 @@
         "llm",
         "not",
         "through"
+      ]
+    },
+    {
+      "source": "candidate:paper:looped-latent-attention-cross-loop-kv-compression-for-looped-transformers",
+      "target": "learning:block-weight-streaming",
+      "relation": "candidate_relevant_to",
+      "score": 6,
+      "matched_terms": [
+        "block",
+        "budget",
+        "low",
+        "output",
+        "per",
+        "weight"
+      ]
+    },
+    {
+      "source": "candidate:paper:looped-latent-attention-cross-loop-kv-compression-for-looped-transformers",
+      "target": "outcome:decoder-mlx-lm-working-route",
+      "relation": "candidate_relevant_to",
+      "score": 6,
+      "matched_terms": [
+        "cache",
+        "quantization",
+        "still",
+        "transformers",
+        "weight",
+        "when"
+      ]
+    },
+    {
+      "source": "candidate:paper:looped-latent-attention-cross-loop-kv-compression-for-looped-transformers",
+      "target": "outcome:qwen25-05b-instruct-local-worked-port",
+      "relation": "candidate_relevant_to",
+      "score": 10,
+      "matched_terms": [
+        "attention",
+        "cache",
+        "cross",
+        "default",
+        "matched",
+        "specific",
+        "tied",
+        "token"
       ]
     },
     {
@@ -12239,16 +12305,6 @@
     },
     {
       "source": "candidate:repository:blaizzy-mlx-vlm",
-      "target": "approach:draft-model-speculation",
-      "relation": "candidate_relevant_to",
-      "score": 2,
-      "matched_terms": [
-        "decoding",
-        "speculative"
-      ]
-    },
-    {
-      "source": "candidate:repository:blaizzy-mlx-vlm",
       "target": "approach:multimodal-content-prefix-cache",
       "relation": "candidate_relevant_to",
       "score": 3,
@@ -12260,12 +12316,23 @@
     },
     {
       "source": "candidate:repository:blaizzy-mlx-vlm",
-      "target": "outcome:vlm-mlx-vlm-working-route",
+      "target": "approach:qwen3-tts-batch-generation",
+      "relation": "candidate_relevant_to",
+      "score": 3,
+      "matched_terms": [
+        "qwen3",
+        "request",
+        "serving"
+      ]
+    },
+    {
+      "source": "candidate:repository:blaizzy-mlx-vlm",
+      "target": "approach:video-input-budgeting",
       "relation": "candidate_relevant_to",
       "score": 3,
       "matched_terms": [
         "multimodal",
-        "serving",
+        "video",
         "vlm"
       ]
     },
@@ -12275,10 +12342,43 @@
       "relation": "candidate_version_of",
       "revision_comparison": {
         "before": "6a8cdff6a1f53f46a15d4adb997c3b2d5f621263",
-        "after": "6d5603b36902e0742a8273f0b0e6fa4a60d2a201",
+        "after": "c9e27b08311f9c1f38690c46034b04c7598d73ee",
         "status": "changed",
         "basis": "source_registry"
       }
+    },
+    {
+      "source": "candidate:repository:ml-explore-mlx",
+      "target": "approach:compile-stable-region",
+      "relation": "candidate_relevant_to",
+      "score": 3,
+      "matched_terms": [
+        "compile",
+        "runtime",
+        "state"
+      ]
+    },
+    {
+      "source": "candidate:repository:ml-explore-mlx",
+      "target": "approach:prompt-prefix-cache",
+      "relation": "candidate_relevant_to",
+      "score": 2,
+      "matched_terms": [
+        "quantization",
+        "state"
+      ]
+    },
+    {
+      "source": "candidate:repository:ml-explore-mlx",
+      "target": "backlog:training-as-port-target",
+      "relation": "candidate_relevant_to",
+      "score": 4,
+      "matched_terms": [
+        "compile",
+        "kernels",
+        "random",
+        "state"
+      ]
     },
     {
       "source": "candidate:repository:ml-explore-mlx",
@@ -12286,7 +12386,7 @@
       "relation": "candidate_version_of",
       "revision_comparison": {
         "before": "96296e9c3075a2389bc5c0f078bf01b5aa377cd9",
-        "after": "b7c3dd6d27f45b5365b08a840310187dc503f1db",
+        "after": "ce3073389e92d8f7b7ecd3d7697523795786e046",
         "status": "changed",
         "basis": "source_registry"
       }
@@ -14452,26 +14552,10 @@
   ],
   "latest_delta": {
     "schema_version": 1,
-    "run_id": "2026-07-18-nightly-knowledge-curator",
-    "generated_at": "2026-07-18T18:23:37+00:00",
-    "previous_graph_generated_at": "2026-07-18T17:59:10+00:00",
+    "run_id": "2026-07-20-nightly-knowledge-curator",
+    "generated_at": "2026-07-23T17:25:58+00:00",
+    "previous_graph_generated_at": "2026-07-18T18:23:37+00:00",
     "already_read_sources": [
-      {
-        "id": "candidate:paper:a-jolt-for-the-kv-cache-near-lossless-kv-cache-compression-via-joint-tucker-and-jl-residual-allocation-for-llms",
-        "label": "A JoLT for the KV Cache: Near-Lossless KV Cache Compression via Joint Tucker and JL-Residual Allocation for LLMs",
-        "locator": "https://arxiv.org/abs/2607.12550",
-        "read_state": "already_read",
-        "kind": "paper",
-        "known_source_id": "source:paper-2607-12550",
-        "immutable_locator": "https://arxiv.org/abs/2607.12550v1",
-        "revision": "v1",
-        "revision_comparison": {
-          "before": "v1",
-          "after": "v1",
-          "status": "same",
-          "basis": "source_registry"
-        }
-      },
       {
         "id": "candidate:paper:pm-kvq-progressive-mixed-precision-kv-cache-quantization-for-long-cot-llms",
         "label": "PM-KVQ: Progressive Mixed-precision KV Cache Quantization for Long-CoT LLMs",
@@ -14503,7 +14587,17 @@
         }
       }
     ],
-    "new_unread_sources": [],
+    "new_unread_sources": [
+      {
+        "id": "candidate:paper:looped-latent-attention-cross-loop-kv-compression-for-looped-transformers",
+        "label": "Looped Latent Attention: Cross-Loop KV Compression for Looped Transformers",
+        "locator": "https://arxiv.org/abs/2607.15456",
+        "read_state": "unread_candidate",
+        "kind": "paper",
+        "immutable_locator": "https://arxiv.org/abs/2607.15456v1",
+        "revision": "v1"
+      }
+    ],
     "updated_sources": [
       {
         "id": "candidate:paper:native-llm-and-mllm-inference-at-scale-on-apple-silicon",
@@ -14534,6 +14628,22 @@
           "after": "v1",
           "status": "same",
           "basis": "previous_graph"
+        }
+      },
+      {
+        "id": "candidate:paper:a-jolt-for-the-kv-cache-near-lossless-kv-cache-compression-via-joint-tucker-and-jl-residual-allocation-for-llms",
+        "label": "A JoLT for the KV Cache: Near-Lossless KV Cache Compression via Joint Tucker and JL-Residual Allocation for LLMs",
+        "locator": "https://arxiv.org/abs/2607.12550",
+        "read_state": "updated_candidate",
+        "kind": "paper",
+        "known_source_id": "source:paper-2607-12550",
+        "immutable_locator": "https://arxiv.org/abs/2607.12550v2",
+        "revision": "v2",
+        "revision_comparison": {
+          "before": "v1",
+          "after": "v2",
+          "status": "changed",
+          "basis": "source_registry"
         }
       },
       {
@@ -14609,22 +14719,6 @@
           "after": "v1",
           "status": "same",
           "basis": "previous_graph"
-        }
-      },
-      {
-        "id": "candidate:paper:rope-aware-bit-allocation-for-kv-cache-quantization",
-        "label": "RoPE-Aware Bit Allocation for KV-Cache Quantization",
-        "locator": "https://arxiv.org/abs/2606.24033",
-        "read_state": "updated_candidate",
-        "kind": "paper",
-        "known_source_id": "source:paper-2606-24033",
-        "immutable_locator": "https://arxiv.org/abs/2606.24033v1",
-        "revision": "v1",
-        "revision_comparison": {
-          "before": null,
-          "after": "v1",
-          "status": "comparison_unpinned",
-          "basis": "source_registry"
         }
       },
       {
@@ -14817,11 +14911,11 @@
         "known_source_id": "source:mlx-repo",
         "revision_comparison": {
           "before": "96296e9c3075a2389bc5c0f078bf01b5aa377cd9",
-          "after": "b7c3dd6d27f45b5365b08a840310187dc503f1db",
+          "after": "ce3073389e92d8f7b7ecd3d7697523795786e046",
           "status": "changed",
           "basis": "source_registry"
         },
-        "head_sha": "b7c3dd6d27f45b5365b08a840310187dc503f1db"
+        "head_sha": "ce3073389e92d8f7b7ecd3d7697523795786e046"
       },
       {
         "id": "candidate:repository:ml-explore-mlx-lm",
@@ -14847,11 +14941,11 @@
         "known_source_id": "source:mlx-vlm-repo",
         "revision_comparison": {
           "before": "6a8cdff6a1f53f46a15d4adb997c3b2d5f621263",
-          "after": "6d5603b36902e0742a8273f0b0e6fa4a60d2a201",
+          "after": "c9e27b08311f9c1f38690c46034b04c7598d73ee",
           "status": "changed",
           "basis": "source_registry"
         },
-        "head_sha": "6d5603b36902e0742a8273f0b0e6fa4a60d2a201"
+        "head_sha": "c9e27b08311f9c1f38690c46034b04c7598d73ee"
       },
       {
         "id": "candidate:repository:blaizzy-mlx-audio",
@@ -14906,11 +15000,11 @@
         "kind": "repository",
         "revision_comparison": {
           "before": "b8b61bc692517adcd18622df260f2ddd80635122",
-          "after": "b8b61bc692517adcd18622df260f2ddd80635122",
-          "status": "same",
+          "after": "cf821e8ec850c6d8380feea0e84859dd8ff54cd0",
+          "status": "changed",
           "basis": "previous_graph"
         },
-        "head_sha": "b8b61bc692517adcd18622df260f2ddd80635122"
+        "head_sha": "cf821e8ec850c6d8380feea0e84859dd8ff54cd0"
       }
     ],
     "new_approach_leads": [
@@ -15012,6 +15106,113 @@
               "large",
               "latency",
               "transformer"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "candidate:paper:a-jolt-for-the-kv-cache-near-lossless-kv-cache-compression-via-joint-tucker-and-jl-residual-allocation-for-llms",
+        "label": "A JoLT for the KV Cache: Near-Lossless KV Cache Compression via Joint Tucker and JL-Residual Allocation for LLMs",
+        "locator": "https://arxiv.org/abs/2607.12550",
+        "read_state": "updated_candidate",
+        "kind": "paper",
+        "known_source_id": "source:paper-2607-12550",
+        "immutable_locator": "https://arxiv.org/abs/2607.12550v2",
+        "revision": "v2",
+        "revision_comparison": {
+          "before": "v1",
+          "after": "v2",
+          "status": "changed",
+          "basis": "source_registry"
+        },
+        "matches": [
+          {
+            "target": "approach:adaptive-kv-quantization",
+            "score": 10,
+            "matched_terms": [
+              "allocation",
+              "bit",
+              "cache",
+              "context",
+              "key",
+              "long",
+              "memory",
+              "quantization"
+            ]
+          },
+          {
+            "target": "approach:native-low-bit-weight-quantization",
+            "score": 7,
+            "matched_terms": [
+              "bit",
+              "low",
+              "memory",
+              "quantization",
+              "size",
+              "throughput",
+              "transformer"
+            ]
+          },
+          {
+            "target": "outcome:qwen25-05b-instruct-local-worked-port",
+            "score": 7,
+            "matched_terms": [
+              "cache",
+              "cross",
+              "rather",
+              "tensor",
+              "than",
+              "token",
+              "tokens"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "candidate:paper:looped-latent-attention-cross-loop-kv-compression-for-looped-transformers",
+        "label": "Looped Latent Attention: Cross-Loop KV Compression for Looped Transformers",
+        "locator": "https://arxiv.org/abs/2607.15456",
+        "read_state": "unread_candidate",
+        "kind": "paper",
+        "immutable_locator": "https://arxiv.org/abs/2607.15456v1",
+        "revision": "v1",
+        "matches": [
+          {
+            "target": "outcome:qwen25-05b-instruct-local-worked-port",
+            "score": 10,
+            "matched_terms": [
+              "attention",
+              "cache",
+              "cross",
+              "default",
+              "matched",
+              "specific",
+              "tied",
+              "token"
+            ]
+          },
+          {
+            "target": "learning:block-weight-streaming",
+            "score": 6,
+            "matched_terms": [
+              "block",
+              "budget",
+              "low",
+              "output",
+              "per",
+              "weight"
+            ]
+          },
+          {
+            "target": "outcome:decoder-mlx-lm-working-route",
+            "score": 6,
+            "matched_terms": [
+              "cache",
+              "quantization",
+              "still",
+              "transformers",
+              "weight",
+              "when"
             ]
           }
         ]
@@ -15289,60 +15490,6 @@
               "long",
               "proven",
               "throughput"
-            ]
-          }
-        ]
-      },
-      {
-        "id": "candidate:paper:rope-aware-bit-allocation-for-kv-cache-quantization",
-        "label": "RoPE-Aware Bit Allocation for KV-Cache Quantization",
-        "locator": "https://arxiv.org/abs/2606.24033",
-        "read_state": "updated_candidate",
-        "kind": "paper",
-        "known_source_id": "source:paper-2606-24033",
-        "immutable_locator": "https://arxiv.org/abs/2606.24033v1",
-        "revision": "v1",
-        "revision_comparison": {
-          "before": null,
-          "after": "v1",
-          "status": "comparison_unpinned",
-          "basis": "source_registry"
-        },
-        "matches": [
-          {
-            "target": "approach:adaptive-kv-quantization",
-            "score": 10,
-            "matched_terms": [
-              "allocation",
-              "aware",
-              "bit",
-              "cache",
-              "context",
-              "key",
-              "long",
-              "quantization"
-            ]
-          },
-          {
-            "target": "approach:multimodal-content-prefix-cache",
-            "score": 5,
-            "matched_terms": [
-              "aware",
-              "block",
-              "cache",
-              "context",
-              "long"
-            ]
-          },
-          {
-            "target": "outcome:qwen25-05b-instruct-local-worked-port",
-            "score": 5,
-            "matched_terms": [
-              "attention",
-              "cache",
-              "matched",
-              "preserves",
-              "rope"
             ]
           }
         ]
@@ -15961,6 +16108,49 @@
         ]
       },
       {
+        "id": "candidate:repository:ml-explore-mlx",
+        "label": "ml-explore/mlx",
+        "locator": "https://github.com/ml-explore/mlx",
+        "read_state": "updated_candidate",
+        "kind": "repository",
+        "known_source_id": "source:mlx-repo",
+        "revision_comparison": {
+          "before": "96296e9c3075a2389bc5c0f078bf01b5aa377cd9",
+          "after": "ce3073389e92d8f7b7ecd3d7697523795786e046",
+          "status": "changed",
+          "basis": "source_registry"
+        },
+        "matches": [
+          {
+            "target": "backlog:training-as-port-target",
+            "score": 4,
+            "matched_terms": [
+              "compile",
+              "kernels",
+              "random",
+              "state"
+            ]
+          },
+          {
+            "target": "approach:compile-stable-region",
+            "score": 3,
+            "matched_terms": [
+              "compile",
+              "runtime",
+              "state"
+            ]
+          },
+          {
+            "target": "approach:prompt-prefix-cache",
+            "score": 2,
+            "matched_terms": [
+              "quantization",
+              "state"
+            ]
+          }
+        ]
+      },
+      {
         "id": "candidate:repository:ml-explore-mlx-lm",
         "label": "ml-explore/mlx-lm",
         "locator": "https://github.com/ml-explore/mlx-lm",
@@ -16011,7 +16201,7 @@
         "known_source_id": "source:mlx-vlm-repo",
         "revision_comparison": {
           "before": "6a8cdff6a1f53f46a15d4adb997c3b2d5f621263",
-          "after": "6d5603b36902e0742a8273f0b0e6fa4a60d2a201",
+          "after": "c9e27b08311f9c1f38690c46034b04c7598d73ee",
           "status": "changed",
           "basis": "source_registry"
         },
@@ -16026,20 +16216,21 @@
             ]
           },
           {
-            "target": "outcome:vlm-mlx-vlm-working-route",
+            "target": "approach:qwen3-tts-batch-generation",
             "score": 3,
             "matched_terms": [
-              "multimodal",
-              "serving",
-              "vlm"
+              "qwen3",
+              "request",
+              "serving"
             ]
           },
           {
-            "target": "approach:draft-model-speculation",
-            "score": 2,
+            "target": "approach:video-input-budgeting",
+            "score": 3,
             "matched_terms": [
-              "decoding",
-              "speculative"
+              "multimodal",
+              "video",
+              "vlm"
             ]
           }
         ]
@@ -16136,14 +16327,14 @@
       "audio",
       "quantization",
       "streaming",
-      "route",
       "weight",
+      "route",
+      "tts",
       "working",
       "adaptive",
-      "prefix",
-      "tts",
-      "vocoder",
-      "vlm"
+      "low",
+      "port",
+      "prefix"
     ],
     "policy": {
       "review_only": true,
