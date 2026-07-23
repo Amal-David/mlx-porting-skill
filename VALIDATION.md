@@ -1,8 +1,8 @@
 # Validation status
 
-**Release snapshot:** 0.6.1
+**Release snapshot:** 0.7.0
 
-**Review date:** 2026-07-14
+**Review date:** 2026-07-23
 
 This file separates repository-level proof from target-model proof. Offline
 tests can demonstrate deterministic routing, safety controls, evidence
@@ -28,8 +28,8 @@ optimization improves a particular Mac workload.
 | Rejected receipts | 1 | generated benchmark assessment |
 | Effective claims | 10 | `mlx-model-porting/assets/effective_claims.json` |
 | Promoted / withheld claims | 0 / 10 | generated effective-claim catalogue |
-| Knowledge-graph nodes / edges | 708 / 501 | `mlx-model-porting/assets/knowledge_graph.json` |
-| Offline tests | 537 | `python3 -m unittest discover -s tests` |
+| Knowledge-graph nodes / edges | 712 / 505 | `mlx-model-porting/assets/knowledge_graph.json` |
+| Offline tests | 551 | `python3 -m unittest discover -s tests` |
 
 The 17 routes are synthetic golden scenarios. They prove that every declared
 family has a fixture exercising route selection, expected weight coverage, a
@@ -245,6 +245,46 @@ instead of reporting successful validation with silent skips.
 Static source-format inspection of ONNX, GGUF, Flax/Orbax, TensorFlow/Keras,
 Core ML, or safetensors artifacts is metadata triage only. The repository does
 not lower arbitrary graphs from those formats into executable MLX.
+
+## Architecture-class stress test and optimize receipts
+
+The [`arch-stress-artifacts/`](arch-stress-artifacts/) directory holds one-off
+proof artifacts produced outside the offline suite and outside the installable
+`mlx-model-porting/` payload. They are evidence and reusable reference code, not
+scaffolds, promotion inputs, or benchmark receipts.
+
+**Seven parity proofs.** Real checkpoints were ported and checked layer-by-layer
+against a Hugging Face eager oracle on one Apple M4 Pro (`mx.gpu`) across all
+seven major architecture classes: dense decoder (Qwen2/Qwen3), encoder
+(ModernBERT), encoder-decoder (t5-small), ASR (HuBERT), linear-attention/Mamba
+hybrid (Qwen3.5-text), vision-language (SmolVLM-256M), and Mixture-of-Experts
+(Granite-3.0-1B). Each reached cosine ≈ 1.0 at every rung with no relaxed
+tolerances; the MoE proof additionally matched the source's top-8 expert IDs
+exactly at every layer. These prove the porting *method* — source oracle,
+explicit weight map, staged parity — reaches every architecture class on a real
+checkpoint. They do **not** prove:
+
+- Generated-scaffold support beyond the six scaffold families. Each novel class
+  (ModernBERT, Qwen3.5-text hybrid, SmolVLM, Granite-MoE) is a hand-written
+  correctness reference; landing it in the executable generator is explicit
+  follow-up. `modernbert`, for one, still routes below the confidence floor and
+  is unregistered.
+- Anything beyond prefill/encode on one fixed fixture per model. No incremental
+  decode, cache, multi-image, video, generation-loop, or task-quality claim.
+- Independent host re-capture of the oracle for every artifact; the evidence is
+  per-rung parity plus a real (non-stub) `model.py`.
+- Any promotion input. They promote no numeric claim and do not replace the
+  external signer/trust-root gate above.
+
+**Four optimize receipts.** Real `optimize_port.py` sweeps on real Metal compared
+a bf16 baseline against 8-bit and naive 4-bit quantization for Qwen2.5-0.5B,
+Qwen2.5-1.5B, SmolLM2-360M, and Qwen3-1.7B, with a quality gate on the perplexity
+ratio and degenerate-output rate. On every model the naive 4-bit default failed
+the gate while the structured 8-bit pick held quality. These sweeps set the
+first-token-agreement minimum to `0.0`, so first-token agreement was recorded but
+did not gate. The receipts are local observations for these models, this Mac, and
+this workload — not promotion inputs or benchmark receipts — and they carry
+`promotable_claim=false`.
 
 ## What requires network access
 

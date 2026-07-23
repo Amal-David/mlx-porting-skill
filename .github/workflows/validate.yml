@@ -42,6 +42,13 @@ jobs:
           python3 -m pip install
           --require-hashes --only-binary=:all:
           -r .github/requirements-ci.txt
+      - name: Smoke-test the skill runtime lockfile installs cleanly
+        run: |
+          set -euo pipefail
+          python3 -m venv "$RUNNER_TEMP/toolslock-venv"
+          "$RUNNER_TEMP/toolslock-venv/bin/python" -m pip install \
+            --require-hashes --only-binary=:all: \
+            -r mlx-model-porting/requirements-tools.lock
       - name: Audit skill strictly
         run: python3 mlx-model-porting/scripts/audit_skill.py --strict mlx-model-porting
       - name: Validate source provenance offline
@@ -101,7 +108,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.10", "3.14"]
+        python-version: ["3.10", "3.13", "3.14"]
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:

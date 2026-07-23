@@ -43,7 +43,7 @@
     <section class="hero" aria-labelledby="hero-title">
       <div class="hero-shell">
         <div class="hero-copy">
-          <div class="status-kicker"><span class="status-dot" aria-hidden="true"></span>Coding-agent skill · v<span data-value="version">0.6.1</span></div>
+          <div class="status-kicker"><span class="status-dot" aria-hidden="true"></span>Coding-agent skill · v<span data-value="version">0.7.0</span></div>
           <h1 id="hero-title">Don’t stop at “it runs.” <em>Make the MLX port fast.</em></h1>
           <p class="hero-lead">A coding-agent skill that turns “convert this model to MLX and make it fast” into a structured, measured loop. Correctness and quality are the safety rails, so the agent can optimize aggressively—and prove which gains hold.</p>
           <div class="hero-actions">
@@ -155,9 +155,11 @@
           <article class="workflow-step"><h3>Vision-language (VLM)</h3><p>SmolVLM — vision tower, connector, fusion, and text tower through logits.</p></article>
           <article class="workflow-step"><h3>Mixture-of-Experts</h3><p>Granite-MoE — router top-8 expert IDs match the source exactly, every layer.</p></article>
         </div>
+        <p style="margin-top: 24px">Checked-in proof packets on GitHub: <a href="https://github.com/Amal-David/mlx-porting-skill/tree/main/arch-stress-artifacts">arch-stress-artifacts</a> — <a href="https://github.com/Amal-David/mlx-porting-skill/tree/main/arch-stress-artifacts/modernbert-base-mlx">ModernBERT</a>, <a href="https://github.com/Amal-David/mlx-porting-skill/tree/main/arch-stress-artifacts/qwen3_5-text-hybrid-mlx">Qwen3.5-text hybrid</a>, <a href="https://github.com/Amal-David/mlx-porting-skill/tree/main/arch-stress-artifacts/smolvlm-256m-mlx">SmolVLM</a>, and <a href="https://github.com/Amal-David/mlx-porting-skill/tree/main/arch-stress-artifacts/granite-moe-1b-mlx">Granite-MoE</a>. The dense decoder, encoder-decoder, and ASR classes are the in-payload worked ports.</p>
         <div class="limitation-box" style="margin-top: 28px">
           <h3>Optimization is proven, not promised</h3>
           <p>Across Qwen2.5-0.5B, SmolLM2-360M, and Qwen3-1.7B, the quality gate caught the naive 4-bit quantization degrading output and kept the 8-bit port that held quality. The receipts record which candidate won and why—measured on real Metal, never asserted.</p>
+          <p><a href="https://github.com/Amal-David/mlx-porting-skill/tree/main/arch-stress-artifacts/optimize-receipts">See the four optimize receipts ↗</a></p>
         </div>
       </div>
     </section>
@@ -174,6 +176,7 @@
             <h3>Qwen2.5-0.5B-Instruct · Apple M4 Pro</h3>
             <p>Measured locally with the same cached source, a fixed 14-token prompt, one warmup, and five timed 64-token greedy runs. The quality check used 72 held next-token positions and four fixed generation prompts.</p>
             <p>These are local measured observations, not portable speed or memory claims. Different models, prompts, thermals, chips, and software versions can reorder the candidates. Promotion stays sealed: this diagnostic sets <code class="inline-code">promotable_claim=false</code> and remains outside the promotion-evidence pipeline.</p>
+            <p><a href="https://github.com/Amal-David/mlx-porting-skill/tree/main/mlx-model-porting/examples/optimized-port-qwen2.5-0.5b">Full optimized-port write-up ↗</a></p>
           </div>
           <div class="evidence-ledger" aria-label="Local Qwen optimization result">
             <div class="ledger-row" style="--ledger-color: var(--aluminum-400)"><i class="ledger-mark" aria-hidden="true"></i><strong>bf16 baseline</strong><span>The local M4 Pro baseline observation measured 133 tok/s, 0.956 GiB peak Metal memory, and a reference perplexity ratio of 1.0000.</span></div>
@@ -190,6 +193,7 @@
           <span class="section-kicker">Architecture-specific routes</span>
           <h2>Different graphs deserve different runbooks.</h2>
           <p>The registry covers 17 architecture routes. Six have executable scaffolds: dense decoder, BERT encoder, T5 encoder-decoder, HuBERT/Wav2Vec2 acoustic encoder, sparse MoE, and selective SSM. Qwen2.5, BGE, t5-small, and HuBERT-base are real checkpoint proofs; MoE and SSM are synthetic-only; the other 11 routes remain runbook-guided.</p>
+          <p>Worked ports (offline packets, weights excluded): <a href="https://github.com/Amal-David/mlx-porting-skill/tree/main/mlx-model-porting/examples/worked-port-qwen2.5-0.5b-instruct">Qwen2.5-0.5B</a>, <a href="https://github.com/Amal-David/mlx-porting-skill/tree/main/mlx-model-porting/examples/worked-port-bge-base-en">BGE-base</a>, <a href="https://github.com/Amal-David/mlx-porting-skill/tree/main/mlx-model-porting/examples/worked-port-t5-small">t5-small</a>, and <a href="https://github.com/Amal-David/mlx-porting-skill/tree/main/mlx-model-porting/examples/worked-port-hubert-base-ls960">HuBERT-base</a>.</p>
         </div>
         <div class="family-grid" id="family-grid" aria-live="polite">
           <p class="generated-fallback">The complete family list is available in the repository’s <a href="https://github.com/Amal-David/mlx-porting-skill/blob/main/mlx-model-porting/assets/architectures.yaml">architecture registry</a>. Interactive route cards require the local generated data file.</p>
@@ -242,7 +246,7 @@
           <div class="section-heading">
             <span class="section-kicker">Use it, inspect it, improve it</span>
             <h2>Install one skill. Keep every judgment reviewable.</h2>
-            <p>Client presets cover Claude Code, Codex, Cursor, Gemini CLI, Windsurf, and GitHub Copilot. The installer is atomic and idempotent; explicit destinations remain available when a client changes discovery conventions.</p>
+            <p>Client presets cover Claude Code, Codex, Cursor, Gemini CLI, Windsurf, GitHub Copilot, and Antigravity. The installer is atomic and idempotent; explicit destinations remain available when a client changes discovery conventions.</p>
           </div>
           <div class="terminal">
             <div class="terminal-bar"><span class="terminal-dots" aria-hidden="true">● ● ●</span><span>Codex / Agent Skills</span></div>

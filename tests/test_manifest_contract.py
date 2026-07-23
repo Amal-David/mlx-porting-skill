@@ -143,6 +143,28 @@ class ManifestContractTests(unittest.TestCase):
         second.pop("generated_at")
         self.assertEqual(first, second)
 
+    def test_build_files_excludes_convert_atomic_write_staging(self) -> None:
+        # convert_checkpoint.py stages converted weights as ".converted-*.safetensors"
+        # before an atomic link into place. build_files must skip these transient
+        # files so a check that races with an in-progress conversion cannot raise a
+        # spurious "changed while it was being hashed" error on a file that is never
+        # part of the distribution, while a real .safetensors weight is still covered.
+        with tempfile.TemporaryDirectory() as raw_tmp:
+            root = self.create_root(raw_tmp)
+            converted = root / "converted"
+            converted.mkdir()
+            (converted / "model.safetensors").write_bytes(b"real distributed weights\n")
+            staging = converted / ".converted-abc123.safetensors"
+            staging.write_bytes(b"in-flight staging bytes\n")
+
+            paths = {record["path"] for record in manifest.build_files(root)}
+            self.assertIn("converted/model.safetensors", paths)
+            self.assertNotIn("converted/.converted-abc123.safetensors", paths)
+
+            # The staging file present at rest must not register as manifest drift.
+            self.run_manifest("generate", root)
+            self.run_manifest("check", root)
+
     def test_check_rejects_missing_and_unexpected_top_level_fields(self) -> None:
         with tempfile.TemporaryDirectory() as raw_tmp:
             root = self.create_root(raw_tmp)

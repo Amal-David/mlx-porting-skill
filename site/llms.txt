@@ -2,7 +2,7 @@
 
 > MLX Porter is a public, evidence-gated field manual and Agent Skill for inspecting, porting, validating, and optimizing PyTorch and Hugging Face models for Apple MLX on Apple Silicon.
 
-The dense-decoder route is executable end to end and proven on pinned Qwen2.5-0.5B-Instruct. The remaining architecture routes provide tested intake, planning, generic validation, and runbooks; they are not claims of completed real-model ports.
+Four real checkpoints port end to end inside the installable skill — Qwen2.5-0.5B-Instruct (dense decoder), BGE-base (BERT encoder), t5-small (encoder-decoder), and HuBERT-base (ASR) — and six architecture families have executable scaffolds. Beyond the payload, a one-off architecture stress test parity-proves all seven major architecture classes (adding ModernBERT, a Qwen3.5-text linear-attention hybrid, SmolVLM, and Granite-MoE) and records four measured quantization optimize receipts; those proof artifacts live on GitHub, not on this site. The other routes provide tested intake, planning, generic validation, and runbooks; they are not claims of completed real-model ports, and every performance claim stays withheld until a local receipt passes the promotion gate.
 
 ## Start here
 

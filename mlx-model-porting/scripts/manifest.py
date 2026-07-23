@@ -51,6 +51,15 @@ EXCLUDE_DIRS = {
 }
 EXCLUDE_NAMES = {".DS_Store", ".dev.vars", "MANIFEST.json"}
 EXCLUDE_SUFFIXES = {".pyc", ".pyo", ".tmp", ".log"}
+# Atomic-write staging files the skill's own tools create and unlink in place.
+# convert_checkpoint.py stages converted weights as ".converted-*.safetensors"
+# before linking them atomically, so a check that races with an in-progress
+# conversion must not try to hash a file that is actively being written. These
+# are transient-by-construction and never part of the distribution, so skipping
+# them cannot hide drift in a real shipped file (mirrors the existing ".tmp"
+# staging exclusion that already covers atomic_write_text).
+STAGING_PREFIX = ".converted-"
+STAGING_SUFFIX = ".safetensors"
 SHIPPED_SYMLINKS = {
     Path(".agents/skills/mlx-model-porting"),
     Path(".claude/skills/mlx-model-porting"),
@@ -356,6 +365,7 @@ def _build_directory_records(
             name in EXCLUDE_DIRS
             or name in EXCLUDE_NAMES
             or Path(name).suffix in EXCLUDE_SUFFIXES
+            or (name.startswith(STAGING_PREFIX) and name.endswith(STAGING_SUFFIX))
         )
         if stat.S_ISDIR(mode):
             if excluded:

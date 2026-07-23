@@ -26,7 +26,7 @@ python3 mlx-model-porting/scripts/install_skill.py --dest PATH_TO_CLIENT_SKILLS_
 | Gemini CLI | `gemini` | `.gemini/skills` | `copy` | Common builds use `.gemini/skills`; verify discovery before relying on it. |
 | Windsurf | `windsurf` | `.windsurf/skills` | `copy` | Version-dependent discovery; verify through Windsurf’s Skills UI. |
 | GitHub Copilot | `copilot` | `.github/skills` | `copy` | Keep scripts subject to workspace trust and review in VS Code/Copilot. |
-| Google Antigravity | none | use resolved product root | `copy` | Install through Antigravity’s current Skills/plugin manager; do not assume a legacy Gemini path. |
+| Google Antigravity | `antigravity` | `.agents/skills` | `symlink` | Shares the Codex `.agents/skills` workspace root; a fresh checkout is already linked there. User-global scope lives at `~/.gemini/config/skills` — pass it with `--dest`; do not assume a legacy Gemini path. |
 
 ## Verification prompt
 
@@ -34,7 +34,17 @@ After installation, start a fresh agent session and ask:
 
 > List the loaded skill named `mlx-model-porting`, then state its version and the first four non-negotiable rules without running any model code.
 
-Expected version: `0.6.1`. The response should mention static intake, source pinning/oracle, and no optimization before parity.
+Expected version: `0.7.0`. The response should mention static intake, source pinning/oracle, and no optimization before parity.
+
+## Check an installed copy for version drift
+
+Compare an installed copy against the repository VERSION file without modifying anything:
+
+```bash
+python3 mlx-model-porting/scripts/install_skill.py --client codex --check
+```
+
+It prints `current`, `stale`, or `missing`, and exits `0` only when the installed copy matches the repository VERSION file (non-zero when stale or missing). The same `--check` flag works with `--dest`.
 
 ## Adapter policy
 

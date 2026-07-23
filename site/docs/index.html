@@ -100,7 +100,7 @@
 
       <article class="docs-article">
         <header class="docs-hero">
-          <p class="docs-breadcrumb">Learning atlas / executable field manual / v<span data-value="version">0.6.1</span></p>
+          <p class="docs-breadcrumb">Learning atlas / executable field manual / v<span data-value="version">0.7.0</span></p>
           <h1>Learn MLX by reading a port <em>from the inside out.</em></h1>
           <p class="docs-lead">Start with arrays, lazy execution, and unified memory. Then read a source model, translate PyTorch and CUDA assumptions, prove the first matching MLX path, and only then use the executable tools and optimization runbooks.</p>
           <div class="docs-hero-actions">
@@ -428,6 +428,13 @@
             <a href="https://github.com/Amal-David/mlx-porting-skill/tree/main/mlx-model-porting/examples/worked-port-qwen2.5-0.5b-instruct">Checked-in proof packet ↗</a>
             <a href="https://github.com/ml-explore/mlx-lm/tree/2c008fd0252b2c569227d12568356ab88ab0560a">Official MLX-LM snapshot ↗</a>
           </div>
+          <div class="official-learning-links" aria-label="More worked ports and architecture-class proofs">
+            <a href="https://github.com/Amal-David/mlx-porting-skill/tree/main/mlx-model-porting/examples/worked-port-bge-base-en">BGE-base encoder ↗</a>
+            <a href="https://github.com/Amal-David/mlx-porting-skill/tree/main/mlx-model-porting/examples/worked-port-t5-small">t5-small encoder-decoder ↗</a>
+            <a href="https://github.com/Amal-David/mlx-porting-skill/tree/main/mlx-model-porting/examples/worked-port-hubert-base-ls960">HuBERT-base ASR ↗</a>
+            <a href="https://github.com/Amal-David/mlx-porting-skill/tree/main/mlx-model-porting/examples/optimized-port-qwen2.5-0.5b">Optimized port (quantization sweep) ↗</a>
+            <a href="https://github.com/Amal-David/mlx-porting-skill/tree/main/arch-stress-artifacts">arch-stress-artifacts: all 7 classes ↗</a>
+          </div>
           <div class="learning-frame">
             <article><strong>Definition</strong><p>This is one pinned dense-decoder checkpoint with a checked-in MLX proof packet.</p></article>
             <article><strong>Why it matters</strong><p>A concrete port shows how component, weight, state, and task evidence connect.</p></article>
@@ -640,7 +647,7 @@ python3 mlx-model-porting/scripts/make_port_plan.py inspection.json \
   --markdown MLX_INSPECTION.md</code></pre>
         </section>
 
-        <section class="doc-section" id="install" data-search="install codex claude cursor gemini windsurf copilot">
+        <section class="doc-section" id="install" data-search="install codex claude cursor gemini windsurf copilot antigravity">
           <span class="label">02 / install</span>
           <h2>Installation</h2>
           <p>Client presets select a documented destination and copy or symlink mode. Always dry-run first when the target matters; <span class="inline-code">--force</span> atomically replaces an existing target.</p>
@@ -651,7 +658,7 @@ python3 mlx-model-porting/scripts/make_port_plan.py inspection.json \
 # Inspect the printed source, destination, target, and mode.
 # Then repeat without --dry-run.</code></pre>
           <div class="doc-grid">
-            <div class="doc-card"><h3>Preset clients</h3><p>Claude Code, Codex, Cursor, Gemini CLI, Windsurf, and GitHub Copilot.</p></div>
+            <div class="doc-card"><h3>Preset clients</h3><p>Claude Code, Codex, Cursor, Gemini CLI, Windsurf, GitHub Copilot, and Antigravity.</p></div>
             <div class="doc-card"><h3>Explicit destination</h3><p>Use <span class="inline-code">--dest ~/.agents/skills --mode symlink</span> when a product version or local convention differs.</p></div>
           </div>
           <div class="callout warning"><strong>Safety boundary</strong><p>The installer rejects recursive destinations, ancestor targets that contain the source, path escapes, and symlink cycles. It compares content and modes for idempotence.</p></div>
@@ -980,7 +987,7 @@ python3 -m unittest discover -s tests -v</code></pre>
         </section>
 
         <footer class="doc-footer">
-          <p>MLX Porter v<span data-value="version">0.6.1</span> · generated site facts come from the checked-in registries and receipts · © <span data-year></span></p>
+          <p>MLX Porter v<span data-value="version">0.7.0</span> · generated site facts come from the checked-in registries and receipts · © <span data-year></span></p>
         </footer>
       </article>
     </main>
