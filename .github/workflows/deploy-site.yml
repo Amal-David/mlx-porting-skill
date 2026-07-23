@@ -1,0 +1,96 @@
+name: deploy-site
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "site/**"
+      - "VERSION"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-site-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  # Pinned exact so a compromised or freshly published wrangler cannot deploy
+  # our site. Published 2026-07-09; bump deliberately and honour the 7-day
+  # supply-chain cooldown before adopting a newer release.
+  WRANGLER_VERSION: "4.110.0"
+  CLOUDFLARE_PAGES_PROJECT: "mlx-porter"
+  CLOUDFLARE_PAGES_URL: "https://mlx-porter.pages.dev"
+
+jobs:
+  deploy:
+    name: Deploy static site to Cloudflare Pages
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+      - name: Require Cloudflare deploy secrets
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          set -euo pipefail
+          missing=""
+          if [ -z "${CLOUDFLARE_API_TOKEN:-}" ]; then
+            missing="CLOUDFLARE_API_TOKEN"
+          fi
+          if [ -z "${CLOUDFLARE_ACCOUNT_ID:-}" ]; then
+            if [ -n "$missing" ]; then
+              missing="${missing}, CLOUDFLARE_ACCOUNT_ID"
+            else
+              missing="CLOUDFLARE_ACCOUNT_ID"
+            fi
+          fi
+          if [ -n "$missing" ]; then
+            echo "::error::Cannot deploy the site: missing repository secret(s): ${missing}." >&2
+            echo "Add them under Settings > Secrets and variables > Actions:" >&2
+            echo "  - CLOUDFLARE_API_TOKEN: a Cloudflare API token with the 'Cloudflare Pages: Edit' permission." >&2
+            echo "  - CLOUDFLARE_ACCOUNT_ID: the Cloudflare account ID that owns the '${CLOUDFLARE_PAGES_PROJECT}' Pages project." >&2
+            exit 1
+          fi
+          echo "Cloudflare deploy secrets are present."
+      - name: Deploy site directory with Wrangler
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          set -euo pipefail
+          npx --yes "wrangler@${WRANGLER_VERSION}" pages deploy site \
+            --project-name "${CLOUDFLARE_PAGES_PROJECT}" \
+            --branch main \
+            --commit-dirty=true
+      - name: Verify the deployed site serves the released version
+        run: |
+          set -euo pipefail
+          expected="$(tr -d '[:space:]' < VERSION)"
+          if [ -z "$expected" ]; then
+            echo "::error::VERSION file is empty; cannot verify the deployment." >&2
+            exit 1
+          fi
+          url="${CLOUDFLARE_PAGES_URL}/data.js"
+          needle="\"version\":\"${expected}\""
+          echo "Waiting for ${url} to serve version ${expected} ..."
+          attempts=12
+          delay=15
+          for attempt in $(seq 1 "$attempts"); do
+            if body="$(curl -fsSL --max-time 30 "$url")"; then
+              if printf '%s' "$body" | tr -d '[:space:]' | grep -Fq "$needle"; then
+                echo "Deployed site is serving version ${expected} (attempt ${attempt}/${attempts})."
+                exit 0
+              fi
+              echo "Fetched ${url} but version ${expected} is not live yet (attempt ${attempt}/${attempts})." >&2
+            else
+              echo "Could not fetch ${url} yet (attempt ${attempt}/${attempts})." >&2
+            fi
+            sleep "$delay"
+          done
+          echo "::error::${url} never served the expected version ${expected} after ${attempts} attempts; the deploy may have failed or targeted a non-production branch." >&2
+          exit 1

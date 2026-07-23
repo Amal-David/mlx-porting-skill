@@ -1,5 +1,67 @@
 # Changelog
 
+## 0.7.0 — 2026-07-23
+
+- Completed 7/7 architecture-class coverage: every stress-tested family now has
+  a checked-in proof, anchored by the verified Granite-MoE-1B MLX port that
+  closes the sparse-MoE class. The README, validation status, site, and
+  `llms.txt` narrative were rewritten around this coverage and the four
+  `optimize-receipts/` observations, which record why the structured 8-bit pick
+  held quality where the naive 4-bit default failed the gate. These remain local
+  single-Mac, single-workload observations, not promoted benchmark claims.
+- Landed the 2026-07-18 and 2026-07-20 nightly knowledge-curator runs as new
+  dated research-run directories and retained bounded prior candidates instead
+  of dropping them on refresh; the reviewed graph now holds 712 nodes and 505
+  edges with the reconciled backlog and drift check still green.
+- Added `.github/workflows/deploy-site.yml`: on a push to `main` touching
+  `site/` or `VERSION`, it deploys the static site to Cloudflare Pages with a
+  pinned Wrangler and then polls the live `data.js` until it serves the released
+  version, failing loudly if the deploy never goes live.
+- Added `.github/workflows/release.yml`: when `VERSION` changes on `main`, it
+  cuts the annotated `vX.Y.Z` tag and publishes a GitHub Release whose body is
+  the matching `CHANGELOG.md` section, and no-ops when the tag already exists.
+- Added `.github/dependabot.yml` for GitHub Actions and the `.github/` CI pip
+  requirements, both grouped, PR-limited, and gated by a 7-day supply-chain
+  cooldown before a freshly published release can be proposed.
+- Extended CI: a Python 3.13 lane joins 3.10 and 3.14 in the supported-Python
+  matrix (with its hash-locked NumPy 2.5.1 wheel), and the release job now
+  smoke-installs `mlx-model-porting/requirements-tools.lock` into a throwaway
+  venv under `--require-hashes --only-binary=:all:` so the runtime lockfile is
+  proven installable.
+- Taught `install_skill.py` an `antigravity` client preset (the shared
+  `.agents/skills` symlink root) and a `--check` mode that reports whether an
+  installed skill's SKILL.md version matches `VERSION` without modifying
+  anything, returning non-zero on a stale or missing install.
+- Fixed a manifest time-of-check/time-of-use race: `manifest.py` now excludes
+  the transient `.converted-*.safetensors` atomic-write staging files that
+  `convert_checkpoint.py` creates and unlinks in place, so a `check` that races
+  an in-progress conversion no longer tries to hash a file being written.
+  Because these files are transient by construction and never distributed,
+  skipping them cannot hide drift in a shipped file.
+- Expanded the SKILL.md trigger map to route high-demand families directly:
+  vision-language/multimodal, diffusion/flow, text-to-speech, ASR/streaming
+  speech, sparse-MoE, and selective-SSM/hybrid inputs now each point at their
+  runbooks, keeping the body under the audited size ceiling.
+- Added `tests/test_corpus_count_contract.py`, which discovers the real suite
+  size in-process and fails loud when README.md or VALIDATION.md advertise a
+  stale offline-test count, and a repository `conftest.py`. Corrected the
+  published counts across README, VALIDATION, and the research report to the
+  discovered 551 offline tests and the current 712-node / 505-edge graph.
+
+### Deferred follow-ups
+
+These deep-research gaps were identified during the release audit. Admitting
+them to `research_backlog.json` requires new `backlog_item` graph nodes and a
+graph regeneration (a new dated run), so they are tracked here for a future
+release rather than hand-written into the reconciled backlog:
+
+- an iOS/Swift on-device MLX deployment reference;
+- a distributed / multi-Mac inference reference (`mx.distributed`);
+- a runnable serving harness covering the `mlx-lm` server workflow;
+- promotion of one stress-tested class (VLM or MoE) into the executable scaffold
+  generator with an in-payload worked example; and
+- a training/LoRA parity fixture, which today exists only as a contract.
+
 ## 0.6.1 — 2026-07-14
 
 - Added four evidence-gated research candidates from the Ideogram V4 serving

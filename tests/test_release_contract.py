@@ -262,12 +262,14 @@ class ReleaseContractTests(unittest.TestCase):
                 )
         self.assertIn('numpy==2.2.6 ; python_version == "3.10"', requirements)
         self.assertIn('numpy==2.5.1 ; python_version == "3.12"', requirements)
+        self.assertIn('numpy==2.5.1 ; python_version == "3.13"', requirements)
         self.assertIn('numpy==2.5.1 ; python_version == "3.14"', requirements)
         self.assertEqual(
             set(re.findall(r"--hash=sha256:([0-9a-f]{64})", requirements)),
             {
                 "fc7b73d02efb0e18c000e9ad8b83480dfcd5dfd11065997ed4c6747470ae8915",
                 "59fda5e192b570217ec2580c96f00e9a7e12ef6866a900eb089b62c1a32545ca",
+                "9726558e8db4a5bf7929a70ae50f63abda4daf0efe810e3bfbab95976f75fc1a",
                 "54ad769f17bc2d833b620851989f62054fb9ab93c969d9e1dc3c8e3d56beea21",
             },
         )
@@ -312,7 +314,7 @@ class ReleaseContractTests(unittest.TestCase):
         assert_executable_fragment(self, release, "python3 -m unittest -v tests.test_distribution_portability")
         assert_executable_fragment(self, release, "tests.test_public_claims_contract")
 
-        self.assertIn('python-version: ["3.10", "3.14"]', supported)
+        self.assertIn('python-version: ["3.10", "3.13", "3.14"]', supported)
         assert_executable_fragment(self, supported, "python3 -m pip install")
         assert_executable_fragment(self, supported, "--require-hashes --only-binary=:all:")
         assert_executable_fragment(self, supported, "python3 -m compileall")

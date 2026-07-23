@@ -32,17 +32,40 @@ Exact output parity is the only built-in quality metric, and no performance
 claim is promoted. [`VALIDATION.md`](VALIDATION.md) states precisely what the
 checked-in gates do and do not prove.
 
-The 0.6.1 corpus behind the skill:
+### All seven architecture classes port with parity
+
+Separately from the scaffold generator, a one-off architecture stress test ported
+real checkpoints across **all seven major architecture classes** and verified
+layer-by-layer parity against the source on Apple Silicon (cosine ≈ 1.0 per rung,
+no relaxed tolerances): dense decoder (Qwen2/Qwen3), encoder (ModernBERT),
+encoder-decoder (t5-small), ASR (HuBERT), linear-attention/Mamba hybrid
+(Qwen3.5-text), vision-language (SmolVLM-256M), and Mixture-of-Experts
+(Granite-3.0-1B). The evidence lives in
+[`arch-stress-artifacts/`](arch-stress-artifacts/) **outside** the installable
+skill payload — these are proof artifacts, not scaffolds. The generator above
+still emits six families; the stress test proves the porting *method* reaches
+every class, not that the generator auto-scaffolds them.
+
+The same effort produced four measured **optimize receipts**: on Qwen2.5-0.5B,
+Qwen2.5-1.5B, SmolLM2-360M, and Qwen3-1.7B, the naive 4-bit quantization default
+failed the quality gate on every model while the structured 8-bit pick held
+quality. The receipts record which candidate won and why —
+[`arch-stress-artifacts/optimize-receipts/`](arch-stress-artifacts/optimize-receipts/README.md).
+They are local observations on one Mac and one workload, not promoted benchmark
+claims.
+
+The 0.7.0 corpus behind the skill:
 
 - 363 evidence sources with explicit review depth; 35 currently carry classified
   support scope and claim types, while 328 remain intentionally unclassified;
-- 33 inspectable Python scripts and 537 offline tests;
+- 33 inspectable Python scripts and 551 offline tests;
 - 13 benchmark receipts (12 observations, 1 rejected) and 10 effective claims,
   all withheld.
 
 ## Install
 
-The distributable skill is the `mlx-model-porting/` directory:
+The distributable skill is the `mlx-model-porting/` directory. Two install paths
+trade convenience for attestation. The quick default is `npx`:
 
 ```bash
 npx skills add Amal-David/mlx-porting-skill --skill mlx-model-porting
@@ -170,6 +193,12 @@ excluded) in [`mlx-model-porting/examples/`](mlx-model-porting/examples/):
 [t5-small](mlx-model-porting/examples/worked-port-t5-small), and
 [HuBERT-base](mlx-model-porting/examples/worked-port-hubert-base-ls960/README.md).
 
+A companion
+[optimized port](mlx-model-porting/examples/optimized-port-qwen2.5-0.5b/README.md)
+applies the structured optimization loop to the same Qwen2.5-0.5B checkpoint and
+shows the quality gate rejecting the naive 4-bit default in favor of the 8-bit
+candidate that held quality.
+
 ## Other workflows
 
 ### Inspect an existing MLX project
@@ -224,6 +253,7 @@ promotion rules and evidence semantics: [`VALIDATION.md`](VALIDATION.md) and
 | [`mlx-model-porting/assets/`](mlx-model-porting/assets/) | Canonical architecture, technique, source, benchmark, and claim registries |
 | [`mlx-model-porting/scripts/`](mlx-model-porting/scripts/) | Non-destructive inspection, planning, parity, benchmarking, and packaging tools |
 | [`mlx-model-porting/examples/`](mlx-model-porting/examples/) | Porting patterns and worked example ports |
+| [`arch-stress-artifacts/`](arch-stress-artifacts/) | One-off real-checkpoint parity proofs across all seven architecture classes and measured quantization receipts (outside the installable payload) |
 | [`tests/`](tests/) | Offline contract, security, determinism, and portability tests |
 | [`site/`](site/) | Offline source of the public runbook site |
 
@@ -241,6 +271,6 @@ ownership table, regeneration commands, and full release-gate list are in
 
 ## Versioning and license
 
-Current release: **0.6.1** (2026-07-14). Version lives in
+Current release: **0.7.0** (2026-07-23). Version lives in
 [`VERSION`](VERSION) and the skill frontmatter; changes in
 [`CHANGELOG.md`](CHANGELOG.md). Licensed [Apache-2.0](LICENSE).

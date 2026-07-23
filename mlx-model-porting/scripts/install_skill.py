@@ -24,7 +24,7 @@ from typing import BinaryIO
 # tree before the manifest inventory is checked.
 sys.dont_write_bytecode = True
 
-from _common import SkillError  # noqa: E402
+from _common import MAX_STRUCTURED_BYTES, SkillError, parse_frontmatter  # noqa: E402
 import manifest as manifest_contract  # noqa: E402
 
 
@@ -40,6 +40,11 @@ MAX_INSTALL_JOURNAL_BYTES = 64 * 1024
 CLIENT_PRESETS = {
     "claude-code": (".claude/skills", "symlink"),
     "codex": (".agents/skills", "symlink"),
+    # Antigravity resolves workspace skills from the same .agents/skills root as
+    # Codex (its global scope lives at ~/.gemini/config/skills; pass that with
+    # --dest). A fresh checkout is already linked there, so symlink matches how
+    # the sibling .agents-root client is treated.
+    "antigravity": (".agents/skills", "symlink"),
     "cursor": (".cursor/skills", "copy"),
     "gemini": (".gemini/skills", "copy"),
     "windsurf": (".windsurf/skills", "copy"),
@@ -62,6 +67,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--name", default=SOURCE.name)
     parser.add_argument("--force", action="store_true")
     parser.add_argument("--dry-run", action="store_true")
+    parser.add_argument(
+        "--check",
+        action="store_true",
+        help="Report whether the installed copy's SKILL.md version matches VERSION without modifying anything",
+    )
     return parser.parse_args()
 
 
@@ -816,6 +826,73 @@ def install_atomically(target: Path, stage: Path, force: bool) -> None:
     _remove_recovery_journal(journal)
 
 
+def read_installed_skill_md(target: Path) -> str | None:
+    """Read an installed SKILL.md as bounded UTF-8 text without following a symlink.
+
+    Returns None when the file is absent so a missing install reports as such
+    rather than raising; genuinely unreadable or oversized files still fail loud.
+    """
+    skill_md = target / "SKILL.md"
+    flags = os.O_RDONLY | NOFOLLOW_FLAG | getattr(os, "O_CLOEXEC", 0)
+    try:
+        descriptor = os.open(skill_md, flags)
+    except FileNotFoundError:
+        return None
+    except OSError as exc:
+        if exc.errno == errno.ELOOP:
+            raise SkillError(f"installed SKILL.md must not be a symlink: {skill_md}") from exc
+        raise SkillError(
+            f"could not read installed SKILL.md without following symlinks: {exc}"
+        ) from exc
+    try:
+        metadata = os.fstat(descriptor)
+        if not stat.S_ISREG(metadata.st_mode):
+            raise SkillError(f"installed SKILL.md is not a regular file: {skill_md}")
+        if metadata.st_size > MAX_STRUCTURED_BYTES:
+            raise SkillError(f"installed SKILL.md exceeds size limit: {skill_md}")
+        data = os.read(descriptor, MAX_STRUCTURED_BYTES + 1)
+    finally:
+        os.close(descriptor)
+    if len(data) > MAX_STRUCTURED_BYTES:
+        raise SkillError(f"installed SKILL.md exceeds size limit: {skill_md}")
+    try:
+        return data.decode("utf-8")
+    except UnicodeDecodeError as exc:
+        raise SkillError(f"installed SKILL.md must be valid UTF-8: {skill_md}") from exc
+
+
+def installed_skill_version(target: Path) -> str | None:
+    """Return the installed SKILL.md frontmatter version, or None when absent."""
+    text = read_installed_skill_md(target)
+    if text is None:
+        return None
+    try:
+        frontmatter, _ = parse_frontmatter(text)
+    except SkillError:
+        return None
+    metadata = frontmatter.get("metadata")
+    if isinstance(metadata, dict):
+        version = metadata.get("version")
+        if isinstance(version, str) and version:
+            return version
+    version = frontmatter.get("version")
+    return version if isinstance(version, str) and version else None
+
+
+def check_installed_version(target: Path) -> int:
+    """Report the installed skill's version drift; 0 when current, 1 when stale or missing."""
+    expected = manifest_contract.read_version(SOURCE.parent)
+    installed = installed_skill_version(target)
+    if installed is None:
+        print(f"missing: no installed skill version at {target} (VERSION is {expected})")
+        return 1
+    if installed == expected:
+        print(f"current: installed {installed} matches VERSION {expected}")
+        return 0
+    print(f"stale: installed {installed} does not match VERSION {expected}")
+    return 1
+
+
 def main() -> int:
     args = parse_args()
     try:
@@ -834,6 +911,9 @@ def main() -> int:
         except ValueError as exc:
             raise SkillError("Target escapes destination root") from exc
         reject_symlink_cycle(target)
+
+        if args.check:
+            return check_installed_version(target)
 
         if not args.dry_run:
             dest_root.mkdir(parents=True, exist_ok=True)

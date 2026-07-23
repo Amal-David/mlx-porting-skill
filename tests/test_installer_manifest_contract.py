@@ -24,6 +24,15 @@ from _common import SkillError  # noqa: E402
 
 OFFICIAL_APACHE_2_SHA256 = "50e6751797c50dedd75ef1b8a0d9e42f5f8472e9fbce91f34718e9f97b0c780a"
 
+SKILL_MD_TEMPLATE = (
+    "---\n"
+    "name: mlx-model-porting\n"
+    "metadata:\n"
+    '  version: "{version}"\n'
+    "---\n"
+    "body\n"
+)
+
 
 class InstallerManifestContractTests(unittest.TestCase):
     def make_fixture(self, parent: Path) -> tuple[Path, Path]:
@@ -102,6 +111,43 @@ class InstallerManifestContractTests(unittest.TestCase):
         ):
             result = install_skill.main()
         return result, stdout.getvalue(), stderr.getvalue()
+
+    def run_check(self, skill: Path, destination: Path, *extra: str) -> tuple[int, str, str]:
+        stdout = io.StringIO()
+        stderr = io.StringIO()
+        arguments = ["install_skill.py", "--dest", str(destination), "--check", *extra]
+        with (
+            mock.patch.object(install_skill, "SOURCE", skill),
+            mock.patch.object(sys, "argv", arguments),
+            contextlib.redirect_stdout(stdout),
+            contextlib.redirect_stderr(stderr),
+        ):
+            result = install_skill.main()
+        return result, stdout.getvalue(), stderr.getvalue()
+
+    def test_check_reports_current_stale_and_missing_installed_versions(self) -> None:
+        with tempfile.TemporaryDirectory() as raw_tmp:
+            _, skill = self.make_fixture(Path(raw_tmp))  # VERSION is 1.0.0
+            destination = Path(raw_tmp) / "agent-skills"
+            target = destination / skill.name
+            target.mkdir(parents=True)
+
+            target_skill_md = target / "SKILL.md"
+            target_skill_md.write_text(SKILL_MD_TEMPLATE.format(version="1.0.0"), encoding="utf-8")
+            current, current_stdout, current_stderr = self.run_check(skill, destination)
+            self.assertEqual(current, 0, current_stdout + current_stderr)
+            self.assertIn("current", current_stdout)
+            self.assertIn("1.0.0", current_stdout)
+
+            target_skill_md.write_text(SKILL_MD_TEMPLATE.format(version="0.9.0"), encoding="utf-8")
+            stale, stale_stdout, stale_stderr = self.run_check(skill, destination)
+            self.assertEqual(stale, 1, stale_stdout + stale_stderr)
+            self.assertIn("stale", stale_stdout)
+
+            target_skill_md.unlink()
+            missing, missing_stdout, missing_stderr = self.run_check(skill, destination)
+            self.assertEqual(missing, 1, missing_stdout + missing_stderr)
+            self.assertIn("missing", missing_stdout)
 
     def test_copy_install_is_exact_manifest_identity_and_idempotent(self) -> None:
         with tempfile.TemporaryDirectory() as raw_tmp:

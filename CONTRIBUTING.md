@@ -4,6 +4,28 @@ Treat this repository as an executable engineering standard. A contribution is
 complete only when its source, scope, validation gate, rollback, generated
 views, and tests agree.
 
+## Where to start
+
+Good first contributions are small, verifiable, and grounded in the real backlog:
+
+- **Classify an evidence source.** Pick one of the ~328 sources that remain
+  intentionally unclassified in
+  [`mlx-model-porting/assets/sources.yaml`](mlx-model-porting/assets/sources.yaml),
+  add an honest support scope and claim type, then regenerate
+  [`EVIDENCE_INDEX.md`](EVIDENCE_INDEX.md).
+- **Extend a family runbook** in
+  [`mlx-model-porting/references/`](mlx-model-porting/references/) with a
+  verified, pinned reference for a technique or failure mode it currently omits.
+- **Add a golden-scenario fixture variant** to
+  [`tests/test_scenarios.py`](tests/test_scenarios.py) so a routing or
+  weight-coverage edge case is covered without loosening an existing gate.
+- **Run a worked example** from
+  [`mlx-model-porting/examples/`](mlx-model-porting/examples/) end to end and
+  report any divergence from its checked-in parity report.
+
+Each keeps the source, scope, and gate in agreement — the standard the rest of
+this document formalizes.
+
 ## Evidence vocabulary
 
 Recommendation status is controlled:
@@ -292,3 +314,16 @@ The offline suite proves repository contracts, not a real-model conversion or a
 portable speedup. If a required Apple-Silicon run, network check, quality
 evaluation, or publication review was not performed, say so explicitly in the
 pull request.
+
+## Release and deployment automation
+
+Two GitHub Actions workflows automate release side effects on `main`:
+
+- `.github/workflows/deploy-site.yml` publishes the static site to Cloudflare
+  Pages when a push to `main` touches `site/` or `VERSION`. It requires the repo
+  secrets `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID`.
+- `.github/workflows/release.yml` cuts the git tag and GitHub Release
+  automatically when `VERSION` changes on `main`.
+
+Both are side effects of an already-merged, already-validated change: they
+publish what the release checks above have proven and relax no gate.

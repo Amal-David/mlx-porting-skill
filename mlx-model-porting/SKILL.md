@@ -5,35 +5,29 @@ license: Apache-2.0
 compatibility: Execution and performance validation require an Apple Silicon Mac with a supported MLX installation. Planning and static inspection can run elsewhere. Python 3.10+ and git are recommended; NumPy is required only for tensor parity and huggingface-hub only for explicitly enabled network intake (see requirements-tools.txt). Network access is optional and must be explicitly enabled.
 metadata:
   author: mlx-porting-skill
-  version: "0.6.1"
-  last-reviewed: "2026-07-14"
+  version: "0.7.0"
+  last-reviewed: "2026-07-23"
 ---
 
 # MLX model porting and optimization
 
 ## Mission
 
-Produce or inspect a **correct, reproducible, architecture-aware MLX implementation**. Correctness comes before speed. Every speed or memory claim must name the hardware, software versions, workload, baseline, and quality gate.
+Produce or inspect a **correct, reproducible, architecture-aware MLX implementation**. Correctness before speed. Every speed or memory claim must name hardware, software versions, workload, baseline, and quality gate.
 
-Six families have scaffolds. Packets:
-[Qwen2.5](examples/worked-port-qwen2.5-0.5b-instruct/README.md),
-[BGE](examples/worked-port-bge-base-en/README.md),
-[t5-small](examples/worked-port-t5-small/README.md), and
-[HuBERT](examples/worked-port-hubert-base-ls960/README.md). MoE/SSM are
-synthetic; others are runbook-guided. Exact output is the built-in metric.
+Six families have scaffolds (MoE/SSM synthetic, others runbook-guided); four
+have worked packets under [examples/](examples/porting-patterns.md): Qwen2.5,
+BGE, t5-small, HuBERT. Exact output is the built-in metric.
 
 ## When to use this skill
 
-- Use for porting, converting, running, inspecting, quantizing, packaging, or publishing a PyTorch/Hugging Face model or existing project on MLX/Apple Silicon.
-- Use for parity, NaN/Inf, shape, tokenizer, preprocessing, output, performance, memory, cache, serving, benchmark, or provenance problems in an MLX port.
-- Do not use for CUDA/non-Apple targets, general ML theory without an MLX
-  target, or unrelated training from scratch.
+Port, convert, run, inspect, quantize, package, or publish a PyTorch/Hugging Face model or MLX project on Apple Silicon, or fix any parity, NaN/Inf, shape, tokenizer, preprocessing, output, performance, memory, cache, serving, benchmark, or provenance issue in a port. Not for CUDA/non-Apple targets, ML theory without an MLX target, or training from scratch.
 
 ## Trigger map
 
 | Signal | Load |
 | --- | --- |
-| Port/convert/run request, `config.json`, safetensors index, model directory, or Hub id. | [intake](references/intake-and-routing.md), then Workflow 1-6; use the [worked chain](examples/worked-port-qwen2.5-0.5b-instruct/README.md) for dense decoders and every routed runbook otherwise. |
+| Port/convert/run request, `config.json`, safetensors index, model directory, or Hub id. | [intake](references/intake-and-routing.md), then Workflow 1-6; [worked chain](examples/worked-port-qwen2.5-0.5b-instruct/README.md) for dense decoders, routed runbooks otherwise. |
 | User points at an existing local MLX project, running MLX app, or completed MLX port. | [inspector mode](references/inspector-mode.md) plus [inspect_mlx_project.py](scripts/inspect_mlx_project.py) |
 | User asks "what can I do with this model?", asks for capability fit, or wants model-specific advice. | [model advisor playbook](references/model-advisor-playbook.md) |
 | A known architecture family needs the right runbook. | [model support map](references/model-support-map.md), then the architecture table in Workflow step 4 below |
@@ -49,12 +43,18 @@ synthetic; others are runbook-guided. Exact output is the built-in metric.
 | Compile behavior, `mx.compile`, custom kernel, graph capture, Metal, or operation fusion comes up. | [compile and kernels](references/compile-and-kernels.md) |
 | Publish, release, checkpoint conversion, model card, provenance, or license packaging is requested. | [packaging and publication](references/packaging-and-publication.md) |
 | The user asks for "50-100 optimization ideas", a deep model-specific hunt, or research-backed candidates. | [hypothesis-led learning](references/hypothesis-led-learning.md) |
+| Vision-language, multimodal, or image+text (VLM) input appears. | [multimodal/omni runbook](references/runbook-multimodal-omni.md) |
+| Diffusion, flow-matching, or image/video generation appears. | [diffusion/flow runbook](references/runbook-diffusion-flow.md) |
+| Text-to-speech, vocoder, or audio generation appears. | [flow-TTS](references/runbook-flow-tts.md), [autoregressive audio](references/runbook-autoregressive-audio.md) |
+| ASR, transcription, or streaming speech appears. | [ASR](references/runbook-asr.md), [streaming speech](references/runbook-streaming-speech.md) |
+| Sparse mixture-of-experts or top-k expert routing appears. | [MoE runbook](references/runbook-moe-transformer.md) |
+| Selective state-space, Mamba, or linear-attention hybrid appears. | [SSM/hybrid runbook](references/runbook-ssm-hybrid.md) |
 | Graph, GNN, message passing, node/edge features, or sparse graph workload appears. | [graph message passing runbook](references/runbook-graph-message-passing.md) |
 | Classic CV detection, segmentation, keypoints, depth, OCR, or non-generative vision appears. | [non-generative CV runbook](references/runbook-non-generative-cv.md) |
 | Time-series, forecasting, tabular sequence, anomaly detection, or temporal model appears. | [time-series forecasting runbook](references/runbook-time-series-forecasting.md) |
 
-Re-consult the map when a new config, parity failure, performance complaint, or
-publish request appears.
+Re-consult the map on a new config, parity failure, performance complaint, or
+publish request.
 
 ## Non-negotiable rules
 
@@ -67,41 +67,36 @@ publish request appears.
 7. **Do not translate CUDA folklore mechanically.** A CUDA technique is only a research candidate until its Metal/MLX bottleneck and implementation are demonstrated.
 8. **Never hide quality regressions behind throughput.** For audio, language, vision, and generative models, use task-specific quality checks in addition to tensor tolerances.
 9. **Do not publish converted weights without license and provenance checks.** Preserve the original model card, attribution, generation config, tokenizer/processor files, and conversion recipe.
-10. **Daily research automation is review-only.** It may collect and rank candidates, but must not silently rewrite runbooks or merge recommendations. Use the promotion-review ledger to separate findings ready for skill-update review from validation backlog and rejected leads.
-11. **Experimental approaches require explicit opt-in.** Label unvalidated contributor, blog, paper, or repository learnings as experimental approaches, state the missing validation gate, and ask before helping execute them: “This is an experimental approach. Do you want to try it?” Continue only if the user explicitly says to try it.
+10. **Daily research automation is review-only.** It may collect and rank candidates, but must not silently rewrite runbooks or merge recommendations. Use the promotion-review ledger to separate review-ready findings from validation backlog and rejected leads.
+11. **Experimental approaches require explicit opt-in.** Label unvalidated contributor, blog, paper, or repository learnings as experimental, state the missing validation gate, and ask before executing them: “This is an experimental approach. Do you want to try it?” Continue only if the user says to try it.
 
 ## Workflow
 
 ### 1. Inspect and classify
 
-For source models, run `scripts/inspect_model.py`, then `scripts/recommend_optimizations.py`, then `scripts/make_port_plan.py --artifact-root MODEL --recommendations ...`. An actionable plan re-runs static inspection against those local bytes and recomputes the complete recommendation report before embedding advice. A blocked inspection may produce only a remediation plan; neither a family override nor direct registry reads may bypass its blockers. A family override may reorder an inspected hybrid route but must preserve every routed family, runbook, and trait. For existing MLX projects or already-running ports, run `scripts/inspect_mlx_project.py` and read [inspector mode](references/inspector-mode.md) before changing code.
+For source models, run `scripts/inspect_model.py`, then `scripts/recommend_optimizations.py`, then `scripts/make_port_plan.py --artifact-root MODEL --recommendations ...`. An actionable plan re-inspects those bytes and recomputes the full recommendation report before advice; a blocked inspection yields only a remediation plan, and no override or registry read bypasses its blockers. An override may reorder a hybrid route but must preserve every routed family, runbook, and trait. For existing MLX projects or running ports, run `scripts/inspect_mlx_project.py` and read [inspector mode](references/inspector-mode.md) first.
 
-Read [intake and routing](references/intake-and-routing.md). Confirm source, risk, Mac, memory, performance, quality; record ambiguity in `PORT_PLAN.md`. For advice, read [model advisor playbook](references/model-advisor-playbook.md) and separate results into all five controlled advisor buckets: validated locally, validated by source or theory, benchmark required, experimental approach, and rejected / do not use. Numeric output may come only from `assets/effective_claims.json`; missing gates withhold the number.
+Read [intake and routing](references/intake-and-routing.md). Confirm source, risk, Mac, memory, performance, quality; record ambiguity in `PORT_PLAN.md`. For advice, read [model advisor playbook](references/model-advisor-playbook.md) and separate results into its five controlled advisor buckets. Numeric output may come only from `assets/effective_claims.json`; missing gates withhold the number.
 
 ### 2. Select the closest proven MLX reference
 
-Consult [model support map](references/model-support-map.md) and `assets/architectures.yaml`. Prefer official MLX, Apple-maintained projects, pinned third-party MLX implementation evidence, paper-only research candidates, then new code; keep the support scope explicit and verify config/layout.
+Consult [model support map](references/model-support-map.md) and `assets/architectures.yaml`. Prefer official MLX, Apple projects, pinned third-party MLX evidence, paper-only candidates, then new code; keep support scope explicit and verify config/layout.
 
 ### 3. Establish the source oracle
 
-Run `scripts/capture_oracle.py` against the pinned local Hugging Face model before implementing the MLX graph, then follow [parity and testing](references/parity-and-testing.md). It records inputs, embeddings, decoder blocks, final norm, logits, hookable branches, and greedy IDs in a bounded NPZ plus content-addressed manifest.
+Run `scripts/capture_oracle.py` against the pinned local Hugging Face model before the MLX graph, then follow [parity and testing](references/parity-and-testing.md). It records inputs, embeddings, blocks, final norm, logits, hookable branches, and greedy IDs in a bounded NPZ plus manifest.
 
 ### 4. Implement the minimal eager MLX graph
 
-Read [core porting method](references/porting-core.md); choose via the trigger map and the controlled family records in `assets/architectures.yaml`. Load every runbook returned by a hybrid route. The registry is the complete runbook inventory; do not substitute an abbreviated parallel list.
+Read [core porting method](references/porting-core.md); choose via the trigger map and the family records in `assets/architectures.yaml`. Load every runbook a hybrid route returns; the registry is the full inventory—never substitute an abbreviated list.
 
-Scaffold an unblocked dense decoder, sparse-MoE decoder, BERT encoder, T5
-encoder-decoder, HuBERT/Wav2Vec2 acoustic encoder, or opt-in synthetic
-`minimal_selective` SSM:
+Scaffold an unblocked dense decoder, sparse-MoE decoder, BERT encoder, T5 encoder-decoder, HuBERT/Wav2Vec2 acoustic encoder, or opt-in `minimal_selective` SSM:
 
 ```bash
 python3 scripts/scaffold_port.py inspection.json --artifact-root MODEL --output mlx_port
 ```
 
-It re-inspects the artifact and fails closed. Review unsupported config before
-continuing; never patch around a generator blocker.
-
-See the linked worked ports above (no weights).
+It re-inspects and fails closed; review unsupported config, never patch around a generator blocker.
 
 Start eager: FP, batch one unless intrinsic, no compile/kernels, state/cache, assertions, reversible map.
 
@@ -109,15 +104,15 @@ Start eager: FP, batch one unless intrinsic, no compile/kernels, state/cache, as
 
 Draft with `scripts/convert_checkpoint.py --emit-draft-map`, resolve the
 schema-2 `WEIGHT_MAP`, validate with `scripts/validate_weight_map.py`, then
-convert the pinned model. Reject shard, coverage, shape, draft, or unresolved
-gaps; never mask exceptions.
+convert. Reject shard, coverage, shape, draft, or unresolved gaps; never mask
+exceptions.
 
 ### 6. Pass the parity ladder
 
 After conversion, `scripts/run_parity.py --mode MODE` runs source/MLX capture
 and stops at the first failed rung. Modes: `dense-decoder` (default), `encoder`,
-`encoder-decoder`, `ssm`, `asr`. Use `capture_mlx.py` for retained captures and
-`compare_tensors.py` for extras; `_capture_common.py` holds bounded rules.
+`encoder-decoder`, `ssm`, `asr`. `capture_mlx.py` retains captures,
+`compare_tensors.py` extras, `_capture_common.py` bounded rules.
 
 When parity fails, use [failure atlas](references/failure-atlas.md); do not optimize a failing graph.
 
@@ -129,13 +124,13 @@ Read [benchmarking](references/benchmarking.md). Separate prefill, decode, postp
 
 Use guides: [C](references/compile-and-kernels.md),[KV](references/attention-and-kv.md),[S](references/decoding-and-serving.md),[Q](references/quantization.md),[T](references/training-and-finetuning.md),[CS](references/compound-stacks.md).
 
-Tiers: `assets/recommendation-taxonomy.yaml`; experimental approach: state gate and ask: “This is an experimental approach. Do you want to try it?” Continue after opt-in.
+Tiers: `assets/recommendation-taxonomy.yaml`; for an experimental approach, state the gate and use the rule-11 opt-in prompt.
 
 Post-parity: one dimension; Metal only after proven bottleneck. Record hypothesis, gates, metrics, decision.
 
 ### 9. Package and publish
 
-Follow [packaging and publication](references/packaging-and-publication.md). Include source, conversion, versions, artifacts, quantization, smoke, benchmarks, limits, license/attribution, and no unsupported “faster” wording.
+Follow [packaging and publication](references/packaging-and-publication.md). Include source, conversion, versions, artifacts, quantization, smoke, benchmarks, limits, license/attribution; no unsupported “faster” wording.
 
 ### 10. Return an engineering report
 

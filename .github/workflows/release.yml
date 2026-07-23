@@ -1,0 +1,70 @@
+name: release
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "VERSION"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  tag-and-release:
+    name: Tag and publish GitHub Release
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+      - name: Tag and release when VERSION is new
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          version="$(tr -d '[:space:]' < VERSION)"
+          if [ -z "$version" ]; then
+            echo "::error::VERSION file is empty; refusing to tag." >&2
+            exit 1
+          fi
+          tag="v${version}"
+
+          git fetch --tags --force
+          if git rev-parse -q --verify "refs/tags/${tag}" >/dev/null; then
+            echo "Tag ${tag} already exists; nothing to release."
+            exit 0
+          fi
+
+          notes_file="$RUNNER_TEMP/release-notes.md"
+          awk -v head="## ${version} " '
+            index($0, head) == 1 { grab = 1; next }
+            grab && index($0, "## ") == 1 { exit }
+            grab {
+              if (!started && $0 ~ /[^[:space:]]/) started = 1
+              if (started) print
+            }
+          ' CHANGELOG.md > "$notes_file"
+
+          if ! grep -q '[^[:space:]]' "$notes_file"; then
+            echo "::error::CHANGELOG.md has no '## ${version} — <date>' section to use as the release body." >&2
+            exit 1
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git tag -a "${tag}" -F "$notes_file"
+          git push origin "refs/tags/${tag}"
+
+          gh release create "${tag}" \
+            --title "${tag}" \
+            --notes-file "$notes_file"
+          echo "Published release ${tag}."
