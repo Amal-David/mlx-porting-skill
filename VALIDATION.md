@@ -17,7 +17,7 @@ optimization improves a particular Mac workload.
 | Architecture-family routes | 17 | `mlx-model-porting/assets/architectures.yaml` |
 | Executable scaffold families | 6 | `scaffold_port.py::FAMILY_GENERATORS` |
 | Checked-in real checkpoint ports | 4 | Qwen2.5, BGE base, t5-small, HuBERT base examples |
-| Evidence sources | 361 | `mlx-model-porting/assets/sources.yaml` |
+| Evidence sources | 363 | `mlx-model-porting/assets/sources.yaml` |
 | Technique records | 70 | `mlx-model-porting/assets/techniques.yaml` |
 | Optimization-guidance methods | 28 | `mlx-model-porting/assets/optimization_guidance.yaml` |
 | Optimization stacks | 4 | `mlx-model-porting/assets/optimization_stacks.yaml` |

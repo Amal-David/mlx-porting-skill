@@ -80,7 +80,7 @@ The 0.6.1 snapshot contains:
 | Surface | Count | Boundary |
 |---|---:|---|
 | Architecture routes | 17 | Synthetic golden route and guard scenarios; one dense-decoder model has a completed real port. |
-| Evidence sources | 361 | Every source has review depth; 35 carry classified support scope and claim types, while 326 remain intentionally unclassified. |
+| Evidence sources | 363 | Every source has review depth; 35 carry classified support scope and claim types, while 328 remain intentionally unclassified. |
 | Technique records | 70 | Status describes evidence maturity, not a portable performance guarantee. |
 | Guidance methods | 28 | Target matching and evidence gates determine whether advice can be surfaced. |
 | Optimization stacks | 4 | Planning structures; no positive compound number is implied. |

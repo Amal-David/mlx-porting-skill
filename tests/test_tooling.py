@@ -2957,6 +2957,8 @@ class ToolingTests(unittest.TestCase):
             self.assertIn("unique sources: 2", summary)
             self.assertIn("MLX documentation index - 2 citation(s)", summary)
             self.assertIn("packages: 0/", summary)
+            self.assertIn("### Thin Source Lanes", summary)
+            self.assertIn("### Uncited Source Lanes", summary)
 
     def test_research_loop_builds_promotion_review_ledger(self) -> None:
         with tempfile.TemporaryDirectory(dir=ROOT) as tmp:

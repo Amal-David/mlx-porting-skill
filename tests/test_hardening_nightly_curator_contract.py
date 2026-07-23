@@ -18,6 +18,14 @@ import nightly_knowledge_curator as nightly  # noqa: E402
 
 
 class NightlyKnowledgeCuratorHardeningTests(unittest.TestCase):
+    def test_gap_hints_are_not_truncated_before_research_loop_planning(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            delta_path = Path(tmp) / "knowledge-delta.json"
+            expected = [f"hint-{index}" for index in range(12)]
+            delta_path.write_text(json.dumps({"gap_hints": expected}), encoding="utf-8")
+
+            self.assertEqual(nightly.read_gap_hints(delta_path), expected)
+
     @unittest.skipIf(os.name == "nt", "POSIX process-group behavior")
     def test_timeout_terminates_descendants(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
