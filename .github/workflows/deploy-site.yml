@@ -32,6 +32,13 @@ jobs:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           persist-credentials: false
+      - name: Refuse to deploy a non-main ref to production
+        run: |
+          set -euo pipefail
+          if [ "${GITHUB_REF}" != "refs/heads/main" ]; then
+            echo "::error::deploy-site.yml publishes the production site and only runs from refs/heads/main; got ${GITHUB_REF}. Dispatch it from main." >&2
+            exit 1
+          fi
       - name: Require Cloudflare deploy secrets
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}

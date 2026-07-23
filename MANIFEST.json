@@ -2,7 +2,7 @@
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
   "version": "0.7.0",
-  "generated_at": "2026-07-23T18:17:55.223846+00:00",
+  "generated_at": "2026-07-23T18:43:04.823902+00:00",
   "file_count": 593,
   "files": [
     {
@@ -51,14 +51,14 @@
     },
     {
       "path": ".github/workflows/deploy-site.yml",
-      "size_bytes": 3770,
-      "sha256": "f881ea64f3173ebf3e022b482d26041d9b9c496fa9bb88f629e0091c622a3288",
+      "size_bytes": 4121,
+      "sha256": "c4d9389df5443d9fce1440d90762721be1a796f0c51bbc9dd783a9b13cabc7e7",
       "executable": false
     },
     {
       "path": ".github/workflows/release.yml",
-      "size_bytes": 2074,
-      "sha256": "b69153af15c6d9b769d79af107077b49bef572b088689364fff14fb3b0f87938",
+      "size_bytes": 2690,
+      "sha256": "1914fc4ac84fc9f69a5b8ed499cdeaa5dc487fd5f88c90fb88e5f0978f51773c",
       "executable": false
     },
     {
