@@ -2,7 +2,7 @@
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
   "version": "0.7.0",
-  "generated_at": "2026-07-23T18:43:04.823902+00:00",
+  "generated_at": "2026-07-24T05:31:10.775919+00:00",
   "file_count": 593,
   "files": [
     {
@@ -1083,8 +1083,8 @@
     },
     {
       "path": "mlx-model-porting/assets/update-candidates.json",
-      "size_bytes": 42608,
-      "sha256": "0686cfb74df7334a9a1e17b9d0621fc86433ddef6f1b021bb3230dd05906bcc9",
+      "size_bytes": 42675,
+      "sha256": "077f75e3df72a1cb469bc04535ed464f551b16574c085df8fd91ea2f6a10ba44",
       "executable": false
     },
     {

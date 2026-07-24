@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-07-20T22:03:44.855773+00:00",
+  "generated_at": "2026-07-24T05:29:42.064195+00:00",
   "policy": {
     "auto_modify_recommendations": false,
     "auto_merge": false,
@@ -16,9 +16,9 @@
         "quantization"
       ],
       "default_branch": "main",
-      "head_sha": "ce3073389e92d8f7b7ecd3d7697523795786e046",
-      "head_date": "2026-07-20T20:09:32Z",
-      "head_message": "Fix captured random state in compile (#3828)",
+      "head_sha": "9b40c9d1b8d2b46138431974e785f6abd148bda1",
+      "head_date": "2026-07-23T21:29:54Z",
+      "head_message": "Fix prod dtype promotion when reducing a size-1 axis (#3898)",
       "url": "https://github.com/ml-explore/mlx",
       "latest_release": {
         "tag": "v0.32.0",
@@ -37,9 +37,9 @@
         "cache"
       ],
       "default_branch": "main",
-      "head_sha": "15b522f593b7ca5fbc0cac6f7572d40859d2d8fe",
-      "head_date": "2026-07-11T20:42:55Z",
-      "head_message": "Lc/fix xtc special tokens server (#1176)",
+      "head_sha": "cf10f962b7a20e63a6df43dbf0faf06070153d40",
+      "head_date": "2026-07-21T15:58:37Z",
+      "head_message": "fix(sampler): change xtc_threshold default from 0.0 to 0.1 everywhere (#1372)",
       "url": "https://github.com/ml-explore/mlx-lm",
       "latest_release": {
         "tag": "v0.31.3",
@@ -73,14 +73,14 @@
         "speculative"
       ],
       "default_branch": "main",
-      "head_sha": "c9e27b08311f9c1f38690c46034b04c7598d73ee",
-      "head_date": "2026-07-20T14:02:10Z",
-      "head_message": "Merge pull request #1642 from Blaizzy/pc/qwen3-vl-pil-video-frames",
+      "head_sha": "4bf719d871e8d0b166dfbedd1b5aa44a438278e7",
+      "head_date": "2026-07-24T00:44:12Z",
+      "head_message": "Merge pull request #1667 from Blaizzy/pc/fix-laguna-nvfp4-sanitize",
       "url": "https://github.com/Blaizzy/mlx-vlm",
       "latest_release": {
-        "tag": "v0.6.6",
-        "published_at": "2026-07-20T16:41:21Z",
-        "url": "https://github.com/Blaizzy/mlx-vlm/releases/tag/v0.6.6"
+        "tag": "v0.6.7",
+        "published_at": "2026-07-23T15:10:48Z",
+        "url": "https://github.com/Blaizzy/mlx-vlm/releases/tag/v0.6.7"
       },
       "known_snapshot": false
     },
@@ -94,9 +94,9 @@
         "codec"
       ],
       "default_branch": "main",
-      "head_sha": "64e8416c303fb3b3463dab8eb4ebd78c55a87c1a",
-      "head_date": "2026-07-10T05:04:55Z",
-      "head_message": "Merge pull request #826 from lucasnewman/improve-transcribe-diarize-performance",
+      "head_sha": "835edf3716f5397bbb1c5413a28c8a447f2a21d0",
+      "head_date": "2026-07-24T00:04:56Z",
+      "head_message": "Merge pull request #855 from LauraGPT/codex/funasr-hotwords",
       "url": "https://github.com/Blaizzy/mlx-audio",
       "latest_release": {
         "tag": "v0.4.5",
@@ -132,9 +132,9 @@
         "agent-skills"
       ],
       "default_branch": "main",
-      "head_sha": "fa0fa64bdc967915dc8399e803be67759e1e62b8",
-      "head_date": "2026-07-17T02:47:37Z",
-      "head_message": "Update docx, pptx, and xlsx skills (#1447)",
+      "head_sha": "1f630fdf9259cec4a14913127dfd7c3b69ef72eb",
+      "head_date": "2026-07-22T18:20:09Z",
+      "head_message": "Update claude-api skill: Managed Agents July launch wave, partner pricing, tool-runner corrections (#1463)",
       "url": "https://github.com/anthropics/skills",
       "latest_release": null,
       "known_snapshot": false
@@ -147,14 +147,14 @@
         "codex"
       ],
       "default_branch": "main",
-      "head_sha": "cf821e8ec850c6d8380feea0e84859dd8ff54cd0",
-      "head_date": "2026-07-20T21:41:17Z",
-      "head_message": "Show completed hook warnings in TUI headers (#34416)",
+      "head_sha": "f61b51ddd924643514b33234816a8a2772b1aec7",
+      "head_date": "2026-07-24T04:37:01Z",
+      "head_message": "Support remote code-mode hosts in app-server (#35098)",
       "url": "https://github.com/openai/codex",
       "latest_release": {
-        "tag": "rust-v0.144.6",
-        "published_at": "2026-07-18T13:51:52Z",
-        "url": "https://github.com/openai/codex/releases/tag/rust-v0.144.6"
+        "tag": "rust-v0.145.0",
+        "published_at": "2026-07-21T18:21:04Z",
+        "url": "https://github.com/openai/codex/releases/tag/rust-v0.145.0"
       },
       "known_snapshot": false
     }
@@ -218,8 +218,8 @@
       "arxiv_id": "2607.12550",
       "revision": "v2",
       "immutable_url": "https://arxiv.org/abs/2607.12550v2",
-      "known_url": false,
-      "known_revision": null,
+      "known_url": true,
+      "known_revision": "v1",
       "candidate_id": "candidate-a-jolt-for-the-kv-cache-near-lossless-kv-cache-compression-via-joint-tucker-and-jl-residual-allocation-for-llms"
     },
     {
@@ -268,9 +268,33 @@
       "arxiv_id": "2505.18610",
       "revision": "v2",
       "immutable_url": "https://arxiv.org/abs/2505.18610v2",
+      "known_url": true,
+      "known_revision": "v2",
+      "candidate_id": "candidate-pm-kvq-progressive-mixed-precision-kv-cache-quantization-for-long-cot-llms"
+    },
+    {
+      "kind": "paper",
+      "query": "KV cache quantization long context",
+      "id": "http://arxiv.org/abs/2607.20538v1",
+      "title": "Codec-Gauge: Learning Compression-Friendly Gauges for Transformer KV Caches",
+      "updated": "2026-07-10T17:18:25Z",
+      "published": "2026-07-10T17:18:25Z",
+      "authors": [
+        "Yitao Jiang",
+        "Yaoqing Yang",
+        "Luyang Zhao",
+        "Muhao Chen",
+        "Devin Balkcom"
+      ],
+      "summary": "Long-context Transformer inference increasingly relies on KV-cache compression or quantization. Prior rotation and transform-coding results suggest that the channel basis of each key/value vector affects how faithfully a fixed backend preserves model behavior. We introduce Codec-Gauge, a post-training cache-coordinate layer that learns small orthogonal channel transforms around existing compression and quantization backends. Its frequency-distribution objective combines a token-channel DCT spectral-centroid loss with a smooth rate proxy to concentrate KV energy in low-frequency codec-facing layouts. We evaluate actual compression and decompression using measured bytes and rolling compressed-history scoring. Across six models at $3$, $4$, and $6$ bits/value, learned gauges reduce zfp KL div",
+      "review_status": "candidate-unreviewed",
+      "canonical_url": "https://arxiv.org/abs/2607.20538",
+      "arxiv_id": "2607.20538",
+      "revision": "v1",
+      "immutable_url": "https://arxiv.org/abs/2607.20538v1",
       "known_url": false,
       "known_revision": null,
-      "candidate_id": "candidate-pm-kvq-progressive-mixed-precision-kv-cache-quantization-for-long-cot-llms"
+      "candidate_id": "candidate-codec-gauge-learning-compression-friendly-gauges-for-transformer-kv-caches"
     },
     {
       "kind": "paper",
@@ -359,31 +383,6 @@
       "known_url": false,
       "known_revision": null,
       "candidate_id": "candidate-lynx-progressive-speculative-quantization-for-accelerating-kv-transfer-in-long-context-inference"
-    },
-    {
-      "kind": "paper",
-      "query": "KV cache quantization long context",
-      "id": "http://arxiv.org/abs/2606.31519v1",
-      "title": "RaBitQCache: Rotated Binary Quantization for KVCache in Long Context LLM Inference",
-      "updated": "2026-06-30T11:32:14Z",
-      "published": "2026-06-30T11:32:14Z",
-      "authors": [
-        "Wenhao Li",
-        "Jinhao Dong",
-        "Hailin Zhang",
-        "Wenhang Shi",
-        "Wei Lu",
-        "Xiaoyong Du"
-      ],
-      "summary": "Long-context Large Language Model inference is severely bottlenecked by the massive Key-Value (KV) cache, yet existing sparse attention methods often suffer from static fixed-budget (Top-k) retrieval or rely on proxy scores that are computationally expensive and biased. To address these limitations, we propose RaBitQCache, a novel sparse attention framework that utilizes randomized rotated binary quantization and high-throughput binary-INT4 arithmetic to efficiently estimate attention weights. Our proxy score serves as an unbiased estimator with a proven error bound, enabling adaptive Top-p retrieval that dynamically adjusts the token budget based on actual attention sparsity. We further implement a hardware-aware system with asynchronous pipelining and lazy updates to mask overhead. Evalu",
-      "review_status": "candidate-unreviewed",
-      "canonical_url": "https://arxiv.org/abs/2606.31519",
-      "arxiv_id": "2606.31519",
-      "revision": "v1",
-      "immutable_url": "https://arxiv.org/abs/2606.31519v1",
-      "known_url": false,
-      "known_revision": null,
-      "candidate_id": "candidate-rabitqcache-rotated-binary-quantization-for-kvcache-in-long-context-llm-inference"
     },
     {
       "kind": "paper",
