@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://auto-mlx.dev/schemas/evidence_graph.json",
   "title": "Auto MLX evidence graph",
-  "description": "Version 2 of the trait-indexed evidence hypergraph shared between the auto-mlx tool and the knowledge repository. Hyperedges are reified: an applied_result node binds one mechanism to one model, hardware, and workload through typed binary edges, and carries the structured measurement effect. The graph is a decision aid with receipt citations; it never substitutes for a fresh measurement and it never promotes.",
+  "description": "Version 2 of the trait-indexed evidence hypergraph shared between the auto-mlx tool and the knowledge repository. Hyperedges are reified: an applied_result node binds one mechanism to one model, hardware, and workload through typed binary edges, and carries the structured measurement effect. Structural rules the schema cannot express are enforced by the executable validators on both sides: globally unique node ids; no dangling edges; endpoint-kind constraints for typed relations; exactly one applied_on, measured_on, and under_workload edge plus at least one instantiates edge per applied_result; id prefix must match node kind (result: for applied_result, external: for external_reference, otherwise the kind name); delta_bp_ci must be ordered [lower, upper]. Documents must be parsed with a strict loader that rejects floats, duplicate keys, and non-finite numbers -- a plain json.load silently coerces and must not be used. The graph is a decision aid with receipt citations; it never substitutes for a fresh measurement and it never promotes.",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -126,7 +126,9 @@
             "type": "string",
             "minLength": 1,
             "maxLength": 1000
-          }
+          },
+          "minItems": 1,
+          "maxItems": 64
         },
         "tags": {
           "type": "array",
@@ -135,7 +137,8 @@
             "type": "string",
             "minLength": 1,
             "maxLength": 100
-          }
+          },
+          "maxItems": 64
         },
         "observed_at": {
           "type": "string",
@@ -169,7 +172,52 @@
       },
       "propertyNames": {
         "$ref": "#/$defs/no_surrogate_string"
-      }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "applied_result"
+              }
+            },
+            "required": [
+              "kind"
+            ]
+          },
+          "then": {
+            "required": [
+              "effect"
+            ]
+          },
+          "else": {
+            "not": {
+              "required": [
+                "effect"
+              ]
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "mechanism"
+              }
+            },
+            "required": [
+              "kind"
+            ]
+          },
+          "else": {
+            "not": {
+              "required": [
+                "exactness_class"
+              ]
+            }
+          }
+        }
+      ]
     },
     "effect": {
       "type": "object",
@@ -215,6 +263,12 @@
           "type": "string",
           "minLength": 1,
           "maxLength": 1000
+        },
+        "metric_direction": {
+          "enum": [
+            "higher_is_better",
+            "lower_is_better"
+          ]
         }
       },
       "propertyNames": {
