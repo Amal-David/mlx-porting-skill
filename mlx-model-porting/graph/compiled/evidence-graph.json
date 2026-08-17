@@ -4000,8 +4000,8 @@
     {
       "confidence": "medium",
       "from": "result:v1-qwen3-8b-continuous-batching-16",
-      "rationale": "Same mechanism, same workload, same source, 11 percentage points of throughput gain apart. Model size, not the mechanism, explains the difference.",
-      "relation": "contradicts",
+      "rationale": "Same mechanism, same workload, same source, 11 percentage points of throughput gain apart. The larger model's result bounds how far the smaller model's headline multiplier generalizes; batching gain shrinks as the model grows.",
+      "relation": "constrains",
       "to": "result:v1-qwen3-0.6b-continuous-batching-16"
     },
     {

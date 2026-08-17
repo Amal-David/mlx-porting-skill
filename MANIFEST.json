@@ -2,7 +2,7 @@
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
   "version": "0.7.0",
-  "generated_at": "2026-08-17T18:25:30.484406+00:00",
+  "generated_at": "2026-08-17T18:31:01.299662+00:00",
   "file_count": 625,
   "files": [
     {
@@ -1353,8 +1353,8 @@
     },
     {
       "path": "mlx-model-porting/graph/compiled/evidence-graph.json",
-      "size_bytes": 453005,
-      "sha256": "4093c0bdca0de0d9e9449384dc9a0ec21e69085a22c25a7d4d633189d116cd4e",
+      "size_bytes": 453084,
+      "sha256": "dce60741eda25eedfd6aa39e1db2f013e28f5ae7196331f9f069b985e84971f8",
       "executable": false
     },
     {
@@ -1425,8 +1425,8 @@
     },
     {
       "path": "mlx-model-porting/graph/shards/ecosystem/reported-results.json",
-      "size_bytes": 5145,
-      "sha256": "755d0f79de029afb77226070d50648b65f8f240df333139b2f807892d9e32ecd",
+      "size_bytes": 5224,
+      "sha256": "770a72c98414edbe26d0cdff114d8ccd1da9e329727e4f580c051351e643fab8",
       "executable": false
     },
     {
