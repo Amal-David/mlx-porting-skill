@@ -76,6 +76,7 @@
           27000
         ],
         "metric": "batch-throughput",
+        "metric_direction": "higher_is_better",
         "sample_note": "Third-party reported figure; host, prompt lengths, and output lengths are not disclosed and no receipt is available. The owning asset holds this claim and emits no effective range.",
         "verdict": "improved"
       },
@@ -105,6 +106,7 @@
           16000
         ],
         "metric": "batch-throughput",
+        "metric_direction": "higher_is_better",
         "sample_note": "Third-party reported figure; host, prompt lengths, and output lengths are not disclosed and no receipt is available. The owning asset holds this claim and emits no effective range.",
         "verdict": "improved"
       },

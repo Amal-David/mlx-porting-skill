@@ -455,6 +455,7 @@ MEASURED_OUTCOMES = {
         "hardware": "hardware:m4-pro",
         "workload": "workload:six-token-greedy-decode",
         "metric": "wall-time-speedup",
+        "metric_direction": "higher_is_better",
         "delta_bp_ci": [3037, 3037],
         "verdict": "improved",
         "baseline_id": "local F32 port, schema-2 receipt, 2026-07-10",
@@ -487,6 +488,7 @@ def _measured_result(name, record, observed):
         observed,
         effect={
             "metric": spec["metric"],
+            "metric_direction": spec["metric_direction"],
             "verdict": spec["verdict"],
             "delta_bp_ci": list(spec["delta_bp_ci"]),
             "baseline_id": spec["baseline_id"],

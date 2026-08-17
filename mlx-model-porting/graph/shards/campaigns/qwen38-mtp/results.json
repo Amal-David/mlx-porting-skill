@@ -1112,6 +1112,7 @@
           -130
         ],
         "metric": "ranked-decode-speedup",
+        "metric_direction": "higher_is_better",
         "sample_note": "Single official run scored by the challenge evaluator; the interval is a point, not a confidence interval. Observed same-content rerun spread is about +/-130bp (byte-identical candidates scored 2.9042110287045, 2.8930596055435216 and 2.86645713502766), so a verdict is only recorded as improved or regressed when the delta exceeds that spread.",
         "verdict": "inconclusive"
       },
@@ -1144,6 +1145,7 @@
           -257
         ],
         "metric": "ranked-decode-speedup",
+        "metric_direction": "higher_is_better",
         "sample_note": "Single official run scored by the challenge evaluator; the interval is a point, not a confidence interval. Observed same-content rerun spread is about +/-130bp (byte-identical candidates scored 2.9042110287045, 2.8930596055435216 and 2.86645713502766), so a verdict is only recorded as improved or regressed when the delta exceeds that spread.",
         "verdict": "regressed"
       },
@@ -1176,6 +1178,7 @@
           -22
         ],
         "metric": "ranked-decode-speedup",
+        "metric_direction": "higher_is_better",
         "sample_note": "Single official run scored by the challenge evaluator; the interval is a point, not a confidence interval. Observed same-content rerun spread is about +/-130bp (byte-identical candidates scored 2.9042110287045, 2.8930596055435216 and 2.86645713502766), so a verdict is only recorded as improved or regressed when the delta exceeds that spread.",
         "verdict": "inconclusive"
       },
@@ -1207,6 +1210,7 @@
           -92
         ],
         "metric": "ranked-decode-speedup",
+        "metric_direction": "higher_is_better",
         "sample_note": "Single official run scored by the challenge evaluator; the interval is a point, not a confidence interval. Observed same-content rerun spread is about +/-130bp (byte-identical candidates scored 2.9042110287045, 2.8930596055435216 and 2.86645713502766), so a verdict is only recorded as improved or regressed when the delta exceeds that spread.",
         "verdict": "inconclusive"
       },
@@ -1239,6 +1243,7 @@
           3
         ],
         "metric": "ranked-decode-speedup",
+        "metric_direction": "higher_is_better",
         "sample_note": "Single official run scored by the challenge evaluator; the interval is a point, not a confidence interval. Observed same-content rerun spread is about +/-130bp (byte-identical candidates scored 2.9042110287045, 2.8930596055435216 and 2.86645713502766), so a verdict is only recorded as improved or regressed when the delta exceeds that spread.",
         "verdict": "inconclusive"
       },
@@ -1270,6 +1275,7 @@
           -2
         ],
         "metric": "ranked-decode-speedup",
+        "metric_direction": "higher_is_better",
         "sample_note": "Single official run scored by the challenge evaluator; the interval is a point, not a confidence interval. Observed same-content rerun spread is about +/-130bp (byte-identical candidates scored 2.9042110287045, 2.8930596055435216 and 2.86645713502766), so a verdict is only recorded as improved or regressed when the delta exceeds that spread.",
         "verdict": "inconclusive"
       },
@@ -1302,6 +1308,7 @@
           172
         ],
         "metric": "ranked-decode-speedup",
+        "metric_direction": "higher_is_better",
         "sample_note": "Single official run scored by the challenge evaluator; the interval is a point, not a confidence interval. Observed same-content rerun spread is about +/-130bp (byte-identical candidates scored 2.9042110287045, 2.8930596055435216 and 2.86645713502766), so a verdict is only recorded as improved or regressed when the delta exceeds that spread.",
         "verdict": "improved"
       },
@@ -1333,6 +1340,7 @@
           -15
         ],
         "metric": "ranked-decode-speedup",
+        "metric_direction": "higher_is_better",
         "sample_note": "Single official run scored by the challenge evaluator; the interval is a point, not a confidence interval. Observed same-content rerun spread is about +/-130bp (byte-identical candidates scored 2.9042110287045, 2.8930596055435216 and 2.86645713502766), so a verdict is only recorded as improved or regressed when the delta exceeds that spread.",
         "verdict": "inconclusive"
       },
@@ -1365,6 +1373,7 @@
           -132
         ],
         "metric": "ranked-decode-speedup",
+        "metric_direction": "higher_is_better",
         "sample_note": "Single official run scored by the challenge evaluator; the interval is a point, not a confidence interval. Observed same-content rerun spread is about +/-130bp (byte-identical candidates scored 2.9042110287045, 2.8930596055435216 and 2.86645713502766), so a verdict is only recorded as improved or regressed when the delta exceeds that spread.",
         "verdict": "regressed"
       },
@@ -1396,6 +1405,7 @@
           -151
         ],
         "metric": "ranked-decode-speedup",
+        "metric_direction": "higher_is_better",
         "sample_note": "Single official run scored by the challenge evaluator; the interval is a point, not a confidence interval. Observed same-content rerun spread is about +/-130bp (byte-identical candidates scored 2.9042110287045, 2.8930596055435216 and 2.86645713502766), so a verdict is only recorded as improved or regressed when the delta exceeds that spread.",
         "verdict": "regressed"
       },
@@ -1428,6 +1438,7 @@
           9
         ],
         "metric": "ranked-decode-speedup",
+        "metric_direction": "higher_is_better",
         "sample_note": "Single official run scored by the challenge evaluator; the interval is a point, not a confidence interval. Observed same-content rerun spread is about +/-130bp (byte-identical candidates scored 2.9042110287045, 2.8930596055435216 and 2.86645713502766), so a verdict is only recorded as improved or regressed when the delta exceeds that spread.",
         "verdict": "inconclusive"
       },
@@ -1459,6 +1470,7 @@
           -408
         ],
         "metric": "ranked-decode-speedup",
+        "metric_direction": "higher_is_better",
         "sample_note": "Single official run scored by the challenge evaluator; the interval is a point, not a confidence interval. Observed same-content rerun spread is about +/-130bp (byte-identical candidates scored 2.9042110287045, 2.8930596055435216 and 2.86645713502766), so a verdict is only recorded as improved or regressed when the delta exceeds that spread.",
         "verdict": "regressed"
       },
@@ -1491,6 +1503,7 @@
           -5
         ],
         "metric": "ranked-decode-speedup",
+        "metric_direction": "higher_is_better",
         "sample_note": "Single official run scored by the challenge evaluator; the interval is a point, not a confidence interval. Observed same-content rerun spread is about +/-130bp (byte-identical candidates scored 2.9042110287045, 2.8930596055435216 and 2.86645713502766), so a verdict is only recorded as improved or regressed when the delta exceeds that spread.",
         "verdict": "inconclusive"
       },
@@ -1521,6 +1534,7 @@
           -136
         ],
         "metric": "ranked-decode-speedup",
+        "metric_direction": "higher_is_better",
         "sample_note": "Single official run scored by the challenge evaluator; the interval is a point, not a confidence interval. Observed same-content rerun spread is about +/-130bp (byte-identical candidates scored 2.9042110287045, 2.8930596055435216 and 2.86645713502766), so a verdict is only recorded as improved or regressed when the delta exceeds that spread.",
         "verdict": "regressed"
       },
@@ -1551,6 +1565,7 @@
           -37
         ],
         "metric": "ranked-decode-speedup",
+        "metric_direction": "higher_is_better",
         "sample_note": "Single official run scored by the challenge evaluator; the interval is a point, not a confidence interval. Observed same-content rerun spread is about +/-130bp (byte-identical candidates scored 2.9042110287045, 2.8930596055435216 and 2.86645713502766), so a verdict is only recorded as improved or regressed when the delta exceeds that spread.",
         "verdict": "inconclusive"
       },
@@ -1581,6 +1596,7 @@
           -153
         ],
         "metric": "ranked-decode-speedup",
+        "metric_direction": "higher_is_better",
         "sample_note": "Single official run scored by the challenge evaluator; the interval is a point, not a confidence interval. Observed same-content rerun spread is about +/-130bp (byte-identical candidates scored 2.9042110287045, 2.8930596055435216 and 2.86645713502766), so a verdict is only recorded as improved or regressed when the delta exceeds that spread.",
         "verdict": "regressed"
       },
@@ -1612,6 +1628,7 @@
           27
         ],
         "metric": "ranked-decode-speedup",
+        "metric_direction": "higher_is_better",
         "sample_note": "Single official run scored by the challenge evaluator; the interval is a point, not a confidence interval. Observed same-content rerun spread is about +/-130bp (byte-identical candidates scored 2.9042110287045, 2.8930596055435216 and 2.86645713502766), so a verdict is only recorded as improved or regressed when the delta exceeds that spread.",
         "verdict": "inconclusive"
       },
@@ -1643,6 +1660,7 @@
           -128
         ],
         "metric": "ranked-decode-speedup",
+        "metric_direction": "higher_is_better",
         "sample_note": "Single official run scored by the challenge evaluator; the interval is a point, not a confidence interval. Observed same-content rerun spread is about +/-130bp (byte-identical candidates scored 2.9042110287045, 2.8930596055435216 and 2.86645713502766), so a verdict is only recorded as improved or regressed when the delta exceeds that spread.",
         "verdict": "inconclusive"
       },
@@ -1674,6 +1692,7 @@
           -23
         ],
         "metric": "ranked-decode-speedup",
+        "metric_direction": "higher_is_better",
         "sample_note": "Single official run scored by the challenge evaluator; the interval is a point, not a confidence interval. Observed same-content rerun spread is about +/-130bp (byte-identical candidates scored 2.9042110287045, 2.8930596055435216 and 2.86645713502766), so a verdict is only recorded as improved or regressed when the delta exceeds that spread.",
         "verdict": "inconclusive"
       },
@@ -1705,6 +1724,7 @@
           -385
         ],
         "metric": "ranked-decode-speedup",
+        "metric_direction": "higher_is_better",
         "sample_note": "Single official run scored by the challenge evaluator; the interval is a point, not a confidence interval. Observed same-content rerun spread is about +/-130bp (byte-identical candidates scored 2.9042110287045, 2.8930596055435216 and 2.86645713502766), so a verdict is only recorded as improved or regressed when the delta exceeds that spread.",
         "verdict": "regressed"
       },
@@ -1736,6 +1756,7 @@
           -38
         ],
         "metric": "ranked-decode-speedup",
+        "metric_direction": "higher_is_better",
         "sample_note": "Single official run scored by the challenge evaluator; the interval is a point, not a confidence interval. Observed same-content rerun spread is about +/-130bp (byte-identical candidates scored 2.9042110287045, 2.8930596055435216 and 2.86645713502766), so a verdict is only recorded as improved or regressed when the delta exceeds that spread.",
         "verdict": "inconclusive"
       },
@@ -1767,6 +1788,7 @@
           -154
         ],
         "metric": "ranked-decode-speedup",
+        "metric_direction": "higher_is_better",
         "sample_note": "Single official run scored by the challenge evaluator; the interval is a point, not a confidence interval. Observed same-content rerun spread is about +/-130bp (byte-identical candidates scored 2.9042110287045, 2.8930596055435216 and 2.86645713502766), so a verdict is only recorded as improved or regressed when the delta exceeds that spread.",
         "verdict": "regressed"
       },
@@ -1798,6 +1820,7 @@
           25
         ],
         "metric": "ranked-decode-speedup",
+        "metric_direction": "higher_is_better",
         "sample_note": "Single official run scored by the challenge evaluator; the interval is a point, not a confidence interval. Observed same-content rerun spread is about +/-130bp (byte-identical candidates scored 2.9042110287045, 2.8930596055435216 and 2.86645713502766), so a verdict is only recorded as improved or regressed when the delta exceeds that spread.",
         "verdict": "inconclusive"
       },
@@ -1829,6 +1852,7 @@
           -46
         ],
         "metric": "ranked-decode-speedup",
+        "metric_direction": "higher_is_better",
         "sample_note": "Single official run scored by the challenge evaluator; the interval is a point, not a confidence interval. Observed same-content rerun spread is about +/-130bp (byte-identical candidates scored 2.9042110287045, 2.8930596055435216 and 2.86645713502766), so a verdict is only recorded as improved or regressed when the delta exceeds that spread.",
         "verdict": "inconclusive"
       },
@@ -1859,6 +1883,7 @@
           -1328
         ],
         "metric": "ranked-decode-speedup",
+        "metric_direction": "higher_is_better",
         "sample_note": "Single official run scored by the challenge evaluator; the interval is a point, not a confidence interval. Observed same-content rerun spread is about +/-130bp (byte-identical candidates scored 2.9042110287045, 2.8930596055435216 and 2.86645713502766), so a verdict is only recorded as improved or regressed when the delta exceeds that spread.",
         "verdict": "regressed"
       },
@@ -1891,6 +1916,7 @@
           -177
         ],
         "metric": "ranked-decode-speedup",
+        "metric_direction": "higher_is_better",
         "sample_note": "Single official run scored by the challenge evaluator; the interval is a point, not a confidence interval. Observed same-content rerun spread is about +/-130bp (byte-identical candidates scored 2.9042110287045, 2.8930596055435216 and 2.86645713502766), so a verdict is only recorded as improved or regressed when the delta exceeds that spread.",
         "verdict": "regressed"
       },
@@ -1922,6 +1948,7 @@
           -9
         ],
         "metric": "ranked-decode-speedup",
+        "metric_direction": "higher_is_better",
         "sample_note": "Single official run scored by the challenge evaluator; the interval is a point, not a confidence interval. Observed same-content rerun spread is about +/-130bp (byte-identical candidates scored 2.9042110287045, 2.8930596055435216 and 2.86645713502766), so a verdict is only recorded as improved or regressed when the delta exceeds that spread.",
         "verdict": "inconclusive"
       },
@@ -1952,6 +1979,7 @@
           -142
         ],
         "metric": "ranked-decode-speedup",
+        "metric_direction": "higher_is_better",
         "sample_note": "Single official run scored by the challenge evaluator; the interval is a point, not a confidence interval. Observed same-content rerun spread is about +/-130bp (byte-identical candidates scored 2.9042110287045, 2.8930596055435216 and 2.86645713502766), so a verdict is only recorded as improved or regressed when the delta exceeds that spread.",
         "verdict": "regressed"
       },
@@ -1984,6 +2012,7 @@
           -340
         ],
         "metric": "ranked-decode-speedup",
+        "metric_direction": "higher_is_better",
         "sample_note": "Single official run scored by the challenge evaluator; the interval is a point, not a confidence interval. Observed same-content rerun spread is about +/-130bp (byte-identical candidates scored 2.9042110287045, 2.8930596055435216 and 2.86645713502766), so a verdict is only recorded as improved or regressed when the delta exceeds that spread.",
         "verdict": "regressed"
       },
@@ -2015,6 +2044,7 @@
           -170
         ],
         "metric": "ranked-decode-speedup",
+        "metric_direction": "higher_is_better",
         "sample_note": "Single official run scored by the challenge evaluator; the interval is a point, not a confidence interval. Observed same-content rerun spread is about +/-130bp (byte-identical candidates scored 2.9042110287045, 2.8930596055435216 and 2.86645713502766), so a verdict is only recorded as improved or regressed when the delta exceeds that spread.",
         "verdict": "regressed"
       },
@@ -2045,6 +2075,7 @@
           -172
         ],
         "metric": "ranked-decode-speedup",
+        "metric_direction": "higher_is_better",
         "sample_note": "Single official run scored by the challenge evaluator; the interval is a point, not a confidence interval. Observed same-content rerun spread is about +/-130bp (byte-identical candidates scored 2.9042110287045, 2.8930596055435216 and 2.86645713502766), so a verdict is only recorded as improved or regressed when the delta exceeds that spread.",
         "verdict": "regressed"
       },
@@ -2077,6 +2108,7 @@
           -175
         ],
         "metric": "ranked-decode-speedup",
+        "metric_direction": "higher_is_better",
         "sample_note": "Single official run scored by the challenge evaluator; the interval is a point, not a confidence interval. Observed same-content rerun spread is about +/-130bp (byte-identical candidates scored 2.9042110287045, 2.8930596055435216 and 2.86645713502766), so a verdict is only recorded as improved or regressed when the delta exceeds that spread.",
         "verdict": "regressed"
       },
@@ -2107,6 +2139,7 @@
           -55
         ],
         "metric": "ranked-decode-speedup",
+        "metric_direction": "higher_is_better",
         "sample_note": "Single official run scored by the challenge evaluator; the interval is a point, not a confidence interval. Observed same-content rerun spread is about +/-130bp (byte-identical candidates scored 2.9042110287045, 2.8930596055435216 and 2.86645713502766), so a verdict is only recorded as improved or regressed when the delta exceeds that spread.",
         "verdict": "inconclusive"
       },
@@ -2137,6 +2170,7 @@
           -40
         ],
         "metric": "ranked-decode-speedup",
+        "metric_direction": "higher_is_better",
         "sample_note": "Single official run scored by the challenge evaluator; the interval is a point, not a confidence interval. Observed same-content rerun spread is about +/-130bp (byte-identical candidates scored 2.9042110287045, 2.8930596055435216 and 2.86645713502766), so a verdict is only recorded as improved or regressed when the delta exceeds that spread.",
         "verdict": "inconclusive"
       },
@@ -2168,6 +2202,7 @@
           241
         ],
         "metric": "ranked-decode-speedup",
+        "metric_direction": "higher_is_better",
         "sample_note": "Single official run scored by the challenge evaluator; the interval is a point, not a confidence interval. Observed same-content rerun spread is about +/-130bp (byte-identical candidates scored 2.9042110287045, 2.8930596055435216 and 2.86645713502766), so a verdict is only recorded as improved or regressed when the delta exceeds that spread.",
         "verdict": "improved"
       },

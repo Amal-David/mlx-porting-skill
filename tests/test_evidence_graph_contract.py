@@ -131,6 +131,35 @@ class GraphValidityTests(unittest.TestCase):
                 )
                 self.assertTrue(gl.ID_MIN_LENGTH <= len(node["id"]) <= gl.ID_MAX_LENGTH)
 
+    def test_every_effect_declares_its_metric_direction(self):
+        """Declaring the direction makes each verdict mechanically checkable.
+
+        Every metric in this corpus is higher-is-better, so a sign error in a
+        verdict cannot hide behind an ambiguous metric name.
+        """
+        for node in self.compiled["nodes"]:
+            if node["kind"] != "applied_result":
+                continue
+            with self.subTest(result=node["id"]):
+                self.assertIn("metric_direction", node["effect"])
+
+    def test_a_claimed_sign_never_touches_or_straddles_zero(self):
+        """`improved` and `regressed` require a strictly one-sided interval.
+
+        An interval containing zero does not support a sign; that is what
+        `inconclusive` is for. Mirrors the auto-mlx validator exactly.
+        """
+        for node in self.compiled["nodes"]:
+            if node["kind"] != "applied_result":
+                continue
+            effect = node["effect"]
+            low, high = effect["delta_bp_ci"]
+            with self.subTest(result=node["id"]):
+                if effect["verdict"] == "improved":
+                    self.assertGreater(low, 0)
+                elif effect["verdict"] == "regressed":
+                    self.assertLess(high, 0)
+
     def test_no_absolute_private_paths_or_secrets(self):
         self.assertEqual([], gl.scan_private_paths(self.compiled))
         self.assertEqual([], gl.scan_secrets(self.compiled))
@@ -343,6 +372,43 @@ class StrictLoaderTests(unittest.TestCase):
             path = Path(tmp) / "doc.json"
             path.write_text(text, encoding="utf-8")
             return gl.load_strict(path)
+
+    def test_verdict_must_agree_with_metric_direction(self):
+        cases = (
+            ("higher_is_better", "improved", [100, 200], True),
+            ("higher_is_better", "improved", [0, 100], False),
+            ("higher_is_better", "improved", [-50, 50], False),
+            ("higher_is_better", "regressed", [-200, -100], True),
+            ("higher_is_better", "regressed", [-100, 0], False),
+            ("lower_is_better", "improved", [-200, -100], True),
+            ("lower_is_better", "improved", [100, 200], False),
+            ("lower_is_better", "regressed", [100, 200], True),
+            # inconclusive is never constrained by the direction
+            ("higher_is_better", "inconclusive", [-50, 50], True),
+            ("lower_is_better", "inconclusive", [100, 200], True),
+        )
+        for direction, verdict, interval, expected_ok in cases:
+            effect = {
+                "metric": "m",
+                "metric_direction": direction,
+                "verdict": verdict,
+                "delta_bp_ci": list(interval),
+            }
+            with self.subTest(direction=direction, verdict=verdict, interval=interval):
+                problems = gl.validate_effect(effect, "probe")
+                self.assertEqual(expected_ok, not problems, problems)
+
+    def test_unknown_metric_direction_is_rejected(self):
+        problems = gl.validate_effect(
+            {
+                "metric": "m",
+                "metric_direction": "bigger_number_good",
+                "verdict": "improved",
+                "delta_bp_ci": [1, 1],
+            },
+            "probe",
+        )
+        self.assertTrue(any("metric_direction" in item for item in problems), problems)
 
     def test_float_is_rejected(self):
         with self.assertRaises(gl.GraphError):

@@ -76,6 +76,11 @@ conditions, and what you did not check.
 - **Use the interval.** If you ran five A/B pairs, `delta_bp_ci` should span
   the observed pairs and `sample_note` should say how they were collected. A
   point interval `[x, x]` is for a single run and should say that too.
+- **Declare `metric_direction`.** `higher_is_better` or `lower_is_better` on the
+  effect. It makes your verdict machine-checkable: with it declared, `improved`
+  or `regressed` requires the whole interval to sit strictly on the claimed side
+  of zero. If your interval crosses zero, the honest verdict is `inconclusive`,
+  and that is a perfectly good result to contribute.
 - **Say what you did not gate.** The example pack states plainly that no
   output-quality gate was run for a quantized KV cache. That sentence is worth
   more to the next reader than the throughput number.

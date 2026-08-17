@@ -41,6 +41,7 @@
           3037
         ],
         "metric": "wall-time-speedup",
+        "metric_direction": "higher_is_better",
         "sample_note": "Single local wall-time observation recomputed as a 1.3037288406x inverse ratio from schema-2 receipts; the owning asset holds the claim. The runner records execution_attested=false because no external signature or out-of-repository trust anchor exists, even though the internal model, workload, interpreter, quality, and raw-output gates pass. The workload is separate-process load plus six greedy tokens on one Apple M4 Pro, not steady-state decode or a portable product workload. No checked-in BF16 quality artifact covers output beyond the exact six-token window.",
         "verdict": "improved"
       },

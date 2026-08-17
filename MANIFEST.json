@@ -2,7 +2,7 @@
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
   "version": "0.7.0",
-  "generated_at": "2026-08-17T18:35:56.943127+00:00",
+  "generated_at": "2026-08-17T18:49:20.573658+00:00",
   "file_count": 625,
   "files": [
     {
@@ -118,7 +118,7 @@
     {
       "path": "README.md",
       "size_bytes": 11303,
-      "sha256": "77cdc6d091341abef6eeb48fc7d7aab9a3a228beba4ca6e8831ab8edafced917",
+      "sha256": "9855ab81376ce58fc252ae9041671662fa4a7982c1ede36d20c71e9d5a95ed98",
       "executable": false
     },
     {
@@ -130,7 +130,7 @@
     {
       "path": "VALIDATION.md",
       "size_bytes": 21550,
-      "sha256": "3fc8f72eaa37cd70e17195dbb4e2666b3a279db72ef8ac7c390cf8015c1ae59d",
+      "sha256": "62c6c558bbe6c6f11ecd7948bc6e24e4933548833639053e5825f5bc2f18bdf9",
       "executable": false
     },
     {
@@ -1347,26 +1347,26 @@
     },
     {
       "path": "mlx-model-porting/graph/README.md",
-      "size_bytes": 6614,
-      "sha256": "f7c4f50e9db4fe0944f440cb058fd622de54d293129a2c3d26ed77d56ed30996",
+      "size_bytes": 7107,
+      "sha256": "dfcc0ffdfc6d19abbdb713c9b32de77939c55d55a10b58873ff2bf31af40f2ad",
       "executable": false
     },
     {
       "path": "mlx-model-porting/graph/compiled/evidence-graph.json",
-      "size_bytes": 453084,
-      "sha256": "dce60741eda25eedfd6aa39e1db2f013e28f5ae7196331f9f069b985e84971f8",
+      "size_bytes": 454908,
+      "sha256": "94942895d3d5fdb4634dd5600b30161b7c493d903bd18f4e6159af337e6c33d5",
       "executable": false
     },
     {
       "path": "mlx-model-porting/graph/docs/evidence-packs.md",
-      "size_bytes": 4979,
-      "sha256": "a27de8591bff536e4ee4c293af138d4bb6314a35c4aee9f3026eacf99a074a16",
+      "size_bytes": 5354,
+      "sha256": "1614b86e17a032491aafe3f0d42dbd422dd79d16de9903fc959e94df8d66944e",
       "executable": false
     },
     {
       "path": "mlx-model-porting/graph/packs/example-kvq8-m3max/graph-delta.json",
-      "size_bytes": 4756,
-      "sha256": "e3445aec704a25d0a1c46ce19b07fe0cc58f2c55ca10234ec83268017d6bb3ef",
+      "size_bytes": 4804,
+      "sha256": "12a570d4a9f520469ae864d27228e17f5f503cae74175c812fb7264c302327d6",
       "executable": false
     },
     {
@@ -1383,8 +1383,8 @@
     },
     {
       "path": "mlx-model-porting/graph/schema/evidence-graph.schema.json",
-      "size_bytes": 6880,
-      "sha256": "2723c37e166981af67222b2c54ca67f320ed60d9210380cd9f98478d42a1f1e2",
+      "size_bytes": 8604,
+      "sha256": "2adeec82028e405f0bf05b5acb7ee66828f27693233a3ad5179983fe4cd8c81f",
       "executable": false
     },
     {
@@ -1401,8 +1401,8 @@
     },
     {
       "path": "mlx-model-porting/graph/shards/campaigns/qwen38-mtp/results.json",
-      "size_bytes": 92745,
-      "sha256": "217e25eb726509f4c789446d992f191eca22b88d739073231b42ae0043b4d44a",
+      "size_bytes": 94425,
+      "sha256": "6ef4c2baacf369640781f45fcb6b600f6051c6c1566c163ef1ccf53ff8f0375b",
       "executable": false
     },
     {
@@ -1425,8 +1425,8 @@
     },
     {
       "path": "mlx-model-porting/graph/shards/ecosystem/reported-results.json",
-      "size_bytes": 5224,
-      "sha256": "770a72c98414edbe26d0cdff114d8ccd1da9e329727e4f580c051351e643fab8",
+      "size_bytes": 5320,
+      "sha256": "b1b64b73a6b3cac0a85f649b0003e5b6c0b39affeccc19fd53c8067d943dc5ba",
       "executable": false
     },
     {
@@ -1461,8 +1461,8 @@
     },
     {
       "path": "mlx-model-porting/graph/shards/migrated/results.json",
-      "size_bytes": 3096,
-      "sha256": "bc767034653390422fb51059bbf76f140a08bd764b5acbe8313f8b87da711d9c",
+      "size_bytes": 3144,
+      "sha256": "b1c3d649d9369a6ed482e130060bcf95b2111e33bb10b2728427263cfc584b13",
       "executable": false
     },
     {
@@ -1485,8 +1485,8 @@
     },
     {
       "path": "mlx-model-porting/graph/tools/_graphlib.py",
-      "size_bytes": 27181,
-      "sha256": "fa2330d147b980e5215938470d90dcd9f6283955162b40f67a9efc8ac20df339",
+      "size_bytes": 29981,
+      "sha256": "ee11841c894aa47d956883b0ca0bd530ff39b4afcce4ba02de5792a3d8386764",
       "executable": false
     },
     {
@@ -1497,8 +1497,8 @@
     },
     {
       "path": "mlx-model-porting/graph/tools/migrate_v1.py",
-      "size_bytes": 24089,
-      "sha256": "342d83ae131ca5d2c8ce309f1221ae5a9e2b9b42d099c8b8c7f280cfac2c10aa",
+      "size_bytes": 24195,
+      "sha256": "1a034be377cce92270a0c9183e04bd23953b1d821f9dafd3cf1bfc67931134a2",
       "executable": false
     },
     {
@@ -1557,8 +1557,8 @@
     },
     {
       "path": "mlx-model-porting/references/evidence-graph.md",
-      "size_bytes": 6102,
-      "sha256": "b5cbd90477e8169ad3289bf3314a2e697d3a6fddbbaf14933479b475d7323174",
+      "size_bytes": 6261,
+      "sha256": "9ed0b1dcfb5e7c2107d1205147ae8d3e00f61caef05ef6aa027ca61cc447ec1f",
       "executable": false
     },
     {
@@ -3537,8 +3537,8 @@
     },
     {
       "path": "tests/test_evidence_graph_contract.py",
-      "size_bytes": 15391,
-      "sha256": "0c63e5a3835751f61206b49e1e6194cb22b3c0223c58dfd1eec55b5291dd7f25",
+      "size_bytes": 18371,
+      "sha256": "73f17644c7bc5f08c54bb1885dd8898e4b1c58506f8f0058fca50af2c32d8980",
       "executable": false
     },
     {

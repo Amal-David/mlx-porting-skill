@@ -85,6 +85,7 @@ EXACTNESS_CLASSES = (
 )
 
 VERDICTS = ("improved", "regressed", "inconclusive")
+METRIC_DIRECTIONS = ("higher_is_better", "lower_is_better")
 
 NODE_REQUIRED = (
     "id",
@@ -104,7 +105,7 @@ EDGE_REQUIRED = ("from", "to", "relation", "confidence", "rationale")
 EDGE_OPTIONAL = ("observed_at",)
 
 EFFECT_REQUIRED = ("metric", "verdict", "delta_bp_ci")
-EFFECT_OPTIONAL = ("receipt_id", "baseline_id", "sample_note")
+EFFECT_OPTIONAL = ("receipt_id", "baseline_id", "sample_note", "metric_direction")
 
 DOC_REQUIRED = ("schema_version", "graph_id", "generated_at", "nodes", "edges")
 
@@ -115,12 +116,11 @@ ISO_DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}(T[0-9:.+Z-]+)?$")
 ID_MIN_LENGTH = 3
 ID_MAX_LENGTH = 300
 
-# These caps are enforced by the auto-mlx executable validator but are NOT
-# expressed in the copied JSON Schema, so `check_schema_agreement` cannot see
-# drift in them. Mirror them here so a document that passes locally also passes
-# the tool.
+# Mirrored from the copied JSON Schema; `check_schema_agreement` compares these
+# against the schema file so drift cannot pass silently.
 MAX_TAGS = 64
 MAX_EVIDENCE = 64
+MIN_EVIDENCE = 1
 MAX_IDENTITY_PROPERTIES = 32
 
 # Node id prefix must name the node kind. `applied_result` uses the shorter
@@ -324,6 +324,29 @@ def check_schema_agreement():
             problems.append(
                 "schema drift in %s: upstream %r != validator %r" % (label, upstream, local)
             )
+    numeric = (
+        ("evidence minItems", defs["node"]["properties"]["evidence"].get("minItems"), MIN_EVIDENCE),
+        ("evidence maxItems", defs["node"]["properties"]["evidence"].get("maxItems"), MAX_EVIDENCE),
+        ("tags maxItems", defs["node"]["properties"]["tags"].get("maxItems"), MAX_TAGS),
+        (
+            "identity maxProperties",
+            defs["node"]["properties"]["identity"].get("maxProperties"),
+            MAX_IDENTITY_PROPERTIES,
+        ),
+        ("identifier minLength", defs["identifier"].get("minLength"), ID_MIN_LENGTH),
+        ("identifier maxLength", defs["identifier"].get("maxLength"), ID_MAX_LENGTH),
+    )
+    for label, upstream, local in numeric:
+        if upstream != local:
+            problems.append(
+                "schema drift in %s: upstream %r != validator %r" % (label, upstream, local)
+            )
+    upstream_direction = defs["effect"]["properties"].get("metric_direction", {}).get("enum")
+    if tuple(upstream_direction or ()) != METRIC_DIRECTIONS:
+        problems.append(
+            "schema drift in metric_direction: upstream %r != validator %r"
+            % (upstream_direction, list(METRIC_DIRECTIONS))
+        )
     if defs["identifier"]["pattern"] != IDENTIFIER_RE.pattern:
         problems.append(
             "schema drift in identifier pattern: upstream %r != validator %r"
@@ -365,6 +388,36 @@ def validate_effect(effect, where):
             for value in interval:
                 if not -1000000 <= value <= 1000000:
                     problems.append("%s: effect.delta_bp_ci value %d is out of range" % (where, value))
+    direction = effect.get("metric_direction")
+    if direction is not None and direction not in METRIC_DIRECTIONS:
+        problems.append(
+            "%s: effect.metric_direction %r is not one of %s"
+            % (where, direction, list(METRIC_DIRECTIONS))
+        )
+    elif direction is not None and isinstance(interval, list) and len(interval) == 2 \
+            and all(_is_int(value) for value in interval):
+        # When the direction is declared, a claimed sign must be unambiguous: the
+        # whole interval has to sit strictly on the claimed side of zero. An
+        # interval touching or straddling zero does not support a sign, which is
+        # what `inconclusive` is for. `inconclusive` is never constrained.
+        low, high = interval
+        verdict = effect.get("verdict")
+        claims_positive = (direction == "higher_is_better" and verdict == "improved") or (
+            direction == "lower_is_better" and verdict == "regressed"
+        )
+        claims_negative = (direction == "higher_is_better" and verdict == "regressed") or (
+            direction == "lower_is_better" and verdict == "improved"
+        )
+        if claims_positive and low <= 0:
+            problems.append(
+                "%s: effect.verdict %r under %r needs a strictly positive interval, got [%d, %d]"
+                % (where, verdict, direction, low, high)
+            )
+        if claims_negative and high >= 0:
+            problems.append(
+                "%s: effect.verdict %r under %r needs a strictly negative interval, got [%d, %d]"
+                % (where, verdict, direction, low, high)
+            )
     if "receipt_id" in effect and not (
         isinstance(effect["receipt_id"], str) and RECEIPT_RE.match(effect["receipt_id"])
     ):

@@ -100,7 +100,9 @@ measurements. It is never upgraded by assertion:
 
 Effects are integer basis points against a named baseline: `100 bp = 1%`,
 `-257` is `-2.57%`. `delta_bp_ci` is a point `[x, x]` for a single run and a
-span for repeated runs; `sample_note` always says which.
+span for repeated runs; `sample_note` always says which. `metric_direction`
+says which way is better, and when it is declared an `improved` or `regressed`
+verdict must have an interval strictly on that side of zero.
 
 `verdict` is conservative on purpose. In the Qwen 3.8 campaign, three official
 runs of *byte-identical* candidate content scored 130 basis points apart

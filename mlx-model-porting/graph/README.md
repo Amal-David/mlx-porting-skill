@@ -13,10 +13,10 @@ it**. When it changes upstream, re-copy it and run the validator:
 against the copied file and fails loudly on drift rather than silently
 accepting a stale contract.
 
-Three caps are enforced by the tool's executable validator but are *not*
-expressed in the JSON Schema, so drift detection cannot see them: at most 64
-`evidence` entries, at most 64 `tags`, and at most 32 `identity` properties per
-node. They are mirrored as constants in `tools/_graphlib.py`.
+The array caps (at most 64 `evidence` entries, at least 1; at most 64 `tags`;
+at most 32 `identity` properties) are expressed in the JSON Schema and compared
+against `tools/_graphlib.py` by the drift check, so neither side can move them
+alone.
 
 To cross-check a document against the tool itself:
 
@@ -94,6 +94,14 @@ and has exactly one `applied_on`, one `measured_on`, and one `under_workload`
 edge, plus at least one `instantiates`. A measurement with no hardware or no
 workload is not a measurement anybody can reuse, so the graph will not store
 one. Conversely, `effect` may appear *only* on an `applied_result`.
+
+**A claimed sign must be unambiguous.** `effect.metric_direction`
+(`higher_is_better` / `lower_is_better`) is optional in the schema, but every
+`applied_result` in this repository declares it. When it is present, an
+`improved` or `regressed` verdict requires the whole interval to sit strictly on
+the claimed side of zero. An interval that touches or straddles zero does not
+support a sign — that is what `inconclusive` is for. Every metric in this corpus
+is higher-is-better, so a sign error cannot hide behind an ambiguous metric name.
 
 **Evidence is mandatory and public.** Every node needs at least one locator,
 and no locator, summary, or identity value may contain an absolute local path
