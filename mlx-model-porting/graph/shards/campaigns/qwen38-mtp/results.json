@@ -1,0 +1,2195 @@
+{
+  "edges": [
+    {
+      "confidence": "high",
+      "from": "result:qwen38-e014-byte-identical-rerun",
+      "rationale": "The challenge target model.",
+      "relation": "applied_on",
+      "to": "model:qwen3.8-27b-mtp"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-e014-byte-identical-rerun",
+      "rationale": "The submitted candidate's only intended change was this mechanism.",
+      "relation": "instantiates",
+      "to": "mechanism:unchanged-rerun-control"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-e014-byte-identical-rerun",
+      "rationale": "Scored by the official ranked evaluator, not on a contributor host.",
+      "relation": "measured_on",
+      "to": "hardware:yukon-mlxfast-runner"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-e014-byte-identical-rerun",
+      "rationale": "The official eight-pair ranked decode workload.",
+      "relation": "under_workload",
+      "to": "workload:qwen-mtp-ranked-decode"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-e016-gh2-grouped-sdpa",
+      "rationale": "The challenge target model.",
+      "relation": "applied_on",
+      "to": "model:qwen3.8-27b-mtp"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-e016-gh2-grouped-sdpa",
+      "rationale": "The submitted candidate's only intended change was this mechanism.",
+      "relation": "instantiates",
+      "to": "mechanism:grouped-sdpa-kv-reuse"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-e016-gh2-grouped-sdpa",
+      "rationale": "Scored by the official ranked evaluator, not on a contributor host.",
+      "relation": "measured_on",
+      "to": "hardware:yukon-mlxfast-runner"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-e016-gh2-grouped-sdpa",
+      "rationale": "Official ranked delta -257 bp against promoted main 7351e626, official score 2.9042110287045; outside the observed +/-130 bp same-content rerun spread.",
+      "relation": "refutes",
+      "to": "mechanism:grouped-sdpa-kv-reuse"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-e016-gh2-grouped-sdpa",
+      "rationale": "The official eight-pair ranked decode workload.",
+      "relation": "under_workload",
+      "to": "workload:qwen-mtp-ranked-decode"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-e018-grouped-hv-wide-gdn",
+      "rationale": "The challenge target model.",
+      "relation": "applied_on",
+      "to": "model:qwen3.8-27b-mtp"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-e018-grouped-hv-wide-gdn",
+      "rationale": "The submitted candidate's only intended change was this mechanism.",
+      "relation": "instantiates",
+      "to": "mechanism:grouped-hv-wide-gdn-recurrence"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-e018-grouped-hv-wide-gdn",
+      "rationale": "Scored by the official ranked evaluator, not on a contributor host.",
+      "relation": "measured_on",
+      "to": "hardware:yukon-mlxfast-runner"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-e018-grouped-hv-wide-gdn",
+      "rationale": "The official eight-pair ranked decode workload.",
+      "relation": "under_workload",
+      "to": "workload:qwen-mtp-ranked-decode"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-e019-m8-qmv-repair",
+      "rationale": "The challenge target model.",
+      "relation": "applied_on",
+      "to": "model:qwen3.8-27b-mtp"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-e019-m8-qmv-repair",
+      "rationale": "The submitted candidate's only intended change was this mechanism.",
+      "relation": "instantiates",
+      "to": "mechanism:qmv-row-regrouping"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-e019-m8-qmv-repair",
+      "rationale": "Scored by the official ranked evaluator, not on a contributor host.",
+      "relation": "measured_on",
+      "to": "hardware:yukon-mlxfast-runner"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-e019-m8-qmv-repair",
+      "rationale": "The official eight-pair ranked decode workload.",
+      "relation": "under_workload",
+      "to": "workload:qwen-mtp-ranked-decode"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-e020-recurrent-replay-prefetch",
+      "rationale": "The challenge target model.",
+      "relation": "applied_on",
+      "to": "model:qwen3.8-27b-mtp"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-e020-recurrent-replay-prefetch",
+      "rationale": "The submitted candidate's only intended change was this mechanism.",
+      "relation": "instantiates",
+      "to": "mechanism:recurrent-replay-prefetch"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-e020-recurrent-replay-prefetch",
+      "rationale": "Scored by the official ranked evaluator, not on a contributor host.",
+      "relation": "measured_on",
+      "to": "hardware:yukon-mlxfast-runner"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-e020-recurrent-replay-prefetch",
+      "rationale": "The official eight-pair ranked decode workload.",
+      "relation": "under_workload",
+      "to": "workload:qwen-mtp-ranked-decode"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-e024-t8t9-dv64-gdn",
+      "rationale": "The challenge target model.",
+      "relation": "applied_on",
+      "to": "model:qwen3.8-27b-mtp"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-e024-t8t9-dv64-gdn",
+      "rationale": "The submitted candidate's only intended change was this mechanism.",
+      "relation": "instantiates",
+      "to": "mechanism:dv64-gdn-recurrence"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-e024-t8t9-dv64-gdn",
+      "rationale": "Scored by the official ranked evaluator, not on a contributor host.",
+      "relation": "measured_on",
+      "to": "hardware:yukon-mlxfast-runner"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-e024-t8t9-dv64-gdn",
+      "rationale": "The official eight-pair ranked decode workload.",
+      "relation": "under_workload",
+      "to": "workload:qwen-mtp-ranked-decode"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-e027-bf16-precision-island-head",
+      "rationale": "The challenge target model.",
+      "relation": "applied_on",
+      "to": "model:qwen3.8-27b-mtp"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-e027-bf16-precision-island-head",
+      "rationale": "Official ranked delta +172 bp against promoted main 0b071ed9, official score 2.9533862452043236; outside the observed +/-130 bp same-content rerun spread.",
+      "relation": "confirms",
+      "to": "mechanism:bf16-precision-island-draft-head"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-e027-bf16-precision-island-head",
+      "rationale": "The submitted candidate's only intended change was this mechanism.",
+      "relation": "instantiates",
+      "to": "mechanism:bf16-precision-island-draft-head"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-e027-bf16-precision-island-head",
+      "rationale": "Scored by the official ranked evaluator, not on a contributor host.",
+      "relation": "measured_on",
+      "to": "hardware:yukon-mlxfast-runner"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-e027-bf16-precision-island-head",
+      "rationale": "The official eight-pair ranked decode workload.",
+      "relation": "under_workload",
+      "to": "workload:qwen-mtp-ranked-decode"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr105-proposal-head-cache-prealloc",
+      "rationale": "The challenge target model.",
+      "relation": "applied_on",
+      "to": "model:qwen3.8-27b-mtp"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr105-proposal-head-cache-prealloc",
+      "rationale": "The submitted candidate's only intended change was this mechanism.",
+      "relation": "instantiates",
+      "to": "mechanism:proposal-head-cache-preallocation"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr105-proposal-head-cache-prealloc",
+      "rationale": "Scored by the official ranked evaluator, not on a contributor host.",
+      "relation": "measured_on",
+      "to": "hardware:yukon-mlxfast-runner"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr105-proposal-head-cache-prealloc",
+      "rationale": "The official eight-pair ranked decode workload.",
+      "relation": "under_workload",
+      "to": "workload:qwen-mtp-ranked-decode"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr146-head-step-cost-018",
+      "rationale": "The challenge target model.",
+      "relation": "applied_on",
+      "to": "model:qwen3.8-27b-mtp"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr146-head-step-cost-018",
+      "rationale": "The submitted candidate's only intended change was this mechanism.",
+      "relation": "instantiates",
+      "to": "mechanism:head-step-cost-retune"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr146-head-step-cost-018",
+      "rationale": "Scored by the official ranked evaluator, not on a contributor host.",
+      "relation": "measured_on",
+      "to": "hardware:yukon-mlxfast-runner"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr146-head-step-cost-018",
+      "rationale": "Official ranked delta -132 bp against shared control, official score 2.727432; outside the observed +/-130 bp same-content rerun spread.",
+      "relation": "refutes",
+      "to": "mechanism:head-step-cost-retune"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr146-head-step-cost-018",
+      "rationale": "The official eight-pair ranked decode workload.",
+      "relation": "under_workload",
+      "to": "workload:qwen-mtp-ranked-decode"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr149-head-step-cost-024",
+      "rationale": "The challenge target model.",
+      "relation": "applied_on",
+      "to": "model:qwen3.8-27b-mtp"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr149-head-step-cost-024",
+      "rationale": "The submitted candidate's only intended change was this mechanism.",
+      "relation": "instantiates",
+      "to": "mechanism:head-step-cost-retune"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr149-head-step-cost-024",
+      "rationale": "Scored by the official ranked evaluator, not on a contributor host.",
+      "relation": "measured_on",
+      "to": "hardware:yukon-mlxfast-runner"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr149-head-step-cost-024",
+      "rationale": "Official ranked delta -151 bp against shared control, official score 2.727432; outside the observed +/-130 bp same-content rerun spread.",
+      "relation": "refutes",
+      "to": "mechanism:head-step-cost-retune"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr149-head-step-cost-024",
+      "rationale": "The official eight-pair ranked decode workload.",
+      "relation": "under_workload",
+      "to": "workload:qwen-mtp-ranked-decode"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr194-one-launch-gdn-prework",
+      "rationale": "The challenge target model.",
+      "relation": "applied_on",
+      "to": "model:qwen3.8-27b-mtp"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr194-one-launch-gdn-prework",
+      "rationale": "The submitted candidate's only intended change was this mechanism.",
+      "relation": "instantiates",
+      "to": "mechanism:one-launch-packed-gdn-prework"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr194-one-launch-gdn-prework",
+      "rationale": "Scored by the official ranked evaluator, not on a contributor host.",
+      "relation": "measured_on",
+      "to": "hardware:yukon-mlxfast-runner"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr194-one-launch-gdn-prework",
+      "rationale": "The official eight-pair ranked decode workload.",
+      "relation": "under_workload",
+      "to": "workload:qwen-mtp-ranked-decode"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr197-compiled-mtp-front",
+      "rationale": "The challenge target model.",
+      "relation": "applied_on",
+      "to": "model:qwen3.8-27b-mtp"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr197-compiled-mtp-front",
+      "rationale": "The submitted candidate's only intended change was this mechanism.",
+      "relation": "instantiates",
+      "to": "mechanism:compiled-mtp-fusion-front"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr197-compiled-mtp-front",
+      "rationale": "Scored by the official ranked evaluator, not on a contributor host.",
+      "relation": "measured_on",
+      "to": "hardware:yukon-mlxfast-runner"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr197-compiled-mtp-front",
+      "rationale": "Official ranked delta -408 bp against promoted main 4eb54489, official score 2.86531796926132; outside the observed +/-130 bp same-content rerun spread.",
+      "relation": "refutes",
+      "to": "mechanism:compiled-mtp-fusion-front"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr197-compiled-mtp-front",
+      "rationale": "The official eight-pair ranked decode workload.",
+      "relation": "under_workload",
+      "to": "workload:qwen-mtp-ranked-decode"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr200-qk-shape-gate",
+      "rationale": "The challenge target model.",
+      "relation": "applied_on",
+      "to": "model:qwen3.8-27b-mtp"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr200-qk-shape-gate",
+      "rationale": "The submitted candidate's only intended change was this mechanism.",
+      "relation": "instantiates",
+      "to": "mechanism:qk-shape-gate"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr200-qk-shape-gate",
+      "rationale": "Scored by the official ranked evaluator, not on a contributor host.",
+      "relation": "measured_on",
+      "to": "hardware:yukon-mlxfast-runner"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr200-qk-shape-gate",
+      "rationale": "The official eight-pair ranked decode workload.",
+      "relation": "under_workload",
+      "to": "workload:qwen-mtp-ranked-decode"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr201-wide-qmv-threshold-2048",
+      "rationale": "The challenge target model.",
+      "relation": "applied_on",
+      "to": "model:qwen3.8-27b-mtp"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr201-wide-qmv-threshold-2048",
+      "rationale": "The submitted candidate's only intended change was this mechanism.",
+      "relation": "instantiates",
+      "to": "mechanism:wide-qmv-threshold-retune"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr201-wide-qmv-threshold-2048",
+      "rationale": "Scored by the official ranked evaluator, not on a contributor host.",
+      "relation": "measured_on",
+      "to": "hardware:yukon-mlxfast-runner"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr201-wide-qmv-threshold-2048",
+      "rationale": "Official ranked delta -136 bp against official score 2.865318; outside the observed +/-130 bp same-content rerun spread.",
+      "relation": "refutes",
+      "to": "mechanism:wide-qmv-threshold-retune"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr201-wide-qmv-threshold-2048",
+      "rationale": "The official eight-pair ranked decode workload.",
+      "relation": "under_workload",
+      "to": "workload:qwen-mtp-ranked-decode"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr208-lower-mse-q4-head",
+      "rationale": "The challenge target model.",
+      "relation": "applied_on",
+      "to": "model:qwen3.8-27b-mtp"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr208-lower-mse-q4-head",
+      "rationale": "The submitted candidate's only intended change was this mechanism.",
+      "relation": "instantiates",
+      "to": "mechanism:weight-error-minimised-draft-head"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr208-lower-mse-q4-head",
+      "rationale": "Scored by the official ranked evaluator, not on a contributor host.",
+      "relation": "measured_on",
+      "to": "hardware:yukon-mlxfast-runner"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr208-lower-mse-q4-head",
+      "rationale": "The official eight-pair ranked decode workload.",
+      "relation": "under_workload",
+      "to": "workload:qwen-mtp-ranked-decode"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr209-compiled-history-kv-layout",
+      "rationale": "The challenge target model.",
+      "relation": "applied_on",
+      "to": "model:qwen3.8-27b-mtp"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr209-compiled-history-kv-layout",
+      "rationale": "The submitted candidate's only intended change was this mechanism.",
+      "relation": "instantiates",
+      "to": "mechanism:compiled-proposal-head-history"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr209-compiled-history-kv-layout",
+      "rationale": "Scored by the official ranked evaluator, not on a contributor host.",
+      "relation": "measured_on",
+      "to": "hardware:yukon-mlxfast-runner"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr209-compiled-history-kv-layout",
+      "rationale": "Official ranked delta -153 bp against promoted main e3b4531d, official score 2.86792937494018; outside the observed +/-130 bp same-content rerun spread.",
+      "relation": "refutes",
+      "to": "mechanism:compiled-proposal-head-history"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr209-compiled-history-kv-layout",
+      "rationale": "The official eight-pair ranked decode workload.",
+      "relation": "under_workload",
+      "to": "workload:qwen-mtp-ranked-decode"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr211-eight-rung-async-ladder",
+      "rationale": "The challenge target model.",
+      "relation": "applied_on",
+      "to": "model:qwen3.8-27b-mtp"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr211-eight-rung-async-ladder",
+      "rationale": "The submitted candidate's only intended change was this mechanism.",
+      "relation": "instantiates",
+      "to": "mechanism:async-eval-ladder"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr211-eight-rung-async-ladder",
+      "rationale": "Scored by the official ranked evaluator, not on a contributor host.",
+      "relation": "measured_on",
+      "to": "hardware:yukon-mlxfast-runner"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr211-eight-rung-async-ladder",
+      "rationale": "The official eight-pair ranked decode workload.",
+      "relation": "under_workload",
+      "to": "workload:qwen-mtp-ranked-decode"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr212-kickoff-only-async",
+      "rationale": "The challenge target model.",
+      "relation": "applied_on",
+      "to": "model:qwen3.8-27b-mtp"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr212-kickoff-only-async",
+      "rationale": "The submitted candidate's only intended change was this mechanism.",
+      "relation": "instantiates",
+      "to": "mechanism:async-eval-ladder"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr212-kickoff-only-async",
+      "rationale": "Scored by the official ranked evaluator, not on a contributor host.",
+      "relation": "measured_on",
+      "to": "hardware:yukon-mlxfast-runner"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr212-kickoff-only-async",
+      "rationale": "The official eight-pair ranked decode workload.",
+      "relation": "under_workload",
+      "to": "workload:qwen-mtp-ranked-decode"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr231-prefix-replay-sole-authority",
+      "rationale": "The challenge target model.",
+      "relation": "applied_on",
+      "to": "model:qwen3.8-27b-mtp"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr231-prefix-replay-sole-authority",
+      "rationale": "The submitted candidate's only intended change was this mechanism.",
+      "relation": "instantiates",
+      "to": "mechanism:prefix-replay-rollback"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr231-prefix-replay-sole-authority",
+      "rationale": "Scored by the official ranked evaluator, not on a contributor host.",
+      "relation": "measured_on",
+      "to": "hardware:yukon-mlxfast-runner"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr231-prefix-replay-sole-authority",
+      "rationale": "The official eight-pair ranked decode workload.",
+      "relation": "under_workload",
+      "to": "workload:qwen-mtp-ranked-decode"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr235-head-step-cost-014",
+      "rationale": "The challenge target model.",
+      "relation": "applied_on",
+      "to": "model:qwen3.8-27b-mtp"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr235-head-step-cost-014",
+      "rationale": "The submitted candidate's only intended change was this mechanism.",
+      "relation": "instantiates",
+      "to": "mechanism:head-step-cost-retune"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr235-head-step-cost-014",
+      "rationale": "Scored by the official ranked evaluator, not on a contributor host.",
+      "relation": "measured_on",
+      "to": "hardware:yukon-mlxfast-runner"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr235-head-step-cost-014",
+      "rationale": "Official ranked delta -385 bp against then-best official score 2.87642940762738; outside the observed +/-130 bp same-content rerun spread.",
+      "relation": "refutes",
+      "to": "mechanism:head-step-cost-retune"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr235-head-step-cost-014",
+      "rationale": "The official eight-pair ranked decode workload.",
+      "relation": "under_workload",
+      "to": "workload:qwen-mtp-ranked-decode"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr236-byte-equivalent-rerun",
+      "rationale": "The challenge target model.",
+      "relation": "applied_on",
+      "to": "model:qwen3.8-27b-mtp"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr236-byte-equivalent-rerun",
+      "rationale": "The submitted candidate's only intended change was this mechanism.",
+      "relation": "instantiates",
+      "to": "mechanism:unchanged-rerun-control"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr236-byte-equivalent-rerun",
+      "rationale": "Scored by the official ranked evaluator, not on a contributor host.",
+      "relation": "measured_on",
+      "to": "hardware:yukon-mlxfast-runner"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr236-byte-equivalent-rerun",
+      "rationale": "The official eight-pair ranked decode workload.",
+      "relation": "under_workload",
+      "to": "workload:qwen-mtp-ranked-decode"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr237-eval-root-trim",
+      "rationale": "The challenge target model.",
+      "relation": "applied_on",
+      "to": "model:qwen3.8-27b-mtp"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr237-eval-root-trim",
+      "rationale": "The submitted candidate's only intended change was this mechanism.",
+      "relation": "instantiates",
+      "to": "mechanism:eval-root-trim"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr237-eval-root-trim",
+      "rationale": "Scored by the official ranked evaluator, not on a contributor host.",
+      "relation": "measured_on",
+      "to": "hardware:yukon-mlxfast-runner"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr237-eval-root-trim",
+      "rationale": "Official ranked delta -154 bp against promoted main 7351e626, official score 2.9042110287045; outside the observed +/-130 bp same-content rerun spread.",
+      "relation": "refutes",
+      "to": "mechanism:eval-root-trim"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr237-eval-root-trim",
+      "rationale": "The official eight-pair ranked decode workload.",
+      "relation": "under_workload",
+      "to": "workload:qwen-mtp-ranked-decode"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr256-m8-qmv-3-3-2",
+      "rationale": "The challenge target model.",
+      "relation": "applied_on",
+      "to": "model:qwen3.8-27b-mtp"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr256-m8-qmv-3-3-2",
+      "rationale": "The submitted candidate's only intended change was this mechanism.",
+      "relation": "instantiates",
+      "to": "mechanism:qmv-row-regrouping"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr256-m8-qmv-3-3-2",
+      "rationale": "Scored by the official ranked evaluator, not on a contributor host.",
+      "relation": "measured_on",
+      "to": "hardware:yukon-mlxfast-runner"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr256-m8-qmv-3-3-2",
+      "rationale": "The official eight-pair ranked decode workload.",
+      "relation": "under_workload",
+      "to": "workload:qwen-mtp-ranked-decode"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr290-eval-root-trim-newer-base",
+      "rationale": "The challenge target model.",
+      "relation": "applied_on",
+      "to": "model:qwen3.8-27b-mtp"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr290-eval-root-trim-newer-base",
+      "rationale": "The submitted candidate's only intended change was this mechanism.",
+      "relation": "instantiates",
+      "to": "mechanism:eval-root-trim"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr290-eval-root-trim-newer-base",
+      "rationale": "Scored by the official ranked evaluator, not on a contributor host.",
+      "relation": "measured_on",
+      "to": "hardware:yukon-mlxfast-runner"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr290-eval-root-trim-newer-base",
+      "rationale": "The official eight-pair ranked decode workload.",
+      "relation": "under_workload",
+      "to": "workload:qwen-mtp-ranked-decode"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr359-error-minimised-q4-head",
+      "rationale": "The challenge target model.",
+      "relation": "applied_on",
+      "to": "model:qwen3.8-27b-mtp"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr359-error-minimised-q4-head",
+      "rationale": "The submitted candidate's only intended change was this mechanism.",
+      "relation": "instantiates",
+      "to": "mechanism:weight-error-minimised-draft-head"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr359-error-minimised-q4-head",
+      "rationale": "Scored by the official ranked evaluator, not on a contributor host.",
+      "relation": "measured_on",
+      "to": "hardware:yukon-mlxfast-runner"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr359-error-minimised-q4-head",
+      "rationale": "Official ranked delta -1328 bp against promoted main cdb06b7, official score 2.93428682708139; outside the observed +/-130 bp same-content rerun spread.",
+      "relation": "refutes",
+      "to": "mechanism:weight-error-minimised-draft-head"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr359-error-minimised-q4-head",
+      "rationale": "The official eight-pair ranked decode workload.",
+      "relation": "under_workload",
+      "to": "workload:qwen-mtp-ranked-decode"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr360-fc-bf16-mixed-head",
+      "rationale": "The challenge target model.",
+      "relation": "applied_on",
+      "to": "model:qwen3.8-27b-mtp"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr360-fc-bf16-mixed-head",
+      "rationale": "The submitted candidate's only intended change was this mechanism.",
+      "relation": "instantiates",
+      "to": "mechanism:mixed-precision-draft-head-layout"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr360-fc-bf16-mixed-head",
+      "rationale": "Scored by the official ranked evaluator, not on a contributor host.",
+      "relation": "measured_on",
+      "to": "hardware:yukon-mlxfast-runner"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr360-fc-bf16-mixed-head",
+      "rationale": "Official ranked delta -177 bp against promoted main cdb06b7, official score 2.93428682708139; outside the observed +/-130 bp same-content rerun spread.",
+      "relation": "refutes",
+      "to": "mechanism:mixed-precision-draft-head-layout"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr360-fc-bf16-mixed-head",
+      "rationale": "The official eight-pair ranked decode workload.",
+      "relation": "under_workload",
+      "to": "workload:qwen-mtp-ranked-decode"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr362-async-ladder-densification",
+      "rationale": "The challenge target model.",
+      "relation": "applied_on",
+      "to": "model:qwen3.8-27b-mtp"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr362-async-ladder-densification",
+      "rationale": "The submitted candidate's only intended change was this mechanism.",
+      "relation": "instantiates",
+      "to": "mechanism:async-eval-ladder"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr362-async-ladder-densification",
+      "rationale": "Scored by the official ranked evaluator, not on a contributor host.",
+      "relation": "measured_on",
+      "to": "hardware:yukon-mlxfast-runner"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr362-async-ladder-densification",
+      "rationale": "The official eight-pair ranked decode workload.",
+      "relation": "under_workload",
+      "to": "workload:qwen-mtp-ranked-decode"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr363-semantic-m7-to-m9-repair",
+      "rationale": "The challenge target model.",
+      "relation": "applied_on",
+      "to": "model:qwen3.8-27b-mtp"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr363-semantic-m7-to-m9-repair",
+      "rationale": "The submitted candidate's only intended change was this mechanism.",
+      "relation": "instantiates",
+      "to": "mechanism:semantic-mtp-width-repair"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr363-semantic-m7-to-m9-repair",
+      "rationale": "Scored by the official ranked evaluator, not on a contributor host.",
+      "relation": "measured_on",
+      "to": "hardware:yukon-mlxfast-runner"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr363-semantic-m7-to-m9-repair",
+      "rationale": "Official ranked delta -142 bp against promoted main 32b94cb, official score 2.9466159730811405; outside the observed +/-130 bp same-content rerun spread.",
+      "relation": "refutes",
+      "to": "mechanism:semantic-mtp-width-repair"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr363-semantic-m7-to-m9-repair",
+      "rationale": "The official eight-pair ranked decode workload.",
+      "relation": "under_workload",
+      "to": "workload:qwen-mtp-ranked-decode"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr386-activation-aware-q4-head",
+      "rationale": "The challenge target model.",
+      "relation": "applied_on",
+      "to": "model:qwen3.8-27b-mtp"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr386-activation-aware-q4-head",
+      "rationale": "The submitted candidate's only intended change was this mechanism.",
+      "relation": "instantiates",
+      "to": "mechanism:weight-error-minimised-draft-head"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr386-activation-aware-q4-head",
+      "rationale": "Scored by the official ranked evaluator, not on a contributor host.",
+      "relation": "measured_on",
+      "to": "hardware:yukon-mlxfast-runner"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr386-activation-aware-q4-head",
+      "rationale": "Official ranked delta -340 bp against official score 2.9533862452043236; outside the observed +/-130 bp same-content rerun spread.",
+      "relation": "refutes",
+      "to": "mechanism:weight-error-minimised-draft-head"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr386-activation-aware-q4-head",
+      "rationale": "The official eight-pair ranked decode workload.",
+      "relation": "under_workload",
+      "to": "workload:qwen-mtp-ranked-decode"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr391-per-row-head-cost-vector",
+      "rationale": "The challenge target model.",
+      "relation": "applied_on",
+      "to": "model:qwen3.8-27b-mtp"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr391-per-row-head-cost-vector",
+      "rationale": "The submitted candidate's only intended change was this mechanism.",
+      "relation": "instantiates",
+      "to": "mechanism:head-step-cost-retune"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr391-per-row-head-cost-vector",
+      "rationale": "Scored by the official ranked evaluator, not on a contributor host.",
+      "relation": "measured_on",
+      "to": "hardware:yukon-mlxfast-runner"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr391-per-row-head-cost-vector",
+      "rationale": "Official ranked delta -170 bp against gate-2/M8 crown, official score 2.9533862452043236; outside the observed +/-130 bp same-content rerun spread.",
+      "relation": "refutes",
+      "to": "mechanism:head-step-cost-retune"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr391-per-row-head-cost-vector",
+      "rationale": "The official eight-pair ranked decode workload.",
+      "relation": "under_workload",
+      "to": "workload:qwen-mtp-ranked-decode"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr392-per-row-head-cost-vector-rerun",
+      "rationale": "The challenge target model.",
+      "relation": "applied_on",
+      "to": "model:qwen3.8-27b-mtp"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr392-per-row-head-cost-vector-rerun",
+      "rationale": "The submitted candidate's only intended change was this mechanism.",
+      "relation": "instantiates",
+      "to": "mechanism:head-step-cost-retune"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr392-per-row-head-cost-vector-rerun",
+      "rationale": "Scored by the official ranked evaluator, not on a contributor host.",
+      "relation": "measured_on",
+      "to": "hardware:yukon-mlxfast-runner"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr392-per-row-head-cost-vector-rerun",
+      "rationale": "Official ranked delta -172 bp against gate-2/M8 crown, official score 2.9533862452043236; outside the observed +/-130 bp same-content rerun spread.",
+      "relation": "refutes",
+      "to": "mechanism:head-step-cost-retune"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr392-per-row-head-cost-vector-rerun",
+      "rationale": "The official eight-pair ranked decode workload.",
+      "relation": "under_workload",
+      "to": "workload:qwen-mtp-ranked-decode"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr393-lazy-replay-convolution",
+      "rationale": "The challenge target model.",
+      "relation": "applied_on",
+      "to": "model:qwen3.8-27b-mtp"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr393-lazy-replay-convolution",
+      "rationale": "The submitted candidate's only intended change was this mechanism.",
+      "relation": "instantiates",
+      "to": "mechanism:lazy-replay-convolution-boundary"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr393-lazy-replay-convolution",
+      "rationale": "Scored by the official ranked evaluator, not on a contributor host.",
+      "relation": "measured_on",
+      "to": "hardware:yukon-mlxfast-runner"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr393-lazy-replay-convolution",
+      "rationale": "Official ranked delta -175 bp against official score 2.9533862452043236; outside the observed +/-130 bp same-content rerun spread.",
+      "relation": "refutes",
+      "to": "mechanism:lazy-replay-convolution-boundary"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr393-lazy-replay-convolution",
+      "rationale": "The official eight-pair ranked decode workload.",
+      "relation": "under_workload",
+      "to": "workload:qwen-mtp-ranked-decode"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr394-verify-ladder-rung-removal",
+      "rationale": "The challenge target model.",
+      "relation": "applied_on",
+      "to": "model:qwen3.8-27b-mtp"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr394-verify-ladder-rung-removal",
+      "rationale": "The submitted candidate's only intended change was this mechanism.",
+      "relation": "instantiates",
+      "to": "mechanism:async-eval-ladder"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr394-verify-ladder-rung-removal",
+      "rationale": "Scored by the official ranked evaluator, not on a contributor host.",
+      "relation": "measured_on",
+      "to": "hardware:yukon-mlxfast-runner"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr394-verify-ladder-rung-removal",
+      "rationale": "The official eight-pair ranked decode workload.",
+      "relation": "under_workload",
+      "to": "workload:qwen-mtp-ranked-decode"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr395-verify-final-norm-reuse",
+      "rationale": "The challenge target model.",
+      "relation": "applied_on",
+      "to": "model:qwen3.8-27b-mtp"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr395-verify-final-norm-reuse",
+      "rationale": "The submitted candidate's only intended change was this mechanism.",
+      "relation": "instantiates",
+      "to": "mechanism:verify-final-normalization-reuse"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr395-verify-final-norm-reuse",
+      "rationale": "Scored by the official ranked evaluator, not on a contributor host.",
+      "relation": "measured_on",
+      "to": "hardware:yukon-mlxfast-runner"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr395-verify-final-norm-reuse",
+      "rationale": "The official eight-pair ranked decode workload.",
+      "relation": "under_workload",
+      "to": "workload:qwen-mtp-ranked-decode"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr414-m6m9-direct-nibble-qmv",
+      "rationale": "The challenge target model.",
+      "relation": "applied_on",
+      "to": "model:qwen3.8-27b-mtp"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr414-m6m9-direct-nibble-qmv",
+      "rationale": "Official ranked delta +241 bp against pre-E027 tree, official score 2.9533862452043236; outside the observed +/-130 bp same-content rerun spread.",
+      "relation": "confirms",
+      "to": "mechanism:qmv-row-regrouping"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr414-m6m9-direct-nibble-qmv",
+      "rationale": "The submitted candidate's only intended change was this mechanism.",
+      "relation": "instantiates",
+      "to": "mechanism:qmv-row-regrouping"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr414-m6m9-direct-nibble-qmv",
+      "rationale": "Scored by the official ranked evaluator, not on a contributor host.",
+      "relation": "measured_on",
+      "to": "hardware:yukon-mlxfast-runner"
+    },
+    {
+      "confidence": "high",
+      "from": "result:qwen38-pr414-m6m9-direct-nibble-qmv",
+      "rationale": "The official eight-pair ranked decode workload.",
+      "relation": "under_workload",
+      "to": "workload:qwen-mtp-ranked-decode"
+    }
+  ],
+  "generated_at": "2026-08-17",
+  "graph_id": "mlx-porting-skill/campaigns/qwen38-mtp/results",
+  "nodes": [
+    {
+      "confidence": "high",
+      "effect": {
+        "baseline_id": "promoted main 7351e626, official score 2.9042110287045",
+        "delta_bp_ci": [
+          -130,
+          -130
+        ],
+        "metric": "ranked-decode-speedup",
+        "sample_note": "Single official run scored by the challenge evaluator; the interval is a point, not a confidence interval. Observed same-content rerun spread is about +/-130bp (byte-identical candidates scored 2.9042110287045, 2.8930596055435216 and 2.86645713502766), so a verdict is only recorded as improved or regressed when the delta exceeds that spread.",
+        "verdict": "inconclusive"
+      },
+      "evidence": [
+        "qwen38 campaign promotion ledger, PROMOTION_LEDGER.md (E014)",
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/234"
+      ],
+      "id": "result:qwen38-e014-byte-identical-rerun",
+      "kind": "applied_result",
+      "observed_at": "2026-08-16",
+      "provenance": "official_verified",
+      "status": "evaluator-variation-evidence",
+      "summary": "An exact recovery of a public parity-passing candidate. The submitted content is byte-identical to the promoted PR #234 tree, and it scored 130 basis points lower. There is no mechanism here: this is the evaluator measuring the same code twice and disagreeing with itself by 1.3 percent. Every other effect in this graph should be read against this number.",
+      "tags": [
+        "calibration",
+        "control",
+        "evaluator-variation",
+        "high-value",
+        "official-run",
+        "qwen-mtp-campaign"
+      ],
+      "title": "E014 byte-identical candidate rerun"
+    },
+    {
+      "confidence": "high",
+      "effect": {
+        "baseline_id": "promoted main 7351e626, official score 2.9042110287045",
+        "delta_bp_ci": [
+          -257,
+          -257
+        ],
+        "metric": "ranked-decode-speedup",
+        "sample_note": "Single official run scored by the challenge evaluator; the interval is a point, not a confidence interval. Observed same-content rerun spread is about +/-130bp (byte-identical candidates scored 2.9042110287045, 2.8930596055435216 and 2.86645713502766), so a verdict is only recorded as improved or regressed when the delta exceeds that spread.",
+        "verdict": "regressed"
+      },
+      "evidence": [
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/239",
+        "qwen38 campaign promotion ledger, PROMOTION_LEDGER.md (E016)"
+      ],
+      "id": "result:qwen38-e016-gh2-grouped-sdpa",
+      "kind": "applied_result",
+      "observed_at": "2026-08-16",
+      "provenance": "official_verified",
+      "status": "retired",
+      "summary": "Grouping two query heads per shared K/V stream for candidate-only multi-row verification, byte-identical to the public PR 239 kernel, with all eight fidelity pairs accepted. It cost 2.6 percent. Reducing redundant K/V reads is a textbook attention optimization and it lost decisively here, twice, at two group widths.",
+      "tags": [
+        "attention",
+        "high-value",
+        "metal",
+        "negative",
+        "official-run",
+        "qwen-mtp-campaign"
+      ],
+      "title": "E016 GH=2 grouped SDPA on the promoted frontier"
+    },
+    {
+      "confidence": "high",
+      "effect": {
+        "baseline_id": "promoted main 7351e626, official score 2.9042110287045",
+        "delta_bp_ci": [
+          -22,
+          -22
+        ],
+        "metric": "ranked-decode-speedup",
+        "sample_note": "Single official run scored by the challenge evaluator; the interval is a point, not a confidence interval. Observed same-content rerun spread is about +/-130bp (byte-identical candidates scored 2.9042110287045, 2.8930596055435216 and 2.86645713502766), so a verdict is only recorded as improved or regressed when the delta exceeds that spread.",
+        "verdict": "inconclusive"
+      },
+      "evidence": [
+        "qwen38 campaign promotion ledger, PROMOTION_LEDGER.md (E018)",
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/263"
+      ],
+      "id": "result:qwen38-e018-grouped-hv-wide-gdn",
+      "kind": "applied_result",
+      "observed_at": "2026-08-16",
+      "provenance": "official_verified",
+      "status": "retired",
+      "summary": "Grouping the value-head dimension in the wide gated-delta recurrence. Parity-clean and negative, inside rerun spread but never recovered on any base.",
+      "tags": [
+        "gated-delta",
+        "metal",
+        "negative",
+        "official-run",
+        "qwen-mtp-campaign"
+      ],
+      "title": "E018 grouped-Hv wide GDN recurrence"
+    },
+    {
+      "confidence": "high",
+      "effect": {
+        "baseline_id": "current crown, official score 2.92520777238747",
+        "delta_bp_ci": [
+          -92,
+          -92
+        ],
+        "metric": "ranked-decode-speedup",
+        "sample_note": "Single official run scored by the challenge evaluator; the interval is a point, not a confidence interval. Observed same-content rerun spread is about +/-130bp (byte-identical candidates scored 2.9042110287045, 2.8930596055435216 and 2.86645713502766), so a verdict is only recorded as improved or regressed when the delta exceeds that spread.",
+        "verdict": "inconclusive"
+      },
+      "evidence": [
+        "qwen38 campaign promotion ledger, PROMOTION_LEDGER.md (E019)"
+      ],
+      "id": "result:qwen38-e019-m8-qmv-repair",
+      "kind": "applied_result",
+      "observed_at": "2026-08-16",
+      "provenance": "official_verified",
+      "status": "retired",
+      "summary": "The M8 3+3+2 regrouping that scored positive on an older base, re-applied on a newer runtime and frontier, with eight of eight pairs and parity_all_ok. It came out negative. The same QMV regrouping is positive on one base and negative on another, which is why this mechanism carries mixed evidence rather than a sign.",
+      "tags": [
+        "base-dependent",
+        "high-value",
+        "metal",
+        "negative",
+        "official-run",
+        "qmv",
+        "qwen-mtp-campaign"
+      ],
+      "title": "E019 current-main M8 QMV repair"
+    },
+    {
+      "confidence": "high",
+      "effect": {
+        "baseline_id": "promoted main da72848, official score 2.92520777238747",
+        "delta_bp_ci": [
+          3,
+          3
+        ],
+        "metric": "ranked-decode-speedup",
+        "sample_note": "Single official run scored by the challenge evaluator; the interval is a point, not a confidence interval. Observed same-content rerun spread is about +/-130bp (byte-identical candidates scored 2.9042110287045, 2.8930596055435216 and 2.86645713502766), so a verdict is only recorded as improved or regressed when the delta exceeds that spread.",
+        "verdict": "inconclusive"
+      },
+      "evidence": [
+        "qwen38 campaign promotion ledger, PROMOTION_LEDGER.md (E020)"
+      ],
+      "id": "result:qwen38-e020-recurrent-replay-prefetch",
+      "kind": "applied_result",
+      "observed_at": "2026-08-16",
+      "provenance": "official_verified",
+      "status": "promoted-but-unresolved",
+      "summary": "Officially promoted: it beat the standing crown and became the new base. The measured delta is +3 basis points, which is roughly forty times smaller than the observed same-content rerun spread. Promotion here means 'ranked above the incumbent on one run', not 'measured to help'. The campaign nonetheless treats it as a proven complementary component because it is exact, tiny, and never measured negative. This is the clearest case in the corpus of a promotion that carries no resolved effect.",
+      "tags": [
+        "below-noise",
+        "gated-delta",
+        "official-run",
+        "prefetch",
+        "promoted",
+        "qwen-mtp-campaign"
+      ],
+      "title": "E020 recurrent replay prefetch"
+    },
+    {
+      "confidence": "high",
+      "effect": {
+        "baseline_id": "submission-time crown 2.9342868270813867",
+        "delta_bp_ci": [
+          -2,
+          -2
+        ],
+        "metric": "ranked-decode-speedup",
+        "sample_note": "Single official run scored by the challenge evaluator; the interval is a point, not a confidence interval. Observed same-content rerun spread is about +/-130bp (byte-identical candidates scored 2.9042110287045, 2.8930596055435216 and 2.86645713502766), so a verdict is only recorded as improved or regressed when the delta exceeds that spread.",
+        "verdict": "inconclusive"
+      },
+      "evidence": [
+        "qwen38 campaign promotion ledger, PROMOTION_LEDGER.md (E024)"
+      ],
+      "id": "result:qwen38-e024-t8t9-dv64-gdn",
+      "kind": "applied_result",
+      "observed_at": "2026-08-16",
+      "provenance": "official_verified",
+      "status": "retired",
+      "summary": "Retiling the gated-delta recurrence at value dimension 64 for two widths. All eight pairs passed. The measured whole-run delta is minus two basis points against its own submission-time base: the local isolated recurrence ratios were real and simply did not reach the ranked score. An isolated kernel improvement that produces a null whole-run result is the most common failure shape in this campaign.",
+      "tags": [
+        "gated-delta",
+        "high-value",
+        "metal",
+        "negative",
+        "no-transfer",
+        "official-run",
+        "qwen-mtp-campaign"
+      ],
+      "title": "E024 T8/T9 Dv64 GDN recurrence"
+    },
+    {
+      "confidence": "high",
+      "effect": {
+        "baseline_id": "promoted main 0b071ed9, official score 2.9533862452043236",
+        "delta_bp_ci": [
+          172,
+          172
+        ],
+        "metric": "ranked-decode-speedup",
+        "sample_note": "Single official run scored by the challenge evaluator; the interval is a point, not a confidence interval. Observed same-content rerun spread is about +/-130bp (byte-identical candidates scored 2.9042110287045, 2.8930596055435216 and 2.86645713502766), so a verdict is only recorded as improved or regressed when the delta exceeds that spread.",
+        "verdict": "improved"
+      },
+      "evidence": [
+        "qwen38 campaign promotion ledger, PROMOTION_LEDGER.md (E027)",
+        "qwen38 campaign goal note, GOAL.md"
+      ],
+      "id": "result:qwen38-e027-bf16-precision-island-head",
+      "kind": "applied_result",
+      "observed_at": "2026-08-16",
+      "provenance": "official_verified",
+      "status": "promoted",
+      "summary": "The campaign's largest clean official gain. Every tensor of the incumbent Q4/group-64 head is preserved byte for byte and six bare proposal-only BF16 tensors are added: K and V rows fully corrected, the 1,024 largest-error Q rows corrected, recovering 29.35 percent of incumbent Q reconstruction error. All official fidelity gates passed. Note that the campaign ledger annotates this result as +5.11 percent, which does not follow from the two scores it quotes; the ratio of the quoted scores is +1.72 percent and that is what is recorded here.",
+      "tags": [
+        "largest-gain",
+        "official-run",
+        "positive",
+        "proposal-head",
+        "qwen-mtp-campaign"
+      ],
+      "title": "E027 BF16 precision-island draft head"
+    },
+    {
+      "confidence": "high",
+      "effect": {
+        "baseline_id": "then-best official score 2.51003299394665",
+        "delta_bp_ci": [
+          -15,
+          -15
+        ],
+        "metric": "ranked-decode-speedup",
+        "sample_note": "Single official run scored by the challenge evaluator; the interval is a point, not a confidence interval. Observed same-content rerun spread is about +/-130bp (byte-identical candidates scored 2.9042110287045, 2.8930596055435216 and 2.86645713502766), so a verdict is only recorded as improved or regressed when the delta exceeds that spread.",
+        "verdict": "inconclusive"
+      },
+      "evidence": [
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/105",
+        "qwen38 campaign findings note, FINDINGS.md (F-008)"
+      ],
+      "id": "result:qwen38-pr105-proposal-head-cache-prealloc",
+      "kind": "applied_result",
+      "observed_at": "2026-08-16",
+      "provenance": "official_verified",
+      "status": "retired",
+      "summary": "Pre-sizing only the proposal head's KV cache to the known scored window, so its 256-token block growth never triggers a capacity copy. Logically exact and logically free work removal, and it measured negative by 15 basis points. Inside rerun spread, so the honest reading is 'no measurable gain', not 'harmful' -- but it is enough to stop a second campaign from spending a slot on it.",
+      "tags": [
+        "allocation",
+        "cache",
+        "high-value",
+        "negative",
+        "official-run",
+        "qwen-mtp-campaign"
+      ],
+      "title": "PR 105 proposal-head cache preallocation"
+    },
+    {
+      "confidence": "high",
+      "effect": {
+        "baseline_id": "shared control, official score 2.727432",
+        "delta_bp_ci": [
+          -132,
+          -132
+        ],
+        "metric": "ranked-decode-speedup",
+        "sample_note": "Single official run scored by the challenge evaluator; the interval is a point, not a confidence interval. Observed same-content rerun spread is about +/-130bp (byte-identical candidates scored 2.9042110287045, 2.8930596055435216 and 2.86645713502766), so a verdict is only recorded as improved or regressed when the delta exceeds that spread.",
+        "verdict": "regressed"
+      },
+      "evidence": [
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/146",
+        "qwen38 campaign findings note, FINDINGS.md (F-014)"
+      ],
+      "id": "result:qwen38-pr146-head-step-cost-018",
+      "kind": "applied_result",
+      "observed_at": "2026-08-16",
+      "provenance": "official_verified",
+      "status": "retired",
+      "summary": "The low flank of a clean two-sided bracket around the promoted 0.20 scalar; all eight prompt parity gates passed.",
+      "tags": [
+        "cost-model",
+        "negative",
+        "official-run",
+        "qwen-mtp-campaign",
+        "scheduler"
+      ],
+      "title": "PR 146 head-step cost ratio 0.18"
+    },
+    {
+      "confidence": "high",
+      "effect": {
+        "baseline_id": "shared control, official score 2.727432",
+        "delta_bp_ci": [
+          -151,
+          -151
+        ],
+        "metric": "ranked-decode-speedup",
+        "sample_note": "Single official run scored by the challenge evaluator; the interval is a point, not a confidence interval. Observed same-content rerun spread is about +/-130bp (byte-identical candidates scored 2.9042110287045, 2.8930596055435216 and 2.86645713502766), so a verdict is only recorded as improved or regressed when the delta exceeds that spread.",
+        "verdict": "regressed"
+      },
+      "evidence": [
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/149",
+        "qwen38 campaign findings note, FINDINGS.md (F-014)"
+      ],
+      "id": "result:qwen38-pr149-head-step-cost-024",
+      "kind": "applied_result",
+      "observed_at": "2026-08-16",
+      "provenance": "official_verified",
+      "status": "retired",
+      "summary": "The high flank of the same bracket. Both flanks regressed by comparable amounts against the same control, which is what makes the promoted 0.20 a measured local optimum rather than an untested default, and which retired the whole family including the never-tried 0.22 midpoint.",
+      "tags": [
+        "cost-model",
+        "high-value",
+        "negative",
+        "official-run",
+        "qwen-mtp-campaign",
+        "scheduler"
+      ],
+      "title": "PR 149 head-step cost ratio 0.24"
+    },
+    {
+      "confidence": "high",
+      "effect": {
+        "baseline_id": "promoted main 4eb54489, official score 2.86531796926132",
+        "delta_bp_ci": [
+          9,
+          9
+        ],
+        "metric": "ranked-decode-speedup",
+        "sample_note": "Single official run scored by the challenge evaluator; the interval is a point, not a confidence interval. Observed same-content rerun spread is about +/-130bp (byte-identical candidates scored 2.9042110287045, 2.8930596055435216 and 2.86645713502766), so a verdict is only recorded as improved or regressed when the delta exceeds that spread.",
+        "verdict": "inconclusive"
+      },
+      "evidence": [
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/194"
+      ],
+      "id": "result:qwen38-pr194-one-launch-gdn-prework",
+      "kind": "applied_result",
+      "observed_at": "2026-08-16",
+      "provenance": "official_verified",
+      "status": "promoted-but-unresolved",
+      "summary": "One packed Metal launch replaced the verify-width three-through-nine gated-delta prework chain and became the promoted frontier. Like the replay prefetch, the measured delta (+9 basis points) sits far inside rerun spread; the mechanism is retained because it is structurally simpler, not because the number resolved.",
+      "tags": [
+        "below-noise",
+        "gated-delta",
+        "metal",
+        "official-run",
+        "promoted",
+        "qwen-mtp-campaign"
+      ],
+      "title": "PR 194 one-launch GDN prework"
+    },
+    {
+      "confidence": "high",
+      "effect": {
+        "baseline_id": "promoted main 4eb54489, official score 2.86531796926132",
+        "delta_bp_ci": [
+          -408,
+          -408
+        ],
+        "metric": "ranked-decode-speedup",
+        "sample_note": "Single official run scored by the challenge evaluator; the interval is a point, not a confidence interval. Observed same-content rerun spread is about +/-130bp (byte-identical candidates scored 2.9042110287045, 2.8930596055435216 and 2.86645713502766), so a verdict is only recorded as improved or regressed when the delta exceeds that spread.",
+        "verdict": "regressed"
+      },
+      "evidence": [
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/197",
+        "qwen38 campaign findings note, FINDINGS.md (F-011)"
+      ],
+      "id": "result:qwen38-pr197-compiled-mtp-front",
+      "kind": "applied_result",
+      "observed_at": "2026-08-16",
+      "provenance": "official_verified",
+      "status": "retired",
+      "summary": "Compiling the ordinary single-row proposal front (embedding RMSNorm, hidden RMSNorm, concatenate, quantized fc) passed exact parity and cost four percent. Compilation is usually presented as free; here it was the most expensive scheduling decision measured. The adjacent history-only variant regressed independently, so this is two negatives for one family.",
+      "tags": [
+        "compile",
+        "high-value",
+        "negative",
+        "official-run",
+        "proposal-head",
+        "qwen-mtp-campaign"
+      ],
+      "title": "PR 197 compiled ordinary MTP fusion front"
+    },
+    {
+      "confidence": "high",
+      "effect": {
+        "baseline_id": "official score 2.86531796926132",
+        "delta_bp_ci": [
+          -5,
+          -5
+        ],
+        "metric": "ranked-decode-speedup",
+        "sample_note": "Single official run scored by the challenge evaluator; the interval is a point, not a confidence interval. Observed same-content rerun spread is about +/-130bp (byte-identical candidates scored 2.9042110287045, 2.8930596055435216 and 2.86645713502766), so a verdict is only recorded as improved or regressed when the delta exceeds that spread.",
+        "verdict": "inconclusive"
+      },
+      "evidence": [
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/200"
+      ],
+      "id": "result:qwen38-pr200-qk-shape-gate",
+      "kind": "applied_result",
+      "observed_at": "2026-08-16",
+      "provenance": "official_verified",
+      "status": "retired",
+      "summary": "Gating the fused Q/K preparation on a short-width test. Five basis points below the frontier: a null result recorded so nobody re-derives it.",
+      "tags": [
+        "attention",
+        "dispatch",
+        "negative",
+        "official-run",
+        "qwen-mtp-campaign"
+      ],
+      "title": "PR 200 short Q/K preparation shape gate"
+    },
+    {
+      "confidence": "high",
+      "effect": {
+        "baseline_id": "official score 2.865318",
+        "delta_bp_ci": [
+          -136,
+          -136
+        ],
+        "metric": "ranked-decode-speedup",
+        "sample_note": "Single official run scored by the challenge evaluator; the interval is a point, not a confidence interval. Observed same-content rerun spread is about +/-130bp (byte-identical candidates scored 2.9042110287045, 2.8930596055435216 and 2.86645713502766), so a verdict is only recorded as improved or regressed when the delta exceeds that spread.",
+        "verdict": "regressed"
+      },
+      "evidence": [
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/201"
+      ],
+      "id": "result:qwen38-pr201-wide-qmv-threshold-2048",
+      "kind": "applied_result",
+      "observed_at": "2026-08-16",
+      "provenance": "official_verified",
+      "status": "retired",
+      "summary": "Lowering the wide-QMV output-width threshold to 2048 regressed 1.4 percent. Upstream shape-dispatch thresholds are already hardware-tuned; moving one without a profile is a coin flip that landed badly.",
+      "tags": [
+        "dispatch",
+        "negative",
+        "official-run",
+        "qmv",
+        "qwen-mtp-campaign"
+      ],
+      "title": "PR 201 lower wide-QMV dispatch threshold"
+    },
+    {
+      "confidence": "high",
+      "effect": {
+        "baseline_id": "promoted main e3b4531d, official score 2.86792937494018",
+        "delta_bp_ci": [
+          -37,
+          -37
+        ],
+        "metric": "ranked-decode-speedup",
+        "sample_note": "Single official run scored by the challenge evaluator; the interval is a point, not a confidence interval. Observed same-content rerun spread is about +/-130bp (byte-identical candidates scored 2.9042110287045, 2.8930596055435216 and 2.86645713502766), so a verdict is only recorded as improved or regressed when the delta exceeds that spread.",
+        "verdict": "inconclusive"
+      },
+      "evidence": [
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/208"
+      ],
+      "id": "result:qwen38-pr208-lower-mse-q4-head",
+      "kind": "applied_result",
+      "observed_at": "2026-08-16",
+      "provenance": "official_verified",
+      "status": "retired",
+      "summary": "The first of three attempts to buy proposal quality with lower weight reconstruction error. Inside rerun spread, and it never promoted.",
+      "tags": [
+        "negative",
+        "official-run",
+        "proposal-head",
+        "quantization",
+        "qwen-mtp-campaign"
+      ],
+      "title": "PR 208 lower-MSE Q4 draft head"
+    },
+    {
+      "confidence": "high",
+      "effect": {
+        "baseline_id": "promoted main e3b4531d, official score 2.86792937494018",
+        "delta_bp_ci": [
+          -153,
+          -153
+        ],
+        "metric": "ranked-decode-speedup",
+        "sample_note": "Single official run scored by the challenge evaluator; the interval is a point, not a confidence interval. Observed same-content rerun spread is about +/-130bp (byte-identical candidates scored 2.9042110287045, 2.8930596055435216 and 2.86645713502766), so a verdict is only recorded as improved or regressed when the delta exceeds that spread.",
+        "verdict": "regressed"
+      },
+      "evidence": [
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/209"
+      ],
+      "id": "result:qwen38-pr209-compiled-history-kv-layout",
+      "kind": "applied_result",
+      "observed_at": "2026-08-16",
+      "provenance": "official_verified",
+      "status": "retired",
+      "summary": "Compiling the proposal head's K-RMS normalization and K/V transpose layout for the history append path passed parity and cost 1.5 percent.",
+      "tags": [
+        "cache",
+        "compile",
+        "negative",
+        "official-run",
+        "proposal-head",
+        "qwen-mtp-campaign"
+      ],
+      "title": "PR 209 compiled proposal-head K/V history layout"
+    },
+    {
+      "confidence": "high",
+      "effect": {
+        "baseline_id": "promoted main e3b4531d, official score 2.86792937494018",
+        "delta_bp_ci": [
+          27,
+          27
+        ],
+        "metric": "ranked-decode-speedup",
+        "sample_note": "Single official run scored by the challenge evaluator; the interval is a point, not a confidence interval. Observed same-content rerun spread is about +/-130bp (byte-identical candidates scored 2.9042110287045, 2.8930596055435216 and 2.86645713502766), so a verdict is only recorded as improved or regressed when the delta exceeds that spread.",
+        "verdict": "inconclusive"
+      },
+      "evidence": [
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/211",
+        "qwen38 campaign findings note, FINDINGS.md (F-013)"
+      ],
+      "id": "result:qwen38-pr211-eight-rung-async-ladder",
+      "kind": "applied_result",
+      "observed_at": "2026-08-16",
+      "provenance": "official_verified",
+      "status": "scored-not-finalized",
+      "summary": "Widening the asynchronous evaluation ladder through width nine measured a small lift in the official workflow, but the submission was never finalized into a promotion. The companion kickoff-only variant regressed, so the promoted rung set is a local optimum in both directions.",
+      "tags": [
+        "async",
+        "below-noise",
+        "official-run",
+        "qwen-mtp-campaign",
+        "scheduler"
+      ],
+      "title": "PR 211 eight-rung async evaluation ladder"
+    },
+    {
+      "confidence": "high",
+      "effect": {
+        "baseline_id": "promoted main e3b4531d, official score 2.86792937494018",
+        "delta_bp_ci": [
+          -128,
+          -128
+        ],
+        "metric": "ranked-decode-speedup",
+        "sample_note": "Single official run scored by the challenge evaluator; the interval is a point, not a confidence interval. Observed same-content rerun spread is about +/-130bp (byte-identical candidates scored 2.9042110287045, 2.8930596055435216 and 2.86645713502766), so a verdict is only recorded as improved or regressed when the delta exceeds that spread.",
+        "verdict": "inconclusive"
+      },
+      "evidence": [
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/212",
+        "qwen38 campaign findings note, FINDINGS.md (F-013)"
+      ],
+      "id": "result:qwen38-pr212-kickoff-only-async",
+      "kind": "applied_result",
+      "observed_at": "2026-08-16",
+      "provenance": "official_verified",
+      "status": "retired",
+      "summary": "Reducing the async ladder to a single kickoff rung measured 128 basis points below the frontier while the eight-rung widening measured slightly above it. Both directions from the promoted rung set are worse.",
+      "tags": [
+        "async",
+        "negative",
+        "official-run",
+        "qwen-mtp-campaign",
+        "scheduler"
+      ],
+      "title": "PR 212 kickoff-only async evaluation"
+    },
+    {
+      "confidence": "high",
+      "effect": {
+        "baseline_id": "official score 2.8764294076",
+        "delta_bp_ci": [
+          -23,
+          -23
+        ],
+        "metric": "ranked-decode-speedup",
+        "sample_note": "Single official run scored by the challenge evaluator; the interval is a point, not a confidence interval. Observed same-content rerun spread is about +/-130bp (byte-identical candidates scored 2.9042110287045, 2.8930596055435216 and 2.86645713502766), so a verdict is only recorded as improved or regressed when the delta exceeds that spread.",
+        "verdict": "inconclusive"
+      },
+      "evidence": [
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/231",
+        "qwen38 campaign promotion ledger, PROMOTION_LEDGER.md"
+      ],
+      "id": "result:qwen38-pr231-prefix-replay-sole-authority",
+      "kind": "applied_result",
+      "observed_at": "2026-08-16",
+      "provenance": "official_verified",
+      "status": "retired",
+      "summary": "Making prefix replay the sole speculative rollback authority and dropping wide recurrent snapshots. Parity-clean and slightly negative, inside rerun spread. It also increases fail-stop risk, which is why the generic snapshot fallback was preserved.",
+      "tags": [
+        "gated-delta",
+        "negative",
+        "official-run",
+        "qwen-mtp-campaign",
+        "rollback"
+      ],
+      "title": "PR 231 prefix replay as sole rollback authority"
+    },
+    {
+      "confidence": "high",
+      "effect": {
+        "baseline_id": "then-best official score 2.87642940762738",
+        "delta_bp_ci": [
+          -385,
+          -385
+        ],
+        "metric": "ranked-decode-speedup",
+        "sample_note": "Single official run scored by the challenge evaluator; the interval is a point, not a confidence interval. Observed same-content rerun spread is about +/-130bp (byte-identical candidates scored 2.9042110287045, 2.8930596055435216 and 2.86645713502766), so a verdict is only recorded as improved or regressed when the delta exceeds that spread.",
+        "verdict": "regressed"
+      },
+      "evidence": [
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/235"
+      ],
+      "id": "result:qwen38-pr235-head-step-cost-014",
+      "kind": "applied_result",
+      "observed_at": "2026-08-16",
+      "provenance": "official_verified",
+      "status": "retired",
+      "summary": "A clean one-line reduction of the head-step cost scalar from the promoted 0.20 to 0.14, with all eight pairs accepted. Nearly four percent negative. Pricing draft steps more cheaply makes the scheduler draft deeper, and deeper drafting on this workload loses.",
+      "tags": [
+        "cost-model",
+        "high-value",
+        "negative",
+        "official-run",
+        "qwen-mtp-campaign",
+        "scheduler"
+      ],
+      "title": "PR 235 head-step cost ratio 0.14"
+    },
+    {
+      "confidence": "high",
+      "effect": {
+        "baseline_id": "promoted main 7351e626, official score 2.9042110287045",
+        "delta_bp_ci": [
+          -38,
+          -38
+        ],
+        "metric": "ranked-decode-speedup",
+        "sample_note": "Single official run scored by the challenge evaluator; the interval is a point, not a confidence interval. Observed same-content rerun spread is about +/-130bp (byte-identical candidates scored 2.9042110287045, 2.8930596055435216 and 2.86645713502766), so a verdict is only recorded as improved or regressed when the delta exceeds that spread.",
+        "verdict": "inconclusive"
+      },
+      "evidence": [
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/236"
+      ],
+      "id": "result:qwen38-pr236-byte-equivalent-rerun",
+      "kind": "applied_result",
+      "observed_at": "2026-08-16",
+      "provenance": "official_verified",
+      "status": "evaluator-variation-evidence",
+      "summary": "A second rerun of editable model content equivalent to the already-promoted tree, with all eight pairs accepted. It scored 38 basis points low. Together with the 130-basis-point rerun this brackets the evaluator's same-content spread and makes every sub-130-basis-point verdict in this graph inconclusive by construction.",
+      "tags": [
+        "calibration",
+        "control",
+        "evaluator-variation",
+        "high-value",
+        "official-run",
+        "qwen-mtp-campaign"
+      ],
+      "title": "PR 236 byte-equivalent candidate rerun"
+    },
+    {
+      "confidence": "high",
+      "effect": {
+        "baseline_id": "promoted main 7351e626, official score 2.9042110287045",
+        "delta_bp_ci": [
+          -154,
+          -154
+        ],
+        "metric": "ranked-decode-speedup",
+        "sample_note": "Single official run scored by the challenge evaluator; the interval is a point, not a confidence interval. Observed same-content rerun spread is about +/-130bp (byte-identical candidates scored 2.9042110287045, 2.8930596055435216 and 2.86645713502766), so a verdict is only recorded as improved or regressed when the delta exceeds that spread.",
+        "verdict": "regressed"
+      },
+      "evidence": [
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/237"
+      ],
+      "id": "result:qwen38-pr237-eval-root-trim",
+      "kind": "applied_result",
+      "observed_at": "2026-08-16",
+      "provenance": "official_verified",
+      "status": "retired",
+      "summary": "One line removing cache states from the blocking evaluation root. Exact, strictly less synchronization, all eight pairs accepted, and 1.5 percent negative.",
+      "tags": [
+        "eval-boundary",
+        "graph",
+        "high-value",
+        "negative",
+        "official-run",
+        "qwen-mtp-campaign"
+      ],
+      "title": "PR 237 evaluation-root trim"
+    },
+    {
+      "confidence": "high",
+      "effect": {
+        "baseline_id": "promoted main 7351e626, official score 2.9042110287045",
+        "delta_bp_ci": [
+          25,
+          25
+        ],
+        "metric": "ranked-decode-speedup",
+        "sample_note": "Single official run scored by the challenge evaluator; the interval is a point, not a confidence interval. Observed same-content rerun spread is about +/-130bp (byte-identical candidates scored 2.9042110287045, 2.8930596055435216 and 2.86645713502766), so a verdict is only recorded as improved or regressed when the delta exceeds that spread.",
+        "verdict": "inconclusive"
+      },
+      "evidence": [
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/256"
+      ],
+      "id": "result:qwen38-pr256-m8-qmv-3-3-2",
+      "kind": "applied_result",
+      "observed_at": "2026-08-16",
+      "provenance": "official_verified",
+      "status": "positive-superseded",
+      "summary": "Changed unbatched affine Q4/group-64 M8 row grouping from 4+4 to 3+3+2 across eligible output widths, with arithmetic intended unchanged. Scored above its base with all eight pairs accepted but lost a trusted-base race and never became the promotion basis. The delta is inside rerun spread.",
+      "tags": [
+        "below-noise",
+        "metal",
+        "official-run",
+        "positive",
+        "qmv",
+        "qwen-mtp-campaign"
+      ],
+      "title": "PR 256 broad M8 QMV 3+3+2 regrouping"
+    },
+    {
+      "confidence": "high",
+      "effect": {
+        "baseline_id": "promoted main da72848, official score 2.92520777238747",
+        "delta_bp_ci": [
+          -46,
+          -46
+        ],
+        "metric": "ranked-decode-speedup",
+        "sample_note": "Single official run scored by the challenge evaluator; the interval is a point, not a confidence interval. Observed same-content rerun spread is about +/-130bp (byte-identical candidates scored 2.9042110287045, 2.8930596055435216 and 2.86645713502766), so a verdict is only recorded as improved or regressed when the delta exceeds that spread.",
+        "verdict": "inconclusive"
+      },
+      "evidence": [
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/290"
+      ],
+      "id": "result:qwen38-pr290-eval-root-trim-newer-base",
+      "kind": "applied_result",
+      "observed_at": "2026-08-16",
+      "provenance": "official_verified",
+      "status": "retired",
+      "summary": "The same evaluation-root trim rebased onto a newer promoted main. Negative again, this time inside rerun spread, which is why the family is retired on the strength of the earlier decisive run rather than this one.",
+      "tags": [
+        "eval-boundary",
+        "graph",
+        "negative",
+        "official-run",
+        "qwen-mtp-campaign"
+      ],
+      "title": "PR 290 evaluation-root trim on a newer base"
+    },
+    {
+      "confidence": "high",
+      "effect": {
+        "baseline_id": "promoted main cdb06b7, official score 2.93428682708139",
+        "delta_bp_ci": [
+          -1328,
+          -1328
+        ],
+        "metric": "ranked-decode-speedup",
+        "sample_note": "Single official run scored by the challenge evaluator; the interval is a point, not a confidence interval. Observed same-content rerun spread is about +/-130bp (byte-identical candidates scored 2.9042110287045, 2.8930596055435216 and 2.86645713502766), so a verdict is only recorded as improved or regressed when the delta exceeds that spread.",
+        "verdict": "regressed"
+      },
+      "evidence": [
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/359",
+        "qwen38 campaign promotion ledger, PROMOTION_LEDGER.md (PR359)"
+      ],
+      "id": "result:qwen38-pr359-error-minimised-q4-head",
+      "kind": "applied_result",
+      "observed_at": "2026-08-16",
+      "provenance": "official_verified",
+      "status": "retired",
+      "summary": "A manifest-only swap to a draft head rebuilt to minimize weight reconstruction error. It cost more than thirteen percent of the score. This is the single largest measured regression from a change that touches no kernel and no scheduler, and it is the strongest available evidence that weight reconstruction error is the wrong objective for a draft head: the head that is closest to the base weights is not the head that agrees with the base model's next token.",
+      "tags": [
+        "high-value",
+        "negative",
+        "official-run",
+        "proposal-head",
+        "quantization",
+        "qwen-mtp-campaign"
+      ],
+      "title": "PR 359 error-minimising Q4 draft head"
+    },
+    {
+      "confidence": "high",
+      "effect": {
+        "baseline_id": "promoted main cdb06b7, official score 2.93428682708139",
+        "delta_bp_ci": [
+          -177,
+          -177
+        ],
+        "metric": "ranked-decode-speedup",
+        "sample_note": "Single official run scored by the challenge evaluator; the interval is a point, not a confidence interval. Observed same-content rerun spread is about +/-130bp (byte-identical candidates scored 2.9042110287045, 2.8930596055435216 and 2.86645713502766), so a verdict is only recorded as improved or regressed when the delta exceeds that spread.",
+        "verdict": "regressed"
+      },
+      "evidence": [
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/360"
+      ],
+      "id": "result:qwen38-pr360-fc-bf16-mixed-head",
+      "kind": "applied_result",
+      "observed_at": "2026-08-16",
+      "provenance": "official_verified",
+      "status": "retired",
+      "summary": "Promoting the draft head's fc projection wholesale to BF16 regressed 1.8 percent. The contrast with the narrow precision-island head, which gained, is the useful part: where the extra precision goes matters more than how much of it there is.",
+      "tags": [
+        "high-value",
+        "mixed-precision",
+        "negative",
+        "official-run",
+        "proposal-head",
+        "qwen-mtp-campaign"
+      ],
+      "title": "PR 360 fc-BF16 mixed-precision draft head"
+    },
+    {
+      "confidence": "high",
+      "effect": {
+        "baseline_id": "promoted main 32b94cb, official score 2.9466159730811405",
+        "delta_bp_ci": [
+          -9,
+          -9
+        ],
+        "metric": "ranked-decode-speedup",
+        "sample_note": "Single official run scored by the challenge evaluator; the interval is a point, not a confidence interval. Observed same-content rerun spread is about +/-130bp (byte-identical candidates scored 2.9042110287045, 2.8930596055435216 and 2.86645713502766), so a verdict is only recorded as improved or regressed when the delta exceeds that spread.",
+        "verdict": "inconclusive"
+      },
+      "evidence": [
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/362"
+      ],
+      "id": "result:qwen38-pr362-async-ladder-densification",
+      "kind": "applied_result",
+      "observed_at": "2026-08-16",
+      "provenance": "official_verified",
+      "status": "retired",
+      "summary": "Densifying the async rungs on a much later base. Negative, inside rerun spread, and retired to prevent it being folded into a larger candidate where its sign would be invisible.",
+      "tags": [
+        "async",
+        "negative",
+        "official-run",
+        "qwen-mtp-campaign",
+        "scheduler"
+      ],
+      "title": "PR 362 async-ladder densification"
+    },
+    {
+      "confidence": "high",
+      "effect": {
+        "baseline_id": "promoted main 32b94cb, official score 2.9466159730811405",
+        "delta_bp_ci": [
+          -142,
+          -142
+        ],
+        "metric": "ranked-decode-speedup",
+        "sample_note": "Single official run scored by the challenge evaluator; the interval is a point, not a confidence interval. Observed same-content rerun spread is about +/-130bp (byte-identical candidates scored 2.9042110287045, 2.8930596055435216 and 2.86645713502766), so a verdict is only recorded as improved or regressed when the delta exceeds that spread.",
+        "verdict": "regressed"
+      },
+      "evidence": [
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/363"
+      ],
+      "id": "result:qwen38-pr363-semantic-m7-to-m9-repair",
+      "kind": "applied_result",
+      "observed_at": "2026-08-16",
+      "provenance": "official_verified",
+      "status": "retired",
+      "summary": "Padding a mid-width verification shape onto a faster wider kernel. Local fixed-round evidence projected roughly 2.981; the ranked score was 2.905. A 1.4 percent regression where the local isolate predicted a gain, because the ranked prompt pool does not spend its time at that width.",
+      "tags": [
+        "dispatch",
+        "high-value",
+        "negative",
+        "no-transfer",
+        "official-run",
+        "qwen-mtp-campaign",
+        "shape"
+      ],
+      "title": "PR 363 semantic M7-to-M9 width repair"
+    },
+    {
+      "confidence": "high",
+      "effect": {
+        "baseline_id": "official score 2.9533862452043236",
+        "delta_bp_ci": [
+          -340,
+          -340
+        ],
+        "metric": "ranked-decode-speedup",
+        "sample_note": "Single official run scored by the challenge evaluator; the interval is a point, not a confidence interval. Observed same-content rerun spread is about +/-130bp (byte-identical candidates scored 2.9042110287045, 2.8930596055435216 and 2.86645713502766), so a verdict is only recorded as improved or regressed when the delta exceeds that spread.",
+        "verdict": "regressed"
+      },
+      "evidence": [
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/386",
+        "qwen38 campaign goal note, GOAL.md"
+      ],
+      "id": "result:qwen38-pr386-activation-aware-q4-head",
+      "kind": "applied_result",
+      "observed_at": "2026-08-16",
+      "provenance": "official_verified",
+      "status": "retired",
+      "summary": "An activation-aware replacement draft head on the newest base. Negative by 3.4 percent, retiring that replacement base along with the approach.",
+      "tags": [
+        "negative",
+        "official-run",
+        "proposal-head",
+        "quantization",
+        "qwen-mtp-campaign"
+      ],
+      "title": "PR 386 activation-aware replacement Q4 head"
+    },
+    {
+      "confidence": "high",
+      "effect": {
+        "baseline_id": "gate-2/M8 crown, official score 2.9533862452043236",
+        "delta_bp_ci": [
+          -170,
+          -170
+        ],
+        "metric": "ranked-decode-speedup",
+        "sample_note": "Single official run scored by the challenge evaluator; the interval is a point, not a confidence interval. Observed same-content rerun spread is about +/-130bp (byte-identical candidates scored 2.9042110287045, 2.8930596055435216 and 2.86645713502766), so a verdict is only recorded as improved or regressed when the delta exceeds that spread.",
+        "verdict": "regressed"
+      },
+      "evidence": [
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/391"
+      ],
+      "id": "result:qwen38-pr391-per-row-head-cost-vector",
+      "kind": "applied_result",
+      "observed_at": "2026-08-16",
+      "provenance": "official_verified",
+      "status": "retired",
+      "summary": "A per-row draft-cost vector replacing the scalar, on a much newer base and with eight of eight pairs accepted. Negative by more than the rerun spread.",
+      "tags": [
+        "cost-model",
+        "negative",
+        "official-run",
+        "qwen-mtp-campaign",
+        "scheduler"
+      ],
+      "title": "PR 391 per-row draft-cost vector"
+    },
+    {
+      "confidence": "high",
+      "effect": {
+        "baseline_id": "gate-2/M8 crown, official score 2.9533862452043236",
+        "delta_bp_ci": [
+          -172,
+          -172
+        ],
+        "metric": "ranked-decode-speedup",
+        "sample_note": "Single official run scored by the challenge evaluator; the interval is a point, not a confidence interval. Observed same-content rerun spread is about +/-130bp (byte-identical candidates scored 2.9042110287045, 2.8930596055435216 and 2.86645713502766), so a verdict is only recorded as improved or regressed when the delta exceeds that spread.",
+        "verdict": "regressed"
+      },
+      "evidence": [
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/392"
+      ],
+      "id": "result:qwen38-pr392-per-row-head-cost-vector-rerun",
+      "kind": "applied_result",
+      "observed_at": "2026-08-16",
+      "provenance": "official_verified",
+      "status": "retired",
+      "summary": "An independent second submission of the same per-row draft-cost vector. It landed within seven basis points of the first. Two independent runs agreeing this closely on a 1.7 percent regression is what turns a single negative into decisive evidence, and it is the reason the campaign closed the entire cost-retune family rather than trying an adjacent vector.",
+      "tags": [
+        "cost-model",
+        "high-value",
+        "negative",
+        "official-run",
+        "qwen-mtp-campaign",
+        "replicated",
+        "scheduler"
+      ],
+      "title": "PR 392 per-row draft-cost vector, independent rerun"
+    },
+    {
+      "confidence": "high",
+      "effect": {
+        "baseline_id": "official score 2.9533862452043236",
+        "delta_bp_ci": [
+          -175,
+          -175
+        ],
+        "metric": "ranked-decode-speedup",
+        "sample_note": "Single official run scored by the challenge evaluator; the interval is a point, not a confidence interval. Observed same-content rerun spread is about +/-130bp (byte-identical candidates scored 2.9042110287045, 2.8930596055435216 and 2.86645713502766), so a verdict is only recorded as improved or regressed when the delta exceeds that spread.",
+        "verdict": "regressed"
+      },
+      "evidence": [
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/393"
+      ],
+      "id": "result:qwen38-pr393-lazy-replay-convolution",
+      "kind": "applied_result",
+      "observed_at": "2026-08-16",
+      "provenance": "official_verified",
+      "status": "retired",
+      "summary": "Removing the wide convolution carrier from the successful-verification replay tape. Exact, less work, 1.75 percent negative.",
+      "tags": [
+        "gated-delta",
+        "negative",
+        "official-run",
+        "qwen-mtp-campaign",
+        "rollback"
+      ],
+      "title": "PR 393 lazy replay-convolution boundary"
+    },
+    {
+      "confidence": "high",
+      "effect": {
+        "baseline_id": "official score 2.9533862452043236",
+        "delta_bp_ci": [
+          -55,
+          -55
+        ],
+        "metric": "ranked-decode-speedup",
+        "sample_note": "Single official run scored by the challenge evaluator; the interval is a point, not a confidence interval. Observed same-content rerun spread is about +/-130bp (byte-identical candidates scored 2.9042110287045, 2.8930596055435216 and 2.86645713502766), so a verdict is only recorded as improved or regressed when the delta exceeds that spread.",
+        "verdict": "inconclusive"
+      },
+      "evidence": [
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/394"
+      ],
+      "id": "result:qwen38-pr394-verify-ladder-rung-removal",
+      "kind": "applied_result",
+      "observed_at": "2026-08-16",
+      "provenance": "official_verified",
+      "status": "retired",
+      "summary": "Removing the verify submission rung for widths three through five. Negative, inside rerun spread. Combined with the densification and kickoff-only results, the promoted rung set is bracketed on three sides.",
+      "tags": [
+        "async",
+        "negative",
+        "official-run",
+        "qwen-mtp-campaign",
+        "scheduler"
+      ],
+      "title": "PR 394 selective verify async-rung removal"
+    },
+    {
+      "confidence": "high",
+      "effect": {
+        "baseline_id": "official score 2.9533862452043236",
+        "delta_bp_ci": [
+          -40,
+          -40
+        ],
+        "metric": "ranked-decode-speedup",
+        "sample_note": "Single official run scored by the challenge evaluator; the interval is a point, not a confidence interval. Observed same-content rerun spread is about +/-130bp (byte-identical candidates scored 2.9042110287045, 2.8930596055435216 and 2.86645713502766), so a verdict is only recorded as improved or regressed when the delta exceeds that spread.",
+        "verdict": "inconclusive"
+      },
+      "evidence": [
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/395"
+      ],
+      "id": "result:qwen38-pr395-verify-final-norm-reuse",
+      "kind": "applied_result",
+      "observed_at": "2026-08-16",
+      "provenance": "official_verified",
+      "status": "retired",
+      "summary": "Reusing the already-computed final-normalized verify hidden state instead of rebuilding one-row normalization graphs. Exact, strictly less arithmetic, and still negative: keeping the wider tensor alive across the boundary cost more than the rows it saved.",
+      "tags": [
+        "graph",
+        "high-value",
+        "negative",
+        "normalization",
+        "official-run",
+        "qwen-mtp-campaign"
+      ],
+      "title": "PR 395 verify final-normalization reuse"
+    },
+    {
+      "confidence": "high",
+      "effect": {
+        "baseline_id": "pre-E027 tree, official score 2.9533862452043236",
+        "delta_bp_ci": [
+          241,
+          241
+        ],
+        "metric": "ranked-decode-speedup",
+        "sample_note": "Single official run scored by the challenge evaluator; the interval is a point, not a confidence interval. Observed same-content rerun spread is about +/-130bp (byte-identical candidates scored 2.9042110287045, 2.8930596055435216 and 2.86645713502766), so a verdict is only recorded as improved or regressed when the delta exceeds that spread.",
+        "verdict": "improved"
+      },
+      "evidence": [
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/414",
+        "qwen38 campaign promotion ledger, PROMOTION_LEDGER.md (E029)"
+      ],
+      "id": "result:qwen38-pr414-m6m9-direct-nibble-qmv",
+      "kind": "applied_result",
+      "observed_at": "2026-08-16",
+      "provenance": "official_verified",
+      "status": "promoted",
+      "summary": "A disjoint QMV regrouping at output widths six and nine using direct nibble access, submitted on the pre-precision-island tree and promoted. Its whole-path overlay restored the incumbent head files, which is why the precision-island head disappeared from the editable tree without being a negative result.",
+      "tags": [
+        "metal",
+        "official-run",
+        "positive",
+        "qmv",
+        "qwen-mtp-campaign"
+      ],
+      "title": "M6/M9 direct-nibble QMV regrouping"
+    }
+  ],
+  "schema_version": 2
+}

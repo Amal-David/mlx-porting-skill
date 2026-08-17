@@ -1,0 +1,545 @@
+{
+  "edges": [
+    {
+      "confidence": "high",
+      "from": "constraint:declared-artifact-digest-identity",
+      "rationale": "The runner resolves and digest-checks the declared artifact before running anything.",
+      "relation": "requires_gate",
+      "to": "mechanism:declared-quantized-draft-head"
+    },
+    {
+      "confidence": "high",
+      "from": "constraint:editable-surface-is-gate-zero",
+      "rationale": "Both public attempts failed this gate before producing any performance evidence.",
+      "relation": "cannot_validate",
+      "to": "mechanism:entropy-coded-weight-stream"
+    },
+    {
+      "confidence": "high",
+      "from": "constraint:editable-surface-is-gate-zero",
+      "rationale": "All four public attempts failed this gate before producing any performance evidence.",
+      "relation": "cannot_validate",
+      "to": "mechanism:two-bit-compact-draft-readout"
+    },
+    {
+      "confidence": "high",
+      "from": "constraint:no-trustworthy-local-thermal-source",
+      "rationale": "Without a thermal gate, local timing cannot even be self-consistent.",
+      "relation": "supports",
+      "to": "constraint:official-evaluator-is-the-only-authority"
+    },
+    {
+      "confidence": "high",
+      "from": "constraint:official-evaluator-is-the-only-authority",
+      "rationale": "Local isolates repeatedly disagreed with the ranked run.",
+      "relation": "supports",
+      "to": "finding:isolated-kernel-gain-does-not-transfer"
+    },
+    {
+      "confidence": "high",
+      "from": "constraint:target-side-bit-exactness",
+      "rationale": "Legal because it touches only proposal-side tensors and leaves the verifier untouched.",
+      "relation": "constrains",
+      "to": "mechanism:bf16-precision-island-draft-head"
+    },
+    {
+      "confidence": "high",
+      "from": "constraint:target-side-bit-exactness",
+      "rationale": "Legal precisely because it is proposal-side; it cannot change emitted tokens.",
+      "relation": "constrains",
+      "to": "mechanism:compact-draft-vocabulary-selector"
+    },
+    {
+      "confidence": "high",
+      "from": "constraint:target-side-bit-exactness",
+      "rationale": "Legal because it is proposal-side; the open question is acceptance, not correctness.",
+      "relation": "constrains",
+      "to": "mechanism:two-bit-compact-draft-readout"
+    },
+    {
+      "confidence": "high",
+      "from": "constraint:target-side-bit-exactness",
+      "rationale": "Target-side readout: requires identical ordered top-two ids, values, and tie-breaking.",
+      "relation": "requires_gate",
+      "to": "mechanism:exact-hierarchical-top-two"
+    },
+    {
+      "confidence": "high",
+      "from": "constraint:target-side-bit-exactness",
+      "rationale": "Target-side attention: requires bit-identical verification outputs.",
+      "relation": "requires_gate",
+      "to": "mechanism:grouped-sdpa-kv-reuse"
+    },
+    {
+      "confidence": "high",
+      "from": "constraint:target-side-bit-exactness",
+      "rationale": "Feeds trusted recurrent state; requires exact FP32 accumulation and rounding boundary.",
+      "relation": "requires_gate",
+      "to": "mechanism:one-launch-packed-gdn-prework"
+    },
+    {
+      "confidence": "high",
+      "from": "constraint:target-side-bit-exactness",
+      "rationale": "Beta enters trusted recurrent state; a one-ULP drift changes emitted tokens.",
+      "relation": "requires_gate",
+      "to": "mechanism:packed-gdn-beta-fold"
+    },
+    {
+      "confidence": "high",
+      "from": "constraint:target-side-bit-exactness",
+      "rationale": "Target-side arithmetic: requires an exactness proof at the affected shape.",
+      "relation": "requires_gate",
+      "to": "mechanism:qmv-row-regrouping"
+    },
+    {
+      "confidence": "high",
+      "from": "finding:base-dependent-mechanism-sign",
+      "rationale": "The mechanism's sign flipped across a frontier move with full parity both times.",
+      "relation": "constrains",
+      "to": "mechanism:qmv-row-regrouping"
+    },
+    {
+      "confidence": "high",
+      "from": "finding:exact-work-removal-can-still-regress",
+      "rationale": "Two independent negatives on two bases.",
+      "relation": "invalidates",
+      "to": "mechanism:eval-root-trim"
+    },
+    {
+      "confidence": "high",
+      "from": "finding:exact-work-removal-can-still-regress",
+      "rationale": "Exact and strictly less arithmetic, still negative.",
+      "relation": "invalidates",
+      "to": "mechanism:verify-final-normalization-reuse"
+    },
+    {
+      "confidence": "high",
+      "from": "finding:official-rerun-variation",
+      "rationale": "The finding is derived from the null-control reruns.",
+      "relation": "depends_on",
+      "to": "mechanism:unchanged-rerun-control"
+    },
+    {
+      "confidence": "high",
+      "from": "finding:official-rerun-variation",
+      "rationale": "The spread is what makes a +3 bp promotion an unresolved effect.",
+      "relation": "supports",
+      "to": "finding:promotion-is-not-effect-resolution"
+    },
+    {
+      "confidence": "high",
+      "from": "finding:surface-failure-yields-no-evidence",
+      "rationale": "The family remains open precisely because no attempt was ever scored.",
+      "relation": "supports",
+      "to": "hypothesis:qwen38-entropy-coded-weight-stream"
+    },
+    {
+      "confidence": "high",
+      "from": "finding:surface-failure-yields-no-evidence",
+      "rationale": "Four unscored attempts are four missing measurements, not four negatives.",
+      "relation": "supports",
+      "to": "hypothesis:qwen38-two-bit-compact-readout"
+    },
+    {
+      "confidence": "high",
+      "from": "finding:weight-error-is-not-proposal-quality",
+      "rationale": "Three independent officially scored negatives close the family.",
+      "relation": "invalidates",
+      "to": "mechanism:weight-error-minimised-draft-head"
+    },
+    {
+      "confidence": "medium",
+      "from": "finding:weight-error-is-not-proposal-quality",
+      "rationale": "Targeted correction of the worst rows gained where global norm minimisation lost.",
+      "relation": "supports",
+      "to": "mechanism:bf16-precision-island-draft-head"
+    },
+    {
+      "confidence": "high",
+      "from": "finding:weight-stream-dominates-readout",
+      "rationale": "The byte ratio removes the payoff before any exactness question is reached.",
+      "relation": "invalidates",
+      "to": "mechanism:fused-target-lmhead-top-two"
+    },
+    {
+      "confidence": "low",
+      "from": "hypothesis:qwen38-entropy-coded-weight-stream",
+      "rationale": "The hypothesis names the mechanism that has never been scored.",
+      "relation": "supports",
+      "to": "mechanism:entropy-coded-weight-stream"
+    },
+    {
+      "confidence": "low",
+      "from": "hypothesis:qwen38-token-conditioned-draft-adapter",
+      "rationale": "The runtime exists but has never been measured.",
+      "relation": "supports",
+      "to": "mechanism:token-conditioned-lowrank-draft-adapter"
+    },
+    {
+      "confidence": "low",
+      "from": "hypothesis:qwen38-two-bit-compact-readout",
+      "rationale": "The hypothesis names the mechanism that has never been scored.",
+      "relation": "supports",
+      "to": "mechanism:two-bit-compact-draft-readout"
+    },
+    {
+      "confidence": "high",
+      "from": "mechanism:bf16-precision-island-draft-head",
+      "rationale": "The precision islands are added to a declared external head artifact.",
+      "relation": "depends_on",
+      "to": "mechanism:declared-quantized-draft-head"
+    },
+    {
+      "confidence": "low",
+      "from": "mechanism:bf16-precision-island-draft-head",
+      "rationale": "Any self-speculative or draft-model stack with a quantized draft head can host targeted precision islands on its highest-error rows; the payoff is unmeasured off this model.",
+      "relation": "transfer_predicted",
+      "to": "model:qwen3-8b"
+    },
+    {
+      "confidence": "high",
+      "from": "mechanism:compiled-proposal-head-history",
+      "rationale": "Adjacent members of the same proposal-front compilation family.",
+      "relation": "overlaps",
+      "to": "mechanism:compiled-mtp-fusion-front"
+    },
+    {
+      "confidence": "high",
+      "from": "mechanism:dv64-gdn-recurrence",
+      "rationale": "Both retile the same gated-delta recurrence; both measured negative.",
+      "relation": "overlaps",
+      "to": "mechanism:grouped-hv-wide-gdn-recurrence"
+    },
+    {
+      "confidence": "high",
+      "from": "mechanism:head-step-cost-retune",
+      "rationale": "The scalar being retuned belongs to the promoted scheduler.",
+      "relation": "depends_on",
+      "to": "mechanism:adaptive-round-cost-scheduler"
+    },
+    {
+      "confidence": "high",
+      "from": "mechanism:lazy-replay-convolution-boundary",
+      "rationale": "It changes how the replay tape is materialized.",
+      "relation": "depends_on",
+      "to": "mechanism:prefix-replay-rollback"
+    },
+    {
+      "confidence": "high",
+      "from": "mechanism:recurrent-replay-prefetch",
+      "rationale": "The prefetch is only meaningful when replay is the rollback authority.",
+      "relation": "depends_on",
+      "to": "mechanism:prefix-replay-rollback"
+    },
+    {
+      "confidence": "low",
+      "from": "mechanism:recurrent-replay-prefetch",
+      "rationale": "Prefetching the rollback replay tape is generic to any recurrent-state speculative stack, but the measured effect here never exceeded rerun spread.",
+      "relation": "transfer_predicted",
+      "to": "model:qwen3-8b"
+    }
+  ],
+  "generated_at": "2026-08-17",
+  "graph_id": "mlx-porting-skill/campaigns/qwen38-mtp/knowledge",
+  "nodes": [
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/256",
+        "qwen38 campaign promotion ledger, PROMOTION_LEDGER.md (E019)"
+      ],
+      "id": "finding:base-dependent-mechanism-sign",
+      "kind": "finding",
+      "observed_at": "2026-08-16",
+      "provenance": "official_verified",
+      "status": "established",
+      "summary": "An M8 QMV row regrouping scored above its base on one promoted main and below its base on a later one, both with full parity. A mechanism's sign is a property of the mechanism-plus-base pair, not of the mechanism. Re-measure after every rebase; do not carry a positive receipt forward across a frontier move.",
+      "tags": [
+        "generalizable",
+        "high-value",
+        "qmv",
+        "transfer"
+      ],
+      "title": "The same kernel regrouping is positive on one base and negative on another"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/223",
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/247",
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/248",
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/255",
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/257",
+        "qwen38 campaign findings note, FINDINGS.md (F-013)"
+      ],
+      "id": "finding:confounded-bundles-cannot-attribute",
+      "kind": "finding",
+      "observed_at": "2026-08-16",
+      "provenance": "code_verified",
+      "status": "established",
+      "summary": "Several public submissions advertised a one-line scheduler experiment while their actual diffs spanned four to eight files and removed promoted mechanisms. Whatever those runs scored, they cannot validate the advertised change, and a positive composite score does not license adopting any component. Read the diff, not the note.",
+      "tags": [
+        "attribution",
+        "generalizable",
+        "high-value",
+        "methodology"
+      ],
+      "title": "Bundled candidates cannot attribute a component sign"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/237",
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/290",
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/393",
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/395",
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/105",
+        "https://ml-explore.github.io/mlx/build/html/usage/lazy_evaluation.html"
+      ],
+      "id": "finding:exact-work-removal-can-still-regress",
+      "kind": "finding",
+      "observed_at": "2026-08-16",
+      "provenance": "official_verified",
+      "status": "established",
+      "summary": "Four separate exact, strictly-less-work changes measured negative on the ranked run: trimming the evaluation root (twice), reusing an already-computed final-normalized hidden state, lazily materializing the replay convolution carrier, and pre-sizing the proposal head's cache. Under a lazy graph runtime, removing an eval boundary or extending a tensor's liveness changes scheduling and allocation in ways that can cost more than the arithmetic saved. 'It does strictly less' is a hypothesis, not a result.",
+      "tags": [
+        "eval-boundary",
+        "generalizable",
+        "graph",
+        "high-value"
+      ],
+      "title": "Removing exact work is not automatically faster"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "qwen38 campaign promotion ledger, PROMOTION_LEDGER.md (E023, E024, PR363)",
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/363"
+      ],
+      "id": "finding:isolated-kernel-gain-does-not-transfer",
+      "kind": "finding",
+      "observed_at": "2026-08-16",
+      "provenance": "official_verified",
+      "status": "established",
+      "summary": "Three independent instances: a Dv64 recurrence retile whose isolated recurrence ratios improved produced a null whole-run result; a semantic width repair with a large local dispatch-cliff saving scored 1.4 percent negative; and a proposal QMV output reuse that was faster in a compact microbenchmark regressed once serialized. Microbenchmark deltas on a hot kernel do not survive contact with a mixed hidden prompt distribution, because the ranked pool does not spend its time in the shape the microbenchmark measured.",
+      "tags": [
+        "generalizable",
+        "high-value",
+        "measurement",
+        "transfer"
+      ],
+      "title": "Isolated kernel gains routinely fail to reach the ranked score"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "qwen38 campaign promotion ledger, PROMOTION_LEDGER.md (E014)",
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/234",
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/236"
+      ],
+      "id": "finding:official-rerun-variation",
+      "kind": "finding",
+      "observed_at": "2026-08-16",
+      "provenance": "official_verified",
+      "status": "established",
+      "summary": "Three official runs of byte-identical or byte-equivalent candidate content scored 2.9042110287045, 2.8930596055435216, and 2.86645713502766. That is a 130-basis-point spread with no code difference at all. Any single-run delta smaller than this is not a measurement of the intervention, and roughly two thirds of the officially scored candidates in this campaign fall inside it. Every applied_result in this graph records its verdict against this spread, which is why many results the campaign called 'rejected' are recorded here as inconclusive: the campaign's decision to retire them was correct policy, but the number alone did not establish harm.",
+      "tags": [
+        "calibration",
+        "generalizable",
+        "high-value",
+        "measurement"
+      ],
+      "title": "Byte-identical candidates score up to 130 basis points apart"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "qwen38 campaign promotion ledger, PROMOTION_LEDGER.md (E020)",
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/194"
+      ],
+      "id": "finding:promotion-is-not-effect-resolution",
+      "kind": "finding",
+      "observed_at": "2026-08-16",
+      "provenance": "official_verified",
+      "status": "established",
+      "summary": "A leaderboard promotes whatever ranks above the incumbent on one run. Two of the mechanisms in the promoted stack were promoted on deltas of +3 and +9 basis points, one to two orders of magnitude below the evaluator's own same-content spread. They are worth keeping because they are exact and cheap, not because they were shown to help. Reading a promoted stack as a stack of proven wins overstates what the receipts say.",
+      "tags": [
+        "generalizable",
+        "high-value",
+        "measurement",
+        "promotion"
+      ],
+      "title": "Promotion and measured effect are different things"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "qwen38 campaign promotion ledger, PROMOTION_LEDGER.md",
+        "qwen38 campaign findings note, FINDINGS.md",
+        "https://arxiv.org/abs/2211.17192"
+      ],
+      "id": "finding:speculative-search-space-is-asymmetric",
+      "kind": "finding",
+      "observed_at": "2026-08-16",
+      "provenance": "official_verified",
+      "status": "established",
+      "summary": "Because the verifier owns emitted tokens, proposal-side interventions need no parity proof and can be attempted quickly, while target-side kernel changes need an exactness argument before they can even be built. In this campaign the cheap half produced many legal attempts and one large win, and the expensive half produced most of the promoted stack. Budget accordingly: prototype freely on the proposal side, but expect the durable structural wins to require the parity work.",
+      "tags": [
+        "generalizable",
+        "speculative-decoding",
+        "strategy"
+      ],
+      "title": "Proposal-side changes are cheap to try and rarely pay; target-side changes are the reverse"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/202",
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/204",
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/216",
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/220",
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/230",
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/244"
+      ],
+      "id": "finding:surface-failure-yields-no-evidence",
+      "kind": "finding",
+      "observed_at": "2026-08-16",
+      "provenance": "official_verified",
+      "status": "established",
+      "summary": "Two of the most obviously promising ideas in this problem -- a lossless entropy-coded weight stream and a two-bit compact draft readout -- have no official performance evidence in either direction after six combined submissions, because every one of them failed the editable-surface or moving-base gate before it was measured. Resubmitting an identical patch after a surface failure produces another surface failure, not evidence. Treat 'attempted and failed unscored' as an open question, never as a negative.",
+      "tags": [
+        "evidence-gap",
+        "generalizable",
+        "high-value",
+        "submission"
+      ],
+      "title": "Unscored surface failures leave whole mechanism families unmeasured"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/208",
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/359",
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/360",
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/386",
+        "qwen38 campaign promotion ledger, PROMOTION_LEDGER.md (E027)"
+      ],
+      "id": "finding:weight-error-is-not-proposal-quality",
+      "kind": "finding",
+      "observed_at": "2026-08-16",
+      "provenance": "official_verified",
+      "status": "established",
+      "summary": "Three officially scored draft heads built to minimise weight reconstruction error (lower MSE, activation-aware, and an fc-BF16 mixed layout) all measured negative, one by more than thirteen percent. The head that best reconstructs the base weights is not the head that best agrees with the base model's next token, and a draft head's only job is agreement. The one head intervention that did gain corrected specific high-error Q, K, and V rows rather than minimising a global norm.",
+      "tags": [
+        "generalizable",
+        "high-value",
+        "proposal-head",
+        "quantization"
+      ],
+      "title": "Minimising draft-head weight error does not buy acceptance"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "qwen38 campaign hypothesis backlog, HYPOTHESES.md (H-002)",
+        "qwen38 campaign promotion ledger, PROMOTION_LEDGER.md (E002)"
+      ],
+      "id": "finding:weight-stream-dominates-readout",
+      "kind": "finding",
+      "observed_at": "2026-08-16",
+      "provenance": "code_verified",
+      "status": "established",
+      "summary": "At the target vocabulary projection the quantized weight stream is roughly 682 MiB per row while the logits tensor is roughly 0.47 MiB, a ratio near 1450 to 1. Any fusion justified by 'we avoid materializing the logits' is optimizing three hundredths of a percent of the traffic while taking on an exact global affine-4 reduction. Check the byte ratio before designing the kernel.",
+      "tags": [
+        "generalizable",
+        "high-value",
+        "readout",
+        "roofline"
+      ],
+      "title": "The quantized weight stream dwarfs the logits it produces"
+    },
+    {
+      "confidence": "low",
+      "evidence": [
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/204",
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/220"
+      ],
+      "id": "hypothesis:qwen38-entropy-coded-weight-stream",
+      "kind": "hypothesis",
+      "observed_at": "2026-08-16",
+      "provenance": "code_verified",
+      "status": "open",
+      "summary": "The target projection is weight-stream bound by roughly three orders of magnitude, so compressing the stored codes is the intervention with the best roofline argument in the problem. The counter-argument is that in-kernel decode, LUT pressure, cursor state, and lost coalescing can each cost more than the bytes saved, and one public attempt also bypassed the live compact proposal projection. Two submissions exist and neither produced a score.",
+      "tags": [
+        "compression",
+        "high-upside",
+        "open",
+        "qmv"
+      ],
+      "title": "A lossless entropy-coded weight stream could pay in a stream-bound regime"
+    },
+    {
+      "confidence": "low",
+      "evidence": [
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/182",
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/193",
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/216",
+        "qwen38 campaign findings note, FINDINGS.md (F-015)"
+      ],
+      "id": "hypothesis:qwen38-target-tail-margin-depth-cap",
+      "kind": "hypothesis",
+      "observed_at": "2026-08-16",
+      "provenance": "official_verified",
+      "status": "rejected-before-implementation",
+      "summary": "The prior target tail's ordered top-two values are already on the host before the next policy call, so the margin costs no extra evaluation or synchronization, and the rule was literally novel across 224 audited public submissions. Rejected anyway: target certainty is a weak proxy for proposal-head agreement, about 45 percent of proposal misses occur at large backbone margins, adjacent margin-weighted confidence policies lost roughly five percent officially, and skipped rounds defer proposal-history catch-up cost. Novelty is not evidence.",
+      "tags": [
+        "novel-but-negative-prior",
+        "policy",
+        "rejected",
+        "scheduler"
+      ],
+      "title": "The previous target tail's top-two margin could cap the next draft depth for free"
+    },
+    {
+      "confidence": "low",
+      "evidence": [
+        "qwen38 campaign promotion ledger, PROMOTION_LEDGER.md (E028)"
+      ],
+      "id": "hypothesis:qwen38-token-conditioned-draft-adapter",
+      "kind": "hypothesis",
+      "observed_at": "2026-08-16",
+      "provenance": "author_claim",
+      "status": "open",
+      "summary": "Train a rank-2/4/8 adapter over the draft head's logits on held-out accepted-prefix evidence. Runtime and a deterministic trainer pass their local gates and a synthetic end-to-end schema test, but no capture, trained artifact, freeze, or submission exists, so there is no evidence in either direction. It is the only remaining live proposal-quality idea after weight-error minimisation was retired three times.",
+      "tags": [
+        "adapter",
+        "open",
+        "proposal-head",
+        "unmeasured"
+      ],
+      "title": "A small token-conditioned adapter on draft logits could raise acceptance"
+    },
+    {
+      "confidence": "low",
+      "evidence": [
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/202",
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/216",
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/230",
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/244"
+      ],
+      "id": "hypothesis:qwen38-two-bit-compact-readout",
+      "kind": "hypothesis",
+      "observed_at": "2026-08-16",
+      "provenance": "code_verified",
+      "status": "open",
+      "summary": "Proposal-side only, so it needs no exactness proof, and the compact selector already restricts the vocabulary. Four submissions, zero scores, all lost to surface or moving-base gates. The open question is entirely empirical: does the acceptance loss from a two-bit readout exceed the proposal time saved?",
+      "tags": [
+        "open",
+        "proposal-head",
+        "quantization"
+      ],
+      "title": "A two-bit compact draft readout could cut proposal weight traffic fourfold"
+    }
+  ],
+  "schema_version": 2
+}

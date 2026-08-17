@@ -1,0 +1,214 @@
+{
+  "edges": [
+    {
+      "confidence": "high",
+      "from": "external:mlx-cache-block-growth",
+      "rationale": "Establishes the 256-token block growth the preallocation was designed to avoid.",
+      "relation": "supports",
+      "to": "mechanism:proposal-head-cache-preallocation"
+    },
+    {
+      "confidence": "high",
+      "from": "external:mlx-compile-and-lazy-eval",
+      "rationale": "Compilation is only safe for stable-shape pure regions with explicit state.",
+      "relation": "constrains",
+      "to": "mechanism:compiled-mtp-fusion-front"
+    },
+    {
+      "confidence": "high",
+      "from": "external:mlx-compile-and-lazy-eval",
+      "rationale": "Documents that both too many and too few evaluation boundaries cost time.",
+      "relation": "supports",
+      "to": "finding:exact-work-removal-can-still-regress"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:mlx-lm-native-mtp-pr990",
+      "rationale": "Independent implementation of hybrid conv/recurrent rollback for this family.",
+      "relation": "supports",
+      "to": "trait:gated-delta-net"
+    },
+    {
+      "confidence": "high",
+      "from": "external:mlx-metal-qmv-guidance",
+      "rationale": "Upstream thresholds are hardware-tuned; retuning one without a profile is unsupported.",
+      "relation": "constrains",
+      "to": "mechanism:wide-qmv-threshold-retune"
+    },
+    {
+      "confidence": "high",
+      "from": "external:mlx-metal-qmv-guidance",
+      "rationale": "Upstream guidance on shape-aware dispatch and fixed reduction order.",
+      "relation": "supports",
+      "to": "mechanism:paired-qmv"
+    },
+    {
+      "confidence": "high",
+      "from": "external:qwen-mtp-serving-contract",
+      "rationale": "Establishes the model's declared MTP, embedding-sharing, and recurrent-state contract.",
+      "relation": "supports",
+      "to": "model:qwen3.8-27b-mtp"
+    },
+    {
+      "confidence": "high",
+      "from": "external:qwen38-mtp-challenge",
+      "rationale": "The challenge repository defines the target, the editable surface, and the scoring.",
+      "relation": "supports",
+      "to": "model:qwen3.8-27b-mtp"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:speculative-decoding-economics",
+      "rationale": "The verifier-owns-output structure is what makes the search space asymmetric.",
+      "relation": "supports",
+      "to": "finding:speculative-search-space-is-asymmetric"
+    },
+    {
+      "confidence": "high",
+      "from": "external:speculative-decoding-economics",
+      "rationale": "The round-cost scheduler implements the committed-tokens-per-cycle-time objective.",
+      "relation": "supports",
+      "to": "mechanism:adaptive-round-cost-scheduler"
+    }
+  ],
+  "generated_at": "2026-08-17",
+  "graph_id": "mlx-porting-skill/campaigns/qwen38-mtp/references",
+  "nodes": [
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://github.com/ml-explore/mlx-lm/blob/main/mlx_lm/models/cache.py",
+        "https://github.com/ml-explore/mlx-swift-lm/blob/main/Libraries/MLXLMCommon/KVCache.swift"
+      ],
+      "id": "external:mlx-cache-block-growth",
+      "kind": "external_reference",
+      "observed_at": "2026-08-16",
+      "provenance": "code_verified",
+      "status": "synthesized",
+      "summary": "Both the Python and Swift MLX cache implementations grow capacity in blocks, so preallocation is only valid when the scored maximum is genuinely known.",
+      "tags": [
+        "allocation",
+        "cache",
+        "mlx"
+      ],
+      "title": "MLX KV caches grow in 256-token blocks"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://ml-explore.github.io/mlx/build/html/usage/compile.html",
+        "https://ml-explore.github.io/mlx/build/html/usage/lazy_evaluation.html"
+      ],
+      "id": "external:mlx-compile-and-lazy-eval",
+      "kind": "external_reference",
+      "observed_at": "2026-08-16",
+      "provenance": "code_verified",
+      "status": "synthesized",
+      "summary": "Stable-shape pure regions can be compiled but state must stay explicit. Too many evaluation boundaries add overhead while unbounded lazy graphs also hurt, which is the documented reason both adding and removing eval roots can regress.",
+      "tags": [
+        "compile",
+        "graph",
+        "mlx"
+      ],
+      "title": "MLX compile and lazy-evaluation constraints"
+    },
+    {
+      "confidence": "medium",
+      "evidence": [
+        "https://github.com/ml-explore/mlx-lm/pull/990"
+      ],
+      "id": "external:mlx-lm-native-mtp-pr990",
+      "kind": "external_reference",
+      "observed_at": "2026-08-16",
+      "provenance": "code_verified",
+      "status": "screened",
+      "summary": "Corroborates target-verified native MTP and hybrid conv/recurrent rollback. Useful as contract evidence only; the challenge implementation is further along.",
+      "tags": [
+        "mlx-lm",
+        "native-mtp",
+        "rollback",
+        "unmerged"
+      ],
+      "title": "Open MLX-LM native Qwen MTP implementation"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://github.com/ml-explore/mlx/blob/main/mlx/backend/metal/quantized.cpp",
+        "https://github.com/ml-explore/mlx/blob/main/mlx/backend/metal/kernels/quantized.h"
+      ],
+      "id": "external:mlx-metal-qmv-guidance",
+      "kind": "external_reference",
+      "observed_at": "2026-08-16",
+      "provenance": "code_verified",
+      "status": "synthesized",
+      "summary": "Use shape-aware QMV dispatch, coalesced packed loads, a fixed float reduction order, alignment specialization, and measured occupancy. Do not assume staging or altered arithmetic is faster.",
+      "tags": [
+        "exactness",
+        "metal",
+        "qmv"
+      ],
+      "title": "Upstream MLX and Apple small-M Metal guidance"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://huggingface.co/Qwen/Qwen3.5-27B/raw/main/config.json",
+        "https://huggingface.co/Qwen/Qwen3.5-27B/blob/main/model.safetensors.index.json",
+        "https://github.com/vllm-project/vllm/blob/main/vllm/model_executor/models/qwen3_5_mtp.py"
+      ],
+      "id": "external:qwen-mtp-serving-contract",
+      "kind": "external_reference",
+      "observed_at": "2026-08-16",
+      "provenance": "code_verified",
+      "status": "synthesized",
+      "summary": "The published config and weight index establish one attached MTP full-attention layer, shared token embeddings, verifier-owned readout, and FP32 recurrent state. The vLLM implementation corroborates the loader and recursive-step contract.",
+      "tags": [
+        "contract",
+        "mtp",
+        "qwen"
+      ],
+      "title": "Qwen native-MTP serving contract"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge",
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pulls?q=is%3Apr+is%3Amerged"
+      ],
+      "id": "external:qwen38-mtp-challenge",
+      "kind": "external_reference",
+      "observed_at": "2026-08-16",
+      "provenance": "code_verified",
+      "status": "synthesized",
+      "summary": "The public challenge repository. Every officially scored result cited in this graph has a public pull request or a public promoted commit here; the campaign-private candidates cite the campaign ledger instead.",
+      "tags": [
+        "challenge",
+        "official",
+        "qwen-mtp"
+      ],
+      "title": "MLX Fast Qwen native-MTP challenge repository"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://arxiv.org/abs/2211.17192",
+        "https://arxiv.org/abs/2402.12374",
+        "https://arxiv.org/abs/2408.11850"
+      ],
+      "id": "external:speculative-decoding-economics",
+      "kind": "external_reference",
+      "observed_at": "2026-08-16",
+      "provenance": "research_inference",
+      "status": "synthesized",
+      "summary": "The objective is expected committed tokens divided by full cycle time, including proposal, verification, cache, and recovery cost. Acceptance rate alone is not the objective, which is why several acceptance-improving interventions in this campaign measured negative.",
+      "tags": [
+        "economics",
+        "scheduler",
+        "speculative-decoding"
+      ],
+      "title": "Acceptance-aware speculative decoding economics"
+    }
+  ],
+  "schema_version": 2
+}

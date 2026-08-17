@@ -1,0 +1,296 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://auto-mlx.dev/schemas/evidence_graph.json",
+  "title": "Auto MLX evidence graph",
+  "description": "Version 2 of the trait-indexed evidence hypergraph shared between the auto-mlx tool and the knowledge repository. Hyperedges are reified: an applied_result node binds one mechanism to one model, hardware, and workload through typed binary edges, and carries the structured measurement effect. The graph is a decision aid with receipt citations; it never substitutes for a fresh measurement and it never promotes.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "graph_id",
+    "generated_at",
+    "nodes",
+    "edges"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 2
+    },
+    "graph_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200
+    },
+    "generated_at": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 64
+    },
+    "nodes": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/node"
+      }
+    },
+    "edges": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/edge"
+      }
+    }
+  },
+  "$defs": {
+    "identifier": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 300,
+      "pattern": "^[a-z0-9][a-z0-9._/@-]*:[A-Za-z0-9][A-Za-z0-9._/@+-]*$"
+    },
+    "confidence": {
+      "enum": [
+        "high",
+        "medium",
+        "low"
+      ]
+    },
+    "provenance": {
+      "enum": [
+        "official_verified",
+        "code_verified",
+        "local_measured",
+        "author_claim",
+        "contributor_claim",
+        "replicated",
+        "research_inference",
+        "transfer_inference"
+      ]
+    },
+    "node": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "kind",
+        "title",
+        "status",
+        "confidence",
+        "provenance",
+        "summary",
+        "evidence",
+        "tags",
+        "observed_at"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "kind": {
+          "enum": [
+            "model",
+            "trait",
+            "hardware",
+            "workload",
+            "mechanism",
+            "applied_result",
+            "hypothesis",
+            "constraint",
+            "finding",
+            "external_reference",
+            "frontier"
+          ]
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 300
+        },
+        "status": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "confidence": {
+          "$ref": "#/$defs/confidence"
+        },
+        "provenance": {
+          "$ref": "#/$defs/provenance"
+        },
+        "summary": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4000
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000
+          }
+        },
+        "tags": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          }
+        },
+        "observed_at": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "identity": {
+          "type": "object",
+          "additionalProperties": {
+            "type": [
+              "string",
+              "integer",
+              "boolean"
+            ]
+          },
+          "maxProperties": 32,
+          "propertyNames": {
+            "$ref": "#/$defs/no_surrogate_string"
+          }
+        },
+        "exactness_class": {
+          "enum": [
+            "exact_by_construction",
+            "needs_parity_proof",
+            "approximate_legal"
+          ]
+        },
+        "effect": {
+          "$ref": "#/$defs/effect"
+        }
+      },
+      "propertyNames": {
+        "$ref": "#/$defs/no_surrogate_string"
+      }
+    },
+    "effect": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "metric",
+        "verdict",
+        "delta_bp_ci"
+      ],
+      "properties": {
+        "metric": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "verdict": {
+          "enum": [
+            "improved",
+            "regressed",
+            "inconclusive"
+          ]
+        },
+        "delta_bp_ci": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "items": {
+            "type": "integer",
+            "minimum": -1000000,
+            "maximum": 1000000
+          }
+        },
+        "receipt_id": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "baseline_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 300
+        },
+        "sample_note": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1000
+        }
+      },
+      "propertyNames": {
+        "$ref": "#/$defs/no_surrogate_string"
+      }
+    },
+    "edge": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "from",
+        "to",
+        "relation",
+        "confidence",
+        "rationale"
+      ],
+      "properties": {
+        "from": {
+          "$ref": "#/$defs/identifier"
+        },
+        "to": {
+          "$ref": "#/$defs/identifier"
+        },
+        "relation": {
+          "enum": [
+            "contains",
+            "supports",
+            "constrains",
+            "depends_on",
+            "overlaps",
+            "contradicts",
+            "invalidates",
+            "suggests",
+            "requires_gate",
+            "supersedes",
+            "cannot_validate",
+            "competes_with",
+            "duplicates",
+            "exhibits",
+            "applies_to",
+            "conditioned_on",
+            "instantiates",
+            "applied_on",
+            "measured_on",
+            "under_workload",
+            "transfer_predicted",
+            "confirms",
+            "refutes"
+          ]
+        },
+        "confidence": {
+          "$ref": "#/$defs/confidence"
+        },
+        "rationale": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2000
+        },
+        "observed_at": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        }
+      },
+      "propertyNames": {
+        "$ref": "#/$defs/no_surrogate_string"
+      }
+    },
+    "no_surrogate_string": {
+      "type": "string",
+      "not": {
+        "pattern": "[\\uD800-\\uDFFF]"
+      }
+    }
+  },
+  "propertyNames": {
+    "$ref": "#/$defs/no_surrogate_string"
+  }
+}

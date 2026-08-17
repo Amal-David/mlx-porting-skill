@@ -1,0 +1,67 @@
+{
+  "edges": [
+    {
+      "confidence": "high",
+      "from": "result:v1-qwen25-05b-bf16-cast-walltime",
+      "rationale": "Measured on the repository's own Qwen2.5-0.5B-Instruct worked port.",
+      "relation": "applied_on",
+      "to": "model:qwen2.5-0.5b-instruct"
+    },
+    {
+      "confidence": "high",
+      "from": "result:v1-qwen25-05b-bf16-cast-walltime",
+      "rationale": "The measured change was the BF16 weight cast.",
+      "relation": "instantiates",
+      "to": "mechanism:bf16-weight-cast"
+    },
+    {
+      "confidence": "high",
+      "from": "result:v1-qwen25-05b-bf16-cast-walltime",
+      "rationale": "Receipts record one Apple M4 Pro host.",
+      "relation": "measured_on",
+      "to": "hardware:m4-pro"
+    },
+    {
+      "confidence": "high",
+      "from": "result:v1-qwen25-05b-bf16-cast-walltime",
+      "rationale": "Separate-process load plus six greedy tokens.",
+      "relation": "under_workload",
+      "to": "workload:six-token-greedy-decode"
+    }
+  ],
+  "generated_at": "2026-07-23",
+  "graph_id": "mlx-porting-skill/migrated/results",
+  "nodes": [
+    {
+      "confidence": "low",
+      "effect": {
+        "baseline_id": "local F32 port, schema-2 receipt, 2026-07-10",
+        "delta_bp_ci": [
+          3037,
+          3037
+        ],
+        "metric": "wall-time-speedup",
+        "sample_note": "Single local wall-time observation recomputed as a 1.3037288406x inverse ratio from schema-2 receipts; the owning asset holds the claim. The runner records execution_attested=false because no external signature or out-of-repository trust anchor exists, even though the internal model, workload, interpreter, quality, and raw-output gates pass. The workload is separate-process load plus six greedy tokens on one Apple M4 Pro, not steady-state decode or a portable product workload. No checked-in BF16 quality artifact covers output beyond the exact six-token window.",
+        "verdict": "improved"
+      },
+      "evidence": [
+        "mlx-model-porting/assets/model_outcomes.json (qwen25-05b-instruct-local-worked-port)",
+        "mlx-model-porting/assets/examples/worked-port-qwen2.5-0.5b-instruct/",
+        "mlx-model-porting/assets/benchmarks/attestations/qwen2.5-0.5b-port-bf16/"
+      ],
+      "id": "result:v1-qwen25-05b-bf16-cast-walltime",
+      "kind": "applied_result",
+      "observed_at": "2026-07-23",
+      "provenance": "local_measured",
+      "status": "held-observation",
+      "summary": "Revision 7ae557604adf67be50417f59c2c2f167def9a775 completed the offline static-intake, Torch-oracle, standalone MLX scaffold, schema-2 weight conversion, 29-rung parity, exact greedy-generation, MLX-LM cross-check, and schema-2 receipt flow on Apple M4 Pro. Schema-2 receipts observed 0.3247475000 s F32 versus 0.2490912910 s BF16 median wall time, a recomputed 1.3037288406x inverse ratio. The measurement is retained as an observation only.",
+      "tags": [
+        "held",
+        "local-observation",
+        "migrated-v1"
+      ],
+      "title": "BF16 weight cast on a local Qwen2.5-0.5B-Instruct port"
+    }
+  ],
+  "schema_version": 2
+}
