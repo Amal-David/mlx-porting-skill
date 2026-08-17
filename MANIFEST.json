@@ -2,7 +2,7 @@
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
   "version": "0.7.0",
-  "generated_at": "2026-08-17T18:31:01.299662+00:00",
+  "generated_at": "2026-08-17T18:35:56.943127+00:00",
   "file_count": 625,
   "files": [
     {
@@ -118,7 +118,7 @@
     {
       "path": "README.md",
       "size_bytes": 11303,
-      "sha256": "2128188a10c98afe95ce46d7b4bc50688df1b1c3a7209225fc2170baa84ed71b",
+      "sha256": "77cdc6d091341abef6eeb48fc7d7aab9a3a228beba4ca6e8831ab8edafced917",
       "executable": false
     },
     {
@@ -130,7 +130,7 @@
     {
       "path": "VALIDATION.md",
       "size_bytes": 21550,
-      "sha256": "2ace0f98b1eb312ab0e6895a17874d20e50f8bd15914c4fb5a818306bb1324d2",
+      "sha256": "3fc8f72eaa37cd70e17195dbb4e2666b3a279db72ef8ac7c390cf8015c1ae59d",
       "executable": false
     },
     {
@@ -1347,8 +1347,8 @@
     },
     {
       "path": "mlx-model-porting/graph/README.md",
-      "size_bytes": 5688,
-      "sha256": "a3448f679eca14d3b2b1a5c05e0189e6c786b4ad9d30f290730326fa8f7f877f",
+      "size_bytes": 6614,
+      "sha256": "f7c4f50e9db4fe0944f440cb058fd622de54d293129a2c3d26ed77d56ed30996",
       "executable": false
     },
     {
@@ -1485,8 +1485,8 @@
     },
     {
       "path": "mlx-model-porting/graph/tools/_graphlib.py",
-      "size_bytes": 26211,
-      "sha256": "4e818a4fdd542e5326161ff671a7338c5e02de9b257e9e748b77dc7d6c77f8a0",
+      "size_bytes": 27181,
+      "sha256": "fa2330d147b980e5215938470d90dcd9f6283955162b40f67a9efc8ac20df339",
       "executable": false
     },
     {
@@ -3537,8 +3537,8 @@
     },
     {
       "path": "tests/test_evidence_graph_contract.py",
-      "size_bytes": 13605,
-      "sha256": "af2d9f6840e07b6bf1b02b5f97e50016a456bde479fe8609878771f07e263bb8",
+      "size_bytes": 15391,
+      "sha256": "0c63e5a3835751f61206b49e1e6194cb22b3c0223c58dfd1eec55b5291dd7f25",
       "executable": false
     },
     {

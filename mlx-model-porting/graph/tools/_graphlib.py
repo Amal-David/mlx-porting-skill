@@ -112,6 +112,17 @@ IDENTIFIER_RE = re.compile(r"^[a-z0-9][a-z0-9._/@-]*:[A-Za-z0-9][A-Za-z0-9._/@+-
 RECEIPT_RE = re.compile(r"^[0-9a-f]{64}$")
 ISO_DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}(T[0-9:.+Z-]+)?$")
 
+ID_MIN_LENGTH = 3
+ID_MAX_LENGTH = 300
+
+# These caps are enforced by the auto-mlx executable validator but are NOT
+# expressed in the copied JSON Schema, so `check_schema_agreement` cannot see
+# drift in them. Mirror them here so a document that passes locally also passes
+# the tool.
+MAX_TAGS = 64
+MAX_EVIDENCE = 64
+MAX_IDENTITY_PROPERTIES = 32
+
 # Node id prefix must name the node kind. `applied_result` uses the shorter
 # `result:` prefix and `external_reference` uses `external:` because those are
 # the forms already used by the upstream campaign graph.
@@ -381,8 +392,11 @@ def validate_node(node, where):
         where = "%s (%s)" % (where, node_id)
         if not IDENTIFIER_RE.match(node_id):
             problems.append("%s: id does not match the prefix:slug identifier pattern" % where)
-        if len(node_id) > 300:
-            problems.append("%s: id is longer than 300 characters" % where)
+        if not ID_MIN_LENGTH <= len(node_id) <= ID_MAX_LENGTH:
+            problems.append(
+                "%s: id length %d is outside %d..%d"
+                % (where, len(node_id), ID_MIN_LENGTH, ID_MAX_LENGTH)
+            )
     elif "id" in node:
         problems.append("%s: id must be a string" % where)
 
@@ -414,6 +428,11 @@ def validate_node(node, where):
     else:
         if not evidence:
             problems.append("%s: evidence is empty; every claim needs a locator" % where)
+        if len(evidence) > MAX_EVIDENCE:
+            problems.append(
+                "%s: evidence has %d entries; the maximum is %d"
+                % (where, len(evidence), MAX_EVIDENCE)
+            )
         for index, item in enumerate(evidence):
             problem = _str_problem(item, "evidence[%d]" % index, 1, 1000)
             if problem:
@@ -429,6 +448,10 @@ def validate_node(node, where):
                 problems.append("%s: %s" % (where, problem))
         if len(set(map(repr, tags))) != len(tags):
             problems.append("%s: tags must be unique" % where)
+        if len(tags) > MAX_TAGS:
+            problems.append(
+                "%s: tags has %d entries; the maximum is %d" % (where, len(tags), MAX_TAGS)
+            )
 
     observed_at = node.get("observed_at")
     problem = _str_problem(observed_at, "observed_at", 1, 64)
@@ -442,8 +465,11 @@ def validate_node(node, where):
         if not isinstance(identity, dict):
             problems.append("%s: identity must be an object" % where)
         else:
-            if len(identity) > 32:
-                problems.append("%s: identity has more than 32 properties" % where)
+            if len(identity) > MAX_IDENTITY_PROPERTIES:
+                problems.append(
+                    "%s: identity has %d properties; the maximum is %d"
+                    % (where, len(identity), MAX_IDENTITY_PROPERTIES)
+                )
             for key, value in identity.items():
                 if not (isinstance(value, str) or _is_int(value) or _is_bool(value)):
                     problems.append(

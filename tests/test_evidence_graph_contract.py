@@ -97,6 +97,40 @@ class GraphValidityTests(unittest.TestCase):
                     anchors.get(node["id"], set()),
                 )
 
+    def test_compilation_is_lossless(self):
+        """Every shard node and edge must survive compilation byte-identically.
+
+        This is what lets one tool-side validation of the compiled graph stand
+        in for validating all sixteen shards. The auto-mlx validator accepts
+        only one self-contained document, so shards holding cross-shard edge
+        references cannot be checked there individually; if compilation is
+        lossless, checking the compiled graph checks every one of them.
+        """
+        nodes = {item["id"]: item for item in self.compiled["nodes"]}
+        edges = {
+            (item["from"], item["relation"], item["to"]): item
+            for item in self.compiled["edges"]
+        }
+        for label, document in self.documents:
+            for node in document["nodes"]:
+                with self.subTest(shard=label, node=node["id"]):
+                    self.assertEqual(node, nodes.get(node["id"]))
+            for edge in document["edges"]:
+                key = (edge["from"], edge["relation"], edge["to"])
+                with self.subTest(shard=label, edge=key):
+                    self.assertEqual(edge, edges.get(key))
+
+    def test_array_caps_match_the_tool_side_validator(self):
+        """Caps the JSON Schema does not express, so drift detection cannot see them."""
+        for node in self.compiled["nodes"]:
+            with self.subTest(node=node["id"]):
+                self.assertLessEqual(len(node["evidence"]), gl.MAX_EVIDENCE)
+                self.assertLessEqual(len(node["tags"]), gl.MAX_TAGS)
+                self.assertLessEqual(
+                    len(node.get("identity", {})), gl.MAX_IDENTITY_PROPERTIES
+                )
+                self.assertTrue(gl.ID_MIN_LENGTH <= len(node["id"]) <= gl.ID_MAX_LENGTH)
+
     def test_no_absolute_private_paths_or_secrets(self):
         self.assertEqual([], gl.scan_private_paths(self.compiled))
         self.assertEqual([], gl.scan_secrets(self.compiled))

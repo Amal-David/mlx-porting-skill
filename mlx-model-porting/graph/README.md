@@ -5,11 +5,32 @@ assets under `assets/` remain the human layer; this directory holds the same
 kind of knowledge in a form a tool can query, validate, and merge across
 models, hardware, and contributors.
 
-The schema is shared with the `auto-mlx` tool repository. `schema/evidence-graph.schema.json`
-is a copy; **auto-mlx owns it**. When it changes upstream, re-copy it and run
-the validator: `tools/_graphlib.py` cross-checks every enumeration and required
-field list against the copied file and fails loudly on drift rather than
-silently accepting a stale contract.
+The schema is shared with the `auto-mlx` tool repository.
+`schema/evidence-graph.schema.json` is a copy of
+`src/auto_mlx/schemas/evidence_graph.json` in that repository; **auto-mlx owns
+it**. When it changes upstream, re-copy it and run the validator:
+`tools/_graphlib.py` cross-checks every enumeration and required-field list
+against the copied file and fails loudly on drift rather than silently
+accepting a stale contract.
+
+Three caps are enforced by the tool's executable validator but are *not*
+expressed in the JSON Schema, so drift detection cannot see them: at most 64
+`evidence` entries, at most 64 `tags`, and at most 32 `identity` properties per
+node. They are mirrored as constants in `tools/_graphlib.py`.
+
+To cross-check a document against the tool itself:
+
+```bash
+cd <auto-mlx checkout>
+PYTHONPATH=src python3 -m auto_mlx validate graph --input <file>
+```
+
+That validator accepts one self-contained document, so only the **compiled**
+graph passes its dangling-reference check. Individual shards carrying
+cross-shard edge references fail there on closure alone; resolving those is this
+repository's validator's job. `tests/test_evidence_graph_contract.py` asserts
+that compilation is lossless, so one check of the compiled graph covers every
+node and edge of every shard.
 
 ## One command
 
