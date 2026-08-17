@@ -2,8 +2,8 @@
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
   "version": "0.7.0",
-  "generated_at": "2026-07-23T18:43:04.823902+00:00",
-  "file_count": 593,
+  "generated_at": "2026-08-17T18:25:30.484406+00:00",
+  "file_count": 625,
   "files": [
     {
       "path": ".agents/skills/mlx-model-porting",
@@ -69,8 +69,8 @@
     },
     {
       "path": ".github/workflows/validate.yml",
-      "size_bytes": 7212,
-      "sha256": "e2a2329596a80de8d0c40622114138b5cae0834ddfb45c4ef87eebd2ac6a855a",
+      "size_bytes": 7572,
+      "sha256": "c198bd040e200610f29b62adb560d5a45bd6598fcb12730dbb3ad4caac32aefa",
       "executable": false
     },
     {
@@ -81,8 +81,8 @@
     },
     {
       "path": "AGENTS.md",
-      "size_bytes": 3303,
-      "sha256": "4d59e8ddb6eb5e90ff15d63c9ee233f3b7b425d49a64b62a6d6cd60be73c35b0",
+      "size_bytes": 3257,
+      "sha256": "988d79db8336c0610c3e3a6610ae5a2bb219e92d34da237b8a993b4f0a4e839c",
       "executable": false
     },
     {
@@ -93,14 +93,14 @@
     },
     {
       "path": "CLAUDE.md",
-      "size_bytes": 2426,
-      "sha256": "65a50767e91d7e69a7269ee696555756ec1611a59f8d2eabd6a3260632c4bc20",
+      "size_bytes": 2380,
+      "sha256": "1df3d243d2f9248ee131fee9c46da2cdfb1a61934dafce6bd6882e6bebc52fe2",
       "executable": false
     },
     {
       "path": "CONTRIBUTING.md",
-      "size_bytes": 17821,
-      "sha256": "8489f23a83284bfd0d3b373d91dcdbae6032062916fb6ccd97240c6b388f1d42",
+      "size_bytes": 21176,
+      "sha256": "034a69c21ebf1b87664c099b9ecc54e29018a3baef6b53f640a0068d66c915e2",
       "executable": false
     },
     {
@@ -118,7 +118,7 @@
     {
       "path": "README.md",
       "size_bytes": 11303,
-      "sha256": "14b64a008b5761b5a6b76afa88a082dc2331f0d1021a1fc26cfcccadb79c3e35",
+      "sha256": "2128188a10c98afe95ce46d7b4bc50688df1b1c3a7209225fc2170baa84ed71b",
       "executable": false
     },
     {
@@ -130,7 +130,7 @@
     {
       "path": "VALIDATION.md",
       "size_bytes": 21550,
-      "sha256": "b4caf326f5c59115da836698750bd9e97be264776d5cc070e84170d0db7906cd",
+      "sha256": "2ace0f98b1eb312ab0e6895a17874d20e50f8bd15914c4fb5a818306bb1324d2",
       "executable": false
     },
     {
@@ -333,8 +333,8 @@
     },
     {
       "path": "mlx-model-porting/SKILL.md",
-      "size_bytes": 13457,
-      "sha256": "454d38f8f44c543fe6ee344da7a13ae09e9dd060bd88ae9c3ed457bc2697e6de",
+      "size_bytes": 13458,
+      "sha256": "eeeca7c2efc3399ad5aff640b5436c3a02a61e70d9825275440769b325154c65",
       "executable": false
     },
     {
@@ -1340,6 +1340,186 @@
       "executable": false
     },
     {
+      "path": "mlx-model-porting/graph/MECHANISM_INDEX.md",
+      "size_bytes": 33527,
+      "sha256": "e60ff0446e42c5409ba43fbf9e01977ae7b0e59e91c85bbeb33329f42a96d82a",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/graph/README.md",
+      "size_bytes": 5688,
+      "sha256": "a3448f679eca14d3b2b1a5c05e0189e6c786b4ad9d30f290730326fa8f7f877f",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/graph/compiled/evidence-graph.json",
+      "size_bytes": 453005,
+      "sha256": "4093c0bdca0de0d9e9449384dc9a0ec21e69085a22c25a7d4d633189d116cd4e",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/graph/docs/evidence-packs.md",
+      "size_bytes": 4979,
+      "sha256": "a27de8591bff536e4ee4c293af138d4bb6314a35c4aee9f3026eacf99a074a16",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/graph/packs/example-kvq8-m3max/graph-delta.json",
+      "size_bytes": 4756,
+      "sha256": "e3445aec704a25d0a1c46ce19b07fe0cc58f2c55ca10234ec83268017d6bb3ef",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/graph/packs/example-kvq8-m3max/manifest.json",
+      "size_bytes": 947,
+      "sha256": "2a77a2bd1e46a42e86e4a784a3d6fdd723de9e0a732d027ecc108c5f7ebc96d2",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/graph/packs/example-kvq8-m3max/receipts/kvq8-vs-fp16.json",
+      "size_bytes": 537,
+      "sha256": "678697424075d197cefa9b4341841db84fe28d1bb95efe5deeff5c1bbcd71952",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/graph/schema/evidence-graph.schema.json",
+      "size_bytes": 6880,
+      "sha256": "2723c37e166981af67222b2c54ca67f320ed60d9210380cd9f98478d42a1f1e2",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/graph/shards/campaigns/qwen38-mtp/knowledge.json",
+      "size_bytes": 25988,
+      "sha256": "0f03e6fdddd743dd148316b131cbae955f7bf7c0fb0cb23c2bab8012d0551dcf",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/graph/shards/campaigns/qwen38-mtp/references.json",
+      "size_bytes": 8406,
+      "sha256": "cefa09412aad1aba44c532978b31c32581060c48f9bc5187040fc51ea924eb8c",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/graph/shards/campaigns/qwen38-mtp/results.json",
+      "size_bytes": 92745,
+      "sha256": "217e25eb726509f4c789446d992f191eca22b88d739073231b42ae0043b4d44a",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/graph/shards/core/constraints.json",
+      "size_bytes": 6760,
+      "sha256": "57c3442d492ac3aea144ad1763263901ce0d48371a7eb79b25f4736068aec6be",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/graph/shards/core/hardware.json",
+      "size_bytes": 3050,
+      "sha256": "8779d3897c47a3099c1c702b1f46528d2a35e02d58831ed4b07bd92d63266bbc",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/graph/shards/core/workloads.json",
+      "size_bytes": 3635,
+      "sha256": "4a2f1bdd1c9813c42eb96b43f3c1a1c70317bba1b51d2b997c9d86eeceb96373",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/graph/shards/ecosystem/reported-results.json",
+      "size_bytes": 5145,
+      "sha256": "755d0f79de029afb77226070d50648b65f8f240df333139b2f807892d9e32ecd",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/graph/shards/mechanisms/qwen38-mtp.json",
+      "size_bytes": 46663,
+      "sha256": "f03c380501380bcdc2249f61faf01ed0d9b4030385af77ce5cec37eb8402526d",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/graph/shards/migrated/findings.json",
+      "size_bytes": 15195,
+      "sha256": "8c95b1a6dd5d69b6c7318c3dcc2e25559fb4e7a2955c65c8e79c50e1eca456e6",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/graph/shards/migrated/hypotheses.json",
+      "size_bytes": 10841,
+      "sha256": "2385e2cb5527b474570cef9f379d25b808508192c76ba718a4c15dcd61b1cc3e",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/graph/shards/migrated/mechanisms.json",
+      "size_bytes": 52487,
+      "sha256": "65b078d4cde3000f1e892e8084650e15cae6c3dc71dfeeeb0da4253bbcd07aa0",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/graph/shards/migrated/references.json",
+      "size_bytes": 150666,
+      "sha256": "4f85f61722f2105f743f3ead8d32983ff89cd68e768a9e5f179ab6529aded4cf",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/graph/shards/migrated/results.json",
+      "size_bytes": 3096,
+      "sha256": "bc767034653390422fb51059bbf76f140a08bd764b5acbe8313f8b87da711d9c",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/graph/shards/migrated/traits.json",
+      "size_bytes": 18965,
+      "sha256": "cedf752acaa4e010d59c63c1e3d11220b4cf60f00e34fce0d1cf561f181ffcd6",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/graph/shards/models/mlx-ecosystem.json",
+      "size_bytes": 2924,
+      "sha256": "29161d2bb8ad08636189d1a6f6b5fd1113c84cf66e7dd23fdeafb0ab2f3f17ab",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/graph/shards/models/qwen3.8-mtp.json",
+      "size_bytes": 8655,
+      "sha256": "0d968f204fd86e34f92ce0bb9930b3b40c5a3e75e8ee0e3b4d1bf86213cdda71",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/graph/tools/_graphlib.py",
+      "size_bytes": 26211,
+      "sha256": "4e818a4fdd542e5326161ff671a7338c5e02de9b257e9e748b77dc7d6c77f8a0",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/graph/tools/compile_graph.py",
+      "size_bytes": 2088,
+      "sha256": "6d116ebfedb677e37a70644f94f259916a382ef61228d1a1cc5ddc06f50636a6",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/graph/tools/migrate_v1.py",
+      "size_bytes": 24089,
+      "sha256": "342d83ae131ca5d2c8ce309f1221ae5a9e2b9b42d099c8b8c7f280cfac2c10aa",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/graph/tools/render_graph_summary.py",
+      "size_bytes": 8979,
+      "sha256": "2efbf95f6b9e41ca2ac1f1f9c0377c2b79e4e59ecd7aebac556d4caf4dcdb3bc",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/graph/tools/validate_graph.py",
+      "size_bytes": 3317,
+      "sha256": "cc8530cdab71ebcb583551a3a73583b25ca79705466dda539747e47603bb0e9d",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/graph/tools/validate_pack.py",
+      "size_bytes": 11865,
+      "sha256": "981b06ba8beba9cb20e93e2048a5978d96ff980399c6cc317a189c2a0286623d",
+      "executable": false
+    },
+    {
       "path": "mlx-model-porting/references/attention-and-kv.md",
       "size_bytes": 5481,
       "sha256": "e7d87f2921d994397a0e11c1dd69e55b3a1faf14c7758a6e2f649e1c6fe51645",
@@ -1373,6 +1553,12 @@
       "path": "mlx-model-porting/references/deep-research-loop.md",
       "size_bytes": 22144,
       "sha256": "6858938d0d554fae88452f1a56ad20d896934d76c820a318669927f36fa465ac",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/references/evidence-graph.md",
+      "size_bytes": 6102,
+      "sha256": "b5cbd90477e8169ad3289bf3314a2e697d3a6fddbbaf14933479b475d7323174",
       "executable": false
     },
     {
@@ -2662,7 +2848,7 @@
     {
       "path": "site/data.js",
       "size_bytes": 184637,
-      "sha256": "026b0f906ab27a4587907013f88a863ac4028fe1c10587c358c0e83cdfe5fd1d",
+      "sha256": "705f0f7d9394e66319cc7b09381aa2bf8ade62b10e485cb9bed3b31870356ced",
       "executable": false
     },
     {
@@ -2715,8 +2901,8 @@
     },
     {
       "path": "tasks/lessons.md",
-      "size_bytes": 8285,
-      "sha256": "263f0d712e750915b56f071a850e00dd6cdcfe905ca152c87ec3078eb8eb49cb",
+      "size_bytes": 9299,
+      "sha256": "9fc60b03eaf819c440b071addb05749881cbbe19be8c200fc564825618e3f6d3",
       "executable": false
     },
     {
@@ -3347,6 +3533,12 @@
       "path": "tests/test_encoder_decoder_contract.py",
       "size_bytes": 16863,
       "sha256": "6ea248dbaed90486e1eea115322df2359bf23f9afaf9b9f5d40f770d37eec987",
+      "executable": false
+    },
+    {
+      "path": "tests/test_evidence_graph_contract.py",
+      "size_bytes": 13605,
+      "sha256": "af2d9f6840e07b6bf1b02b5f97e50016a456bde479fe8609878771f07e263bb8",
       "executable": false
     },
     {

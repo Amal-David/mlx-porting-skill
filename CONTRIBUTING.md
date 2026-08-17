@@ -134,6 +134,62 @@ their explicit user-opt-in advisor policy; rejected or superseded methods are
 never selectable. A local-promotion number must retain its metric, exact target
 constraints, experiment fingerprint, and effective range as one scoped record.
 
+## Evidence graph and pack extension flow
+
+`mlx-model-porting/graph/` is the machine-readable knowledge layer. It stores
+the same kind of knowledge as `assets/`, in a strict validated graph keyed by
+model traits, so that a measured result compounds across models, hardware, and
+contributors instead of living in one runbook paragraph. Read
+`mlx-model-porting/graph/README.md` for the invariants and
+`mlx-model-porting/references/evidence-graph.md` for how an agent queries it.
+
+The schema at `mlx-model-porting/graph/schema/evidence-graph.schema.json` is a
+copy. The `auto-mlx` tool repository owns it. When it changes upstream, re-copy
+it and run the validator: the validator cross-checks every enumeration and
+required-field list against the copied file, so a stale contract fails loudly
+instead of being silently accepted.
+
+One command validates everything:
+
+```bash
+python3 mlx-model-porting/graph/tools/validate_graph.py
+```
+
+Editing the graph directly:
+
+- Authored shards under `graph/shards/` are canonical JSON, edited by hand.
+  `graph/shards/migrated/` is generated; regenerate it, do not edit it.
+- Every node needs at least one evidence locator, and locators must be URLs or
+  descriptive references. Absolute local paths and anything credential-shaped
+  are rejected by the validator, not by review.
+- Effects are integer basis points. There are no floats anywhere in the graph,
+  including inside `identity` and `effect`.
+- Never upgrade provenance to make a claim look stronger. `official_verified`,
+  `local_measured`, and `replicated` mean specific things about who verified
+  what. A `regressed` or `inconclusive` result is as valuable as a positive one
+  and is usually more valuable.
+- After editing a shard, regenerate the compiled graph and the mechanism index
+  in the dependency order above.
+
+Contributing a measurement from outside:
+
+Open a pull request adding one directory under `mlx-model-porting/graph/packs/`
+with a `manifest.json`, a `graph-delta.json`, and optional pinned receipts. The
+format, the three contribution gates, and a worked example are documented in
+`mlx-model-porting/graph/docs/evidence-packs.md`. Validate before opening the
+PR:
+
+```bash
+python3 mlx-model-porting/graph/tools/validate_pack.py mlx-model-porting/graph/packs/<slug>
+```
+
+A pack enters the graph as a `contributor_claim`. That is a real, citable
+status, not a lesser one: it says exactly one host measured this, once.
+Independent replication is what raises provenance, and only a maintainer sets
+it. A pack may add nodes and reference existing ids freely; it may not redefine
+an existing node, and it may never assert a verified provenance for its own
+measurement.
+
 ## Benchmark extension flow
 
 Use `mlx-model-porting/scripts/benchmark_generation.py` only for legacy
@@ -234,6 +290,9 @@ Do not hand-edit generated artifacts.
 | Receipt JSON under `mlx-model-porting/assets/benchmarks/` | `receipt_assessments.json`, `receipts_index.json`, and `mlx-model-porting/assets/BENCHMARK_REPORT.md` | `python3 mlx-model-porting/scripts/validate_benchmarks.py generate` |
 | `optimization_guidance.yaml`, `sources.yaml`, and generated receipt assessments | `mlx-model-porting/assets/effective_claims.json` | `python3 mlx-model-porting/scripts/generate_claim_catalog.py` |
 | `VERSION`, canonical registries, `references/*.md`, generated assessments, and effective claims | `site/data.js` | `python3 mlx-model-porting/scripts/generate_site_data.py` |
+| Authored v1 assets under `mlx-model-porting/assets/` | `mlx-model-porting/graph/shards/migrated/*.json` | `python3 mlx-model-porting/graph/tools/migrate_v1.py` |
+| Every shard under `mlx-model-porting/graph/shards/` | `mlx-model-porting/graph/compiled/evidence-graph.json` | `python3 mlx-model-porting/graph/tools/compile_graph.py` |
+| `mlx-model-porting/graph/compiled/evidence-graph.json` | `mlx-model-porting/graph/MECHANISM_INDEX.md` | `python3 mlx-model-porting/graph/tools/render_graph_summary.py` |
 | Final distributed repository tree | `MANIFEST.json` | `python3 mlx-model-porting/scripts/manifest.py generate` |
 
 The first three rows are explicit network collectors, not deterministic release
@@ -256,6 +315,9 @@ python3 mlx-model-porting/scripts/validate_benchmarks.py generate
 python3 mlx-model-porting/scripts/generate_claim_catalog.py
 python3 mlx-model-porting/scripts/generate_evidence_index.py
 python3 mlx-model-porting/scripts/generate_site_data.py
+python3 mlx-model-porting/graph/tools/migrate_v1.py
+python3 mlx-model-porting/graph/tools/compile_graph.py
+python3 mlx-model-porting/graph/tools/render_graph_summary.py
 python3 mlx-model-porting/scripts/manifest.py generate
 ```
 

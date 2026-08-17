@@ -547,15 +547,26 @@ def validate_document(doc, where):
     return problems
 
 
-def validate_corpus(documents):
+def validate_corpus(documents, context=()):
     """Cross-document structural validation.
 
     `documents` is a sequence of (label, document) pairs. Edges may reference
     nodes declared in any document in the corpus.
+
+    `context` is an optional sequence of (label, document) pairs whose nodes
+    resolve edge endpoints but whose own nodes and edges are not re-validated.
+    An evidence pack uses it to resolve references into the compiled graph.
     """
     problems = []
     owner = {}
     kinds = {}
+    for label, doc in context:
+        for node in doc.get("nodes", []):
+            if isinstance(node, dict) and isinstance(node.get("id"), str):
+                owner[node["id"]] = label
+                kinds[node["id"]] = node.get("kind")
+    context_ids = set(owner)
+    declared_here = set()
     for label, doc in documents:
         for node in doc.get("nodes", []):
             if not isinstance(node, dict):
@@ -563,13 +574,14 @@ def validate_corpus(documents):
             node_id = node.get("id")
             if not isinstance(node_id, str):
                 continue
-            if node_id in owner:
+            if node_id in owner and node_id not in context_ids:
                 problems.append(
                     "duplicate node id %s declared in %s and %s" % (node_id, owner[node_id], label)
                 )
                 continue
             owner[node_id] = label
             kinds[node_id] = node.get("kind")
+            declared_here.add(node_id)
 
     seen_edges = set()
     result_relations = {}
@@ -608,7 +620,7 @@ def validate_corpus(documents):
                 result_relations.setdefault(source, {}).setdefault(relation, []).append(target)
 
     for node_id, kind in sorted(kinds.items()):
-        if kind != "applied_result":
+        if kind != "applied_result" or (node_id in context_ids and node_id not in declared_here):
             continue
         found = result_relations.get(node_id, {})
         for relation in RESULT_EXACTLY_ONE:

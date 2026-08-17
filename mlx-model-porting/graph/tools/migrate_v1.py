@@ -115,9 +115,9 @@ def edge(source, target, relation, confidence, rationale):
 def with_gate(summary, gate, rollback):
     parts = [summary.strip()]
     if gate:
-        parts.append("Validation gate: %s" % gate.strip())
+        parts.append("Validation gate: %s." % gate.strip().rstrip("."))
     if rollback:
-        parts.append("Rollback: %s" % rollback.strip())
+        parts.append("Rollback: %s." % rollback.strip().rstrip("."))
     return " ".join(parts)
 
 
@@ -156,6 +156,30 @@ def build(assets):
     technique_title = {
         item["id"]: item["title"] for item in assets["techniques.yaml"]["techniques"]
     }
+    # An approach id names an optimization_guidance method, which in turn names the
+    # technique that owns the human-readable title and the source evidence list. Only
+    # eleven of the twenty-eight approach ids are also technique ids, so resolve
+    # through the method registry rather than assuming the ids line up.
+    method_technique = {
+        item["id"]: item["technique_id"]
+        for item in assets["optimization_guidance.yaml"]["methods"]
+    }
+    method_sources = {}
+    for item in assets["optimization_guidance.yaml"]["methods"]:
+        collected = set()
+        for values in item.get("evidence_refs", {}).values():
+            collected.update(values)
+        method_sources[item["id"]] = collected
+
+    def approach_title(name, fallback):
+        technique = method_technique.get(name, name)
+        return technique_title.get(technique) or technique_title.get(name) or fallback
+
+    def approach_sources(name):
+        technique = method_technique.get(name, name)
+        return set(technique_evidence.get(technique, [])) | set(
+            technique_evidence.get(name, [])
+        ) | method_sources.get(name, set())
     exactness = {}
     for stack in assets["optimization_stacks.yaml"]["stacks"]:
         for step in stack["steps"]:
@@ -188,7 +212,7 @@ def build(assets):
         mech_id = "mechanism:" + name
         provenance, confidence = APPROACH_PROVENANCE[item["status"]]
         evidence = [ASSET_LOCATOR % "knowledge_graph.json (approach:%s)" % name]
-        for source_id in sorted(technique_evidence.get(name, [])):
+        for source_id in sorted(approach_sources(name)):
             if source_id in source_url:
                 evidence.append(source_url[source_id])
         band = claim_band.get(name)
@@ -206,7 +230,7 @@ def build(assets):
             node(
                 mech_id,
                 "mechanism",
-                technique_title.get(name, item["label"].replace("-", " ")),
+                approach_title(name, item["label"].replace("-", " ").capitalize()),
                 item["status"],
                 confidence,
                 provenance,

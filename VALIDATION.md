@@ -29,7 +29,7 @@ optimization improves a particular Mac workload.
 | Effective claims | 10 | `mlx-model-porting/assets/effective_claims.json` |
 | Promoted / withheld claims | 0 / 10 | generated effective-claim catalogue |
 | Knowledge-graph nodes / edges | 712 / 505 | `mlx-model-porting/assets/knowledge_graph.json` |
-| Offline tests | 551 | `python3 -m unittest discover -s tests` |
+| Offline tests | 579 | `python3 -m unittest discover -s tests` |
 
 The 17 routes are synthetic golden scenarios. They prove that every declared
 family has a fixture exercising route selection, expected weight coverage, a

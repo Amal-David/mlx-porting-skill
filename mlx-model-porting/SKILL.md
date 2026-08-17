@@ -142,5 +142,5 @@ Stop when license, remote code, unresolved parity, regressions, missing kernel f
 
 ## Maintenance
 
-Maintenance: [maintenance](references/maintenance-and-provenance.md), [hypothesis-led learning](references/hypothesis-led-learning.md), [research loop](references/deep-research-loop.md). Run `scripts/audit_skill.py --strict` and `scripts/validate_sources.py` before distribution.
-When `assets/architectures.yaml` changes, keep the golden scenario gate in `tests/test_scenarios.py` at full family coverage.
+[maintenance](references/maintenance-and-provenance.md), [hypothesis-led learning](references/hypothesis-led-learning.md), [research loop](references/deep-research-loop.md), [evidence graph](references/evidence-graph.md). Run `scripts/audit_skill.py --strict` and `scripts/validate_sources.py` before release.
+Keep `tests/test_scenarios.py` at full family coverage when `assets/architectures.yaml` changes.
