@@ -2,7 +2,7 @@
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
   "version": "0.7.0",
-  "generated_at": "2026-08-17T18:49:20.573658+00:00",
+  "generated_at": "2026-08-18T01:25:34.953514+00:00",
   "file_count": 625,
   "files": [
     {
@@ -81,8 +81,8 @@
     },
     {
       "path": "AGENTS.md",
-      "size_bytes": 3257,
-      "sha256": "988d79db8336c0610c3e3a6610ae5a2bb219e92d34da237b8a993b4f0a4e839c",
+      "size_bytes": 3303,
+      "sha256": "4d59e8ddb6eb5e90ff15d63c9ee233f3b7b425d49a64b62a6d6cd60be73c35b0",
       "executable": false
     },
     {
@@ -93,8 +93,8 @@
     },
     {
       "path": "CLAUDE.md",
-      "size_bytes": 2380,
-      "sha256": "1df3d243d2f9248ee131fee9c46da2cdfb1a61934dafce6bd6882e6bebc52fe2",
+      "size_bytes": 2426,
+      "sha256": "65a50767e91d7e69a7269ee696555756ec1611a59f8d2eabd6a3260632c4bc20",
       "executable": false
     },
     {
@@ -2901,8 +2901,8 @@
     },
     {
       "path": "tasks/lessons.md",
-      "size_bytes": 9299,
-      "sha256": "9fc60b03eaf819c440b071addb05749881cbbe19be8c200fc564825618e3f6d3",
+      "size_bytes": 8285,
+      "sha256": "263f0d712e750915b56f071a850e00dd6cdcfe905ca152c87ec3078eb8eb49cb",
       "executable": false
     },
     {
