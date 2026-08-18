@@ -2,7 +2,7 @@
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
   "version": "0.7.0",
-  "generated_at": "2026-08-18T01:25:34.953514+00:00",
+  "generated_at": "2026-08-18T01:39:50.251819+00:00",
   "file_count": 625,
   "files": [
     {
@@ -118,7 +118,7 @@
     {
       "path": "README.md",
       "size_bytes": 11303,
-      "sha256": "9855ab81376ce58fc252ae9041671662fa4a7982c1ede36d20c71e9d5a95ed98",
+      "sha256": "fa8caedf6d1a11668af00ca65ea779ab50bc5481c9b091a22cebb3c26b0591bc",
       "executable": false
     },
     {
@@ -130,7 +130,7 @@
     {
       "path": "VALIDATION.md",
       "size_bytes": 21550,
-      "sha256": "62c6c558bbe6c6f11ecd7948bc6e24e4933548833639053e5825f5bc2f18bdf9",
+      "sha256": "bf0455407bbe06a0cdfe25e0ef1354f51d68208bf90dc41f8a7aab3b674521c4",
       "executable": false
     },
     {
@@ -1342,7 +1342,7 @@
     {
       "path": "mlx-model-porting/graph/MECHANISM_INDEX.md",
       "size_bytes": 33527,
-      "sha256": "e60ff0446e42c5409ba43fbf9e01977ae7b0e59e91c85bbeb33329f42a96d82a",
+      "sha256": "389dc964a19f42c8cbf8d48967cb7e73839c39c6a2bda312208c7fafbf0cc9ca",
       "executable": false
     },
     {
@@ -1353,8 +1353,8 @@
     },
     {
       "path": "mlx-model-porting/graph/compiled/evidence-graph.json",
-      "size_bytes": 454908,
-      "sha256": "94942895d3d5fdb4634dd5600b30161b7c493d903bd18f4e6159af337e6c33d5",
+      "size_bytes": 457060,
+      "sha256": "49fbcffb905462efa61a4903a18c9a0040f5c5e418dc9377d07498ce9dbd8749",
       "executable": false
     },
     {
@@ -1455,8 +1455,8 @@
     },
     {
       "path": "mlx-model-porting/graph/shards/migrated/references.json",
-      "size_bytes": 150666,
-      "sha256": "4f85f61722f2105f743f3ead8d32983ff89cd68e768a9e5f179ab6529aded4cf",
+      "size_bytes": 152818,
+      "sha256": "ba5c0083dc92cb00974e545ea8d5cbc5f2b29c824a908283a7e16da1943c02c0",
       "executable": false
     },
     {
@@ -1497,8 +1497,8 @@
     },
     {
       "path": "mlx-model-porting/graph/tools/migrate_v1.py",
-      "size_bytes": 24195,
-      "sha256": "1a034be377cce92270a0c9183e04bd23953b1d821f9dafd3cf1bfc67931134a2",
+      "size_bytes": 24753,
+      "sha256": "17ddb4dda96a1707e1631c7ff32f0eacc05a1bc6288f746bdf1fa3ebeafac09e",
       "executable": false
     },
     {
@@ -3537,8 +3537,8 @@
     },
     {
       "path": "tests/test_evidence_graph_contract.py",
-      "size_bytes": 18371,
-      "sha256": "73f17644c7bc5f08c54bb1885dd8898e4b1c58506f8f0058fca50af2c32d8980",
+      "size_bytes": 20043,
+      "sha256": "7e39fad2af3f50a03f761ec0b4e0141083fad225b3a41e65a74d60cf10fed51c",
       "executable": false
     },
     {

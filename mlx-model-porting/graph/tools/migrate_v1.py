@@ -374,6 +374,7 @@ def build(assets):
         return builder(v1_id) if builder else None
 
     used_sources = {}
+    deferred_versions = []
     for raw in sorted(graph["edges"], key=lambda e: (e["source"], e["relation"], e["target"])):
         relation = raw["relation"]
         if relation == "contributor_in_refresh":
@@ -382,20 +383,12 @@ def build(assets):
         if origin is None:
             continue
         if relation == "candidate_version_of":
-            if raw["target"] not in used_sources:
-                continue
-            reference_edges.append(
-                edge(
-                    _reference_id(origin),
-                    used_sources[raw["target"]],
-                    "supersedes",
-                    "low",
-                    "Source registry observed revision %s of the same work."
-                    % (raw.get("revision_comparison", {}).get("after", "newer")),
-                )
-            )
-            used_sources.setdefault(raw["source"], _reference_id(origin))
-            references.append(_reference_node(origin, source_depth, observed))
+            # Version lineage can only anchor to a source that actually
+            # entered the graph, and lexical ordering visits every
+            # candidate:* edge before any source:* edge can populate
+            # used_sources -- so defer lineage until every admitting
+            # relation has run (order preserved for determinism).
+            deferred_versions.append((raw, origin))
             continue
         target = v2_target(raw["target"])
         if target is None:
@@ -414,6 +407,24 @@ def build(assets):
                      "Unreviewed research candidate matched %s on terms %s."
                      % (raw["target"], ", ".join(sorted(raw.get("matched_terms", []))) or "n/a"))
             )
+
+    for raw, origin in deferred_versions:
+        if raw["target"] not in used_sources:
+            # The superseded source never entered the graph; emitting the
+            # edge would dangle. Skipping keeps the connected-only policy.
+            continue
+        reference_edges.append(
+            edge(
+                _reference_id(origin),
+                used_sources[raw["target"]],
+                "supersedes",
+                "low",
+                "Source registry observed revision %s of the same work."
+                % (raw.get("revision_comparison", {}).get("after", "newer")),
+            )
+        )
+        used_sources.setdefault(raw["source"], _reference_id(origin))
+        references.append(_reference_node(origin, source_depth, observed))
 
     references = _dedupe(references)
     reference_edges = _dedupe_edges(reference_edges)

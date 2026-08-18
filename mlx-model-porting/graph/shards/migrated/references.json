@@ -170,6 +170,13 @@
     },
     {
       "confidence": "low",
+      "from": "external:candidate-arxiv-2601-19139",
+      "rationale": "Source registry observed revision v2 of the same work.",
+      "relation": "supersedes",
+      "to": "external:paper-2601-19139"
+    },
+    {
+      "confidence": "low",
       "from": "external:candidate-arxiv-2603-06079",
       "rationale": "Unreviewed research candidate matched approach:audio-reference-conditioning-cache on terms audio, codec, latency, speaker.",
       "relation": "suggests",
@@ -359,6 +366,13 @@
     },
     {
       "confidence": "low",
+      "from": "external:candidate-arxiv-2606-24033",
+      "rationale": "Source registry observed revision v1 of the same work.",
+      "relation": "supersedes",
+      "to": "external:paper-2606-24033"
+    },
+    {
+      "confidence": "low",
       "from": "external:candidate-arxiv-2606-31519",
       "rationale": "Unreviewed research candidate matched backlog:structured-timeseries-recsys on terms based, context, error, mask, retrieval, score, top, value.",
       "relation": "suggests",
@@ -527,6 +541,13 @@
     },
     {
       "confidence": "low",
+      "from": "external:candidate-blaizzy-mlx-audio",
+      "rationale": "Source registry observed revision 64e8416c303fb3b3463dab8eb4ebd78c55a87c1a of the same work.",
+      "relation": "supersedes",
+      "to": "external:mlx-audio-repo"
+    },
+    {
+      "confidence": "low",
       "from": "external:candidate-blaizzy-mlx-vlm",
       "rationale": "Unreviewed research candidate matched approach:multimodal-content-prefix-cache on terms multimodal, serving, vlm.",
       "relation": "suggests",
@@ -545,6 +566,13 @@
       "rationale": "Unreviewed research candidate matched approach:video-input-budgeting on terms multimodal, video, vlm.",
       "relation": "suggests",
       "to": "mechanism:video-input-budgeting"
+    },
+    {
+      "confidence": "low",
+      "from": "external:candidate-blaizzy-mlx-vlm",
+      "rationale": "Source registry observed revision c9e27b08311f9c1f38690c46034b04c7598d73ee of the same work.",
+      "relation": "supersedes",
+      "to": "external:mlx-vlm-repo"
     },
     {
       "confidence": "low",
@@ -569,6 +597,13 @@
     },
     {
       "confidence": "low",
+      "from": "external:candidate-ml-explore-mlx",
+      "rationale": "Source registry observed revision ce3073389e92d8f7b7ecd3d7697523795786e046 of the same work.",
+      "relation": "supersedes",
+      "to": "external:mlx-repo"
+    },
+    {
+      "confidence": "low",
       "from": "external:candidate-ml-explore-mlx-examples",
       "rationale": "Unreviewed research candidate matched backlog:non-generative-cv on terms add, architectures, vision.",
       "relation": "suggests",
@@ -587,6 +622,13 @@
       "rationale": "Unreviewed research candidate matched approach:native-low-bit-weight-quantization on terms audio, vision.",
       "relation": "suggests",
       "to": "mechanism:native-low-bit-weight-quantization"
+    },
+    {
+      "confidence": "low",
+      "from": "external:candidate-ml-explore-mlx-examples",
+      "rationale": "Source registry observed revision 796f5b53cab69a3d48a44233ce21aae889e94a08 of the same work.",
+      "relation": "supersedes",
+      "to": "external:mlx-examples-repo"
     },
     {
       "confidence": "low",
@@ -611,6 +653,13 @@
     },
     {
       "confidence": "low",
+      "from": "external:candidate-ml-explore-mlx-lm",
+      "rationale": "Source registry observed revision 15b522f593b7ca5fbc0cac6f7572d40859d2d8fe of the same work.",
+      "relation": "supersedes",
+      "to": "external:mlx-lm-repo"
+    },
+    {
+      "confidence": "low",
       "from": "external:candidate-waybarrios-vllm-mlx",
       "rationale": "Unreviewed research candidate matched outcome:vlm-mlx-vlm-working-route on terms cache, serving, vllm.",
       "relation": "suggests",
@@ -629,6 +678,13 @@
       "rationale": "Unreviewed research candidate matched approach:prompt-prefix-cache on terms cache, serving, version.",
       "relation": "suggests",
       "to": "mechanism:prompt-prefix-cache"
+    },
+    {
+      "confidence": "low",
+      "from": "external:candidate-waybarrios-vllm-mlx",
+      "rationale": "Source registry observed revision 0dd115769ef1196a715b96b181353edacd2a4f69 of the same work.",
+      "relation": "supersedes",
+      "to": "external:vllm-mlx-repo"
     },
     {
       "confidence": "medium",

@@ -430,5 +430,46 @@ class StrictLoaderTests(unittest.TestCase):
         self.assertEqual({"a": -257}, self._load('{"a": -257}'))
 
 
+class MigrationLineageTests(unittest.TestCase):
+    """Source-version lineage must survive migration (PR #33 review finding).
+
+    The v1 edge sort visits every candidate:* edge before any source:* edge
+    can enter the admitted set, so an order-dependent lineage check silently
+    dropped every candidate_version_of relationship. The migration now
+    defers lineage until all admitting relations have run. This test
+    recomputes the expectation from the v1 asset itself, so it fails if the
+    ordering bug returns and adapts if the corpus changes.
+    """
+
+    def test_admitted_version_lineage_becomes_supersedes_edges(self):
+        sys.path.insert(0, str(TOOLS))
+        import migrate_v1
+
+        assets = migrate_v1.load_assets()
+        v1 = assets["knowledge_graph.json"]
+        admitting = {
+            raw["source"]
+            for raw in v1["edges"]
+            if raw["relation"] in ("evidence_for", "evidence_for_outcome", "candidate_relevant_to")
+        }
+        expected = sum(
+            1
+            for raw in v1["edges"]
+            if raw["relation"] == "candidate_version_of" and raw["target"] in admitting
+        )
+        self.assertGreater(
+            expected, 0,
+            "corpus no longer holds admitted version lineage; update this test's premise",
+        )
+
+        shards, _observed = migrate_v1.build(assets)
+        _nodes, reference_edges = shards["references.json"]
+        supersedes = [entry for entry in reference_edges if entry["relation"] == "supersedes"]
+        self.assertEqual(
+            len(supersedes), expected,
+            "candidate_version_of lineage was dropped by the migration ordering",
+        )
+
+
 if __name__ == "__main__":
     unittest.main()

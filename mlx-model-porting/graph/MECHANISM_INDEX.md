@@ -18,7 +18,7 @@ Every effect below is an integer basis-point delta against the specific baseline
 | model | 4 |
 | trait | 37 |
 | workload | 4 |
-| **edges** | 575 |
+| **edges** | 583 |
 
 ## Mechanisms with measured effects
 
