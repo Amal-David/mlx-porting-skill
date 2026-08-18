@@ -5,7 +5,7 @@ assets under `assets/` remain the human layer; this directory holds the same
 kind of knowledge in a form a tool can query, validate, and merge across
 models, hardware, and contributors.
 
-The schema is shared with the `auto-mlx` tool repository.
+The schema is shared with the [auto-mlx](https://github.com/Amal-David/auto-mlx) tool repository.
 `schema/evidence-graph.schema.json` is a copy of
 `src/auto_mlx/schemas/evidence_graph.json` in that repository; **auto-mlx owns
 it**. When it changes upstream, re-copy it and run the validator:

@@ -252,7 +252,7 @@ promotion rules and evidence semantics: [`VALIDATION.md`](VALIDATION.md) and
 [`mlx-model-porting/graph/`](mlx-model-porting/graph/README.md) is the
 repository's machine-readable knowledge layer: a strictly validated,
 trait-indexed evidence graph (schema version 2, shared with the
-[auto-mlx](https://github.com/) tool so both sides enforce one contract).
+[auto-mlx](https://github.com/Amal-David/auto-mlx) tool so both sides enforce one contract).
 Mechanisms declare which architecture *traits* they apply to; every
 measurement is a reified `applied_result` node binding exactly one mechanism,
 model, hardware, and workload, carrying an integer basis-point effect
