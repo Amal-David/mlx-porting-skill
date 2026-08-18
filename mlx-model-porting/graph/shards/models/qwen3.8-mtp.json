@@ -1,0 +1,217 @@
+{
+  "edges": [
+    {
+      "confidence": "high",
+      "from": "model:qwen3.8-27b-mtp",
+      "rationale": "Established from the model's published config, the vendored runtime, and the challenge's editable surface.",
+      "relation": "exhibits",
+      "to": "trait:affine-q4-group-64"
+    },
+    {
+      "confidence": "medium",
+      "from": "model:qwen3.8-27b-mtp",
+      "rationale": "The full-attention half of the stack is an ordinary dense decoder, which is why dense-decoder mechanisms from the migrated registry are candidates here.",
+      "relation": "exhibits",
+      "to": "trait:dense-decoder-transformer"
+    },
+    {
+      "confidence": "high",
+      "from": "model:qwen3.8-27b-mtp",
+      "rationale": "Established from the model's published config, the vendored runtime, and the challenge's editable surface.",
+      "relation": "exhibits",
+      "to": "trait:fp32-recurrent-state"
+    },
+    {
+      "confidence": "high",
+      "from": "model:qwen3.8-27b-mtp",
+      "rationale": "Established from the model's published config, the vendored runtime, and the challenge's editable surface.",
+      "relation": "exhibits",
+      "to": "trait:gated-delta-net"
+    },
+    {
+      "confidence": "high",
+      "from": "model:qwen3.8-27b-mtp",
+      "rationale": "Established from the model's published config, the vendored runtime, and the challenge's editable surface.",
+      "relation": "exhibits",
+      "to": "trait:hybrid-attention"
+    },
+    {
+      "confidence": "high",
+      "from": "model:qwen3.8-27b-mtp",
+      "rationale": "Established from the model's published config, the vendored runtime, and the challenge's editable surface.",
+      "relation": "exhibits",
+      "to": "trait:native-mtp-head"
+    },
+    {
+      "confidence": "high",
+      "from": "model:qwen3.8-27b-mtp",
+      "rationale": "Established from the model's published config, the vendored runtime, and the challenge's editable surface.",
+      "relation": "exhibits",
+      "to": "trait:shared-token-embeddings"
+    },
+    {
+      "confidence": "high",
+      "from": "model:qwen3.8-27b-mtp",
+      "rationale": "Established from the model's published config, the vendored runtime, and the challenge's editable surface.",
+      "relation": "exhibits",
+      "to": "trait:speculative-self-draft"
+    }
+  ],
+  "generated_at": "2026-08-17",
+  "graph_id": "mlx-porting-skill/models/qwen3.8-mtp",
+  "nodes": [
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge",
+        "qwen38 campaign goal note, GOAL.md",
+        "https://huggingface.co/Qwen/Qwen3.5-27B/raw/main/config.json"
+      ],
+      "id": "model:qwen3.8-27b-mtp",
+      "identity": {
+        "mtp_layers": 1,
+        "parameters_b": 27,
+        "quantization": "affine-q4-group-64",
+        "track": "qwen3.8-27b-mtp-v1"
+      },
+      "kind": "model",
+      "observed_at": "2026-08-16",
+      "provenance": "code_verified",
+      "status": "active-challenge-target",
+      "summary": "The 27B hybrid decoder used by the MLX Fast native-MTP challenge: gated delta recurrence interleaved with full attention, an attached native multi-token-prediction head sharing the base token embeddings, affine 4-bit group-64 quantized projections, and FP32 recurrent state. It is the target of every official_verified result in this graph.",
+      "tags": [
+        "challenge-target",
+        "hybrid",
+        "mtp",
+        "qwen"
+      ],
+      "title": "Qwen 3.8 27B with native MTP head"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://github.com/ml-explore/mlx/blob/main/mlx/backend/metal/kernels/quantized.h",
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge"
+      ],
+      "id": "trait:affine-q4-group-64",
+      "kind": "trait",
+      "observed_at": "2026-08-16",
+      "provenance": "code_verified",
+      "status": "declared",
+      "summary": "Weights are stored as affine 4-bit codes with group size 64 and per-group scale and bias. Exactness of any custom matvec requires preserving the quantized dot accumulation order, the affine scale/bias application order, and NaN ordering.",
+      "tags": [
+        "qwen-mtp",
+        "structural-trait"
+      ],
+      "title": "Affine 4-bit group-64 quantized projections"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/246",
+        "https://huggingface.co/Qwen/Qwen3.5-27B/raw/main/config.json"
+      ],
+      "id": "trait:fp32-recurrent-state",
+      "kind": "trait",
+      "observed_at": "2026-08-16",
+      "provenance": "code_verified",
+      "status": "declared",
+      "summary": "The recurrent state is carried in FP32 while activations are BF16. Any fused kernel touching the recurrence must reproduce the exact FP32 accumulation and the exact FP32-to-BF16 rounding boundary; one-ULP drift here changes emitted tokens.",
+      "tags": [
+        "qwen-mtp",
+        "structural-trait"
+      ],
+      "title": "FP32-carried recurrent state"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge",
+        "https://github.com/ml-explore/mlx-lm/pull/990"
+      ],
+      "id": "trait:gated-delta-net",
+      "kind": "trait",
+      "observed_at": "2026-08-16",
+      "provenance": "code_verified",
+      "status": "declared",
+      "summary": "Linear-attention gated delta recurrence interleaved with full attention. The recurrent state must be carried, snapshotted, and rolled back across speculative rejection, which makes rollback a first-class cost rather than a bookkeeping detail.",
+      "tags": [
+        "qwen-mtp",
+        "structural-trait"
+      ],
+      "title": "Gated DeltaNet recurrent layers"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge",
+        "https://github.com/ml-explore/mlx-lm/pull/990"
+      ],
+      "id": "trait:hybrid-attention",
+      "kind": "trait",
+      "observed_at": "2026-08-16",
+      "provenance": "code_verified",
+      "status": "declared",
+      "summary": "The decoder mixes recurrent/convolutional state layers with full-attention layers. Speculative rollback must restore both the KV cache and the recurrent state, and the two have different trimmability properties.",
+      "tags": [
+        "qwen-mtp",
+        "structural-trait"
+      ],
+      "title": "Hybrid recurrent and full-attention stack"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://huggingface.co/Qwen/Qwen3.5-27B/raw/main/config.json",
+        "https://github.com/vllm-project/vllm/blob/main/vllm/model_executor/models/qwen3_5_mtp.py"
+      ],
+      "id": "trait:native-mtp-head",
+      "kind": "trait",
+      "observed_at": "2026-08-16",
+      "provenance": "code_verified",
+      "status": "declared",
+      "summary": "One attached full-attention MTP layer that shares the base token embeddings and whose readout is owned by the verifier. The model can therefore draft for itself without a separate draft model, and the draft path shares the target's KV geometry.",
+      "tags": [
+        "qwen-mtp",
+        "structural-trait"
+      ],
+      "title": "Native multi-token-prediction head"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://huggingface.co/Qwen/Qwen3.5-27B/blob/main/model.safetensors.index.json"
+      ],
+      "id": "trait:shared-token-embeddings",
+      "kind": "trait",
+      "observed_at": "2026-08-16",
+      "provenance": "code_verified",
+      "status": "declared",
+      "summary": "The MTP head reuses the base token embedding table, so a change to the embedding or its normalization is not proposal-local; it reaches the verifier.",
+      "tags": [
+        "qwen-mtp",
+        "structural-trait"
+      ],
+      "title": "Token embeddings shared with the draft path"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge",
+        "https://arxiv.org/abs/2211.17192"
+      ],
+      "id": "trait:speculative-self-draft",
+      "kind": "trait",
+      "observed_at": "2026-08-16",
+      "provenance": "code_verified",
+      "status": "declared",
+      "summary": "The model proposes its own candidate continuations and verifies them with its own backbone in the same process, so proposal cost, verification width, and acceptance rate are all coupled through one scheduler rather than two independent models.",
+      "tags": [
+        "qwen-mtp",
+        "structural-trait"
+      ],
+      "title": "Self-speculative drafting"
+    }
+  ],
+  "schema_version": 2
+}

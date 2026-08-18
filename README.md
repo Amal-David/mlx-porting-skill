@@ -58,9 +58,12 @@ The 0.7.0 corpus behind the skill:
 
 - 363 evidence sources with explicit review depth; 35 currently carry classified
   support scope and claim types, while 328 remain intentionally unclassified;
-- 33 inspectable Python scripts and 551 offline tests;
+- 33 inspectable Python scripts and 586 offline tests;
 - 13 benchmark receipts (12 observations, 1 rejected) and 10 effective claims,
-  all withheld.
+  all withheld;
+- a compiled [evidence graph](mlx-model-porting/graph/README.md) of 319 nodes
+  and 583 edges: 64 mechanisms, 37 architecture traits, and 38 reified
+  measurement results with integer basis-point effects.
 
 ## Install
 
@@ -244,6 +247,41 @@ promotion contract. Benchmark state:
 promotion rules and evidence semantics: [`VALIDATION.md`](VALIDATION.md) and
 [`EVIDENCE_INDEX.md`](EVIDENCE_INDEX.md).
 
+## The evidence graph
+
+[`mlx-model-porting/graph/`](mlx-model-porting/graph/README.md) is the
+repository's machine-readable knowledge layer: a strictly validated,
+trait-indexed evidence graph (schema version 2, shared with the
+[auto-mlx](https://github.com/) tool so both sides enforce one contract).
+Mechanisms declare which architecture *traits* they apply to; every
+measurement is a reified `applied_result` node binding exactly one mechanism,
+model, hardware, and workload, carrying an integer basis-point effect
+interval and a provenance tier that is never silently upgraded.
+
+The founding corpus holds the Qwen 3.8 native-MTP optimization campaign —
+promoted mechanisms *and* officially rejected ones, because negative results
+are the knowledge most worth not rediscovering — plus a selective migration
+of the v1 source registry. Verdicts are conservative by construction: any
+delta inside the evaluator's own observed same-content rerun spread is
+recorded `inconclusive`, whatever the human decision was.
+
+Consume it from
+[`graph/compiled/evidence-graph.json`](mlx-model-porting/graph/compiled/evidence-graph.json)
+or the generated
+[`MECHANISM_INDEX.md`](mlx-model-porting/graph/MECHANISM_INDEX.md); validate
+and regenerate with the stdlib-only tools:
+
+```bash
+python3 mlx-model-porting/graph/tools/validate_graph.py
+python3 mlx-model-porting/graph/tools/compile_graph.py
+python3 mlx-model-porting/graph/tools/render_graph_summary.py
+```
+
+External contributions arrive as **evidence packs** — a graph delta plus a
+manifest and receipts, validated in CI, with measurement claims capped at
+`contributor_claim` provenance until independently replicated. Format and
+flow: [`graph/docs/evidence-packs.md`](mlx-model-porting/graph/docs/evidence-packs.md).
+
 ## Repository layout
 
 | Path | Purpose |
@@ -253,6 +291,7 @@ promotion rules and evidence semantics: [`VALIDATION.md`](VALIDATION.md) and
 | [`mlx-model-porting/assets/`](mlx-model-porting/assets/) | Canonical architecture, technique, source, benchmark, and claim registries |
 | [`mlx-model-porting/scripts/`](mlx-model-porting/scripts/) | Non-destructive inspection, planning, parity, benchmarking, and packaging tools |
 | [`mlx-model-porting/examples/`](mlx-model-porting/examples/) | Porting patterns and worked example ports |
+| [`mlx-model-porting/graph/`](mlx-model-porting/graph/) | Schema-v2 evidence graph: shards, compiled graph, validation tools, contribution packs |
 | [`arch-stress-artifacts/`](arch-stress-artifacts/) | One-off real-checkpoint parity proofs across all seven architecture classes and measured quantization receipts (outside the installable payload) |
 | [`tests/`](tests/) | Offline contract, security, determinism, and portability tests |
 | [`site/`](site/) | Offline source of the public runbook site |

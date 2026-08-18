@@ -1,0 +1,78 @@
+{
+  "edges": [],
+  "generated_at": "2026-08-17",
+  "graph_id": "mlx-porting-skill/core/hardware",
+  "nodes": [
+    {
+      "confidence": "high",
+      "evidence": [
+        "mlx-model-porting/assets/benchmarks/attestations/",
+        "qwen38 campaign thermal recovery note, logs/subagents"
+      ],
+      "id": "hardware:m4-pro",
+      "identity": {
+        "chip": "Apple M4 Pro",
+        "platform": "macOS",
+        "vendor": "Apple"
+      },
+      "kind": "hardware",
+      "observed_at": "2026-08-16",
+      "provenance": "code_verified",
+      "status": "active",
+      "summary": "Apple M4 Pro Apple Silicon host with unified memory. Chip-level identity only: memory size, macOS build, and MLX version vary per contribution and are recorded on the applied_result or in the contributing pack manifest, not here.",
+      "tags": [
+        "apple-silicon",
+        "local-host",
+        "m4"
+      ],
+      "title": "Apple M4 Pro"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "mlx-model-porting/assets/model_outcomes.json",
+        "mlx-model-porting/assets/effective_claims.json"
+      ],
+      "id": "hardware:undisclosed-source-reported",
+      "identity": {
+        "disclosed": false
+      },
+      "kind": "hardware",
+      "observed_at": "2026-08-16",
+      "provenance": "research_inference",
+      "status": "active",
+      "summary": "Placeholder hardware identity for results a third party reported without publishing the host. It exists so that a source-reported number can still be stored as a reified hyperedge with an honest hardware anchor instead of being silently attached to a real machine. Nothing measured here transfers without re-measurement.",
+      "tags": [
+        "identity-undisclosed",
+        "placeholder",
+        "source-reported"
+      ],
+      "title": "Undisclosed host reported by a third-party source"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge",
+        "qwen38 campaign goal note, GOAL.md"
+      ],
+      "id": "hardware:yukon-mlxfast-runner",
+      "identity": {
+        "authority": "ranked-score",
+        "disclosed": false,
+        "operator": "challenge-operator"
+      },
+      "kind": "hardware",
+      "observed_at": "2026-08-16",
+      "provenance": "code_verified",
+      "status": "active",
+      "summary": "The challenge operator's ranked evaluation host. Every official_verified score in this graph was produced here, not on a contributor machine. The exact chip, memory, macOS build, and thermal state are not disclosed to participants, so transfer from these results to a named local host is an inference, never a measurement. Treating this as an opaque but stable hardware identity is what makes the official scores comparable to each other and incomparable to local timings.",
+      "tags": [
+        "apple-silicon",
+        "identity-undisclosed",
+        "official-evaluator"
+      ],
+      "title": "Official MLX Fast ranked evaluation runner"
+    }
+  ],
+  "schema_version": 2
+}

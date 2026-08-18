@@ -1,0 +1,132 @@
+{
+  "edges": [
+    {
+      "confidence": "medium",
+      "from": "result:pack-kvq8-qwen3-8b-m3max",
+      "rationale": "The only change between the A and B legs was the KV cache dtype.",
+      "relation": "instantiates",
+      "to": "mechanism:uniform-kv-quantization"
+    },
+    {
+      "confidence": "medium",
+      "from": "result:pack-kvq8-qwen3-8b-m3max",
+      "rationale": "Measured against the contributor's own Qwen3-8B port.",
+      "relation": "applied_on",
+      "to": "model:qwen3-8b"
+    },
+    {
+      "confidence": "medium",
+      "from": "result:pack-kvq8-qwen3-8b-m3max",
+      "rationale": "Self-reported contributor host declared in the pack manifest.",
+      "relation": "measured_on",
+      "to": "hardware:m3-max"
+    },
+    {
+      "confidence": "medium",
+      "from": "result:pack-kvq8-qwen3-8b-m3max",
+      "rationale": "The 8k-prompt, 512-token decode workload defined by this pack.",
+      "relation": "under_workload",
+      "to": "workload:long-context-8k-decode"
+    },
+    {
+      "confidence": "low",
+      "from": "result:pack-kvq8-qwen3-8b-m3max",
+      "rationale": "A single unreplicated contributor claim is weak support; it does not settle the mechanism's sign on any other host, model, or context length.",
+      "relation": "confirms",
+      "to": "mechanism:uniform-kv-quantization"
+    },
+    {
+      "confidence": "medium",
+      "from": "model:qwen3-8b",
+      "rationale": "The contributor's port is a dense decoder and was routed as one.",
+      "relation": "exhibits",
+      "to": "trait:long-context"
+    }
+  ],
+  "generated_at": "2026-08-14",
+  "graph_id": "pack/example-kvq8-m3max",
+  "nodes": [
+    {
+      "confidence": "medium",
+      "evidence": [
+        "packs/example-kvq8-m3max/manifest.json",
+        "packs/example-kvq8-m3max/receipts/kvq8-vs-fp16.json"
+      ],
+      "id": "hardware:m3-max",
+      "identity": {
+        "chip": "Apple M3 Max",
+        "gpu_cores": 40,
+        "memory_gb": 64,
+        "platform": "macOS",
+        "vendor": "Apple"
+      },
+      "kind": "hardware",
+      "observed_at": "2026-08-14",
+      "provenance": "contributor_claim",
+      "status": "active",
+      "summary": "Apple M3 Max, 40 GPU cores, 64 GB unified memory, running macOS 26.2. Identity as self-reported by the contributing pack; no maintainer has verified this host.",
+      "tags": [
+        "apple-silicon",
+        "contributor-host",
+        "m3"
+      ],
+      "title": "Apple M3 Max (40-core GPU, 64 GB)"
+    },
+    {
+      "confidence": "medium",
+      "evidence": [
+        "packs/example-kvq8-m3max/manifest.json"
+      ],
+      "id": "workload:long-context-8k-decode",
+      "identity": {
+        "decode_tokens": 512,
+        "prompt_tokens": 8192,
+        "sampling": "greedy"
+      },
+      "kind": "workload",
+      "observed_at": "2026-08-14",
+      "provenance": "contributor_claim",
+      "status": "active",
+      "summary": "An 8,192-token prompt followed by 512 greedy decode tokens, measured after a warmup pass, reported as the median of five alternating A/B runs.",
+      "tags": [
+        "long-context",
+        "decode",
+        "contributor-defined"
+      ],
+      "title": "8k-token prompt, 512-token greedy decode"
+    },
+    {
+      "confidence": "medium",
+      "effect": {
+        "baseline_id": "same build, same prompt, FP16 KV cache",
+        "delta_bp_ci": [
+          640,
+          1090
+        ],
+        "metric": "decode-tokens-per-second",
+        "metric_direction": "higher_is_better",
+        "sample_note": "Five alternating A/B pairs after one discarded warmup; the interval is the min and max of the five per-pair ratios, not a fitted confidence interval. Thermals were not instrumented and the host was otherwise idle. Contributor claim; not replicated.",
+        "verdict": "improved"
+      },
+      "evidence": [
+        "packs/example-kvq8-m3max/receipts/kvq8-vs-fp16.json",
+        "https://github.com/ml-explore/mlx-lm/blob/main/mlx_lm/models/cache.py"
+      ],
+      "id": "result:pack-kvq8-qwen3-8b-m3max",
+      "kind": "applied_result",
+      "observed_at": "2026-08-14",
+      "provenance": "contributor_claim",
+      "status": "claimed-unreplicated",
+      "summary": "Switching the KV cache from FP16 to uniform 8-bit on a Qwen3-8B port raised decode throughput on an 8k-prompt workload by roughly six to eleven percent across five alternating A/B pairs. The gain is memory-bandwidth driven and should shrink at short context. No output-quality gate was run, so the quality cost of the quantized cache is unmeasured in this pack.",
+      "tags": [
+        "kv-cache",
+        "quantization",
+        "long-context",
+        "contributor-claim",
+        "quality-ungated"
+      ],
+      "title": "Uniform 8-bit KV cache on Qwen3-8B, Apple M3 Max"
+    }
+  ],
+  "schema_version": 2
+}

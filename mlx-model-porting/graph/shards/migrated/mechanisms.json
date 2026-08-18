@@ -1,0 +1,1179 @@
+{
+  "edges": [
+    {
+      "confidence": "low",
+      "from": "mechanism:adaptive-kv-quantization",
+      "rationale": "v1 approach approach:adaptive-kv-quantization declares applies_to dense-decoder-transformer.",
+      "relation": "applies_to",
+      "to": "trait:dense-decoder-transformer"
+    },
+    {
+      "confidence": "low",
+      "from": "mechanism:adaptive-kv-quantization",
+      "rationale": "v1 approach approach:adaptive-kv-quantization declares applies_to long-context.",
+      "relation": "applies_to",
+      "to": "trait:long-context"
+    },
+    {
+      "confidence": "low",
+      "from": "mechanism:adaptive-kv-quantization",
+      "rationale": "v1 approach approach:adaptive-kv-quantization declares applies_to moe-decoder-transformer.",
+      "relation": "applies_to",
+      "to": "trait:moe-decoder-transformer"
+    },
+    {
+      "confidence": "medium",
+      "from": "mechanism:audio-reference-conditioning-cache",
+      "rationale": "v1 approach approach:audio-reference-conditioning-cache declares applies_to autoregressive-audio-lm.",
+      "relation": "applies_to",
+      "to": "trait:autoregressive-audio-lm"
+    },
+    {
+      "confidence": "medium",
+      "from": "mechanism:audio-reference-conditioning-cache",
+      "rationale": "v1 approach approach:audio-reference-conditioning-cache declares applies_to tts.",
+      "relation": "applies_to",
+      "to": "trait:tts"
+    },
+    {
+      "confidence": "medium",
+      "from": "mechanism:audio-reference-conditioning-cache",
+      "rationale": "v1 approach approach:audio-reference-conditioning-cache declares applies_to voice-cloning.",
+      "relation": "applies_to",
+      "to": "trait:voice-cloning"
+    },
+    {
+      "confidence": "medium",
+      "from": "mechanism:audio-streaming-and-cache",
+      "rationale": "v1 approach approach:audio-streaming-and-cache declares applies_to audio-codec.",
+      "relation": "applies_to",
+      "to": "trait:audio-codec"
+    },
+    {
+      "confidence": "medium",
+      "from": "mechanism:audio-streaming-and-cache",
+      "rationale": "v1 approach approach:audio-streaming-and-cache declares applies_to streaming-speech.",
+      "relation": "applies_to",
+      "to": "trait:streaming-speech"
+    },
+    {
+      "confidence": "medium",
+      "from": "mechanism:audio-streaming-and-cache",
+      "rationale": "v1 approach approach:audio-streaming-and-cache declares applies_to tts.",
+      "relation": "applies_to",
+      "to": "trait:tts"
+    },
+    {
+      "confidence": "medium",
+      "from": "mechanism:audio-streaming-and-cache",
+      "rationale": "v1 approach approach:audio-streaming-and-cache declares applies_to vocoder.",
+      "relation": "applies_to",
+      "to": "trait:vocoder"
+    },
+    {
+      "confidence": "high",
+      "from": "mechanism:bf16-weight-cast",
+      "rationale": "v1 approach approach:bf16-weight-cast declares applies_to dense-decoder-transformer.",
+      "relation": "applies_to",
+      "to": "trait:dense-decoder-transformer"
+    },
+    {
+      "confidence": "high",
+      "from": "mechanism:bf16-weight-cast",
+      "rationale": "v1 approach approach:bf16-weight-cast declares applies_to linear-heavy-models.",
+      "relation": "applies_to",
+      "to": "trait:linear-heavy-models"
+    },
+    {
+      "confidence": "medium",
+      "from": "mechanism:block-weight-streaming",
+      "rationale": "v1 approach approach:block-weight-streaming declares applies_to diffusion-flow.",
+      "relation": "applies_to",
+      "to": "trait:diffusion-flow"
+    },
+    {
+      "confidence": "medium",
+      "from": "mechanism:block-weight-streaming",
+      "rationale": "v1 approach approach:block-weight-streaming declares applies_to flow-diffusion-tts.",
+      "relation": "applies_to",
+      "to": "trait:flow-diffusion-tts"
+    },
+    {
+      "confidence": "medium",
+      "from": "mechanism:block-weight-streaming",
+      "rationale": "v1 approach approach:block-weight-streaming declares applies_to vision-language-omni.",
+      "relation": "applies_to",
+      "to": "trait:vision-language-omni"
+    },
+    {
+      "confidence": "low",
+      "from": "mechanism:cache-privacy-and-isolation",
+      "rationale": "v1 approach approach:cache-privacy-and-isolation declares applies_to agents.",
+      "relation": "applies_to",
+      "to": "trait:agents"
+    },
+    {
+      "confidence": "low",
+      "from": "mechanism:cache-privacy-and-isolation",
+      "rationale": "v1 approach approach:cache-privacy-and-isolation declares applies_to dense-decoder-transformer.",
+      "relation": "applies_to",
+      "to": "trait:dense-decoder-transformer"
+    },
+    {
+      "confidence": "low",
+      "from": "mechanism:cache-privacy-and-isolation",
+      "rationale": "v1 approach approach:cache-privacy-and-isolation declares applies_to moe-decoder-transformer.",
+      "relation": "applies_to",
+      "to": "trait:moe-decoder-transformer"
+    },
+    {
+      "confidence": "low",
+      "from": "mechanism:cache-privacy-and-isolation",
+      "rationale": "v1 approach approach:cache-privacy-and-isolation declares applies_to rag.",
+      "relation": "applies_to",
+      "to": "trait:rag"
+    },
+    {
+      "confidence": "low",
+      "from": "mechanism:cache-privacy-and-isolation",
+      "rationale": "v1 approach approach:cache-privacy-and-isolation declares applies_to server.",
+      "relation": "applies_to",
+      "to": "trait:server"
+    },
+    {
+      "confidence": "low",
+      "from": "mechanism:cache-privacy-and-isolation",
+      "rationale": "v1 approach approach:cache-privacy-and-isolation declares applies_to vision-language-omni.",
+      "relation": "applies_to",
+      "to": "trait:vision-language-omni"
+    },
+    {
+      "confidence": "low",
+      "from": "mechanism:content-prefix-cache-vlm",
+      "rationale": "v1 approach approach:content-prefix-cache-vlm declares applies_to vision-language-omni.",
+      "relation": "applies_to",
+      "to": "trait:vision-language-omni"
+    },
+    {
+      "confidence": "low",
+      "from": "mechanism:content-prefix-cache-vlm",
+      "rationale": "v1 approach approach:content-prefix-cache-vlm declares applies_to vlm.",
+      "relation": "applies_to",
+      "to": "trait:vlm"
+    },
+    {
+      "confidence": "medium",
+      "from": "mechanism:continuous-batching-serving",
+      "rationale": "v1 approach approach:continuous-batching-serving declares applies_to autoregressive-transformer.",
+      "relation": "applies_to",
+      "to": "trait:autoregressive-transformer"
+    },
+    {
+      "confidence": "medium",
+      "from": "mechanism:continuous-batching-serving",
+      "rationale": "v1 approach approach:continuous-batching-serving declares applies_to server.",
+      "relation": "applies_to",
+      "to": "trait:server"
+    },
+    {
+      "confidence": "medium",
+      "from": "mechanism:continuous-batching-serving",
+      "rationale": "v1 approach approach:continuous-batching-serving declares applies_to vision-language-omni.",
+      "relation": "applies_to",
+      "to": "trait:vision-language-omni"
+    },
+    {
+      "confidence": "low",
+      "from": "mechanism:cuda-graphs-decode-capture",
+      "rationale": "v1 approach approach:cuda-graphs-decode-capture declares applies_to dense-decoder-transformer.",
+      "relation": "applies_to",
+      "to": "trait:dense-decoder-transformer"
+    },
+    {
+      "confidence": "low",
+      "from": "mechanism:cuda-graphs-decode-capture",
+      "rationale": "v1 approach approach:cuda-graphs-decode-capture declares applies_to moe-decoder-transformer.",
+      "relation": "applies_to",
+      "to": "trait:moe-decoder-transformer"
+    },
+    {
+      "confidence": "high",
+      "from": "mechanism:draft-model-speculation",
+      "rationale": "v1 approach approach:draft-model-speculation declares applies_to autoregressive-decoder.",
+      "relation": "applies_to",
+      "to": "trait:autoregressive-decoder"
+    },
+    {
+      "confidence": "high",
+      "from": "mechanism:draft-model-speculation",
+      "rationale": "v1 approach approach:draft-model-speculation declares applies_to dense-decoder-transformer.",
+      "relation": "applies_to",
+      "to": "trait:dense-decoder-transformer"
+    },
+    {
+      "confidence": "high",
+      "from": "mechanism:draft-model-speculation",
+      "rationale": "v1 approach approach:draft-model-speculation declares applies_to moe-decoder-transformer.",
+      "relation": "applies_to",
+      "to": "trait:moe-decoder-transformer"
+    },
+    {
+      "confidence": "low",
+      "from": "mechanism:eagle-medusa-mtp-drafters",
+      "rationale": "v1 approach approach:eagle-medusa-mtp-drafters declares applies_to decoder-transformer.",
+      "relation": "applies_to",
+      "to": "trait:decoder-transformer"
+    },
+    {
+      "confidence": "low",
+      "from": "mechanism:eagle-medusa-mtp-drafters",
+      "rationale": "v1 approach approach:eagle-medusa-mtp-drafters declares applies_to vision-language-omni.",
+      "relation": "applies_to",
+      "to": "trait:vision-language-omni"
+    },
+    {
+      "confidence": "high",
+      "from": "mechanism:fast-sdpa",
+      "rationale": "v1 approach approach:fast-sdpa declares applies_to dense-decoder-transformer.",
+      "relation": "applies_to",
+      "to": "trait:dense-decoder-transformer"
+    },
+    {
+      "confidence": "high",
+      "from": "mechanism:fast-sdpa",
+      "rationale": "v1 approach approach:fast-sdpa declares applies_to encoder-decoder-transformer.",
+      "relation": "applies_to",
+      "to": "trait:encoder-decoder-transformer"
+    },
+    {
+      "confidence": "high",
+      "from": "mechanism:fast-sdpa",
+      "rationale": "v1 approach approach:fast-sdpa declares applies_to encoder-transformer.",
+      "relation": "applies_to",
+      "to": "trait:encoder-transformer"
+    },
+    {
+      "confidence": "high",
+      "from": "mechanism:fast-sdpa",
+      "rationale": "v1 approach approach:fast-sdpa declares applies_to moe-decoder-transformer.",
+      "relation": "applies_to",
+      "to": "trait:moe-decoder-transformer"
+    },
+    {
+      "confidence": "high",
+      "from": "mechanism:fast-sdpa",
+      "rationale": "v1 approach approach:fast-sdpa declares applies_to vision-language-omni.",
+      "relation": "applies_to",
+      "to": "trait:vision-language-omni"
+    },
+    {
+      "confidence": "low",
+      "from": "mechanism:generic-audio-prefix-cache",
+      "rationale": "v1 approach approach:generic-audio-prefix-cache declares applies_to audio-lm.",
+      "relation": "applies_to",
+      "to": "trait:audio-lm"
+    },
+    {
+      "confidence": "low",
+      "from": "mechanism:generic-audio-prefix-cache",
+      "rationale": "v1 approach approach:generic-audio-prefix-cache declares applies_to speech-to-speech.",
+      "relation": "applies_to",
+      "to": "trait:speech-to-speech"
+    },
+    {
+      "confidence": "low",
+      "from": "mechanism:generic-audio-prefix-cache",
+      "rationale": "v1 approach approach:generic-audio-prefix-cache declares applies_to stt.",
+      "relation": "applies_to",
+      "to": "trait:stt"
+    },
+    {
+      "confidence": "low",
+      "from": "mechanism:generic-audio-prefix-cache",
+      "rationale": "v1 approach approach:generic-audio-prefix-cache declares applies_to tts.",
+      "relation": "applies_to",
+      "to": "trait:tts"
+    },
+    {
+      "confidence": "high",
+      "from": "mechanism:moe-expert-dispatch-and-quantization",
+      "rationale": "v1 approach approach:moe-expert-dispatch-and-quantization declares applies_to moe-decoder-transformer.",
+      "relation": "applies_to",
+      "to": "trait:moe-decoder-transformer"
+    },
+    {
+      "confidence": "low",
+      "from": "mechanism:moe-gate-up-fusion",
+      "rationale": "v1 approach approach:moe-gate-up-fusion declares applies_to moe-decoder-transformer.",
+      "relation": "applies_to",
+      "to": "trait:moe-decoder-transformer"
+    },
+    {
+      "confidence": "high",
+      "from": "mechanism:moe-gather-and-expert-batching",
+      "rationale": "v1 approach approach:moe-gather-and-expert-batching declares applies_to moe-decoder-transformer.",
+      "relation": "applies_to",
+      "to": "trait:moe-decoder-transformer"
+    },
+    {
+      "confidence": "medium",
+      "from": "mechanism:multimodal-content-prefix-cache",
+      "rationale": "v1 approach approach:multimodal-content-prefix-cache declares applies_to long-context-vlm.",
+      "relation": "applies_to",
+      "to": "trait:long-context-vlm"
+    },
+    {
+      "confidence": "medium",
+      "from": "mechanism:multimodal-content-prefix-cache",
+      "rationale": "v1 approach approach:multimodal-content-prefix-cache declares applies_to multimodal-serving.",
+      "relation": "applies_to",
+      "to": "trait:multimodal-serving"
+    },
+    {
+      "confidence": "medium",
+      "from": "mechanism:multimodal-content-prefix-cache",
+      "rationale": "v1 approach approach:multimodal-content-prefix-cache declares applies_to vision-language-omni.",
+      "relation": "applies_to",
+      "to": "trait:vision-language-omni"
+    },
+    {
+      "confidence": "high",
+      "from": "mechanism:native-low-bit-weight-quantization",
+      "rationale": "v1 approach approach:native-low-bit-weight-quantization declares applies_to audio-lm.",
+      "relation": "applies_to",
+      "to": "trait:audio-lm"
+    },
+    {
+      "confidence": "high",
+      "from": "mechanism:native-low-bit-weight-quantization",
+      "rationale": "v1 approach approach:native-low-bit-weight-quantization declares applies_to dense-decoder-transformer.",
+      "relation": "applies_to",
+      "to": "trait:dense-decoder-transformer"
+    },
+    {
+      "confidence": "high",
+      "from": "mechanism:native-low-bit-weight-quantization",
+      "rationale": "v1 approach approach:native-low-bit-weight-quantization declares applies_to linear-heavy-models.",
+      "relation": "applies_to",
+      "to": "trait:linear-heavy-models"
+    },
+    {
+      "confidence": "high",
+      "from": "mechanism:native-low-bit-weight-quantization",
+      "rationale": "v1 approach approach:native-low-bit-weight-quantization declares applies_to moe-decoder-transformer.",
+      "relation": "applies_to",
+      "to": "trait:moe-decoder-transformer"
+    },
+    {
+      "confidence": "high",
+      "from": "mechanism:native-low-bit-weight-quantization",
+      "rationale": "v1 approach approach:native-low-bit-weight-quantization declares applies_to vision-language-omni.",
+      "relation": "applies_to",
+      "to": "trait:vision-language-omni"
+    },
+    {
+      "confidence": "low",
+      "from": "mechanism:prompt-lookup-ngram-speculation",
+      "rationale": "v1 approach approach:prompt-lookup-ngram-speculation declares applies_to code.",
+      "relation": "applies_to",
+      "to": "trait:code"
+    },
+    {
+      "confidence": "low",
+      "from": "mechanism:prompt-lookup-ngram-speculation",
+      "rationale": "v1 approach approach:prompt-lookup-ngram-speculation declares applies_to rag.",
+      "relation": "applies_to",
+      "to": "trait:rag"
+    },
+    {
+      "confidence": "low",
+      "from": "mechanism:prompt-lookup-ngram-speculation",
+      "rationale": "v1 approach approach:prompt-lookup-ngram-speculation declares applies_to repetitive-prompts.",
+      "relation": "applies_to",
+      "to": "trait:repetitive-prompts"
+    },
+    {
+      "confidence": "high",
+      "from": "mechanism:prompt-prefix-cache",
+      "rationale": "v1 approach approach:prompt-prefix-cache declares applies_to agents.",
+      "relation": "applies_to",
+      "to": "trait:agents"
+    },
+    {
+      "confidence": "high",
+      "from": "mechanism:prompt-prefix-cache",
+      "rationale": "v1 approach approach:prompt-prefix-cache declares applies_to autoregressive-transformer.",
+      "relation": "applies_to",
+      "to": "trait:autoregressive-transformer"
+    },
+    {
+      "confidence": "high",
+      "from": "mechanism:prompt-prefix-cache",
+      "rationale": "v1 approach approach:prompt-prefix-cache declares applies_to rag.",
+      "relation": "applies_to",
+      "to": "trait:rag"
+    },
+    {
+      "confidence": "high",
+      "from": "mechanism:prompt-prefix-cache",
+      "rationale": "v1 approach approach:prompt-prefix-cache declares applies_to vision-language-omni.",
+      "relation": "applies_to",
+      "to": "trait:vision-language-omni"
+    },
+    {
+      "confidence": "medium",
+      "from": "mechanism:qwen3-tts-batch-generation",
+      "rationale": "v1 approach approach:qwen3-tts-batch-generation declares applies_to autoregressive-audio-lm.",
+      "relation": "applies_to",
+      "to": "trait:autoregressive-audio-lm"
+    },
+    {
+      "confidence": "medium",
+      "from": "mechanism:spatial-grid-sample-kernel",
+      "rationale": "v1 approach approach:spatial-grid-sample-kernel declares applies_to diffusion-flow.",
+      "relation": "applies_to",
+      "to": "trait:diffusion-flow"
+    },
+    {
+      "confidence": "medium",
+      "from": "mechanism:spatial-grid-sample-kernel",
+      "rationale": "v1 approach approach:spatial-grid-sample-kernel declares applies_to vision-language-omni.",
+      "relation": "applies_to",
+      "to": "trait:vision-language-omni"
+    },
+    {
+      "confidence": "high",
+      "from": "mechanism:uniform-kv-quantization",
+      "rationale": "v1 approach approach:uniform-kv-quantization declares applies_to autoregressive-transformer.",
+      "relation": "applies_to",
+      "to": "trait:autoregressive-transformer"
+    },
+    {
+      "confidence": "high",
+      "from": "mechanism:uniform-kv-quantization",
+      "rationale": "v1 approach approach:uniform-kv-quantization declares applies_to dense-decoder-transformer.",
+      "relation": "applies_to",
+      "to": "trait:dense-decoder-transformer"
+    },
+    {
+      "confidence": "high",
+      "from": "mechanism:uniform-kv-quantization",
+      "rationale": "v1 approach approach:uniform-kv-quantization declares applies_to long-context.",
+      "relation": "applies_to",
+      "to": "trait:long-context"
+    },
+    {
+      "confidence": "high",
+      "from": "mechanism:uniform-kv-quantization",
+      "rationale": "v1 approach approach:uniform-kv-quantization declares applies_to moe-decoder-transformer.",
+      "relation": "applies_to",
+      "to": "trait:moe-decoder-transformer"
+    },
+    {
+      "confidence": "medium",
+      "from": "mechanism:video-input-budgeting",
+      "rationale": "v1 approach approach:video-input-budgeting declares applies_to video-vlm.",
+      "relation": "applies_to",
+      "to": "trait:video-vlm"
+    },
+    {
+      "confidence": "medium",
+      "from": "mechanism:video-input-budgeting",
+      "rationale": "v1 approach approach:video-input-budgeting declares applies_to vision-language-omni.",
+      "relation": "applies_to",
+      "to": "trait:vision-language-omni"
+    },
+    {
+      "confidence": "medium",
+      "from": "mechanism:vision-feature-cache",
+      "rationale": "v1 approach approach:vision-feature-cache declares applies_to multimodal-serving.",
+      "relation": "applies_to",
+      "to": "trait:multimodal-serving"
+    },
+    {
+      "confidence": "medium",
+      "from": "mechanism:vision-feature-cache",
+      "rationale": "v1 approach approach:vision-feature-cache declares applies_to vision-language-omni.",
+      "relation": "applies_to",
+      "to": "trait:vision-language-omni"
+    },
+    {
+      "confidence": "low",
+      "from": "mechanism:visual-token-pruning-or-merge",
+      "rationale": "v1 approach approach:visual-token-pruning-or-merge declares applies_to vision-language-omni.",
+      "relation": "applies_to",
+      "to": "trait:vision-language-omni"
+    }
+  ],
+  "generated_at": "2026-07-23",
+  "graph_id": "mlx-porting-skill/migrated/mechanisms",
+  "nodes": [
+    {
+      "confidence": "low",
+      "evidence": [
+        "mlx-model-porting/assets/knowledge_graph.json (approach:adaptive-kv-quantization)",
+        "https://arxiv.org/abs/2502.04420",
+        "https://arxiv.org/abs/2502.15075",
+        "https://arxiv.org/abs/2602.23200",
+        "https://arxiv.org/abs/2604.04722",
+        "https://arxiv.org/abs/2606.20474",
+        "https://arxiv.org/abs/2606.24033"
+      ],
+      "id": "mechanism:adaptive-kv-quantization",
+      "kind": "mechanism",
+      "observed_at": "2026-07-23",
+      "provenance": "research_inference",
+      "status": "research-candidate",
+      "summary": "Treat layerwise, key/value, RoPE-aware, and hardware-aware KV bit allocation as experiments until reproduced in MLX. Validation gate: MLX implementation. Rollback: no quality advantage over uniform KV quantization.",
+      "tags": [
+        "category/kv-cache",
+        "migrated-v1",
+        "objective/long-context",
+        "objective/peak-memory"
+      ],
+      "title": "Layerwise/key-value/adaptive mixed-precision KV"
+    },
+    {
+      "confidence": "medium",
+      "evidence": [
+        "mlx-model-porting/assets/knowledge_graph.json (approach:audio-reference-conditioning-cache)",
+        "https://github.com/Blaizzy/mlx-audio/blob/a7ef98604cfd752e9e5c9011bcee8ec8c67228be/docs/models/tts/qwen3-tts.md",
+        "https://github.com/Blaizzy/mlx-audio/releases/tag/v0.4.4"
+      ],
+      "exactness_class": "exact_by_construction",
+      "id": "mechanism:audio-reference-conditioning-cache",
+      "kind": "mechanism",
+      "observed_at": "2026-07-23",
+      "provenance": "code_verified",
+      "status": "proven-mlx-port",
+      "summary": "Cache repeated reference/ICL conditioning only with model/codec/quantization/speaker fingerprint keys. Validation gate: cold/warm parity. Rollback: speaker identity or prosody drifts.",
+      "tags": [
+        "category/audio-cache",
+        "migrated-v1",
+        "objective/first-audio-latency",
+        "objective/rtf"
+      ],
+      "title": "Audio reference / ICL conditioning cache"
+    },
+    {
+      "confidence": "medium",
+      "evidence": [
+        "mlx-model-porting/assets/knowledge_graph.json (approach:audio-streaming-and-cache)",
+        "https://github.com/Blaizzy/mlx-audio/tree/412cf7cd381c2a3f6a8189af04a95af24cb415b6/mlx_audio/codec/models",
+        "https://github.com/Blaizzy/mlx-audio/tree/412cf7cd381c2a3f6a8189af04a95af24cb415b6/mlx_audio",
+        "https://github.com/Blaizzy/mlx-audio/releases/tag/v0.4.4",
+        "https://github.com/Blaizzy/mlx-audio/tree/412cf7cd381c2a3f6a8189af04a95af24cb415b6",
+        "https://arxiv.org/abs/2505.15380"
+      ],
+      "exactness_class": "approximate_legal",
+      "id": "mechanism:audio-streaming-and-cache",
+      "kind": "mechanism",
+      "observed_at": "2026-07-23",
+      "provenance": "code_verified",
+      "status": "proven-mlx-port",
+      "summary": "Use cache-aware streaming, overlap-add, and chunked codec/vocoder execution only when chunk boundaries preserve audio quality. Validation gate: first-audio latency. Rollback: audible discontinuity.",
+      "tags": [
+        "category/audio",
+        "migrated-v1",
+        "objective/first-audio-latency",
+        "objective/rtf",
+        "objective/streaming-quality"
+      ],
+      "title": "Overlap-add mid-generation streaming"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "mlx-model-porting/assets/knowledge_graph.json (approach:bf16-weight-cast)",
+        "https://ml-explore.github.io/mlx/build/html/index.html",
+        "https://github.com/ml-explore/mlx/tree/96296e9c3075a2389bc5c0f078bf01b5aa377cd9"
+      ],
+      "id": "mechanism:bf16-weight-cast",
+      "kind": "mechanism",
+      "observed_at": "2026-07-23",
+      "provenance": "code_verified",
+      "status": "native-mlx",
+      "summary": "Cast a controlled F32 MLX port to BF16 only when the exact target workload retains its declared quality window; keep timing results observation-only until every promotion gate, including external signed attestation, passes. Validation gate: deterministic F32-to-BF16 conversion manifest. Rollback: quality output leaves the declared window. Observed source band 1.0x-1.8122x on metric wall-time; the repository holds this claim (promotion_state=withheld) and emits no effective range.",
+      "tags": [
+        "category/quantization",
+        "migrated-v1",
+        "objective/latency",
+        "objective/model-size"
+      ],
+      "title": "BF16 weight casting for MLX inference"
+    },
+    {
+      "confidence": "medium",
+      "evidence": [
+        "mlx-model-porting/assets/knowledge_graph.json (approach:block-weight-streaming)",
+        "https://github.com/dgrauet/ltx-2-mlx/blob/3f5897a9582b5c14379c8f88216ae0fd6e55741d/packages/ltx-core-mlx/src/ltx_core_mlx/loader/block_streaming.py",
+        "https://github.com/dgrauet/ltx-2-mlx/blob/3f5897a9582b5c14379c8f88216ae0fd6e55741d/tests/test_block_streaming.py",
+        "https://github.com/dgrauet/ltx-2-mlx/blob/3f5897a9582b5c14379c8f88216ae0fd6e55741d/docs/REGRESSION_TESTS_v0.11.0.md"
+      ],
+      "id": "mechanism:block-weight-streaming",
+      "kind": "mechanism",
+      "observed_at": "2026-07-23",
+      "provenance": "code_verified",
+      "status": "proven-mlx-port",
+      "summary": "For repeated-block models that exceed unified memory, stream block weights from inspectable safetensors into a shared block only after eager parity is established. Validation gate: block key coverage. Rollback: streamed outputs drift.",
+      "tags": [
+        "category/memory",
+        "migrated-v1",
+        "objective/peak-memory"
+      ],
+      "title": "Repeated-block weight streaming"
+    },
+    {
+      "confidence": "low",
+      "evidence": [
+        "mlx-model-porting/assets/knowledge_graph.json (approach:cache-privacy-and-isolation)",
+        "https://arxiv.org/abs/2606.21842",
+        "https://vllm.ai/blog/2025-09-05-anatomy-of-vllm",
+        "https://github.com/waybarrios/vllm-mlx"
+      ],
+      "exactness_class": "exact_by_construction",
+      "id": "mechanism:cache-privacy-and-isolation",
+      "kind": "mechanism",
+      "observed_at": "2026-07-23",
+      "provenance": "research_inference",
+      "status": "research-candidate",
+      "summary": "Require namespace isolation, opt-out, padding/constant-time policy review, and leakage tests before cross-user cache reuse. Validation gate: tenant namespace tests. Rollback: unbounded cross-tenant reuse.",
+      "tags": [
+        "category/security-privacy",
+        "migrated-v1",
+        "objective/serving-safety"
+      ],
+      "title": "Cache privacy and tenant isolation review"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "mlx-model-porting/assets/knowledge_graph.json (approach:compile-stable-region)",
+        "https://developer.apple.com/videos/play/wwdc2025/315/",
+        "https://ml-explore.github.io/mlx/build/html/usage/compile.html",
+        "https://github.com/ml-explore/mlx/tree/96296e9c3075a2389bc5c0f078bf01b5aa377cd9"
+      ],
+      "exactness_class": "exact_by_construction",
+      "id": "mechanism:compile-stable-region",
+      "kind": "mechanism",
+      "observed_at": "2026-07-23",
+      "provenance": "code_verified",
+      "status": "native-mlx",
+      "summary": "Compile pure repeated regions after parity is established and shapes/state containers are stable. Validation gate: compile count or cold/warm timing captured. Rollback: hidden retracing.",
+      "tags": [
+        "category/runtime",
+        "migrated-v1",
+        "objective/latency",
+        "objective/throughput"
+      ],
+      "title": "Compile stable repeated regions"
+    },
+    {
+      "confidence": "low",
+      "evidence": [
+        "mlx-model-porting/assets/knowledge_graph.json (approach:content-prefix-cache-vlm)",
+        "https://github.com/Blaizzy/mlx-vlm/blob/6a8cdff6a1f53f46a15d4adb997c3b2d5f621263/README.md",
+        "https://arxiv.org/abs/2402.05099",
+        "https://arxiv.org/abs/2402.15220",
+        "https://arxiv.org/abs/2601.19139",
+        "https://github.com/waybarrios/vllm-mlx"
+      ],
+      "id": "mechanism:content-prefix-cache-vlm",
+      "kind": "mechanism",
+      "observed_at": "2026-07-23",
+      "provenance": "research_inference",
+      "status": "rejected-or-superseded",
+      "summary": "Superseded by multimodal-content-prefix-cache; do not count this alias as a separate optimization or evidence line. Validation gate: same-image/different-encoding hit tests. Rollback: false cache hit.",
+      "tags": [
+        "category/multimodal-serving",
+        "migrated-v1",
+        "objective/throughput",
+        "objective/ttft"
+      ],
+      "title": "Block-level automatic prefix caching"
+    },
+    {
+      "confidence": "medium",
+      "evidence": [
+        "mlx-model-porting/assets/knowledge_graph.json (approach:continuous-batching-serving)",
+        "https://github.com/Blaizzy/mlx-vlm/blob/6a8cdff6a1f53f46a15d4adb997c3b2d5f621263/README.md",
+        "https://www.usenix.org/conference/osdi22/presentation/yu",
+        "https://arxiv.org/abs/2309.06180",
+        "https://arxiv.org/abs/2601.19139",
+        "https://vllm.ai/blog/2025-09-05-anatomy-of-vllm",
+        "https://github.com/waybarrios/vllm-mlx"
+      ],
+      "exactness_class": "exact_by_construction",
+      "id": "mechanism:continuous-batching-serving",
+      "kind": "mechanism",
+      "observed_at": "2026-07-23",
+      "provenance": "code_verified",
+      "status": "proven-mlx-port",
+      "summary": "Use only for concurrent serving where scheduler complexity is justified. Validation gate: concurrency=1 and many. Rollback: tail latency regression. Observed source band 1.0x-4.3x on metric batch-throughput; the repository holds this claim (promotion_state=withheld) and emits no effective range.",
+      "tags": [
+        "category/serving",
+        "migrated-v1",
+        "objective/concurrency",
+        "objective/tail-latency",
+        "objective/throughput"
+      ],
+      "title": "Continuous batching"
+    },
+    {
+      "confidence": "low",
+      "evidence": [
+        "mlx-model-porting/assets/knowledge_graph.json (approach:cuda-graphs-decode-capture)",
+        "https://ml-explore.github.io/mlx/build/html/usage/compile.html",
+        "https://docs.pytorch.org/docs/stable/notes/cuda.html#cuda-graphs"
+      ],
+      "id": "mechanism:cuda-graphs-decode-capture",
+      "kind": "mechanism",
+      "observed_at": "2026-07-23",
+      "provenance": "research_inference",
+      "status": "rejected-or-superseded",
+      "summary": "Do not port. CUDA Graphs capture/replay is NVIDIA-specific; the portable MLX analog is mx.compile of the single decode step, which this skill already recommends. Validation gate: Not applicable on Metal/MLX; use the mx.compile stable-region gate instead. Rollback: Always: this method is rejected for MLX and must not be adopted.",
+      "tags": [
+        "category/runtime",
+        "migrated-v1",
+        "objective/decode-latency"
+      ],
+      "title": "CUDA Graphs decode-loop capture"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "mlx-model-porting/assets/knowledge_graph.json (approach:draft-model-speculation)",
+        "https://github.com/ml-explore/mlx-lm/blob/2c008fd0252b2c569227d12568356ab88ab0560a/mlx_lm/generate.py",
+        "https://arxiv.org/abs/2211.17192",
+        "https://arxiv.org/abs/2302.01318"
+      ],
+      "exactness_class": "exact_by_construction",
+      "id": "mechanism:draft-model-speculation",
+      "kind": "mechanism",
+      "observed_at": "2026-07-23",
+      "provenance": "code_verified",
+      "status": "official-mlx-project",
+      "summary": "Try only when a compatible smaller draft model shares tokenizer/vocabulary and acceptance is high enough to offset draft cost. Validation gate: lossless distribution or quality-preserving test. Rollback: acceptance too low. Observed source band 1.0x-1.3x on metric decode-tokens-per-sec; the repository holds this claim (promotion_state=withheld) and emits no effective range.",
+      "tags": [
+        "category/decoding",
+        "migrated-v1",
+        "objective/decode-latency",
+        "objective/throughput"
+      ],
+      "title": "Independent draft-model speculative decoding"
+    },
+    {
+      "confidence": "low",
+      "evidence": [
+        "mlx-model-porting/assets/knowledge_graph.json (approach:eagle-medusa-mtp-drafters)",
+        "https://github.com/Blaizzy/mlx-vlm/blob/6a8cdff6a1f53f46a15d4adb997c3b2d5f621263/README.md",
+        "https://arxiv.org/abs/2401.10774",
+        "https://arxiv.org/abs/2401.15077",
+        "https://arxiv.org/abs/2406.16858",
+        "https://arxiv.org/abs/2412.19437",
+        "https://github.com/waybarrios/vllm-mlx"
+      ],
+      "id": "mechanism:eagle-medusa-mtp-drafters",
+      "kind": "mechanism",
+      "observed_at": "2026-07-23",
+      "provenance": "research_inference",
+      "status": "research-candidate",
+      "summary": "Use only when compatible trained drafter heads/artifacts and verification code exist for the target architecture. Validation gate: drafter compatibility. Rollback: incompatible features.",
+      "tags": [
+        "category/decoding",
+        "migrated-v1",
+        "objective/decode-latency",
+        "objective/throughput"
+      ],
+      "title": "EAGLE/EAGLE3 feature-level speculation"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "mlx-model-porting/assets/knowledge_graph.json (approach:fast-sdpa)",
+        "https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.fast.scaled_dot_product_attention.html",
+        "https://github.com/ml-explore/mlx/tree/96296e9c3075a2389bc5c0f078bf01b5aa377cd9",
+        "https://arxiv.org/abs/2205.14135",
+        "https://arxiv.org/abs/2307.08691",
+        "https://arxiv.org/abs/2407.08608"
+      ],
+      "exactness_class": "exact_by_construction",
+      "id": "mechanism:fast-sdpa",
+      "kind": "mechanism",
+      "observed_at": "2026-07-23",
+      "provenance": "code_verified",
+      "status": "native-mlx",
+      "summary": "Try MLX fast SDPA when Q/K/V layout, GQA/MQA grouping, mask, scale, causal alignment, sinks, and dtype semantics match the source. Validation gate: Prefill tensor parity. Rollback: Any semantic mismatch.",
+      "tags": [
+        "category/attention",
+        "migrated-v1",
+        "objective/decode-latency",
+        "objective/prefill-latency",
+        "objective/throughput"
+      ],
+      "title": "MLX fast scaled-dot-product attention"
+    },
+    {
+      "confidence": "low",
+      "evidence": [
+        "mlx-model-porting/assets/knowledge_graph.json (approach:generic-audio-prefix-cache)",
+        "https://blaizzy.github.io/mlx-audio/guides/streaming/",
+        "https://arxiv.org/abs/2601.15621",
+        "https://arxiv.org/abs/2601.19139"
+      ],
+      "id": "mechanism:generic-audio-prefix-cache",
+      "kind": "mechanism",
+      "observed_at": "2026-07-23",
+      "provenance": "research_inference",
+      "status": "research-candidate",
+      "summary": "Keep generic audio prefix cache as a research experiment until a model-specific MLX-Audio cache path exists. Validation gate: model-specific cache path. Rollback: state mismatch.",
+      "tags": [
+        "category/audio-cache",
+        "migrated-v1",
+        "objective/first-audio-latency",
+        "objective/peak-memory",
+        "objective/rtf"
+      ],
+      "title": "Generic audio prefix cache"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "mlx-model-porting/assets/knowledge_graph.json (approach:lazy-eval-boundaries)",
+        "https://machinelearning.apple.com/research/exploring-llms-mlx-m5",
+        "https://developer.apple.com/videos/play/wwdc2025/315/",
+        "https://ml-explore.github.io/mlx/build/html/usage/lazy_evaluation.html",
+        "https://github.com/ml-explore/mlx/tree/96296e9c3075a2389bc5c0f078bf01b5aa377cd9"
+      ],
+      "id": "mechanism:lazy-eval-boundaries",
+      "kind": "mechanism",
+      "observed_at": "2026-07-23",
+      "provenance": "code_verified",
+      "status": "native-mlx",
+      "summary": "Move host synchronization to intentional boundaries and avoid accidental NumPy conversion, printing, or scalar item extraction in hot loops. Validation gate: same outputs. Rollback: memory blow-up.",
+      "tags": [
+        "category/runtime",
+        "migrated-v1",
+        "objective/latency",
+        "objective/peak-memory",
+        "objective/throughput"
+      ],
+      "title": "Deliberate lazy evaluation boundaries"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "mlx-model-porting/assets/knowledge_graph.json (approach:moe-expert-dispatch-and-quantization)",
+        "https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.gather_mm.html",
+        "https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.gather_qmm.html",
+        "https://github.com/ml-explore/mlx-lm/blob/ed1fca4cef15a824c5f1702c80f70b4cffc8e4dd/mlx_lm/models/switch_layers.py",
+        "https://arxiv.org/abs/2401.04088",
+        "https://arxiv.org/abs/2405.04434"
+      ],
+      "exactness_class": "approximate_legal",
+      "id": "mechanism:moe-expert-dispatch-and-quantization",
+      "kind": "mechanism",
+      "observed_at": "2026-07-23",
+      "provenance": "code_verified",
+      "status": "native-mlx",
+      "summary": "After a loop oracle passes, move to MLX gather_mm/gather_qmm expert dispatch and quantize experts only after sensitivity tests. Validation gate: loop oracle parity. Rollback: rare-expert quality regression.",
+      "tags": [
+        "category/moe",
+        "migrated-v1",
+        "objective/decode-throughput",
+        "objective/peak-memory"
+      ],
+      "title": "Gather matmul for indexed expert projections"
+    },
+    {
+      "confidence": "low",
+      "evidence": [
+        "mlx-model-porting/assets/knowledge_graph.json (approach:moe-gate-up-fusion)",
+        "https://github.com/ml-explore/mlx-lm/issues/956",
+        "https://github.com/ml-explore/mlx-lm/blob/ed1fca4cef15a824c5f1702c80f70b4cffc8e4dd/mlx_lm/models/switch_layers.py"
+      ],
+      "id": "mechanism:moe-gate-up-fusion",
+      "kind": "mechanism",
+      "observed_at": "2026-07-23",
+      "provenance": "research_inference",
+      "status": "research-candidate",
+      "summary": "Treat fused MoE gate/up projection as an experimental patch, not baseline MLX support. Validation gate: token-exact parity. Rollback: proposal not available in target runtime.",
+      "tags": [
+        "category/moe-research",
+        "migrated-v1",
+        "objective/decode-throughput"
+      ],
+      "title": "MoE gate/up projection fusion"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "mlx-model-porting/assets/knowledge_graph.json (approach:moe-gather-and-expert-batching)",
+        "https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.gather_mm.html",
+        "https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.gather_qmm.html",
+        "https://github.com/ml-explore/mlx-lm/blob/ed1fca4cef15a824c5f1702c80f70b4cffc8e4dd/mlx_lm/models/switch_layers.py",
+        "https://github.com/ml-explore/mlx/tree/96296e9c3075a2389bc5c0f078bf01b5aa377cd9",
+        "https://arxiv.org/abs/2401.04088"
+      ],
+      "id": "mechanism:moe-gather-and-expert-batching",
+      "kind": "mechanism",
+      "observed_at": "2026-07-23",
+      "provenance": "code_verified",
+      "status": "native-mlx",
+      "summary": "Use gather or grouped matmul primitives when expert routing creates large enough grouped matrix multiplies and duplicate/scatter semantics match. Validation gate: loop oracle parity including duplicates. Rollback: small group overhead dominates.",
+      "tags": [
+        "category/moe",
+        "migrated-v1",
+        "objective/latency",
+        "objective/throughput"
+      ],
+      "title": "Gather matmul for indexed expert projections"
+    },
+    {
+      "confidence": "medium",
+      "evidence": [
+        "mlx-model-porting/assets/knowledge_graph.json (approach:multimodal-content-prefix-cache)",
+        "https://github.com/Blaizzy/mlx-vlm/blob/6a8cdff6a1f53f46a15d4adb997c3b2d5f621263/mlx_vlm/apc.py",
+        "https://github.com/Blaizzy/mlx-vlm/blob/6a8cdff6a1f53f46a15d4adb997c3b2d5f621263/mlx_vlm/generate/ar.py",
+        "https://arxiv.org/abs/2601.19139",
+        "https://docs.vllm.ai/en/stable/design/prefix_caching/",
+        "https://github.com/waybarrios/vllm-mlx/blob/a48c86c1a41900f7d26658471b5f67e5fdd35445/vllm_mlx/mllm_batch_generator.py"
+      ],
+      "exactness_class": "exact_by_construction",
+      "id": "mechanism:multimodal-content-prefix-cache",
+      "kind": "mechanism",
+      "observed_at": "2026-07-23",
+      "provenance": "code_verified",
+      "status": "proven-mlx-port",
+      "summary": "Use a media-aware block prefix cache only when restored cache coverage and media placeholder safety are proven. Validation gate: media extra hashes include content and processing knobs. Rollback: tenant isolation fails. Observed source band 1.0x-28.0x on metric repeated-media-ttft; the repository holds this claim (promotion_state=withheld) and emits no effective range.",
+      "tags": [
+        "category/serving-cache",
+        "migrated-v1",
+        "objective/concurrent-throughput",
+        "objective/prefill-throughput",
+        "objective/ttft"
+      ],
+      "title": "Content-hashed multimodal prefix cache"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "mlx-model-porting/assets/knowledge_graph.json (approach:native-low-bit-weight-quantization)",
+        "https://github.com/Blaizzy/mlx-audio/blob/412cf7cd381c2a3f6a8189af04a95af24cb415b6/mlx_audio/convert.py",
+        "https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.quantize.html",
+        "https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.nn.quantize.html",
+        "https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.quantized_matmul.html",
+        "https://github.com/ml-explore/mlx-lm/blob/2c008fd0252b2c569227d12568356ab88ab0560a/mlx_lm/convert.py",
+        "https://developer.nvidia.com/blog/introducing-nvfp4-for-efficient-and-accurate-low-precision-inference/",
+        "https://arxiv.org/abs/2310.16836",
+        "https://www.spheron.network/blog/nvfp4-vs-mxfp4-gpu-cloud-4bit-quantization-guide/"
+      ],
+      "exactness_class": "approximate_legal",
+      "id": "mechanism:native-low-bit-weight-quantization",
+      "kind": "mechanism",
+      "observed_at": "2026-07-23",
+      "provenance": "code_verified",
+      "status": "native-mlx",
+      "summary": "Use MLX affine, mxfp4, mxfp8, or nvfp4 only where the target Linear path and conversion tooling support the mode. Validation gate: task quality against unquantized baseline. Rollback: quality drift exceeds budget. Observed source band 1.0x-2.4x on metric decode-tokens-per-sec; the repository holds this claim (promotion_state=withheld) and emits no effective range.",
+      "tags": [
+        "category/quantization",
+        "migrated-v1",
+        "objective/model-size",
+        "objective/peak-memory",
+        "objective/throughput"
+      ],
+      "title": "Native MLX affine/MX/NV low-bit quantization modes"
+    },
+    {
+      "confidence": "low",
+      "evidence": [
+        "mlx-model-porting/assets/knowledge_graph.json (approach:prompt-lookup-ngram-speculation)",
+        "https://arxiv.org/abs/2311.08252",
+        "https://github.com/apoorvumang/prompt-lookup-decoding"
+      ],
+      "id": "mechanism:prompt-lookup-ngram-speculation",
+      "kind": "mechanism",
+      "observed_at": "2026-07-23",
+      "provenance": "research_inference",
+      "status": "research-candidate",
+      "summary": "Consider as a low-memory experiment for copy-heavy workloads only after implementing a target MLX drafter. Validation gate: hit rate. Rollback: low match rate.",
+      "tags": [
+        "category/decoding",
+        "migrated-v1",
+        "objective/decode-latency"
+      ],
+      "title": "Prompt lookup / n-gram speculation"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "mlx-model-porting/assets/knowledge_graph.json (approach:prompt-prefix-cache)",
+        "https://github.com/ml-explore/mlx-lm/blob/2c008fd0252b2c569227d12568356ab88ab0560a/mlx_lm/models/cache.py",
+        "https://github.com/ml-explore/mlx-lm/tree/2c008fd0252b2c569227d12568356ab88ab0560a",
+        "https://github.com/Blaizzy/mlx-vlm/blob/6a8cdff6a1f53f46a15d4adb997c3b2d5f621263/README.md",
+        "https://arxiv.org/abs/2402.05099",
+        "https://arxiv.org/abs/2412.03594",
+        "https://arxiv.org/abs/2606.21842",
+        "https://docs.vllm.ai/en/stable/design/prefix_caching/",
+        "https://github.com/waybarrios/vllm-mlx"
+      ],
+      "exactness_class": "exact_by_construction",
+      "id": "mechanism:prompt-prefix-cache",
+      "kind": "mechanism",
+      "observed_at": "2026-07-23",
+      "provenance": "code_verified",
+      "status": "official-mlx-project",
+      "summary": "Reuse immutable prefix state only when model, tokenizer/template, processor, adapter, quantization, positions, and cache format version match. Validation gate: exact-hit and miss tests. Rollback: incorrect reuse. Observed source band 1.0x-23.8x on metric ttft-proxy; the repository holds this claim (promotion_state=withheld) and emits no effective range.",
+      "tags": [
+        "category/serving",
+        "migrated-v1",
+        "objective/throughput",
+        "objective/ttft"
+      ],
+      "title": "Prompt cache"
+    },
+    {
+      "confidence": "medium",
+      "evidence": [
+        "mlx-model-porting/assets/knowledge_graph.json (approach:qwen3-tts-batch-generation)",
+        "https://github.com/Blaizzy/mlx-audio/blob/a7ef98604cfd752e9e5c9011bcee8ec8c67228be/docs/models/tts/qwen3-tts.md",
+        "https://github.com/Blaizzy/mlx-audio/releases/tag/v0.4.4",
+        "https://arxiv.org/abs/2601.15621"
+      ],
+      "exactness_class": "exact_by_construction",
+      "id": "mechanism:qwen3-tts-batch-generation",
+      "kind": "mechanism",
+      "observed_at": "2026-07-23",
+      "provenance": "code_verified",
+      "status": "proven-mlx-port",
+      "summary": "Use Qwen3-TTS batch_generate for compatible concurrent TTS jobs after single-request quality is locked. Validation gate: single-vs-batched parity. Rollback: TTFB or P95 tail violates budget. Observed source band 1.0x-5.45x on metric batch-throughput; the repository holds this claim (promotion_state=withheld) and emits no effective range.",
+      "tags": [
+        "category/audio-serving",
+        "migrated-v1",
+        "objective/concurrent-throughput",
+        "objective/first-audio-latency",
+        "objective/rtf"
+      ],
+      "title": "Qwen3-TTS batch generation"
+    },
+    {
+      "confidence": "medium",
+      "evidence": [
+        "mlx-model-porting/assets/knowledge_graph.json (approach:spatial-grid-sample-kernel)",
+        "https://github.com/katlun-lgtm/mlx-grid-sample/blob/467385fa2b84864659bf3076eca32c4c4d4ddbec/bench_grid_sample.py",
+        "https://github.com/katlun-lgtm/mlx-grid-sample/blob/467385fa2b84864659bf3076eca32c4c4d4ddbec/mlx_grid_sample.py",
+        "https://github.com/katlun-lgtm/mlx-grid-sample/blob/467385fa2b84864659bf3076eca32c4c4d4ddbec/test_grid_sample.py",
+        "https://ml-explore.github.io/mlx/build/html/dev/extensions.html"
+      ],
+      "id": "mechanism:spatial-grid-sample-kernel",
+      "kind": "mechanism",
+      "observed_at": "2026-07-23",
+      "provenance": "code_verified",
+      "status": "proven-mlx-port",
+      "summary": "Use only when the source model actually depends on PyTorch grid_sample-style spatial or volume warping; first lock a readable MLX/NumPy reference, then consider a custom Metal kernel for the profiled warp. Validation gate: coordinate order and align_corners parity. Rollback: unsupported source grid_sample mode is required. Observed source band 1.0x-10.0x on metric kernel-latency; the repository holds this claim (promotion_state=withheld) and emits no effective range.",
+      "tags": [
+        "category/kernels",
+        "migrated-v1",
+        "objective/latency",
+        "objective/throughput"
+      ],
+      "title": "PyTorch-compatible grid_sample Metal kernel"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "mlx-model-porting/assets/knowledge_graph.json (approach:uniform-kv-quantization)",
+        "https://github.com/ml-explore/mlx-lm/blob/2c008fd0252b2c569227d12568356ab88ab0560a/mlx_lm/models/cache.py",
+        "https://github.com/ml-explore/mlx-lm/tree/2c008fd0252b2c569227d12568356ab88ab0560a",
+        "https://github.com/Blaizzy/mlx-vlm/blob/6a8cdff6a1f53f46a15d4adb997c3b2d5f621263/README.md",
+        "https://arxiv.org/abs/2402.02750"
+      ],
+      "exactness_class": "approximate_legal",
+      "id": "mechanism:uniform-kv-quantization",
+      "kind": "mechanism",
+      "observed_at": "2026-07-23",
+      "provenance": "code_verified",
+      "status": "official-mlx-project",
+      "summary": "Start with official/proven uniform KV quantization before adaptive or rotated KV schemes. Validation gate: logit/perplexity drift over context lengths. Rollback: quality regression. Observed source band 1.0x-1.1x on metric decode-tokens-per-sec; the repository holds this claim (promotion_state=withheld) and emits no effective range.",
+      "tags": [
+        "category/kv-cache",
+        "migrated-v1",
+        "objective/concurrency",
+        "objective/long-context",
+        "objective/peak-memory"
+      ],
+      "title": "Uniform KV cache quantization"
+    },
+    {
+      "confidence": "medium",
+      "evidence": [
+        "mlx-model-porting/assets/knowledge_graph.json (approach:video-input-budgeting)",
+        "https://arxiv.org/abs/2409.12191",
+        "https://arxiv.org/abs/2502.13923",
+        "https://github.com/waybarrios/vllm-mlx/blob/a48c86c1a41900f7d26658471b5f67e5fdd35445/docs/guides/multimodal.md"
+      ],
+      "id": "mechanism:video-input-budgeting",
+      "kind": "mechanism",
+      "observed_at": "2026-07-23",
+      "provenance": "code_verified",
+      "status": "proven-mlx-port",
+      "summary": "Treat FPS/frame/pixel budgets as an explicit quality mode for video VLMs. Validation gate: visual token count recorded. Rollback: quality drops beyond budget.",
+      "tags": [
+        "category/multimodal-preprocessing",
+        "migrated-v1",
+        "objective/peak-memory",
+        "objective/prefill-throughput",
+        "objective/ttft"
+      ],
+      "title": "Video FPS/frame/pixel input budgeting"
+    },
+    {
+      "confidence": "medium",
+      "evidence": [
+        "mlx-model-porting/assets/knowledge_graph.json (approach:vision-feature-cache)",
+        "https://github.com/Blaizzy/mlx-vlm/blob/6a8cdff6a1f53f46a15d4adb997c3b2d5f621263/README.md",
+        "https://github.com/Blaizzy/mlx-vlm/blob/6a8cdff6a1f53f46a15d4adb997c3b2d5f621263/mlx_vlm/vision_cache.py",
+        "https://arxiv.org/abs/2601.19139",
+        "https://github.com/waybarrios/vllm-mlx/blob/a48c86c1a41900f7d26658471b5f67e5fdd35445/vllm_mlx/vision_embedding_cache.py"
+      ],
+      "exactness_class": "exact_by_construction",
+      "id": "mechanism:vision-feature-cache",
+      "kind": "mechanism",
+      "observed_at": "2026-07-23",
+      "provenance": "code_verified",
+      "status": "proven-mlx-port",
+      "summary": "Use for repeated identical image/video inputs after keying by content hash and processor/projector revision. Validation gate: cold/warm logits parity. Rollback: warm outputs drift from cold outputs.",
+      "tags": [
+        "category/multimodal-cache",
+        "migrated-v1",
+        "objective/prefill-throughput",
+        "objective/ttft"
+      ],
+      "title": "Projected vision feature cache"
+    },
+    {
+      "confidence": "low",
+      "evidence": [
+        "mlx-model-porting/assets/knowledge_graph.json (approach:visual-token-pruning-or-merge)",
+        "https://llava-vl.github.io/blog/2024-08-05-llava-onevision/",
+        "https://arxiv.org/abs/2403.15388",
+        "https://arxiv.org/abs/2412.04467"
+      ],
+      "id": "mechanism:visual-token-pruning-or-merge",
+      "kind": "mechanism",
+      "observed_at": "2026-07-23",
+      "provenance": "research_inference",
+      "status": "research-candidate",
+      "summary": "Do not recommend generic visual-token pruning unless the model-specific MLX implementation and quality probes exist. Validation gate: MLX implementation path. Rollback: quality regression.",
+      "tags": [
+        "category/multimodal-research",
+        "migrated-v1",
+        "objective/peak-memory",
+        "objective/prefill-throughput",
+        "objective/ttft"
+      ],
+      "title": "Generic visual-token pruning or merging"
+    }
+  ],
+  "schema_version": 2
+}

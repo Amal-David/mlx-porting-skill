@@ -1,0 +1,102 @@
+{
+  "edges": [],
+  "generated_at": "2026-08-17",
+  "graph_id": "mlx-porting-skill/core/workloads",
+  "nodes": [
+    {
+      "confidence": "medium",
+      "evidence": [
+        "mlx-model-porting/assets/model_outcomes.json"
+      ],
+      "id": "workload:concurrent-serving-16-streams",
+      "identity": {
+        "concurrent_requests": 16
+      },
+      "kind": "workload",
+      "observed_at": "2026-08-16",
+      "provenance": "research_inference",
+      "status": "active",
+      "summary": "Batched serving throughput under sixteen concurrent requests, as evaluated by the vLLM-MLX continuous-batching source. Prompt lengths, output lengths, and scheduler settings are not fully recoverable from the report.",
+      "tags": [
+        "concurrency",
+        "serving",
+        "throughput"
+      ],
+      "title": "Sixteen concurrent generation requests"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "qwen38 campaign goal note, GOAL.md",
+        "qwen38 campaign gate profile, gate-profile.json"
+      ],
+      "id": "workload:qwen-mtp-local-iterate",
+      "identity": {
+        "rankable": false,
+        "tokens": 64
+      },
+      "kind": "workload",
+      "observed_at": "2026-08-16",
+      "provenance": "code_verified",
+      "status": "active",
+      "summary": "The public 64-token iterate and longer local-submit paths used for correctness gating. Exact tokens, reference rows, cache offsets, and rollback are checked here, but its timing is directional only and cannot promote anything.",
+      "tags": [
+        "correctness-only",
+        "local",
+        "speculative-decoding"
+      ],
+      "title": "Public local iterate and submit decode path"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge",
+        "qwen38 campaign goal note, GOAL.md",
+        "qwen38 campaign gate profile, gate-profile.json"
+      ],
+      "id": "workload:qwen-mtp-ranked-decode",
+      "identity": {
+        "prompt_pairs": 8,
+        "score": "median-decode-speedup",
+        "scored_tokens": 512,
+        "seed_tokens": 512
+      },
+      "kind": "workload",
+      "observed_at": "2026-08-16",
+      "provenance": "code_verified",
+      "status": "active",
+      "summary": "The official scored workload: eight prompt pairs, a fixed 512-token seed followed by a 512-token scored decode window, hidden prompt distribution, and a median-based decode-speedup score with a per-pair exact-token and ordered-top-two fidelity gate. All eight pairs must report parity_all_ok before a score is issued.",
+      "tags": [
+        "hidden-prompts",
+        "median-score",
+        "ranked",
+        "speculative-decoding"
+      ],
+      "title": "Ranked MTP decode over eight hidden prompt pairs"
+    },
+    {
+      "confidence": "medium",
+      "evidence": [
+        "mlx-model-porting/assets/model_outcomes.json"
+      ],
+      "id": "workload:six-token-greedy-decode",
+      "identity": {
+        "includes_process_load": true,
+        "sampling": "greedy",
+        "tokens": 6
+      },
+      "kind": "workload",
+      "observed_at": "2026-08-16",
+      "provenance": "code_verified",
+      "status": "active",
+      "summary": "A very short local wall-time workload: load the model in a fresh process and emit six greedy tokens. It measures load plus first-tokens cost, not steady-state decode, and no quality artifact covers output beyond the six-token window.",
+      "tags": [
+        "local",
+        "short-window",
+        "wall-time"
+      ],
+      "title": "Separate-process load plus six greedy tokens"
+    }
+  ],
+  "schema_version": 2
+}

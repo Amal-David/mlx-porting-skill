@@ -1,0 +1,132 @@
+{
+  "edges": [
+    {
+      "confidence": "medium",
+      "from": "result:v1-qwen3-0.6b-continuous-batching-16",
+      "rationale": "The model named in the report body.",
+      "relation": "applied_on",
+      "to": "model:qwen3-0.6b"
+    },
+    {
+      "confidence": "medium",
+      "from": "result:v1-qwen3-0.6b-continuous-batching-16",
+      "rationale": "The reported intervention is continuous batching.",
+      "relation": "instantiates",
+      "to": "mechanism:continuous-batching-serving"
+    },
+    {
+      "confidence": "high",
+      "from": "result:v1-qwen3-0.6b-continuous-batching-16",
+      "rationale": "The report does not disclose its host.",
+      "relation": "measured_on",
+      "to": "hardware:undisclosed-source-reported"
+    },
+    {
+      "confidence": "medium",
+      "from": "result:v1-qwen3-0.6b-continuous-batching-16",
+      "rationale": "Sixteen concurrent requests, as stated in the report body.",
+      "relation": "under_workload",
+      "to": "workload:concurrent-serving-16-streams"
+    },
+    {
+      "confidence": "medium",
+      "from": "result:v1-qwen3-8b-continuous-batching-16",
+      "rationale": "The model named in the report body.",
+      "relation": "applied_on",
+      "to": "model:qwen3-8b"
+    },
+    {
+      "confidence": "medium",
+      "from": "result:v1-qwen3-8b-continuous-batching-16",
+      "rationale": "Same mechanism, same workload, same source, 11 percentage points of throughput gain apart. The larger model's result bounds how far the smaller model's headline multiplier generalizes; batching gain shrinks as the model grows.",
+      "relation": "constrains",
+      "to": "result:v1-qwen3-0.6b-continuous-batching-16"
+    },
+    {
+      "confidence": "medium",
+      "from": "result:v1-qwen3-8b-continuous-batching-16",
+      "rationale": "The reported intervention is continuous batching.",
+      "relation": "instantiates",
+      "to": "mechanism:continuous-batching-serving"
+    },
+    {
+      "confidence": "high",
+      "from": "result:v1-qwen3-8b-continuous-batching-16",
+      "rationale": "The report does not disclose its host.",
+      "relation": "measured_on",
+      "to": "hardware:undisclosed-source-reported"
+    },
+    {
+      "confidence": "medium",
+      "from": "result:v1-qwen3-8b-continuous-batching-16",
+      "rationale": "Sixteen concurrent requests, as stated in the report body.",
+      "relation": "under_workload",
+      "to": "workload:concurrent-serving-16-streams"
+    }
+  ],
+  "generated_at": "2026-08-17",
+  "graph_id": "mlx-porting-skill/ecosystem/reported-results",
+  "nodes": [
+    {
+      "confidence": "low",
+      "effect": {
+        "baseline_id": "single-stream generation, same source",
+        "delta_bp_ci": [
+          27000,
+          27000
+        ],
+        "metric": "batch-throughput",
+        "metric_direction": "higher_is_better",
+        "sample_note": "Third-party reported figure; host, prompt lengths, and output lengths are not disclosed and no receipt is available. The owning asset holds this claim and emits no effective range.",
+        "verdict": "improved"
+      },
+      "evidence": [
+        "mlx-model-porting/assets/model_outcomes.json (decoder-mlx-lm-working-route)"
+      ],
+      "id": "result:v1-qwen3-0.6b-continuous-batching-16",
+      "kind": "applied_result",
+      "observed_at": "2026-07-10",
+      "provenance": "author_claim",
+      "status": "source-reported",
+      "summary": "A third party reports 3.7x batch throughput for Qwen3-0.6B at sixteen concurrent requests under continuous batching. The report's own abstract advertises a 4.3x maximum that its benchmark body does not reach for either evaluated model, and the host is not disclosed. Recorded as the source's claim, not as a measurement this repository stands behind.",
+      "tags": [
+        "held",
+        "serving",
+        "source-reported",
+        "throughput"
+      ],
+      "title": "Continuous batching at 16 concurrent requests, Qwen3-0.6B"
+    },
+    {
+      "confidence": "low",
+      "effect": {
+        "baseline_id": "single-stream generation, same source",
+        "delta_bp_ci": [
+          16000,
+          16000
+        ],
+        "metric": "batch-throughput",
+        "metric_direction": "higher_is_better",
+        "sample_note": "Third-party reported figure; host, prompt lengths, and output lengths are not disclosed and no receipt is available. The owning asset holds this claim and emits no effective range.",
+        "verdict": "improved"
+      },
+      "evidence": [
+        "mlx-model-porting/assets/model_outcomes.json (decoder-mlx-lm-working-route)"
+      ],
+      "id": "result:v1-qwen3-8b-continuous-batching-16",
+      "kind": "applied_result",
+      "observed_at": "2026-07-10",
+      "provenance": "author_claim",
+      "status": "source-reported",
+      "summary": "The same third-party report gives 2.6x for Qwen3-8B at sixteen concurrent requests. The gap between the two models is the useful part: batching throughput gain shrinks as the model grows, so a headline multiplier taken from the smallest evaluated model overstates the effect for anything larger.",
+      "tags": [
+        "held",
+        "serving",
+        "source-reported",
+        "throughput"
+      ],
+      "title": "Continuous batching at 16 concurrent requests, Qwen3-8B"
+    }
+  ],
+  "schema_version": 2
+}
