@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-07-20T22:03:44.855773+00:00",
+  "generated_at": "2026-09-04T07:13:05.384385+00:00",
   "policy": {
     "auto_modify_recommendations": false,
     "auto_merge": false,
@@ -16,14 +16,14 @@
         "quantization"
       ],
       "default_branch": "main",
-      "head_sha": "ce3073389e92d8f7b7ecd3d7697523795786e046",
-      "head_date": "2026-07-20T20:09:32Z",
-      "head_message": "Fix captured random state in compile (#3828)",
+      "head_sha": "b6368984b8e02a3fb3ee7986846c0fb85e1fccf7",
+      "head_date": "2026-09-03T06:29:31Z",
+      "head_message": "Add get_array_buffer_size to query buffer size for arrays (#4436)",
       "url": "https://github.com/ml-explore/mlx",
       "latest_release": {
-        "tag": "v0.32.0",
-        "published_at": "2026-07-07T22:29:13Z",
-        "url": "https://github.com/ml-explore/mlx/releases/tag/v0.32.0"
+        "tag": "v0.32.2",
+        "published_at": "2026-08-25T10:58:55Z",
+        "url": "https://github.com/ml-explore/mlx/releases/tag/v0.32.2"
       },
       "known_snapshot": false
     },
@@ -37,9 +37,9 @@
         "cache"
       ],
       "default_branch": "main",
-      "head_sha": "15b522f593b7ca5fbc0cac6f7572d40859d2d8fe",
-      "head_date": "2026-07-11T20:42:55Z",
-      "head_message": "Lc/fix xtc special tokens server (#1176)",
+      "head_sha": "4343e96fa72e0ed458d02d08e2d220a1b22061cb",
+      "head_date": "2026-09-03T08:35:16Z",
+      "head_message": "Fix evaluate post processing ordering bug (#1820)",
       "url": "https://github.com/ml-explore/mlx-lm",
       "latest_release": {
         "tag": "v0.31.3",
@@ -73,14 +73,14 @@
         "speculative"
       ],
       "default_branch": "main",
-      "head_sha": "c9e27b08311f9c1f38690c46034b04c7598d73ee",
-      "head_date": "2026-07-20T14:02:10Z",
-      "head_message": "Merge pull request #1642 from Blaizzy/pc/qwen3-vl-pil-video-frames",
+      "head_sha": "5c9b5f52adfeab35b5ece0bb2d6e4d44541d9e32",
+      "head_date": "2026-09-03T20:53:36Z",
+      "head_message": "mla: use the absorbed path for multi-token steps (#2150)",
       "url": "https://github.com/Blaizzy/mlx-vlm",
       "latest_release": {
-        "tag": "v0.6.6",
-        "published_at": "2026-07-20T16:41:21Z",
-        "url": "https://github.com/Blaizzy/mlx-vlm/releases/tag/v0.6.6"
+        "tag": "v0.6.17",
+        "published_at": "2026-08-26T17:05:18Z",
+        "url": "https://github.com/Blaizzy/mlx-vlm/releases/tag/v0.6.17"
       },
       "known_snapshot": false
     },
@@ -94,14 +94,14 @@
         "codec"
       ],
       "default_branch": "main",
-      "head_sha": "64e8416c303fb3b3463dab8eb4ebd78c55a87c1a",
-      "head_date": "2026-07-10T05:04:55Z",
-      "head_message": "Merge pull request #826 from lucasnewman/improve-transcribe-diarize-performance",
+      "head_sha": "d5432b59b8d99d0f50cd66a6bfb0223daa8835ea",
+      "head_date": "2026-09-03T20:57:27Z",
+      "head_message": "Merge pull request #939 from lucasnewman/fix-unknown-stt-kwargs",
       "url": "https://github.com/Blaizzy/mlx-audio",
       "latest_release": {
-        "tag": "v0.4.5",
-        "published_at": "2026-07-09T16:32:10Z",
-        "url": "https://github.com/Blaizzy/mlx-audio/releases/tag/v0.4.5"
+        "tag": "v0.5.1",
+        "published_at": "2026-08-31T19:39:20Z",
+        "url": "https://github.com/Blaizzy/mlx-audio/releases/tag/v0.5.1"
       },
       "known_snapshot": false
     },
@@ -114,14 +114,14 @@
         "batching"
       ],
       "default_branch": "main",
-      "head_sha": "0dd115769ef1196a715b96b181353edacd2a4f69",
-      "head_date": "2026-06-28T20:18:29Z",
-      "head_message": "bump version to 0.4.0",
+      "head_sha": "f2d3ad394eb4f2b5e0b1352364eddfed41e390e1",
+      "head_date": "2026-09-03T22:46:30Z",
+      "head_message": "fix(scheduler): guard MTP install against mlx-lm >= 0.31 BatchGenerator (#737)",
       "url": "https://github.com/waybarrios/vllm-mlx",
       "latest_release": {
-        "tag": "v0.4.0",
-        "published_at": "2026-06-28T20:20:22Z",
-        "url": "https://github.com/waybarrios/vllm-mlx/releases/tag/v0.4.0"
+        "tag": "v0.4.1",
+        "published_at": "2026-08-12T05:13:31Z",
+        "url": "https://github.com/waybarrios/vllm-mlx/releases/tag/v0.4.1"
       },
       "known_snapshot": false
     },
@@ -132,9 +132,9 @@
         "agent-skills"
       ],
       "default_branch": "main",
-      "head_sha": "fa0fa64bdc967915dc8399e803be67759e1e62b8",
-      "head_date": "2026-07-17T02:47:37Z",
-      "head_message": "Update docx, pptx, and xlsx skills (#1447)",
+      "head_sha": "41bbe19d1a1a7eaab5e7bb9050a417e5c6cffc8f",
+      "head_date": "2026-09-03T16:37:13Z",
+      "head_message": "Update frontend-design skill to avoid generic design defaults (#1713)",
       "url": "https://github.com/anthropics/skills",
       "latest_release": null,
       "known_snapshot": false
@@ -147,14 +147,14 @@
         "codex"
       ],
       "default_branch": "main",
-      "head_sha": "cf821e8ec850c6d8380feea0e84859dd8ff54cd0",
-      "head_date": "2026-07-20T21:41:17Z",
-      "head_message": "Show completed hook warnings in TUI headers (#34416)",
+      "head_sha": "8e6a44b428e31f91b21edc97904fcdf4f0931ade",
+      "head_date": "2026-09-04T06:14:15Z",
+      "head_message": "Fix the worktrees experimental feature test fixture (#42682)",
       "url": "https://github.com/openai/codex",
       "latest_release": {
-        "tag": "rust-v0.144.6",
-        "published_at": "2026-07-18T13:51:52Z",
-        "url": "https://github.com/openai/codex/releases/tag/rust-v0.144.6"
+        "tag": "rust-v0.153.2",
+        "published_at": "2026-09-03T23:53:12Z",
+        "url": "https://github.com/openai/codex/releases/tag/rust-v0.153.2"
       },
       "known_snapshot": false
     }
@@ -204,9 +204,137 @@
     {
       "kind": "paper",
       "query": "KV cache quantization long context",
-      "id": "http://arxiv.org/abs/2607.12550v2",
-      "title": "A JoLT for the KV Cache: Near-Lossless KV Cache Compression via Joint Tucker and JL-Residual Allocation for LLMs",
-      "updated": "2026-07-17T17:45:07Z",
+      "id": "http://arxiv.org/abs/2609.04098v1",
+      "title": "Why Gated DeltaNet Survives 4-Bit Quantization: NVFP4 W4A4 for the Recurrent Half of a Hybrid 27B LLM",
+      "updated": "2026-09-03T17:04:26Z",
+      "published": "2026-09-03T17:04:26Z",
+      "authors": [
+        "Sergii Kozyrev",
+        "Davyd Maiboroda"
+      ],
+      "summary": "Hybrid LLMs pair softmax attention with linear-attention layers such as Gated DeltaNet (GDN), whose recurrent state summarizes the context in fixed size. Early community 4-bit quantizations of Qwen3.8-27B (48 GDN layers, 16 attention layers) left the GDN block in 8- or 16-bit precision -- especially its decay and write-strength gates -- on the intuition that errors in a recurrence accumulate over long contexts. We test that intuition by building Minima: NVFP4 W4A4 on all 496 linear layers, GDN included. Across perplexity at 4K/32K, MMLU-Pro, GSM8K, AIME'25, GPQA-Diamond, LiveCodeBench, and RULER retrieval to 64K, Minima matches BF16 within seed noise (5-task average -0.52) while being the smallest (17.5 GiB) and fastest-prefill (+14-19%) recipe we compare, and its 32K perplexity gap shrink",
+      "review_status": "candidate-unreviewed",
+      "canonical_url": "https://arxiv.org/abs/2609.04098",
+      "arxiv_id": "2609.04098",
+      "revision": "v1",
+      "immutable_url": "https://arxiv.org/abs/2609.04098v1",
+      "known_url": false,
+      "known_revision": null,
+      "candidate_id": "candidate-why-gated-deltanet-survives-4-bit-quantization-nvfp4-w4a4-for-the-recurrent-half-of-a-hybrid-27b-llm"
+    },
+    {
+      "kind": "paper",
+      "query": "KV cache quantization long context",
+      "id": "http://arxiv.org/abs/2609.03949v1",
+      "title": "VestigeKV: The NoPE-MLA KV Cache Carries Its Own Eviction Signal in a Vestigial Branch",
+      "updated": "2026-09-03T14:53:20Z",
+      "published": "2026-09-03T14:53:20Z",
+      "authors": [
+        "WenJie Fan"
+      ],
+      "summary": "The problem. A long-lived KV cache must be compressed before the queries that will read it exist; selection by observed attention (H2O, SnapKV) collapses there (0.00-0.33 needle retrieval on a NoPE MLA model), because a token's importance has not yet been observed. The method. On Kimi Linear, VestigeKV evicts by a query-independent signal the cache already carries: the 64-dimensional decoupled branch, a vestige of RoPE that NoPE training repurposes into a salience channel. Reading 11% of each row, it partitions the cache: the top-m rows stay in the attended tier; every other row moves -- exactly, never deleted -- to a GPU-resident archive reachable per step by a certified trigger. No training, no quantization, no weight or kernel change. Cost. Nothing measurable: retrieval holds at 1.00 un",
+      "review_status": "candidate-unreviewed",
+      "canonical_url": "https://arxiv.org/abs/2609.03949",
+      "arxiv_id": "2609.03949",
+      "revision": "v1",
+      "immutable_url": "https://arxiv.org/abs/2609.03949v1",
+      "known_url": false,
+      "known_revision": null,
+      "candidate_id": "candidate-vestigekv-the-nope-mla-kv-cache-carries-its-own-eviction-signal-in-a-vestigial-branch"
+    },
+    {
+      "kind": "paper",
+      "query": "KV cache quantization long context",
+      "id": "http://arxiv.org/abs/2608.30076v2",
+      "title": "Budget-Aware Compression Pipeline for Single-GPU LLM Inference: Methods, Trade-offs, and Coupling Effects",
+      "updated": "2026-09-03T14:46:10Z",
+      "published": "2026-08-30T22:54:40Z",
+      "authors": [
+        "Hongyu Yu",
+        "Yifei Shen"
+      ],
+      "summary": "Single-GPU deployment of 70B-parameter language models on an NVIDIA GPU is constrained by device memory, long-context throughput, and engineering integration cost. We cast single-GPU inference as a budget-aware design problem over these three axes and study how pruning, quantization, and KV-cache compression interact under realistic execution. Controlled ablations show that layer-wise pruning makes weight quantization more robust. KV-cache sparsification complements INT8 KV quantization by reducing memory without hurting decoding speed, while static vector quantizers often conflict with dynamic caching. Guided by these coupling results and explicit budget tracking, we assembled a practical pipeline and compressed a 70B model to about 33 GB, sustained about 57 tokens/s on 10k token prompts ",
+      "review_status": "candidate-unreviewed",
+      "canonical_url": "https://arxiv.org/abs/2608.30076",
+      "arxiv_id": "2608.30076",
+      "revision": "v2",
+      "immutable_url": "https://arxiv.org/abs/2608.30076v2",
+      "known_url": false,
+      "known_revision": null,
+      "candidate_id": "candidate-budget-aware-compression-pipeline-for-single-gpu-llm-inference-methods-trade-offs-and-coupling-effects"
+    },
+    {
+      "kind": "paper",
+      "query": "KV cache quantization long context",
+      "id": "http://arxiv.org/abs/2608.03276v2",
+      "title": "TaskPress: Query-Agnostic KV Cache Compression via Task-Guided Pruning",
+      "updated": "2026-08-30T22:10:44Z",
+      "published": "2026-08-04T07:51:37Z",
+      "authors": [
+        "Wonpyo Park",
+        "Seung-won Hwang"
+      ],
+      "summary": "Long-context inference with large language models is constrained by the linear growth of the key-value cache to sequence length. While pruning offers mitigation, prevailing methods determine query-specific token importance that cannot be reused across unseen queries. In contrast, we introduce TaskPress, a framework for task-guided, query-agnostic KV cache eviction. Instead of optimizing the cache for a single query, TaskPress constructs a reusable memory representation conditioned on a high-level task guide. The guide functions as a meta-query during prefill to filter irrelevant tokens before downstream queries are issued. In addition, TaskPress leverages quantization scale factors as a zero-cost signal for detecting influential representation outliers, providing an efficient proxy for tok",
+      "review_status": "candidate-unreviewed",
+      "canonical_url": "https://arxiv.org/abs/2608.03276",
+      "arxiv_id": "2608.03276",
+      "revision": "v2",
+      "immutable_url": "https://arxiv.org/abs/2608.03276v2",
+      "known_url": false,
+      "known_revision": null,
+      "candidate_id": "candidate-taskpress-query-agnostic-kv-cache-compression-via-task-guided-pruning"
+    },
+    {
+      "kind": "paper",
+      "query": "KV cache quantization long context",
+      "id": "http://arxiv.org/abs/2608.28911v1",
+      "title": "SemKV: Semantic Mixed-Precision KV Cache Quantization Guided by the Quality Cliff for Long-Context LLM Inference",
+      "updated": "2026-08-28T22:19:47Z",
+      "published": "2026-08-28T22:19:47Z",
+      "authors": [
+        "Daeha Lee",
+        "Do-Hyung Kim",
+        "Jae-Hong Kim"
+      ],
+      "summary": "The key-value (KV) cache is the dominant memory bottleneck of long-context large language model (LLM) inference, growing linearly with context length. We show that uniform KV quantization on a fractional-bit grid does not degrade gracefully: under a prespecified multi-seed statistical protocol, Llama-3.1-8B-Instruct with an affine quantizer is statistically indistinguishable from FP16 KV down to 2.322 code bits/value and collapses at 2.0 bits - a quality cliff in (2.0, 2.322] that reappears in generation-time quantization and multi-turn dialogue and transfers to Mistral-7B. The cliff reframes importance-aware mixed precision: above it, eight model-internal importance indicators are statistically interchangeable, so the benefit of mixing is grid interpolation, reaching average precisions un",
+      "review_status": "candidate-unreviewed",
+      "canonical_url": "https://arxiv.org/abs/2608.28911",
+      "arxiv_id": "2608.28911",
+      "revision": "v1",
+      "immutable_url": "https://arxiv.org/abs/2608.28911v1",
+      "known_url": false,
+      "known_revision": null,
+      "candidate_id": "candidate-semkv-semantic-mixed-precision-kv-cache-quantization-guided-by-the-quality-cliff-for-long-context-llm-inference"
+    },
+    {
+      "kind": "paper",
+      "query": "KV cache quantization long context",
+      "id": "http://arxiv.org/abs/2608.23843v1",
+      "title": "PuzzleKV: Page-Wise Low-Rank Decomposition for KV Cache Compression",
+      "updated": "2026-08-24T21:30:11Z",
+      "published": "2026-08-24T21:30:11Z",
+      "authors": [
+        "Zizhong Wang",
+        "Jieying Wang",
+        "Zhao Zhang",
+        "Jiajia Li"
+      ],
+      "summary": "Long-context inference in large language models (LLMs) is increasingly limited by the memory required for the key-value (KV) cache. KV cache compression addresses this problem by reducing the storage cost of previous tokens. Among existing approaches, low-rank compression is particularly attractive because it represents every token in reduced dimensions. Previous low-rank methods typically derive fixed projection spaces from model weights, construct fixed spaces from calibration activations, or construct a shared basis over a broad cache region. Such representations may not capture detailed but important information. We partition each per-head KV cache into fixed-length logical pages and observe substantial low-rank structure within individual pages. Based on this observation, we propose P",
+      "review_status": "candidate-unreviewed",
+      "canonical_url": "https://arxiv.org/abs/2608.23843",
+      "arxiv_id": "2608.23843",
+      "revision": "v1",
+      "immutable_url": "https://arxiv.org/abs/2608.23843v1",
+      "known_url": false,
+      "known_revision": null,
+      "candidate_id": "candidate-puzzlekv-page-wise-low-rank-decomposition-for-kv-cache-compression"
+    },
+    {
+      "kind": "paper",
+      "query": "KV cache quantization long context",
+      "id": "http://arxiv.org/abs/2607.12550v3",
+      "title": "A JoLT for the KV cache: Near-lossless KV cache compression via joint Lagrangian allocation of Tucker ranks and a rotated residual for llms",
+      "updated": "2026-08-23T15:16:32Z",
       "published": "2026-07-14T09:23:20Z",
       "authors": [
         "Rahul Krishnan",
@@ -216,174 +344,82 @@
       "review_status": "candidate-unreviewed",
       "canonical_url": "https://arxiv.org/abs/2607.12550",
       "arxiv_id": "2607.12550",
+      "revision": "v3",
+      "immutable_url": "https://arxiv.org/abs/2607.12550v3",
+      "known_url": true,
+      "known_revision": "v1",
+      "candidate_id": "candidate-a-jolt-for-the-kv-cache-near-lossless-kv-cache-compression-via-joint-lagrangian-allocation-of-tucker-ranks-and-a-rotated-residual-for-llms"
+    },
+    {
+      "kind": "paper",
+      "query": "KV cache quantization long context",
+      "id": "http://arxiv.org/abs/2608.21693v1",
+      "title": "Benchmarking Composable Compression Techniques in Mixture-of-Experts LLMs",
+      "updated": "2026-08-22T00:01:18Z",
+      "published": "2026-08-22T00:01:18Z",
+      "authors": [
+        "Afsara Benazir",
+        "Chen Chen",
+        "Rongxiao Qu",
+        "Jiabo Huang",
+        "Jingtao Li",
+        "Lingjuan Lyu"
+      ],
+      "summary": "Mixture-of-Experts (MoE) LLMs scale model capacity efficiently through sparse activation, but their large expert parameter footprint, routing imbalance, and long-context KV-cache growth make deployment difficult on commodity hardware. Practical deployment often requires stacking multiple compression techniques: expert pruning removes redundant experts, weight quantization lowers model memory footprint, and KV-cache compression reduces long-context memory pressure. However, these techniques are typically evaluated in isolation, leaving open how they interact when applied together in realistic deployment pipelines. In this work, we present MoEXBench, a systematic benchmark for evaluating composable MoE compression as an end-to-end deployment workflow. MoEXBench studies 10 MoE models ranging ",
+      "review_status": "candidate-unreviewed",
+      "canonical_url": "https://arxiv.org/abs/2608.21693",
+      "arxiv_id": "2608.21693",
+      "revision": "v1",
+      "immutable_url": "https://arxiv.org/abs/2608.21693v1",
+      "known_url": false,
+      "known_revision": null,
+      "candidate_id": "candidate-benchmarking-composable-compression-techniques-in-mixture-of-experts-llms"
+    },
+    {
+      "kind": "paper",
+      "query": "neural audio codec speech tokenizer streaming",
+      "id": "http://arxiv.org/abs/2608.05727v2",
+      "title": "LILAC: An Idempotent Neural Speech Codec",
+      "updated": "2026-08-26T10:31:14Z",
+      "published": "2026-08-06T08:09:48Z",
+      "authors": [
+        "June Young Yi",
+        "Dongwook Lee",
+        "Jiheum Yeom",
+        "Sungroh Yoon"
+      ],
+      "summary": "Neural Audio Codecs are widely adopted in speech generation and editing. However, existing neural audio codecs are not idempotent: across the paper's twelve baseline systems, every configuration tested rewrites, on average, at least 15% of its tokens in a single decode-re-encode pass. This poses a problem for utilizing Neural Audio Codecs as token interfaces in pipelines where re-encoding decoded outputs can occur. We present LILAC, a fully convolutional 24 kHz speech codec at 9.375 Hz and 0.75 kbit/s that is codec idempotent by construction; re-encoding the decoded audio of any valid token stream returns the identical stream. LILAC achieves idempotency while maintaining competitive quality, reaching UTMOS 4.14 and 4.24 on LibriSpeech and LibriTTS-R test sets, comparable to SOTA sub-1 kbit",
+      "review_status": "candidate-unreviewed",
+      "canonical_url": "https://arxiv.org/abs/2608.05727",
+      "arxiv_id": "2608.05727",
       "revision": "v2",
-      "immutable_url": "https://arxiv.org/abs/2607.12550v2",
+      "immutable_url": "https://arxiv.org/abs/2608.05727v2",
       "known_url": false,
       "known_revision": null,
-      "candidate_id": "candidate-a-jolt-for-the-kv-cache-near-lossless-kv-cache-compression-via-joint-tucker-and-jl-residual-allocation-for-llms"
+      "candidate_id": "candidate-lilac-an-idempotent-neural-speech-codec"
     },
     {
       "kind": "paper",
-      "query": "KV cache quantization long context",
-      "id": "http://arxiv.org/abs/2607.15456v1",
-      "title": "Looped Latent Attention: Cross-Loop KV Compression for Looped Transformers",
-      "updated": "2026-07-16T20:58:16Z",
-      "published": "2026-07-16T20:58:16Z",
+      "query": "neural audio codec speech tokenizer streaming",
+      "id": "http://arxiv.org/abs/2608.08286v1",
+      "title": "ReLMCodec: Designing Predictable Speech Tokens from Pre-Quantization Phoneme Structure",
+      "updated": "2026-08-08T18:35:10Z",
+      "published": "2026-08-08T18:35:10Z",
       "authors": [
-        "James O' Neill",
-        "Fergal Reid"
+        "Zixiang Wan",
+        "Xusheng Yang",
+        "Zheng Wang",
+        "Peiji Yang"
       ],
-      "summary": "Looped, weight-tied Transformers reduce parameters by reusing a block, but decoding still stores a separate K/V cache for every recurrence step. We show that this loop-indexed cache is highly structured. For a fixed token, layer and head, K/V vectors trace a short low-rank trajectory across loops, while the head and layer axes remain much flatter. We introduce Looped Latent Attention (LLA), a post-training cache codec that stores compact K and V latents and reconstructs loop-specific K/V vectors only when attention reads them. The default per-head codec compresses recurrence, while LLA-2D also folds heads into one latent for the extreme-compression regime. The codec is initialized from SVD of teacher activations and refined with KL and attention-output distillation. At matched cache budget",
+      "summary": "Neural speech codecs face a fundamental tension in the language-model era: tokens that support high-fidelity reconstruction are not necessarily easy for autoregressive models to predict. Our controlled analysis of diverse codec and self-supervised speech representations shows that clearer phoneme structure before discrete code assignment is consistently associated with easier autoregressive token prediction. Yet phoneme structure alone is insufficient for high-fidelity reconstruction, which also requires reconstruction-relevant acoustic detail. Guided by this observation, we introduce ReLMCodec, a low-bitrate single-codebook speech codec built upon a preserve--control--refine principle: it preserves the linguistic organization of frozen self-supervised learning (SSL) features at the quanti",
       "review_status": "candidate-unreviewed",
-      "canonical_url": "https://arxiv.org/abs/2607.15456",
-      "arxiv_id": "2607.15456",
+      "canonical_url": "https://arxiv.org/abs/2608.08286",
+      "arxiv_id": "2608.08286",
       "revision": "v1",
-      "immutable_url": "https://arxiv.org/abs/2607.15456v1",
+      "immutable_url": "https://arxiv.org/abs/2608.08286v1",
       "known_url": false,
       "known_revision": null,
-      "candidate_id": "candidate-looped-latent-attention-cross-loop-kv-compression-for-looped-transformers"
-    },
-    {
-      "kind": "paper",
-      "query": "KV cache quantization long context",
-      "id": "http://arxiv.org/abs/2505.18610v2",
-      "title": "PM-KVQ: Progressive Mixed-precision KV Cache Quantization for Long-CoT LLMs",
-      "updated": "2026-07-11T08:07:07Z",
-      "published": "2025-05-24T09:18:11Z",
-      "authors": [
-        "Tengxuan Liu",
-        "Shiyao Li",
-        "Jiayi Yang",
-        "Tianchen Zhao",
-        "Feng Zhou",
-        "Xiaohui Song",
-        "Guohao Dai",
-        "Shengen Yan",
-        "Huazhong Yang",
-        "Yu Wang"
-      ],
-      "summary": "Recently, significant progress has been made in developing reasoning-capable Large Language Models (LLMs) through long Chain-of-Thought (CoT) techniques. However, this long-CoT reasoning process imposes substantial memory overhead due to the large Key-Value (KV) Cache memory overhead. Post-training KV Cache quantization has emerged as a promising compression technique and has been extensively studied in short-context scenarios. However, directly applying existing methods to long-CoT LLMs causes significant performance degradation due to the following two reasons: (1) Large cumulative error: Existing methods fail to adequately leverage available memory, and they directly quantize the KV Cache during each decoding step, leading to large cumulative quantization error. (2) Short-context calibr",
-      "review_status": "candidate-unreviewed",
-      "canonical_url": "https://arxiv.org/abs/2505.18610",
-      "arxiv_id": "2505.18610",
-      "revision": "v2",
-      "immutable_url": "https://arxiv.org/abs/2505.18610v2",
-      "known_url": false,
-      "known_revision": null,
-      "candidate_id": "candidate-pm-kvq-progressive-mixed-precision-kv-cache-quantization-for-long-cot-llms"
-    },
-    {
-      "kind": "paper",
-      "query": "KV cache quantization long context",
-      "id": "http://arxiv.org/abs/2607.08032v1",
-      "title": "What to Keep, What to Forget: A Rate--Distortion View of Memory Compaction in LLMs and Agents",
-      "updated": "2026-07-09T01:15:03Z",
-      "published": "2026-07-09T01:15:03Z",
-      "authors": [
-        "Ashwin Gerard Colaco",
-        "Nada Lahjouji"
-      ],
-      "summary": "Large language models, and the agents built on them, spend an ever-growing share of their compute and memory on remembering: caching attention keys and values, carrying long prompts, maintaining recurrent state, and storing what happened in previous turns and sessions. Because none of this memory is free, four largely separate research communities have each learned to compact it. They evict or quantize the KV cache, prune or distill prompts, bound architectural state, and consolidate agent memory. We argue that these are instances of one problem: a rate--distortion decision about what context-derived information to retain versus discard, at what fidelity, under a resource budget, so as to preserve downstream task utility. We make this lens precise with a single compaction objective and a l",
-      "review_status": "candidate-unreviewed",
-      "canonical_url": "https://arxiv.org/abs/2607.08032",
-      "arxiv_id": "2607.08032",
-      "revision": "v1",
-      "immutable_url": "https://arxiv.org/abs/2607.08032v1",
-      "known_url": false,
-      "known_revision": null,
-      "candidate_id": "candidate-what-to-keep-what-to-forget-a-rate-distortion-view-of-memory-compaction-in-llms-and-agents"
-    },
-    {
-      "kind": "paper",
-      "query": "KV cache quantization long context",
-      "id": "http://arxiv.org/abs/2607.07144v1",
-      "title": "Fractal KV-Cache Archives: Lossless Symbolic Storage with In-Place Retrieval for Long-Context LLM Inference",
-      "updated": "2026-07-08T08:37:49Z",
-      "published": "2026-07-08T08:37:49Z",
-      "authors": [
-        "Vladimir Gusev"
-      ],
-      "summary": "The key-value (KV) cache dominates the memory cost of long-context autoregressive inference, and a growing body of work compresses it through quantization, eviction, or offloading. We study a complementary question: once a position's KV state has been quantized to codebook indices, how should the resulting symbol stream be stored, and can the storage layer do more than store? A family of contractive iterated-map codes that serialize a symbol sequence into a sequence of low-dimensional real vectors is revisited, and it is shown that they form a natural archive format for a quantized KV cache with the following features. The method provides exactly the access pattern a growing cache requires. It is lossless, it runs in linear time, and supports O(1) random access and O(1) amortized append. A",
-      "review_status": "candidate-unreviewed",
-      "canonical_url": "https://arxiv.org/abs/2607.07144",
-      "arxiv_id": "2607.07144",
-      "revision": "v1",
-      "immutable_url": "https://arxiv.org/abs/2607.07144v1",
-      "known_url": false,
-      "known_revision": null,
-      "candidate_id": "candidate-fractal-kv-cache-archives-lossless-symbolic-storage-with-in-place-retrieval-for-long-context-llm-inference"
-    },
-    {
-      "kind": "paper",
-      "query": "KV cache quantization long context",
-      "id": "http://arxiv.org/abs/2607.03652v1",
-      "title": "ELiTeFormer: An Efficient Transformer for FPGAs",
-      "updated": "2026-07-04T00:52:06Z",
-      "published": "2026-07-04T00:52:06Z",
-      "authors": [
-        "Victor Agostinelli",
-        "Nicolas Bohm Agostini",
-        "Antonino Tumeo"
-      ],
-      "summary": "Transformer blocks are prevalent in large language model (LLM) but present deployment challenges due to their challenging computational and memory demands. While prior work has typically optimized attention mechanisms or feed-forward networks (FFNs) separately, few hardware (HW) architecture have jointly addressed both components with co-designed hardware acceleration. We present ELiTeFormer (Efficient Linear Ternary Transformer), the first Transformer model architecture that unifies hybrid linear attention with ultra-low-precision (ternary) linear projections, specifically co-designed for field-programmable gate array (FPGA) deployment. ELiTeFormer achieves 10x model weight compression and 12.8x key-value (KV) cache compression compared to LLaMA 3, while maintaining competitive accuracy (",
-      "review_status": "candidate-unreviewed",
-      "canonical_url": "https://arxiv.org/abs/2607.03652",
-      "arxiv_id": "2607.03652",
-      "revision": "v1",
-      "immutable_url": "https://arxiv.org/abs/2607.03652v1",
-      "known_url": false,
-      "known_revision": null,
-      "candidate_id": "candidate-eliteformer-an-efficient-transformer-for-fpgas"
-    },
-    {
-      "kind": "paper",
-      "query": "KV cache quantization long context",
-      "id": "http://arxiv.org/abs/2607.01831v1",
-      "title": "Lynx: Progressive Speculative Quantization for accelerating KV Transfer in Long-Context Inference",
-      "updated": "2026-07-02T07:52:43Z",
-      "published": "2026-07-02T07:52:43Z",
-      "authors": [
-        "Wenchen Han",
-        "Gingfung Matthew Yeung",
-        "Marco Barletta",
-        "William Toner",
-        "Amory Hoste",
-        "Adam Barker"
-      ],
-      "summary": "Long-context inference is increasingly common in large language model (LLM) serving, driven by retrieval-augmented generation and agentic systems. In disaggregated inference, these workloads require transferring large Key-Value (KV) caches across the network, where decoding cannot begin until the transfer completes. Recent KV quantization techniques reduce data volume and alleviate this bottleneck, but existing schemes fail to achieve both low network-exposed latency and high inference accuracy. We challenge the assumption that the KV cache is an indivisible unit that must be fully received before use. We leverage the observation that different bits in the KV cache contribute unequally to attention computation and inference precision: the most significant bits capture the coarse structure ",
-      "review_status": "candidate-unreviewed",
-      "canonical_url": "https://arxiv.org/abs/2607.01831",
-      "arxiv_id": "2607.01831",
-      "revision": "v1",
-      "immutable_url": "https://arxiv.org/abs/2607.01831v1",
-      "known_url": false,
-      "known_revision": null,
-      "candidate_id": "candidate-lynx-progressive-speculative-quantization-for-accelerating-kv-transfer-in-long-context-inference"
-    },
-    {
-      "kind": "paper",
-      "query": "KV cache quantization long context",
-      "id": "http://arxiv.org/abs/2606.31519v1",
-      "title": "RaBitQCache: Rotated Binary Quantization for KVCache in Long Context LLM Inference",
-      "updated": "2026-06-30T11:32:14Z",
-      "published": "2026-06-30T11:32:14Z",
-      "authors": [
-        "Wenhao Li",
-        "Jinhao Dong",
-        "Hailin Zhang",
-        "Wenhang Shi",
-        "Wei Lu",
-        "Xiaoyong Du"
-      ],
-      "summary": "Long-context Large Language Model inference is severely bottlenecked by the massive Key-Value (KV) cache, yet existing sparse attention methods often suffer from static fixed-budget (Top-k) retrieval or rely on proxy scores that are computationally expensive and biased. To address these limitations, we propose RaBitQCache, a novel sparse attention framework that utilizes randomized rotated binary quantization and high-throughput binary-INT4 arithmetic to efficiently estimate attention weights. Our proxy score serves as an unbiased estimator with a proven error bound, enabling adaptive Top-p retrieval that dynamically adjusts the token budget based on actual attention sparsity. We further implement a hardware-aware system with asynchronous pipelining and lazy updates to mask overhead. Evalu",
-      "review_status": "candidate-unreviewed",
-      "canonical_url": "https://arxiv.org/abs/2606.31519",
-      "arxiv_id": "2606.31519",
-      "revision": "v1",
-      "immutable_url": "https://arxiv.org/abs/2606.31519v1",
-      "known_url": false,
-      "known_revision": null,
-      "candidate_id": "candidate-rabitqcache-rotated-binary-quantization-for-kvcache-in-long-context-llm-inference"
+      "candidate_id": "candidate-relmcodec-designing-predictable-speech-tokens-from-pre-quantization-phoneme-structure"
     },
     {
       "kind": "paper",
@@ -527,61 +563,6 @@
       "known_url": false,
       "known_revision": null,
       "candidate_id": "candidate-streamvoiceanon-emotion-preserving-streaming-speaker-anonymization-via-frame-level-acoustic-distillation"
-    },
-    {
-      "kind": "paper",
-      "query": "neural audio codec speech tokenizer streaming",
-      "id": "http://arxiv.org/abs/2510.00981v3",
-      "title": "FlexiCodec: A Dynamic Neural Audio Codec for Low Frame Rates",
-      "updated": "2026-02-25T08:24:00Z",
-      "published": "2025-10-01T14:56:18Z",
-      "authors": [
-        "Jiaqi Li",
-        "Yao Qian",
-        "Yuxuan Hu",
-        "Leying Zhang",
-        "Xiaofei Wang",
-        "Heng Lu",
-        "Manthan Thakker",
-        "Jinyu Li",
-        "Sheng Zhao",
-        "Zhizheng Wu"
-      ],
-      "summary": "Neural audio codecs are foundational to speech language models. It is expected to have a low frame rate and decoupled semantic and acoustic information. A lower frame rate codec can reduce the computational cost of speech language models by shortening the sequence length. Recent studies have developed 12.5Hz low-frame-rate audio codecs, but even lower frame rate codecs remain underexplored. We find that a major challenge for very low frame rate tokens is missing semantic information. This paper introduces FlexiCodec to address this limitation. FlexiCodec improves semantic preservation with a dynamic frame rate approach and introduces a novel architecture featuring an ASR feature-assisted dual stream encoding and Transformer bottlenecks. With dynamic frame rates, it uses less frames at info",
-      "review_status": "candidate-unreviewed",
-      "canonical_url": "https://arxiv.org/abs/2510.00981",
-      "arxiv_id": "2510.00981",
-      "revision": "v3",
-      "immutable_url": "https://arxiv.org/abs/2510.00981v3",
-      "known_url": false,
-      "known_revision": null,
-      "candidate_id": "candidate-flexicodec-a-dynamic-neural-audio-codec-for-low-frame-rates"
-    },
-    {
-      "kind": "paper",
-      "query": "neural audio codec speech tokenizer streaming",
-      "id": "http://arxiv.org/abs/2601.11141v1",
-      "title": "FlashLabs Chroma 1.0: A Real-Time End-to-End Spoken Dialogue Model with Personalized Voice Cloning",
-      "updated": "2026-01-16T10:00:03Z",
-      "published": "2026-01-16T10:00:03Z",
-      "authors": [
-        "Tanyu Chen",
-        "Tairan Chen",
-        "Kai Shen",
-        "Zhenghua Bao",
-        "Zhihui Zhang",
-        "Man Yuan",
-        "Yi Shi"
-      ],
-      "summary": "Recent end-to-end spoken dialogue systems leverage speech tokenizers and neural audio codecs to enable LLMs to operate directly on discrete speech representations. However, these models often exhibit limited speaker identity preservation, hindering personalized voice interaction. In this work, we present Chroma 1.0, the first open-source, real-time, end-to-end spoken dialogue model that achieves both low-latency interaction and high-fidelity personalized voice cloning. Chroma achieves sub-second end-to-end latency through an interleaved text-audio token schedule (1:2) that supports streaming generation, while maintaining high-quality personalized voice synthesis across multi-turn conversations. Our experimental results demonstrate that Chroma achieves a 10.96% relative improvement in speak",
-      "review_status": "candidate-unreviewed",
-      "canonical_url": "https://arxiv.org/abs/2601.11141",
-      "arxiv_id": "2601.11141",
-      "revision": "v1",
-      "immutable_url": "https://arxiv.org/abs/2601.11141v1",
-      "known_url": false,
-      "known_revision": null,
-      "candidate_id": "candidate-flashlabs-chroma-1-0-a-real-time-end-to-end-spoken-dialogue-model-with-personalized-voice-cloning"
     },
     {
       "kind": "paper",
