@@ -33,3 +33,10 @@ updates:
       prefix: "deps"
     cooldown:
       default-days: 7
+    # These packages share version bounds; review and resolve them together.
+    groups:
+      transformers-stack:
+        patterns:
+          - "transformers"
+          - "tokenizers"
+          - "safetensors"

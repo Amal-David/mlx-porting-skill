@@ -885,7 +885,14 @@ def capture_asr_tensors(
 
     def capture_layer(index: int) -> Any:
         def hook(_module: Any, _inputs: tuple[Any, ...], output: Any) -> None:
-            hidden = output[0] if isinstance(output, tuple) and output else None
+            # Current Wav2Vec2 layers return the hidden tensor directly;
+            # older Wav2Vec2 and HuBERT layers expose it as tuple element zero.
+            if torch.is_tensor(output):
+                hidden = output
+            elif isinstance(output, tuple) and output:
+                hidden = output[0]
+            else:
+                hidden = None
             if not torch.is_tensor(hidden):
                 raise SkillError(f"ASR encoder layer {index} did not return a tensor hidden state")
             layer_hidden[index] = hidden.detach()
