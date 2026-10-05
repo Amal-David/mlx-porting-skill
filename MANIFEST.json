@@ -2,8 +2,8 @@
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
   "version": "0.7.0",
-  "generated_at": "2026-10-05T02:58:19.111314+00:00",
-  "file_count": 625,
+  "generated_at": "2026-10-05T03:01:01.566010+00:00",
+  "file_count": 627,
   "files": [
     {
       "path": ".agents/skills/mlx-model-porting",
@@ -27,8 +27,8 @@
     },
     {
       "path": ".github/dependabot.yml",
-      "size_bytes": 879,
-      "sha256": "622b89a8b5471c56edc2fbea6d4bd846ed61aad847109d45c7553d90ead9fef8",
+      "size_bytes": 1090,
+      "sha256": "05a8c464d9207695a8bdde5b45469fcac17a05628fcefd486753552172602d5b",
       "executable": false
     },
     {
@@ -38,9 +38,15 @@
       "executable": false
     },
     {
+      "path": ".github/requirements-mlx-keystones.in",
+      "size_bytes": 621,
+      "sha256": "82ef4e6cf9048c9df60e983121af3d45d58c48f3c00f4437c6197428805bb897",
+      "executable": false
+    },
+    {
       "path": ".github/requirements-mlx-keystones.txt",
-      "size_bytes": 50991,
-      "sha256": "3a79cb06e3d89be14a8c717469e7b00852ea710a0fb2f689239a749696fdabb5",
+      "size_bytes": 51100,
+      "sha256": "1853e1a187309992a48a1b8d25bec628c7f575525684dacce3fce5334749c0c6",
       "executable": false
     },
     {
@@ -99,8 +105,8 @@
     },
     {
       "path": "CONTRIBUTING.md",
-      "size_bytes": 21176,
-      "sha256": "034a69c21ebf1b87664c099b9ecc54e29018a3baef6b53f640a0068d66c915e2",
+      "size_bytes": 21512,
+      "sha256": "bbf8f79c95870699d0f0ea318ee039a9d280724fba512406c53ec57f2f3aba64",
       "executable": false
     },
     {
@@ -3479,6 +3485,12 @@
       "path": "tests/test_capture_oracle_contract.py",
       "size_bytes": 20255,
       "sha256": "399c040e48c385ca400379418fc9caaf351b2f774b9cb8ea31f6e03c3353608a",
+      "executable": false
+    },
+    {
+      "path": "tests/test_ci_dependency_contract.py",
+      "size_bytes": 2330,
+      "sha256": "e6424419e54965f702acdfdc010be0b5fbc6ad62bc4b889833f36be2e35966ef",
       "executable": false
     },
     {

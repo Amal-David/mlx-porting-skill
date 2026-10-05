@@ -1,0 +1,14 @@
+# Direct dependencies for the Apple Silicon / CPython 3.12 CI lane.
+# Regenerate without upgrading unrelated transitive pins:
+# MACOSX_DEPLOYMENT_TARGET=14.0 uv pip compile .github/requirements-mlx-keystones.in --python-version 3.12 \
+#   --python-platform aarch64-apple-darwin --generate-hashes \
+#   --output-file .github/requirements-mlx-keystones.txt
+# Transformers 5.16.0 is the first stable release accepting Tokenizers 0.23.1;
+# it also requires Safetensors >=0.8.0. Keep this tested group compatible.
+mlx==0.32.0
+mlx-lm==0.31.3
+numpy==2.2.6
+safetensors==0.8.0
+tokenizers==0.23.1
+torch==2.9.1
+transformers==5.16.0
