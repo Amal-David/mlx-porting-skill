@@ -369,3 +369,10 @@ only after eager parity passes. State why it is experimental, implement the
 smallest isolated branch, run the required validation gate, measure quality,
 memory, and latency, and revert if the rollback condition is hit.
 ```
+
+## Engine research is not a new promotion bucket
+
+The [engine survey](inference-engine-selection.md) adds a workload-fit research
+shortlist, never numerical authority or a sixth optimization status. Preserve
+canonical blockers. A source-declared feature is not locally reproduced support;
+compare compatible model/quality/cache/load cells before making a deployment pick.

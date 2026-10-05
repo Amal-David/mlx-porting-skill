@@ -21,7 +21,7 @@ optimization improves a particular Mac workload.
 | Technique records | 70 | `mlx-model-porting/assets/techniques.yaml` |
 | Optimization-guidance methods | 28 | `mlx-model-porting/assets/optimization_guidance.yaml` |
 | Optimization stacks | 4 | `mlx-model-porting/assets/optimization_stacks.yaml` |
-| Python scripts | 34 | `mlx-model-porting/scripts/*.py` |
+| Python scripts | 35 | `mlx-model-porting/scripts/*.py` |
 | Benchmark receipts | 13 | `mlx-model-porting/assets/benchmarks/receipt_assessments.json` |
 | Performance observations | 12 | generated benchmark assessment |
 | Promotion-ready receipts | 0 | generated benchmark assessment |
@@ -29,7 +29,7 @@ optimization improves a particular Mac workload.
 | Effective claims | 10 | `mlx-model-porting/assets/effective_claims.json` |
 | Promoted / withheld claims | 0 / 10 | generated effective-claim catalogue |
 | Knowledge-graph nodes / edges | 712 / 505 | `mlx-model-porting/assets/knowledge_graph.json` |
-| Offline tests | 612 | `python3 -m unittest discover -s tests` |
+| Offline tests | 633 | `python3 -m unittest discover -s tests` |
 
 The 17 routes are synthetic golden scenarios. They prove that every declared
 family has a fixture exercising route selection, expected weight coverage, a
@@ -319,3 +319,13 @@ git diff --check
 `check` modes are non-mutating drift gates. Regeneration commands and ownership
 rules are documented in `CONTRIBUTING.md`; `MANIFEST.json` must be regenerated
 last after all distributed files are final.
+
+## Inference-engine survey gate
+
+The engine inventory is independently versioned; it does not promote the legacy
+source corpus or benchmarks. The full suite checks the registry, workload
+shortlists, Doctor blocker propagation, and generated Markdown/HTML equality.
+
+```bash
+python3 mlx-model-porting/scripts/inference_engine_advisor.py --check
+```

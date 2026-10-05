@@ -39,7 +39,7 @@ Port, convert, run, inspect, quantize, package, or publish a PyTorch/Hugging Fac
 | KV cache, long context, recurrent state, attention memory, or prefill/decode memory is the bottleneck. | [attention and KV cache](references/attention-and-kv.md) |
 | Quantization or "4-bit". | [guide](references/quantization.md), [quality gate](references/quantization-quality-gate.md) |
 | Structured local optimization sweep. | [loop](references/optimization-loop.md) |
-| Decoding, serving, speculative decoding, batching, streaming, or API runtime behavior is requested. | [decoding and serving](references/decoding-and-serving.md) |
+| Engine selection, serving, caching or speculation. | [engine selection](references/inference-engine-selection.md), [decoding](references/decoding-and-serving.md) |
 | Compile behavior, `mx.compile`, custom kernel, graph capture, Metal, or operation fusion comes up. | [compile and kernels](references/compile-and-kernels.md) |
 | Publish, release, checkpoint conversion, model card, provenance, or license packaging is requested. | [packaging and publication](references/packaging-and-publication.md) |
 | The user asks for "50-100 optimization ideas", a deep model-specific hunt, or research-backed candidates. | [hypothesis-led learning](references/hypothesis-led-learning.md) |

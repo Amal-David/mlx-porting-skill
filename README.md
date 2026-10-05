@@ -58,7 +58,7 @@ The 0.7.0 corpus behind the skill:
 
 - 363 evidence sources with explicit review depth; 35 currently carry classified
   support scope and claim types, while 328 remain intentionally unclassified;
-- 34 inspectable Python scripts and 612 offline tests;
+- 35 inspectable Python scripts and 633 offline tests;
 - 13 benchmark receipts (12 observations, 1 rejected) and 10 effective claims,
   all withheld;
 - a compiled [evidence graph](mlx-model-porting/graph/README.md) of 319 nodes
@@ -83,6 +83,21 @@ command arguments. The installed-skill entry point is
 `python3 mlx-model-porting/scripts/mlx_doctor.py`.
 
 [Doctor usage, statuses, output safety, and limitations](docs/mlx-doctor.md).
+
+## Choose an inference engine by workload
+
+The [October 2026 engine survey](INFERENCE_ENGINE_SURVEY.md) screens 24 pinned
+projects and 14 method contracts, including oMLX, vLLM Metal, mlx-serve, Splash,
+MTPLX, rMLX and non-MLX comparators. It is not a performance leaderboard.
+
+```bash
+python3 mlx-model-porting/scripts/inference_engine_advisor.py --workload coding-agent
+./mlx-doctor /path/to/model --workload multimodal --format markdown
+```
+
+Engine candidates remain unqualified until exact model/runtime, parity, quality
+and comparable workload measurements pass. The engine inventory is separate from
+the historical source corpus; no old evidence pin or benchmark is silently upgraded.
 
 ## Install
 

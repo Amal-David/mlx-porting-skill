@@ -1,0 +1,1188 @@
+{
+  "schema_version": 1,
+  "reviewed": "2026-10-05",
+  "scope": "Primary-source architecture survey; not a benchmark leaderboard or deployment approval.",
+  "legacy_source_policy": "This separately versioned engine inventory does not repin historical sources or promote legacy benchmark claims.",
+  "engines": [
+    {
+      "id": "basert",
+      "name": "BaseRT",
+      "repository": "basecompute/baseRT",
+      "revision": "128bdd7348c6d0d271f47b5aca5b2fb16a5e1df6",
+      "commit_date": "2026-09-18T03:31:00Z",
+      "category": "opaque-engine",
+      "runtime": "Proprietary runtime; public integration tools",
+      "license": "Apache-2.0",
+      "license_note": "Apache-2.0 covers surrounding tools; core inference engine is proprietary.",
+      "workloads": [
+        "interactive",
+        "coding-agent"
+      ],
+      "methods": [
+        "packaged-runtime",
+        "phase-metrics"
+      ],
+      "scope": "A separately benchmarkable engine with public tooling and integration materials.",
+      "limitations": "The Apache-licensed repository does not make the inference engine open source; inspect license boundaries before reuse and do not claim access to its kernels.",
+      "evidence": [
+        {
+          "path": "README.md",
+          "sha256": "918f77c46cf9a4fc56dbac39154ad6473456ba5d6d513e5b7dbde4be410c0a59",
+          "url": "https://github.com/basecompute/baseRT/blob/128bdd7348c6d0d271f47b5aca5b2fb16a5e1df6/README.md",
+          "review_scope": "readme-reviewed"
+        },
+        {
+          "path": "LICENSE",
+          "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+          "url": "https://github.com/basecompute/baseRT/blob/128bdd7348c6d0d271f47b5aca5b2fb16a5e1df6/LICENSE",
+          "review_scope": "license-file-captured"
+        }
+      ],
+      "local_validation": "not-run"
+    },
+    {
+      "id": "dflash-mlx",
+      "name": "dflash-mlx",
+      "repository": "bstnxbt/dflash-mlx",
+      "revision": "60803233af4589e18588b9bacbb03880801c828a",
+      "commit_date": "2026-08-20T09:36:34Z",
+      "category": "speculation-adapter",
+      "runtime": "Python / MLX / Metal",
+      "license": "Apache-2.0",
+      "license_note": "Component/model licenses and notices remain separate; no upstream implementation is copied by this survey.",
+      "workloads": [
+        "coding-agent",
+        "interactive",
+        "specialized"
+      ],
+      "methods": [
+        "speculation",
+        "stateful-cache",
+        "paged-kernels",
+        "phase-metrics"
+      ],
+      "scope": "DFlash draft/verify adapter plus server, recurrent tape-replay rollback, hot/cold prefix snapshots and verification-specialized kernels.",
+      "limitations": "Greedy target verification is not identical to stochastic exact sampling; dispatch differences can alter the AR path. Sparse prefill is a separate approximate feature.",
+      "evidence": [
+        {
+          "path": "LICENSE",
+          "sha256": "f2a3fe3d0154c3db2cc36a9b8b4412f12f4fa9feeb53ae68905b0580db5f6f50",
+          "url": "https://github.com/bstnxbt/dflash-mlx/blob/60803233af4589e18588b9bacbb03880801c828a/LICENSE",
+          "review_scope": "license-file-captured"
+        },
+        {
+          "path": "README.md",
+          "sha256": "4ec95d401302dfac26744d445e880949b7e36d186aa05dc4296be3c1d0d45f8b",
+          "url": "https://github.com/bstnxbt/dflash-mlx/blob/60803233af4589e18588b9bacbb03880801c828a/README.md",
+          "review_scope": "readme-reviewed"
+        },
+        {
+          "path": "dflash_mlx/cache/fingerprints.py",
+          "sha256": "3ec62f436d3068dd36da870056ee7bfc7fdab769381a57a8f8395b7029fcef2c",
+          "url": "https://github.com/bstnxbt/dflash-mlx/blob/60803233af4589e18588b9bacbb03880801c828a/dflash_mlx/cache/fingerprints.py",
+          "review_scope": "selected-source-sections"
+        }
+      ],
+      "local_validation": "not-run"
+    },
+    {
+      "id": "exo",
+      "name": "exo",
+      "repository": "exo-explore/exo",
+      "revision": "21a54c5ea0230a3bec1e1a786d200126c7e34ec6",
+      "commit_date": "2026-08-25T18:59:53Z",
+      "category": "distributed-runtime",
+      "runtime": "Python / MLX and distributed transports",
+      "license": "Apache-2.0",
+      "license_note": "Component/model licenses and notices remain separate; no upstream implementation is copied by this survey.",
+      "workloads": [
+        "distributed"
+      ],
+      "methods": [
+        "topology-routing",
+        "stateful-cache"
+      ],
+      "scope": "Topology-aware sharding across devices, including tensor/pipeline approaches and transport-dependent placement.",
+      "limitations": "Capacity across Macs is not a single-Mac latency win. Link bandwidth, collective cost and failure recovery are part of the benchmark.",
+      "evidence": [
+        {
+          "path": "README.md",
+          "sha256": "07c117eab042d44f26bbf8322e5dff582d558db6950c22330acf3c6ec3fe09df",
+          "url": "https://github.com/exo-explore/exo/blob/21a54c5ea0230a3bec1e1a786d200126c7e34ec6/README.md",
+          "review_scope": "readme-reviewed"
+        },
+        {
+          "path": "LICENSE",
+          "sha256": "12a6ed8c837f40b1add1b9fdd7a142bde27e399310da8f60c2a8ed45dcf31517",
+          "url": "https://github.com/exo-explore/exo/blob/21a54c5ea0230a3bec1e1a786d200126c7e34ec6/LICENSE",
+          "review_scope": "license-file-captured"
+        }
+      ],
+      "local_validation": "not-run"
+    },
+    {
+      "id": "flash-moe",
+      "name": "Flash-MoE",
+      "repository": "danveloper/flash-moe",
+      "revision": "3601d41882a346d85041f7955c66429d248e8cd9",
+      "commit_date": "2026-03-19T17:21:45Z",
+      "category": "non-mlx-specialized",
+      "runtime": "C / Objective-C / direct Metal",
+      "license": "NOASSERTION",
+      "license_note": "Permission/coverage unresolved for code reuse; study as context only.",
+      "workloads": [
+        "specialized"
+      ],
+      "methods": [
+        "expert-streaming",
+        "phase-metrics",
+        "memory-admission"
+      ],
+      "scope": "Active-expert streaming from SSD for a large sparse model on a smaller-memory Mac.",
+      "limitations": "Not MLX and not generic dense-model offload. No root license was found in the pinned inventory; do not copy code pending permission. SSD streaming does not remove OOM risk.",
+      "evidence": [
+        {
+          "path": "README.md",
+          "sha256": "4cde0e3dfcf1a96cd62137e8657bd18ed94de972de56a544ae29f72d0d6012d9",
+          "url": "https://github.com/danveloper/flash-moe/blob/3601d41882a346d85041f7955c66429d248e8cd9/README.md",
+          "review_scope": "readme-reviewed"
+        }
+      ],
+      "local_validation": "not-run"
+    },
+    {
+      "id": "llama-cpp",
+      "name": "llama.cpp",
+      "repository": "ggml-org/llama.cpp",
+      "revision": "c06f84160a30c66d7b5a2829ae9b3ea15275cbc3",
+      "commit_date": "2026-10-05T14:37:50Z",
+      "category": "non-mlx-comparator",
+      "runtime": "C/C++ / GGML / Metal",
+      "license": "MIT",
+      "license_note": "Component/model licenses and notices remain separate; no upstream implementation is copied by this survey.",
+      "workloads": [
+        "interactive",
+        "coding-agent",
+        "multi-user",
+        "multimodal"
+      ],
+      "methods": [
+        "paged-kernels",
+        "chunked-prefill",
+        "protocol-conformance"
+      ],
+      "scope": "Mature non-MLX comparator with GGUF, native Metal and serving workflows.",
+      "limitations": "GGUF quantization and MLX quantization may not encode identical weights; report the artifact/quality difference rather than an engine-only ratio.",
+      "evidence": [
+        {
+          "path": "README.md",
+          "sha256": "dc2d34687c844ecf929d9e9a9c9c78e8023b52abf3b2b3d039600c79016673b6",
+          "url": "https://github.com/ggml-org/llama.cpp/blob/c06f84160a30c66d7b5a2829ae9b3ea15275cbc3/README.md",
+          "review_scope": "readme-reviewed"
+        },
+        {
+          "path": "LICENSE",
+          "sha256": "94f29bbed6a22c35b992c5c6ebf0e7c92f13b836b90f36f461c9cf2f0f1d010d",
+          "url": "https://github.com/ggml-org/llama.cpp/blob/c06f84160a30c66d7b5a2829ae9b3ea15275cbc3/LICENSE",
+          "review_scope": "license-file-captured"
+        }
+      ],
+      "local_validation": "not-run"
+    },
+    {
+      "id": "mistral-rs",
+      "name": "mistral.rs",
+      "repository": "EricLBuehler/mistral.rs",
+      "revision": "3f2515e9b5adc2ac44949c128c50a13b15721294",
+      "commit_date": "2026-10-01T04:18:41Z",
+      "category": "non-mlx-comparator",
+      "runtime": "Rust / Candle / Metal",
+      "license": "MIT",
+      "license_note": "Component/model licenses and notices remain separate; no upstream implementation is copied by this survey.",
+      "workloads": [
+        "interactive",
+        "multi-user",
+        "multimodal",
+        "embeddings"
+      ],
+      "methods": [
+        "stateful-cache",
+        "media-identity",
+        "approximation-gates"
+      ],
+      "scope": "Rust inference with continuous batching, multimodal prefix handling and per-layer quantization/device mapping.",
+      "limitations": "Metal support is not MLX support. Do not transfer CUDA-specific kernel or paged-attention measurements to Apple hardware.",
+      "evidence": [
+        {
+          "path": "README.md",
+          "sha256": "e5c5bae4387f54f29ca8028e8003512cac6b992710be9dd943340229e31b14c3",
+          "url": "https://github.com/EricLBuehler/mistral.rs/blob/3f2515e9b5adc2ac44949c128c50a13b15721294/README.md",
+          "review_scope": "readme-reviewed"
+        },
+        {
+          "path": "LICENSE",
+          "sha256": "b40bb09c7b3b6f697a8920cf9d2cb3ff8cfcf77a0fcb6d264a92842b43c4dcae",
+          "url": "https://github.com/EricLBuehler/mistral.rs/blob/3f2515e9b5adc2ac44949c128c50a13b15721294/LICENSE",
+          "review_scope": "license-file-captured"
+        }
+      ],
+      "local_validation": "not-run"
+    },
+    {
+      "id": "mlc-llm",
+      "name": "MLC LLM",
+      "repository": "mlc-ai/mlc-llm",
+      "revision": "69881d121ee3f6dd00fe3745586a908c1b81c064",
+      "commit_date": "2026-10-04T03:48:03Z",
+      "category": "non-mlx-comparator",
+      "runtime": "TVM / compiled device runtimes",
+      "license": "Apache-2.0",
+      "license_note": "Component/model licenses and notices remain separate; no upstream implementation is copied by this survey.",
+      "workloads": [
+        "interactive",
+        "multi-user"
+      ],
+      "methods": [
+        "packaged-runtime",
+        "stateful-cache",
+        "paged-kernels"
+      ],
+      "scope": "Compiler-driven deployment with a shared runtime and prefix-cache machinery across supported platforms.",
+      "limitations": "Ahead-of-time compilation/build cost and format conversion belong in deployment comparisons; this is not an MLX backend.",
+      "evidence": [
+        {
+          "path": "README.md",
+          "sha256": "c6208e455ea145dbac62aa26493175db67bde071d481edf57ceaf17638d4db09",
+          "url": "https://github.com/mlc-ai/mlc-llm/blob/69881d121ee3f6dd00fe3745586a908c1b81c064/README.md",
+          "review_scope": "readme-reviewed"
+        },
+        {
+          "path": "LICENSE",
+          "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+          "url": "https://github.com/mlc-ai/mlc-llm/blob/69881d121ee3f6dd00fe3745586a908c1b81c064/LICENSE",
+          "review_scope": "license-file-captured"
+        }
+      ],
+      "local_validation": "not-run"
+    },
+    {
+      "id": "mlx-audio",
+      "name": "MLX-Audio",
+      "repository": "Blaizzy/mlx-audio",
+      "revision": "feb25a37b07923bae556e59111995071d66afa0d",
+      "commit_date": "2026-10-05T03:17:18Z",
+      "category": "reference-library",
+      "runtime": "Python / MLX",
+      "license": "MIT",
+      "license_note": "Component/model licenses and notices remain separate; no upstream implementation is copied by this survey.",
+      "workloads": [
+        "audio"
+      ],
+      "methods": [
+        "audio-metrics",
+        "media-identity",
+        "phase-metrics"
+      ],
+      "scope": "Specialized speech generation, recognition, streaming and audio model implementations.",
+      "limitations": "First-audio latency, real-time factor, intelligibility and speaker continuity are not interchangeable with text decode token rates.",
+      "evidence": [
+        {
+          "path": "README.md",
+          "sha256": "d6fb30e1bbdd1637eaeb9c71a14ee0f62c1d8499c1ca63ef8bbd9557d4d9a9fc",
+          "url": "https://github.com/Blaizzy/mlx-audio/blob/feb25a37b07923bae556e59111995071d66afa0d/README.md",
+          "review_scope": "readme-reviewed"
+        },
+        {
+          "path": "LICENSE",
+          "sha256": "11d27e0259dec3a323fa6c04c330621d0950ab96c6760d5aac3e2e97229e6f22",
+          "url": "https://github.com/Blaizzy/mlx-audio/blob/feb25a37b07923bae556e59111995071d66afa0d/LICENSE",
+          "review_scope": "license-file-captured"
+        }
+      ],
+      "local_validation": "not-run"
+    },
+    {
+      "id": "mlx-engine",
+      "name": "LM Studio mlx-engine",
+      "repository": "lmstudio-ai/mlx-engine",
+      "revision": "86f20eb48bc79c528f682fabfc0384f799cdea0f",
+      "commit_date": "2026-09-25T19:17:24Z",
+      "category": "embedded-runtime",
+      "runtime": "Python / MLX",
+      "license": "MIT",
+      "license_note": "Component/model licenses and notices remain separate; no upstream implementation is copied by this survey.",
+      "workloads": [
+        "interactive",
+        "multimodal"
+      ],
+      "methods": [
+        "packaged-runtime",
+        "protocol-conformance",
+        "chunked-prefill"
+      ],
+      "scope": "Open-source model engine and integration layer used by LM Studio, including batched vision code.",
+      "limitations": "The engine's license and capabilities are separate from the LM Studio application; test the actual bundled dependency/runtime versions.",
+      "evidence": [
+        {
+          "path": "README.md",
+          "sha256": "30b9b334c3b4c8b0130d11e43c0829cae29d192307b7ffd74e573878e2188e14",
+          "url": "https://github.com/lmstudio-ai/mlx-engine/blob/86f20eb48bc79c528f682fabfc0384f799cdea0f/README.md",
+          "review_scope": "readme-reviewed"
+        },
+        {
+          "path": "LICENSE",
+          "sha256": "caf8c6e6782bf9b8aef656590c0a05d9b1c11c268adb660af43cb3132a907554",
+          "url": "https://github.com/lmstudio-ai/mlx-engine/blob/86f20eb48bc79c528f682fabfc0384f799cdea0f/LICENSE",
+          "review_scope": "license-file-captured"
+        }
+      ],
+      "local_validation": "not-run"
+    },
+    {
+      "id": "mlx-lm",
+      "name": "MLX-LM",
+      "repository": "ml-explore/mlx-lm",
+      "revision": "5cfec4cb39deba54210b3ff4d86f2337c7bc10b5",
+      "commit_date": "2026-10-02T08:28:40Z",
+      "category": "reference-library",
+      "runtime": "Python / MLX",
+      "license": "MIT",
+      "license_note": "Component/model licenses and notices remain separate; no upstream implementation is copied by this survey.",
+      "workloads": [
+        "interactive",
+        "coding-agent",
+        "multi-user"
+      ],
+      "methods": [
+        "chunked-prefill",
+        "stateful-cache",
+        "phase-metrics"
+      ],
+      "scope": "Official language-model numerics and generation baseline, including batch generation and prompt caches.",
+      "limitations": "Library support is not automatic server admission, API conformance or model qualification.",
+      "evidence": [
+        {
+          "path": "README.md",
+          "sha256": "fc4dc67d70ca364ef8c2f94e84d170072d3c5f4fdfd2aa7a7be7a38a6b3d0008",
+          "url": "https://github.com/ml-explore/mlx-lm/blob/5cfec4cb39deba54210b3ff4d86f2337c7bc10b5/README.md",
+          "review_scope": "readme-reviewed"
+        },
+        {
+          "path": "LICENSE",
+          "sha256": "ccfab7ccb2ea306f71531c8ca77bb55507606cd90768b1e32b8b52ab5b48cf01",
+          "url": "https://github.com/ml-explore/mlx-lm/blob/5cfec4cb39deba54210b3ff4d86f2337c7bc10b5/LICENSE",
+          "review_scope": "license-file-captured"
+        }
+      ],
+      "local_validation": "not-run"
+    },
+    {
+      "id": "mlx-omni-server",
+      "name": "MLX Omni Server",
+      "repository": "madroidmaq/mlx-omni-server",
+      "revision": "4f8e9ef623808b876d2fd08df8fe11745d5a2751",
+      "commit_date": "2026-05-09T02:07:29Z",
+      "category": "serving-runtime",
+      "runtime": "Python / MLX libraries",
+      "license": "MIT",
+      "license_note": "Component/model licenses and notices remain separate; no upstream implementation is copied by this survey.",
+      "workloads": [
+        "interactive",
+        "multimodal",
+        "audio",
+        "embeddings"
+      ],
+      "methods": [
+        "protocol-conformance",
+        "audio-metrics"
+      ],
+      "scope": "Unified API orchestration for local text, vision and audio workflows.",
+      "limitations": "A shared endpoint does not establish shared scheduling, memory budgets or faster numerical kernels.",
+      "evidence": [
+        {
+          "path": "README.md",
+          "sha256": "1fd58f7ac1803dba7416b5098d317e0c4f29897bcf526483e99fc328394150b7",
+          "url": "https://github.com/madroidmaq/mlx-omni-server/blob/4f8e9ef623808b876d2fd08df8fe11745d5a2751/README.md",
+          "review_scope": "readme-reviewed"
+        },
+        {
+          "path": "LICENSE",
+          "sha256": "fca32230dd650ed87115c2d59cbe8eee01b9ac42c7eded54b33f0b42eceeac95",
+          "url": "https://github.com/madroidmaq/mlx-omni-server/blob/4f8e9ef623808b876d2fd08df8fe11745d5a2751/LICENSE",
+          "review_scope": "license-file-captured"
+        }
+      ],
+      "local_validation": "not-run"
+    },
+    {
+      "id": "mlx-serve",
+      "name": "mlx-serve",
+      "repository": "ddalcu/mlx-serve",
+      "revision": "c84a5a6321c7bad40c50b2bc50f7a5f4510413ab",
+      "commit_date": "2026-10-05T14:28:14Z",
+      "category": "native-runtime",
+      "runtime": "Zig / MLX C / Metal; optional GGUF backends",
+      "license": "MIT AND component licenses",
+      "license_note": "Component/model licenses and notices remain separate; no upstream implementation is copied by this survey.",
+      "workloads": [
+        "coding-agent",
+        "multi-user",
+        "multimodal",
+        "audio"
+      ],
+      "methods": [
+        "paged-kernels",
+        "chunked-prefill",
+        "speculation",
+        "packaged-runtime",
+        "protocol-conformance"
+      ],
+      "scope": "Native Zig serving, specialized Metal/GDN paths, speculative verification and packaged runtime without Python.",
+      "limitations": "Format routing may invoke different numerical engines. Upstream shipping-default comparisons are workload-scoped, not a universal fastest claim. The pinned acceptance code also exposes typical/TokenV3 alternatives; they must not inherit the exact mode label.",
+      "evidence": [
+        {
+          "path": "LICENSE",
+          "sha256": "dfe22e0f100fe7f2c2808f1af6f488e7339cf8deb7504153602b4169ed7d90b4",
+          "url": "https://github.com/ddalcu/mlx-serve/blob/c84a5a6321c7bad40c50b2bc50f7a5f4510413ab/LICENSE",
+          "review_scope": "license-file-captured"
+        },
+        {
+          "path": "README.md",
+          "sha256": "bef8bd879335f403dee6eab8397f569e64a36459148f9734f49fa870f4691fa7",
+          "url": "https://github.com/ddalcu/mlx-serve/blob/c84a5a6321c7bad40c50b2bc50f7a5f4510413ab/README.md",
+          "review_scope": "readme-reviewed"
+        },
+        {
+          "path": "src/mtp_acceptance.zig",
+          "sha256": "43d6b39cb304d0f2bb379ecac9ac8bacc133d53bb40ff950139cbd3da8e66ef3",
+          "url": "https://github.com/ddalcu/mlx-serve/blob/c84a5a6321c7bad40c50b2bc50f7a5f4510413ab/src/mtp_acceptance.zig",
+          "review_scope": "selected-source-sections"
+        }
+      ],
+      "local_validation": "not-run"
+    },
+    {
+      "id": "mlx-vlm",
+      "name": "MLX-VLM",
+      "repository": "Blaizzy/mlx-vlm",
+      "revision": "6ecadd767ca1c7c54763289c750dd180d7945037",
+      "commit_date": "2026-10-02T16:39:27Z",
+      "category": "reference-library",
+      "runtime": "Python / MLX",
+      "license": "MIT",
+      "license_note": "Component/model licenses and notices remain separate; no upstream implementation is copied by this survey.",
+      "workloads": [
+        "multimodal",
+        "multi-user",
+        "interactive"
+      ],
+      "methods": [
+        "chunked-prefill",
+        "stateful-cache",
+        "tiered-cache",
+        "media-identity",
+        "speculation",
+        "phase-metrics"
+      ],
+      "scope": "Current multimodal baseline includes continuous batching, state-aware prefix/disk caches and several draft/verify paths.",
+      "limitations": "Do not compare a current competitor against an obsolete unbatched MLX-VLM baseline; family and cache-format combinations still need qualification.",
+      "evidence": [
+        {
+          "path": "README.md",
+          "sha256": "e3d95888b2d22d86e6091cc8de9b1635f41aa8071655af629dde01132709b91b",
+          "url": "https://github.com/Blaizzy/mlx-vlm/blob/6ecadd767ca1c7c54763289c750dd180d7945037/README.md",
+          "review_scope": "readme-reviewed"
+        },
+        {
+          "path": "LICENSE",
+          "sha256": "f74c448746be3376e27dee43e2be9ec9d55f4820cd7466c603a6c7d1fd2d25b8",
+          "url": "https://github.com/Blaizzy/mlx-vlm/blob/6ecadd767ca1c7c54763289c750dd180d7945037/LICENSE",
+          "review_scope": "license-file-captured"
+        }
+      ],
+      "local_validation": "not-run"
+    },
+    {
+      "id": "mlx2",
+      "name": "mlx2",
+      "repository": "pierre427/mlx2",
+      "revision": "bb031aaafd6438287a32d80512e1573cdaf1fc1b",
+      "commit_date": "2026-10-05T13:39:16Z",
+      "category": "research-runtime",
+      "runtime": "Python / MLX / native Metal",
+      "license": "Apache-2.0",
+      "license_note": "Component/model licenses and notices remain separate; no upstream implementation is copied by this survey.",
+      "workloads": [
+        "coding-agent",
+        "multi-user"
+      ],
+      "methods": [
+        "stateful-cache",
+        "memory-admission",
+        "phase-metrics",
+        "speculation"
+      ],
+      "scope": "Research runtime with route qualification, leased layered checkpoints, mechanism counters and admission policies.",
+      "limitations": "Explicitly experimental; current-source GPU qualification is incomplete for several routes. Historical measurements and CPU tests are not current deployment evidence.",
+      "evidence": [
+        {
+          "path": "README.md",
+          "sha256": "9b99ee0caca15516354c0ceb21fd745d75344033a91e17334687e71651305894",
+          "url": "https://github.com/pierre427/mlx2/blob/bb031aaafd6438287a32d80512e1573cdaf1fc1b/README.md",
+          "review_scope": "readme-reviewed"
+        },
+        {
+          "path": "LICENSE",
+          "sha256": "5ec7682d4552b7de286e6469cc3a756687be712c0c71dc5b3675cc1a8eeb061d",
+          "url": "https://github.com/pierre427/mlx2/blob/bb031aaafd6438287a32d80512e1573cdaf1fc1b/LICENSE",
+          "review_scope": "license-file-captured"
+        }
+      ],
+      "local_validation": "not-run"
+    },
+    {
+      "id": "mlxfast-qwen",
+      "name": "MLXFast Qwen engine",
+      "repository": "Layr-Labs/mlxfast-qwen38-125b-a6b-engine",
+      "revision": "59160bd982abe5c98c8000caeb028e2a901b1d48",
+      "commit_date": "2026-09-24T16:24:10Z",
+      "category": "specialized-benchmark",
+      "runtime": "Swift / MLX / Metal",
+      "license": "NOASSERTION",
+      "license_note": "Permission/coverage unresolved for code reuse; study as context only.",
+      "workloads": [
+        "specialized"
+      ],
+      "methods": [
+        "paged-kernels",
+        "speculation",
+        "phase-metrics"
+      ],
+      "scope": "Model-specific competition engine with a pinned target, separate evaluator, native MTP and controlled implementation boundaries.",
+      "limitations": "Not a general inference server. Preserve organizer golden outputs and benchmark rules; mixed/vendor licenses need review before any code reuse.",
+      "evidence": [
+        {
+          "path": "README.md",
+          "sha256": "fcaadc35f453ab9ca68a63b76fac5dd50b702e83de20dd08fe39c07e17340fcd",
+          "url": "https://github.com/Layr-Labs/mlxfast-qwen38-125b-a6b-engine/blob/59160bd982abe5c98c8000caeb028e2a901b1d48/README.md",
+          "review_scope": "readme-reviewed"
+        },
+        {
+          "path": "LICENSE",
+          "sha256": "3e4515c8baee16121ff56e5d6cdf9e0b70b3db31cacdf1983ab4d813b5427f04",
+          "url": "https://github.com/Layr-Labs/mlxfast-qwen38-125b-a6b-engine/blob/59160bd982abe5c98c8000caeb028e2a901b1d48/LICENSE",
+          "review_scope": "license-file-captured"
+        }
+      ],
+      "local_validation": "not-run"
+    },
+    {
+      "id": "mtplx",
+      "name": "MTPLX",
+      "repository": "youssofal/MTPLX",
+      "revision": "9882703f3105363ddc37eca9f97aa09a1d387112",
+      "commit_date": "2026-10-03T00:00:43Z",
+      "category": "specialized-runtime",
+      "runtime": "Python / MLX / Metal; native app",
+      "license": "Apache-2.0",
+      "license_note": "Read the upstream LICENSE and NOTICE, including its attribution statement, before incorporating any implementation. No code copied here.",
+      "workloads": [
+        "coding-agent",
+        "interactive",
+        "multimodal",
+        "specialized"
+      ],
+      "methods": [
+        "speculation",
+        "stateful-cache",
+        "paged-kernels",
+        "phase-metrics"
+      ],
+      "scope": "Native MTP with rejection sampling/residual correction, verify-shape kernels and per-host draft-depth tuning that retains autoregressive fallback.",
+      "limitations": "Trunk/head lineage and target numerical equivalence need separate proof. Preserve NOTICE obligations if incorporating code; image and sampled paths need their own qualification.",
+      "evidence": [
+        {
+          "path": "LICENSE",
+          "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+          "url": "https://github.com/youssofal/MTPLX/blob/9882703f3105363ddc37eca9f97aa09a1d387112/LICENSE",
+          "review_scope": "license-file-captured"
+        },
+        {
+          "path": "README.md",
+          "sha256": "07abdaa3901c9708c7744faa31bcfd2b2266a1aeb76b939164a1b371829afdf0",
+          "url": "https://github.com/youssofal/MTPLX/blob/9882703f3105363ddc37eca9f97aa09a1d387112/README.md",
+          "review_scope": "readme-reviewed"
+        }
+      ],
+      "local_validation": "not-run"
+    },
+    {
+      "id": "omlx",
+      "name": "oMLX",
+      "repository": "jundot/omlx",
+      "revision": "a435a3736071286fdb2b74f486b3505f23f3c194",
+      "commit_date": "2026-10-05T08:55:46Z",
+      "category": "serving-runtime",
+      "runtime": "Python / MLX; Swift app",
+      "license": "Apache-2.0",
+      "license_note": "Component/model licenses and notices remain separate; no upstream implementation is copied by this survey.",
+      "workloads": [
+        "coding-agent",
+        "multi-user",
+        "multimodal",
+        "embeddings"
+      ],
+      "methods": [
+        "chunked-prefill",
+        "stateful-cache",
+        "tiered-cache",
+        "memory-admission",
+        "packaged-runtime",
+        "protocol-conformance"
+      ],
+      "scope": "Multi-model engine pool, pinning/TTL/LRU, continuous batching and hot-memory plus cold-SSD cache.",
+      "limitations": "Uses MLX-LM/MLX-VLM underneath; SSD KV eviction does not make arbitrary model weights fit. New native kernels have build/hardware requirements.",
+      "evidence": [
+        {
+          "path": "README.md",
+          "sha256": "700a92714265f1cdde45b2133970a38b805ed30620a499895e9210feaef2a590",
+          "url": "https://github.com/jundot/omlx/blob/a435a3736071286fdb2b74f486b3505f23f3c194/README.md",
+          "review_scope": "readme-reviewed"
+        },
+        {
+          "path": "LICENSE",
+          "sha256": "de69b4352c9952cd5f0f4b8cb4584782a07f02c9ba82aeb5d496aa2b7fe5457d",
+          "url": "https://github.com/jundot/omlx/blob/a435a3736071286fdb2b74f486b3505f23f3c194/LICENSE",
+          "review_scope": "license-file-captured"
+        },
+        {
+          "path": "omlx/cache/prefix_cache.py",
+          "sha256": "61b0d125c147a1e37ef6e13add8d89f9f26125ddb965db0af2dd073f8f599b5a",
+          "url": "https://github.com/jundot/omlx/blob/a435a3736071286fdb2b74f486b3505f23f3c194/omlx/cache/prefix_cache.py",
+          "review_scope": "selected-source-sections"
+        },
+        {
+          "path": "packaging/README.md",
+          "sha256": "528166855d6e11ca767773e661248940c81c19462ccc9c8b38c17ec4c281c503",
+          "url": "https://github.com/jundot/omlx/blob/a435a3736071286fdb2b74f486b3505f23f3c194/packaging/README.md",
+          "review_scope": "architecture-doc-reviewed"
+        }
+      ],
+      "local_validation": "not-run"
+    },
+    {
+      "id": "rapid-mlx",
+      "name": "Rapid-MLX",
+      "repository": "raullenchai/Rapid-MLX",
+      "revision": "c55b6edfc53bb5cbcc1fe423bf75dcc7bb5dd8cc",
+      "commit_date": "2026-10-05T14:14:34Z",
+      "category": "serving-runtime",
+      "runtime": "Python / MLX; desktop integration",
+      "license": "Apache-2.0 AND component licenses",
+      "license_note": "Component/model licenses and notices remain separate; no upstream implementation is copied by this survey.",
+      "workloads": [
+        "coding-agent",
+        "multi-user",
+        "multimodal"
+      ],
+      "methods": [
+        "protocol-conformance",
+        "chunked-prefill",
+        "stateful-cache"
+      ],
+      "scope": "Serving fork with emphasis on coding-client compatibility, tool handling and deployment integration.",
+      "limitations": "Shared ancestry is not independent benchmark corroboration; pin the tested client/protocol/model versions.",
+      "evidence": [
+        {
+          "path": "LICENSE",
+          "sha256": "81f5d6e57a48b0c8ab3642d5d6e51c28fb71dc213dda876546531e3145dbb7eb",
+          "url": "https://github.com/raullenchai/Rapid-MLX/blob/c55b6edfc53bb5cbcc1fe423bf75dcc7bb5dd8cc/LICENSE",
+          "review_scope": "license-file-captured"
+        },
+        {
+          "path": "README.md",
+          "sha256": "d1f08ce1b17e656fd428fa455fb4350c58f453073fc22a70b327ed6f4855a35a",
+          "url": "https://github.com/raullenchai/Rapid-MLX/blob/c55b6edfc53bb5cbcc1fe423bf75dcc7bb5dd8cc/README.md",
+          "review_scope": "readme-reviewed"
+        }
+      ],
+      "local_validation": "not-run"
+    },
+    {
+      "id": "rmlx",
+      "name": "rMLX",
+      "repository": "Pushkinist/rMLX",
+      "revision": "e5d967a5c065c7a602d9e171c7d41ac006b1adcc",
+      "commit_date": "2026-09-30T08:33:47Z",
+      "category": "serving-runtime",
+      "runtime": "Rust / mlx-c / MLX",
+      "license": "MIT OR Apache-2.0",
+      "license_note": "Component/model licenses and notices remain separate; no upstream implementation is copied by this survey.",
+      "workloads": [
+        "interactive",
+        "multi-user",
+        "multimodal",
+        "audio",
+        "embeddings"
+      ],
+      "methods": [
+        "stateful-cache",
+        "approximation-gates",
+        "packaged-runtime",
+        "media-identity"
+      ],
+      "scope": "Rust-native MLX-format serving with an ABI-bound runtime, model registry and multiple weight/KV representations.",
+      "limitations": "Several advertised KV codecs retain BF16 mirrors; nominal codec bit width does not establish resident memory savings.",
+      "evidence": [
+        {
+          "path": "README.md",
+          "sha256": "648850bcc23baed3601fad804b3433a6c4a5bb420481ea8ac36cca8c794c8931",
+          "url": "https://github.com/Pushkinist/rMLX/blob/e5d967a5c065c7a602d9e171c7d41ac006b1adcc/README.md",
+          "review_scope": "readme-reviewed"
+        }
+      ],
+      "local_validation": "not-run"
+    },
+    {
+      "id": "splash",
+      "name": "Splash",
+      "repository": "incoai/splash",
+      "revision": "35c828c34bf4e3718dc8064c061132db9e018385",
+      "commit_date": "2026-10-05T08:09:12Z",
+      "category": "native-specialized",
+      "runtime": "Native Metal runtime",
+      "license": "Apache-2.0",
+      "license_note": "Component/model licenses and notices remain separate; no upstream implementation is copied by this survey.",
+      "workloads": [
+        "coding-agent",
+        "multi-user",
+        "multimodal",
+        "specialized"
+      ],
+      "methods": [
+        "paged-kernels",
+        "speculation",
+        "memory-admission",
+        "stateful-cache"
+      ],
+      "scope": "Model-specialized Metal kernels, DFlash2 target/draft pairing, cache reuse, batching and automatic memory planning.",
+      "limitations": "Narrow model/device/OS requirements. Supports MLX-format and GGUF inputs; format support alone does not mean the numerical runtime is MLX.",
+      "evidence": [
+        {
+          "path": "LICENSE",
+          "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+          "url": "https://github.com/incoai/splash/blob/35c828c34bf4e3718dc8064c061132db9e018385/LICENSE",
+          "review_scope": "license-file-captured"
+        },
+        {
+          "path": "README.md",
+          "sha256": "6aaeee7b3d21a635dae166740aced85893afa4966b92bca7520bbf9c59385b44",
+          "url": "https://github.com/incoai/splash/blob/35c828c34bf4e3718dc8064c061132db9e018385/README.md",
+          "review_scope": "readme-reviewed"
+        }
+      ],
+      "local_validation": "not-run"
+    },
+    {
+      "id": "vllm-metal",
+      "name": "vLLM Metal",
+      "repository": "vllm-project/vllm-metal",
+      "revision": "39255c170616bba3e2010e108d5caeb7e21443db",
+      "commit_date": "2026-10-05T08:09:12Z",
+      "category": "serving-runtime",
+      "runtime": "vLLM control plane / MLX / Metal",
+      "license": "Apache-2.0",
+      "license_note": "Component/model licenses and notices remain separate; no upstream implementation is copied by this survey.",
+      "workloads": [
+        "multi-user",
+        "coding-agent",
+        "multimodal"
+      ],
+      "methods": [
+        "paged-kernels",
+        "chunked-prefill",
+        "speculation",
+        "stateful-cache"
+      ],
+      "scope": "Upstream vLLM scheduler and block manager with MLX model layers and request-aware paged variable-length Metal attention.",
+      "limitations": "Different project from vllm-mlx. Device-generation-specific kernels and exact model/quantization support must be verified.",
+      "evidence": [
+        {
+          "path": "README.md",
+          "sha256": "7f8846e84acf8a6bed6caa8005ab648b2f802aa44af7b703c667a07883be01b9",
+          "url": "https://github.com/vllm-project/vllm-metal/blob/39255c170616bba3e2010e108d5caeb7e21443db/README.md",
+          "review_scope": "readme-reviewed"
+        },
+        {
+          "path": "LICENSE",
+          "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+          "url": "https://github.com/vllm-project/vllm-metal/blob/39255c170616bba3e2010e108d5caeb7e21443db/LICENSE",
+          "review_scope": "license-file-captured"
+        }
+      ],
+      "local_validation": "not-run"
+    },
+    {
+      "id": "vllm-mlx",
+      "name": "vllm-mlx",
+      "repository": "waybarrios/vllm-mlx",
+      "revision": "80e7fdec7e8641c8f81b01ece2d7cc256348b76f",
+      "commit_date": "2026-10-03T06:40:13Z",
+      "category": "serving-runtime",
+      "runtime": "Python / MLX",
+      "license": "Apache-2.0",
+      "license_note": "Component/model licenses and notices remain separate; no upstream implementation is copied by this survey.",
+      "workloads": [
+        "coding-agent",
+        "multi-user",
+        "multimodal",
+        "audio",
+        "embeddings"
+      ],
+      "methods": [
+        "chunked-prefill",
+        "stateful-cache",
+        "tiered-cache",
+        "protocol-conformance",
+        "approximation-gates"
+      ],
+      "scope": "vLLM-style server over MLX libraries with scheduler, paged/prefix caches, multimodal routes and client acceptance tests.",
+      "limitations": "Not the upstream vLLM Metal plugin. MoE expert reduction and sparse prefill alter computation and need separate task-quality gates.",
+      "evidence": [
+        {
+          "path": "README.md",
+          "sha256": "7ef876daeb2eb935dac298fd3492e2ecdc08faa2cb84f2c1c6b11f796c49265e",
+          "url": "https://github.com/waybarrios/vllm-mlx/blob/80e7fdec7e8641c8f81b01ece2d7cc256348b76f/README.md",
+          "review_scope": "readme-reviewed"
+        },
+        {
+          "path": "LICENSE",
+          "sha256": "a6cba85bc92e0cff7a450b1d873c0eaa2e9fc96bf472df0247a26bec77bf3ff9",
+          "url": "https://github.com/waybarrios/vllm-mlx/blob/80e7fdec7e8641c8f81b01ece2d7cc256348b76f/LICENSE",
+          "review_scope": "license-file-captured"
+        },
+        {
+          "path": "vllm_mlx/scheduler.py",
+          "sha256": "11128969170388420f593da4f42c0e7eda0c67beaa2ab568aaf8e462a299836f",
+          "url": "https://github.com/waybarrios/vllm-mlx/blob/80e7fdec7e8641c8f81b01ece2d7cc256348b76f/vllm_mlx/scheduler.py",
+          "review_scope": "selected-source-sections"
+        }
+      ],
+      "local_validation": "not-run"
+    },
+    {
+      "id": "vmlx",
+      "name": "vMLX",
+      "repository": "jjang-ai/vmlx",
+      "revision": "279c59c66dfb76b6d980e356e2c9563e34b26dde",
+      "commit_date": "2026-10-01T09:37:20Z",
+      "category": "serving-runtime",
+      "runtime": "Python / MLX; native components",
+      "license": "Apache-2.0",
+      "license_note": "Component/model licenses and notices remain separate; no upstream implementation is copied by this survey.",
+      "workloads": [
+        "coding-agent",
+        "multi-user",
+        "multimodal"
+      ],
+      "methods": [
+        "stateful-cache",
+        "tiered-cache",
+        "media-identity",
+        "approximation-gates",
+        "protocol-conformance"
+      ],
+      "scope": "Broad serving stack with architecture-specific cache topology, quantization and model handling.",
+      "limitations": "Vendor-specific weight/cache layouts and partial hybrid support must not be treated as portable across MLX backends.",
+      "evidence": [
+        {
+          "path": "README.md",
+          "sha256": "66504af3be1e259105b5aef6d85bb6fba4b4266f1dd54cf1e35feb0c8ebf481e",
+          "url": "https://github.com/jjang-ai/vmlx/blob/279c59c66dfb76b6d980e356e2c9563e34b26dde/README.md",
+          "review_scope": "readme-reviewed"
+        },
+        {
+          "path": "LICENSE",
+          "sha256": "47e3d4086335484a5c751fbfae668442c2a7ad9eb9f7454359805484b988e61d",
+          "url": "https://github.com/jjang-ai/vmlx/blob/279c59c66dfb76b6d980e356e2c9563e34b26dde/LICENSE",
+          "review_scope": "license-file-captured"
+        }
+      ],
+      "local_validation": "not-run"
+    },
+    {
+      "id": "vmlx-swift",
+      "name": "Osaurus vmlx-swift",
+      "repository": "osaurus-ai/vmlx-swift",
+      "revision": "2b05d39a6f43c1bc8789112fc92baa426d84c833",
+      "commit_date": "2026-10-05T04:40:52Z",
+      "category": "embedded-runtime",
+      "runtime": "Swift / MLX",
+      "license": "MIT",
+      "license_note": "Component/model licenses and notices remain separate; no upstream implementation is copied by this survey.",
+      "workloads": [
+        "interactive",
+        "multimodal"
+      ],
+      "methods": [
+        "stateful-cache",
+        "media-identity",
+        "packaged-runtime",
+        "protocol-conformance"
+      ],
+      "scope": "Swift runtime integration with explicit constructed model capabilities, batching and cache handling in the current source tree.",
+      "limitations": "README still describes an earlier facade stage while source contains runtime code; release/readiness and component licenses need explicit confirmation.",
+      "evidence": [
+        {
+          "path": "README.md",
+          "sha256": "9359c8056959280ac7498f70db40ac87268ecdedf5cdca3b8583f8088c52f40c",
+          "url": "https://github.com/osaurus-ai/vmlx-swift/blob/2b05d39a6f43c1bc8789112fc92baa426d84c833/README.md",
+          "review_scope": "readme-reviewed"
+        },
+        {
+          "path": "LICENSE",
+          "sha256": "44326a4ea062241ae6fc26ee2ec90bdc81af7eb7b9d3966181b733fa69d42057",
+          "url": "https://github.com/osaurus-ai/vmlx-swift/blob/2b05d39a6f43c1bc8789112fc92baa426d84c833/LICENSE",
+          "review_scope": "license-file-captured"
+        },
+        {
+          "path": "Libraries/MLXLMCommon/ModelRuntimeCapabilitySnapshot.swift",
+          "sha256": "02c8d5c52166d0aafd05d203cb83b5baf770369eb92ac690a8e7da24d638ffe3",
+          "url": "https://github.com/osaurus-ai/vmlx-swift/blob/2b05d39a6f43c1bc8789112fc92baa426d84c833/Libraries/MLXLMCommon/ModelRuntimeCapabilitySnapshot.swift",
+          "review_scope": "selected-source-sections"
+        }
+      ],
+      "local_validation": "not-run"
+    }
+  ],
+  "methods": [
+    {
+      "id": "phase-metrics",
+      "priority": "P0",
+      "lossiness": "none",
+      "bottleneck": "Misleading or incomparable performance reports",
+      "approach": "Separate process/load, request first-content latency, physical prefill, cached tokens, decode and end-to-end time; disclose observed model width.",
+      "correctness": "Monotonic parent timing; valid token accounting; no heartbeat counted as a token; preserve failure rows.",
+      "measure": "Cold/warm/partial-prefix runs, p50/p95 latency, aggregate throughput, RSS/Metal/cache/swap separately.",
+      "rollback": "Reject comparison or keep baseline when artifact, workload, precision, hardware or metric semantics differ.",
+      "source_ids": [
+        "mlx-vlm",
+        "dflash-mlx",
+        "mlx2",
+        "mtplx"
+      ]
+    },
+    {
+      "id": "memory-admission",
+      "priority": "P0",
+      "lossiness": "none",
+      "bottleneck": "Requests or model pools exceed usable memory",
+      "approach": "Reserve model plus projected KV/state/activation growth and system headroom before admission; bound queues and eviction.",
+      "correctness": "Mixed long/short overload, pinned-model constraints, cancellation releases leases, rejected requests produce explicit errors.",
+      "measure": "Peak and steady memory, queue time, admission failures, eviction stalls, tail latency.",
+      "rollback": "Reduce admission or unload safely; never silently reduce context or quantize weights.",
+      "source_ids": [
+        "omlx",
+        "splash",
+        "mlx2"
+      ]
+    },
+    {
+      "id": "packaged-runtime",
+      "priority": "P0",
+      "lossiness": "none",
+      "bottleneck": "Fragile interpreters and incompatible native kernels",
+      "approach": "Pin the entire executable/dependency/native-library environment and probe the actual compiled backend capabilities.",
+      "correctness": "Relocatable environment launch, correct ABI/library resolution, no ambient packages; first real workload inside the intended isolation.",
+      "measure": "Cold load, warm load, compiler/startup work, packaging size and selected/fallback kernel counters.",
+      "rollback": "Refuse unsupported ABI/device paths and keep a tested runtime; do not broaden sandbox permissions to hide failures.",
+      "source_ids": [
+        "mlx-engine",
+        "omlx",
+        "rmlx",
+        "vmlx-swift",
+        "mlx-serve"
+      ]
+    },
+    {
+      "id": "protocol-conformance",
+      "priority": "P0",
+      "lossiness": "none",
+      "bottleneck": "Compatible endpoints behave differently for real clients",
+      "approach": "Test exact tool/reasoning/template, usage, stop, cancellation and error semantics with versioned client transcripts.",
+      "correctness": "Malformed tools fail; unsupported controls fail explicitly; disconnect halts work; no hidden template/sampling change.",
+      "measure": "First-content latency, successful tool round trips, stream errors and cancellation cleanup.",
+      "rollback": "Fall back to a declared supported route or return an explicit unsupported error.",
+      "source_ids": [
+        "vllm-mlx",
+        "rapid-mlx",
+        "mlx2",
+        "mlx-serve",
+        "mtplx"
+      ]
+    },
+    {
+      "id": "stateful-cache",
+      "priority": "P1",
+      "lossiness": "none",
+      "bottleneck": "Repeated prompts recompute or state restore is unsafe",
+      "approach": "Use topology-specific immutable checkpoints, copy-on-write and leases; recurrent state cannot be reconstructed by slicing ordinary KV.",
+      "correctness": "Cold-vs-warm next-token/logit and multi-turn checks; exact prefix length; rollback; tenant and adapter/media identity mutation tests.",
+      "measure": "Exact and partial hit rates, restored versus computed tokens, clone bytes and restoration cost.",
+      "rollback": "Invalidate incompatible/corrupt state and recompute; never reuse partially qualified hybrid state.",
+      "source_ids": [
+        "mlx-lm",
+        "mlx-vlm",
+        "omlx",
+        "vmlx",
+        "rmlx",
+        "mlx2",
+        "dflash-mlx"
+      ]
+    },
+    {
+      "id": "chunked-prefill",
+      "priority": "P1",
+      "lossiness": "none",
+      "bottleneck": "A long prefill starves ongoing generations",
+      "approach": "Token-budget chunking interleaves prefill and decoding; continuous batching must expose actual compute widths and safe per-request state.",
+      "correctness": "Unequal lengths, left padding/masks, per-request sampler/stop, cancellation at chunk boundaries, no starvation.",
+      "measure": "Prefill versus decode latency, p95 inter-token time, observed width, queue depth and aggregate tokens.",
+      "rollback": "Reduce chunk/concurrency budget or revert to single-request execution when quality or tail latency regresses.",
+      "source_ids": [
+        "mlx-lm",
+        "mlx-vlm",
+        "vllm-mlx",
+        "omlx",
+        "vllm-metal"
+      ]
+    },
+    {
+      "id": "media-identity",
+      "priority": "P1",
+      "lossiness": "none",
+      "bottleneck": "Vision/audio processing is repeated or a text cache aliases media",
+      "approach": "Separate encoder-output and language-state caches; bind media content and processor/frame/audio settings to exact cache identity.",
+      "correctness": "Same text with changed image/audio/frame order must miss; processor/template/adapter/tenant changes invalidate.",
+      "measure": "Encoder latency, media bytes, prompt prefill, first-audio and first-text boundaries separately.",
+      "rollback": "Disable the media cache and re-encode when identity or restored-state qualification is missing.",
+      "source_ids": [
+        "mlx-vlm",
+        "mistral-rs",
+        "rmlx",
+        "vmlx-swift",
+        "mlx-audio"
+      ]
+    },
+    {
+      "id": "tiered-cache",
+      "priority": "P2",
+      "lossiness": "none",
+      "bottleneck": "Reusable prefix state exceeds the hot-cache budget",
+      "approach": "Bound hot RAM and cold SSD stores with explicit format/version, checksums, atomic writes and per-namespace limits.",
+      "correctness": "Interrupted write/restart, checksum failure, partial restore, lease/eviction races, no cross-tenant hits.",
+      "measure": "SSD reads/writes, restore latency, physical and apparent prefill rates, hot/cold hits and resident state.",
+      "rollback": "Evict or ignore bad snapshots and recompute; keep model-weight fit and SSD-cache capacity as separate budgets.",
+      "source_ids": [
+        "mlx-vlm",
+        "omlx",
+        "vllm-mlx",
+        "dflash-mlx"
+      ]
+    },
+    {
+      "id": "speculation",
+      "priority": "P2",
+      "lossiness": "conditional",
+      "bottleneck": "Serial target decoding is bandwidth/dispatch bound",
+      "approach": "Pair exact target/draft artifacts; optimize the verification shape, track acceptance and retain ordinary decode as a selectable baseline.",
+      "correctness": "Greedy and sampled paths separately; residual correction where sampling is claimed; rejected-token KV/GDN rollback; repeated seed/distribution checks.",
+      "measure": "Accepted tokens per verification, draft/verify/rollback time, depth, context and short-output break-even.",
+      "rollback": "Disable speculation when total useful progress is slower or any target-quality/state gate fails.",
+      "source_ids": [
+        "mtplx",
+        "dflash-mlx",
+        "splash",
+        "vllm-metal",
+        "mlx2"
+      ]
+    },
+    {
+      "id": "paged-kernels",
+      "priority": "P2",
+      "lossiness": "none",
+      "bottleneck": "Attention or small verification matmuls dominate the profile",
+      "approach": "Use variable-length paged attention and shape/device-specialized fused kernels behind explicit capability guards and a readable reference.",
+      "correctness": "Dtype/layout/mask/group-size/length boundary parity; packaged metallib/ABI checks; safe fallback for unsupported shapes.",
+      "measure": "Per-phase kernel/launch time, command-buffer/synchronization cost, prefill/decode/verify separately.",
+      "rollback": "Revert the exact kernel path on parity, unsupported hardware, allocation or tail-latency regression.",
+      "source_ids": [
+        "vllm-metal",
+        "splash",
+        "mlx-serve",
+        "mtplx",
+        "dflash-mlx"
+      ]
+    },
+    {
+      "id": "approximation-gates",
+      "priority": "P2",
+      "lossiness": "lossy",
+      "bottleneck": "Lower precision or less computation is presented as free speed",
+      "approach": "Treat KV/weight quantization, expert reduction, sparse prefill and context compaction as separate task-quality experiments.",
+      "correctness": "Full model/task metrics and long-context tests; distinguish packed resident storage from a codec with a full-precision shadow.",
+      "measure": "Actual resident bytes including shadows/scales, quality deltas and phase timing at the same output policy.",
+      "rollback": "Restore precision/expert count/context path if the predeclared task-quality threshold fails.",
+      "source_ids": [
+        "rmlx",
+        "vllm-mlx",
+        "vmlx",
+        "mlx-vlm",
+        "mistral-rs"
+      ]
+    },
+    {
+      "id": "expert-streaming",
+      "priority": "P3",
+      "lossiness": "none",
+      "bottleneck": "Sparse model weights exceed memory but few experts are active",
+      "approach": "Stream only required expert/table data, overlap bounded I/O, and preserve exact router selections.",
+      "correctness": "Match resident execution token/logit/router results; cold SSD stalls and disk failure must fail safely.",
+      "measure": "SSD bandwidth, page faults, cold/warm expert locality, resident buffers and sustained decode.",
+      "rollback": "Use a smaller model or resident path when I/O stalls or memory headroom fails; never claim streaming eliminates OOM risk.",
+      "source_ids": [
+        "flash-moe",
+        "mtplx"
+      ]
+    },
+    {
+      "id": "topology-routing",
+      "priority": "P3",
+      "lossiness": "none",
+      "bottleneck": "A model requires multiple Macs or heterogeneous memory",
+      "approach": "Choose tensor versus pipeline partitioning from measured compute/link budgets rather than aggregate RAM alone.",
+      "correctness": "Shard identity, full-model parity, rank failure/recovery and collective synchronization.",
+      "measure": "Per-rank time, link latency/bandwidth, serial and concurrent latency, total energy and cost.",
+      "rollback": "Return to a validated smaller topology or single-host model when communication dominates.",
+      "source_ids": [
+        "exo",
+        "omlx"
+      ]
+    },
+    {
+      "id": "audio-metrics",
+      "priority": "P1",
+      "lossiness": "none",
+      "bottleneck": "Text metrics hide unusable audio latency or quality",
+      "approach": "Treat speech as a pipeline: frontend, acoustic model, codec/vocoder, chunk flush and playback lead time.",
+      "correctness": "WER/CER where appropriate, speaker/prosody fidelity, continuity across chunks, cancellation and long-form drift.",
+      "measure": "First-audio latency; real-time factor defined as compute seconds divided by generated audio seconds; peak memory and underruns.",
+      "rollback": "Keep the prior audio pipeline if task or continuity gates regress even when text generation speeds improve.",
+      "source_ids": [
+        "mlx-audio",
+        "mlx-omni-server",
+        "vllm-mlx"
+      ]
+    }
+  ]
+}

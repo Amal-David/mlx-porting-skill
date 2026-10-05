@@ -390,3 +390,13 @@ Two GitHub Actions workflows automate release side effects on `main`:
 
 Both are side effects of an already-merged, already-validated change: they
 publish what the release checks above have proven and relax no gate.
+
+## Engine survey maintenance
+
+`mlx-model-porting/assets/inference_engines.json` owns the separately versioned
+engine/method inventory. Change exact pins and record what was actually read;
+source retrieval is not execution validation. Historical source/benchmark records
+remain immutable. Regenerate `INFERENCE_ENGINE_SURVEY.md` and `site/engines.html`
+with `python3 mlx-model-porting/scripts/inference_engine_advisor.py --generate`,
+check with `--check`, then regenerate `MANIFEST.json` last. The full unittest
+suite includes registry, shortlist, Doctor propagation and generated-drift gates.

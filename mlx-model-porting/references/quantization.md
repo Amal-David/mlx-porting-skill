@@ -112,3 +112,12 @@ the measured boundary in
 [`quantization-quality-gate.md`](quantization-quality-gate.md). Its output is a
 user diagnostic only and must not be ingested into the sealed claims or receipt
 pipeline.
+
+## Engine and cache format boundaries
+
+The [engine inventory](inference-engine-selection.md) includes MLX, GGUF,
+engine-specific layouts and mixed per-layer formats. Match effective weight and
+KV precision plus conversion lineage before attributing gains to an engine.
+Inspect actual allocated storage, including BF16 shadows, codebooks and scales;
+nominal KV bit width is not a resident-memory measurement. Reduced expert count
+and sparse prefill are separate approximate-computation changes, not quantization.
