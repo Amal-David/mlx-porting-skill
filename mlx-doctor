@@ -1,0 +1,9 @@
+#!/usr/bin/env python3
+"""Checkout launcher; installed skills use scripts/mlx_doctor.py directly."""
+from pathlib import Path
+import sys
+
+sys.path.insert(0, str(Path(__file__).resolve().parent / "mlx-model-porting" / "scripts"))
+from mlx_doctor import main
+
+raise SystemExit(main())
