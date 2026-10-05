@@ -101,3 +101,11 @@ Generic audio prefix caching is not proven by text/VLM prefix-cache results. Cac
 - batch size/concurrency, streaming interval, first chunk frames, codec context, cache state, and API surface;
 - boundary clicks, timestamp drift, and quality measured;
 - real-time claim includes audio I/O/preprocessing where applicable.
+
+## Serving-engine metrics
+
+Use the [engine survey](inference-engine-selection.md) for audio-specific gates.
+Separate first-audio delay, acoustic generation, codec/vocoder and playback lead.
+Define real-time factor as compute seconds / generated audio seconds; lower is
+better. Text decode rate cannot replace intelligibility, speaker/prosody fidelity,
+chunk-boundary continuity, cancellation cleanup or sustained underrun testing.

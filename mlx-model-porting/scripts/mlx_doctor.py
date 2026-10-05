@@ -17,6 +17,7 @@ from typing import Any
 
 from _common import SkillError, dump_json, load_structured, redact_secret_text, run_process_capture
 from scaffold_port import FAMILY_GENERATORS
+from inference_engine_advisor import WORKLOADS, load_registry, shortlist
 
 SCRIPT_DIR = Path(__file__).resolve().parent
 BACKENDS = {"mlx-lm": "mlx-lm", "mlx-vlm": "mlx-vlm", "mlx-audio": "mlx-audio", "standalone-mlx": None}
@@ -35,6 +36,8 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--kind", choices=("auto", "model", "project"), default="auto")
     parser.add_argument("--model", help="optional local checkpoint when inspecting a project")
     parser.add_argument("--backend", choices=tuple(BACKENDS), help="check metadata for this target backend")
+    parser.add_argument("--workload", choices=("interactive", "coding-agent", "multi-user", "multimodal", "audio", "embeddings", "distributed", "specialized"), help="attach an offline serving-engine research shortlist, not compatibility approval")
+    parser.add_argument("--include-comparators", action="store_true", help="include non-MLX and opaque research baselines in --workload output")
     parser.add_argument("--format", choices=("json", "markdown"), default="json")
     parser.add_argument("--output", help="create a new JSON report outside the inspected input")
     parser.add_argument("--markdown", help="create a new Markdown report outside the inspected input")
@@ -220,7 +223,8 @@ def diagnose(args: argparse.Namespace) -> dict[str, Any]:
         actions.append(action("choose-input", "Supply a local model or project to inspect.", validation="A model-specific report requires actual local artifacts."))
     blocked = bool(blockers) or (args.require_runtime and bool(runtime_blockers))
     status = "blocked" if blockers else ("runtime-prerequisites-missing" if runtime_blockers else ("host-metadata-only" if kind == "host" else "static-review-complete"))
-    return {"schema_version": SCHEMA_VERSION, "tool": "mlx-doctor", "inspection_mode": "offline-static-no-target-code", "status": status, "ok": not blocked, "input": {"kind": kind, "path": str(path) if path and args.include_local_paths else (path.name if path else None), "model": str(model) if model and args.include_local_paths else (model.name if model else None)}, "host": host, "architecture": {"families": families, "runbooks": runbooks, "target_hints": targets, "routing_decision": raw.get("routing_decision"), "scaffold": scaffold, "native_execution_verified": False}, "artifact_fingerprint": static_identity, "license": license_summary, "project_health": project_health, "memory": {"declared_tensor_storage_bytes": weight_bytes, "requested_budget_bytes": budget, "estimated_runtime_bytes": None, "fit_verified": False, "scope": "tensor-storage-only; excludes caches, activations, runtime and other processes"}, "selected_backend": backend, "blockers": list(dict.fromkeys(blockers)), "runtime_blockers": runtime_blockers, "warnings": warnings, "findings": findings, "next_actions": actions, "limitations": ["Recognition, installed packages and static proof-file names do not establish native execution, source parity or task quality.", "Doctor never imports or executes the target project or ML framework and never enables network intake.", "Scaffold family availability is separate from configuration acceptance, weight coverage and end-to-end conversion.", "No model-fit, throughput, quality or optimization claim is promoted by this diagnostic.", "Commands are suggestions, not executed actions. Placeholder arguments must be supplied when local paths are omitted."]}
+    serving = shortlist(load_registry(), args.workload, blockers=list(dict.fromkeys(blockers)), runtime_blockers=runtime_blockers, include_comparators=getattr(args, "include_comparators", False)) if getattr(args, "workload", None) else None
+    return {"serving_candidates": serving, "schema_version": SCHEMA_VERSION, "tool": "mlx-doctor", "inspection_mode": "offline-static-no-target-code", "status": status, "ok": not blocked, "input": {"kind": kind, "path": str(path) if path and args.include_local_paths else (path.name if path else None), "model": str(model) if model and args.include_local_paths else (model.name if model else None)}, "host": host, "architecture": {"families": families, "runbooks": runbooks, "target_hints": targets, "routing_decision": raw.get("routing_decision"), "scaffold": scaffold, "native_execution_verified": False}, "artifact_fingerprint": static_identity, "license": license_summary, "project_health": project_health, "memory": {"declared_tensor_storage_bytes": weight_bytes, "requested_budget_bytes": budget, "estimated_runtime_bytes": None, "fit_verified": False, "scope": "tensor-storage-only; excludes caches, activations, runtime and other processes"}, "selected_backend": backend, "blockers": list(dict.fromkeys(blockers)), "runtime_blockers": runtime_blockers, "warnings": warnings, "findings": findings, "next_actions": actions, "limitations": ["Recognition, installed packages and static proof-file names do not establish native execution, source parity or task quality.", "Doctor never imports or executes the target project or ML framework and never enables network intake.", "Scaffold family availability is separate from configuration acceptance, weight coverage and end-to-end conversion.", "No model-fit, throughput, quality or optimization claim is promoted by this diagnostic.", "Commands are suggestions, not executed actions. Placeholder arguments must be supplied when local paths are omitted."]}
 
 
 def make_markdown(report: dict[str, Any]) -> str:
@@ -233,6 +237,11 @@ def make_markdown(report: dict[str, Any]) -> str:
             lines.extend(["## " + title, ""])
             lines.extend("- " + cell(value) for value in values)
             lines.append("")
+    serving = report.get("serving_candidates")
+    if serving is not None:
+        lines.extend(["## Serving engine research shortlist", "", "Workload fit only, not model compatibility or execution approval. Alphabetical, not performance ranked. Use --include-comparators to include non-MLX and opaque comparison baselines.", ""])
+        for candidate in serving["candidates"]:
+            lines.extend(["### " + cell(candidate["name"]), "", cell(candidate["rationale"]), "", "Gate: " + cell(candidate["eligibility"]) + ". " + cell(candidate["limitations"]), ""])
     lines.extend(["## Next steps", ""])
     for step in report["next_actions"]:
         lines.extend(["### " + cell(step["title"]), ""])

@@ -21,6 +21,7 @@ INTENTIONAL_WRITE_ONLY_ARCHIVES: dict[str, str] = {}
 # Explicit reader declarations make reviews inspectable and catch new assets.
 # A declared reader must name the asset and contain a structured read path.
 ASSET_CONSUMERS: dict[str, tuple[str, ...]] = {
+    "inference_engines.json": ("inference_engine_advisor.py",),
     "WEIGHT_MAP.json": ("audit_skill.py",),
     "architectures.yaml": ("audit_skill.py",),
     "contributor-refresh.json": ("knowledge_curator.py",),

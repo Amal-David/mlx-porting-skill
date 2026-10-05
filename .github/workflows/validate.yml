@@ -59,6 +59,8 @@ jobs:
         run: python3 mlx-model-porting/scripts/generate_claim_catalog.py --check
       - name: Check evidence index drift
         run: python3 mlx-model-porting/scripts/generate_evidence_index.py --check
+      - name: Check inference engine survey and site drift
+        run: python3 mlx-model-porting/scripts/inference_engine_advisor.py --check
       - name: Check static site data drift
         run: python3 mlx-model-porting/scripts/generate_site_data.py --check
       - name: Validate the evidence graph
