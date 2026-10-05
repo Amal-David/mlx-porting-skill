@@ -1,0 +1,160 @@
+{
+  "edges": [],
+  "generated_at": "2026-07-23",
+  "graph_id": "mlx-porting-skill/migrated/hypotheses",
+  "nodes": [
+    {
+      "confidence": "low",
+      "evidence": [
+        "mlx-model-porting/assets/knowledge_graph.json (backlog:golden-scenarios-all-families)",
+        "mlx-model-porting/research-runs/2026-06-27-deep-research-loop/synthesis.json"
+      ],
+      "id": "hypothesis:golden-scenarios-all-families",
+      "kind": "hypothesis",
+      "observed_at": "2026-07-23",
+      "provenance": "research_inference",
+      "status": "validated",
+      "summary": "Golden scenarios now cover all 17 declared architecture families with reproducible synthetic fixtures. Validation gate: Keep `tests.test_scenarios` green at full family coverage: each declared family must route correctly, select the expected runbook, prove source weight keys, catch a seeded parity bug, and include or exclude one relevant optimization.",
+      "tags": [
+        "backlog",
+        "migrated-v1",
+        "priority/P0"
+      ],
+      "title": "golden scenarios all families"
+    },
+    {
+      "confidence": "low",
+      "evidence": [
+        "mlx-model-porting/assets/knowledge_graph.json (backlog:graph-geometric-scientific)",
+        "mlx-model-porting/research-runs/2026-06-27-live-multi-source-gap-run/synthesis.json"
+      ],
+      "id": "hypothesis:graph-geometric-scientific",
+      "kind": "hypothesis",
+      "observed_at": "2026-07-23",
+      "provenance": "research_inference",
+      "status": "needs-validation",
+      "summary": "Graph/geometric research now has first offline GCN-style message-passing routing coverage with a synthetic fixture and runbook. Point-cloud, neighbor/sampling, equivariant, protein, chemistry, and energy/force scientific ports remain validation backlog. Validation gate: Keep the GCN-style graph-message-passing scenario green, then add point-cloud neighbor/sampling fixtures and one equivariant or energy-force fixture. Gates must include scatter/segment/reduce parity, permutation invariance, rotation/reflection equivariance probes, neighbor-list/radius graph fixtures, ragged batching, sparse/dense aggregation comparisons, units/symmetry/energy-force constraints, and task metrics such as OGB accuracy/ROC-AUC, ModelNet/ShapeNet accuracy or mIoU, molecular MAE/RMSE, and energy/force errors.",
+      "tags": [
+        "backlog",
+        "migrated-v1",
+        "priority/P1"
+      ],
+      "title": "graph geometric scientific"
+    },
+    {
+      "confidence": "low",
+      "evidence": [
+        "mlx-model-porting/assets/knowledge_graph.json (backlog:multi-source-research-sampling)",
+        "mlx-model-porting/research-runs/2026-06-27-deep-research-loop/synthesis.json"
+      ],
+      "id": "hypothesis:multi-source-research-sampling",
+      "kind": "hypothesis",
+      "observed_at": "2026-07-23",
+      "provenance": "research_inference",
+      "status": "validated",
+      "summary": "The deep research loop now embeds explicit sample targets for official docs, papers, Hugging Face, package registries, technical blogs, community leads, repositories, and repo-local audits in every assignment, and reports planned non-GitHub coverage before findings return. Validation gate: Keep scaffold-only, offline-fixture, and local-executor research-loop tests green; planned sample targets must be reported separately from actual findings, stay review-only, and never auto-promote sources or execute remote model code.",
+      "tags": [
+        "backlog",
+        "migrated-v1",
+        "priority/P1"
+      ],
+      "title": "multi source research sampling"
+    },
+    {
+      "confidence": "low",
+      "evidence": [
+        "mlx-model-porting/assets/knowledge_graph.json (backlog:non-generative-cv)",
+        "mlx-model-porting/research-runs/2026-06-27-live-multi-source-gap-run/synthesis.json"
+      ],
+      "id": "hypothesis:non-generative-cv",
+      "kind": "hypothesis",
+      "observed_at": "2026-07-23",
+      "provenance": "research_inference",
+      "status": "needs-validation",
+      "summary": "Non-generative CV now has first offline backbone/classifier routing coverage with a synthetic ResNet-style fixture and runbook. Dense/promptable vision, OCR, depth, pose, feature extraction on real checkpoints, and detection-style postprocessing remain validation backlog. Validation gate: Keep the ResNet/CIFAR-style backbone/classifier scenario green, then add scoped fixtures before broader support claims: SAM-style prompt-to-mask, DINOv2 feature extraction, SegFormer semantic segmentation, Depth-Anything relative depth, and later DETR/Table Transformer boxes. Gates must include preprocessing parity, NCHW/NHWC conversion, logits/masks/boxes/depth/keypoint/string parity, coordinate and resize semantics, IoU/AP/Dice/AbsRel/RMSE/OKS/edit-distance/top-k metrics, and readable MLX or NumPy fallbacks for NMS, ROIAlign, and grid-sample-like paths.",
+      "tags": [
+        "backlog",
+        "migrated-v1",
+        "priority/P1"
+      ],
+      "title": "non generative cv"
+    },
+    {
+      "confidence": "low",
+      "evidence": [
+        "mlx-model-porting/assets/knowledge_graph.json (backlog:source-formats-beyond-pytorch-hf)",
+        "mlx-model-porting/research-runs/2026-06-27-deep-research-loop/synthesis.json"
+      ],
+      "id": "hypothesis:source-formats-beyond-pytorch-hf",
+      "kind": "hypothesis",
+      "observed_at": "2026-07-23",
+      "provenance": "research_inference",
+      "status": "needs-validation",
+      "summary": "Static intake now emits ONNX, GGUF, Flax/Orbax, TensorFlow SavedModel, Keras archive, Core ML package, and safetensors-checkpoint manifests, with conservative operator/layer coverage reports for ONNX, TensorFlow, and Keras plus deterministic weight-map shape coverage for ONNX initializers and GGUF tensor tables. Broader checkpoint-only repo fixtures remain. Validation gate: Static manifest extraction without import or execution: keep ONNX ModelProto/opset/initializer/external-data inspection, GGUF header/metadata/tensor table coverage, Flax/Orbax tree metadata, TensorFlow SavedModel and Keras archive signatures/config, Core ML package metadata, ONNX/TensorFlow/Keras static coverage reports, safetensors-only checkpoint holds, ONNX/GGUF source-format weight-map validation, and no silent fallback to manual routing green; add broader checkpoint-only repo fixtures.",
+      "tags": [
+        "backlog",
+        "migrated-v1",
+        "priority/P0"
+      ],
+      "title": "source formats beyond pytorch hf"
+    },
+    {
+      "confidence": "low",
+      "evidence": [
+        "mlx-model-porting/assets/knowledge_graph.json (backlog:structured-timeseries-recsys)",
+        "mlx-model-porting/research-runs/2026-06-27-live-multi-source-gap-run/synthesis.json"
+      ],
+      "id": "hypothesis:structured-timeseries-recsys",
+      "kind": "hypothesis",
+      "observed_at": "2026-07-23",
+      "provenance": "research_inference",
+      "status": "needs-validation",
+      "summary": "Structured/time-series research now has first offline forecasting routing coverage with a synthetic Time-Series-Transformer-style fixture and runbook. Tabular/skops, deep tabular, text ranking, and recommender subfamilies remain validation backlog. Validation gate: Keep the time-series forecasting scenario green, then create separate fixtures for tabular/skops or deep tabular, cross-encoder text ranking, and later recommender subfamilies. Gates must include scaler/normalizer parity, lag construction, observed-mask handling, context/prediction split, quantile or forecast-patch parity, known-future covariate leakage checks, categorical vocab and missing-value policy, jagged offsets/lengths and embedding pooling parity, pair-score parity, candidate-id versus score-based retrieval checks, NDCG/AUC/top-k/forecast-error task gates, loader family, remote-code risk, and rollback condition.",
+      "tags": [
+        "backlog",
+        "migrated-v1",
+        "priority/P1"
+      ],
+      "title": "structured timeseries recsys"
+    },
+    {
+      "confidence": "low",
+      "evidence": [
+        "mlx-model-porting/assets/knowledge_graph.json (backlog:top1000-contributor-long-tail-rescreening)",
+        "mlx-model-porting/research-runs/2026-06-27-top1000-contributor-loop/synthesis.json"
+      ],
+      "id": "hypothesis:top1000-contributor-long-tail-rescreening",
+      "kind": "hypothesis",
+      "observed_at": "2026-07-23",
+      "provenance": "research_inference",
+      "status": "needs-validation",
+      "summary": "The current MLX contributor refresh requested 1000 contributors, captured 263 linked contributors and 269 anon=true author buckets through 2026-07-20. Collection remains source-selection evidence only; repository/code-search rescreening and implementation review remain open. Validation gate: Refresh contributors with `scripts/collect_contributors.py`, following GitHub Link headers until no rel=\"next\" remains or the explicit cap is reached; record requested count, linked count, anon=true count without raw anonymous identities, status codes, ETags, Last-Modified headers, rate-limit state, repository/code search total_count and incomplete_results, replay missed queries, inspect newly matched repos by architecture/source-format family, and record each result as adopted, held, rejected, or backlog.",
+      "tags": [
+        "backlog",
+        "migrated-v1",
+        "priority/P1"
+      ],
+      "title": "top1000 contributor long tail rescreening"
+    },
+    {
+      "confidence": "low",
+      "evidence": [
+        "mlx-model-porting/assets/knowledge_graph.json (backlog:training-as-port-target)",
+        "mlx-model-porting/research-runs/2026-06-27-live-multi-source-gap-run/synthesis.json"
+      ],
+      "id": "hypothesis:training-as-port-target",
+      "kind": "hypothesis",
+      "observed_at": "2026-07-23",
+      "provenance": "research_inference",
+      "status": "needs-validation",
+      "summary": "Official MLX autograd, Module, optimizer, compile, memory, checkpoint, and LoRA references now define a concrete training-port contract, but no local training parity fixture has been run. Validation gate: Add a tiny training fixture before support claims: scalar loss parity, selected gradient parity, trainable/frozen parameter membership, tiny overfit, optimizer state round-trip, exact checkpoint resume with optimizer config, scheduler, random state, data cursor and accumulation remainder, deterministic seed replay, train/eval mode checks, adapter key/shape manifest, adapter merge/fuse parity, eager-vs-compiled state-capture parity, gradient-checkpoint on/off parity, active/cache/peak memory logs, and memory graph-retention checks.",
+      "tags": [
+        "backlog",
+        "migrated-v1",
+        "priority/P2"
+      ],
+      "title": "training as port target"
+    }
+  ],
+  "schema_version": 2
+}

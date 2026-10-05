@@ -1,0 +1,97 @@
+{
+  "edges": [
+    {
+      "confidence": "high",
+      "from": "model:qwen2.5-0.5b-instruct",
+      "rationale": "Routed to the dense-decoder-transformer family by the repository's own router.",
+      "relation": "exhibits",
+      "to": "trait:dense-decoder-transformer"
+    },
+    {
+      "confidence": "medium",
+      "from": "model:qwen3-0.6b",
+      "rationale": "Dense decoder family per the v1 architecture registry.",
+      "relation": "exhibits",
+      "to": "trait:dense-decoder-transformer"
+    },
+    {
+      "confidence": "medium",
+      "from": "model:qwen3-8b",
+      "rationale": "Dense decoder family per the v1 architecture registry.",
+      "relation": "exhibits",
+      "to": "trait:dense-decoder-transformer"
+    }
+  ],
+  "generated_at": "2026-08-17",
+  "graph_id": "mlx-porting-skill/models/mlx-ecosystem",
+  "nodes": [
+    {
+      "confidence": "high",
+      "evidence": [
+        "mlx-model-porting/examples/worked-port-qwen2.5-0.5b-instruct/",
+        "mlx-model-porting/assets/model_outcomes.json"
+      ],
+      "id": "model:qwen2.5-0.5b-instruct",
+      "identity": {
+        "family": "qwen2.5",
+        "parameters_b": 1
+      },
+      "kind": "model",
+      "observed_at": "2026-07-10",
+      "provenance": "code_verified",
+      "status": "ported",
+      "summary": "The repository's own smallest worked port, used as the local parity and benchmark keystone. Its receipts are the only locally measured effect in the migrated v1 corpus.",
+      "tags": [
+        "dense-decoder",
+        "qwen",
+        "worked-port"
+      ],
+      "title": "Qwen2.5-0.5B-Instruct"
+    },
+    {
+      "confidence": "medium",
+      "evidence": [
+        "mlx-model-porting/assets/model_outcomes.json"
+      ],
+      "id": "model:qwen3-0.6b",
+      "identity": {
+        "family": "qwen3",
+        "parameters_b": 1
+      },
+      "kind": "model",
+      "observed_at": "2026-07-10",
+      "provenance": "research_inference",
+      "status": "referenced",
+      "summary": "Referenced only as the smaller model in a third-party continuous-batching evaluation. No local port or receipt exists in this repository.",
+      "tags": [
+        "dense-decoder",
+        "qwen",
+        "source-reported"
+      ],
+      "title": "Qwen3-0.6B"
+    },
+    {
+      "confidence": "medium",
+      "evidence": [
+        "mlx-model-porting/assets/model_outcomes.json"
+      ],
+      "id": "model:qwen3-8b",
+      "identity": {
+        "family": "qwen3",
+        "parameters_b": 8
+      },
+      "kind": "model",
+      "observed_at": "2026-07-10",
+      "provenance": "research_inference",
+      "status": "referenced",
+      "summary": "Referenced only as the larger model in a third-party continuous-batching evaluation. No local port or receipt exists in this repository.",
+      "tags": [
+        "dense-decoder",
+        "qwen",
+        "source-reported"
+      ],
+      "title": "Qwen3-8B"
+    }
+  ],
+  "schema_version": 2
+}

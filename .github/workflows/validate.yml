@@ -61,6 +61,12 @@ jobs:
         run: python3 mlx-model-porting/scripts/generate_evidence_index.py --check
       - name: Check static site data drift
         run: python3 mlx-model-porting/scripts/generate_site_data.py --check
+      - name: Validate the evidence graph
+        run: python3 mlx-model-porting/graph/tools/validate_graph.py
+      - name: Check mechanism index drift
+        run: python3 mlx-model-porting/graph/tools/render_graph_summary.py --check
+      - name: Validate contributed evidence packs
+        run: python3 mlx-model-porting/graph/tools/validate_pack.py --all
       - name: Check static JavaScript syntax
         run: |
           node --check site/data.js

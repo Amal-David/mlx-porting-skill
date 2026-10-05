@@ -1,0 +1,131 @@
+{
+  "edges": [],
+  "generated_at": "2026-08-17",
+  "graph_id": "mlx-porting-skill/core/constraints",
+  "nodes": [
+    {
+      "confidence": "high",
+      "evidence": [
+        "qwen38 campaign promotion ledger, PROMOTION_LEDGER.md (E026)",
+        "qwen38 campaign goal note, GOAL.md"
+      ],
+      "id": "constraint:declared-artifact-digest-identity",
+      "kind": "constraint",
+      "observed_at": "2026-08-16",
+      "provenance": "official_verified",
+      "status": "active",
+      "summary": "When a candidate declares a remote weight artifact, the official runner resolves the declared revision and compares digests. In this campaign a candidate died at that step with no score and no performance conclusion because the manifest digest did not match the digest of the fetched pinned tree. Publish an immutable revision and recompute the digest from a clean download of that exact revision before submitting.",
+      "tags": [
+        "artifact",
+        "generalizable",
+        "identity",
+        "submission"
+      ],
+      "title": "A declared remote weight artifact must match a freshly downloaded digest"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/195",
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/204",
+        "qwen38 campaign promotion ledger, PROMOTION_LEDGER.md (E001)",
+        "qwen38 campaign findings note, FINDINGS.md"
+      ],
+      "id": "constraint:editable-surface-is-gate-zero",
+      "kind": "constraint",
+      "observed_at": "2026-08-16",
+      "provenance": "code_verified",
+      "status": "active",
+      "summary": "A benchmark harness that archives a candidate archives only the paths the benchmark manifest declares editable. A change that depends on any other file is invalid before compilation, correctness, or timing is even discussed. In this campaign several locally correct and locally faster candidates were unreproducible for exactly this reason, and several public submissions terminally failed unscored after the frontier moved under them. Enumerate every required path and audit it against the manifest before building a worktree.",
+      "tags": [
+        "gate-zero",
+        "generalizable",
+        "reproducibility",
+        "submission"
+      ],
+      "title": "Only harness-declared editable paths are archived"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://github.com/vladkens/macmon/issues/12",
+        "https://github.com/vladkens/macmon/issues/68",
+        "qwen38 campaign thermal recovery note, logs/subagents"
+      ],
+      "id": "constraint:no-trustworthy-local-thermal-source",
+      "kind": "constraint",
+      "observed_at": "2026-08-16",
+      "provenance": "code_verified",
+      "status": "active",
+      "summary": "On the campaign's Apple M4 Pro under macOS 26.3, macmon 0.7.2 emitted physically impossible readings (2.4 C) interleaved with real hot readings and then failed to create a fresh subscription. With no independent scalar source installed, local timing cannot be thermally calibrated, so the private helper fails closed at 999 C and every local measurement is directional only.",
+      "tags": [
+        "apple-silicon",
+        "fail-closed",
+        "measurement",
+        "thermal"
+      ],
+      "title": "This Apple Silicon host has no usable GPU temperature gate"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "qwen38 campaign promotion ledger, PROMOTION_LEDGER.md",
+        "qwen38 campaign goal note, GOAL.md",
+        "qwen38 campaign gate profile, gate-profile.json"
+      ],
+      "id": "constraint:official-evaluator-is-the-only-authority",
+      "kind": "constraint",
+      "observed_at": "2026-08-16",
+      "provenance": "code_verified",
+      "status": "active",
+      "summary": "No local result may promote a candidate. Promotion requires an official receipt bound to the identical candidate identity. This is not bureaucratic: the campaign repeatedly produced isolated local wins that reversed on the ranked run, because the ranked pool uses hidden prompts, a different host, and a median rather than a mean.",
+      "tags": [
+        "generalizable",
+        "measurement",
+        "promotion"
+      ],
+      "title": "Local timing is directional; only the official receipt promotes"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "qwen38 campaign config, campaign.json",
+        "qwen38 campaign findings note, FINDINGS.md"
+      ],
+      "id": "constraint:single-model-resident-measurement-lane",
+      "kind": "constraint",
+      "observed_at": "2026-08-16",
+      "provenance": "code_verified",
+      "status": "active",
+      "summary": "Setup, model runs, local iterate, and local submit contend for one GPU and must be serialized behind a lease. Static research, history analysis, candidate shaping, and model-free tests can run fully in parallel with a measurement in flight, which is why queue latency is exploitable research time rather than dead time.",
+      "tags": [
+        "concurrency",
+        "generalizable",
+        "measurement"
+      ],
+      "title": "Model-resident measurement is serial on one GPU"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge",
+        "qwen38 campaign exact-target constraint, research/hypergraph.json",
+        "qwen38 campaign findings note, FINDINGS.md"
+      ],
+      "id": "constraint:target-side-bit-exactness",
+      "kind": "constraint",
+      "observed_at": "2026-08-16",
+      "provenance": "code_verified",
+      "status": "active",
+      "summary": "In a target-verified speculative decoding system the verifier owns emitted tokens, so every target-side arithmetic change must reproduce identical logits, identical ordered top-two ids and values, identical tie-breaking, identical cache state, and identical rejection rollback. The proposal side has no such obligation: it may be requantized, reshaped, or replaced entirely, because a worse draft costs only acceptance rate. This asymmetry is the single most useful structural fact for anyone optimizing a speculative-decoding stack. It partitions the search space into a cheap high-degrees-of-freedom half and an expensive parity-proof half, and it explains why proposal-quality interventions in this campaign were legal but usually unprofitable while target-side kernel rewrites were the ones that had to survive an exactness proof.",
+      "tags": [
+        "exactness",
+        "generalizable",
+        "search-space",
+        "speculative-decoding"
+      ],
+      "title": "Target side must be bit-exact; the proposal side only moves acceptance"
+    }
+  ],
+  "schema_version": 2
+}
