@@ -1,0 +1,30 @@
+{
+  "contributor": "example-contributor",
+  "hardware": {
+    "chip": "Apple M3 Max",
+    "gpu_cores": 40,
+    "memory_gb": 64,
+    "node_id": "hardware:m3-max",
+    "os_build": "macOS 26.2",
+    "thermal_instrumented": false
+  },
+  "notes": "No output-quality gate was run, so the quality cost of the quantized KV cache is unmeasured. The A/B legs share one build and one prompt; only the cache dtype differs.",
+  "pack_version": 1,
+  "receipts": [
+    {
+      "path": "receipts/kvq8-vs-fp16.json",
+      "role": "paired-ab",
+      "sha256": "678697424075d197cefa9b4341841db84fe28d1bb95efe5deeff5c1bbcd71952"
+    }
+  ],
+  "runtime": {
+    "os": "macOS 26.2",
+    "packages": {
+      "mlx": "0.30.4",
+      "mlx-lm": "0.31.2",
+      "python": "3.12.7"
+    }
+  },
+  "submitted_at": "2026-08-14",
+  "summary": "Uniform 8-bit KV cache versus FP16 on a Qwen3-8B port, 8k prompt and 512 decode tokens, five alternating A/B pairs on an Apple M3 Max."
+}

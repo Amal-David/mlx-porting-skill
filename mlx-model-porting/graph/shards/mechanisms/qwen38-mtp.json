@@ -1,0 +1,1140 @@
+{
+  "edges": [
+    {
+      "confidence": "high",
+      "from": "mechanism:adaptive-round-cost-scheduler",
+      "rationale": "The mechanism's correctness or payoff argument depends on this trait.",
+      "relation": "applies_to",
+      "to": "trait:speculative-self-draft"
+    },
+    {
+      "confidence": "high",
+      "from": "mechanism:async-eval-ladder",
+      "rationale": "The mechanism's correctness or payoff argument depends on this trait.",
+      "relation": "applies_to",
+      "to": "trait:speculative-self-draft"
+    },
+    {
+      "confidence": "high",
+      "from": "mechanism:bf16-precision-island-draft-head",
+      "rationale": "The mechanism's correctness or payoff argument depends on this trait.",
+      "relation": "applies_to",
+      "to": "trait:affine-q4-group-64"
+    },
+    {
+      "confidence": "high",
+      "from": "mechanism:bf16-precision-island-draft-head",
+      "rationale": "The mechanism's correctness or payoff argument depends on this trait.",
+      "relation": "applies_to",
+      "to": "trait:native-mtp-head"
+    },
+    {
+      "confidence": "high",
+      "from": "mechanism:bf16-precision-island-draft-head",
+      "rationale": "The mechanism's correctness or payoff argument depends on this trait.",
+      "relation": "applies_to",
+      "to": "trait:speculative-self-draft"
+    },
+    {
+      "confidence": "high",
+      "from": "mechanism:compact-draft-vocabulary-selector",
+      "rationale": "The mechanism's correctness or payoff argument depends on this trait.",
+      "relation": "applies_to",
+      "to": "trait:shared-token-embeddings"
+    },
+    {
+      "confidence": "high",
+      "from": "mechanism:compact-draft-vocabulary-selector",
+      "rationale": "The mechanism's correctness or payoff argument depends on this trait.",
+      "relation": "applies_to",
+      "to": "trait:speculative-self-draft"
+    },
+    {
+      "confidence": "high",
+      "from": "mechanism:compiled-mtp-fusion-front",
+      "rationale": "The mechanism's correctness or payoff argument depends on this trait.",
+      "relation": "applies_to",
+      "to": "trait:native-mtp-head"
+    },
+    {
+      "confidence": "high",
+      "from": "mechanism:compiled-mtp-fusion-front",
+      "rationale": "The mechanism's correctness or payoff argument depends on this trait.",
+      "relation": "applies_to",
+      "to": "trait:shared-token-embeddings"
+    },
+    {
+      "confidence": "high",
+      "from": "mechanism:compiled-proposal-head-history",
+      "rationale": "The mechanism's correctness or payoff argument depends on this trait.",
+      "relation": "applies_to",
+      "to": "trait:native-mtp-head"
+    },
+    {
+      "confidence": "high",
+      "from": "mechanism:compiled-swiglu",
+      "rationale": "The mechanism's correctness or payoff argument depends on this trait.",
+      "relation": "applies_to",
+      "to": "trait:affine-q4-group-64"
+    },
+    {
+      "confidence": "high",
+      "from": "mechanism:declared-quantized-draft-head",
+      "rationale": "The mechanism's correctness or payoff argument depends on this trait.",
+      "relation": "applies_to",
+      "to": "trait:affine-q4-group-64"
+    },
+    {
+      "confidence": "high",
+      "from": "mechanism:declared-quantized-draft-head",
+      "rationale": "The mechanism's correctness or payoff argument depends on this trait.",
+      "relation": "applies_to",
+      "to": "trait:native-mtp-head"
+    },
+    {
+      "confidence": "high",
+      "from": "mechanism:dv64-gdn-recurrence",
+      "rationale": "The mechanism's correctness or payoff argument depends on this trait.",
+      "relation": "applies_to",
+      "to": "trait:fp32-recurrent-state"
+    },
+    {
+      "confidence": "high",
+      "from": "mechanism:dv64-gdn-recurrence",
+      "rationale": "The mechanism's correctness or payoff argument depends on this trait.",
+      "relation": "applies_to",
+      "to": "trait:gated-delta-net"
+    },
+    {
+      "confidence": "high",
+      "from": "mechanism:entropy-coded-weight-stream",
+      "rationale": "The mechanism's correctness or payoff argument depends on this trait.",
+      "relation": "applies_to",
+      "to": "trait:affine-q4-group-64"
+    },
+    {
+      "confidence": "high",
+      "from": "mechanism:exact-hierarchical-top-two",
+      "rationale": "The mechanism's correctness or payoff argument depends on this trait.",
+      "relation": "applies_to",
+      "to": "trait:speculative-self-draft"
+    },
+    {
+      "confidence": "high",
+      "from": "mechanism:fused-qkv-projection",
+      "rationale": "The mechanism's correctness or payoff argument depends on this trait.",
+      "relation": "applies_to",
+      "to": "trait:affine-q4-group-64"
+    },
+    {
+      "confidence": "high",
+      "from": "mechanism:fused-target-lmhead-top-two",
+      "rationale": "The mechanism's correctness or payoff argument depends on this trait.",
+      "relation": "applies_to",
+      "to": "trait:affine-q4-group-64"
+    },
+    {
+      "confidence": "high",
+      "from": "mechanism:grouped-hv-wide-gdn-recurrence",
+      "rationale": "The mechanism's correctness or payoff argument depends on this trait.",
+      "relation": "applies_to",
+      "to": "trait:fp32-recurrent-state"
+    },
+    {
+      "confidence": "high",
+      "from": "mechanism:grouped-hv-wide-gdn-recurrence",
+      "rationale": "The mechanism's correctness or payoff argument depends on this trait.",
+      "relation": "applies_to",
+      "to": "trait:gated-delta-net"
+    },
+    {
+      "confidence": "high",
+      "from": "mechanism:grouped-sdpa-kv-reuse",
+      "rationale": "The mechanism's correctness or payoff argument depends on this trait.",
+      "relation": "applies_to",
+      "to": "trait:hybrid-attention"
+    },
+    {
+      "confidence": "high",
+      "from": "mechanism:head-step-cost-retune",
+      "rationale": "The mechanism's correctness or payoff argument depends on this trait.",
+      "relation": "applies_to",
+      "to": "trait:speculative-self-draft"
+    },
+    {
+      "confidence": "high",
+      "from": "mechanism:lazy-replay-convolution-boundary",
+      "rationale": "The mechanism's correctness or payoff argument depends on this trait.",
+      "relation": "applies_to",
+      "to": "trait:gated-delta-net"
+    },
+    {
+      "confidence": "high",
+      "from": "mechanism:lazy-verification",
+      "rationale": "The mechanism's correctness or payoff argument depends on this trait.",
+      "relation": "applies_to",
+      "to": "trait:speculative-self-draft"
+    },
+    {
+      "confidence": "high",
+      "from": "mechanism:mixed-precision-draft-head-layout",
+      "rationale": "The mechanism's correctness or payoff argument depends on this trait.",
+      "relation": "applies_to",
+      "to": "trait:affine-q4-group-64"
+    },
+    {
+      "confidence": "high",
+      "from": "mechanism:mixed-precision-draft-head-layout",
+      "rationale": "The mechanism's correctness or payoff argument depends on this trait.",
+      "relation": "applies_to",
+      "to": "trait:native-mtp-head"
+    },
+    {
+      "confidence": "high",
+      "from": "mechanism:one-launch-packed-gdn-prework",
+      "rationale": "The mechanism's correctness or payoff argument depends on this trait.",
+      "relation": "applies_to",
+      "to": "trait:fp32-recurrent-state"
+    },
+    {
+      "confidence": "high",
+      "from": "mechanism:one-launch-packed-gdn-prework",
+      "rationale": "The mechanism's correctness or payoff argument depends on this trait.",
+      "relation": "applies_to",
+      "to": "trait:gated-delta-net"
+    },
+    {
+      "confidence": "high",
+      "from": "mechanism:packed-gdn-beta-fold",
+      "rationale": "The mechanism's correctness or payoff argument depends on this trait.",
+      "relation": "applies_to",
+      "to": "trait:fp32-recurrent-state"
+    },
+    {
+      "confidence": "high",
+      "from": "mechanism:packed-gdn-beta-fold",
+      "rationale": "The mechanism's correctness or payoff argument depends on this trait.",
+      "relation": "applies_to",
+      "to": "trait:gated-delta-net"
+    },
+    {
+      "confidence": "high",
+      "from": "mechanism:paired-qmv",
+      "rationale": "The mechanism's correctness or payoff argument depends on this trait.",
+      "relation": "applies_to",
+      "to": "trait:affine-q4-group-64"
+    },
+    {
+      "confidence": "high",
+      "from": "mechanism:prefix-replay-rollback",
+      "rationale": "The mechanism's correctness or payoff argument depends on this trait.",
+      "relation": "applies_to",
+      "to": "trait:gated-delta-net"
+    },
+    {
+      "confidence": "high",
+      "from": "mechanism:prefix-replay-rollback",
+      "rationale": "The mechanism's correctness or payoff argument depends on this trait.",
+      "relation": "applies_to",
+      "to": "trait:hybrid-attention"
+    },
+    {
+      "confidence": "high",
+      "from": "mechanism:proposal-head-cache-preallocation",
+      "rationale": "The mechanism's correctness or payoff argument depends on this trait.",
+      "relation": "applies_to",
+      "to": "trait:native-mtp-head"
+    },
+    {
+      "confidence": "high",
+      "from": "mechanism:qk-shape-gate",
+      "rationale": "The mechanism's correctness or payoff argument depends on this trait.",
+      "relation": "applies_to",
+      "to": "trait:hybrid-attention"
+    },
+    {
+      "confidence": "high",
+      "from": "mechanism:qmv-row-regrouping",
+      "rationale": "The mechanism's correctness or payoff argument depends on this trait.",
+      "relation": "applies_to",
+      "to": "trait:affine-q4-group-64"
+    },
+    {
+      "confidence": "high",
+      "from": "mechanism:recurrent-replay-prefetch",
+      "rationale": "The mechanism's correctness or payoff argument depends on this trait.",
+      "relation": "applies_to",
+      "to": "trait:gated-delta-net"
+    },
+    {
+      "confidence": "high",
+      "from": "mechanism:recurrent-replay-prefetch",
+      "rationale": "The mechanism's correctness or payoff argument depends on this trait.",
+      "relation": "applies_to",
+      "to": "trait:hybrid-attention"
+    },
+    {
+      "confidence": "high",
+      "from": "mechanism:semantic-mtp-width-repair",
+      "rationale": "The mechanism's correctness or payoff argument depends on this trait.",
+      "relation": "applies_to",
+      "to": "trait:affine-q4-group-64"
+    },
+    {
+      "confidence": "high",
+      "from": "mechanism:token-conditioned-lowrank-draft-adapter",
+      "rationale": "The mechanism's correctness or payoff argument depends on this trait.",
+      "relation": "applies_to",
+      "to": "trait:native-mtp-head"
+    },
+    {
+      "confidence": "high",
+      "from": "mechanism:token-conditioned-lowrank-draft-adapter",
+      "rationale": "The mechanism's correctness or payoff argument depends on this trait.",
+      "relation": "applies_to",
+      "to": "trait:speculative-self-draft"
+    },
+    {
+      "confidence": "high",
+      "from": "mechanism:top-two-confidence-margin-cap",
+      "rationale": "The mechanism's correctness or payoff argument depends on this trait.",
+      "relation": "applies_to",
+      "to": "trait:speculative-self-draft"
+    },
+    {
+      "confidence": "high",
+      "from": "mechanism:two-bit-compact-draft-readout",
+      "rationale": "The mechanism's correctness or payoff argument depends on this trait.",
+      "relation": "applies_to",
+      "to": "trait:native-mtp-head"
+    },
+    {
+      "confidence": "high",
+      "from": "mechanism:two-bit-compact-draft-readout",
+      "rationale": "The mechanism's correctness or payoff argument depends on this trait.",
+      "relation": "applies_to",
+      "to": "trait:speculative-self-draft"
+    },
+    {
+      "confidence": "high",
+      "from": "mechanism:weight-error-minimised-draft-head",
+      "rationale": "The mechanism's correctness or payoff argument depends on this trait.",
+      "relation": "applies_to",
+      "to": "trait:affine-q4-group-64"
+    },
+    {
+      "confidence": "high",
+      "from": "mechanism:weight-error-minimised-draft-head",
+      "rationale": "The mechanism's correctness or payoff argument depends on this trait.",
+      "relation": "applies_to",
+      "to": "trait:native-mtp-head"
+    },
+    {
+      "confidence": "high",
+      "from": "mechanism:wide-qmv-threshold-retune",
+      "rationale": "The mechanism's correctness or payoff argument depends on this trait.",
+      "relation": "applies_to",
+      "to": "trait:affine-q4-group-64"
+    }
+  ],
+  "generated_at": "2026-08-17",
+  "graph_id": "mlx-porting-skill/mechanisms/qwen38-mtp",
+  "nodes": [
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/163",
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/182",
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/193",
+        "qwen38 campaign promotion ledger, PROMOTION_LEDGER.md",
+        "https://arxiv.org/abs/2408.11850"
+      ],
+      "exactness_class": "approximate_legal",
+      "id": "mechanism:adaptive-round-cost-scheduler",
+      "kind": "mechanism",
+      "observed_at": "2026-08-16",
+      "provenance": "official_verified",
+      "status": "promoted",
+      "summary": "Price each speculative round using an EMA of recent acceptance, a head-step cost ratio, and a full-accept streak gate, then choose draft depth to maximize expected committed tokens per unit cycle time. Every attempt in this campaign to retune its scalars measured negative.",
+      "tags": [
+        "cost-model",
+        "promoted-stack",
+        "qwen-mtp-campaign",
+        "saturated",
+        "scheduler"
+      ],
+      "title": "Adaptive round-cost draft scheduler"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/211",
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/222",
+        "qwen38 campaign promotion ledger, PROMOTION_LEDGER.md",
+        "https://ml-explore.github.io/mlx/build/html/usage/lazy_evaluation.html"
+      ],
+      "exactness_class": "exact_by_construction",
+      "id": "mechanism:async-eval-ladder",
+      "kind": "mechanism",
+      "observed_at": "2026-08-16",
+      "provenance": "official_verified",
+      "status": "promoted",
+      "summary": "Submit work asynchronously in graded rungs across verification widths so the GPU is not idle between dependent stages. Scheduling only: no arithmetic changes. Both densifying and removing rungs measured negative, so the promoted rung set is a local optimum rather than a monotone knob.",
+      "tags": [
+        "async",
+        "local-optimum",
+        "promoted-stack",
+        "qwen-mtp-campaign",
+        "scheduler"
+      ],
+      "title": "Asynchronous evaluation ladder"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "qwen38 campaign promotion ledger, PROMOTION_LEDGER.md (E027)",
+        "qwen38 campaign goal note, GOAL.md"
+      ],
+      "exactness_class": "approximate_legal",
+      "id": "mechanism:bf16-precision-island-draft-head",
+      "kind": "mechanism",
+      "observed_at": "2026-08-16",
+      "provenance": "official_verified",
+      "status": "promoted",
+      "summary": "Preserve every tensor of an incumbent Q4/group-64 draft head byte for byte and add a small number of bare BF16 proposal-only tensors covering the highest-error Q, K, and V rows. K and V are fully corrected while only the worst Q rows are, recovering about 29 percent of the incumbent Q reconstruction error at a bounded size cost. The target verifier, emitted-token authority, rollback, and serial leg are untouched. This is the largest clean positive in the campaign and it is a proposal-quality intervention, not a kernel one.",
+      "tags": [
+        "mixed-precision",
+        "promoted-stack",
+        "proposal-head",
+        "qwen-mtp-campaign"
+      ],
+      "title": "BF16 precision islands in a Q4 draft head"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge",
+        "qwen38 campaign promotion ledger, PROMOTION_LEDGER.md",
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/215"
+      ],
+      "exactness_class": "approximate_legal",
+      "id": "mechanism:compact-draft-vocabulary-selector",
+      "kind": "mechanism",
+      "observed_at": "2026-08-16",
+      "provenance": "official_verified",
+      "status": "promoted",
+      "summary": "Restrict the proposal head's readout to a compact declared vocabulary subset and select over it. Proposal-side only, so it cannot change emitted tokens; it can only change acceptance rate and proposal cost.",
+      "tags": [
+        "promoted-stack",
+        "proposal-head",
+        "qwen-mtp-campaign",
+        "readout"
+      ],
+      "title": "Compact proposal vocabulary selector"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/197",
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/217",
+        "qwen38 campaign findings note, FINDINGS.md (F-011)"
+      ],
+      "exactness_class": "needs_parity_proof",
+      "id": "mechanism:compiled-mtp-fusion-front",
+      "kind": "mechanism",
+      "observed_at": "2026-08-16",
+      "provenance": "official_verified",
+      "status": "retired",
+      "summary": "Compile the proposal head's pre-FC sequence (embedding RMSNorm, hidden RMSNorm, concatenate, quantized fc) into one region. Passed exact parity and regressed four percent; the adjacent history-only variant also regressed. Two independent negatives.",
+      "tags": [
+        "compile",
+        "proposal-head",
+        "qwen-mtp-campaign",
+        "retired-negative"
+      ],
+      "title": "Compiled MTP fusion front"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/209",
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/218",
+        "qwen38 campaign findings note, FINDINGS.md (F-011)"
+      ],
+      "exactness_class": "needs_parity_proof",
+      "id": "mechanism:compiled-proposal-head-history",
+      "kind": "mechanism",
+      "observed_at": "2026-08-16",
+      "provenance": "official_verified",
+      "status": "retired",
+      "summary": "Compile the proposal head's K-RMS normalization and the K/V transpose/append layout for the history path. Passed parity and regressed; reopened on a newer base without a better result.",
+      "tags": [
+        "cache",
+        "compile",
+        "proposal-head",
+        "qwen-mtp-campaign",
+        "retired-negative"
+      ],
+      "title": "Compiled proposal-head K/V history layout"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/210",
+        "qwen38 campaign promotion ledger, PROMOTION_LEDGER.md",
+        "https://ml-explore.github.io/mlx/build/html/usage/compile.html"
+      ],
+      "exactness_class": "needs_parity_proof",
+      "id": "mechanism:compiled-swiglu",
+      "kind": "mechanism",
+      "observed_at": "2026-08-16",
+      "provenance": "official_verified",
+      "status": "promoted",
+      "summary": "Compile the SiLU-gate times up-projection pass for small verification widths into one stable-shape region. Compilation is only safe where shapes are stable and state stays explicit.",
+      "tags": [
+        "compile",
+        "mlp",
+        "promoted-stack",
+        "qwen-mtp-campaign"
+      ],
+      "title": "Compiled short-width SwiGLU"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "qwen38 campaign promotion ledger, PROMOTION_LEDGER.md (E026, E027)",
+        "qwen38 campaign goal note, GOAL.md"
+      ],
+      "exactness_class": "approximate_legal",
+      "id": "mechanism:declared-quantized-draft-head",
+      "kind": "mechanism",
+      "observed_at": "2026-08-16",
+      "provenance": "official_verified",
+      "status": "promoted",
+      "summary": "Declare an externally published quantized MTP head artifact instead of deriving the draft weights from the base checkpoint. Proposal-side only and therefore legal, but the runner resolves and digest-checks the declared artifact, which becomes a new failure mode.",
+      "tags": [
+        "artifact",
+        "promoted-stack",
+        "proposal-head",
+        "qwen-mtp-campaign"
+      ],
+      "title": "Declared external quantized draft head"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "qwen38 campaign promotion ledger, PROMOTION_LEDGER.md (E024)"
+      ],
+      "exactness_class": "needs_parity_proof",
+      "id": "mechanism:dv64-gdn-recurrence",
+      "kind": "mechanism",
+      "observed_at": "2026-08-16",
+      "provenance": "official_verified",
+      "status": "retired",
+      "summary": "Retile the gated-delta recurrence at value dimension 64 for two specific widths. Locally the isolated recurrence ratios improved; on the ranked run the whole-run effect vanished into rerun spread. A clean example of an isolated kernel win that does not transfer.",
+      "tags": [
+        "gated-delta",
+        "metal",
+        "no-transfer",
+        "qwen-mtp-campaign",
+        "retired-negative"
+      ],
+      "title": "Dv64 tiled GDN recurrence"
+    },
+    {
+      "confidence": "low",
+      "evidence": [
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/204",
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/220"
+      ],
+      "exactness_class": "exact_by_construction",
+      "id": "mechanism:entropy-coded-weight-stream",
+      "kind": "mechanism",
+      "observed_at": "2026-08-16",
+      "provenance": "code_verified",
+      "status": "unresolved",
+      "summary": "Store affine-4 weights under a custom entropy code (nibble-pair or Huffman) and decode inside the quantized matvec, trading decode/LUT/cursor work for stored-byte traffic. Attempted twice publicly. One attempt failed the editable-surface gate unscored and the other was still queued at the last observation, so this family has NO official performance evidence in either direction despite being an obvious idea in a weight-stream-bound regime.",
+      "tags": [
+        "compression",
+        "high-complexity",
+        "metal",
+        "qmv",
+        "qwen-mtp-campaign",
+        "unmeasured"
+      ],
+      "title": "Lossless entropy-coded weight stream"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/237",
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/249",
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/290",
+        "qwen38 campaign promotion ledger, PROMOTION_LEDGER.md (PR237, PR290)"
+      ],
+      "exactness_class": "exact_by_construction",
+      "id": "mechanism:eval-root-trim",
+      "kind": "mechanism",
+      "observed_at": "2026-08-16",
+      "provenance": "official_verified",
+      "status": "retired",
+      "summary": "Remove cache-state tensors from the blocking evaluation root list so the graph flush waits on fewer outputs. Exact and one line; measured negative on two different bases.",
+      "tags": [
+        "eval-boundary",
+        "graph",
+        "qwen-mtp-campaign",
+        "retired-negative"
+      ],
+      "title": "Evaluation-root trimming"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge",
+        "qwen38 campaign promotion ledger, PROMOTION_LEDGER.md",
+        "qwen38 campaign hypothesis backlog, HYPOTHESES.md"
+      ],
+      "exactness_class": "exact_by_construction",
+      "id": "mechanism:exact-hierarchical-top-two",
+      "kind": "mechanism",
+      "observed_at": "2026-08-16",
+      "provenance": "official_verified",
+      "status": "promoted",
+      "summary": "Two-stage reduction that produces the ordered top-two token ids and values with the same total order and lower-id tie-breaking as the reference scan, so the emitted-token ledger is unchanged.",
+      "tags": [
+        "exactness",
+        "promoted-stack",
+        "qwen-mtp-campaign",
+        "readout"
+      ],
+      "title": "Exact hierarchical top-two reduction"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge",
+        "qwen38 campaign promotion ledger, PROMOTION_LEDGER.md"
+      ],
+      "exactness_class": "exact_by_construction",
+      "id": "mechanism:fused-qkv-projection",
+      "kind": "mechanism",
+      "observed_at": "2026-08-16",
+      "provenance": "official_verified",
+      "status": "promoted",
+      "summary": "Concatenate the Q, K, and V projections into one quantized matmul so a decode or verify step issues one wide launch instead of three narrow ones. Exact by construction because the per-output accumulation order is unchanged.",
+      "tags": [
+        "attention",
+        "kernel-fusion",
+        "promoted-stack",
+        "qwen-mtp-campaign"
+      ],
+      "title": "Fused Q/K/V projection"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "qwen38 campaign hypothesis backlog, HYPOTHESES.md (H-002)",
+        "qwen38 campaign promotion ledger, PROMOTION_LEDGER.md (E002, PR295)",
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/29",
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/37"
+      ],
+      "exactness_class": "needs_parity_proof",
+      "id": "mechanism:fused-target-lmhead-top-two",
+      "kind": "mechanism",
+      "observed_at": "2026-08-16",
+      "provenance": "code_verified",
+      "status": "rejected-before-implementation",
+      "summary": "Fuse the target's quantized vocabulary projection with the top-two reduction so the full logits tensor is never materialized. Rejected on arithmetic grounds before any implementation: the projection streams roughly 682 MiB of weights per row while the logits tensor it would eliminate is roughly 0.47 MiB. A later public attempt at the same fusion was repaired to exactness and was still 1.9x to 2.5x slower than the existing chain.",
+      "tags": [
+        "kernel-fusion",
+        "lm-head",
+        "qwen-mtp-campaign",
+        "readout",
+        "rejected"
+      ],
+      "title": "Fused target LM head and top-two reduction"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "qwen38 campaign promotion ledger, PROMOTION_LEDGER.md (E018)",
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/263"
+      ],
+      "exactness_class": "needs_parity_proof",
+      "id": "mechanism:grouped-hv-wide-gdn-recurrence",
+      "kind": "mechanism",
+      "observed_at": "2026-08-16",
+      "provenance": "official_verified",
+      "status": "retired",
+      "summary": "Group the value-head dimension in the wide gated-delta recurrence so several heads share one pass. Parity-clean and measured negative; a later Dv64 variant of the same idea also measured negative.",
+      "tags": [
+        "gated-delta",
+        "metal",
+        "qwen-mtp-campaign",
+        "retired-negative"
+      ],
+      "title": "Grouped-Hv wide GDN recurrence"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/239",
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/198",
+        "qwen38 campaign promotion ledger, PROMOTION_LEDGER.md (E015, E016)"
+      ],
+      "exactness_class": "needs_parity_proof",
+      "id": "mechanism:grouped-sdpa-kv-reuse",
+      "kind": "mechanism",
+      "observed_at": "2026-08-16",
+      "provenance": "official_verified",
+      "status": "retired",
+      "summary": "Group query heads that share a KV head so multi-row verification attention reads each K/V stream once instead of once per query head. Serial single-row attention stays on the stock path. Terminally negative on the ranked path at two group widths.",
+      "tags": [
+        "attention",
+        "metal",
+        "qwen-mtp-campaign",
+        "retired-negative"
+      ],
+      "title": "Grouped SDPA with shared K/V reads"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/146",
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/149",
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/235",
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/391",
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/392",
+        "qwen38 campaign findings note, FINDINGS.md (F-014)"
+      ],
+      "exactness_class": "approximate_legal",
+      "id": "mechanism:head-step-cost-retune",
+      "kind": "mechanism",
+      "observed_at": "2026-08-16",
+      "provenance": "official_verified",
+      "status": "retired",
+      "summary": "Change the scalar or per-row vector that prices one proposal-head step against one verification step in the round-cost scheduler. Officially measured at 0.14, 0.18, and 0.24 against a promoted 0.20, and later as a per-row vector on a much newer base. Every measurement on both sides of the incumbent was negative, twice reproduced. This is the most thoroughly disproven family in the campaign.",
+      "tags": [
+        "cost-model",
+        "qwen-mtp-campaign",
+        "retired-negative",
+        "saturated",
+        "scheduler"
+      ],
+      "title": "Draft head-step cost retune"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/393",
+        "qwen38 campaign promotion ledger, PROMOTION_LEDGER.md (PR393)"
+      ],
+      "exactness_class": "exact_by_construction",
+      "id": "mechanism:lazy-replay-convolution-boundary",
+      "kind": "mechanism",
+      "observed_at": "2026-08-16",
+      "provenance": "official_verified",
+      "status": "retired",
+      "summary": "Remove the wide convolution carrier from the successful-verification replay tape so the tape is materialized lazily. Exact and less work; measured negative.",
+      "tags": [
+        "gated-delta",
+        "qwen-mtp-campaign",
+        "retired-negative",
+        "rollback"
+      ],
+      "title": "Lazy replay-convolution boundary"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge",
+        "qwen38 campaign promotion ledger, PROMOTION_LEDGER.md"
+      ],
+      "exactness_class": "exact_by_construction",
+      "id": "mechanism:lazy-verification",
+      "kind": "mechanism",
+      "observed_at": "2026-08-16",
+      "provenance": "official_verified",
+      "status": "promoted",
+      "summary": "Defer materializing verification work until the scheduler knows the accepted prefix length, avoiding evaluation of rows that a rejection will discard.",
+      "tags": [
+        "laziness",
+        "promoted-stack",
+        "qwen-mtp-campaign",
+        "scheduler"
+      ],
+      "title": "Lazy target verification"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/360",
+        "qwen38 campaign promotion ledger, PROMOTION_LEDGER.md (PR360)"
+      ],
+      "exactness_class": "approximate_legal",
+      "id": "mechanism:mixed-precision-draft-head-layout",
+      "kind": "mechanism",
+      "observed_at": "2026-08-16",
+      "provenance": "official_verified",
+      "status": "retired",
+      "summary": "Promote the draft head's fc projection to BF16 while leaving the rest quantized. Proposal quality improved but did not repay its runtime cost. Contrast with narrow precision islands, which did.",
+      "tags": [
+        "mixed-precision",
+        "proposal-head",
+        "qwen-mtp-campaign",
+        "retired-negative"
+      ],
+      "title": "Mixed-precision draft head layout"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/194",
+        "qwen38 campaign promotion ledger, PROMOTION_LEDGER.md"
+      ],
+      "exactness_class": "needs_parity_proof",
+      "id": "mechanism:one-launch-packed-gdn-prework",
+      "kind": "mechanism",
+      "observed_at": "2026-08-16",
+      "provenance": "official_verified",
+      "status": "promoted",
+      "summary": "Replace the multi-launch gated-delta prework chain for verify widths three through nine with one packed Metal launch, keeping the graph sigmoid for beta so the FP32 recurrent boundary is preserved. Needs a parity proof because the recurrence feeds trusted state.",
+      "tags": [
+        "gated-delta",
+        "metal",
+        "promoted-stack",
+        "qwen-mtp-campaign"
+      ],
+      "title": "One-launch packed GDN prework"
+    },
+    {
+      "confidence": "medium",
+      "evidence": [
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/246",
+        "qwen38 campaign hypothesis backlog, HYPOTHESES.md (H-018)"
+      ],
+      "exactness_class": "needs_parity_proof",
+      "id": "mechanism:packed-gdn-beta-fold",
+      "kind": "mechanism",
+      "observed_at": "2026-08-16",
+      "provenance": "code_verified",
+      "status": "held",
+      "summary": "Emit the recurrence gate beta from inside the existing packed prework kernel using an explicit FP32 sigmoid, an explicit BF16 rounding boundary, and an explicit FP32 widening. Directly targets a documented one-ULP failure of the older all-BF16 helper. No terminal official result was observed.",
+      "tags": [
+        "exactness",
+        "gated-delta",
+        "metal",
+        "qwen-mtp-campaign",
+        "unresolved"
+      ],
+      "title": "Beta folded into packed GDN prework"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge",
+        "qwen38 campaign promotion ledger, PROMOTION_LEDGER.md",
+        "https://github.com/ml-explore/mlx/blob/main/mlx/backend/metal/quantized.cpp"
+      ],
+      "exactness_class": "exact_by_construction",
+      "id": "mechanism:paired-qmv",
+      "kind": "mechanism",
+      "observed_at": "2026-08-16",
+      "provenance": "official_verified",
+      "status": "promoted",
+      "summary": "Compute two output rows per threadgroup in the quantized matvec so one weight stream serves two rows. The weight stream, not the arithmetic, is the bottleneck at small M.",
+      "tags": [
+        "metal",
+        "promoted-stack",
+        "qmv",
+        "qwen-mtp-campaign"
+      ],
+      "title": "Paired quantized matrix-vector rows"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/231",
+        "qwen38 campaign promotion ledger, PROMOTION_LEDGER.md"
+      ],
+      "exactness_class": "exact_by_construction",
+      "id": "mechanism:prefix-replay-rollback",
+      "kind": "mechanism",
+      "observed_at": "2026-08-16",
+      "provenance": "official_verified",
+      "status": "promoted",
+      "summary": "Make prefix replay the sole authority for restoring recurrent state after a rejection instead of keeping wide snapshots. Trades memory traffic for recompute and removes a fail-stop surface, but the measured effect on the ranked path was within rerun spread.",
+      "tags": [
+        "gated-delta",
+        "promoted-stack",
+        "qwen-mtp-campaign",
+        "rollback"
+      ],
+      "title": "Prefix replay as rollback authority"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/105",
+        "qwen38 campaign promotion ledger, PROMOTION_LEDGER.md (E005)",
+        "https://github.com/ml-explore/mlx-lm/blob/main/mlx_lm/models/cache.py"
+      ],
+      "exactness_class": "exact_by_construction",
+      "id": "mechanism:proposal-head-cache-preallocation",
+      "kind": "mechanism",
+      "observed_at": "2026-08-16",
+      "provenance": "official_verified",
+      "status": "retired",
+      "summary": "Pre-size only the proposal head's KV cache to the known scored window so the 256-token block growth never triggers a capacity copy during scored decode. Logically exact and logically free; measured slightly negative and never recovered.",
+      "tags": [
+        "allocation",
+        "cache",
+        "qwen-mtp-campaign",
+        "retired-negative"
+      ],
+      "title": "Proposal-head KV cache preallocation"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/200"
+      ],
+      "exactness_class": "exact_by_construction",
+      "id": "mechanism:qk-shape-gate",
+      "kind": "mechanism",
+      "observed_at": "2026-08-16",
+      "provenance": "official_verified",
+      "status": "retired",
+      "summary": "Gate the fused Q/K normalization and RoPE preparation on a short-width shape test so narrow steps skip the wide path. Measured within rerun spread and not promoted.",
+      "tags": [
+        "attention",
+        "dispatch",
+        "qwen-mtp-campaign",
+        "retired-negative"
+      ],
+      "title": "Short Q/K preparation shape gate"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/245",
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/256",
+        "qwen38 campaign promotion ledger, PROMOTION_LEDGER.md (E017, E019, E029)"
+      ],
+      "exactness_class": "needs_parity_proof",
+      "id": "mechanism:qmv-row-regrouping",
+      "kind": "mechanism",
+      "observed_at": "2026-08-16",
+      "provenance": "official_verified",
+      "status": "mixed-evidence",
+      "summary": "At one exact quantized shape, change how output rows are partitioned across threadgroups (4+3 to 3+2+2, 4+4 to 3+3+2, or a direct-nibble variant) while leaving every other shape on the promoted path. Arithmetic is intended to be unchanged, but the regrouping is only legal after an exactness proof at that shape. This family produced both the largest measured positive and several regressions, and the sign depends on the exact width, not on the idea.",
+      "tags": [
+        "metal",
+        "mixed",
+        "qmv",
+        "qwen-mtp-campaign",
+        "shape-specific"
+      ],
+      "title": "Shape-specific QMV row regrouping"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "qwen38 campaign promotion ledger, PROMOTION_LEDGER.md (E020)"
+      ],
+      "exactness_class": "exact_by_construction",
+      "id": "mechanism:recurrent-replay-prefetch",
+      "kind": "mechanism",
+      "observed_at": "2026-08-16",
+      "provenance": "official_verified",
+      "status": "promoted",
+      "summary": "Prefetch the replay tape used to reconstruct recurrent state after a partial rejection, so the rollback path does not stall on a cold read. Five lines; exact because it only moves when the same data is fetched.",
+      "tags": [
+        "gated-delta",
+        "prefetch",
+        "promoted-stack",
+        "qwen-mtp-campaign",
+        "rollback"
+      ],
+      "title": "Recurrent replay prefetch"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/363",
+        "qwen38 campaign promotion ledger, PROMOTION_LEDGER.md (PR363)"
+      ],
+      "exactness_class": "needs_parity_proof",
+      "id": "mechanism:semantic-mtp-width-repair",
+      "kind": "mechanism",
+      "observed_at": "2026-08-16",
+      "provenance": "official_verified",
+      "status": "retired",
+      "summary": "Pad and repair a mid-width verification shape so it dispatches on the faster wider kernel. The local dispatch-cliff saving was large; the ranked score regressed, because the ranked prompt pool does not sit on that width.",
+      "tags": [
+        "dispatch",
+        "no-transfer",
+        "qwen-mtp-campaign",
+        "retired-negative",
+        "shape"
+      ],
+      "title": "Semantic MTP width repair"
+    },
+    {
+      "confidence": "low",
+      "evidence": [
+        "qwen38 campaign promotion ledger, PROMOTION_LEDGER.md (E028)"
+      ],
+      "exactness_class": "approximate_legal",
+      "id": "mechanism:token-conditioned-lowrank-draft-adapter",
+      "kind": "mechanism",
+      "observed_at": "2026-08-16",
+      "provenance": "author_claim",
+      "status": "unfrozen",
+      "summary": "Learn a small rank-2/4/8 adapter over the draft head's logits, conditioned on recent token ids, trained on held-out accepted-prefix evidence. Runtime and a deterministic trainer exist and pass release, diff, and JIT gates; no capture, trained artifact, freeze, or submission exists, so there is no performance evidence of any kind.",
+      "tags": [
+        "adapter",
+        "proposal-head",
+        "qwen-mtp-campaign",
+        "unmeasured"
+      ],
+      "title": "Token-conditioned low-rank draft-logit adapter"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "qwen38 campaign promotion ledger, PROMOTION_LEDGER.md",
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/247"
+      ],
+      "exactness_class": "approximate_legal",
+      "id": "mechanism:top-two-confidence-margin-cap",
+      "kind": "mechanism",
+      "observed_at": "2026-08-16",
+      "provenance": "official_verified",
+      "status": "promoted",
+      "summary": "Temper drafting depth at the first position using the margin between the target's top two logits. Policy only: it changes how many tokens are drafted, never which tokens are emitted.",
+      "tags": [
+        "policy",
+        "promoted-stack",
+        "qwen-mtp-campaign",
+        "scheduler"
+      ],
+      "title": "Top-two confidence margin cap"
+    },
+    {
+      "confidence": "low",
+      "evidence": [
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/202",
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/216",
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/230",
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/244",
+        "qwen38 campaign promotion ledger, PROMOTION_LEDGER.md (PR244)"
+      ],
+      "exactness_class": "approximate_legal",
+      "id": "mechanism:two-bit-compact-draft-readout",
+      "kind": "mechanism",
+      "observed_at": "2026-08-16",
+      "provenance": "code_verified",
+      "status": "unresolved",
+      "summary": "Quantize the compact proposal readout to two bits so the draft selector streams a quarter of the weights. Proposal-side only and therefore legal. Attempted four times publicly and every attempt failed unscored on the editable-surface or moving-base gate, so this family also has NO official performance evidence. Repeated resubmission of an identical patch is not evidence.",
+      "tags": [
+        "proposal-head",
+        "quantization",
+        "qwen-mtp-campaign",
+        "readout",
+        "unmeasured"
+      ],
+      "title": "Two-bit compact draft readout"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "qwen38 campaign promotion ledger, PROMOTION_LEDGER.md (E014)",
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/236"
+      ],
+      "exactness_class": "exact_by_construction",
+      "id": "mechanism:unchanged-rerun-control",
+      "kind": "mechanism",
+      "observed_at": "2026-08-16",
+      "provenance": "official_verified",
+      "status": "control",
+      "summary": "Resubmit byte-identical candidate content to the ranked evaluator with no change. It is not an optimization; it is the control that measures evaluator variation, and it is the only way to calibrate how large a delta has to be before it means anything.",
+      "tags": [
+        "calibration",
+        "control",
+        "measurement",
+        "qwen-mtp-campaign"
+      ],
+      "title": "Unchanged candidate rerun (null control)"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/395",
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/221",
+        "qwen38 campaign promotion ledger, PROMOTION_LEDGER.md (PR395)"
+      ],
+      "exactness_class": "exact_by_construction",
+      "id": "mechanism:verify-final-normalization-reuse",
+      "kind": "mechanism",
+      "observed_at": "2026-08-16",
+      "provenance": "official_verified",
+      "status": "retired",
+      "summary": "Reuse the already-computed post-final-norm verify hidden state for the pending and history rows instead of rebuilding one-row RMSNorm graphs. Exact, strictly less work, and measured slightly negative: the added output liveness outweighed the saved rows.",
+      "tags": [
+        "graph",
+        "normalization",
+        "qwen-mtp-campaign",
+        "retired-negative"
+      ],
+      "title": "Verify final-normalization reuse"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/208",
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/359",
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/386",
+        "https://arxiv.org/abs/2210.17323",
+        "qwen38 campaign findings note, FINDINGS.md (F-016)"
+      ],
+      "exactness_class": "approximate_legal",
+      "id": "mechanism:weight-error-minimised-draft-head",
+      "kind": "mechanism",
+      "observed_at": "2026-08-16",
+      "provenance": "official_verified",
+      "status": "retired",
+      "summary": "Rebuild the quantized draft head to minimize weight reconstruction error (lower MSE, activation-aware, or output-aware) while keeping the runtime layout. Measured three times, each negative, once catastrophically. Weight reconstruction error is not proposal quality, and proposal quality is not score.",
+      "tags": [
+        "calibration",
+        "proposal-head",
+        "quantization",
+        "qwen-mtp-campaign",
+        "retired-negative"
+      ],
+      "title": "Weight-error-minimised draft head"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/201",
+        "https://github.com/ml-explore/mlx/blob/main/mlx/backend/metal/quantized.cpp"
+      ],
+      "exactness_class": "needs_parity_proof",
+      "id": "mechanism:wide-qmv-threshold-retune",
+      "kind": "mechanism",
+      "observed_at": "2026-08-16",
+      "provenance": "official_verified",
+      "status": "retired",
+      "summary": "Lower the output-width threshold at which the quantized matvec switches to its wide kernel. Shape-dispatch thresholds are hardware-tuned upstream; moving one without a profile regressed.",
+      "tags": [
+        "dispatch",
+        "qmv",
+        "qwen-mtp-campaign",
+        "retired-negative"
+      ],
+      "title": "Wide-QMV dispatch threshold retune"
+    }
+  ],
+  "schema_version": 2
+}

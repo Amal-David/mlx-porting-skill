@@ -1,0 +1,329 @@
+{
+  "edges": [],
+  "generated_at": "2026-07-23",
+  "graph_id": "mlx-porting-skill/migrated/findings",
+  "nodes": [
+    {
+      "confidence": "low",
+      "evidence": [
+        "mlx-model-porting/assets/knowledge_graph.json (learning:audio-flow-tts-duration-vocoder-gates)",
+        "mlx-model-porting/assets/contributor_learnings.json"
+      ],
+      "id": "finding:audio-flow-tts-duration-vocoder-gates",
+      "kind": "finding",
+      "observed_at": "2026-07-23",
+      "provenance": "research_inference",
+      "status": "held-reinforces-existing-guidance",
+      "summary": "Existing flow-TTS, vocoder, audio-codec, and streaming-speech runbooks already require these gates.",
+      "tags": [
+        "contributor-learning",
+        "migrated-v1"
+      ],
+      "title": "audio flow tts duration vocoder gates"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "mlx-model-porting/assets/knowledge_graph.json (learning:block-weight-streaming)",
+        "mlx-model-porting/assets/contributor_learnings.json"
+      ],
+      "id": "finding:block-weight-streaming",
+      "kind": "finding",
+      "observed_at": "2026-07-23",
+      "provenance": "research_inference",
+      "status": "adopted",
+      "summary": "Add a proven-mlx-port optimization method for block weight streaming from inspectable safetensors, scoped to repeated-block models that exceed unified-memory budget. Validation gate: Block-count/key coverage, streamed-vs-eager parity on a tiny fixture, eviction/reload test, peak-memory measurement, and fallback eager path. Rollback: Disable streaming if outputs drift, block key coverage is incomplete, eviction reloads stale weights, or disk/page-fault overhead erases the memory benefit.",
+      "tags": [
+        "contributor-learning",
+        "migrated-v1"
+      ],
+      "title": "block weight streaming"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "mlx-model-porting/assets/knowledge_graph.json (learning:grid-sample-spatial-kernel)",
+        "mlx-model-porting/assets/contributor_learnings.json"
+      ],
+      "id": "finding:grid-sample-spatial-kernel",
+      "kind": "finding",
+      "observed_at": "2026-07-23",
+      "provenance": "research_inference",
+      "status": "adopted",
+      "summary": "Add a proven-mlx-port optimization method for PyTorch-compatible grid_sample custom kernels, scoped to spatial/volume-warping ports with explicit parity and end-to-end benchmark gates. Validation gate: Coordinate order, align_corners, padding mode, interpolation, dtype, and layout parity against NumPy/Torch; unsupported-mode declaration; pure-MLX fallback; end-to-end benchmark. Rollback: Disable or hold if reflection/nearest/backward semantics are required, parity drifts, layout transposes dominate, or the model-level benchmark does not improve.",
+      "tags": [
+        "contributor-learning",
+        "migrated-v1"
+      ],
+      "title": "grid sample spatial kernel"
+    },
+    {
+      "confidence": "low",
+      "evidence": [
+        "mlx-model-porting/assets/knowledge_graph.json (learning:layer-eval-watchdog-guard)",
+        "mlx-model-porting/assets/contributor_learnings.json"
+      ],
+      "id": "finding:layer-eval-watchdog-guard",
+      "kind": "finding",
+      "observed_at": "2026-07-23",
+      "provenance": "research_inference",
+      "status": "held",
+      "summary": "The skill already recommends deliberate lazy-evaluation boundaries; add a note in runtime guidance, but do not create a separate optimization method without a repo-local watchdog reproducer.",
+      "tags": [
+        "contributor-learning",
+        "migrated-v1"
+      ],
+      "title": "layer eval watchdog guard"
+    },
+    {
+      "confidence": "low",
+      "evidence": [
+        "mlx-model-porting/assets/knowledge_graph.json (learning:layer-range-network-sharding)",
+        "mlx-model-porting/assets/contributor_learnings.json"
+      ],
+      "id": "finding:layer-range-network-sharding",
+      "kind": "finding",
+      "observed_at": "2026-07-23",
+      "provenance": "research_inference",
+      "status": "held-research-candidate-only",
+      "summary": "The implementation is explicitly a demo/start point and lacks enough parity, failure, cancellation, scheduler, and security evidence to become supported porting guidance.",
+      "tags": [
+        "contributor-learning",
+        "migrated-v1"
+      ],
+      "title": "layer range network sharding"
+    },
+    {
+      "confidence": "low",
+      "evidence": [
+        "mlx-model-porting/assets/knowledge_graph.json (learning:mlx-onnx-export-adjacent)",
+        "mlx-model-porting/assets/contributor_learnings.json"
+      ],
+      "id": "finding:mlx-onnx-export-adjacent",
+      "kind": "finding",
+      "observed_at": "2026-07-23",
+      "provenance": "research_inference",
+      "status": "held-adjacent-context-only",
+      "summary": "Useful adjacent ecosystem context, but not a model-to-MLX porting technique for this skill.",
+      "tags": [
+        "contributor-learning",
+        "migrated-v1"
+      ],
+      "title": "mlx onnx export adjacent"
+    },
+    {
+      "confidence": "low",
+      "evidence": [
+        "mlx-model-porting/assets/knowledge_graph.json (learning:operation-benchmark-hygiene)",
+        "mlx-model-porting/assets/contributor_learnings.json"
+      ],
+      "id": "finding:operation-benchmark-hygiene",
+      "kind": "finding",
+      "observed_at": "2026-07-23",
+      "provenance": "research_inference",
+      "status": "held-reinforces-existing-guidance",
+      "summary": "The skill already separates microbenchmarks from end-to-end claims and requires hardware/workload metadata; no new supported optimization follows from operation tables alone.",
+      "tags": [
+        "contributor-learning",
+        "migrated-v1"
+      ],
+      "title": "operation benchmark hygiene"
+    },
+    {
+      "confidence": "medium",
+      "evidence": [
+        "mlx-model-porting/assets/model_outcomes.json (asr-whisper-working-adjacent-route)",
+        "mlx-model-porting/assets/knowledge_graph.json (outcome:asr-whisper-working-adjacent-route)"
+      ],
+      "id": "finding:outcome-asr-whisper-working-adjacent-route",
+      "kind": "finding",
+      "observed_at": "2026-07-23",
+      "provenance": "research_inference",
+      "status": "source_backed_working",
+      "summary": "Whisper-family ASR has working Apple-platform routes, but the advisor should separate Core ML or example support from generic MLX optimization claims. Claim boundary: Claim a source-backed ASR route and quality gates, not a generic MLX performance win.",
+      "tags": [
+        "family/automatic-speech-recognition",
+        "family/streaming-speech",
+        "migrated-v1",
+        "route-outcome"
+      ],
+      "title": "Whisper ASR route"
+    },
+    {
+      "confidence": "medium",
+      "evidence": [
+        "mlx-model-porting/assets/model_outcomes.json (audio-tts-qwen3-and-vocoder-routes)",
+        "mlx-model-porting/assets/knowledge_graph.json (outcome:audio-tts-qwen3-and-vocoder-routes)"
+      ],
+      "id": "finding:outcome-audio-tts-qwen3-and-vocoder-routes",
+      "kind": "finding",
+      "observed_at": "2026-07-23",
+      "provenance": "research_inference",
+      "status": "source_backed_working",
+      "summary": "MLX-Audio and Qwen3-TTS evidence can guide TTS/audio candidates, but each model still needs duration, vocoder, reference-audio, and perceptual quality gates. Observed overall band 1.0x-5.45x (profile_required, claim_status=n/a). Claim boundary: Claim source-backed route evidence for matching audio/TTS families; benchmark first-audio latency, RTF, and quality locally.",
+      "tags": [
+        "family/autoregressive-audio-lm",
+        "family/flow-diffusion-tts",
+        "family/neural-audio-codec",
+        "family/separation-enhancement",
+        "family/vocoder-waveform-decoder",
+        "migrated-v1",
+        "route-outcome"
+      ],
+      "title": "Audio and TTS partial routes"
+    },
+    {
+      "confidence": "medium",
+      "evidence": [
+        "mlx-model-porting/assets/model_outcomes.json (decoder-mlx-lm-working-route)",
+        "mlx-model-porting/assets/knowledge_graph.json (outcome:decoder-mlx-lm-working-route)"
+      ],
+      "id": "finding:outcome-decoder-mlx-lm-working-route",
+      "kind": "finding",
+      "observed_at": "2026-07-23",
+      "provenance": "research_inference",
+      "status": "source_backed_working",
+      "summary": "For common decoder LLM families, start with MLX-LM conversion, loading, generation, cache, and quantization before writing a bespoke port. Observed overall band 1.0x-4.3x (profile_required, claim_status=held). Observed speculative_decoding band 1.0x-1.3x (performance_observation, claim_status=held). Claim boundary: Claim route support and source-backed method availability; claim speed only after local target-workload benchmark metadata exists.",
+      "tags": [
+        "family/dense-decoder-transformer",
+        "family/moe-decoder-transformer",
+        "migrated-v1",
+        "route-outcome"
+      ],
+      "title": "MLX-LM decoder route"
+    },
+    {
+      "confidence": "low",
+      "evidence": [
+        "mlx-model-porting/assets/model_outcomes.json (diffusion-and-flow-partial-routes)",
+        "mlx-model-porting/assets/knowledge_graph.json (outcome:diffusion-and-flow-partial-routes)"
+      ],
+      "id": "finding:outcome-diffusion-and-flow-partial-routes",
+      "kind": "finding",
+      "observed_at": "2026-07-23",
+      "provenance": "research_inference",
+      "status": "known_limit_or_gap",
+      "summary": "Diffusion and flow models have MLX examples and contributor ports, but outcomes are model-specific and cannot be promoted to a top-model-wide route without scheduler and conditioning parity. Claim boundary: Show as model-specific partial route or benchmark-required memory pattern, not a universal diffusion speedup.",
+      "tags": [
+        "family/diffusion-flow",
+        "family/flow-diffusion-tts",
+        "migrated-v1",
+        "route-outcome"
+      ],
+      "title": "Diffusion and flow partial routes"
+    },
+    {
+      "confidence": "low",
+      "evidence": [
+        "mlx-model-porting/assets/model_outcomes.json (encoder-embedding-top-model-gap)",
+        "mlx-model-porting/assets/knowledge_graph.json (outcome:encoder-embedding-top-model-gap)"
+      ],
+      "id": "finding:outcome-encoder-embedding-top-model-gap",
+      "kind": "finding",
+      "observed_at": "2026-07-23",
+      "provenance": "research_inference",
+      "status": "known_limit_or_gap",
+      "summary": "Many top downloaded models are embedding, reranker, BERT, CLIP, or feature-extraction models; this skill has routing gates but not a broad proven MLX outcome matrix for them yet. Claim boundary: Show as a known coverage gap or validation backlog, not as a benchmark-required speed candidate.",
+      "tags": [
+        "family/encoder-transformer",
+        "family/non-generative-cv-backbone",
+        "migrated-v1",
+        "route-outcome"
+      ],
+      "title": "Encoder and embedding gap"
+    },
+    {
+      "confidence": "low",
+      "evidence": [
+        "mlx-model-porting/assets/model_outcomes.json (time-series-and-structured-gap)",
+        "mlx-model-porting/assets/knowledge_graph.json (outcome:time-series-and-structured-gap)"
+      ],
+      "id": "finding:outcome-time-series-and-structured-gap",
+      "kind": "finding",
+      "observed_at": "2026-07-23",
+      "provenance": "research_inference",
+      "status": "known_limit_or_gap",
+      "summary": "Top downloaded Chronos and structured/ranking models should not inherit LLM optimization guidance; they need task-specific preprocessing and metric gates. Claim boundary: Show as validation backlog, not as an optimization candidate.",
+      "tags": [
+        "family/time-series-forecasting",
+        "migrated-v1",
+        "route-outcome"
+      ],
+      "title": "Time-series and structured gap"
+    },
+    {
+      "confidence": "medium",
+      "evidence": [
+        "mlx-model-porting/assets/model_outcomes.json (vlm-mlx-vlm-working-route)",
+        "mlx-model-porting/assets/knowledge_graph.json (outcome:vlm-mlx-vlm-working-route)"
+      ],
+      "id": "finding:outcome-vlm-mlx-vlm-working-route",
+      "kind": "finding",
+      "observed_at": "2026-07-23",
+      "provenance": "research_inference",
+      "status": "source_backed_working",
+      "summary": "For Qwen-VL, LLaVA-style, Pixtral, Gemma vision, and related image-text models, use MLX-VLM before inventing a new multimodal serving path. Observed overall band 1.0x-28.0x (profile_required, claim_status=n/a). Claim boundary: Claim source-backed VLM route and cache candidates; keep source-reported speedups attached to repeated-input serving setups.",
+      "tags": [
+        "family/vision-language-omni",
+        "migrated-v1",
+        "route-outcome"
+      ],
+      "title": "MLX-VLM multimodal route"
+    },
+    {
+      "confidence": "low",
+      "evidence": [
+        "mlx-model-porting/assets/knowledge_graph.json (learning:paged-kv-and-gather-qmm-serving)",
+        "mlx-model-porting/assets/contributor_learnings.json"
+      ],
+      "id": "finding:paged-kv-and-gather-qmm-serving",
+      "kind": "finding",
+      "observed_at": "2026-07-23",
+      "provenance": "research_inference",
+      "status": "held-reinforces-existing-guidance",
+      "summary": "Existing paged KV, continuous batching, and MoE gather/qmm guidance already requires block-boundary, fragmentation, cancellation, sorted/unsorted, and loop-oracle checks.",
+      "tags": [
+        "contributor-learning",
+        "migrated-v1"
+      ],
+      "title": "paged kv and gather qmm serving"
+    },
+    {
+      "confidence": "low",
+      "evidence": [
+        "mlx-model-porting/assets/knowledge_graph.json (learning:rwkv-ssm-conformer-prototypes)",
+        "mlx-model-porting/assets/contributor_learnings.json"
+      ],
+      "id": "finding:rwkv-ssm-conformer-prototypes",
+      "kind": "finding",
+      "observed_at": "2026-07-23",
+      "provenance": "research_inference",
+      "status": "held-insufficient-evidence",
+      "summary": "The current SSM/recurrent/ASR runbooks already require full-sequence versus recurrent parity, state tests, and source oracle capture; these prototypes do not justify new supported guidance.",
+      "tags": [
+        "contributor-learning",
+        "migrated-v1"
+      ],
+      "title": "rwkv ssm conformer prototypes"
+    },
+    {
+      "confidence": "low",
+      "evidence": [
+        "mlx-model-porting/assets/knowledge_graph.json (learning:synthetic-moe-assembly)",
+        "mlx-model-porting/assets/contributor_learnings.json"
+      ],
+      "id": "finding:synthetic-moe-assembly",
+      "kind": "finding",
+      "observed_at": "2026-07-23",
+      "provenance": "research_inference",
+      "status": "held-research-candidate-only",
+      "summary": "This is architecture creation/fine-tuning, not a source-preserving port optimization. It should remain a lossy/product-mode experiment unless a task explicitly asks to train or publish a new MoE.",
+      "tags": [
+        "contributor-learning",
+        "migrated-v1"
+      ],
+      "title": "synthetic moe assembly"
+    }
+  ],
+  "schema_version": 2
+}

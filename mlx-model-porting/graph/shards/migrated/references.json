@@ -1,0 +1,4100 @@
+{
+  "edges": [
+    {
+      "confidence": "medium",
+      "from": "external:apple-mlx-m5-blog",
+      "rationale": "v1 evidence_for edge from source:apple-mlx-m5-blog.",
+      "relation": "supports",
+      "to": "mechanism:lazy-eval-boundaries"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:apple-wwdc25-mlx",
+      "rationale": "v1 evidence_for edge from source:apple-wwdc25-mlx.",
+      "relation": "supports",
+      "to": "mechanism:compile-stable-region"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:apple-wwdc25-mlx",
+      "rationale": "v1 evidence_for edge from source:apple-wwdc25-mlx.",
+      "relation": "supports",
+      "to": "mechanism:lazy-eval-boundaries"
+    },
+    {
+      "confidence": "low",
+      "from": "external:candidate-arxiv-2001-00577",
+      "rationale": "Unreviewed research candidate matched learning:block-weight-streaming on terms low, memory, method, streaming.",
+      "relation": "suggests",
+      "to": "finding:block-weight-streaming"
+    },
+    {
+      "confidence": "low",
+      "from": "external:candidate-arxiv-2001-00577",
+      "rationale": "Unreviewed research candidate matched approach:adaptive-kv-quantization on terms bit, memory, quantization.",
+      "relation": "suggests",
+      "to": "mechanism:adaptive-kv-quantization"
+    },
+    {
+      "confidence": "low",
+      "from": "external:candidate-arxiv-2001-00577",
+      "rationale": "Unreviewed research candidate matched approach:native-low-bit-weight-quantization on terms bit, low, memory, quantization, size.",
+      "relation": "suggests",
+      "to": "mechanism:native-low-bit-weight-quantization"
+    },
+    {
+      "confidence": "low",
+      "from": "external:candidate-arxiv-2503-09905",
+      "rationale": "Unreviewed research candidate matched backlog:graph-geometric-scientific on terms offline, one, such.",
+      "relation": "suggests",
+      "to": "hypothesis:graph-geometric-scientific"
+    },
+    {
+      "confidence": "low",
+      "from": "external:candidate-arxiv-2503-09905",
+      "rationale": "Unreviewed research candidate matched approach:audio-streaming-and-cache on terms latency, speech, streaming.",
+      "relation": "suggests",
+      "to": "mechanism:audio-streaming-and-cache"
+    },
+    {
+      "confidence": "low",
+      "from": "external:candidate-arxiv-2503-09905",
+      "rationale": "Unreviewed research candidate matched approach:bf16-weight-cast on terms its, latency, quantization.",
+      "relation": "suggests",
+      "to": "mechanism:bf16-weight-cast"
+    },
+    {
+      "confidence": "low",
+      "from": "external:candidate-arxiv-2505-18610",
+      "rationale": "Unreviewed research candidate matched backlog:training-as-port-target on terms been, cache, has, key, memory, training.",
+      "relation": "suggests",
+      "to": "hypothesis:training-as-port-target"
+    },
+    {
+      "confidence": "low",
+      "from": "external:candidate-arxiv-2505-18610",
+      "rationale": "Unreviewed research candidate matched approach:adaptive-kv-quantization on terms cache, context, key, long, memory, mixed, precision, quantization.",
+      "relation": "suggests",
+      "to": "mechanism:adaptive-kv-quantization"
+    },
+    {
+      "confidence": "low",
+      "from": "external:candidate-arxiv-2505-18610",
+      "rationale": "Unreviewed research candidate matched approach:uniform-kv-quantization on terms cache, context, long, memory, quantization.",
+      "relation": "suggests",
+      "to": "mechanism:uniform-kv-quantization"
+    },
+    {
+      "confidence": "low",
+      "from": "external:candidate-arxiv-2510-00981",
+      "rationale": "Unreviewed research candidate matched learning:audio-flow-tts-duration-vocoder-gates on terms audio, codec, length, speech, streaming.",
+      "relation": "suggests",
+      "to": "finding:audio-flow-tts-duration-vocoder-gates"
+    },
+    {
+      "confidence": "low",
+      "from": "external:candidate-arxiv-2510-00981",
+      "rationale": "Unreviewed research candidate matched outcome:asr-whisper-working-adjacent-route on terms asr, but, can, feature, language, streaming.",
+      "relation": "suggests",
+      "to": "finding:outcome-asr-whisper-working-adjacent-route"
+    },
+    {
+      "confidence": "low",
+      "from": "external:candidate-arxiv-2510-00981",
+      "rationale": "Unreviewed research candidate matched outcome:audio-tts-qwen3-and-vocoder-routes on terms asr, audio, but, can, codec, rate.",
+      "relation": "suggests",
+      "to": "finding:outcome-audio-tts-qwen3-and-vocoder-routes"
+    },
+    {
+      "confidence": "low",
+      "from": "external:candidate-arxiv-2510-18921",
+      "rationale": "Unreviewed research candidate matched outcome:asr-whisper-working-adjacent-route on terms apple, has, language, need, optimization.",
+      "relation": "suggests",
+      "to": "finding:outcome-asr-whisper-working-adjacent-route"
+    },
+    {
+      "confidence": "low",
+      "from": "external:candidate-arxiv-2510-18921",
+      "rationale": "Unreviewed research candidate matched approach:eagle-medusa-mtp-drafters on terms architecture, language, latency, transformer.",
+      "relation": "suggests",
+      "to": "mechanism:eagle-medusa-mtp-drafters"
+    },
+    {
+      "confidence": "low",
+      "from": "external:candidate-arxiv-2510-18921",
+      "rationale": "Unreviewed research candidate matched approach:moe-gather-and-expert-batching on terms creates, large, latency, transformer.",
+      "relation": "suggests",
+      "to": "mechanism:moe-gather-and-expert-batching"
+    },
+    {
+      "confidence": "low",
+      "from": "external:candidate-arxiv-2601-11141",
+      "rationale": "Unreviewed research candidate matched outcome:audio-tts-qwen3-and-vocoder-routes on terms audio, codec, generation, latency, quality, speaker, text.",
+      "relation": "suggests",
+      "to": "finding:outcome-audio-tts-qwen3-and-vocoder-routes"
+    },
+    {
+      "confidence": "low",
+      "from": "external:candidate-arxiv-2601-11141",
+      "rationale": "Unreviewed research candidate matched approach:audio-reference-conditioning-cache on terms audio, cloning, codec, first, latency, speaker, voice.",
+      "relation": "suggests",
+      "to": "mechanism:audio-reference-conditioning-cache"
+    },
+    {
+      "confidence": "low",
+      "from": "external:candidate-arxiv-2601-11141",
+      "rationale": "Unreviewed research candidate matched approach:audio-streaming-and-cache on terms audio, codec, first, latency, quality, speech, streaming.",
+      "relation": "suggests",
+      "to": "mechanism:audio-streaming-and-cache"
+    },
+    {
+      "confidence": "low",
+      "from": "external:candidate-arxiv-2601-19139",
+      "rationale": "Unreviewed research candidate matched outcome:vlm-mlx-vlm-working-route on terms has, multimodal, prefix, text, vision, vllm.",
+      "relation": "suggests",
+      "to": "finding:outcome-vlm-mlx-vlm-working-route"
+    },
+    {
+      "confidence": "low",
+      "from": "external:candidate-arxiv-2601-19139",
+      "rationale": "Unreviewed research candidate matched approach:continuous-batching-serving on terms batching, concurrent, continuous, throughput, vision.",
+      "relation": "suggests",
+      "to": "mechanism:continuous-batching-serving"
+    },
+    {
+      "confidence": "low",
+      "from": "external:candidate-arxiv-2601-19139",
+      "rationale": "Unreviewed research candidate matched approach:multimodal-content-prefix-cache on terms concurrent, content, mllm, multimodal, prefix, throughput, vision.",
+      "relation": "suggests",
+      "to": "mechanism:multimodal-content-prefix-cache"
+    },
+    {
+      "confidence": "low",
+      "from": "external:candidate-arxiv-2601-19139",
+      "rationale": "Source registry observed revision v2 of the same work.",
+      "relation": "supersedes",
+      "to": "external:paper-2601-19139"
+    },
+    {
+      "confidence": "low",
+      "from": "external:candidate-arxiv-2603-06079",
+      "rationale": "Unreviewed research candidate matched approach:audio-reference-conditioning-cache on terms audio, codec, latency, speaker.",
+      "relation": "suggests",
+      "to": "mechanism:audio-reference-conditioning-cache"
+    },
+    {
+      "confidence": "low",
+      "from": "external:candidate-arxiv-2603-06079",
+      "rationale": "Unreviewed research candidate matched approach:audio-streaming-and-cache on terms audio, codec, latency, speech, streaming.",
+      "relation": "suggests",
+      "to": "mechanism:audio-streaming-and-cache"
+    },
+    {
+      "confidence": "low",
+      "from": "external:candidate-arxiv-2603-06079",
+      "rationale": "Unreviewed research candidate matched outcome:qwen25-05b-instruct-local-worked-port on terms all, rather, same, than, token, tokens.",
+      "relation": "suggests",
+      "to": "result:v1-qwen25-05b-bf16-cast-walltime"
+    },
+    {
+      "confidence": "low",
+      "from": "external:candidate-arxiv-2603-08721",
+      "rationale": "Unreviewed research candidate matched learning:grid-sample-spatial-kernel on terms benchmark, custom, kernel, kernels, level, metal.",
+      "relation": "suggests",
+      "to": "finding:grid-sample-spatial-kernel"
+    },
+    {
+      "confidence": "low",
+      "from": "external:candidate-arxiv-2603-08721",
+      "rationale": "Unreviewed research candidate matched outcome:decoder-mlx-lm-working-route on terms architectures, code, custom, generation, llm, not, through.",
+      "relation": "suggests",
+      "to": "finding:outcome-decoder-mlx-lm-working-route"
+    },
+    {
+      "confidence": "low",
+      "from": "external:candidate-arxiv-2603-08721",
+      "rationale": "Unreviewed research candidate matched backlog:structured-timeseries-recsys on terms architectures, based, code, error, first, has, time.",
+      "relation": "suggests",
+      "to": "hypothesis:structured-timeseries-recsys"
+    },
+    {
+      "confidence": "low",
+      "from": "external:candidate-arxiv-2603-14035",
+      "rationale": "Unreviewed research candidate matched learning:audio-flow-tts-duration-vocoder-gates on terms audio, codec, dependent, quantized, speech, streaming, these.",
+      "relation": "suggests",
+      "to": "finding:audio-flow-tts-duration-vocoder-gates"
+    },
+    {
+      "confidence": "low",
+      "from": "external:candidate-arxiv-2603-14035",
+      "rationale": "Unreviewed research candidate matched approach:audio-streaming-and-cache on terms audio, codec, speech, streaming, use.",
+      "relation": "suggests",
+      "to": "mechanism:audio-streaming-and-cache"
+    },
+    {
+      "confidence": "low",
+      "from": "external:candidate-arxiv-2603-14035",
+      "rationale": "Unreviewed research candidate matched approach:native-low-bit-weight-quantization on terms audio, linear, transformer, use.",
+      "relation": "suggests",
+      "to": "mechanism:native-low-bit-weight-quantization"
+    },
+    {
+      "confidence": "low",
+      "from": "external:candidate-arxiv-2604-14493",
+      "rationale": "Unreviewed research candidate matched outcome:asr-whisper-working-adjacent-route on terms asr, decoder, quality, real, state, streaming, time, whisper.",
+      "relation": "suggests",
+      "to": "finding:outcome-asr-whisper-working-adjacent-route"
+    },
+    {
+      "confidence": "low",
+      "from": "external:candidate-arxiv-2604-14493",
+      "rationale": "Unreviewed research candidate matched outcome:diffusion-and-flow-partial-routes on terms encoder, memory, quality, streaming, time, without.",
+      "relation": "suggests",
+      "to": "finding:outcome-diffusion-and-flow-partial-routes"
+    },
+    {
+      "confidence": "low",
+      "from": "external:candidate-arxiv-2604-14493",
+      "rationale": "Unreviewed research candidate matched approach:audio-streaming-and-cache on terms chunked, latency, quality, speech, streaming.",
+      "relation": "suggests",
+      "to": "mechanism:audio-streaming-and-cache"
+    },
+    {
+      "confidence": "low",
+      "from": "external:candidate-arxiv-2605-23373",
+      "rationale": "Unreviewed research candidate matched approach:audio-streaming-and-cache on terms audio, codec, speech, streaming.",
+      "relation": "suggests",
+      "to": "mechanism:audio-streaming-and-cache"
+    },
+    {
+      "confidence": "low",
+      "from": "external:candidate-arxiv-2605-23373",
+      "rationale": "Unreviewed research candidate matched approach:block-weight-streaming on terms block, language, stream, streaming.",
+      "relation": "suggests",
+      "to": "mechanism:block-weight-streaming"
+    },
+    {
+      "confidence": "low",
+      "from": "external:candidate-arxiv-2605-23373",
+      "rationale": "Unreviewed research candidate matched approach:native-low-bit-weight-quantization on terms audio, bit, language, quantization, where.",
+      "relation": "suggests",
+      "to": "mechanism:native-low-bit-weight-quantization"
+    },
+    {
+      "confidence": "low",
+      "from": "external:candidate-arxiv-2606-06743",
+      "rationale": "Unreviewed research candidate matched backlog:graph-geometric-scientific on terms architectures, first, has, one.",
+      "relation": "suggests",
+      "to": "hypothesis:graph-geometric-scientific"
+    },
+    {
+      "confidence": "low",
+      "from": "external:candidate-arxiv-2606-06743",
+      "rationale": "Unreviewed research candidate matched approach:audio-streaming-and-cache on terms audio, codec, first, speech, streaming.",
+      "relation": "suggests",
+      "to": "mechanism:audio-streaming-and-cache"
+    },
+    {
+      "confidence": "low",
+      "from": "external:candidate-arxiv-2606-06743",
+      "rationale": "Unreviewed research candidate matched approach:block-weight-streaming on terms language, stream, streaming, unified.",
+      "relation": "suggests",
+      "to": "mechanism:block-weight-streaming"
+    },
+    {
+      "confidence": "low",
+      "from": "external:candidate-arxiv-2606-21888",
+      "rationale": "Unreviewed research candidate matched outcome:audio-tts-qwen3-and-vocoder-routes on terms audio, but, codec, generation, not, speaker, text, transfer.",
+      "relation": "suggests",
+      "to": "finding:outcome-audio-tts-qwen3-and-vocoder-routes"
+    },
+    {
+      "confidence": "low",
+      "from": "external:candidate-arxiv-2606-21888",
+      "rationale": "Unreviewed research candidate matched approach:audio-reference-conditioning-cache on terms audio, cloning, codec, conditioning, speaker, voice.",
+      "relation": "suggests",
+      "to": "mechanism:audio-reference-conditioning-cache"
+    },
+    {
+      "confidence": "low",
+      "from": "external:candidate-arxiv-2606-21888",
+      "rationale": "Unreviewed research candidate matched outcome:qwen25-05b-instruct-local-worked-port on terms both, conversion, embeddings, generation, not, rather, than, tokens.",
+      "relation": "suggests",
+      "to": "result:v1-qwen25-05b-bf16-cast-walltime"
+    },
+    {
+      "confidence": "low",
+      "from": "external:candidate-arxiv-2606-21893",
+      "rationale": "Unreviewed research candidate matched outcome:audio-tts-qwen3-and-vocoder-routes on terms audio, codec, each, rate, speaker.",
+      "relation": "suggests",
+      "to": "finding:outcome-audio-tts-qwen3-and-vocoder-routes"
+    },
+    {
+      "confidence": "low",
+      "from": "external:candidate-arxiv-2606-21893",
+      "rationale": "Unreviewed research candidate matched approach:audio-streaming-and-cache on terms audio, codec, preserve, speech, streaming.",
+      "relation": "suggests",
+      "to": "mechanism:audio-streaming-and-cache"
+    },
+    {
+      "confidence": "low",
+      "from": "external:candidate-arxiv-2606-21893",
+      "rationale": "Unreviewed research candidate matched outcome:qwen25-05b-instruct-local-worked-port on terms conversion, embeddings, target, token, tokens.",
+      "relation": "suggests",
+      "to": "result:v1-qwen25-05b-bf16-cast-walltime"
+    },
+    {
+      "confidence": "low",
+      "from": "external:candidate-arxiv-2606-24033",
+      "rationale": "Unreviewed research candidate matched approach:adaptive-kv-quantization on terms allocation, aware, bit, cache, context, key, long, quantization.",
+      "relation": "suggests",
+      "to": "mechanism:adaptive-kv-quantization"
+    },
+    {
+      "confidence": "low",
+      "from": "external:candidate-arxiv-2606-24033",
+      "rationale": "Unreviewed research candidate matched approach:multimodal-content-prefix-cache on terms aware, block, cache, context, long.",
+      "relation": "suggests",
+      "to": "mechanism:multimodal-content-prefix-cache"
+    },
+    {
+      "confidence": "low",
+      "from": "external:candidate-arxiv-2606-24033",
+      "rationale": "Unreviewed research candidate matched outcome:qwen25-05b-instruct-local-worked-port on terms attention, cache, matched, preserves, rope.",
+      "relation": "suggests",
+      "to": "result:v1-qwen25-05b-bf16-cast-walltime"
+    },
+    {
+      "confidence": "low",
+      "from": "external:candidate-arxiv-2606-24033",
+      "rationale": "Source registry observed revision v1 of the same work.",
+      "relation": "supersedes",
+      "to": "external:paper-2606-24033"
+    },
+    {
+      "confidence": "low",
+      "from": "external:candidate-arxiv-2606-31519",
+      "rationale": "Unreviewed research candidate matched backlog:structured-timeseries-recsys on terms based, context, error, mask, retrieval, score, top, value.",
+      "relation": "suggests",
+      "to": "hypothesis:structured-timeseries-recsys"
+    },
+    {
+      "confidence": "low",
+      "from": "external:candidate-arxiv-2606-31519",
+      "rationale": "Unreviewed research candidate matched approach:adaptive-kv-quantization on terms adaptive, aware, cache, context, hardware, key, long, quantization.",
+      "relation": "suggests",
+      "to": "mechanism:adaptive-kv-quantization"
+    },
+    {
+      "confidence": "low",
+      "from": "external:candidate-arxiv-2606-31519",
+      "rationale": "Unreviewed research candidate matched approach:multimodal-content-prefix-cache on terms aware, cache, context, language, long, proven, throughput.",
+      "relation": "suggests",
+      "to": "mechanism:multimodal-content-prefix-cache"
+    },
+    {
+      "confidence": "low",
+      "from": "external:candidate-arxiv-2607-01831",
+      "rationale": "Unreviewed research candidate matched outcome:decoder-mlx-lm-working-route on terms cache, common, generation, llm, quantization, speculative.",
+      "relation": "suggests",
+      "to": "finding:outcome-decoder-mlx-lm-working-route"
+    },
+    {
+      "confidence": "low",
+      "from": "external:candidate-arxiv-2607-01831",
+      "rationale": "Unreviewed research candidate matched approach:adaptive-kv-quantization on terms cache, context, key, long, precision, quantization, until, value.",
+      "relation": "suggests",
+      "to": "mechanism:adaptive-kv-quantization"
+    },
+    {
+      "confidence": "low",
+      "from": "external:candidate-arxiv-2607-01831",
+      "rationale": "Unreviewed research candidate matched approach:multimodal-content-prefix-cache on terms cache, context, language, long, serving, use.",
+      "relation": "suggests",
+      "to": "mechanism:multimodal-content-prefix-cache"
+    },
+    {
+      "confidence": "low",
+      "from": "external:candidate-arxiv-2607-03652",
+      "rationale": "Unreviewed research candidate matched approach:adaptive-kv-quantization on terms cache, context, hardware, key, long, memory, precision, quantization.",
+      "relation": "suggests",
+      "to": "mechanism:adaptive-kv-quantization"
+    },
+    {
+      "confidence": "low",
+      "from": "external:candidate-arxiv-2607-03652",
+      "rationale": "Unreviewed research candidate matched approach:native-low-bit-weight-quantization on terms language, linear, low, memory, quantization, transformer, weight.",
+      "relation": "suggests",
+      "to": "mechanism:native-low-bit-weight-quantization"
+    },
+    {
+      "confidence": "low",
+      "from": "external:candidate-arxiv-2607-03652",
+      "rationale": "Unreviewed research candidate matched approach:uniform-kv-quantization on terms cache, context, long, memory, quantization, transformer.",
+      "relation": "suggests",
+      "to": "mechanism:uniform-kv-quantization"
+    },
+    {
+      "confidence": "low",
+      "from": "external:candidate-arxiv-2607-07144",
+      "rationale": "Unreviewed research candidate matched backlog:structured-timeseries-recsys on terms context, family, has, map, retrieval, time, value.",
+      "relation": "suggests",
+      "to": "hypothesis:structured-timeseries-recsys"
+    },
+    {
+      "confidence": "low",
+      "from": "external:candidate-arxiv-2607-07144",
+      "rationale": "Unreviewed research candidate matched backlog:top1000-contributor-long-tail-rescreening on terms codes, family, following, format, long, runs, state, through.",
+      "relation": "suggests",
+      "to": "hypothesis:top1000-contributor-long-tail-rescreening"
+    },
+    {
+      "confidence": "low",
+      "from": "external:candidate-arxiv-2607-07144",
+      "rationale": "Unreviewed research candidate matched approach:adaptive-kv-quantization on terms cache, context, key, long, memory, quantization, value.",
+      "relation": "suggests",
+      "to": "mechanism:adaptive-kv-quantization"
+    },
+    {
+      "confidence": "low",
+      "from": "external:candidate-arxiv-2607-08032",
+      "rationale": "Unreviewed research candidate matched backlog:structured-timeseries-recsys on terms context, keep, research, separate, task, versus.",
+      "relation": "suggests",
+      "to": "hypothesis:structured-timeseries-recsys"
+    },
+    {
+      "confidence": "low",
+      "from": "external:candidate-arxiv-2607-08032",
+      "rationale": "Unreviewed research candidate matched approach:adaptive-kv-quantization on terms cache, context, long, memory, quantization.",
+      "relation": "suggests",
+      "to": "mechanism:adaptive-kv-quantization"
+    },
+    {
+      "confidence": "low",
+      "from": "external:candidate-arxiv-2607-08032",
+      "rationale": "Unreviewed research candidate matched approach:prompt-prefix-cache on terms agents, cache, language, quantization, state.",
+      "relation": "suggests",
+      "to": "mechanism:prompt-prefix-cache"
+    },
+    {
+      "confidence": "low",
+      "from": "external:candidate-arxiv-2607-12550",
+      "rationale": "Unreviewed research candidate matched approach:adaptive-kv-quantization on terms allocation, bit, cache, context, key, long, memory, quantization.",
+      "relation": "suggests",
+      "to": "mechanism:adaptive-kv-quantization"
+    },
+    {
+      "confidence": "low",
+      "from": "external:candidate-arxiv-2607-12550",
+      "rationale": "Unreviewed research candidate matched approach:native-low-bit-weight-quantization on terms bit, low, memory, quantization, size, throughput, transformer.",
+      "relation": "suggests",
+      "to": "mechanism:native-low-bit-weight-quantization"
+    },
+    {
+      "confidence": "low",
+      "from": "external:candidate-arxiv-2607-12550",
+      "rationale": "Unreviewed research candidate matched outcome:qwen25-05b-instruct-local-worked-port on terms cache, cross, rather, tensor, than, token, tokens.",
+      "relation": "suggests",
+      "to": "result:v1-qwen25-05b-bf16-cast-walltime"
+    },
+    {
+      "confidence": "low",
+      "from": "external:candidate-arxiv-2607-15456",
+      "rationale": "Unreviewed research candidate matched learning:block-weight-streaming on terms block, budget, low, output, per, weight.",
+      "relation": "suggests",
+      "to": "finding:block-weight-streaming"
+    },
+    {
+      "confidence": "low",
+      "from": "external:candidate-arxiv-2607-15456",
+      "rationale": "Unreviewed research candidate matched outcome:decoder-mlx-lm-working-route on terms cache, quantization, still, transformers, weight, when.",
+      "relation": "suggests",
+      "to": "finding:outcome-decoder-mlx-lm-working-route"
+    },
+    {
+      "confidence": "low",
+      "from": "external:candidate-arxiv-2607-15456",
+      "rationale": "Unreviewed research candidate matched outcome:qwen25-05b-instruct-local-worked-port on terms attention, cache, cross, default, matched, specific, tied, token.",
+      "relation": "suggests",
+      "to": "result:v1-qwen25-05b-bf16-cast-walltime"
+    },
+    {
+      "confidence": "low",
+      "from": "external:candidate-blaizzy-mlx-audio",
+      "rationale": "Unreviewed research candidate matched learning:audio-flow-tts-duration-vocoder-gates on terms audio, codec, lucasnewman, tts.",
+      "relation": "suggests",
+      "to": "finding:audio-flow-tts-duration-vocoder-gates"
+    },
+    {
+      "confidence": "low",
+      "from": "external:candidate-blaizzy-mlx-audio",
+      "rationale": "Unreviewed research candidate matched approach:audio-reference-conditioning-cache on terms audio, codec, tts.",
+      "relation": "suggests",
+      "to": "mechanism:audio-reference-conditioning-cache"
+    },
+    {
+      "confidence": "low",
+      "from": "external:candidate-blaizzy-mlx-audio",
+      "rationale": "Unreviewed research candidate matched approach:audio-streaming-and-cache on terms audio, codec, tts.",
+      "relation": "suggests",
+      "to": "mechanism:audio-streaming-and-cache"
+    },
+    {
+      "confidence": "low",
+      "from": "external:candidate-blaizzy-mlx-audio",
+      "rationale": "Source registry observed revision 64e8416c303fb3b3463dab8eb4ebd78c55a87c1a of the same work.",
+      "relation": "supersedes",
+      "to": "external:mlx-audio-repo"
+    },
+    {
+      "confidence": "low",
+      "from": "external:candidate-blaizzy-mlx-vlm",
+      "rationale": "Unreviewed research candidate matched approach:multimodal-content-prefix-cache on terms multimodal, serving, vlm.",
+      "relation": "suggests",
+      "to": "mechanism:multimodal-content-prefix-cache"
+    },
+    {
+      "confidence": "low",
+      "from": "external:candidate-blaizzy-mlx-vlm",
+      "rationale": "Unreviewed research candidate matched approach:qwen3-tts-batch-generation on terms qwen3, request, serving.",
+      "relation": "suggests",
+      "to": "mechanism:qwen3-tts-batch-generation"
+    },
+    {
+      "confidence": "low",
+      "from": "external:candidate-blaizzy-mlx-vlm",
+      "rationale": "Unreviewed research candidate matched approach:video-input-budgeting on terms multimodal, video, vlm.",
+      "relation": "suggests",
+      "to": "mechanism:video-input-budgeting"
+    },
+    {
+      "confidence": "low",
+      "from": "external:candidate-blaizzy-mlx-vlm",
+      "rationale": "Source registry observed revision c9e27b08311f9c1f38690c46034b04c7598d73ee of the same work.",
+      "relation": "supersedes",
+      "to": "external:mlx-vlm-repo"
+    },
+    {
+      "confidence": "low",
+      "from": "external:candidate-ml-explore-mlx",
+      "rationale": "Unreviewed research candidate matched backlog:training-as-port-target on terms compile, kernels, random, state.",
+      "relation": "suggests",
+      "to": "hypothesis:training-as-port-target"
+    },
+    {
+      "confidence": "low",
+      "from": "external:candidate-ml-explore-mlx",
+      "rationale": "Unreviewed research candidate matched approach:compile-stable-region on terms compile, runtime, state.",
+      "relation": "suggests",
+      "to": "mechanism:compile-stable-region"
+    },
+    {
+      "confidence": "low",
+      "from": "external:candidate-ml-explore-mlx",
+      "rationale": "Unreviewed research candidate matched approach:prompt-prefix-cache on terms quantization, state.",
+      "relation": "suggests",
+      "to": "mechanism:prompt-prefix-cache"
+    },
+    {
+      "confidence": "low",
+      "from": "external:candidate-ml-explore-mlx",
+      "rationale": "Source registry observed revision ce3073389e92d8f7b7ecd3d7697523795786e046 of the same work.",
+      "relation": "supersedes",
+      "to": "external:mlx-repo"
+    },
+    {
+      "confidence": "low",
+      "from": "external:candidate-ml-explore-mlx-examples",
+      "rationale": "Unreviewed research candidate matched backlog:non-generative-cv on terms add, architectures, vision.",
+      "relation": "suggests",
+      "to": "hypothesis:non-generative-cv"
+    },
+    {
+      "confidence": "low",
+      "from": "external:candidate-ml-explore-mlx-examples",
+      "rationale": "Unreviewed research candidate matched approach:audio-streaming-and-cache on terms add, audio.",
+      "relation": "suggests",
+      "to": "mechanism:audio-streaming-and-cache"
+    },
+    {
+      "confidence": "low",
+      "from": "external:candidate-ml-explore-mlx-examples",
+      "rationale": "Unreviewed research candidate matched approach:native-low-bit-weight-quantization on terms audio, vision.",
+      "relation": "suggests",
+      "to": "mechanism:native-low-bit-weight-quantization"
+    },
+    {
+      "confidence": "low",
+      "from": "external:candidate-ml-explore-mlx-examples",
+      "rationale": "Source registry observed revision 796f5b53cab69a3d48a44233ce21aae889e94a08 of the same work.",
+      "relation": "supersedes",
+      "to": "external:mlx-examples-repo"
+    },
+    {
+      "confidence": "low",
+      "from": "external:candidate-ml-explore-mlx-lm",
+      "rationale": "Unreviewed research candidate matched approach:cache-privacy-and-isolation on terms cache, language, server.",
+      "relation": "suggests",
+      "to": "mechanism:cache-privacy-and-isolation"
+    },
+    {
+      "confidence": "low",
+      "from": "external:candidate-ml-explore-mlx-lm",
+      "rationale": "Unreviewed research candidate matched approach:continuous-batching-serving on terms language, server.",
+      "relation": "suggests",
+      "to": "mechanism:continuous-batching-serving"
+    },
+    {
+      "confidence": "low",
+      "from": "external:candidate-ml-explore-mlx-lm",
+      "rationale": "Unreviewed research candidate matched outcome:qwen25-05b-instruct-local-worked-port on terms cache, conversion, tokens.",
+      "relation": "suggests",
+      "to": "result:v1-qwen25-05b-bf16-cast-walltime"
+    },
+    {
+      "confidence": "low",
+      "from": "external:candidate-ml-explore-mlx-lm",
+      "rationale": "Source registry observed revision 15b522f593b7ca5fbc0cac6f7572d40859d2d8fe of the same work.",
+      "relation": "supersedes",
+      "to": "external:mlx-lm-repo"
+    },
+    {
+      "confidence": "low",
+      "from": "external:candidate-waybarrios-vllm-mlx",
+      "rationale": "Unreviewed research candidate matched outcome:vlm-mlx-vlm-working-route on terms cache, serving, vllm.",
+      "relation": "suggests",
+      "to": "finding:outcome-vlm-mlx-vlm-working-route"
+    },
+    {
+      "confidence": "low",
+      "from": "external:candidate-waybarrios-vllm-mlx",
+      "rationale": "Unreviewed research candidate matched approach:cache-privacy-and-isolation on terms cache, serving.",
+      "relation": "suggests",
+      "to": "mechanism:cache-privacy-and-isolation"
+    },
+    {
+      "confidence": "low",
+      "from": "external:candidate-waybarrios-vllm-mlx",
+      "rationale": "Unreviewed research candidate matched approach:prompt-prefix-cache on terms cache, serving, version.",
+      "relation": "suggests",
+      "to": "mechanism:prompt-prefix-cache"
+    },
+    {
+      "confidence": "low",
+      "from": "external:candidate-waybarrios-vllm-mlx",
+      "rationale": "Source registry observed revision 0dd115769ef1196a715b96b181353edacd2a4f69 of the same work.",
+      "relation": "supersedes",
+      "to": "external:vllm-mlx-repo"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:dgrauet-ltx2-block-streaming-source",
+      "rationale": "v1 evidence_for_outcome edge from source:dgrauet-ltx2-block-streaming-source.",
+      "relation": "supports",
+      "to": "finding:outcome-diffusion-and-flow-partial-routes"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:dgrauet-ltx2-block-streaming-source",
+      "rationale": "v1 evidence_for edge from source:dgrauet-ltx2-block-streaming-source.",
+      "relation": "supports",
+      "to": "mechanism:block-weight-streaming"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:dgrauet-ltx2-block-streaming-tests",
+      "rationale": "v1 evidence_for_outcome edge from source:dgrauet-ltx2-block-streaming-tests.",
+      "relation": "supports",
+      "to": "finding:outcome-diffusion-and-flow-partial-routes"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:dgrauet-ltx2-block-streaming-tests",
+      "rationale": "v1 evidence_for edge from source:dgrauet-ltx2-block-streaming-tests.",
+      "relation": "supports",
+      "to": "mechanism:block-weight-streaming"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:dgrauet-ltx2-regression-report",
+      "rationale": "v1 evidence_for_outcome edge from source:dgrauet-ltx2-regression-report.",
+      "relation": "supports",
+      "to": "finding:outcome-diffusion-and-flow-partial-routes"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:dgrauet-ltx2-regression-report",
+      "rationale": "v1 evidence_for edge from source:dgrauet-ltx2-regression-report.",
+      "relation": "supports",
+      "to": "mechanism:block-weight-streaming"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:huggingface-transformers",
+      "rationale": "v1 evidence_for_outcome edge from source:huggingface-transformers.",
+      "relation": "supports",
+      "to": "finding:outcome-encoder-embedding-top-model-gap"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:katlun-grid-sample-benchmark",
+      "rationale": "v1 evidence_for edge from source:katlun-grid-sample-benchmark.",
+      "relation": "supports",
+      "to": "mechanism:spatial-grid-sample-kernel"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:katlun-grid-sample-source",
+      "rationale": "v1 evidence_for edge from source:katlun-grid-sample-source.",
+      "relation": "supports",
+      "to": "mechanism:spatial-grid-sample-kernel"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:katlun-grid-sample-tests",
+      "rationale": "v1 evidence_for edge from source:katlun-grid-sample-tests.",
+      "relation": "supports",
+      "to": "mechanism:spatial-grid-sample-kernel"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:llava-onevision-blog",
+      "rationale": "v1 evidence_for edge from source:llava-onevision-blog.",
+      "relation": "supports",
+      "to": "mechanism:visual-token-pruning-or-merge"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:mlx-audio-codecs",
+      "rationale": "v1 evidence_for edge from source:mlx-audio-codecs.",
+      "relation": "supports",
+      "to": "mechanism:audio-streaming-and-cache"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:mlx-audio-convert",
+      "rationale": "v1 evidence_for edge from source:mlx-audio-convert.",
+      "relation": "supports",
+      "to": "mechanism:native-low-bit-weight-quantization"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:mlx-audio-models",
+      "rationale": "v1 evidence_for edge from source:mlx-audio-models.",
+      "relation": "supports",
+      "to": "mechanism:audio-streaming-and-cache"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:mlx-audio-qwen3-tts-docs",
+      "rationale": "v1 evidence_for_outcome edge from source:mlx-audio-qwen3-tts-docs.",
+      "relation": "supports",
+      "to": "finding:outcome-audio-tts-qwen3-and-vocoder-routes"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:mlx-audio-qwen3-tts-docs",
+      "rationale": "v1 evidence_for edge from source:mlx-audio-qwen3-tts-docs.",
+      "relation": "supports",
+      "to": "mechanism:audio-reference-conditioning-cache"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:mlx-audio-qwen3-tts-docs",
+      "rationale": "v1 evidence_for edge from source:mlx-audio-qwen3-tts-docs.",
+      "relation": "supports",
+      "to": "mechanism:qwen3-tts-batch-generation"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:mlx-audio-release-044",
+      "rationale": "v1 evidence_for edge from source:mlx-audio-release-044.",
+      "relation": "supports",
+      "to": "mechanism:audio-reference-conditioning-cache"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:mlx-audio-release-044",
+      "rationale": "v1 evidence_for edge from source:mlx-audio-release-044.",
+      "relation": "supports",
+      "to": "mechanism:audio-streaming-and-cache"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:mlx-audio-release-044",
+      "rationale": "v1 evidence_for edge from source:mlx-audio-release-044.",
+      "relation": "supports",
+      "to": "mechanism:qwen3-tts-batch-generation"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:mlx-audio-repo",
+      "rationale": "v1 evidence_for_outcome edge from source:mlx-audio-repo.",
+      "relation": "supports",
+      "to": "finding:outcome-audio-tts-qwen3-and-vocoder-routes"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:mlx-audio-repo",
+      "rationale": "v1 evidence_for edge from source:mlx-audio-repo.",
+      "relation": "supports",
+      "to": "mechanism:audio-streaming-and-cache"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:mlx-audio-streaming-guide",
+      "rationale": "v1 evidence_for edge from source:mlx-audio-streaming-guide.",
+      "relation": "supports",
+      "to": "mechanism:generic-audio-prefix-cache"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:mlx-doc-compile",
+      "rationale": "v1 evidence_for edge from source:mlx-doc-compile.",
+      "relation": "supports",
+      "to": "mechanism:compile-stable-region"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:mlx-doc-compile",
+      "rationale": "v1 evidence_for edge from source:mlx-doc-compile.",
+      "relation": "supports",
+      "to": "mechanism:cuda-graphs-decode-capture"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:mlx-doc-core-quantize",
+      "rationale": "v1 evidence_for edge from source:mlx-doc-core-quantize.",
+      "relation": "supports",
+      "to": "mechanism:native-low-bit-weight-quantization"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:mlx-doc-custom-extensions",
+      "rationale": "v1 evidence_for edge from source:mlx-doc-custom-extensions.",
+      "relation": "supports",
+      "to": "mechanism:spatial-grid-sample-kernel"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:mlx-doc-fast-sdpa",
+      "rationale": "v1 evidence_for edge from source:mlx-doc-fast-sdpa.",
+      "relation": "supports",
+      "to": "mechanism:fast-sdpa"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:mlx-doc-gather-mm",
+      "rationale": "v1 evidence_for edge from source:mlx-doc-gather-mm.",
+      "relation": "supports",
+      "to": "mechanism:moe-expert-dispatch-and-quantization"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:mlx-doc-gather-mm",
+      "rationale": "v1 evidence_for edge from source:mlx-doc-gather-mm.",
+      "relation": "supports",
+      "to": "mechanism:moe-gather-and-expert-batching"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:mlx-doc-gather-qmm",
+      "rationale": "v1 evidence_for edge from source:mlx-doc-gather-qmm.",
+      "relation": "supports",
+      "to": "mechanism:moe-expert-dispatch-and-quantization"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:mlx-doc-gather-qmm",
+      "rationale": "v1 evidence_for edge from source:mlx-doc-gather-qmm.",
+      "relation": "supports",
+      "to": "mechanism:moe-gather-and-expert-batching"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:mlx-doc-lazy",
+      "rationale": "v1 evidence_for edge from source:mlx-doc-lazy.",
+      "relation": "supports",
+      "to": "mechanism:lazy-eval-boundaries"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:mlx-doc-nn-quantize",
+      "rationale": "v1 evidence_for edge from source:mlx-doc-nn-quantize.",
+      "relation": "supports",
+      "to": "mechanism:native-low-bit-weight-quantization"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:mlx-doc-quantized-matmul",
+      "rationale": "v1 evidence_for edge from source:mlx-doc-quantized-matmul.",
+      "relation": "supports",
+      "to": "mechanism:native-low-bit-weight-quantization"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:mlx-docs",
+      "rationale": "v1 evidence_for edge from source:mlx-docs.",
+      "relation": "supports",
+      "to": "mechanism:bf16-weight-cast"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:mlx-examples-repo",
+      "rationale": "v1 evidence_for_outcome edge from source:mlx-examples-repo.",
+      "relation": "supports",
+      "to": "finding:outcome-asr-whisper-working-adjacent-route"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:mlx-examples-repo",
+      "rationale": "v1 evidence_for_outcome edge from source:mlx-examples-repo.",
+      "relation": "supports",
+      "to": "finding:outcome-diffusion-and-flow-partial-routes"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:mlx-lm-cache",
+      "rationale": "v1 evidence_for_outcome edge from source:mlx-lm-cache.",
+      "relation": "supports",
+      "to": "finding:outcome-decoder-mlx-lm-working-route"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:mlx-lm-cache",
+      "rationale": "v1 evidence_for edge from source:mlx-lm-cache.",
+      "relation": "supports",
+      "to": "mechanism:prompt-prefix-cache"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:mlx-lm-cache",
+      "rationale": "v1 evidence_for edge from source:mlx-lm-cache.",
+      "relation": "supports",
+      "to": "mechanism:uniform-kv-quantization"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:mlx-lm-convert",
+      "rationale": "v1 evidence_for_outcome edge from source:mlx-lm-convert.",
+      "relation": "supports",
+      "to": "finding:outcome-decoder-mlx-lm-working-route"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:mlx-lm-convert",
+      "rationale": "v1 evidence_for edge from source:mlx-lm-convert.",
+      "relation": "supports",
+      "to": "mechanism:native-low-bit-weight-quantization"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:mlx-lm-issue-956",
+      "rationale": "v1 evidence_for edge from source:mlx-lm-issue-956.",
+      "relation": "supports",
+      "to": "mechanism:moe-gate-up-fusion"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:mlx-lm-models",
+      "rationale": "v1 evidence_for_outcome edge from source:mlx-lm-models.",
+      "relation": "supports",
+      "to": "finding:outcome-decoder-mlx-lm-working-route"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:mlx-lm-models",
+      "rationale": "v1 evidence_for_outcome edge from source:mlx-lm-models.",
+      "relation": "supports",
+      "to": "result:v1-qwen25-05b-bf16-cast-walltime"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:mlx-lm-repo",
+      "rationale": "v1 evidence_for_outcome edge from source:mlx-lm-repo.",
+      "relation": "supports",
+      "to": "finding:outcome-decoder-mlx-lm-working-route"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:mlx-lm-repo",
+      "rationale": "v1 evidence_for_outcome edge from source:mlx-lm-repo.",
+      "relation": "supports",
+      "to": "result:v1-qwen25-05b-bf16-cast-walltime"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:mlx-lm-speculative",
+      "rationale": "v1 evidence_for_outcome edge from source:mlx-lm-speculative.",
+      "relation": "supports",
+      "to": "finding:outcome-decoder-mlx-lm-working-route"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:mlx-lm-speculative",
+      "rationale": "v1 evidence_for edge from source:mlx-lm-speculative.",
+      "relation": "supports",
+      "to": "mechanism:draft-model-speculation"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:mlx-lm-switch-layers",
+      "rationale": "v1 evidence_for edge from source:mlx-lm-switch-layers.",
+      "relation": "supports",
+      "to": "mechanism:moe-expert-dispatch-and-quantization"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:mlx-lm-switch-layers",
+      "rationale": "v1 evidence_for edge from source:mlx-lm-switch-layers.",
+      "relation": "supports",
+      "to": "mechanism:moe-gate-up-fusion"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:mlx-repo",
+      "rationale": "v1 evidence_for edge from source:mlx-repo.",
+      "relation": "supports",
+      "to": "mechanism:bf16-weight-cast"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:mlx-repo",
+      "rationale": "v1 evidence_for edge from source:mlx-repo.",
+      "relation": "supports",
+      "to": "mechanism:compile-stable-region"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:mlx-repo",
+      "rationale": "v1 evidence_for edge from source:mlx-repo.",
+      "relation": "supports",
+      "to": "mechanism:fast-sdpa"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:mlx-repo",
+      "rationale": "v1 evidence_for edge from source:mlx-repo.",
+      "relation": "supports",
+      "to": "mechanism:lazy-eval-boundaries"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:mlx-repo",
+      "rationale": "v1 evidence_for edge from source:mlx-repo.",
+      "relation": "supports",
+      "to": "mechanism:moe-gather-and-expert-batching"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:mlx-vlm-apc-source",
+      "rationale": "v1 evidence_for_outcome edge from source:mlx-vlm-apc-source.",
+      "relation": "supports",
+      "to": "finding:outcome-vlm-mlx-vlm-working-route"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:mlx-vlm-apc-source",
+      "rationale": "v1 evidence_for edge from source:mlx-vlm-apc-source.",
+      "relation": "supports",
+      "to": "mechanism:multimodal-content-prefix-cache"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:mlx-vlm-ar-cache-guards",
+      "rationale": "v1 evidence_for_outcome edge from source:mlx-vlm-ar-cache-guards.",
+      "relation": "supports",
+      "to": "finding:outcome-vlm-mlx-vlm-working-route"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:mlx-vlm-ar-cache-guards",
+      "rationale": "v1 evidence_for edge from source:mlx-vlm-ar-cache-guards.",
+      "relation": "supports",
+      "to": "mechanism:multimodal-content-prefix-cache"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:mlx-vlm-readme",
+      "rationale": "v1 evidence_for_outcome edge from source:mlx-vlm-readme.",
+      "relation": "supports",
+      "to": "finding:outcome-vlm-mlx-vlm-working-route"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:mlx-vlm-readme",
+      "rationale": "v1 evidence_for edge from source:mlx-vlm-readme.",
+      "relation": "supports",
+      "to": "mechanism:content-prefix-cache-vlm"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:mlx-vlm-readme",
+      "rationale": "v1 evidence_for edge from source:mlx-vlm-readme.",
+      "relation": "supports",
+      "to": "mechanism:continuous-batching-serving"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:mlx-vlm-readme",
+      "rationale": "v1 evidence_for edge from source:mlx-vlm-readme.",
+      "relation": "supports",
+      "to": "mechanism:eagle-medusa-mtp-drafters"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:mlx-vlm-readme",
+      "rationale": "v1 evidence_for edge from source:mlx-vlm-readme.",
+      "relation": "supports",
+      "to": "mechanism:prompt-prefix-cache"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:mlx-vlm-readme",
+      "rationale": "v1 evidence_for edge from source:mlx-vlm-readme.",
+      "relation": "supports",
+      "to": "mechanism:uniform-kv-quantization"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:mlx-vlm-repo",
+      "rationale": "v1 evidence_for_outcome edge from source:mlx-vlm-repo.",
+      "relation": "supports",
+      "to": "finding:outcome-vlm-mlx-vlm-working-route"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:mlx-vlm-vision-cache-source",
+      "rationale": "v1 evidence_for_outcome edge from source:mlx-vlm-vision-cache-source.",
+      "relation": "supports",
+      "to": "finding:outcome-vlm-mlx-vlm-working-route"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:mlx-vlm-vision-cache-source",
+      "rationale": "v1 evidence_for edge from source:mlx-vlm-vision-cache-source.",
+      "relation": "supports",
+      "to": "mechanism:vision-feature-cache"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:nvidia-nvfp4-blog",
+      "rationale": "v1 evidence_for edge from source:nvidia-nvfp4-blog.",
+      "relation": "supports",
+      "to": "mechanism:native-low-bit-weight-quantization"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:orca-osdi22",
+      "rationale": "v1 evidence_for edge from source:orca-osdi22.",
+      "relation": "supports",
+      "to": "mechanism:continuous-batching-serving"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:paper-2205-14135",
+      "rationale": "v1 evidence_for edge from source:paper-2205-14135.",
+      "relation": "supports",
+      "to": "mechanism:fast-sdpa"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:paper-2211-17192",
+      "rationale": "v1 evidence_for_outcome edge from source:paper-2211-17192.",
+      "relation": "supports",
+      "to": "finding:outcome-decoder-mlx-lm-working-route"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:paper-2211-17192",
+      "rationale": "v1 evidence_for_outcome edge from source:paper-2211-17192.",
+      "relation": "supports",
+      "to": "finding:outcome-vlm-mlx-vlm-working-route"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:paper-2211-17192",
+      "rationale": "v1 evidence_for edge from source:paper-2211-17192.",
+      "relation": "supports",
+      "to": "mechanism:draft-model-speculation"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:paper-2302-01318",
+      "rationale": "v1 evidence_for_outcome edge from source:paper-2302-01318.",
+      "relation": "supports",
+      "to": "finding:outcome-decoder-mlx-lm-working-route"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:paper-2302-01318",
+      "rationale": "v1 evidence_for_outcome edge from source:paper-2302-01318.",
+      "relation": "supports",
+      "to": "finding:outcome-vlm-mlx-vlm-working-route"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:paper-2302-01318",
+      "rationale": "v1 evidence_for edge from source:paper-2302-01318.",
+      "relation": "supports",
+      "to": "mechanism:draft-model-speculation"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:paper-2307-08691",
+      "rationale": "v1 evidence_for edge from source:paper-2307-08691.",
+      "relation": "supports",
+      "to": "mechanism:fast-sdpa"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:paper-2309-06180",
+      "rationale": "v1 evidence_for edge from source:paper-2309-06180.",
+      "relation": "supports",
+      "to": "mechanism:continuous-batching-serving"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:paper-2310-16836",
+      "rationale": "v1 evidence_for edge from source:paper-2310-16836.",
+      "relation": "supports",
+      "to": "mechanism:native-low-bit-weight-quantization"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:paper-2311-08252",
+      "rationale": "v1 evidence_for edge from source:paper-2311-08252.",
+      "relation": "supports",
+      "to": "mechanism:prompt-lookup-ngram-speculation"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:paper-2401-04088",
+      "rationale": "v1 evidence_for edge from source:paper-2401-04088.",
+      "relation": "supports",
+      "to": "mechanism:moe-expert-dispatch-and-quantization"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:paper-2401-04088",
+      "rationale": "v1 evidence_for edge from source:paper-2401-04088.",
+      "relation": "supports",
+      "to": "mechanism:moe-gather-and-expert-batching"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:paper-2401-10774",
+      "rationale": "v1 evidence_for edge from source:paper-2401-10774.",
+      "relation": "supports",
+      "to": "mechanism:eagle-medusa-mtp-drafters"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:paper-2401-15077",
+      "rationale": "v1 evidence_for edge from source:paper-2401-15077.",
+      "relation": "supports",
+      "to": "mechanism:eagle-medusa-mtp-drafters"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:paper-2402-02750",
+      "rationale": "v1 evidence_for edge from source:paper-2402-02750.",
+      "relation": "supports",
+      "to": "mechanism:uniform-kv-quantization"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:paper-2402-05099",
+      "rationale": "v1 evidence_for edge from source:paper-2402-05099.",
+      "relation": "supports",
+      "to": "mechanism:prompt-prefix-cache"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:paper-2403-15388",
+      "rationale": "v1 evidence_for edge from source:paper-2403-15388.",
+      "relation": "supports",
+      "to": "mechanism:visual-token-pruning-or-merge"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:paper-2405-04434",
+      "rationale": "v1 evidence_for edge from source:paper-2405-04434.",
+      "relation": "supports",
+      "to": "mechanism:moe-expert-dispatch-and-quantization"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:paper-2406-16858",
+      "rationale": "v1 evidence_for edge from source:paper-2406-16858.",
+      "relation": "supports",
+      "to": "mechanism:eagle-medusa-mtp-drafters"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:paper-2407-08608",
+      "rationale": "v1 evidence_for edge from source:paper-2407-08608.",
+      "relation": "supports",
+      "to": "mechanism:fast-sdpa"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:paper-2409-12191",
+      "rationale": "v1 evidence_for edge from source:paper-2409-12191.",
+      "relation": "supports",
+      "to": "mechanism:video-input-budgeting"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:paper-2412-03594",
+      "rationale": "v1 evidence_for edge from source:paper-2412-03594.",
+      "relation": "supports",
+      "to": "mechanism:prompt-prefix-cache"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:paper-2412-04467",
+      "rationale": "v1 evidence_for edge from source:paper-2412-04467.",
+      "relation": "supports",
+      "to": "mechanism:visual-token-pruning-or-merge"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:paper-2412-19437",
+      "rationale": "v1 evidence_for edge from source:paper-2412-19437.",
+      "relation": "supports",
+      "to": "mechanism:eagle-medusa-mtp-drafters"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:paper-2502-04420",
+      "rationale": "v1 evidence_for edge from source:paper-2502-04420.",
+      "relation": "supports",
+      "to": "mechanism:adaptive-kv-quantization"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:paper-2502-13923",
+      "rationale": "v1 evidence_for edge from source:paper-2502-13923.",
+      "relation": "supports",
+      "to": "mechanism:video-input-budgeting"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:paper-2502-15075",
+      "rationale": "v1 evidence_for edge from source:paper-2502-15075.",
+      "relation": "supports",
+      "to": "mechanism:adaptive-kv-quantization"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:paper-2505-15380",
+      "rationale": "v1 evidence_for_outcome edge from source:paper-2505-15380.",
+      "relation": "supports",
+      "to": "finding:outcome-audio-tts-qwen3-and-vocoder-routes"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:paper-2505-15380",
+      "rationale": "v1 evidence_for edge from source:paper-2505-15380.",
+      "relation": "supports",
+      "to": "mechanism:audio-streaming-and-cache"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:paper-2601-15621",
+      "rationale": "v1 evidence_for edge from source:paper-2601-15621.",
+      "relation": "supports",
+      "to": "mechanism:generic-audio-prefix-cache"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:paper-2601-15621",
+      "rationale": "v1 evidence_for edge from source:paper-2601-15621.",
+      "relation": "supports",
+      "to": "mechanism:qwen3-tts-batch-generation"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:paper-2601-19139",
+      "rationale": "v1 evidence_for_outcome edge from source:paper-2601-19139.",
+      "relation": "supports",
+      "to": "finding:outcome-decoder-mlx-lm-working-route"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:paper-2601-19139",
+      "rationale": "v1 evidence_for_outcome edge from source:paper-2601-19139.",
+      "relation": "supports",
+      "to": "finding:outcome-vlm-mlx-vlm-working-route"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:paper-2601-19139",
+      "rationale": "v1 evidence_for edge from source:paper-2601-19139.",
+      "relation": "supports",
+      "to": "mechanism:content-prefix-cache-vlm"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:paper-2601-19139",
+      "rationale": "v1 evidence_for edge from source:paper-2601-19139.",
+      "relation": "supports",
+      "to": "mechanism:continuous-batching-serving"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:paper-2601-19139",
+      "rationale": "v1 evidence_for edge from source:paper-2601-19139.",
+      "relation": "supports",
+      "to": "mechanism:multimodal-content-prefix-cache"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:paper-2601-19139",
+      "rationale": "v1 evidence_for edge from source:paper-2601-19139.",
+      "relation": "supports",
+      "to": "mechanism:vision-feature-cache"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:paper-2602-23200",
+      "rationale": "v1 evidence_for edge from source:paper-2602-23200.",
+      "relation": "supports",
+      "to": "mechanism:adaptive-kv-quantization"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:paper-2604-04722",
+      "rationale": "v1 evidence_for edge from source:paper-2604-04722.",
+      "relation": "supports",
+      "to": "mechanism:adaptive-kv-quantization"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:paper-2606-20474",
+      "rationale": "v1 evidence_for edge from source:paper-2606-20474.",
+      "relation": "supports",
+      "to": "mechanism:adaptive-kv-quantization"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:paper-2606-21842",
+      "rationale": "v1 evidence_for edge from source:paper-2606-21842.",
+      "relation": "supports",
+      "to": "mechanism:cache-privacy-and-isolation"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:paper-2606-21842",
+      "rationale": "v1 evidence_for edge from source:paper-2606-21842.",
+      "relation": "supports",
+      "to": "mechanism:prompt-prefix-cache"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:paper-2606-24033",
+      "rationale": "v1 evidence_for edge from source:paper-2606-24033.",
+      "relation": "supports",
+      "to": "mechanism:adaptive-kv-quantization"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:prompt-lookup-decoding-repo",
+      "rationale": "v1 evidence_for edge from source:prompt-lookup-decoding-repo.",
+      "relation": "supports",
+      "to": "mechanism:prompt-lookup-ngram-speculation"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:pypi-mlx-audio",
+      "rationale": "v1 evidence_for_outcome edge from source:pypi-mlx-audio.",
+      "relation": "supports",
+      "to": "finding:outcome-audio-tts-qwen3-and-vocoder-routes"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:pypi-mlx-lm",
+      "rationale": "v1 evidence_for_outcome edge from source:pypi-mlx-lm.",
+      "relation": "supports",
+      "to": "finding:outcome-decoder-mlx-lm-working-route"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:pytorch-doc-cuda-graphs",
+      "rationale": "v1 evidence_for edge from source:pytorch-doc-cuda-graphs.",
+      "relation": "supports",
+      "to": "mechanism:cuda-graphs-decode-capture"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:repo-stable-audio-tools",
+      "rationale": "v1 evidence_for_outcome edge from source:repo-stable-audio-tools.",
+      "relation": "supports",
+      "to": "finding:outcome-audio-tts-qwen3-and-vocoder-routes"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:repo-whisper",
+      "rationale": "v1 evidence_for_outcome edge from source:repo-whisper.",
+      "relation": "supports",
+      "to": "finding:outcome-asr-whisper-working-adjacent-route"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:spheron-nvfp4-mxfp4-guide",
+      "rationale": "v1 evidence_for edge from source:spheron-nvfp4-mxfp4-guide.",
+      "relation": "supports",
+      "to": "mechanism:native-low-bit-weight-quantization"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:vllm-blog-anatomy",
+      "rationale": "v1 evidence_for edge from source:vllm-blog-anatomy.",
+      "relation": "supports",
+      "to": "mechanism:cache-privacy-and-isolation"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:vllm-blog-anatomy",
+      "rationale": "v1 evidence_for edge from source:vllm-blog-anatomy.",
+      "relation": "supports",
+      "to": "mechanism:continuous-batching-serving"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:vllm-doc-prefix-caching",
+      "rationale": "v1 evidence_for edge from source:vllm-doc-prefix-caching.",
+      "relation": "supports",
+      "to": "mechanism:multimodal-content-prefix-cache"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:vllm-doc-prefix-caching",
+      "rationale": "v1 evidence_for edge from source:vllm-doc-prefix-caching.",
+      "relation": "supports",
+      "to": "mechanism:prompt-prefix-cache"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:vllm-mlx-continuous-batching-guide",
+      "rationale": "v1 evidence_for_outcome edge from source:vllm-mlx-continuous-batching-guide.",
+      "relation": "supports",
+      "to": "finding:outcome-decoder-mlx-lm-working-route"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:vllm-mlx-mllm-batch-source",
+      "rationale": "v1 evidence_for_outcome edge from source:vllm-mlx-mllm-batch-source.",
+      "relation": "supports",
+      "to": "finding:outcome-vlm-mlx-vlm-working-route"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:vllm-mlx-mllm-batch-source",
+      "rationale": "v1 evidence_for edge from source:vllm-mlx-mllm-batch-source.",
+      "relation": "supports",
+      "to": "mechanism:multimodal-content-prefix-cache"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:vllm-mlx-multimodal-guide",
+      "rationale": "v1 evidence_for_outcome edge from source:vllm-mlx-multimodal-guide.",
+      "relation": "supports",
+      "to": "finding:outcome-vlm-mlx-vlm-working-route"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:vllm-mlx-multimodal-guide",
+      "rationale": "v1 evidence_for edge from source:vllm-mlx-multimodal-guide.",
+      "relation": "supports",
+      "to": "mechanism:video-input-budgeting"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:vllm-mlx-repo",
+      "rationale": "v1 evidence_for_outcome edge from source:vllm-mlx-repo.",
+      "relation": "supports",
+      "to": "finding:outcome-vlm-mlx-vlm-working-route"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:vllm-mlx-repo",
+      "rationale": "v1 evidence_for edge from source:vllm-mlx-repo.",
+      "relation": "supports",
+      "to": "mechanism:cache-privacy-and-isolation"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:vllm-mlx-repo",
+      "rationale": "v1 evidence_for edge from source:vllm-mlx-repo.",
+      "relation": "supports",
+      "to": "mechanism:content-prefix-cache-vlm"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:vllm-mlx-repo",
+      "rationale": "v1 evidence_for edge from source:vllm-mlx-repo.",
+      "relation": "supports",
+      "to": "mechanism:continuous-batching-serving"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:vllm-mlx-repo",
+      "rationale": "v1 evidence_for edge from source:vllm-mlx-repo.",
+      "relation": "supports",
+      "to": "mechanism:eagle-medusa-mtp-drafters"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:vllm-mlx-repo",
+      "rationale": "v1 evidence_for edge from source:vllm-mlx-repo.",
+      "relation": "supports",
+      "to": "mechanism:prompt-prefix-cache"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:vllm-mlx-vision-cache-source",
+      "rationale": "v1 evidence_for_outcome edge from source:vllm-mlx-vision-cache-source.",
+      "relation": "supports",
+      "to": "finding:outcome-vlm-mlx-vlm-working-route"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:vllm-mlx-vision-cache-source",
+      "rationale": "v1 evidence_for edge from source:vllm-mlx-vision-cache-source.",
+      "relation": "supports",
+      "to": "mechanism:vision-feature-cache"
+    }
+  ],
+  "generated_at": "2026-07-23",
+  "graph_id": "mlx-porting-skill/migrated/references",
+  "nodes": [
+    {
+      "confidence": "medium",
+      "evidence": [
+        "https://machinelearning.apple.com/research/exploring-llms-mlx-m5"
+      ],
+      "id": "external:apple-mlx-m5-blog",
+      "kind": "external_reference",
+      "observed_at": "2026-07-23",
+      "provenance": "research_inference",
+      "status": "screened",
+      "summary": "technical-blog source owned by Apple Machine Learning Research. Review depth screened: relevance and limits reviewed",
+      "tags": [
+        "migrated-v1",
+        "review-depth/screened",
+        "source-kind/technical-blog",
+        "topic/apple-silicon",
+        "topic/llm",
+        "topic/mlx",
+        "topic/runtime"
+      ],
+      "title": "Exploring LLMs with MLX and the Neural Accelerators in the M5 GPU"
+    },
+    {
+      "confidence": "medium",
+      "evidence": [
+        "https://developer.apple.com/videos/play/wwdc2025/315"
+      ],
+      "id": "external:apple-wwdc25-mlx",
+      "kind": "external_reference",
+      "observed_at": "2026-07-23",
+      "provenance": "research_inference",
+      "status": "screened",
+      "summary": "technical-blog source owned by Apple Developer. Review depth screened: relevance and limits reviewed",
+      "tags": [
+        "migrated-v1",
+        "review-depth/screened",
+        "source-kind/technical-blog",
+        "topic/apple-silicon",
+        "topic/compile",
+        "topic/lazy-evaluation",
+        "topic/mlx"
+      ],
+      "title": "Get started with MLX for Apple silicon"
+    },
+    {
+      "confidence": "low",
+      "evidence": [
+        "https://arxiv.org/abs/2001.00577",
+        "https://arxiv.org/abs/2001.00577v1"
+      ],
+      "id": "external:candidate-arxiv-2001-00577",
+      "kind": "external_reference",
+      "observed_at": "2020-01-02",
+      "provenance": "research_inference",
+      "status": "candidate-unreviewed",
+      "summary": "Automatically collected research candidate awaiting review. It has not informed any rule, runbook, or registry decision and must not be cited as if it had. Discovery query: streaming ASR on-device quantization",
+      "tags": [
+        "migrated-v1",
+        "review-depth/candidate",
+        "source-kind/paper"
+      ],
+      "title": "Attention based on-device streaming speech recognition with large speech corpus"
+    },
+    {
+      "confidence": "low",
+      "evidence": [
+        "https://arxiv.org/abs/2503.09905",
+        "https://arxiv.org/abs/2503.09905v1"
+      ],
+      "id": "external:candidate-arxiv-2503-09905",
+      "kind": "external_reference",
+      "observed_at": "2025-03-12",
+      "provenance": "research_inference",
+      "status": "candidate-unreviewed",
+      "summary": "Automatically collected research candidate awaiting review. It has not informed any rule, runbook, or registry decision and must not be cited as if it had. Discovery query: streaming ASR on-device quantization",
+      "tags": [
+        "migrated-v1",
+        "review-depth/candidate",
+        "source-kind/paper"
+      ],
+      "title": "Quantization for OpenAI's Whisper Models: A Comparative Analysis"
+    },
+    {
+      "confidence": "low",
+      "evidence": [
+        "https://arxiv.org/abs/2505.18610",
+        "https://arxiv.org/abs/2505.18610v2"
+      ],
+      "id": "external:candidate-arxiv-2505-18610",
+      "kind": "external_reference",
+      "observed_at": "2026-07-11",
+      "provenance": "research_inference",
+      "status": "candidate-unreviewed",
+      "summary": "Automatically collected research candidate awaiting review. It has not informed any rule, runbook, or registry decision and must not be cited as if it had. Discovery query: KV cache quantization long context",
+      "tags": [
+        "migrated-v1",
+        "review-depth/candidate",
+        "source-kind/paper"
+      ],
+      "title": "PM-KVQ: Progressive Mixed-precision KV Cache Quantization for Long-CoT LLMs"
+    },
+    {
+      "confidence": "low",
+      "evidence": [
+        "https://arxiv.org/abs/2510.00981",
+        "https://arxiv.org/abs/2510.00981v3"
+      ],
+      "id": "external:candidate-arxiv-2510-00981",
+      "kind": "external_reference",
+      "observed_at": "2026-02-25",
+      "provenance": "research_inference",
+      "status": "candidate-unreviewed",
+      "summary": "Automatically collected research candidate awaiting review. It has not informed any rule, runbook, or registry decision and must not be cited as if it had. Discovery query: neural audio codec speech tokenizer streaming",
+      "tags": [
+        "migrated-v1",
+        "review-depth/candidate",
+        "source-kind/paper"
+      ],
+      "title": "FlexiCodec: A Dynamic Neural Audio Codec for Low Frame Rates"
+    },
+    {
+      "confidence": "low",
+      "evidence": [
+        "https://arxiv.org/abs/2510.18921",
+        "https://arxiv.org/abs/2510.18921v1"
+      ],
+      "id": "external:candidate-arxiv-2510-18921",
+      "kind": "external_reference",
+      "observed_at": "2025-10-21",
+      "provenance": "research_inference",
+      "status": "candidate-unreviewed",
+      "summary": "Automatically collected research candidate awaiting review. It has not informed any rule, runbook, or registry decision and must not be cited as if it had. Discovery query: MLX Apple Silicon inference optimization",
+      "tags": [
+        "migrated-v1",
+        "review-depth/candidate",
+        "source-kind/paper"
+      ],
+      "title": "Benchmarking On-Device Machine Learning on Apple Silicon with MLX"
+    },
+    {
+      "confidence": "low",
+      "evidence": [
+        "https://arxiv.org/abs/2601.11141",
+        "https://arxiv.org/abs/2601.11141v1"
+      ],
+      "id": "external:candidate-arxiv-2601-11141",
+      "kind": "external_reference",
+      "observed_at": "2026-01-16",
+      "provenance": "research_inference",
+      "status": "candidate-unreviewed",
+      "summary": "Automatically collected research candidate awaiting review. It has not informed any rule, runbook, or registry decision and must not be cited as if it had. Discovery query: neural audio codec speech tokenizer streaming",
+      "tags": [
+        "migrated-v1",
+        "review-depth/candidate",
+        "source-kind/paper"
+      ],
+      "title": "FlashLabs Chroma 1.0: A Real-Time End-to-End Spoken Dialogue Model with Personalized Voice Cloning"
+    },
+    {
+      "confidence": "low",
+      "evidence": [
+        "https://arxiv.org/abs/2601.19139",
+        "https://arxiv.org/abs/2601.19139v2"
+      ],
+      "id": "external:candidate-arxiv-2601-19139",
+      "kind": "external_reference",
+      "observed_at": "2026-01-29",
+      "provenance": "research_inference",
+      "status": "candidate-unreviewed",
+      "summary": "Automatically collected research candidate awaiting review. It has not informed any rule, runbook, or registry decision and must not be cited as if it had. Discovery query: MLX Apple Silicon inference optimization",
+      "tags": [
+        "migrated-v1",
+        "review-depth/candidate",
+        "source-kind/paper"
+      ],
+      "title": "Native LLM and MLLM Inference at Scale on Apple Silicon"
+    },
+    {
+      "confidence": "low",
+      "evidence": [
+        "https://arxiv.org/abs/2603.06079",
+        "https://arxiv.org/abs/2603.06079v1"
+      ],
+      "id": "external:candidate-arxiv-2603-06079",
+      "kind": "external_reference",
+      "observed_at": "2026-03-06",
+      "provenance": "research_inference",
+      "status": "candidate-unreviewed",
+      "summary": "Automatically collected research candidate awaiting review. It has not informed any rule, runbook, or registry decision and must not be cited as if it had. Discovery query: neural audio codec speech tokenizer streaming",
+      "tags": [
+        "migrated-v1",
+        "review-depth/candidate",
+        "source-kind/paper"
+      ],
+      "title": "StreamVoiceAnon+: Emotion-Preserving Streaming Speaker Anonymization via Frame-Level Acoustic Distillation"
+    },
+    {
+      "confidence": "low",
+      "evidence": [
+        "https://arxiv.org/abs/2603.08721",
+        "https://arxiv.org/abs/2603.08721v2"
+      ],
+      "id": "external:candidate-arxiv-2603-08721",
+      "kind": "external_reference",
+      "observed_at": "2026-05-29",
+      "provenance": "research_inference",
+      "status": "candidate-unreviewed",
+      "summary": "Automatically collected research candidate awaiting review. It has not informed any rule, runbook, or registry decision and must not be cited as if it had. Discovery query: Metal GPU custom kernel machine learning",
+      "tags": [
+        "migrated-v1",
+        "review-depth/candidate",
+        "source-kind/paper"
+      ],
+      "title": "KernelCraft: Benchmarking for Agentic Close-to-Metal Kernel Generation on Emerging Hardware"
+    },
+    {
+      "confidence": "low",
+      "evidence": [
+        "https://arxiv.org/abs/2603.14035",
+        "https://arxiv.org/abs/2603.14035v1"
+      ],
+      "id": "external:candidate-arxiv-2603-14035",
+      "kind": "external_reference",
+      "observed_at": "2026-03-14",
+      "provenance": "research_inference",
+      "status": "candidate-unreviewed",
+      "summary": "Automatically collected research candidate awaiting review. It has not informed any rule, runbook, or registry decision and must not be cited as if it had. Discovery query: neural audio codec speech tokenizer streaming",
+      "tags": [
+        "migrated-v1",
+        "review-depth/candidate",
+        "source-kind/paper"
+      ],
+      "title": "Probing neural audio codecs for distinctions among English nuclear tunes"
+    },
+    {
+      "confidence": "low",
+      "evidence": [
+        "https://arxiv.org/abs/2604.14493",
+        "https://arxiv.org/abs/2604.14493v2"
+      ],
+      "id": "external:candidate-arxiv-2604-14493",
+      "kind": "external_reference",
+      "observed_at": "2026-04-19",
+      "provenance": "research_inference",
+      "status": "candidate-unreviewed",
+      "summary": "Automatically collected research candidate awaiting review. It has not informed any rule, runbook, or registry decision and must not be cited as if it had. Discovery query: streaming ASR on-device quantization",
+      "tags": [
+        "migrated-v1",
+        "review-depth/candidate",
+        "source-kind/paper"
+      ],
+      "title": "Pushing the Limits of On-Device Streaming ASR: A Compact, High-Accuracy English Model for Low-Latency Inference"
+    },
+    {
+      "confidence": "low",
+      "evidence": [
+        "https://arxiv.org/abs/2605.23373",
+        "https://arxiv.org/abs/2605.23373v1"
+      ],
+      "id": "external:candidate-arxiv-2605-23373",
+      "kind": "external_reference",
+      "observed_at": "2026-05-22",
+      "provenance": "research_inference",
+      "status": "candidate-unreviewed",
+      "summary": "Automatically collected research candidate awaiting review. It has not informed any rule, runbook, or registry decision and must not be cited as if it had. Discovery query: neural audio codec speech tokenizer streaming",
+      "tags": [
+        "migrated-v1",
+        "review-depth/candidate",
+        "source-kind/paper"
+      ],
+      "title": "AffectCodec: Emotion-Preserving Neural Speech Codec with Block-Diagonal Residual FSQ"
+    },
+    {
+      "confidence": "low",
+      "evidence": [
+        "https://arxiv.org/abs/2606.06743",
+        "https://arxiv.org/abs/2606.06743v1"
+      ],
+      "id": "external:candidate-arxiv-2606-06743",
+      "kind": "external_reference",
+      "observed_at": "2026-06-04",
+      "provenance": "research_inference",
+      "status": "candidate-unreviewed",
+      "summary": "Automatically collected research candidate awaiting review. It has not informed any rule, runbook, or registry decision and must not be cited as if it had. Discovery query: neural audio codec speech tokenizer streaming",
+      "tags": [
+        "migrated-v1",
+        "review-depth/candidate",
+        "source-kind/paper"
+      ],
+      "title": "HybridCodec: Fast Dual-Stream, Semantically Enhanced Neural Audio Codec"
+    },
+    {
+      "confidence": "low",
+      "evidence": [
+        "https://arxiv.org/abs/2606.21888",
+        "https://arxiv.org/abs/2606.21888v1"
+      ],
+      "id": "external:candidate-arxiv-2606-21888",
+      "kind": "external_reference",
+      "observed_at": "2026-06-20",
+      "provenance": "research_inference",
+      "status": "candidate-unreviewed",
+      "summary": "Automatically collected research candidate awaiting review. It has not informed any rule, runbook, or registry decision and must not be cited as if it had. Discovery query: neural audio codec speech tokenizer streaming",
+      "tags": [
+        "migrated-v1",
+        "review-depth/candidate",
+        "source-kind/paper"
+      ],
+      "title": "ProsoCodec: Prosody-Oriented Speech Codec for Voice Conversion"
+    },
+    {
+      "confidence": "low",
+      "evidence": [
+        "https://arxiv.org/abs/2606.21893",
+        "https://arxiv.org/abs/2606.21893v1"
+      ],
+      "id": "external:candidate-arxiv-2606-21893",
+      "kind": "external_reference",
+      "observed_at": "2026-06-20",
+      "provenance": "research_inference",
+      "status": "candidate-unreviewed",
+      "summary": "Automatically collected research candidate awaiting review. It has not informed any rule, runbook, or registry decision and must not be cited as if it had. Discovery query: neural audio codec speech tokenizer streaming",
+      "tags": [
+        "migrated-v1",
+        "review-depth/candidate",
+        "source-kind/paper"
+      ],
+      "title": "AugCodec: A Low-Bitrate Disentangled Neural Speech Codec via Data Augmentation"
+    },
+    {
+      "confidence": "low",
+      "evidence": [
+        "https://arxiv.org/abs/2606.24033",
+        "https://arxiv.org/abs/2606.24033v1"
+      ],
+      "id": "external:candidate-arxiv-2606-24033",
+      "kind": "external_reference",
+      "observed_at": "2026-06-23",
+      "provenance": "research_inference",
+      "status": "candidate-unreviewed",
+      "summary": "Automatically collected research candidate awaiting review. It has not informed any rule, runbook, or registry decision and must not be cited as if it had. Discovery query: KV cache quantization long context",
+      "tags": [
+        "migrated-v1",
+        "review-depth/candidate",
+        "source-kind/paper"
+      ],
+      "title": "RoPE-Aware Bit Allocation for KV-Cache Quantization"
+    },
+    {
+      "confidence": "low",
+      "evidence": [
+        "https://arxiv.org/abs/2606.31519",
+        "https://arxiv.org/abs/2606.31519v1"
+      ],
+      "id": "external:candidate-arxiv-2606-31519",
+      "kind": "external_reference",
+      "observed_at": "2026-06-30",
+      "provenance": "research_inference",
+      "status": "candidate-unreviewed",
+      "summary": "Automatically collected research candidate awaiting review. It has not informed any rule, runbook, or registry decision and must not be cited as if it had. Discovery query: KV cache quantization long context",
+      "tags": [
+        "migrated-v1",
+        "review-depth/candidate",
+        "source-kind/paper"
+      ],
+      "title": "RaBitQCache: Rotated Binary Quantization for KVCache in Long Context LLM Inference"
+    },
+    {
+      "confidence": "low",
+      "evidence": [
+        "https://arxiv.org/abs/2607.01831",
+        "https://arxiv.org/abs/2607.01831v1"
+      ],
+      "id": "external:candidate-arxiv-2607-01831",
+      "kind": "external_reference",
+      "observed_at": "2026-07-02",
+      "provenance": "research_inference",
+      "status": "candidate-unreviewed",
+      "summary": "Automatically collected research candidate awaiting review. It has not informed any rule, runbook, or registry decision and must not be cited as if it had. Discovery query: KV cache quantization long context",
+      "tags": [
+        "migrated-v1",
+        "review-depth/candidate",
+        "source-kind/paper"
+      ],
+      "title": "Lynx: Progressive Speculative Quantization for accelerating KV Transfer in Long-Context Inference"
+    },
+    {
+      "confidence": "low",
+      "evidence": [
+        "https://arxiv.org/abs/2607.03652",
+        "https://arxiv.org/abs/2607.03652v1"
+      ],
+      "id": "external:candidate-arxiv-2607-03652",
+      "kind": "external_reference",
+      "observed_at": "2026-07-04",
+      "provenance": "research_inference",
+      "status": "candidate-unreviewed",
+      "summary": "Automatically collected research candidate awaiting review. It has not informed any rule, runbook, or registry decision and must not be cited as if it had. Discovery query: KV cache quantization long context",
+      "tags": [
+        "migrated-v1",
+        "review-depth/candidate",
+        "source-kind/paper"
+      ],
+      "title": "ELiTeFormer: An Efficient Transformer for FPGAs"
+    },
+    {
+      "confidence": "low",
+      "evidence": [
+        "https://arxiv.org/abs/2607.07144",
+        "https://arxiv.org/abs/2607.07144v1"
+      ],
+      "id": "external:candidate-arxiv-2607-07144",
+      "kind": "external_reference",
+      "observed_at": "2026-07-08",
+      "provenance": "research_inference",
+      "status": "candidate-unreviewed",
+      "summary": "Automatically collected research candidate awaiting review. It has not informed any rule, runbook, or registry decision and must not be cited as if it had. Discovery query: KV cache quantization long context",
+      "tags": [
+        "migrated-v1",
+        "review-depth/candidate",
+        "source-kind/paper"
+      ],
+      "title": "Fractal KV-Cache Archives: Lossless Symbolic Storage with In-Place Retrieval for Long-Context LLM Inference"
+    },
+    {
+      "confidence": "low",
+      "evidence": [
+        "https://arxiv.org/abs/2607.08032",
+        "https://arxiv.org/abs/2607.08032v1"
+      ],
+      "id": "external:candidate-arxiv-2607-08032",
+      "kind": "external_reference",
+      "observed_at": "2026-07-09",
+      "provenance": "research_inference",
+      "status": "candidate-unreviewed",
+      "summary": "Automatically collected research candidate awaiting review. It has not informed any rule, runbook, or registry decision and must not be cited as if it had. Discovery query: KV cache quantization long context",
+      "tags": [
+        "migrated-v1",
+        "review-depth/candidate",
+        "source-kind/paper"
+      ],
+      "title": "What to Keep, What to Forget: A Rate--Distortion View of Memory Compaction in LLMs and Agents"
+    },
+    {
+      "confidence": "low",
+      "evidence": [
+        "https://arxiv.org/abs/2607.12550",
+        "https://arxiv.org/abs/2607.12550v2"
+      ],
+      "id": "external:candidate-arxiv-2607-12550",
+      "kind": "external_reference",
+      "observed_at": "2026-07-17",
+      "provenance": "research_inference",
+      "status": "candidate-unreviewed",
+      "summary": "Automatically collected research candidate awaiting review. It has not informed any rule, runbook, or registry decision and must not be cited as if it had. Discovery query: KV cache quantization long context",
+      "tags": [
+        "migrated-v1",
+        "review-depth/candidate",
+        "source-kind/paper"
+      ],
+      "title": "A JoLT for the KV Cache: Near-Lossless KV Cache Compression via Joint Tucker and JL-Residual Allocation for LLMs"
+    },
+    {
+      "confidence": "low",
+      "evidence": [
+        "https://arxiv.org/abs/2607.15456",
+        "https://arxiv.org/abs/2607.15456v1"
+      ],
+      "id": "external:candidate-arxiv-2607-15456",
+      "kind": "external_reference",
+      "observed_at": "2026-07-16",
+      "provenance": "research_inference",
+      "status": "candidate-unreviewed",
+      "summary": "Automatically collected research candidate awaiting review. It has not informed any rule, runbook, or registry decision and must not be cited as if it had. Discovery query: KV cache quantization long context",
+      "tags": [
+        "migrated-v1",
+        "review-depth/candidate",
+        "source-kind/paper"
+      ],
+      "title": "Looped Latent Attention: Cross-Loop KV Compression for Looped Transformers"
+    },
+    {
+      "confidence": "low",
+      "evidence": [
+        "https://github.com/Blaizzy/mlx-audio"
+      ],
+      "id": "external:candidate-blaizzy-mlx-audio",
+      "kind": "external_reference",
+      "observed_at": "2026-07-23",
+      "provenance": "research_inference",
+      "status": "candidate-unreviewed",
+      "summary": "Automatically collected research candidate awaiting review. It has not informed any rule, runbook, or registry decision and must not be cited as if it had. Discovery query: n/a",
+      "tags": [
+        "migrated-v1",
+        "review-depth/candidate",
+        "source-kind/repository",
+        "topic/audio",
+        "topic/codec",
+        "topic/stt",
+        "topic/tts"
+      ],
+      "title": "Blaizzy/mlx-audio"
+    },
+    {
+      "confidence": "low",
+      "evidence": [
+        "https://github.com/Blaizzy/mlx-vlm"
+      ],
+      "id": "external:candidate-blaizzy-mlx-vlm",
+      "kind": "external_reference",
+      "observed_at": "2026-07-23",
+      "provenance": "research_inference",
+      "status": "candidate-unreviewed",
+      "summary": "Automatically collected research candidate awaiting review. It has not informed any rule, runbook, or registry decision and must not be cited as if it had. Discovery query: n/a",
+      "tags": [
+        "migrated-v1",
+        "review-depth/candidate",
+        "source-kind/repository",
+        "topic/multimodal",
+        "topic/serving",
+        "topic/speculative"
+      ],
+      "title": "Blaizzy/mlx-vlm"
+    },
+    {
+      "confidence": "low",
+      "evidence": [
+        "https://github.com/ml-explore/mlx"
+      ],
+      "id": "external:candidate-ml-explore-mlx",
+      "kind": "external_reference",
+      "observed_at": "2026-07-23",
+      "provenance": "research_inference",
+      "status": "candidate-unreviewed",
+      "summary": "Automatically collected research candidate awaiting review. It has not informed any rule, runbook, or registry decision and must not be cited as if it had. Discovery query: n/a",
+      "tags": [
+        "migrated-v1",
+        "review-depth/candidate",
+        "source-kind/repository",
+        "topic/kernels",
+        "topic/quantization",
+        "topic/runtime"
+      ],
+      "title": "ml-explore/mlx"
+    },
+    {
+      "confidence": "low",
+      "evidence": [
+        "https://github.com/ml-explore/mlx-examples"
+      ],
+      "id": "external:candidate-ml-explore-mlx-examples",
+      "kind": "external_reference",
+      "observed_at": "2026-07-23",
+      "provenance": "research_inference",
+      "status": "candidate-unreviewed",
+      "summary": "Automatically collected research candidate awaiting review. It has not informed any rule, runbook, or registry decision and must not be cited as if it had. Discovery query: n/a",
+      "tags": [
+        "migrated-v1",
+        "review-depth/candidate",
+        "source-kind/repository",
+        "topic/architectures",
+        "topic/audio",
+        "topic/vision"
+      ],
+      "title": "ml-explore/mlx-examples"
+    },
+    {
+      "confidence": "low",
+      "evidence": [
+        "https://github.com/ml-explore/mlx-lm"
+      ],
+      "id": "external:candidate-ml-explore-mlx-lm",
+      "kind": "external_reference",
+      "observed_at": "2026-07-23",
+      "provenance": "research_inference",
+      "status": "candidate-unreviewed",
+      "summary": "Automatically collected research candidate awaiting review. It has not informed any rule, runbook, or registry decision and must not be cited as if it had. Discovery query: n/a",
+      "tags": [
+        "migrated-v1",
+        "review-depth/candidate",
+        "source-kind/repository",
+        "topic/cache",
+        "topic/conversion",
+        "topic/decoding",
+        "topic/language"
+      ],
+      "title": "ml-explore/mlx-lm"
+    },
+    {
+      "confidence": "low",
+      "evidence": [
+        "https://github.com/waybarrios/vllm-mlx"
+      ],
+      "id": "external:candidate-waybarrios-vllm-mlx",
+      "kind": "external_reference",
+      "observed_at": "2026-07-23",
+      "provenance": "research_inference",
+      "status": "candidate-unreviewed",
+      "summary": "Automatically collected research candidate awaiting review. It has not informed any rule, runbook, or registry decision and must not be cited as if it had. Discovery query: n/a",
+      "tags": [
+        "migrated-v1",
+        "review-depth/candidate",
+        "source-kind/repository",
+        "topic/batching",
+        "topic/cache",
+        "topic/serving"
+      ],
+      "title": "waybarrios/vllm-mlx"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://github.com/dgrauet/ltx-2-mlx/blob/3f5897a9582b5c14379c8f88216ae0fd6e55741d/packages/ltx-core-mlx/src/ltx_core_mlx/loader/block_streaming.py"
+      ],
+      "id": "external:dgrauet-ltx2-block-streaming-source",
+      "kind": "external_reference",
+      "observed_at": "2026-07-23",
+      "provenance": "code_verified",
+      "status": "synthesized",
+      "summary": "source-code source owned by dgrauet. Review depth synthesized: directly informed a rule, runbook, or registry decision",
+      "tags": [
+        "migrated-v1",
+        "review-depth/synthesized",
+        "source-kind/source-code",
+        "topic/block-streaming",
+        "topic/diffusion",
+        "topic/mlx",
+        "topic/peak-memory",
+        "topic/safetensors"
+      ],
+      "title": "ltx-2-mlx BlockStreamer implementation"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://github.com/dgrauet/ltx-2-mlx/blob/3f5897a9582b5c14379c8f88216ae0fd6e55741d/tests/test_block_streaming.py"
+      ],
+      "id": "external:dgrauet-ltx2-block-streaming-tests",
+      "kind": "external_reference",
+      "observed_at": "2026-07-23",
+      "provenance": "code_verified",
+      "status": "synthesized",
+      "summary": "source-code source owned by dgrauet. Review depth synthesized: directly informed a rule, runbook, or registry decision",
+      "tags": [
+        "migrated-v1",
+        "review-depth/synthesized",
+        "source-kind/source-code",
+        "topic/block-streaming",
+        "topic/eviction",
+        "topic/mlx",
+        "topic/parity",
+        "topic/tests"
+      ],
+      "title": "ltx-2-mlx block streaming tests"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://github.com/dgrauet/ltx-2-mlx/blob/3f5897a9582b5c14379c8f88216ae0fd6e55741d/docs/REGRESSION_TESTS_v0.11.0.md"
+      ],
+      "id": "external:dgrauet-ltx2-regression-report",
+      "kind": "external_reference",
+      "observed_at": "2026-07-23",
+      "provenance": "code_verified",
+      "status": "synthesized",
+      "summary": "source-code source owned by dgrauet. Review depth synthesized: directly informed a rule, runbook, or registry decision",
+      "tags": [
+        "migrated-v1",
+        "review-depth/synthesized",
+        "source-kind/source-code",
+        "topic/block-streaming",
+        "topic/mlx",
+        "topic/regression-tests",
+        "topic/video-diffusion"
+      ],
+      "title": "ltx-2-mlx v0.11.0 regression report"
+    },
+    {
+      "confidence": "medium",
+      "evidence": [
+        "https://github.com/huggingface/transformers"
+      ],
+      "id": "external:huggingface-transformers",
+      "kind": "external_reference",
+      "observed_at": "2026-07-23",
+      "provenance": "research_inference",
+      "status": "screened",
+      "summary": "repository source owned by Hugging Face. Review depth screened: relevance and limits reviewed",
+      "tags": [
+        "migrated-v1",
+        "review-depth/screened",
+        "source-kind/repository",
+        "topic/architectures",
+        "topic/model-config",
+        "topic/source-oracle"
+      ],
+      "title": "Transformers architecture and model repository"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://github.com/katlun-lgtm/mlx-grid-sample/blob/467385fa2b84864659bf3076eca32c4c4d4ddbec/bench_grid_sample.py"
+      ],
+      "id": "external:katlun-grid-sample-benchmark",
+      "kind": "external_reference",
+      "observed_at": "2026-07-23",
+      "provenance": "code_verified",
+      "status": "synthesized",
+      "summary": "source-code source owned by katlun-lgtm. Review depth synthesized: directly informed a rule, runbook, or registry decision",
+      "tags": [
+        "migrated-v1",
+        "review-depth/synthesized",
+        "source-kind/source-code",
+        "topic/benchmarking",
+        "topic/custom-kernel",
+        "topic/grid-sample",
+        "topic/mlx"
+      ],
+      "title": "mlx-grid-sample benchmark harness"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://github.com/katlun-lgtm/mlx-grid-sample/blob/467385fa2b84864659bf3076eca32c4c4d4ddbec/mlx_grid_sample.py"
+      ],
+      "id": "external:katlun-grid-sample-source",
+      "kind": "external_reference",
+      "observed_at": "2026-07-23",
+      "provenance": "code_verified",
+      "status": "synthesized",
+      "summary": "source-code source owned by katlun-lgtm. Review depth synthesized: directly informed a rule, runbook, or registry decision",
+      "tags": [
+        "migrated-v1",
+        "review-depth/synthesized",
+        "source-kind/source-code",
+        "topic/custom-kernel",
+        "topic/grid-sample",
+        "topic/mlx",
+        "topic/spatial-warp",
+        "topic/video"
+      ],
+      "title": "mlx-grid-sample custom Metal implementation"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://github.com/katlun-lgtm/mlx-grid-sample/blob/467385fa2b84864659bf3076eca32c4c4d4ddbec/test_grid_sample.py"
+      ],
+      "id": "external:katlun-grid-sample-tests",
+      "kind": "external_reference",
+      "observed_at": "2026-07-23",
+      "provenance": "code_verified",
+      "status": "synthesized",
+      "summary": "source-code source owned by katlun-lgtm. Review depth synthesized: directly informed a rule, runbook, or registry decision",
+      "tags": [
+        "migrated-v1",
+        "review-depth/synthesized",
+        "source-kind/source-code",
+        "topic/custom-kernel",
+        "topic/grid-sample",
+        "topic/mlx",
+        "topic/parity",
+        "topic/tests"
+      ],
+      "title": "mlx-grid-sample correctness tests"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://llava-vl.github.io/blog/2024-08-05-llava-onevision"
+      ],
+      "id": "external:llava-onevision-blog",
+      "kind": "external_reference",
+      "observed_at": "2026-07-23",
+      "provenance": "research_inference",
+      "status": "synthesized",
+      "summary": "technical-blog source owned by LLaVA team. Review depth synthesized: directly informed a rule, runbook, or registry decision",
+      "tags": [
+        "migrated-v1",
+        "review-depth/synthesized",
+        "source-kind/technical-blog",
+        "topic/llava",
+        "topic/video",
+        "topic/vision-language"
+      ],
+      "title": "LLaVA-OneVision release blog"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://github.com/Blaizzy/mlx-audio/tree/412cf7cd381c2a3f6a8189af04a95af24cb415b6/mlx_audio/codec/models"
+      ],
+      "id": "external:mlx-audio-codecs",
+      "kind": "external_reference",
+      "observed_at": "2026-07-23",
+      "provenance": "code_verified",
+      "status": "synthesized",
+      "summary": "source-code source owned by Blaizzy. Review depth synthesized: directly informed a rule, runbook, or registry decision",
+      "tags": [
+        "migrated-v1",
+        "review-depth/synthesized",
+        "source-kind/source-code",
+        "topic/audio-codec",
+        "topic/tokenizer",
+        "topic/vocoder"
+      ],
+      "title": "MLX-Audio codec implementations"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://github.com/Blaizzy/mlx-audio/blob/412cf7cd381c2a3f6a8189af04a95af24cb415b6/mlx_audio/convert.py"
+      ],
+      "id": "external:mlx-audio-convert",
+      "kind": "external_reference",
+      "observed_at": "2026-07-23",
+      "provenance": "code_verified",
+      "status": "synthesized",
+      "summary": "source-code source owned by Blaizzy. Review depth synthesized: directly informed a rule, runbook, or registry decision",
+      "tags": [
+        "migrated-v1",
+        "review-depth/synthesized",
+        "source-kind/source-code",
+        "topic/audio",
+        "topic/conversion",
+        "topic/model-detection",
+        "topic/quantization"
+      ],
+      "title": "MLX-Audio conversion implementation"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://github.com/Blaizzy/mlx-audio/tree/412cf7cd381c2a3f6a8189af04a95af24cb415b6/mlx_audio"
+      ],
+      "id": "external:mlx-audio-models",
+      "kind": "external_reference",
+      "observed_at": "2026-07-23",
+      "provenance": "code_verified",
+      "status": "synthesized",
+      "summary": "source-code source owned by Blaizzy. Review depth synthesized: directly informed a rule, runbook, or registry decision",
+      "tags": [
+        "migrated-v1",
+        "review-depth/synthesized",
+        "source-kind/source-code",
+        "topic/audio",
+        "topic/sts",
+        "topic/stt",
+        "topic/tts"
+      ],
+      "title": "MLX-Audio model implementations"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://github.com/Blaizzy/mlx-audio/blob/a7ef98604cfd752e9e5c9011bcee8ec8c67228be/docs/models/tts/qwen3-tts.md"
+      ],
+      "id": "external:mlx-audio-qwen3-tts-docs",
+      "kind": "external_reference",
+      "observed_at": "2026-07-23",
+      "provenance": "code_verified",
+      "status": "synthesized",
+      "summary": "source-code source owned by Blaizzy. Review depth synthesized: directly informed a rule, runbook, or registry decision",
+      "tags": [
+        "migrated-v1",
+        "review-depth/synthesized",
+        "source-kind/source-code",
+        "topic/batching",
+        "topic/mlx-audio",
+        "topic/qwen3-tts",
+        "topic/streaming",
+        "topic/tts"
+      ],
+      "title": "MLX-Audio Qwen3-TTS model guide"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://github.com/Blaizzy/mlx-audio/releases/tag/v0.4.4"
+      ],
+      "id": "external:mlx-audio-release-044",
+      "kind": "external_reference",
+      "observed_at": "2026-07-23",
+      "provenance": "code_verified",
+      "status": "synthesized",
+      "summary": "release source owned by Blaizzy. Review depth synthesized: directly informed a rule, runbook, or registry decision",
+      "tags": [
+        "migrated-v1",
+        "review-depth/synthesized",
+        "source-kind/release",
+        "topic/audio",
+        "topic/cache",
+        "topic/codec",
+        "topic/streaming"
+      ],
+      "title": "MLX-Audio v0.4.4 release"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://github.com/Blaizzy/mlx-audio/tree/412cf7cd381c2a3f6a8189af04a95af24cb415b6"
+      ],
+      "id": "external:mlx-audio-repo",
+      "kind": "external_reference",
+      "observed_at": "2026-07-23",
+      "provenance": "code_verified",
+      "status": "synthesized",
+      "summary": "repository source owned by Blaizzy. Review depth synthesized: directly informed a rule, runbook, or registry decision",
+      "tags": [
+        "migrated-v1",
+        "review-depth/synthesized",
+        "source-kind/repository",
+        "topic/audio",
+        "topic/codec",
+        "topic/mlx",
+        "topic/stt",
+        "topic/tts"
+      ],
+      "title": "MLX-Audio repository"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://blaizzy.github.io/mlx-audio/guides/streaming"
+      ],
+      "id": "external:mlx-audio-streaming-guide",
+      "kind": "external_reference",
+      "observed_at": "2026-07-23",
+      "provenance": "code_verified",
+      "status": "synthesized",
+      "summary": "official-doc source owned by Blaizzy. Review depth synthesized: directly informed a rule, runbook, or registry decision",
+      "tags": [
+        "migrated-v1",
+        "review-depth/synthesized",
+        "source-kind/official-doc",
+        "topic/mlx-audio",
+        "topic/streaming",
+        "topic/stt",
+        "topic/tts"
+      ],
+      "title": "MLX-Audio streaming audio guide"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://ml-explore.github.io/mlx/build/html/usage/compile.html"
+      ],
+      "id": "external:mlx-doc-compile",
+      "kind": "external_reference",
+      "observed_at": "2026-07-23",
+      "provenance": "code_verified",
+      "status": "synthesized",
+      "summary": "official-doc source owned by Apple MLX. Review depth synthesized: directly informed a rule, runbook, or registry decision",
+      "tags": [
+        "migrated-v1",
+        "review-depth/synthesized",
+        "source-kind/official-doc",
+        "topic/compile",
+        "topic/fusion",
+        "topic/mlx"
+      ],
+      "title": "MLX compilation documentation"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.quantize.html"
+      ],
+      "id": "external:mlx-doc-core-quantize",
+      "kind": "external_reference",
+      "observed_at": "2026-07-23",
+      "provenance": "code_verified",
+      "status": "synthesized",
+      "summary": "official-doc source owned by Apple MLX. Review depth synthesized: directly informed a rule, runbook, or registry decision",
+      "tags": [
+        "migrated-v1",
+        "review-depth/synthesized",
+        "source-kind/official-doc",
+        "topic/low-bit-formats",
+        "topic/mlx",
+        "topic/quantization"
+      ],
+      "title": "MLX core quantize API"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://ml-explore.github.io/mlx/build/html/dev/extensions.html"
+      ],
+      "id": "external:mlx-doc-custom-extensions",
+      "kind": "external_reference",
+      "observed_at": "2026-07-23",
+      "provenance": "code_verified",
+      "status": "synthesized",
+      "summary": "official-doc source owned by Apple MLX. Review depth synthesized: directly informed a rule, runbook, or registry decision",
+      "tags": [
+        "migrated-v1",
+        "review-depth/synthesized",
+        "source-kind/official-doc",
+        "topic/custom-kernels",
+        "topic/metal",
+        "topic/mlx"
+      ],
+      "title": "MLX custom extensions documentation"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.fast.scaled_dot_product_attention.html"
+      ],
+      "id": "external:mlx-doc-fast-sdpa",
+      "kind": "external_reference",
+      "observed_at": "2026-07-23",
+      "provenance": "code_verified",
+      "status": "synthesized",
+      "summary": "official-doc source owned by Apple MLX. Review depth synthesized: directly informed a rule, runbook, or registry decision",
+      "tags": [
+        "migrated-v1",
+        "review-depth/synthesized",
+        "source-kind/official-doc",
+        "topic/attention",
+        "topic/kernels",
+        "topic/mlx"
+      ],
+      "title": "MLX fast scaled dot product attention API"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.gather_mm.html"
+      ],
+      "id": "external:mlx-doc-gather-mm",
+      "kind": "external_reference",
+      "observed_at": "2026-07-23",
+      "provenance": "code_verified",
+      "status": "synthesized",
+      "summary": "official-doc source owned by Apple MLX. Review depth synthesized: directly informed a rule, runbook, or registry decision",
+      "tags": [
+        "migrated-v1",
+        "review-depth/synthesized",
+        "source-kind/official-doc",
+        "topic/gather",
+        "topic/kernels",
+        "topic/mlx",
+        "topic/moe"
+      ],
+      "title": "MLX gather matmul API"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.gather_qmm.html"
+      ],
+      "id": "external:mlx-doc-gather-qmm",
+      "kind": "external_reference",
+      "observed_at": "2026-07-23",
+      "provenance": "code_verified",
+      "status": "synthesized",
+      "summary": "official-doc source owned by Apple MLX. Review depth synthesized: directly informed a rule, runbook, or registry decision",
+      "tags": [
+        "migrated-v1",
+        "review-depth/synthesized",
+        "source-kind/official-doc",
+        "topic/gather",
+        "topic/kernels",
+        "topic/mlx",
+        "topic/moe",
+        "topic/quantization"
+      ],
+      "title": "MLX gather quantized matmul API"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://ml-explore.github.io/mlx/build/html/usage/lazy_evaluation.html"
+      ],
+      "id": "external:mlx-doc-lazy",
+      "kind": "external_reference",
+      "observed_at": "2026-07-23",
+      "provenance": "code_verified",
+      "status": "synthesized",
+      "summary": "official-doc source owned by Apple MLX. Review depth synthesized: directly informed a rule, runbook, or registry decision",
+      "tags": [
+        "migrated-v1",
+        "review-depth/synthesized",
+        "source-kind/official-doc",
+        "topic/lazy-evaluation",
+        "topic/mlx"
+      ],
+      "title": "MLX lazy evaluation documentation"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.nn.quantize.html"
+      ],
+      "id": "external:mlx-doc-nn-quantize",
+      "kind": "external_reference",
+      "observed_at": "2026-07-23",
+      "provenance": "code_verified",
+      "status": "synthesized",
+      "summary": "official-doc source owned by Apple MLX. Review depth synthesized: directly informed a rule, runbook, or registry decision",
+      "tags": [
+        "migrated-v1",
+        "review-depth/synthesized",
+        "source-kind/official-doc",
+        "topic/linear",
+        "topic/mlx",
+        "topic/quantization"
+      ],
+      "title": "MLX neural network quantize API"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.quantized_matmul.html"
+      ],
+      "id": "external:mlx-doc-quantized-matmul",
+      "kind": "external_reference",
+      "observed_at": "2026-07-23",
+      "provenance": "code_verified",
+      "status": "synthesized",
+      "summary": "official-doc source owned by Apple MLX. Review depth synthesized: directly informed a rule, runbook, or registry decision",
+      "tags": [
+        "migrated-v1",
+        "review-depth/synthesized",
+        "source-kind/official-doc",
+        "topic/kernels",
+        "topic/mlx",
+        "topic/quantization"
+      ],
+      "title": "MLX quantized matmul API"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://ml-explore.github.io/mlx/build/html/index.html"
+      ],
+      "id": "external:mlx-docs",
+      "kind": "external_reference",
+      "observed_at": "2026-07-23",
+      "provenance": "code_verified",
+      "status": "synthesized",
+      "summary": "official-doc source owned by Apple MLX. Review depth synthesized: directly informed a rule, runbook, or registry decision",
+      "tags": [
+        "migrated-v1",
+        "review-depth/synthesized",
+        "source-kind/official-doc",
+        "topic/api",
+        "topic/mlx",
+        "topic/runtime"
+      ],
+      "title": "MLX documentation"
+    },
+    {
+      "confidence": "medium",
+      "evidence": [
+        "https://github.com/ml-explore/mlx-examples"
+      ],
+      "id": "external:mlx-examples-repo",
+      "kind": "external_reference",
+      "observed_at": "2026-07-23",
+      "provenance": "research_inference",
+      "status": "screened",
+      "summary": "repository source owned by Apple MLX. Review depth screened: relevance and limits reviewed",
+      "tags": [
+        "migrated-v1",
+        "review-depth/screened",
+        "source-kind/repository",
+        "topic/diffusion",
+        "topic/encodec",
+        "topic/examples",
+        "topic/whisper"
+      ],
+      "title": "MLX examples repository"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://github.com/ml-explore/mlx-lm/blob/2c008fd0252b2c569227d12568356ab88ab0560a/mlx_lm/models/cache.py"
+      ],
+      "id": "external:mlx-lm-cache",
+      "kind": "external_reference",
+      "observed_at": "2026-07-23",
+      "provenance": "code_verified",
+      "status": "synthesized",
+      "summary": "source-code source owned by Apple MLX. Review depth synthesized: directly informed a rule, runbook, or registry decision",
+      "tags": [
+        "migrated-v1",
+        "review-depth/synthesized",
+        "source-kind/source-code",
+        "topic/kv-cache",
+        "topic/quantization",
+        "topic/rotating-cache"
+      ],
+      "title": "MLX-LM cache implementations"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://github.com/ml-explore/mlx-lm/blob/2c008fd0252b2c569227d12568356ab88ab0560a/mlx_lm/convert.py"
+      ],
+      "id": "external:mlx-lm-convert",
+      "kind": "external_reference",
+      "observed_at": "2026-07-23",
+      "provenance": "code_verified",
+      "status": "synthesized",
+      "summary": "source-code source owned by Apple MLX. Review depth synthesized: directly informed a rule, runbook, or registry decision",
+      "tags": [
+        "migrated-v1",
+        "review-depth/synthesized",
+        "source-kind/source-code",
+        "topic/conversion",
+        "topic/quantization",
+        "topic/weights"
+      ],
+      "title": "MLX-LM model conversion and quantization"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://github.com/ml-explore/mlx-lm/issues/956"
+      ],
+      "id": "external:mlx-lm-issue-956",
+      "kind": "external_reference",
+      "observed_at": "2026-07-23",
+      "provenance": "research_inference",
+      "status": "synthesized",
+      "summary": "issue-report source owned by Apple MLX. Review depth synthesized: directly informed a rule, runbook, or registry decision",
+      "tags": [
+        "migrated-v1",
+        "review-depth/synthesized",
+        "source-kind/issue-report",
+        "topic/fusion",
+        "topic/mlx-lm",
+        "topic/moe",
+        "topic/quantization"
+      ],
+      "title": "MLX-LM MoE gate/up fusion proposal"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://github.com/ml-explore/mlx-lm/tree/2c008fd0252b2c569227d12568356ab88ab0560a/mlx_lm/models"
+      ],
+      "id": "external:mlx-lm-models",
+      "kind": "external_reference",
+      "observed_at": "2026-07-23",
+      "provenance": "code_verified",
+      "status": "synthesized",
+      "summary": "source-code source owned by Apple MLX. Review depth synthesized: directly informed a rule, runbook, or registry decision",
+      "tags": [
+        "migrated-v1",
+        "review-depth/synthesized",
+        "source-kind/source-code",
+        "topic/architectures",
+        "topic/language-models"
+      ],
+      "title": "MLX-LM architecture implementations"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://github.com/ml-explore/mlx-lm/tree/2c008fd0252b2c569227d12568356ab88ab0560a"
+      ],
+      "id": "external:mlx-lm-repo",
+      "kind": "external_reference",
+      "observed_at": "2026-07-23",
+      "provenance": "code_verified",
+      "status": "synthesized",
+      "summary": "repository source owned by Apple MLX. Review depth synthesized: directly informed a rule, runbook, or registry decision",
+      "tags": [
+        "migrated-v1",
+        "review-depth/synthesized",
+        "source-kind/repository",
+        "topic/generation",
+        "topic/language-models",
+        "topic/mlx",
+        "topic/training"
+      ],
+      "title": "MLX-LM repository"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://github.com/ml-explore/mlx-lm/blob/2c008fd0252b2c569227d12568356ab88ab0560a/mlx_lm/generate.py"
+      ],
+      "id": "external:mlx-lm-speculative",
+      "kind": "external_reference",
+      "observed_at": "2026-07-23",
+      "provenance": "code_verified",
+      "status": "synthesized",
+      "summary": "source-code source owned by Apple MLX. Review depth synthesized: directly informed a rule, runbook, or registry decision",
+      "tags": [
+        "migrated-v1",
+        "review-depth/synthesized",
+        "source-kind/source-code",
+        "topic/generation",
+        "topic/speculative-decoding"
+      ],
+      "title": "MLX-LM speculative generation implementation"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://github.com/ml-explore/mlx-lm/blob/ed1fca4cef15a824c5f1702c80f70b4cffc8e4dd/mlx_lm/models/switch_layers.py"
+      ],
+      "id": "external:mlx-lm-switch-layers",
+      "kind": "external_reference",
+      "observed_at": "2026-07-23",
+      "provenance": "code_verified",
+      "status": "synthesized",
+      "summary": "source-code source owned by Apple MLX. Review depth synthesized: directly informed a rule, runbook, or registry decision",
+      "tags": [
+        "migrated-v1",
+        "review-depth/synthesized",
+        "source-kind/source-code",
+        "topic/gather-mm",
+        "topic/gather-qmm",
+        "topic/mlx-lm",
+        "topic/moe"
+      ],
+      "title": "MLX-LM Switch/MoE layers implementation"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://github.com/ml-explore/mlx/tree/96296e9c3075a2389bc5c0f078bf01b5aa377cd9"
+      ],
+      "id": "external:mlx-repo",
+      "kind": "external_reference",
+      "observed_at": "2026-07-23",
+      "provenance": "code_verified",
+      "status": "synthesized",
+      "summary": "repository source owned by Apple MLX. Review depth synthesized: directly informed a rule, runbook, or registry decision",
+      "tags": [
+        "migrated-v1",
+        "review-depth/synthesized",
+        "source-kind/repository",
+        "topic/cuda",
+        "topic/metal",
+        "topic/mlx",
+        "topic/runtime"
+      ],
+      "title": "MLX array framework repository"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://github.com/Blaizzy/mlx-vlm/blob/6a8cdff6a1f53f46a15d4adb997c3b2d5f621263/mlx_vlm/apc.py"
+      ],
+      "id": "external:mlx-vlm-apc-source",
+      "kind": "external_reference",
+      "observed_at": "2026-07-23",
+      "provenance": "code_verified",
+      "status": "synthesized",
+      "summary": "source-code source owned by Blaizzy. Review depth synthesized: directly informed a rule, runbook, or registry decision",
+      "tags": [
+        "migrated-v1",
+        "review-depth/synthesized",
+        "source-kind/source-code",
+        "topic/automatic-prefix-cache",
+        "topic/cache",
+        "topic/mlx-vlm",
+        "topic/multimodal"
+      ],
+      "title": "MLX-VLM automatic prefix cache implementation"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://github.com/Blaizzy/mlx-vlm/blob/6a8cdff6a1f53f46a15d4adb997c3b2d5f621263/mlx_vlm/generate/ar.py"
+      ],
+      "id": "external:mlx-vlm-ar-cache-guards",
+      "kind": "external_reference",
+      "observed_at": "2026-07-23",
+      "provenance": "code_verified",
+      "status": "synthesized",
+      "summary": "source-code source owned by Blaizzy. Review depth synthesized: directly informed a rule, runbook, or registry decision",
+      "tags": [
+        "migrated-v1",
+        "review-depth/synthesized",
+        "source-kind/source-code",
+        "topic/cache-safety",
+        "topic/media-hash",
+        "topic/mlx-vlm",
+        "topic/prefix-cache"
+      ],
+      "title": "MLX-VLM generation cache media guards"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://github.com/Blaizzy/mlx-vlm/blob/6a8cdff6a1f53f46a15d4adb997c3b2d5f621263/README.md"
+      ],
+      "id": "external:mlx-vlm-readme",
+      "kind": "external_reference",
+      "observed_at": "2026-07-23",
+      "provenance": "code_verified",
+      "status": "synthesized",
+      "summary": "source-code source owned by Blaizzy. Review depth synthesized: directly informed a rule, runbook, or registry decision",
+      "tags": [
+        "migrated-v1",
+        "review-depth/synthesized",
+        "source-kind/source-code",
+        "topic/continuous-batching",
+        "topic/kv-quantization",
+        "topic/prefix-cache",
+        "topic/speculative-decoding"
+      ],
+      "title": "MLX-VLM serving, caching, and speculative decoding documentation"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://github.com/Blaizzy/mlx-vlm/tree/6a8cdff6a1f53f46a15d4adb997c3b2d5f621263"
+      ],
+      "id": "external:mlx-vlm-repo",
+      "kind": "external_reference",
+      "observed_at": "2026-07-23",
+      "provenance": "code_verified",
+      "status": "synthesized",
+      "summary": "repository source owned by Blaizzy. Review depth synthesized: directly informed a rule, runbook, or registry decision",
+      "tags": [
+        "migrated-v1",
+        "review-depth/synthesized",
+        "source-kind/repository",
+        "topic/mlx",
+        "topic/multimodal",
+        "topic/serving"
+      ],
+      "title": "MLX-VLM repository"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://github.com/Blaizzy/mlx-vlm/blob/6a8cdff6a1f53f46a15d4adb997c3b2d5f621263/mlx_vlm/vision_cache.py"
+      ],
+      "id": "external:mlx-vlm-vision-cache-source",
+      "kind": "external_reference",
+      "observed_at": "2026-07-23",
+      "provenance": "code_verified",
+      "status": "synthesized",
+      "summary": "source-code source owned by Blaizzy. Review depth synthesized: directly informed a rule, runbook, or registry decision",
+      "tags": [
+        "migrated-v1",
+        "review-depth/synthesized",
+        "source-kind/source-code",
+        "topic/cache",
+        "topic/mlx-vlm",
+        "topic/multimodal",
+        "topic/vision-cache"
+      ],
+      "title": "MLX-VLM vision feature cache implementation"
+    },
+    {
+      "confidence": "medium",
+      "evidence": [
+        "https://developer.nvidia.com/blog/introducing-nvfp4-for-efficient-and-accurate-low-precision-inference"
+      ],
+      "id": "external:nvidia-nvfp4-blog",
+      "kind": "external_reference",
+      "observed_at": "2026-07-23",
+      "provenance": "research_inference",
+      "status": "screened",
+      "summary": "technical-blog source owned by NVIDIA. Review depth screened: relevance and limits reviewed",
+      "tags": [
+        "migrated-v1",
+        "review-depth/screened",
+        "source-kind/technical-blog",
+        "topic/low-bit-formats",
+        "topic/nvfp4",
+        "topic/quantization"
+      ],
+      "title": "Introducing NVFP4 for Efficient and Accurate Low-Precision Inference"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://www.usenix.org/conference/osdi22/presentation/yu"
+      ],
+      "id": "external:orca-osdi22",
+      "kind": "external_reference",
+      "observed_at": "2026-07-23",
+      "provenance": "research_inference",
+      "status": "synthesized",
+      "summary": "paper source owned by authors. Review depth synthesized: directly informed a rule, runbook, or registry decision",
+      "tags": [
+        "migrated-v1",
+        "review-depth/synthesized",
+        "source-kind/paper",
+        "topic/continuous-batching",
+        "topic/serving"
+      ],
+      "title": "Orca: A Distributed Serving System for Transformer-Based Generative Models"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://arxiv.org/abs/2205.14135"
+      ],
+      "id": "external:paper-2205-14135",
+      "kind": "external_reference",
+      "observed_at": "2026-07-23",
+      "provenance": "research_inference",
+      "status": "synthesized",
+      "summary": "paper source owned by authors. Review depth synthesized: directly informed a rule, runbook, or registry decision",
+      "tags": [
+        "migrated-v1",
+        "review-depth/synthesized",
+        "source-kind/paper",
+        "topic/attention",
+        "topic/kernel"
+      ],
+      "title": "FlashAttention: Fast and Memory-Efficient Exact Attention with IO-Awareness"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://arxiv.org/abs/2211.17192"
+      ],
+      "id": "external:paper-2211-17192",
+      "kind": "external_reference",
+      "observed_at": "2026-07-23",
+      "provenance": "research_inference",
+      "status": "synthesized",
+      "summary": "paper source owned by authors. Review depth synthesized: directly informed a rule, runbook, or registry decision",
+      "tags": [
+        "migrated-v1",
+        "review-depth/synthesized",
+        "source-kind/paper",
+        "topic/speculative-decoding"
+      ],
+      "title": "Fast Inference from Transformers via Speculative Decoding"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://arxiv.org/abs/2302.01318"
+      ],
+      "id": "external:paper-2302-01318",
+      "kind": "external_reference",
+      "observed_at": "2026-07-23",
+      "provenance": "research_inference",
+      "status": "synthesized",
+      "summary": "paper source owned by authors. Review depth synthesized: directly informed a rule, runbook, or registry decision",
+      "tags": [
+        "migrated-v1",
+        "review-depth/synthesized",
+        "source-kind/paper",
+        "topic/speculative-decoding"
+      ],
+      "title": "Accelerating Large Language Model Decoding with Speculative Sampling"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://arxiv.org/abs/2307.08691"
+      ],
+      "id": "external:paper-2307-08691",
+      "kind": "external_reference",
+      "observed_at": "2026-07-23",
+      "provenance": "research_inference",
+      "status": "synthesized",
+      "summary": "paper source owned by authors. Review depth synthesized: directly informed a rule, runbook, or registry decision",
+      "tags": [
+        "migrated-v1",
+        "review-depth/synthesized",
+        "source-kind/paper",
+        "topic/attention",
+        "topic/kernel"
+      ],
+      "title": "FlashAttention-2: Faster Attention with Better Parallelism and Work Partitioning"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://arxiv.org/abs/2309.06180"
+      ],
+      "id": "external:paper-2309-06180",
+      "kind": "external_reference",
+      "observed_at": "2026-07-23",
+      "provenance": "research_inference",
+      "status": "synthesized",
+      "summary": "paper source owned by authors. Review depth synthesized: directly informed a rule, runbook, or registry decision",
+      "tags": [
+        "migrated-v1",
+        "review-depth/synthesized",
+        "source-kind/paper",
+        "topic/paged-attention",
+        "topic/serving"
+      ],
+      "title": "Efficient Memory Management for Large Language Model Serving with PagedAttention"
+    },
+    {
+      "confidence": "medium",
+      "evidence": [
+        "https://arxiv.org/abs/2310.16836"
+      ],
+      "id": "external:paper-2310-16836",
+      "kind": "external_reference",
+      "observed_at": "2026-07-23",
+      "provenance": "research_inference",
+      "status": "screened",
+      "summary": "paper source owned by authors. Review depth screened: relevance and limits reviewed",
+      "tags": [
+        "migrated-v1",
+        "review-depth/screened",
+        "source-kind/paper",
+        "topic/fp4",
+        "topic/quantization"
+      ],
+      "title": "LLM-FP4: 4-Bit Floating-Point Quantized Transformers"
+    },
+    {
+      "confidence": "medium",
+      "evidence": [
+        "https://arxiv.org/abs/2311.08252"
+      ],
+      "id": "external:paper-2311-08252",
+      "kind": "external_reference",
+      "observed_at": "2026-07-23",
+      "provenance": "research_inference",
+      "status": "screened",
+      "summary": "paper source owned by authors. Review depth screened: relevance and limits reviewed",
+      "tags": [
+        "migrated-v1",
+        "review-depth/screened",
+        "source-kind/paper",
+        "topic/retrieval",
+        "topic/speculative-decoding"
+      ],
+      "title": "REST: Retrieval-Based Speculative Decoding"
+    },
+    {
+      "confidence": "medium",
+      "evidence": [
+        "https://arxiv.org/abs/2401.04088"
+      ],
+      "id": "external:paper-2401-04088",
+      "kind": "external_reference",
+      "observed_at": "2026-07-23",
+      "provenance": "research_inference",
+      "status": "screened",
+      "summary": "paper source owned by authors. Review depth screened: relevance and limits reviewed",
+      "tags": [
+        "migrated-v1",
+        "review-depth/screened",
+        "source-kind/paper",
+        "topic/decoder-transformer",
+        "topic/moe"
+      ],
+      "title": "Mixtral of Experts"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://arxiv.org/abs/2401.10774"
+      ],
+      "id": "external:paper-2401-10774",
+      "kind": "external_reference",
+      "observed_at": "2026-07-23",
+      "provenance": "research_inference",
+      "status": "synthesized",
+      "summary": "paper source owned by authors. Review depth synthesized: directly informed a rule, runbook, or registry decision",
+      "tags": [
+        "migrated-v1",
+        "review-depth/synthesized",
+        "source-kind/paper",
+        "topic/medusa",
+        "topic/speculative-decoding"
+      ],
+      "title": "Medusa: Simple LLM Inference Acceleration Framework with Multiple Decoding Heads"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://arxiv.org/abs/2401.15077"
+      ],
+      "id": "external:paper-2401-15077",
+      "kind": "external_reference",
+      "observed_at": "2026-07-23",
+      "provenance": "research_inference",
+      "status": "synthesized",
+      "summary": "paper source owned by authors. Review depth synthesized: directly informed a rule, runbook, or registry decision",
+      "tags": [
+        "migrated-v1",
+        "review-depth/synthesized",
+        "source-kind/paper",
+        "topic/eagle",
+        "topic/speculative-decoding"
+      ],
+      "title": "EAGLE: Speculative Sampling Requires Rethinking Feature Uncertainty"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://arxiv.org/abs/2402.02750"
+      ],
+      "id": "external:paper-2402-02750",
+      "kind": "external_reference",
+      "observed_at": "2026-07-23",
+      "provenance": "research_inference",
+      "status": "synthesized",
+      "summary": "paper source owned by authors. Review depth synthesized: directly informed a rule, runbook, or registry decision",
+      "tags": [
+        "migrated-v1",
+        "review-depth/synthesized",
+        "source-kind/paper",
+        "topic/kv-quantization"
+      ],
+      "title": "KIVI: A Tuning-Free Asymmetric 2bit Quantization for KV Cache"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://arxiv.org/abs/2402.05099"
+      ],
+      "id": "external:paper-2402-05099",
+      "kind": "external_reference",
+      "observed_at": "2026-07-23",
+      "provenance": "research_inference",
+      "status": "synthesized",
+      "summary": "paper source owned by authors. Review depth synthesized: directly informed a rule, runbook, or registry decision",
+      "tags": [
+        "migrated-v1",
+        "review-depth/synthesized",
+        "source-kind/paper",
+        "topic/prefix-sharing",
+        "topic/serving"
+      ],
+      "title": "Hydragen: High-Throughput LLM Inference with Shared Prefixes"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://arxiv.org/abs/2403.15388"
+      ],
+      "id": "external:paper-2403-15388",
+      "kind": "external_reference",
+      "observed_at": "2026-07-23",
+      "provenance": "research_inference",
+      "status": "synthesized",
+      "summary": "paper source owned by authors. Review depth synthesized: directly informed a rule, runbook, or registry decision",
+      "tags": [
+        "migrated-v1",
+        "review-depth/synthesized",
+        "source-kind/paper",
+        "topic/llava",
+        "topic/vision-language",
+        "topic/visual-token-pruning"
+      ],
+      "title": "LLaVA-PruMerge: Adaptive Token Reduction for Efficient Large Multimodal Models"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://arxiv.org/abs/2405.04434"
+      ],
+      "id": "external:paper-2405-04434",
+      "kind": "external_reference",
+      "observed_at": "2026-07-23",
+      "provenance": "research_inference",
+      "status": "synthesized",
+      "summary": "paper source owned by authors. Review depth synthesized: directly informed a rule, runbook, or registry decision",
+      "tags": [
+        "migrated-v1",
+        "review-depth/synthesized",
+        "source-kind/paper",
+        "topic/attention",
+        "topic/mla",
+        "topic/moe"
+      ],
+      "title": "DeepSeek-V2: A Strong, Economical, and Efficient Mixture-of-Experts Language Model"
+    },
+    {
+      "confidence": "medium",
+      "evidence": [
+        "https://arxiv.org/abs/2406.16858"
+      ],
+      "id": "external:paper-2406-16858",
+      "kind": "external_reference",
+      "observed_at": "2026-07-23",
+      "provenance": "research_inference",
+      "status": "screened",
+      "summary": "paper source owned by authors. Review depth screened: relevance and limits reviewed",
+      "tags": [
+        "migrated-v1",
+        "review-depth/screened",
+        "source-kind/paper",
+        "topic/eagle2",
+        "topic/speculative-decoding"
+      ],
+      "title": "EAGLE-2: Faster Inference of Language Models with Dynamic Draft Trees"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://arxiv.org/abs/2407.08608"
+      ],
+      "id": "external:paper-2407-08608",
+      "kind": "external_reference",
+      "observed_at": "2026-07-23",
+      "provenance": "research_inference",
+      "status": "synthesized",
+      "summary": "paper source owned by authors. Review depth synthesized: directly informed a rule, runbook, or registry decision",
+      "tags": [
+        "migrated-v1",
+        "review-depth/synthesized",
+        "source-kind/paper",
+        "topic/attention",
+        "topic/kernel"
+      ],
+      "title": "FlashAttention-3: Fast and Accurate Attention with Asynchrony and Low-Precision"
+    },
+    {
+      "confidence": "medium",
+      "evidence": [
+        "https://arxiv.org/abs/2409.12191"
+      ],
+      "id": "external:paper-2409-12191",
+      "kind": "external_reference",
+      "observed_at": "2026-07-23",
+      "provenance": "research_inference",
+      "status": "screened",
+      "summary": "paper source owned by authors. Review depth screened: relevance and limits reviewed",
+      "tags": [
+        "migrated-v1",
+        "review-depth/screened",
+        "source-kind/paper",
+        "topic/video",
+        "topic/vision-language"
+      ],
+      "title": "Qwen2-VL: Enhancing Vision-Language Model’s Perception of the World at Any Resolution"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://arxiv.org/abs/2412.03594"
+      ],
+      "id": "external:paper-2412-03594",
+      "kind": "external_reference",
+      "observed_at": "2026-07-23",
+      "provenance": "research_inference",
+      "status": "synthesized",
+      "summary": "paper source owned by authors. Review depth synthesized: directly informed a rule, runbook, or registry decision",
+      "tags": [
+        "migrated-v1",
+        "review-depth/synthesized",
+        "source-kind/paper",
+        "topic/batching",
+        "topic/prefix-sharing"
+      ],
+      "title": "BatchLLM: Optimizing Large Batched LLM Inference with Global Prefix Sharing"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://arxiv.org/abs/2412.04467"
+      ],
+      "id": "external:paper-2412-04467",
+      "kind": "external_reference",
+      "observed_at": "2026-07-23",
+      "provenance": "research_inference",
+      "status": "synthesized",
+      "summary": "paper source owned by authors. Review depth synthesized: directly informed a rule, runbook, or registry decision",
+      "tags": [
+        "migrated-v1",
+        "review-depth/synthesized",
+        "source-kind/paper",
+        "topic/vision-language",
+        "topic/visual-token-pruning"
+      ],
+      "title": "VisionZip: Longer is Better but Not Necessary in Vision Language Models"
+    },
+    {
+      "confidence": "medium",
+      "evidence": [
+        "https://arxiv.org/abs/2412.19437"
+      ],
+      "id": "external:paper-2412-19437",
+      "kind": "external_reference",
+      "observed_at": "2026-07-23",
+      "provenance": "research_inference",
+      "status": "screened",
+      "summary": "paper source owned by authors. Review depth screened: relevance and limits reviewed",
+      "tags": [
+        "migrated-v1",
+        "review-depth/screened",
+        "source-kind/paper",
+        "topic/attention",
+        "topic/moe",
+        "topic/mtp"
+      ],
+      "title": "DeepSeek-V3 Technical Report"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://arxiv.org/abs/2502.04420"
+      ],
+      "id": "external:paper-2502-04420",
+      "kind": "external_reference",
+      "observed_at": "2026-07-23",
+      "provenance": "research_inference",
+      "status": "synthesized",
+      "summary": "paper source owned by authors. Review depth synthesized: directly informed a rule, runbook, or registry decision",
+      "tags": [
+        "migrated-v1",
+        "review-depth/synthesized",
+        "source-kind/paper",
+        "topic/kv-quantization",
+        "topic/mixed-precision"
+      ],
+      "title": "KVTuner: Sensitivity-Aware Layer-Wise Mixed-Precision KV Cache Quantization"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://arxiv.org/abs/2502.13923"
+      ],
+      "id": "external:paper-2502-13923",
+      "kind": "external_reference",
+      "observed_at": "2026-07-23",
+      "provenance": "research_inference",
+      "status": "synthesized",
+      "summary": "paper source owned by authors. Review depth synthesized: directly informed a rule, runbook, or registry decision",
+      "tags": [
+        "migrated-v1",
+        "review-depth/synthesized",
+        "source-kind/paper",
+        "topic/mrope",
+        "topic/qwen",
+        "topic/video",
+        "topic/vision-language"
+      ],
+      "title": "Qwen2.5-VL Technical Report"
+    },
+    {
+      "confidence": "medium",
+      "evidence": [
+        "https://arxiv.org/abs/2502.15075"
+      ],
+      "id": "external:paper-2502-15075",
+      "kind": "external_reference",
+      "observed_at": "2026-07-23",
+      "provenance": "research_inference",
+      "status": "screened",
+      "summary": "paper source owned by authors. Review depth screened: relevance and limits reviewed",
+      "tags": [
+        "migrated-v1",
+        "review-depth/screened",
+        "source-kind/paper",
+        "topic/kv-quantization",
+        "topic/mixed-precision"
+      ],
+      "title": "More for Keys, Less for Values: Adaptive KV Cache Quantization"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://arxiv.org/abs/2505.15380"
+      ],
+      "id": "external:paper-2505-15380",
+      "kind": "external_reference",
+      "observed_at": "2026-07-23",
+      "provenance": "research_inference",
+      "status": "synthesized",
+      "summary": "paper source owned by authors. Review depth synthesized: directly informed a rule, runbook, or registry decision",
+      "tags": [
+        "migrated-v1",
+        "review-depth/synthesized",
+        "source-kind/paper",
+        "topic/speculative-decoding",
+        "topic/speech"
+      ],
+      "title": "Accelerating Autoregressive Speech Synthesis Inference With Speech Speculative Decoding"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://arxiv.org/abs/2601.15621"
+      ],
+      "id": "external:paper-2601-15621",
+      "kind": "external_reference",
+      "observed_at": "2026-07-23",
+      "provenance": "research_inference",
+      "status": "synthesized",
+      "summary": "paper source owned by authors. Review depth synthesized: directly informed a rule, runbook, or registry decision",
+      "tags": [
+        "migrated-v1",
+        "review-depth/synthesized",
+        "source-kind/paper",
+        "topic/dual-track",
+        "topic/streaming",
+        "topic/tts"
+      ],
+      "title": "Qwen3-TTS Technical Report"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://arxiv.org/abs/2601.19139"
+      ],
+      "id": "external:paper-2601-19139",
+      "kind": "external_reference",
+      "observed_at": "2026-07-23",
+      "provenance": "research_inference",
+      "status": "synthesized",
+      "summary": "paper source owned by authors. Review depth synthesized: directly informed a rule, runbook, or registry decision",
+      "tags": [
+        "migrated-v1",
+        "review-depth/synthesized",
+        "source-kind/paper",
+        "topic/continuous-batching",
+        "topic/mlx",
+        "topic/prefix-cache",
+        "topic/serving",
+        "topic/vlm"
+      ],
+      "title": "Native LLM and MLLM Inference at Scale on Apple Silicon"
+    },
+    {
+      "confidence": "medium",
+      "evidence": [
+        "https://arxiv.org/abs/2602.23200"
+      ],
+      "id": "external:paper-2602-23200",
+      "kind": "external_reference",
+      "observed_at": "2026-07-23",
+      "provenance": "research_inference",
+      "status": "screened",
+      "summary": "paper source owned by authors. Review depth screened: relevance and limits reviewed",
+      "tags": [
+        "migrated-v1",
+        "review-depth/screened",
+        "source-kind/paper",
+        "topic/hardware-aware",
+        "topic/kv-quantization"
+      ],
+      "title": "InnerQ: Hardware-Aware Tuning-Free Quantization of KV Cache for Large Language Models"
+    },
+    {
+      "confidence": "medium",
+      "evidence": [
+        "https://arxiv.org/abs/2604.04722"
+      ],
+      "id": "external:paper-2604-04722",
+      "kind": "external_reference",
+      "observed_at": "2026-07-23",
+      "provenance": "research_inference",
+      "status": "screened",
+      "summary": "paper source owned by authors. Review depth screened: relevance and limits reviewed",
+      "tags": [
+        "migrated-v1",
+        "review-depth/screened",
+        "source-kind/paper",
+        "topic/kv-quantization",
+        "topic/on-device"
+      ],
+      "title": "Don't Waste Bits! Adaptive KV-Cache Quantization for Lightweight On-Device LLMs"
+    },
+    {
+      "confidence": "medium",
+      "evidence": [
+        "https://arxiv.org/abs/2606.20474"
+      ],
+      "id": "external:paper-2606-20474",
+      "kind": "external_reference",
+      "observed_at": "2026-07-23",
+      "provenance": "research_inference",
+      "status": "screened",
+      "summary": "paper source owned by authors. Review depth screened: relevance and limits reviewed",
+      "tags": [
+        "migrated-v1",
+        "review-depth/screened",
+        "source-kind/paper",
+        "topic/agent-serving",
+        "topic/kv-quantization"
+      ],
+      "title": "UltraQuant: 4-bit KV Caching for Context-Heavy Agents"
+    },
+    {
+      "confidence": "medium",
+      "evidence": [
+        "https://arxiv.org/abs/2606.21842"
+      ],
+      "id": "external:paper-2606-21842",
+      "kind": "external_reference",
+      "observed_at": "2026-07-23",
+      "provenance": "research_inference",
+      "status": "screened",
+      "summary": "paper source owned by authors. Review depth screened: relevance and limits reviewed",
+      "tags": [
+        "migrated-v1",
+        "review-depth/screened",
+        "source-kind/paper",
+        "topic/kv-cache",
+        "topic/rag",
+        "topic/side-channel"
+      ],
+      "title": "Agent-Assisted Side-Channel Attacks on Non-Prefix KV Cache in RAG"
+    },
+    {
+      "confidence": "medium",
+      "evidence": [
+        "https://arxiv.org/abs/2606.24033"
+      ],
+      "id": "external:paper-2606-24033",
+      "kind": "external_reference",
+      "observed_at": "2026-07-23",
+      "provenance": "research_inference",
+      "status": "screened",
+      "summary": "paper source owned by authors. Review depth screened: relevance and limits reviewed",
+      "tags": [
+        "migrated-v1",
+        "review-depth/screened",
+        "source-kind/paper",
+        "topic/kv-quantization",
+        "topic/rope"
+      ],
+      "title": "RoPE-Aware Bit Allocation for KV-Cache Quantization"
+    },
+    {
+      "confidence": "medium",
+      "evidence": [
+        "https://github.com/apoorvumang/prompt-lookup-decoding"
+      ],
+      "id": "external:prompt-lookup-decoding-repo",
+      "kind": "external_reference",
+      "observed_at": "2026-07-23",
+      "provenance": "research_inference",
+      "status": "screened",
+      "summary": "repository source owned by Apoorv Saxena. Review depth screened: relevance and limits reviewed",
+      "tags": [
+        "migrated-v1",
+        "review-depth/screened",
+        "source-kind/repository",
+        "topic/prompt-lookup",
+        "topic/speculative-decoding"
+      ],
+      "title": "Prompt Lookup Decoding repository"
+    },
+    {
+      "confidence": "medium",
+      "evidence": [
+        "https://pypi.org/project/mlx-audio"
+      ],
+      "id": "external:pypi-mlx-audio",
+      "kind": "external_reference",
+      "observed_at": "2026-07-23",
+      "provenance": "research_inference",
+      "status": "screened",
+      "summary": "release source owned by Blaizzy / contributors. Review depth screened: relevance and limits reviewed",
+      "tags": [
+        "migrated-v1",
+        "review-depth/screened",
+        "source-kind/release",
+        "topic/asr",
+        "topic/dependencies",
+        "topic/mlx-audio",
+        "topic/package",
+        "topic/tts"
+      ],
+      "title": "mlx-audio PyPI package metadata"
+    },
+    {
+      "confidence": "medium",
+      "evidence": [
+        "https://pypi.org/project/mlx-lm"
+      ],
+      "id": "external:pypi-mlx-lm",
+      "kind": "external_reference",
+      "observed_at": "2026-07-23",
+      "provenance": "research_inference",
+      "status": "screened",
+      "summary": "release source owned by ml-explore. Review depth screened: relevance and limits reviewed",
+      "tags": [
+        "migrated-v1",
+        "review-depth/screened",
+        "source-kind/release",
+        "topic/cache",
+        "topic/mlx-lm",
+        "topic/package",
+        "topic/serving"
+      ],
+      "title": "mlx-lm PyPI package metadata"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://docs.pytorch.org/docs/stable/notes/cuda.html"
+      ],
+      "id": "external:pytorch-doc-cuda-graphs",
+      "kind": "external_reference",
+      "observed_at": "2026-07-23",
+      "provenance": "code_verified",
+      "status": "synthesized",
+      "summary": "official-doc source owned by PyTorch. Review depth synthesized: directly informed a rule, runbook, or registry decision",
+      "tags": [
+        "migrated-v1",
+        "review-depth/synthesized",
+        "source-kind/official-doc",
+        "topic/capture-replay",
+        "topic/cuda",
+        "topic/cuda-graphs",
+        "topic/pytorch"
+      ],
+      "title": "PyTorch CUDA Graphs semantics"
+    },
+    {
+      "confidence": "low",
+      "evidence": [
+        "https://github.com/Stability-AI/stable-audio-tools"
+      ],
+      "id": "external:repo-stable-audio-tools",
+      "kind": "external_reference",
+      "observed_at": "2026-07-23",
+      "provenance": "research_inference",
+      "status": "indexed",
+      "summary": "repository source owned by Stability AI. Review depth indexed: catalogued for future review; do not represent as fully reviewed",
+      "tags": [
+        "migrated-v1",
+        "review-depth/indexed",
+        "source-kind/repository",
+        "topic/audio-generation",
+        "topic/diffusion"
+      ],
+      "title": "Stable Audio Tools repository"
+    },
+    {
+      "confidence": "medium",
+      "evidence": [
+        "https://github.com/openai/whisper"
+      ],
+      "id": "external:repo-whisper",
+      "kind": "external_reference",
+      "observed_at": "2026-07-23",
+      "provenance": "research_inference",
+      "status": "screened",
+      "summary": "repository source owned by OpenAI. Review depth screened: relevance and limits reviewed",
+      "tags": [
+        "migrated-v1",
+        "review-depth/screened",
+        "source-kind/repository",
+        "topic/asr",
+        "topic/whisper"
+      ],
+      "title": "Whisper repository"
+    },
+    {
+      "confidence": "medium",
+      "evidence": [
+        "https://www.spheron.network/blog/nvfp4-vs-mxfp4-gpu-cloud-4bit-quantization-guide"
+      ],
+      "id": "external:spheron-nvfp4-mxfp4-guide",
+      "kind": "external_reference",
+      "observed_at": "2026-07-23",
+      "provenance": "research_inference",
+      "status": "screened",
+      "summary": "technical-blog source owned by Spheron. Review depth screened: relevance and limits reviewed",
+      "tags": [
+        "migrated-v1",
+        "review-depth/screened",
+        "source-kind/technical-blog",
+        "topic/low-bit-formats",
+        "topic/mxfp4",
+        "topic/nvfp4",
+        "topic/quantization"
+      ],
+      "title": "NVFP4 vs MXFP4: 4-Bit Quantization Format Decision Guide"
+    },
+    {
+      "confidence": "medium",
+      "evidence": [
+        "https://vllm.ai/blog/2025-09-05-anatomy-of-vllm"
+      ],
+      "id": "external:vllm-blog-anatomy",
+      "kind": "external_reference",
+      "observed_at": "2026-07-23",
+      "provenance": "research_inference",
+      "status": "screened",
+      "summary": "technical-blog source owned by vLLM project. Review depth screened: relevance and limits reviewed",
+      "tags": [
+        "migrated-v1",
+        "review-depth/screened",
+        "source-kind/technical-blog",
+        "topic/continuous-batching",
+        "topic/paged-attention",
+        "topic/prefix-cache",
+        "topic/serving",
+        "topic/speculative-decoding"
+      ],
+      "title": "Inside vLLM: Anatomy of a High-Throughput LLM Inference System"
+    },
+    {
+      "confidence": "medium",
+      "evidence": [
+        "https://docs.vllm.ai/en/stable/design/prefix_caching"
+      ],
+      "id": "external:vllm-doc-prefix-caching",
+      "kind": "external_reference",
+      "observed_at": "2026-07-23",
+      "provenance": "research_inference",
+      "status": "screened",
+      "summary": "official-doc source owned by vLLM project. Review depth screened: relevance and limits reviewed",
+      "tags": [
+        "migrated-v1",
+        "review-depth/screened",
+        "source-kind/official-doc",
+        "topic/kv-cache",
+        "topic/prefix-cache",
+        "topic/serving"
+      ],
+      "title": "vLLM automatic prefix caching documentation"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://github.com/waybarrios/vllm-mlx/blob/a48c86c1a41900f7d26658471b5f67e5fdd35445/docs/guides/continuous-batching.md"
+      ],
+      "id": "external:vllm-mlx-continuous-batching-guide",
+      "kind": "external_reference",
+      "observed_at": "2026-07-23",
+      "provenance": "code_verified",
+      "status": "synthesized",
+      "summary": "source-code source owned by waybarrios. Review depth synthesized: directly informed a rule, runbook, or registry decision",
+      "tags": [
+        "migrated-v1",
+        "review-depth/synthesized",
+        "source-kind/source-code",
+        "topic/continuous-batching",
+        "topic/serving",
+        "topic/vllm-mlx"
+      ],
+      "title": "vLLM-MLX continuous batching guide"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://github.com/waybarrios/vllm-mlx/blob/a48c86c1a41900f7d26658471b5f67e5fdd35445/vllm_mlx/mllm_batch_generator.py"
+      ],
+      "id": "external:vllm-mlx-mllm-batch-source",
+      "kind": "external_reference",
+      "observed_at": "2026-07-23",
+      "provenance": "code_verified",
+      "status": "synthesized",
+      "summary": "source-code source owned by waybarrios. Review depth synthesized: directly informed a rule, runbook, or registry decision",
+      "tags": [
+        "migrated-v1",
+        "review-depth/synthesized",
+        "source-kind/source-code",
+        "topic/batching",
+        "topic/multimodal",
+        "topic/prefix-cache",
+        "topic/vllm-mlx"
+      ],
+      "title": "vLLM-MLX multimodal batch generator implementation"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://github.com/waybarrios/vllm-mlx/blob/a48c86c1a41900f7d26658471b5f67e5fdd35445/docs/guides/multimodal.md"
+      ],
+      "id": "external:vllm-mlx-multimodal-guide",
+      "kind": "external_reference",
+      "observed_at": "2026-07-23",
+      "provenance": "code_verified",
+      "status": "synthesized",
+      "summary": "source-code source owned by waybarrios. Review depth synthesized: directly informed a rule, runbook, or registry decision",
+      "tags": [
+        "migrated-v1",
+        "review-depth/synthesized",
+        "source-kind/source-code",
+        "topic/multimodal",
+        "topic/serving",
+        "topic/video",
+        "topic/vllm-mlx"
+      ],
+      "title": "vLLM-MLX multimodal serving guide"
+    },
+    {
+      "confidence": "medium",
+      "evidence": [
+        "https://github.com/waybarrios/vllm-mlx"
+      ],
+      "id": "external:vllm-mlx-repo",
+      "kind": "external_reference",
+      "observed_at": "2026-07-23",
+      "provenance": "research_inference",
+      "status": "screened",
+      "summary": "repository source owned by waybarrios. Review depth screened: relevance and limits reviewed",
+      "tags": [
+        "migrated-v1",
+        "review-depth/screened",
+        "source-kind/repository",
+        "topic/continuous-batching",
+        "topic/paged-kv",
+        "topic/prefix-cache",
+        "topic/serving"
+      ],
+      "title": "vLLM-MLX serving repository"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://github.com/waybarrios/vllm-mlx/blob/a48c86c1a41900f7d26658471b5f67e5fdd35445/vllm_mlx/vision_embedding_cache.py"
+      ],
+      "id": "external:vllm-mlx-vision-cache-source",
+      "kind": "external_reference",
+      "observed_at": "2026-07-23",
+      "provenance": "code_verified",
+      "status": "synthesized",
+      "summary": "source-code source owned by waybarrios. Review depth synthesized: directly informed a rule, runbook, or registry decision",
+      "tags": [
+        "migrated-v1",
+        "review-depth/synthesized",
+        "source-kind/source-code",
+        "topic/multimodal",
+        "topic/serving",
+        "topic/vision-cache",
+        "topic/vllm-mlx"
+      ],
+      "title": "vLLM-MLX vision embedding cache implementation"
+    }
+  ],
+  "schema_version": 2
+}

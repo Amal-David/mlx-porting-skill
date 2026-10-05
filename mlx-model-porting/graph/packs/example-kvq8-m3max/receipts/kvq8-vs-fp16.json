@@ -1,0 +1,19 @@
+{
+  "baseline": {
+    "kv_cache": "fp16",
+    "median_decode_tps": 41,
+    "per_pair_decode_tps": [41, 40, 42, 41, 41]
+  },
+  "candidate": {
+    "kv_cache": "uniform-int8",
+    "median_decode_tps": 44,
+    "per_pair_decode_tps": [44, 44, 45, 44, 45]
+  },
+  "method": "five alternating A/B pairs after one discarded warmup pass, host otherwise idle",
+  "per_pair_delta_bp": [732, 1090, 714, 640, 927],
+  "prompt_tokens": 8192,
+  "decode_tokens": 512,
+  "sampling": "greedy",
+  "thermal_instrumented": false,
+  "quality_gate_run": false
+}
