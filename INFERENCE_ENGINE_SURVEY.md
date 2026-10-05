@@ -555,7 +555,7 @@ Snapshot `2b05d39a6f43c1bc8789112fc92baa426d84c833`; upstream commit date `2026-
 
 ## Reproduction and scope
 
-The JSON registry is the canonical engine/method inventory. Evidence digests bind the bytes fetched during the review; offline validation checks their format and locator consistency, not the continued availability of upstream bytes. No third-party engine was installed or benchmarked, no upstream implementation is vendored, and no source's performance claim is promoted.
+Maintenance modes (`--generate`, `--check`) require the source Git checkout and refuse to write outside an installed skill. Installed skills support queries and `--validate`. Add `--include-comparators` to include non-MLX/opaque/specialized comparison baselines; default results explicitly list excluded categories. The JSON registry is the canonical engine/method inventory. Evidence digests bind the bytes fetched during the review; offline validation checks their format and locator consistency, not the continued availability of upstream bytes. No third-party engine was installed or benchmarked, no upstream implementation is vendored, and no source's performance claim is promoted.
 
 This separately versioned engine inventory does not repin historical sources or promote legacy benchmark claims.
 

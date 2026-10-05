@@ -58,7 +58,7 @@ The 0.7.0 corpus behind the skill:
 
 - 363 evidence sources with explicit review depth; 35 currently carry classified
   support scope and claim types, while 328 remain intentionally unclassified;
-- 35 inspectable Python scripts and 633 offline tests;
+- 35 inspectable Python scripts and 637 offline tests;
 - 13 benchmark receipts (12 observations, 1 rejected) and 10 effective claims,
   all withheld;
 - a compiled [evidence graph](mlx-model-porting/graph/README.md) of 319 nodes

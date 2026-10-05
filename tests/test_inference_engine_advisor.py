@@ -157,6 +157,34 @@ class EngineAdvisorTests(unittest.TestCase):
         self.assertIsNone(report["serving_candidates"])
         self.assertFalse(report["architecture"]["native_execution_verified"])
 
+    def test_installed_maintenance_refuses_parent_output(self):
+        import contextlib
+        import io
+        with tempfile.TemporaryDirectory() as tmp, patch.object(advisor, "ROOT", Path(tmp) / "installed-skill"), contextlib.redirect_stderr(io.StringIO()):
+            self.assertEqual(advisor.main(["--generate"]), 2)
+            self.assertEqual(advisor.main(["--check"]), 2)
+            self.assertFalse((Path(tmp) / "INFERENCE_ENGINE_SURVEY.md").exists())
+
+    def test_runtime_prerequisites_are_not_model_inspection_blockers(self):
+        result = advisor.shortlist(self.data, "interactive", runtime_blockers=["mlx not installed"])
+        self.assertEqual(result["inspection_blockers"], [])
+        self.assertEqual(result["runtime_prerequisites"], ["mlx not installed"])
+        self.assertTrue(all(c["eligibility"] == "runtime-prerequisites-missing" for c in result["candidates"]))
+
+    def test_comparator_exclusions_are_explicit_and_doctor_has_opt_in(self):
+        result = advisor.shortlist(self.data, "coding-agent")
+        self.assertFalse(result["comparators_included"])
+        self.assertIn("non-mlx-comparator", result["excluded_categories"])
+        args = doctor.parse_args(["--workload", "coding-agent", "--include-comparators"])
+        report = doctor.diagnose(args)
+        self.assertTrue(report["serving_candidates"]["comparators_included"])
+        self.assertEqual(report["serving_candidates"]["excluded_categories"], [])
+
+    def test_skill_keeps_existing_serving_trigger_terms(self):
+        line = next(line for line in (ROOT / "mlx-model-porting/SKILL.md").read_text().splitlines() if "inference-engine-selection.md" in line)
+        for term in ("decoding", "batching", "streaming", "API runtime"):
+            self.assertIn(term, line)
+
     def test_doctor_workload_choices_follow_registry_contract(self):
         for workload in advisor.WORKLOADS:
             self.assertEqual(doctor.parse_args(["--workload", workload]).workload, workload)

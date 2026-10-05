@@ -60,6 +60,7 @@ engine inventory. An upstream feature declaration is not a local execution test.
 python3 mlx-model-porting/scripts/inference_engine_advisor.py --workload coding-agent
 python3 mlx-model-porting/scripts/inference_engine_advisor.py --workload multimodal
 python3 mlx-model-porting/scripts/inference_engine_advisor.py --workload distributed
+python3 mlx-model-porting/scripts/inference_engine_advisor.py --workload coding-agent --include-comparators
 ```
 
 ## Priority order for this repository and auto-mlx
@@ -140,3 +141,9 @@ For speech, carry the same discipline through the frontend, acoustic model,
 codec/vocoder and playback queue: first-audio latency, real-time factor defined
 as compute seconds / audio seconds, intelligibility and boundary continuity are
 required. Text token throughput cannot stand in for audio usability.
+
+Repository maintenance (`--generate`, `--check`) requires a source Git checkout.
+Installed skills use `--validate` and queries only. Shortlist JSON distinguishes
+canonical inspection blockers from missing runtime prerequisites and lists any
+excluded comparator categories explicitly. Doctor accepts `--include-comparators`
+with its workload query; the resulting research list still cannot approve execution.

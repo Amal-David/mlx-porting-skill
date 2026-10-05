@@ -117,14 +117,16 @@ def load_registry(path: Path = REGISTRY) -> dict[str, Any]:
     return validate_registry(json.loads(raw, object_pairs_hook=_pairs, parse_constant=_bad_constant))
 
 
-def shortlist(data: dict[str, Any], workload: str, *, blockers: list[str] | None = None, include_comparators: bool = False) -> dict[str, Any]:
+def shortlist(data: dict[str, Any], workload: str, *, blockers: list[str] | None = None, runtime_blockers: list[str] | None = None, include_comparators: bool = False) -> dict[str, Any]:
     validate_registry(data)
     require(workload in WORKLOADS, "unknown serving workload")
     held = list(blockers or [])
+    runtime_held = list(runtime_blockers or [])
+    require(type(include_comparators) is bool and all(type(x) is str for x in runtime_held), "invalid shortlist controls")
     require(all(type(x) is str for x in held), "blockers must be strings")
     excluded = {"non-mlx-comparator", "non-mlx-specialized", "opaque-engine", "specialized-benchmark"}
     rows = [row for row in data["engines"] if workload in row["workloads"] and (include_comparators or row["category"] not in excluded)]
-    return {"schema_version": 1, "reviewed": data["reviewed"], "workload": workload, "scope": "workload-fit-research-shortlist-not-model-compatibility", "order": "alphabetical-not-performance-ranked", "execution_allowed": False, "inspection_blockers": held, "candidates": [{"id": row["id"], "name": row["name"], "category": row["category"], "revision": row["revision"], "source": next(e["url"] for e in row["evidence"] if e["path"].lower() == "readme.md"), "rationale": row["scope"], "limitations": row["limitations"], "local_validation": "not-run", "eligibility": "blocked-by-inspection" if held else "requires-model-and-runtime-qualification"} for row in sorted(rows, key=lambda row: row["name"].casefold())], "required_gates": ["Exact model, tokenizer, processor, template, adapter and weight-layout support.", "Artifact/runtime license and isolated execution review.", "Reference parity plus task-quality checks on the requested configuration.", "Comparable cold/warm/partial-cache and concurrency measurements before selection."]}
+    return {"schema_version": 1, "reviewed": data["reviewed"], "workload": workload, "scope": "workload-fit-research-shortlist-not-model-compatibility", "order": "alphabetical-not-performance-ranked", "execution_allowed": False, "inspection_blockers": held, "runtime_prerequisites": runtime_held, "comparators_included": include_comparators, "excluded_categories": [] if include_comparators else sorted(excluded), "candidates": [{"id": row["id"], "name": row["name"], "category": row["category"], "revision": row["revision"], "source": next(e["url"] for e in row["evidence"] if e["path"].lower() == "readme.md"), "rationale": row["scope"], "limitations": row["limitations"], "local_validation": "not-run", "eligibility": "blocked-by-inspection" if held else "runtime-prerequisites-missing" if runtime_held else "requires-model-and-runtime-qualification"} for row in sorted(rows, key=lambda row: row["name"].casefold())], "required_gates": ["Exact model, tokenizer, processor, template, adapter and weight-layout support.", "Artifact/runtime license and isolated execution review.", "Reference parity plus task-quality checks on the requested configuration.", "Comparable cold/warm/partial-cache and concurrency measurements before selection."]}
 
 
 def render(data: dict[str, Any]) -> str:
@@ -146,7 +148,7 @@ def render(data: dict[str, Any]) -> str:
         for item in row["evidence"]:
             lines.append(f"- [{item['path']}]({item['url']}) — {item['review_scope']}; SHA-256 `{item['sha256']}`.")
         lines.append("")
-    lines.extend(["## Reproduction and scope", "", "The JSON registry is the canonical engine/method inventory. Evidence digests bind the bytes fetched during the review; offline validation checks their format and locator consistency, not the continued availability of upstream bytes. No third-party engine was installed or benchmarked, no upstream implementation is vendored, and no source's performance claim is promoted.", "", data["legacy_source_policy"], "", "```bash", "python3 mlx-model-porting/scripts/inference_engine_advisor.py --workload coding-agent", "python3 mlx-model-porting/scripts/inference_engine_advisor.py --validate", "python3 mlx-model-porting/scripts/inference_engine_advisor.py --generate", "python3 mlx-model-porting/scripts/inference_engine_advisor.py --check", "```", ""])
+    lines.extend(["## Reproduction and scope", "", "Maintenance modes (`--generate`, `--check`) require the source Git checkout and refuse to write outside an installed skill. Installed skills support queries and `--validate`. Add `--include-comparators` to include non-MLX/opaque/specialized comparison baselines; default results explicitly list excluded categories. The JSON registry is the canonical engine/method inventory. Evidence digests bind the bytes fetched during the review; offline validation checks their format and locator consistency, not the continued availability of upstream bytes. No third-party engine was installed or benchmarked, no upstream implementation is vendored, and no source's performance claim is promoted.", "", data["legacy_source_policy"], "", "```bash", "python3 mlx-model-porting/scripts/inference_engine_advisor.py --workload coding-agent", "python3 mlx-model-porting/scripts/inference_engine_advisor.py --validate", "python3 mlx-model-porting/scripts/inference_engine_advisor.py --generate", "python3 mlx-model-porting/scripts/inference_engine_advisor.py --check", "```", ""])
     return "\n".join(lines)
 
 
@@ -165,18 +167,25 @@ def render_html(data: dict[str, Any]) -> str:
     return "\n".join(parts)
 
 
+def require_checkout() -> None:
+    # Maintenance output belongs to this repository, never an installed skill's parent.
+    root = ROOT.parent
+    require((root / ".git").exists() and (root / "site/index.html").is_file() and (root / ".github/workflows/validate.yml").is_file(), "--generate/--check require the source repository checkout; installed skills support queries and --validate")
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__, allow_abbrev=False)
     parser.add_argument("--workload", choices=WORKLOADS)
     parser.add_argument("--include-comparators", action="store_true")
     parser.add_argument("--validate", action="store_true", help="validate only the installed registry")
-    parser.add_argument("--generate", action="store_true", help="regenerate the repository-root survey")
-    parser.add_argument("--check", action="store_true", help="check registry and generated survey drift")
+    parser.add_argument("--generate", action="store_true", help="source checkout only: regenerate tracked survey and site")
+    parser.add_argument("--check", action="store_true", help="source checkout only: check registry and generated survey drift")
     args = parser.parse_args(argv)
     try:
         require(sum(bool(v) for v in (args.workload, args.validate, args.generate, args.check)) <= 1, "choose one query/validation/generation mode")
         data = load_registry()
         if args.generate or args.check:
+            require_checkout()
             text = render(data)
             page = render_html(data)
             if args.check:

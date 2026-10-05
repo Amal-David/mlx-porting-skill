@@ -88,7 +88,7 @@ The 0.7.0 snapshot contains:
 | Benchmark receipts | 13 | 12 performance observations, 0 promotion-ready, 1 rejected. |
 | Effective claims | 10 | All ten are withheld. |
 | Knowledge graph | 712 nodes / 505 edges | Review-only research memory with a reconciled backlog and bounded advisor projection. |
-| Offline tests | 633 | Contract, security, determinism, portability, generated-drift, learning-atlas, and gated execution coverage. |
+| Offline tests | 637 | Contract, security, determinism, portability, generated-drift, learning-atlas, and gated execution coverage. |
 
 The `bf16-weight-cast` measurement is a reproducible observation for the
 captured Qwen load-plus-six-token workload. It is not promotion-ready because
