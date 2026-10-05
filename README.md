@@ -58,12 +58,31 @@ The 0.7.0 corpus behind the skill:
 
 - 363 evidence sources with explicit review depth; 35 currently carry classified
   support scope and claim types, while 328 remain intentionally unclassified;
-- 33 inspectable Python scripts and 588 offline tests;
+- 34 inspectable Python scripts and 612 offline tests;
 - 13 benchmark receipts (12 observations, 1 rejected) and 10 effective claims,
   all withheld;
 - a compiled [evidence graph](mlx-model-porting/graph/README.md) of 319 nodes
   and 583 edges: 64 mechanisms, 37 architecture traits, and 38 reified
   measurement results with integer basis-point effects.
+
+## Diagnose a local model or project
+
+MLX Doctor combines the existing static inspectors into one offline report:
+
+```bash
+./mlx-doctor /path/to/local-model --format markdown
+./mlx-doctor /path/to/project --kind project --model /path/to/local-model
+./mlx-doctor --backend mlx-lm --require-runtime
+```
+
+It reports architecture/runbooks, scaffold-family availability, source blockers,
+installed runtime metadata, and next-step commands. It never imports target code,
+downloads weights, or treats recognition as verified native execution, parity, or
+memory fit. JSON is the default; use `--include-local-paths` for machine-specific
+command arguments. The installed-skill entry point is
+`python3 mlx-model-porting/scripts/mlx_doctor.py`.
+
+[Doctor usage, statuses, output safety, and limitations](docs/mlx-doctor.md).
 
 ## Install
 

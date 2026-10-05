@@ -2,8 +2,8 @@
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
   "version": "0.7.0",
-  "generated_at": "2026-10-05T03:09:27.720951+00:00",
-  "file_count": 627,
+  "generated_at": "2026-10-05T07:08:26.972745+00:00",
+  "file_count": 631,
   "files": [
     {
       "path": ".agents/skills/mlx-model-porting",
@@ -123,20 +123,20 @@
     },
     {
       "path": "README.md",
-      "size_bytes": 13439,
-      "sha256": "33c8bbcba9dbc1bcea17707c7dac1cc2025ef4adcc4c07d9e14ca7236aba9b65",
+      "size_bytes": 14253,
+      "sha256": "db22d173aa5207ce4d65a358133392c26f81e83178660753983e4429cd3c1af4",
       "executable": false
     },
     {
       "path": "RESEARCH_REPORT.md",
       "size_bytes": 23254,
-      "sha256": "c0497c88b6d42269af5fbd84ce36fdfbe50fc23d6da72df186c0ba39b077ed8f",
+      "sha256": "f855b083697c9b2496573ed88b41badd25ad7e745644518eb0c063f072ad8db5",
       "executable": false
     },
     {
       "path": "VALIDATION.md",
       "size_bytes": 21550,
-      "sha256": "2bf27c8254eb267302e2dfe9bdcd10b2a2a49c2f9ecc12bae3ffbec1ab003d95",
+      "sha256": "afc8bc5ff3c6572cda8eee1bd237b5d383d5bbfbdb5ba49c4f17bdf8acee9a1e",
       "executable": false
     },
     {
@@ -330,6 +330,18 @@
       "size_bytes": 1478,
       "sha256": "8869a22942260f9d09fa2f3e4ff230aac4076105fdd15e66ad94d69a6fe23ccb",
       "executable": false
+    },
+    {
+      "path": "docs/mlx-doctor.md",
+      "size_bytes": 6851,
+      "sha256": "08227738b208ad1b741a0ff358d3ebd375ec018a5d7e8d0c6b23145fee743737",
+      "executable": false
+    },
+    {
+      "path": "mlx-doctor",
+      "size_bytes": 283,
+      "sha256": "7711c5dc88dff81dd07dcb9f3532fcb06c7e2d2c0e371ccbcd22c6cd756caed2",
+      "executable": true
     },
     {
       "path": "mlx-model-porting/LICENSE",
@@ -2768,6 +2780,12 @@
       "executable": false
     },
     {
+      "path": "mlx-model-porting/scripts/mlx_doctor.py",
+      "size_bytes": 20402,
+      "sha256": "28b6d132180989387a732640d63d10cc87b549d9cd1196c16080747934fdfe57",
+      "executable": true
+    },
+    {
       "path": "mlx-model-porting/scripts/nightly_knowledge_curator.py",
       "size_bytes": 11713,
       "sha256": "4942c3f14e0048288242758e51b7a275d3fd6b607a296dde0427e3e4be78e5f4",
@@ -3635,6 +3653,12 @@
       "path": "tests/test_manifest_contract.py",
       "size_bytes": 25859,
       "sha256": "6d847d31ea25d139ca1d51d82e990ee4ac8669cccb165aabb66f704961cfe09c",
+      "executable": false
+    },
+    {
+      "path": "tests/test_mlx_doctor.py",
+      "size_bytes": 12296,
+      "sha256": "67c107f6a81e642a8c34ec37e05be5f67c9495ded519b0d1e52912ab118889f8",
       "executable": false
     },
     {
