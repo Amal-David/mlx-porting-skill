@@ -1,0 +1,93 @@
+name: engine-survey-inputs
+on:
+  push:
+    branches: [feat/inference-engine-advisor]
+    paths: [.github/workflows/engine-survey-inputs.yml]
+permissions:
+  contents: read
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: 232eb02aad5524470688ab4b0f4d19dc397fb3f6
+          path: skill
+          persist-credentials: false
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: Amal-David/auto-mlx
+          ref: 59eb34d7f7a342ef2501714be59bbaeaa8c8e64a
+          path: auto
+          persist-credentials: false
+      - name: Export tracked source trees and public pinned upstream metadata
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p review-inputs/upstreams
+          git -C skill archive --format=tar HEAD > review-inputs/mlx-porting-skill.tar
+          git -C auto archive --format=tar HEAD > review-inputs/auto-mlx.tar
+          python3 - <<'PY'
+          import base64, concurrent.futures, json, os, pathlib, urllib.request
+          root = pathlib.Path('review-inputs/upstreams')
+          repos = '''ml-explore/mlx@264c14fe650e
+          ml-explore/mlx-lm@5cfec4cb39deba54210b3ff4d86f2337c7bc10b5
+          Blaizzy/mlx-vlm@6ecadd767ca1c7c54763289c750dd180d7945037
+          Blaizzy/mlx-audio@feb25a37b07923bae556e59111995071d66afa0d
+          ml-explore/mlx-swift-lm@5e46681b2adcef2db158e7b949aeae3896778e23
+          jundot/omlx@a435a3736071286fdb2b74f486b3505f23f3c194
+          waybarrios/vllm-mlx@80e7fdec7e8641c8f81b01ece2d7cc256348b76f
+          vllm-project/vllm-metal@39255c170616bba3e2010e108d5caeb7e21443db
+          raullenchai/Rapid-MLX@986caeb521789d7b1cdafe6e6546a676eeef4ac5
+          lablup/mlxcel@022067ad2aab2a7697024dc3394713654c5a3eac
+          ddalcu/mlx-serve@0f01d299d3d7759a7222b2117567053b6d350b89
+          youssofal/MTPLX@9882703f3105363ddc37eca9f97aa09a1d387112
+          bstnxbt/dflash-mlx@60803233af4589e18588b9bacbb03880801c828a
+          ARahim3/mlx-dspark@446f37cf7421d7174b7156dc79d57e932369118a
+          humanrouter/ddtree-mlx@4b12590abc9909fb03bfdf7dd736e76cef7ebdb0
+          incoai/splash@35c828c34bf4e3718dc8064c061132db9e018385
+          basecompute/baseRT@128bdd7348c6d0d271f47b5aca5b2fb16a5e1df6
+          trymirai/uzu@4d880766f5a4137b63d56c3924e7a2e403b0ccc6
+          TheTom/vllm-swift@d1dbba0e5222691bf1a31476266580973fb4525e
+          Trans-N-ai/swama@1b0172e60480c0122c30001383aab3561520423a
+          SharpAI/SwiftLM@7a6d23f26e1a9d624b3a209dbc9c6eab55f4824e
+          Epistates/pmetal@ea28248d322d5a5cf09b5c15385b69ce102ecda2
+          exo-explore/exo@21a54c5ea0230a3bec1e1a786d200126c7e34ec6
+          madroidmaq/mlx-omni-server@4f8e9ef623808b876d2fd08df8fe11745d5a2751
+          cubist38/mlx-openai-server@4b7d4b61586dd08b5ca1149b73003e85272ff652
+          Mininglamp-AI/cider@4d91fcee9439f7aea17ae6e965271d9536c604a0
+          ggml-org/llama.cpp@2ed93db472c2
+          lmstudio-ai/mlx-engine@86f20eb48bc79c528f682fabfc0384f799cdea0f
+          truespar/paddock@87e51e632aa0b0eeb4351a47392443c89d786135
+          NeelM0906/Mference@cd1f27fd57e187ca99127305a4e3ff643330f7b5
+          pytorch/executorch@5e21c13cc9e34fa2922d5708ba5962e3e365afdb
+          mlc-ai/mlc-llm@69881d121ee3f6dd00fe3745586a908c1b81c064'''.split()
+          def get(path):
+              request = urllib.request.Request('https://api.github.com/' + path, headers={'Authorization': 'Bearer ' + os.environ['GH_TOKEN'], 'Accept': 'application/vnd.github+json'})
+              with urllib.request.urlopen(request, timeout=45) as response:
+                  return json.load(response)
+          def collect(item):
+              repo, revision = item.split('@')
+              dest = root / repo.replace('/', '__'); dest.mkdir()
+              info = get('repos/' + repo)
+              commit = get('repos/' + repo + '/commits/' + revision)
+              sha = commit['sha']; assert sha.startswith(revision)
+              readme = get('repos/' + repo + '/readme?ref=' + sha)
+              (dest / 'README.md').write_bytes(base64.b64decode(readme['content']))
+              releases = get('repos/' + repo + '/releases?per_page=10')
+              release = next((r for r in releases if not r['draft'] and not r['prerelease']), None)
+              record = {'repository': repo, 'revision': sha, 'commit_date': commit['commit']['committer']['date'], 'license': (info.get('license') or {}).get('spdx_id', 'NOASSERTION'), 'readme_path': readme['path'], 'latest_stable_release': {'tag': release['tag_name'], 'published_at': release['published_at'], 'url': release['html_url']} if release else None}
+              (dest / 'metadata.json').write_text(json.dumps(record, indent=2))
+              return record
+          with concurrent.futures.ThreadPoolExecutor(max_workers=4) as pool:
+              records = list(pool.map(collect, repos))
+          (root / 'index.json').write_text(json.dumps(records, indent=2))
+          print('Exported two tracked source trees and', len(records), 'pinned public project metadata records.')
+          PY
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: engine-survey-review-inputs
+          path: review-inputs/
+          retention-days: 3
