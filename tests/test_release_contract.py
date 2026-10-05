@@ -218,8 +218,8 @@ class ReleaseContractTests(unittest.TestCase):
     def test_validate_workflow_uses_immutable_actions_and_hash_locked_dependencies(self) -> None:
         workflow = WORKFLOW.read_text(encoding="utf-8")
         expected_actions = {
-            "actions/checkout": ("9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0", "v7.0.0"),
-            "actions/setup-python": ("ece7cb06caefa5fff74198d8649806c4678c61a1", "v6.3.0"),
+            "actions/checkout": ("3d3c42e5aac5ba805825da76410c181273ba90b1", "v7.0.1"),
+            "actions/setup-python": ("5fda3b95a4ea91299a34e894583c3862153e4b97", "v7.0.0"),
         }
         uses = re.findall(
             r"(?m)^\s+(?:- )?uses: ([^@\s]+)@([0-9a-f]{40})\s+#\s+(v\d+\.\d+\.\d+)\s*$",
@@ -357,8 +357,8 @@ class ReleaseContractTests(unittest.TestCase):
         self.assertNotRegex(job, r"(?i)\b(?:generate|regenerate)\b.*\bevidence\b")
 
         expected_actions = {
-            "actions/checkout": ("9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0", "v7.0.0"),
-            "actions/setup-python": ("ece7cb06caefa5fff74198d8649806c4678c61a1", "v6.3.0"),
+            "actions/checkout": ("3d3c42e5aac5ba805825da76410c181273ba90b1", "v7.0.1"),
+            "actions/setup-python": ("5fda3b95a4ea91299a34e894583c3862153e4b97", "v7.0.0"),
             "actions/upload-artifact": ("043fb46d1a93c77aae656e7c1c64a875d1fc6a0a", "v7.0.1"),
         }
         uses = re.findall(

@@ -2,7 +2,7 @@
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
   "version": "0.7.0",
-  "generated_at": "2026-10-05T03:07:20.109241+00:00",
+  "generated_at": "2026-10-05T03:09:27.720951+00:00",
   "file_count": 627,
   "files": [
     {
@@ -52,31 +52,31 @@
     {
       "path": ".github/workflows/daily-research.yml",
       "size_bytes": 7497,
-      "sha256": "075861cf671f0c92763d1afe5da61ede66651f34b4df65808e5fe5037f3850e9",
+      "sha256": "22660a2725535c5a06d5ca21bda70316dbda41f78962df2d54ecea7f2f75813d",
       "executable": false
     },
     {
       "path": ".github/workflows/deploy-site.yml",
       "size_bytes": 4121,
-      "sha256": "c4d9389df5443d9fce1440d90762721be1a796f0c51bbc9dd783a9b13cabc7e7",
+      "sha256": "24859a9cbdd4b85b3348f30908e93e8734ae63e02a6614631e4c73af8d642d94",
       "executable": false
     },
     {
       "path": ".github/workflows/release.yml",
       "size_bytes": 2690,
-      "sha256": "1914fc4ac84fc9f69a5b8ed499cdeaa5dc487fd5f88c90fb88e5f0978f51773c",
+      "sha256": "c315a6424f41107acfde4a314941054582b5c48e807d88b35cfb01098a7c0dd2",
       "executable": false
     },
     {
       "path": ".github/workflows/source-health.yml",
       "size_bytes": 1212,
-      "sha256": "b4824b98741e701a20e9f8a8dc4d39d56dc09a3f4c5d41a37099c1c086f65678",
+      "sha256": "8b63023ab1c998c281c749287eab427e43913c12c2c1d3d9bbe89b4f1cfd3264",
       "executable": false
     },
     {
       "path": ".github/workflows/validate.yml",
       "size_bytes": 7572,
-      "sha256": "c198bd040e200610f29b62adb560d5a45bd6598fcb12730dbb3ad4caac32aefa",
+      "sha256": "4abd199e252e5adc1c0823f988eeb92e077faacfa0ce2ebc103c3bfd3c498297",
       "executable": false
     },
     {
@@ -3700,7 +3700,7 @@
     {
       "path": "tests/test_release_contract.py",
       "size_bytes": 21140,
-      "sha256": "d89f7bafb24d7cf5534e20ea6e765b6d1cb74bddc09a2c9ef8105506aac9ec4b",
+      "sha256": "7317798e7a0f477a3f6acf1afbc9eefc42cc40cf29847eef8097d171e04394ee",
       "executable": false
     },
     {
@@ -3766,7 +3766,7 @@
     {
       "path": "tests/test_workflow_contract.py",
       "size_bytes": 5499,
-      "sha256": "2db3ebceece6583f2276b048df1427d6a00e7492e19b95aafe9080215fd9a9a9",
+      "sha256": "1236ead94a0b3d40bbe84397d93e8e5ba0533ac8a117aead110721b7509c68c7",
       "executable": false
     }
   ]
