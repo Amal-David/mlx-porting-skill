@@ -105,13 +105,13 @@ window.MLX_PORTING_SITE_DATA = {
   },
   "guidance": {
     "by_status": {
-      "native-mlx": 7,
+      "native-mlx": 10,
       "official-mlx-project": 3,
       "proven-mlx-port": 9,
       "rejected-or-superseded": 2,
-      "research-candidate": 7
+      "research-candidate": 10
     },
-    "total": 28
+    "total": 34
   },
   "learning": {
     "checkpoint_nodes": [
@@ -448,6 +448,29 @@ window.MLX_PORTING_SITE_DATA = {
             "url": "https://arxiv.org/abs/2502.04420"
           },
           {
+            "claim_types": [
+              "algorithm_candidate"
+            ],
+            "id": "paper-2504-19874",
+            "review_depth": "synthesized",
+            "role": "papers",
+            "support_scope": "paper_only",
+            "title": "TurboQuant: Online Vector Quantization with Near-optimal Distortion Rate",
+            "url": "https://arxiv.org/abs/2504.19874v1"
+          },
+          {
+            "claim_types": [
+              "algorithm_candidate",
+              "risk_or_negative"
+            ],
+            "id": "paper-2610-33076",
+            "review_depth": "synthesized",
+            "role": "papers",
+            "support_scope": "paper_only",
+            "title": "Double KV Cache Optimization on Apple Silicon: Block-FP4, Radial Quantization, and Fused Metal Kernels",
+            "url": "https://arxiv.org/abs/2610.33076v1"
+          },
+          {
             "claim_types": [],
             "id": "paper-2502-15075",
             "review_depth": "screened",
@@ -528,7 +551,8 @@ window.MLX_PORTING_SITE_DATA = {
           "long-context quality",
           "bytes/token/layer",
           "decode latency",
-          "fallback mode"
+          "fallback mode",
+          "Compare with current uniform KV at matched storage and task quality; include rotation/residual metadata and reconstruction time."
         ]
       },
       {
@@ -1076,6 +1100,92 @@ window.MLX_PORTING_SITE_DATA = {
       },
       {
         "advisor": {
+          "description": "Promising contributor, blog, repository, paper, package, or research-loop learning that is not promotion-ready for supported guidance.",
+          "id": "experimental-approach",
+          "label": "Experimental approach",
+          "requires_user_opt_in": true
+        },
+        "applies_to": [
+          "dense-decoder-transformer",
+          "moe-decoder-transformer"
+        ],
+        "canonical_source": {
+          "claim_types": [
+            "algorithm_candidate"
+          ],
+          "id": "paper-2504-19874",
+          "review_depth": "synthesized",
+          "role": "papers",
+          "support_scope": "paper_only",
+          "title": "TurboQuant: Online Vector Quantization with Near-optimal Distortion Rate",
+          "url": "https://arxiv.org/abs/2504.19874v1"
+        },
+        "claim_eligibility": "not-catalogued",
+        "evidence_links": [
+          {
+            "claim_types": [
+              "algorithm_candidate"
+            ],
+            "id": "paper-2504-19874",
+            "review_depth": "synthesized",
+            "role": "papers",
+            "support_scope": "paper_only",
+            "title": "TurboQuant: Online Vector Quantization with Near-optimal Distortion Rate",
+            "url": "https://arxiv.org/abs/2504.19874v1"
+          },
+          {
+            "claim_types": [
+              "algorithm_candidate",
+              "risk_or_negative"
+            ],
+            "id": "paper-2610-33076",
+            "review_depth": "synthesized",
+            "role": "papers",
+            "support_scope": "paper_only",
+            "title": "Double KV Cache Optimization on Apple Silicon: Block-FP4, Radial Quantization, and Fused Metal Kernels",
+            "url": "https://arxiv.org/abs/2610.33076v1"
+          }
+        ],
+        "expected_effect": "Targets peak memory, long context, decode throughput. No numeric effect is claimed; profile the declared target workload and consult the effective-claim catalog before publishing a number.",
+        "family_id": "state-memory",
+        "id": "compressed-kv-direct-attention",
+        "numeric_authority": "effective_claims",
+        "numeric_claim": null,
+        "objectives": [
+          "peak-memory",
+          "long-context",
+          "decode-throughput"
+        ],
+        "prerequisite": "A parity-passing readable baseline and a profile showing this bottleneck: Weights or KV state exceed the useful memory budget or create avoidable transfer and cache cost.",
+        "proof_gate": "State update, position, reset, isolation, and representative memory accounting are validated.",
+        "quality_gate": [
+          "long-context retrieval/reasoning quality at matched memory budget",
+          "cache boundary and reconstruction parity"
+        ],
+        "quality_gated": true,
+        "recommendation": "Investigate blockwise attention that consumes compressed KV without reconstructing the entire cache only after measuring the existing uniform-quantized and uncompressed baselines.",
+        "rollback_conditions": [
+          "Reconstruction dominates decode or peak memory defeats the capacity objective.",
+          "Quality degrades beyond the preset budget.",
+          "The implementation materializes the full cache on every token or fails allocation/boundary checks."
+        ],
+        "status": "research-candidate",
+        "technique_id": "compressed-kv-direct-attention",
+        "title": "Direct compressed-KV attention without full-cache reconstruction",
+        "tradeoffs": [
+          "Packing, rotation, scales, residuals and reconstruction all consume time and memory.",
+          "A fused reconstruction kernel alone does not establish compressed-attention support or long-context scalability."
+        ],
+        "validation_gates": [
+          "Pin an inspectable MLX implementation; compare numerical and task quality with uniform KV and uncompressed baselines at a matched memory budget.",
+          "Measure resident cache, scale/residual metadata, transient reconstruction, allocator peak and allocation sizes separately.",
+          "Sweep supported short, intermediate and deployment-long contexts, including 32K or longer only when the model and host budget support them.",
+          "Verify direct compressed-block consumption, preallocation/chunk boundaries, cache persistence and nonmultiple lengths.",
+          "Measure committed-token latency and first-token cost including quantization and attention; do not multiply representation-level compression factors."
+        ]
+      },
+      {
+        "advisor": {
           "description": "Incompatible, unsafe, contradicted, license-blocked, CUDA-only, or superseded.",
           "id": "rejected-do-not-use",
           "label": "Rejected / do not use",
@@ -1122,6 +1232,18 @@ window.MLX_PORTING_SITE_DATA = {
             "support_scope": "paper_only",
             "title": "Native LLM and MLLM Inference at Scale on Apple Silicon",
             "url": "https://arxiv.org/abs/2601.19139"
+          },
+          {
+            "claim_types": [
+              "algorithm_candidate",
+              "serving_semantics"
+            ],
+            "id": "vllm-mlx-paper-v2-2026-01-29",
+            "review_depth": "synthesized",
+            "role": "papers",
+            "support_scope": "paper_only",
+            "title": "Native LLM and MLLM Inference at Scale on Apple Silicon",
+            "url": "https://arxiv.org/abs/2601.19139v2"
           },
           {
             "claim_types": [],
@@ -1416,6 +1538,18 @@ window.MLX_PORTING_SITE_DATA = {
             "support_scope": "unspecified",
             "title": "Accelerating Large Language Model Decoding with Speculative Sampling",
             "url": "https://arxiv.org/abs/2302.01318"
+          },
+          {
+            "claim_types": [
+              "algorithm_candidate",
+              "risk_or_negative"
+            ],
+            "id": "paper-2610-31479",
+            "review_depth": "synthesized",
+            "role": "papers",
+            "support_scope": "paper_only",
+            "title": "Evaluating the Applicability of LLM Inference Optimizations on Apple Silicon",
+            "url": "https://arxiv.org/abs/2610.31479v1"
           }
         ],
         "expected_effect": "Targets decode latency, throughput. No numeric effect is claimed; profile the declared target workload and consult the effective-claim catalog before publishing a number.",
@@ -1435,7 +1569,8 @@ window.MLX_PORTING_SITE_DATA = {
         "rollback_conditions": [
           "acceptance too low",
           "memory budget exceeded",
-          "quality/distribution mismatch"
+          "quality/distribution mismatch",
+          "Disable speculation when committed-token latency or deployment tail latency regresses, even with high acceptance."
         ],
         "status": "official-mlx-project",
         "technique_id": "classic-speculative",
@@ -1449,7 +1584,9 @@ window.MLX_PORTING_SITE_DATA = {
           "lossless distribution or quality-preserving test",
           "acceptance length",
           "target verification cost",
-          "TTFT/decode benchmark"
+          "TTFT/decode benchmark",
+          "Measure draft, verification, synchronization and rollback time per committed token against the same target-only baseline across short/long contexts.",
+          "Sweep draft size/token budget and verify cache composition, reset and rejection rollback; acceptance rate alone is not a speed metric."
         ]
       },
       {
@@ -1465,18 +1602,28 @@ window.MLX_PORTING_SITE_DATA = {
         ],
         "canonical_source": {
           "claim_types": [
-            "mlx_implementation",
-            "serving_semantics"
+            "algorithm_candidate"
           ],
-          "id": "mlx-vlm-readme",
+          "id": "dflash-paper-v2-2026-05-28",
           "review_depth": "synthesized",
-          "role": "repositories",
-          "support_scope": "third_party_pinned",
-          "title": "MLX-VLM serving, caching, and speculative decoding documentation",
-          "url": "https://github.com/Blaizzy/mlx-vlm/blob/6a8cdff6a1f53f46a15d4adb997c3b2d5f621263/README.md"
+          "role": "papers",
+          "support_scope": "paper_only",
+          "title": "DFlash: Block Diffusion for Flash Speculative Decoding",
+          "url": "https://arxiv.org/abs/2602.06036v2"
         },
         "claim_eligibility": "not-catalogued",
         "evidence_links": [
+          {
+            "claim_types": [
+              "algorithm_candidate"
+            ],
+            "id": "dflash-paper-v2-2026-05-28",
+            "review_depth": "synthesized",
+            "role": "papers",
+            "support_scope": "paper_only",
+            "title": "DFlash: Block Diffusion for Flash Speculative Decoding",
+            "url": "https://arxiv.org/abs/2602.06036v2"
+          },
           {
             "claim_types": [
               "mlx_implementation",
@@ -1506,6 +1653,29 @@ window.MLX_PORTING_SITE_DATA = {
             "support_scope": "unspecified",
             "title": "EAGLE: Speculative Sampling Requires Rethinking Feature Uncertainty",
             "url": "https://arxiv.org/abs/2401.15077"
+          },
+          {
+            "claim_types": [
+              "algorithm_candidate"
+            ],
+            "id": "paper-2503-01840",
+            "review_depth": "synthesized",
+            "role": "papers",
+            "support_scope": "paper_only",
+            "title": "EAGLE-3: Scaling up Inference Acceleration of Large Language Models via Training-Time Test",
+            "url": "https://arxiv.org/abs/2503.01840v3"
+          },
+          {
+            "claim_types": [
+              "algorithm_candidate",
+              "risk_or_negative"
+            ],
+            "id": "paper-2610-31479",
+            "review_depth": "synthesized",
+            "role": "papers",
+            "support_scope": "paper_only",
+            "title": "Evaluating the Applicability of LLM Inference Optimizations on Apple Silicon",
+            "url": "https://arxiv.org/abs/2610.31479v1"
           },
           {
             "claim_types": [],
@@ -1566,7 +1736,8 @@ window.MLX_PORTING_SITE_DATA = {
           "drafter compatibility",
           "acceptance/tree stats",
           "distribution or task quality",
-          "end-to-end benchmark"
+          "end-to-end benchmark",
+          "Pin target feature taps, drafter checkpoint, tokenizer mapping and verification policy; test every rejection offset and all recurrent/KV state before benchmarking."
         ]
       },
       {
@@ -1756,6 +1927,165 @@ window.MLX_PORTING_SITE_DATA = {
       },
       {
         "advisor": {
+          "description": "Promising contributor, blog, repository, paper, package, or research-loop learning that is not promotion-ready for supported guidance.",
+          "id": "experimental-approach",
+          "label": "Experimental approach",
+          "requires_user_opt_in": true
+        },
+        "applies_to": [
+          "all"
+        ],
+        "canonical_source": {
+          "claim_types": [
+            "algorithm_candidate",
+            "risk_or_negative"
+          ],
+          "id": "bair-k-search-mlx-2026-07-29",
+          "review_depth": "synthesized",
+          "role": "technical_blogs",
+          "support_scope": "context_only",
+          "title": "From CUDA to MLX: How K-Search Brings Decades of Kernel Expertise to Apple Silicon",
+          "url": "https://bair.berkeley.edu/blog/2026/07/29/cuda-to-mlx-k-search/"
+        },
+        "claim_eligibility": "not-catalogued",
+        "evidence_links": [
+          {
+            "claim_types": [
+              "algorithm_candidate",
+              "risk_or_negative"
+            ],
+            "id": "bair-k-search-mlx-2026-07-29",
+            "review_depth": "synthesized",
+            "role": "technical_blogs",
+            "support_scope": "context_only",
+            "title": "From CUDA to MLX: How K-Search Brings Decades of Kernel Expertise to Apple Silicon",
+            "url": "https://bair.berkeley.edu/blog/2026/07/29/cuda-to-mlx-k-search/"
+          },
+          {
+            "claim_types": [
+              "algorithm_candidate"
+            ],
+            "id": "paper-2602-19128",
+            "review_depth": "synthesized",
+            "role": "papers",
+            "support_scope": "paper_only",
+            "title": "K-Search: LLM Kernel Generation via Co-Evolving Intrinsic World Model",
+            "url": "https://arxiv.org/abs/2602.19128v2"
+          }
+        ],
+        "expected_effect": "Targets prefill throughput, decode throughput, latency, throughput. No numeric effect is claimed; profile the declared target workload and consult the effective-claim catalog before publishing a number.",
+        "family_id": "custom-backend",
+        "id": "hardware-aware-kernel-search",
+        "numeric_authority": "effective_claims",
+        "numeric_claim": null,
+        "objectives": [
+          "prefill-throughput",
+          "decode-throughput",
+          "latency",
+          "throughput"
+        ],
+        "prerequisite": "A parity-passing readable baseline and a profile showing this bottleneck: A proven hot operation has no adequate native MLX path after safer options are exhausted.",
+        "proof_gate": "A readable fallback passes parity and the custom path is benchmarked over representative shapes and devices.",
+        "quality_gate": [],
+        "quality_gated": false,
+        "recommendation": "Use a bounded hypothesis-and-measurement search for a demonstrated hotspot: translate algorithmic invariants and memory access patterns into Metal constraints, generate one candidate change at a time, and retain the current native MLX baseline and fallback.",
+        "rollback_conditions": [
+          "A candidate fails held-out parity or depends on unsupported hardware behavior.",
+          "The native baseline wins or tuning gains vanish end to end.",
+          "The search exhausts its budget without a reproducible improvement."
+        ],
+        "status": "research-candidate",
+        "technique_id": "hardware-aware-kernel-search",
+        "title": "Hardware-aware kernel search with held-out validation",
+        "tradeoffs": [
+          "Kernel search consumes tuning budget and can overfit benchmark shapes.",
+          "CUDA warp, asynchronous-copy and memory assumptions require a new Metal design; paper search scores are not measurements."
+        ],
+        "validation_gates": [
+          "Capture the operator contract, current native baseline, supported shapes/dtypes, chip limits and a bounded iteration/time budget.",
+          "Freeze held-out correctness and workload cases before search; validate every candidate before timing.",
+          "Exercise nonmultiple dimensions, strides, tails, empty/masked cases and gradients when training is in scope.",
+          "Keep per-candidate source hashes, changed hypothesis, compiler/runtime identity, failures and real-device timing.",
+          "Recheck finalists on held-out shapes and the end-to-end model; separate prefill from decode and cold compile from warm execution."
+        ]
+      },
+      {
+        "advisor": {
+          "description": "Promising contributor, blog, repository, paper, package, or research-loop learning that is not promotion-ready for supported guidance.",
+          "id": "experimental-approach",
+          "label": "Experimental approach",
+          "requires_user_opt_in": true
+        },
+        "applies_to": [
+          "dense-decoder-transformer",
+          "moe-decoder-transformer"
+        ],
+        "canonical_source": {
+          "claim_types": [
+            "algorithm_candidate",
+            "risk_or_negative"
+          ],
+          "id": "paper-2610-31479",
+          "review_depth": "synthesized",
+          "role": "papers",
+          "support_scope": "paper_only",
+          "title": "Evaluating the Applicability of LLM Inference Optimizations on Apple Silicon",
+          "url": "https://arxiv.org/abs/2610.31479v1"
+        },
+        "claim_eligibility": "not-catalogued",
+        "evidence_links": [
+          {
+            "claim_types": [
+              "algorithm_candidate",
+              "risk_or_negative"
+            ],
+            "id": "paper-2610-31479",
+            "review_depth": "synthesized",
+            "role": "papers",
+            "support_scope": "paper_only",
+            "title": "Evaluating the Applicability of LLM Inference Optimizations on Apple Silicon",
+            "url": "https://arxiv.org/abs/2610.31479v1"
+          }
+        ],
+        "expected_effect": "Targets peak memory, long context, decode throughput. No numeric effect is claimed; profile the declared target workload and consult the effective-claim catalog before publishing a number.",
+        "family_id": "state-memory",
+        "id": "kv-cache-pruning",
+        "numeric_authority": "effective_claims",
+        "numeric_claim": null,
+        "objectives": [
+          "peak-memory",
+          "long-context",
+          "decode-throughput"
+        ],
+        "prerequisite": "A parity-passing readable baseline and a profile showing this bottleneck: Weights or KV state exceed the useful memory budget or create avoidable transfer and cache cost.",
+        "proof_gate": "State update, position, reset, isolation, and representative memory accounting are validated.",
+        "quality_gate": [
+          "retained/evicted-fact retrieval and reasoning quality",
+          "position, mask and cache persistence semantics"
+        ],
+        "quality_gated": true,
+        "recommendation": "Evaluate a precisely specified KV retention policy only after baseline parity; keep positional semantics, retained indices, sinks and recent-window rules explicit. Never prune a recurrent state as if it were ordinary attention KV.",
+        "rollback_conditions": [
+          "Any required task falls below its preset quality floor.",
+          "Index/position semantics drift.",
+          "Selection overhead removes the end-to-end benefit on deployment workloads."
+        ],
+        "status": "research-candidate",
+        "technique_id": "kv-pruning",
+        "title": "KV cache pruning/eviction",
+        "tradeoffs": [
+          "Pruning changes attention outputs and can discard information needed later.",
+          "Selection/gather overhead and decode regime determine whether reduced KV traffic pays off."
+        ],
+        "validation_gates": [
+          "Fix the retention rule and budget before comparing against the same unpruned model/runtime.",
+          "Test retrieval at dispersed positions, multi-turn continuation, summarization and reasoning, including probes for retained versus evicted facts.",
+          "Check absolute position, RoPE, mask, sink, reset and persistence behavior, and keep recurrent state independent.",
+          "Benchmark actual short/long contexts, batch-one and intended concurrency with selection/gather time, peak memory and tail latency."
+        ]
+      },
+      {
+        "advisor": {
           "description": "Backed by official MLX/API docs, a pinned implementation, or primary paper, but still requiring local confirmation for the chosen model.",
           "id": "validated-source-theory",
           "label": "Validated by source or theory",
@@ -1789,6 +2119,18 @@ window.MLX_PORTING_SITE_DATA = {
             "url": "https://ml-explore.github.io/mlx/build/html/usage/lazy_evaluation.html"
           },
           {
+            "claim_types": [
+              "algorithm_candidate",
+              "risk_or_negative"
+            ],
+            "id": "apple-mlx-m5-blog",
+            "review_depth": "synthesized",
+            "role": "technical_blogs",
+            "support_scope": "context_only",
+            "title": "Exploring LLMs with MLX and the Neural Accelerators in the M5 GPU",
+            "url": "https://machinelearning.apple.com/research/exploring-llms-mlx-m5"
+          },
+          {
             "claim_types": [],
             "id": "mlx-repo",
             "review_depth": "synthesized",
@@ -1796,15 +2138,6 @@ window.MLX_PORTING_SITE_DATA = {
             "support_scope": "unspecified",
             "title": "MLX array framework repository",
             "url": "https://github.com/ml-explore/mlx/tree/96296e9c3075a2389bc5c0f078bf01b5aa377cd9"
-          },
-          {
-            "claim_types": [],
-            "id": "apple-mlx-m5-blog",
-            "review_depth": "screened",
-            "role": "technical_blogs",
-            "support_scope": "unspecified",
-            "title": "Exploring LLMs with MLX and the Neural Accelerators in the M5 GPU",
-            "url": "https://machinelearning.apple.com/research/exploring-llms-mlx-m5"
           },
           {
             "claim_types": [],
@@ -1847,6 +2180,113 @@ window.MLX_PORTING_SITE_DATA = {
           "bounded graph growth",
           "dispatch/synchronization count or timing improvement",
           "peak memory recorded"
+        ]
+      },
+      {
+        "advisor": {
+          "description": "Backed by official MLX/API docs, a pinned implementation, or primary paper, but still requiring local confirmation for the chosen model.",
+          "id": "validated-source-theory",
+          "label": "Validated by source or theory",
+          "requires_user_opt_in": false
+        },
+        "applies_to": [
+          "linear-heavy-models",
+          "diffusion-flow"
+        ],
+        "canonical_source": {
+          "claim_types": [
+            "api_support",
+            "risk_or_negative"
+          ],
+          "id": "mlx-0324-nax-device",
+          "review_depth": "synthesized",
+          "role": "repositories",
+          "support_scope": "official_mlx",
+          "title": "MLX 0.32.4 Metal NAX device and build gate",
+          "url": "https://github.com/ml-explore/mlx/blob/36969c094354086e15d2a327a9c50feb20b9cf11/mlx/backend/metal/device.cpp"
+        },
+        "claim_eligibility": "not-catalogued",
+        "evidence_links": [
+          {
+            "claim_types": [
+              "api_support",
+              "risk_or_negative"
+            ],
+            "id": "mlx-0324-nax-device",
+            "review_depth": "synthesized",
+            "role": "repositories",
+            "support_scope": "official_mlx",
+            "title": "MLX 0.32.4 Metal NAX device and build gate",
+            "url": "https://github.com/ml-explore/mlx/blob/36969c094354086e15d2a327a9c50feb20b9cf11/mlx/backend/metal/device.cpp"
+          },
+          {
+            "claim_types": [
+              "algorithm_candidate",
+              "risk_or_negative"
+            ],
+            "id": "apple-metal-tensors-wwdc26",
+            "review_depth": "synthesized",
+            "role": "official_docs",
+            "support_scope": "context_only",
+            "title": "Optimize custom machine learning operations with Metal tensors",
+            "url": "https://developer.apple.com/videos/play/wwdc2026/330/"
+          },
+          {
+            "claim_types": [
+              "algorithm_candidate",
+              "risk_or_negative"
+            ],
+            "id": "apple-mlx-m5-blog",
+            "review_depth": "synthesized",
+            "role": "technical_blogs",
+            "support_scope": "context_only",
+            "title": "Exploring LLMs with MLX and the Neural Accelerators in the M5 GPU",
+            "url": "https://machinelearning.apple.com/research/exploring-llms-mlx-m5"
+          }
+        ],
+        "expected_effect": "Targets prefill throughput, decode throughput, throughput. No numeric effect is claimed; profile the declared target workload and consult the effective-claim catalog before publishing a number.",
+        "family_id": "native-operators-compilation",
+        "id": "metal-nax-matmul",
+        "numeric_authority": "effective_claims",
+        "numeric_claim": null,
+        "objectives": [
+          "prefill-throughput",
+          "decode-throughput",
+          "throughput"
+        ],
+        "prerequisite": "A parity-passing readable baseline and a profile showing this bottleneck: A compatible repeated operator or stable graph region dominates runtime. Requires macOS ≥ 26.2; MLX ≥ 0.32.4; M5 family. Unknown or incompatible runtime holds execution.",
+        "proof_gate": "Eager parity exists and the native or compiled path matches it across representative shapes and state.",
+        "quality_gate": [],
+        "quality_gated": false,
+        "recommendation": "For an explicitly identified M5-family Mac with macOS>=26.2 and the reviewed MLX>=0.32.4 baseline, profile the existing native matrix dispatch before writing a replacement kernel. M4 and unreviewed chip families remain outside this recipe.",
+        "rollback_conditions": [
+          "The actual build/device does not expose the required path.",
+          "Numerical behavior exceeds the declared tolerance.",
+          "The native alternative is faster or end-to-end gain disappears."
+        ],
+        "runtime_requirements": {
+          "hardware": {
+            "chip_family_any": [
+              "m5"
+            ]
+          },
+          "minimum_software": {
+            "macos": "26.2",
+            "mlx": "0.32.4"
+          }
+        },
+        "status": "native-mlx",
+        "technique_id": "metal-nax-matmul",
+        "title": "Profile the native M5 GPU Neural Accelerator matrix path",
+        "tradeoffs": [
+          "The installed build or MLX_METAL_NO_NAX may disable NAX despite compatible version and hardware metadata.",
+          "Tiny matrix-vector decode and irregular expert shapes may prefer another native dispatch."
+        ],
+        "validation_gates": [
+          "Match mlx>=0.32.4, macos>=26.2 and explicit M5 chip family in TargetProfile.",
+          "Verify Metal GPU execution and inspect the installed native dispatch/build before attributing work to NAX.",
+          "Check matrix layout, tails, accumulation precision and representative task quality against the readable baseline.",
+          "Benchmark prefill and decode separately at the same precision, model, shape distribution, software and power conditions."
         ]
       },
       {
@@ -1956,7 +2396,8 @@ window.MLX_PORTING_SITE_DATA = {
           "loop oracle parity",
           "sorted/unsorted duplicate tests",
           "tokens_per_expert histogram",
-          "quality and peak-memory benchmark"
+          "quality and peak-memory benchmark",
+          "Compare batch-one routed GEMV against grouped prefill/batch GEMM; include routing, sorting, gathers and partial-output reduction in the timed block."
         ]
       },
       {
@@ -2249,6 +2690,107 @@ window.MLX_PORTING_SITE_DATA = {
           "requires_user_opt_in": false
         },
         "applies_to": [
+          "ssm-recurrent-hybrid"
+        ],
+        "canonical_source": {
+          "claim_types": [
+            "api_support",
+            "risk_or_negative"
+          ],
+          "id": "mlx-0324-fast-bindings",
+          "review_depth": "synthesized",
+          "role": "repositories",
+          "support_scope": "official_mlx",
+          "title": "MLX 0.32.4 fast-operation Python bindings",
+          "url": "https://github.com/ml-explore/mlx/blob/36969c094354086e15d2a327a9c50feb20b9cf11/python/src/fast.cpp"
+        },
+        "claim_eligibility": "not-catalogued",
+        "evidence_links": [
+          {
+            "claim_types": [
+              "api_support",
+              "risk_or_negative"
+            ],
+            "id": "mlx-0324-fast-bindings",
+            "review_depth": "synthesized",
+            "role": "repositories",
+            "support_scope": "official_mlx",
+            "title": "MLX 0.32.4 fast-operation Python bindings",
+            "url": "https://github.com/ml-explore/mlx/blob/36969c094354086e15d2a327a9c50feb20b9cf11/python/src/fast.cpp"
+          },
+          {
+            "claim_types": [
+              "mlx_implementation",
+              "api_support"
+            ],
+            "id": "mlx-0324-gated-delta-implementation",
+            "review_depth": "synthesized",
+            "role": "repositories",
+            "support_scope": "official_mlx",
+            "title": "MLX 0.32.4 gated-delta implementation and VJP",
+            "url": "https://github.com/ml-explore/mlx/blob/36969c094354086e15d2a327a9c50feb20b9cf11/mlx/fast.cpp"
+          },
+          {
+            "claim_types": [
+              "mlx_implementation",
+              "api_support"
+            ],
+            "id": "mlx-0324-gated-delta-tests",
+            "review_depth": "synthesized",
+            "role": "repositories",
+            "support_scope": "official_mlx",
+            "title": "MLX 0.32.4 gated-delta oracle and gradient tests",
+            "url": "https://github.com/ml-explore/mlx/blob/36969c094354086e15d2a327a9c50feb20b9cf11/python/tests/test_fast_gated_delta.py"
+          }
+        ],
+        "expected_effect": "Targets prefill throughput, decode throughput, peak memory. No numeric effect is claimed; profile the declared target workload and consult the effective-claim catalog before publishing a number.",
+        "family_id": "native-operators-compilation",
+        "id": "native-gated-delta-update",
+        "numeric_authority": "effective_claims",
+        "numeric_claim": null,
+        "objectives": [
+          "prefill-throughput",
+          "decode-throughput",
+          "peak-memory"
+        ],
+        "prerequisite": "A parity-passing readable baseline and a profile showing this bottleneck: A compatible repeated operator or stable graph region dominates runtime. Requires MLX ≥ 0.32.4. Unknown or incompatible runtime holds execution.",
+        "proof_gate": "Eager parity exists and the native or compiled path matches it across representative shapes and state.",
+        "quality_gate": [],
+        "quality_gated": false,
+        "recommendation": "On the reviewed MLX 0.32.4-or-newer source baseline, evaluate mx.fast.gated_delta_update only for a matching Gated DeltaNet recurrence after the eager state oracle passes; this does not make Mamba or every linear attention variant compatible.",
+        "rollback_conditions": [
+          "State or output parity fails at any chunk boundary.",
+          "The model uses a different recurrence or the native path is unavailable.",
+          "Latency or memory regresses on the intended sequence-length distribution."
+        ],
+        "runtime_requirements": {
+          "minimum_software": {
+            "mlx": "0.32.4"
+          }
+        },
+        "status": "native-mlx",
+        "technique_id": "native-gated-delta-update",
+        "title": "Native Gated DeltaNet update with an explicit recurrent-state contract",
+        "tradeoffs": [
+          "A matching version does not prove the symbol, backend, dtype, or recurrence is usable.",
+          "The binding prose and tested state layout differ in the reviewed snapshot; resolve the contract against implementation and tests."
+        ],
+        "validation_gates": [
+          "Confirm mlx>=0.32.4 and probe the actual mx.fast.gated_delta_update path on the selected device.",
+          "Verify float32 state [B,Hv,Dv,Dk], decay convention, normalization and upstream query scaling against the source recurrence.",
+          "Compare full-sequence, chunked-prefill, token-by-token, reset, padding, fork and rejected-draft rollback outputs and final state.",
+          "If trainable, compare vector-Jacobian products and gradient tolerance separately from inference parity.",
+          "Measure prefill and committed-token decode, synchronization, live state and peak memory against the current native/eager baseline."
+        ]
+      },
+      {
+        "advisor": {
+          "description": "Backed by official MLX/API docs, a pinned implementation, or primary paper, but still requiring local confirmation for the chosen model.",
+          "id": "validated-source-theory",
+          "label": "Validated by source or theory",
+          "requires_user_opt_in": false
+        },
+        "applies_to": [
           "linear-heavy-models",
           "dense-decoder-transformer",
           "moe-decoder-transformer",
@@ -2257,17 +2799,30 @@ window.MLX_PORTING_SITE_DATA = {
         ],
         "canonical_source": {
           "claim_types": [
-            "api_support"
+            "api_support",
+            "risk_or_negative"
           ],
-          "id": "mlx-doc-core-quantize",
+          "id": "mlx-0324-quantization-bindings",
           "review_depth": "synthesized",
-          "role": "official_docs",
+          "role": "repositories",
           "support_scope": "official_mlx",
-          "title": "MLX core quantize API",
-          "url": "https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.quantize.html"
+          "title": "MLX 0.32.4 quantization and QQMM API contracts",
+          "url": "https://github.com/ml-explore/mlx/blob/36969c094354086e15d2a327a9c50feb20b9cf11/python/src/ops.cpp"
         },
         "claim_eligibility": "withheld",
         "evidence_links": [
+          {
+            "claim_types": [
+              "api_support",
+              "risk_or_negative"
+            ],
+            "id": "mlx-0324-quantization-bindings",
+            "review_depth": "synthesized",
+            "role": "repositories",
+            "support_scope": "official_mlx",
+            "title": "MLX 0.32.4 quantization and QQMM API contracts",
+            "url": "https://github.com/ml-explore/mlx/blob/36969c094354086e15d2a327a9c50feb20b9cf11/python/src/ops.cpp"
+          },
           {
             "claim_types": [
               "api_support"
@@ -2378,7 +2933,89 @@ window.MLX_PORTING_SITE_DATA = {
           "task quality against unquantized baseline",
           "load/save roundtrip",
           "latency and peak memory benchmark",
-          "fallback precision recorded"
+          "fallback precision recorded",
+          "Validate the mode-specific bit width, group size, scale/bias tuple and eligible layer path against the pinned runtime; do not treat FP4/FP8 formats as interchangeable.",
+          "Report quantized weights separately from peak live memory, and profile the full repeated block after lowering matmul cost."
+        ]
+      },
+      {
+        "advisor": {
+          "description": "Backed by official MLX/API docs, a pinned implementation, or primary paper, but still requiring local confirmation for the chosen model.",
+          "id": "validated-source-theory",
+          "label": "Validated by source or theory",
+          "requires_user_opt_in": false
+        },
+        "applies_to": [
+          "automatic-speech-recognition",
+          "streaming-speech",
+          "separation-enhancement",
+          "vocoder-waveform-decoder",
+          "neural-audio-codec",
+          "flow-diffusion-tts"
+        ],
+        "canonical_source": {
+          "claim_types": [
+            "api_support"
+          ],
+          "id": "mlx-0324-fft-bindings",
+          "review_depth": "synthesized",
+          "role": "repositories",
+          "support_scope": "official_mlx",
+          "title": "MLX 0.32.4 STFT and inverse STFT bindings",
+          "url": "https://github.com/ml-explore/mlx/blob/36969c094354086e15d2a327a9c50feb20b9cf11/python/src/fft.cpp"
+        },
+        "claim_eligibility": "not-catalogued",
+        "evidence_links": [
+          {
+            "claim_types": [
+              "api_support"
+            ],
+            "id": "mlx-0324-fft-bindings",
+            "review_depth": "synthesized",
+            "role": "repositories",
+            "support_scope": "official_mlx",
+            "title": "MLX 0.32.4 STFT and inverse STFT bindings",
+            "url": "https://github.com/ml-explore/mlx/blob/36969c094354086e15d2a327a9c50feb20b9cf11/python/src/fft.cpp"
+          }
+        ],
+        "expected_effect": "Targets first audio latency, rtf, latency, streaming quality. No numeric effect is claimed; profile the declared target workload and consult the effective-claim catalog before publishing a number.",
+        "family_id": "native-operators-compilation",
+        "id": "native-spectral-transforms",
+        "numeric_authority": "effective_claims",
+        "numeric_claim": null,
+        "objectives": [
+          "first-audio-latency",
+          "rtf",
+          "latency",
+          "streaming-quality"
+        ],
+        "prerequisite": "A parity-passing readable baseline and a profile showing this bottleneck: A compatible repeated operator or stable graph region dominates runtime. Requires MLX ≥ 0.32.4. Unknown or incompatible runtime holds execution.",
+        "proof_gate": "Eager parity exists and the native or compiled path matches it across representative shapes and state.",
+        "quality_gate": [],
+        "quality_gated": false,
+        "recommendation": "Evaluate mlx.core.fft.stft/istft on the reviewed MLX 0.32.4-or-newer baseline only when the source spectral frontend or decoder has an exactly matched transform contract.",
+        "rollback_conditions": [
+          "Spectral or waveform parity fails.",
+          "The source needs unsupported padding, normalization or streaming semantics.",
+          "Task quality or end-to-end audio latency regresses."
+        ],
+        "runtime_requirements": {
+          "minimum_software": {
+            "mlx": "0.32.4"
+          }
+        },
+        "status": "native-mlx",
+        "technique_id": "native-spectral-transforms",
+        "title": "Native STFT and inverse STFT with source-matched boundary semantics",
+        "tradeoffs": [
+          "Window, centering, padding and inverse overlap normalization differ across frameworks.",
+          "A file-level round trip can conceal stream-boundary defects or latency regressions."
+        ],
+        "validation_gates": [
+          "Confirm mlx>=0.32.4 and exercise fft.stft and fft.istft on the selected device before adopting them.",
+          "Match FFT length, hop, window samples, centering, padding, one-sided/full spectrum, complex layout and reconstruction length to the source.",
+          "Compare silence, impulse, sinusoid, short clips and nonmultiple lengths plus whole-file versus streaming chunk boundaries.",
+          "Run task quality and clipping/continuity checks; measure first-chunk latency, real-time factor and peak memory."
         ]
       },
       {
@@ -2834,6 +3471,18 @@ window.MLX_PORTING_SITE_DATA = {
             "support_scope": "unspecified",
             "title": "KIVI: A Tuning-Free Asymmetric 2bit Quantization for KV Cache",
             "url": "https://arxiv.org/abs/2402.02750"
+          },
+          {
+            "claim_types": [
+              "algorithm_candidate",
+              "risk_or_negative"
+            ],
+            "id": "paper-2610-33076",
+            "review_depth": "synthesized",
+            "role": "papers",
+            "support_scope": "paper_only",
+            "title": "Double KV Cache Optimization on Apple Silicon: Block-FP4, Radial Quantization, and Fused Metal Kernels",
+            "url": "https://arxiv.org/abs/2610.33076v1"
           }
         ],
         "expected_effect": "Targets peak memory, long context, concurrency. No numeric effect is claimed; profile the declared target workload and consult the effective-claim catalog before publishing a number.",
@@ -2871,7 +3520,8 @@ window.MLX_PORTING_SITE_DATA = {
           "retrieval/reasoning quality",
           "bytes/token/layer",
           "decode latency",
-          "cache reset/reuse tests"
+          "cache reset/reuse tests",
+          "Separate stored KV bytes from metadata and transient dequantization/reconstruction allocations; include long-context peak and allocation limits."
         ]
       },
       {
@@ -3619,6 +4269,14 @@ window.MLX_PORTING_SITE_DATA = {
       "bf16-weight-cast": [
         "task-specific quality against F32"
       ],
+      "compressed-kv-direct-attention": [
+        "long-context retrieval/reasoning quality at matched memory budget",
+        "cache boundary and reconstruction parity"
+      ],
+      "kv-cache-pruning": [
+        "retained/evicted-fact retrieval and reasoning quality",
+        "position, mask and cache persistence semantics"
+      ],
       "moe-expert-dispatch-and-quantization": [
         "quality against the unquantized expert baseline"
       ],
@@ -3734,7 +4392,10 @@ window.MLX_PORTING_SITE_DATA = {
         "id": "native-operators-compilation",
         "method_ids": [
           "fast-sdpa",
-          "compile-stable-region"
+          "compile-stable-region",
+          "native-gated-delta-update",
+          "native-spectral-transforms",
+          "metal-nax-matmul"
         ],
         "proof_gate": "Eager parity exists and the native or compiled path matches it across representative shapes and state.",
         "rollback": "Use the readable eager fallback on semantic mismatch, retracing instability, or no end-to-end benefit.",
@@ -3756,7 +4417,9 @@ window.MLX_PORTING_SITE_DATA = {
         "method_ids": [
           "block-weight-streaming",
           "uniform-kv-quantization",
-          "adaptive-kv-quantization"
+          "adaptive-kv-quantization",
+          "compressed-kv-direct-attention",
+          "kv-cache-pruning"
         ],
         "proof_gate": "State update, position, reset, isolation, and representative memory accounting are validated.",
         "rollback": "Return to full state or resident weights when parity, quality, privacy, or end-to-end latency regresses.",
@@ -3813,14 +4476,15 @@ window.MLX_PORTING_SITE_DATA = {
         "method_ids": [
           "moe-gate-up-fusion",
           "spatial-grid-sample-kernel",
-          "cuda-graphs-decode-capture"
+          "cuda-graphs-decode-capture",
+          "hardware-aware-kernel-search"
         ],
         "proof_gate": "A readable fallback passes parity and the custom path is benchmarked over representative shapes and devices.",
         "rollback": "Keep or restore the fallback on semantic mismatch, maintenance risk, rejected platform assumptions, or no measured win.",
         "title": "Custom backend work"
       }
     ],
-    "reviewed": "2026-07-12",
+    "reviewed": "2026-11-05",
     "schema_version": 1,
     "translation_lens": [
       {
@@ -3946,52 +4610,52 @@ window.MLX_PORTING_SITE_DATA = {
     ]
   },
   "local_docs": {
-    "references": 38,
+    "references": 40,
     "runbooks": 17
   },
   "schema_version": 1,
   "sources": {
     "by_classification": {
-      "official_api_doc": 14,
-      "primary_paper": 4,
-      "primary_source_code": 13,
-      "release_note": 2,
-      "technical_blog": 2,
-      "unclassified": 328
+      "official_api_doc": 21,
+      "primary_paper": 16,
+      "primary_source_code": 24,
+      "release_note": 4,
+      "technical_blog": 9,
+      "unclassified": 326
     },
     "by_kind": {
       "issue-report": 1,
-      "official-doc": 38,
-      "paper": 232,
-      "release": 8,
+      "official-doc": 45,
+      "paper": 243,
+      "release": 10,
       "repository": 49,
-      "source-code": 26,
-      "technical-blog": 9
+      "source-code": 37,
+      "technical-blog": 15
     },
     "by_review_depth": {
       "indexed": 24,
-      "screened": 192,
-      "synthesized": 147
+      "screened": 191,
+      "synthesized": 185
     },
     "by_support_scope": {
-      "context_only": 3,
-      "official_mlx": 14,
+      "context_only": 13,
+      "official_mlx": 31,
       "official_mlx_project": 4,
-      "paper_only": 4,
+      "paper_only": 16,
       "third_party_pinned": 10,
-      "unspecified": 328
+      "unspecified": 326
     },
-    "total": 363
+    "total": 400
   },
   "techniques": {
     "by_status": {
-      "native-mlx": 15,
+      "native-mlx": 18,
       "official-mlx-project": 9,
       "proven-mlx-port": 22,
       "rejected-or-superseded": 1,
-      "research-candidate": 23
+      "research-candidate": 25
     },
-    "total": 70
+    "total": 75
   },
   "version": "0.7.0"
 };

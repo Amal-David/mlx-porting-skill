@@ -1,0 +1,160 @@
+{
+  "edges": [
+    {
+      "confidence": "medium",
+      "from": "mechanism:compressed-kv-direct-attention",
+      "rationale": "Trait relevance selects a candidate only; canonical applicability and validation gates remain required.",
+      "relation": "applies_to",
+      "to": "trait:decoder-transformer"
+    },
+    {
+      "confidence": "medium",
+      "from": "mechanism:compressed-kv-direct-attention",
+      "rationale": "Trait relevance selects a candidate only; canonical applicability and validation gates remain required.",
+      "relation": "applies_to",
+      "to": "trait:long-context"
+    },
+    {
+      "confidence": "medium",
+      "from": "mechanism:hardware-aware-kernel-search",
+      "rationale": "Trait relevance selects a candidate only; canonical applicability and validation gates remain required.",
+      "relation": "applies_to",
+      "to": "trait:profiled-native-hotspot"
+    },
+    {
+      "confidence": "medium",
+      "from": "mechanism:kv-cache-pruning",
+      "rationale": "Trait relevance selects a candidate only; canonical applicability and validation gates remain required.",
+      "relation": "applies_to",
+      "to": "trait:decoder-transformer"
+    },
+    {
+      "confidence": "medium",
+      "from": "mechanism:kv-cache-pruning",
+      "rationale": "Trait relevance selects a candidate only; canonical applicability and validation gates remain required.",
+      "relation": "applies_to",
+      "to": "trait:long-context"
+    },
+    {
+      "confidence": "medium",
+      "from": "mechanism:metal-nax-matmul",
+      "rationale": "Trait relevance selects a candidate only; canonical applicability and validation gates remain required.",
+      "relation": "applies_to",
+      "to": "trait:m5-native-matrix-dispatch"
+    },
+    {
+      "confidence": "medium",
+      "from": "mechanism:metal-nax-matmul",
+      "rationale": "Apply software/chip eligibility before execution; source availability is not device validation.",
+      "relation": "requires_gate",
+      "to": "constraint:runtime-profile-eligibility"
+    },
+    {
+      "confidence": "medium",
+      "from": "mechanism:native-gated-delta-update",
+      "rationale": "Trait relevance selects a candidate only; canonical applicability and validation gates remain required.",
+      "relation": "applies_to",
+      "to": "trait:fp32-recurrent-state"
+    },
+    {
+      "confidence": "medium",
+      "from": "mechanism:native-gated-delta-update",
+      "rationale": "Trait relevance selects a candidate only; canonical applicability and validation gates remain required.",
+      "relation": "applies_to",
+      "to": "trait:gated-delta-net"
+    },
+    {
+      "confidence": "medium",
+      "from": "mechanism:native-gated-delta-update",
+      "rationale": "Apply software/chip eligibility before execution; source availability is not device validation.",
+      "relation": "requires_gate",
+      "to": "constraint:runtime-profile-eligibility"
+    },
+    {
+      "confidence": "medium",
+      "from": "mechanism:native-spectral-transforms",
+      "rationale": "Trait relevance selects a candidate only; canonical applicability and validation gates remain required.",
+      "relation": "applies_to",
+      "to": "trait:stft-istft-frontend"
+    },
+    {
+      "confidence": "medium",
+      "from": "mechanism:native-spectral-transforms",
+      "rationale": "Apply software/chip eligibility before execution; source availability is not device validation.",
+      "relation": "requires_gate",
+      "to": "constraint:runtime-profile-eligibility"
+    }
+  ],
+  "generated_at": "2026-11-05",
+  "graph_id": "mlx-porting-skill/ecosystem/research-refresh-2026-11",
+  "nodes": [
+    {
+      "confidence": "medium",
+      "evidence": [
+        "mlx-model-porting/scripts/recommend_optimizations.py: runtime_eligibility_holds",
+        "mlx-model-porting/references/runtime-compatibility.md"
+      ],
+      "id": "constraint:runtime-profile-eligibility",
+      "kind": "constraint",
+      "observed_at": "2026-11-05",
+      "provenance": "code_verified",
+      "status": "reviewed",
+      "summary": "Missing, old or ambiguous target versions and unreviewed chips hold applicability. Matching declared metadata still requires the actual API/device probe and parity; it never promotes a numeric performance claim.",
+      "tags": [
+        "compatibility",
+        "research-refresh-2026-11",
+        "runtime"
+      ],
+      "title": "Runtime compatibility is an independent execution prerequisite"
+    },
+    {
+      "confidence": "medium",
+      "evidence": [
+        "https://github.com/ml-explore/mlx/blob/36969c094354086e15d2a327a9c50feb20b9cf11/mlx/backend/metal/device.cpp"
+      ],
+      "id": "trait:m5-native-matrix-dispatch",
+      "kind": "trait",
+      "observed_at": "2026-11-05",
+      "provenance": "research_inference",
+      "status": "reviewed",
+      "summary": "A profiled matrix workload on a reviewed M5 chip with compatible OS/build; the chip name alone does not establish NAX execution.",
+      "tags": [
+        "research-refresh-2026-11"
+      ],
+      "title": "M5 native matrix dispatch"
+    },
+    {
+      "confidence": "medium",
+      "evidence": [
+        "https://bair.berkeley.edu/blog/2026/07/29/cuda-to-mlx-k-search/"
+      ],
+      "id": "trait:profiled-native-hotspot",
+      "kind": "trait",
+      "observed_at": "2026-11-05",
+      "provenance": "research_inference",
+      "status": "reviewed",
+      "summary": "Kernel search begins with a measured operator hotspot and a current native baseline plus an independent correctness oracle.",
+      "tags": [
+        "research-refresh-2026-11"
+      ],
+      "title": "A measured hotspot with a native baseline"
+    },
+    {
+      "confidence": "medium",
+      "evidence": [
+        "https://github.com/ml-explore/mlx/blob/36969c094354086e15d2a327a9c50feb20b9cf11/python/src/fft.cpp"
+      ],
+      "id": "trait:stft-istft-frontend",
+      "kind": "trait",
+      "observed_at": "2026-11-05",
+      "provenance": "research_inference",
+      "status": "reviewed",
+      "summary": "The source includes an STFT or inverse STFT whose window, boundary and reconstruction contract can be preserved.",
+      "tags": [
+        "research-refresh-2026-11"
+      ],
+      "title": "Source-matched spectral transform"
+    }
+  ],
+  "schema_version": 2
+}

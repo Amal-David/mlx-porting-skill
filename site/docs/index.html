@@ -110,7 +110,7 @@
           <div class="docs-summary" aria-label="Generated documentation summary">
             <div><strong data-value="architectures.total">17</strong><span>declared routes with golden scenarios</span></div>
             <div><strong>8</strong><span>shared proof checkpoints</span></div>
-            <div><strong data-value="sources.total">363</strong><span>live sources at recorded review depths</span></div>
+            <div><strong data-value="sources.total">400</strong><span>live sources at recorded review depths</span></div>
           </div>
         </header>
 
@@ -487,14 +487,88 @@
             <h3>Eight measured-bottleneck branches</h3>
             <p>JavaScript is optional for the taxonomy. Open the canonical guidance registry for applicability, validation gates, evidence, trade-offs, and rollback details.</p>
             <div class="optimization-fallback-grid">
-              <details open><summary>Evaluation and scheduling <span>1 method</span></summary><p>Lazy graph lifetime, synchronization, or misplaced evaluation.</p><ul><li data-optimization-fallback-method="lazy-eval-boundaries">Deliberate lazy evaluation boundaries <small>native MLX</small></li></ul></details>
-              <details open><summary>Native operators and compilation <span>2 methods</span></summary><p>Compatible repeated operators or stable graph regions.</p><ul><li data-optimization-fallback-method="fast-sdpa">MLX fast scaled-dot-product attention <small>native MLX operator</small></li><li data-optimization-fallback-method="compile-stable-region">Compile stable repeated regions <small>native MLX execution</small></li></ul></details>
-              <details open><summary>Layout and numerical representation <span>1 method</span></summary><p>Dispatch layout, gathers, dtype, or accumulation.</p><ul><li data-optimization-fallback-method="moe-gather-and-expert-batching">Gather matmul for indexed expert projections <small>native MLX</small></li></ul></details>
-              <details open><summary>State and memory <span>3 methods</span></summary><p>Weight residency or KV state exceeds the useful memory budget.</p><ul><li data-optimization-fallback-method="block-weight-streaming">Repeated-block weight streaming</li><li data-optimization-fallback-method="uniform-kv-quantization">Uniform KV cache quantization</li><li data-optimization-fallback-method="adaptive-kv-quantization">Adaptive mixed-precision KV <small>research</small></li></ul></details>
-              <details open><summary>Compression <span>4 methods</span></summary><p>Weight, state, or token representation dominates memory or bandwidth.</p><ul><li data-optimization-fallback-method="bf16-weight-cast">BF16 weight casting</li><li data-optimization-fallback-method="native-low-bit-weight-quantization">Native low-bit weight quantization</li><li data-optimization-fallback-method="visual-token-pruning-or-merge">Visual-token pruning or merging <small>research</small></li><li data-optimization-fallback-method="moe-expert-dispatch-and-quantization">MoE expert dispatch and quantization</li></ul></details>
-              <details open><summary>Inference algorithms <span>3 methods</span></summary><p>Autoregressive target-model calls dominate after decoder parity.</p><ul><li data-optimization-fallback-method="draft-model-speculation">Independent draft-model speculative decoding</li><li data-optimization-fallback-method="prompt-lookup-ngram-speculation">Prompt lookup / n-gram speculation <small>research</small></li><li data-optimization-fallback-method="eagle-medusa-mtp-drafters">EAGLE / trained drafters <small>research boundary</small></li></ul></details>
-              <details open><summary>Serving and pipeline <span>11 methods</span></summary><p>Batching, preprocessing, cache reuse, streaming, or scheduling.</p><ul><li data-optimization-fallback-method="prompt-prefix-cache">Prompt cache</li><li data-optimization-fallback-method="continuous-batching-serving">Continuous batching</li><li data-optimization-fallback-method="content-prefix-cache-vlm">Block-level automatic prefix caching <small>rejected / superseded</small></li><li data-optimization-fallback-method="audio-streaming-and-cache">Audio streaming and cache</li><li data-optimization-fallback-method="cache-privacy-and-isolation">Cache privacy and tenant isolation <small>research</small></li><li data-optimization-fallback-method="vision-feature-cache">Vision feature cache</li><li data-optimization-fallback-method="multimodal-content-prefix-cache">Multimodal prefix cache</li><li data-optimization-fallback-method="video-input-budgeting">Video input budgeting</li><li data-optimization-fallback-method="qwen3-tts-batch-generation">Qwen3-TTS batch generation</li><li data-optimization-fallback-method="audio-reference-conditioning-cache">Audio reference conditioning cache</li><li data-optimization-fallback-method="generic-audio-prefix-cache">Generic audio prefix cache <small>research</small></li></ul></details>
-              <details open><summary>Custom backend work <span>3 methods</span></summary><p>A proven hot operation has no adequate native path.</p><ul><li data-optimization-fallback-method="moe-gate-up-fusion">MoE gate/up projection fusion <small>research</small></li><li data-optimization-fallback-method="spatial-grid-sample-kernel">Grid-sample Metal kernel</li><li data-optimization-fallback-method="cuda-graphs-decode-capture">CUDA Graphs capture <small>rejected—NVIDIA-specific</small></li></ul></details>
+              <details open>
+                <summary>Evaluation and scheduling <span>1 method</span></summary>
+                <p>Lazy graph lifetime, synchronization, or misplaced evaluation dominates the measured phase.</p>
+                <ul>
+                  <li data-optimization-fallback-method="lazy-eval-boundaries">Deliberate lazy evaluation boundaries <small>native MLX</small></li>
+                </ul>
+              </details>
+              <details open>
+                <summary>Native operators and compilation <span>5 methods</span></summary>
+                <p>A compatible repeated operator or stable graph region dominates runtime.</p>
+                <ul>
+                  <li data-optimization-fallback-method="fast-sdpa">MLX fast scaled-dot-product attention <small>native MLX</small></li>
+                  <li data-optimization-fallback-method="compile-stable-region">Compile stable repeated regions <small>native MLX</small></li>
+                  <li data-optimization-fallback-method="native-gated-delta-update">Native Gated DeltaNet update with an explicit recurrent-state contract <small>native MLX</small><br><small data-optimization-fallback-prerequisite>Requires MLX ≥ 0.32.4. Unknown or incompatible runtime holds execution; model parity and a local profile are still required.</small></li>
+                  <li data-optimization-fallback-method="native-spectral-transforms">Native STFT and inverse STFT with source-matched boundary semantics <small>native MLX</small><br><small data-optimization-fallback-prerequisite>Requires MLX ≥ 0.32.4. Unknown or incompatible runtime holds execution; model parity and a local profile are still required.</small></li>
+                  <li data-optimization-fallback-method="metal-nax-matmul">Profile the native M5 GPU Neural Accelerator matrix path <small>native MLX</small><br><small data-optimization-fallback-prerequisite>Requires macOS ≥ 26.2, MLX ≥ 0.32.4, M5 family. Unknown or incompatible runtime holds execution; model parity and a local profile are still required.</small></li>
+                </ul>
+              </details>
+              <details open>
+                <summary>Layout and numerical representation <span>1 method</span></summary>
+                <p>Dispatch layout, gather structure, dtype, or accumulation behavior limits the target path.</p>
+                <ul>
+                  <li data-optimization-fallback-method="moe-gather-and-expert-batching">Gather matmul for indexed expert projections <small>native MLX</small></li>
+                </ul>
+              </details>
+              <details open>
+                <summary>State and memory <span>5 methods</span></summary>
+                <p>Weights or KV state exceed the useful memory budget or create avoidable transfer and cache cost.</p>
+                <ul>
+                  <li data-optimization-fallback-method="block-weight-streaming">Repeated-block weight streaming <small>pinned MLX port</small></li>
+                  <li data-optimization-fallback-method="uniform-kv-quantization">Uniform KV cache quantization <small>official MLX project</small></li>
+                  <li data-optimization-fallback-method="adaptive-kv-quantization">Layerwise/key-value/adaptive mixed-precision KV <small>research — opt-in</small></li>
+                  <li data-optimization-fallback-method="compressed-kv-direct-attention">Direct compressed-KV attention without full-cache reconstruction <small>research — opt-in</small></li>
+                  <li data-optimization-fallback-method="kv-cache-pruning">KV cache pruning/eviction <small>research — opt-in</small></li>
+                </ul>
+              </details>
+              <details open>
+                <summary>Compression <span>4 methods</span></summary>
+                <p>Weight, state, or token representation dominates memory or bandwidth after baseline parity.</p>
+                <ul>
+                  <li data-optimization-fallback-method="bf16-weight-cast">BF16 weight casting for MLX inference <small>native MLX</small></li>
+                  <li data-optimization-fallback-method="native-low-bit-weight-quantization">Native MLX affine/MX/NV low-bit quantization modes <small>native MLX</small></li>
+                  <li data-optimization-fallback-method="visual-token-pruning-or-merge">Generic visual-token pruning or merging <small>research — opt-in</small></li>
+                  <li data-optimization-fallback-method="moe-expert-dispatch-and-quantization">Gather matmul for indexed expert projections <small>native MLX</small></li>
+                </ul>
+              </details>
+              <details open>
+                <summary>Inference algorithms <span>3 methods</span></summary>
+                <p>Autoregressive target-model calls dominate after the underlying decoder is correct.</p>
+                <ul>
+                  <li data-optimization-fallback-method="draft-model-speculation">Independent draft-model speculative decoding <small>official MLX project</small></li>
+                  <li data-optimization-fallback-method="prompt-lookup-ngram-speculation">Prompt lookup / n-gram speculation <small>research — opt-in</small></li>
+                  <li data-optimization-fallback-method="eagle-medusa-mtp-drafters">EAGLE/EAGLE3 feature-level speculation <small>research — opt-in</small></li>
+                </ul>
+              </details>
+              <details open>
+                <summary>Serving and pipeline <span>11 methods</span></summary>
+                <p>Batching, preprocessing, cache reuse, streaming, or multi-request scheduling limits the real workload.</p>
+                <ul>
+                  <li data-optimization-fallback-method="prompt-prefix-cache">Prompt cache <small>official MLX project</small></li>
+                  <li data-optimization-fallback-method="continuous-batching-serving">Continuous batching <small>pinned MLX port</small></li>
+                  <li data-optimization-fallback-method="content-prefix-cache-vlm">Block-level automatic prefix caching <small>rejected / superseded</small></li>
+                  <li data-optimization-fallback-method="audio-streaming-and-cache">Overlap-add mid-generation streaming <small>pinned MLX port</small></li>
+                  <li data-optimization-fallback-method="cache-privacy-and-isolation">Cache privacy and tenant isolation review <small>research — opt-in</small></li>
+                  <li data-optimization-fallback-method="vision-feature-cache">Projected vision feature cache <small>pinned MLX port</small></li>
+                  <li data-optimization-fallback-method="multimodal-content-prefix-cache">Content-hashed multimodal prefix cache <small>pinned MLX port</small></li>
+                  <li data-optimization-fallback-method="video-input-budgeting">Video FPS/frame/pixel input budgeting <small>pinned MLX port</small></li>
+                  <li data-optimization-fallback-method="qwen3-tts-batch-generation">Qwen3-TTS batch generation <small>pinned MLX port</small></li>
+                  <li data-optimization-fallback-method="audio-reference-conditioning-cache">Audio reference / ICL conditioning cache <small>pinned MLX port</small></li>
+                  <li data-optimization-fallback-method="generic-audio-prefix-cache">Generic audio prefix cache <small>research — opt-in</small></li>
+                </ul>
+              </details>
+              <details open>
+                <summary>Custom backend work <span>4 methods</span></summary>
+                <p>A proven hot operation has no adequate native MLX path after safer options are exhausted.</p>
+                <ul>
+                  <li data-optimization-fallback-method="moe-gate-up-fusion">MoE gate/up projection fusion <small>research — opt-in</small></li>
+                  <li data-optimization-fallback-method="spatial-grid-sample-kernel">PyTorch-compatible grid_sample Metal kernel <small>pinned MLX port</small></li>
+                  <li data-optimization-fallback-method="cuda-graphs-decode-capture">CUDA Graphs decode-loop capture <small>rejected / superseded</small></li>
+                  <li data-optimization-fallback-method="hardware-aware-kernel-search">Hardware-aware kernel search with held-out validation <small>research — opt-in</small></li>
+                </ul>
+              </details>
             </div>
             <p><a href="https://github.com/Amal-David/mlx-porting-skill/blob/main/mlx-model-porting/assets/optimization_guidance.yaml">Open the canonical optimization guidance ↗</a></p>
           </div>
@@ -926,7 +1000,7 @@ python3 -m unittest discover -s tests -v</code></pre>
         <section class="doc-section" id="sources" data-search="primary sources mlx release mlx-lm mlx-vlm mlx-audio vllm pinned snapshot">
           <span class="label">13 / sources</span>
           <h2>Registry-current primary sources</h2>
-          <p>“Current” means the pinned registry snapshot reviewed on 2026-07-14, not an unverified claim about live upstream latest versions.</p>
+          <p>“Current” means the pinned registry snapshot reviewed on 2026-11-05, not an unverified claim about live upstream latest versions.</p>
           <div class="route-table-wrap">
             <table data-audited-sources>
               <thead><tr><th>Surface</th><th>Recorded immutable reference</th><th>Scope</th></tr></thead>
@@ -934,6 +1008,7 @@ python3 -m unittest discover -s tests -v</code></pre>
                 <tr><td>Apple MLX</td><td><a href="https://github.com/ml-explore/mlx/tree/96296e9c3075a2389bc5c0f078bf01b5aa377cd9">mlx-repo · 96296e9 ↗</a></td><td><span class="inline-code">official_mlx</span></td></tr>
                 <tr><td>Apple MLX-LM</td><td><a href="https://github.com/ml-explore/mlx-lm/tree/2c008fd0252b2c569227d12568356ab88ab0560a">mlx-lm-repo · 2c008fd ↗</a></td><td>Apple-maintained project; model/workload confirmation still required.</td></tr>
                 <tr><td>MLX source snapshot</td><td><a href="https://github.com/ml-explore/mlx/tree/96296e9c3075a2389bc5c0f078bf01b5aa377cd9">Registered framework tree ↗</a></td><td>Canonical <span class="inline-code">mlx-repo</span> snapshot; not a speed guarantee.</td></tr>
+                <tr><td>MLX 0.32.4 API baseline</td><td><a href="https://github.com/ml-explore/mlx/blob/36969c094354086e15d2a327a9c50feb20b9cf11/python/src/ops.cpp">Pinned quantization bindings · 36969c0 ↗</a></td><td>Reviewed runtime contracts; M5 matrix dispatch additionally requires macOS ≥ 26.2 and an M5-family target.</td></tr>
                 <tr><td>MLX-Audio</td><td><a href="https://github.com/Blaizzy/mlx-audio/tree/412cf7cd381c2a3f6a8189af04a95af24cb415b6">mlx-audio-repo · 412cf7c ↗</a></td><td><span class="inline-code">third_party_pinned</span>; not Apple-official.</td></tr>
                 <tr><td>MLX-VLM / vLLM-MLX</td><td><a href="https://github.com/Blaizzy/mlx-vlm/tree/6a8cdff6a1f53f46a15d4adb997c3b2d5f621263">MLX-VLM 6a8cdff ↗</a> · <a href="https://github.com/waybarrios/vllm-mlx/blob/a48c86c1a41900f7d26658471b5f67e5fdd35445/docs/guides/continuous-batching.md">vLLM-MLX batching source ↗</a></td><td>Pinned third-party implementation evidence.</td></tr>
               </tbody>
