@@ -2,6 +2,9 @@
 
 ## Unreleased — 2026-11-05
 
+- Preserve article-identifying query parameters in research graph locators,
+  including the Qwen3-Next author article. Keep encoded and repeated query
+  values intact, and retain the existing arXiv/GitHub identity rules.
 - Add runtime eligibility to recommendation and canonical plan generation.
   Minimum reviewed software versions and explicit chip families are distinct
   from historical numeric-claim constraints; missing, malformed or incompatible

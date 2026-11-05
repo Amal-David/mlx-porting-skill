@@ -2,8 +2,8 @@
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
   "version": "0.7.0",
-  "generated_at": "2026-11-05T06:25:28.310055+00:00",
-  "file_count": 636,
+  "generated_at": "2026-11-05T06:57:18.449654+00:00",
+  "file_count": 641,
   "files": [
     {
       "path": ".agents/skills/mlx-model-porting",
@@ -93,8 +93,8 @@
     },
     {
       "path": "CHANGELOG.md",
-      "size_bytes": 22132,
-      "sha256": "d80074c743441714cc1d6e8c906ba012c09b04a6909fff37272c16a4f2ffd186",
+      "size_bytes": 22353,
+      "sha256": "87df24c5e54d36ff9b5b3c097cd4a2996e8408064aba75f08bb6f386e9f4ef7a",
       "executable": false
     },
     {
@@ -1029,8 +1029,8 @@
     },
     {
       "path": "mlx-model-porting/assets/knowledge_graph.json",
-      "size_bytes": 587160,
-      "sha256": "556593969906dbf6eef2d6747179c7110aec83e9d872bb88c6594901d9cf41cf",
+      "size_bytes": 587266,
+      "sha256": "a0c7fb9571039c64f803efa74c0719f5104a218ce3617d26216f50b3b4444312",
       "executable": false
     },
     {
@@ -1065,8 +1065,8 @@
     },
     {
       "path": "mlx-model-porting/assets/research_backlog.json",
-      "size_bytes": 11697,
-      "sha256": "6d73110a3fc9052117d22d9e2cdb2197ee16ed4d0c2c330baaf1e43110eb5186",
+      "size_bytes": 11691,
+      "sha256": "85327c2f0ced08c4ee1c9e00c87d02275b9fd0a8a06d1dd8ded857183bb0ed3b",
       "executable": false
     },
     {
@@ -2660,6 +2660,36 @@
       "executable": false
     },
     {
+      "path": "mlx-model-porting/research-runs/2026-11-05-pr42-provenance-fix/README.md",
+      "size_bytes": 643,
+      "sha256": "2fb4f5baf3e5d48c562a1d2c4ad983d84e97f6dd4c5e1577e85853e34ed23d7f",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/research-runs/2026-11-05-pr42-provenance-fix/knowledge-delta.json",
+      "size_bytes": 50739,
+      "sha256": "6c412200056f37dbc631b517d85c84119aab59065c8f9d75b33c1214ba5bea9f",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/research-runs/2026-11-05-pr42-provenance-fix/knowledge-delta.md",
+      "size_bytes": 12571,
+      "sha256": "142fed59bb38d5eeb3ac77efa5faf759e3ec8f5fca0c1a5e754d86434f668e40",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/research-runs/2026-11-05-pr42-provenance-fix/nightly-run.json",
+      "size_bytes": 3173,
+      "sha256": "714f93d953d50d6e5b5b1a46f7b63610f9e418065e93545d105edc623e8d656b",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/research-runs/2026-11-05-pr42-provenance-fix/nightly-run.md",
+      "size_bytes": 1607,
+      "sha256": "449a65b0ed9de0b97c21f22d263a9250fd200a9c99687cf4d27d7e175d37ab17",
+      "executable": false
+    },
+    {
       "path": "mlx-model-porting/research-runs/2026-11-05-reviewed-research-refresh/README.md",
       "size_bytes": 827,
       "sha256": "2372aaac2ad16ad9b2d15a9a6d56619c035a654a564e6ba57adc3da505154009",
@@ -2799,8 +2829,8 @@
     },
     {
       "path": "mlx-model-porting/scripts/knowledge_curator.py",
-      "size_bytes": 41512,
-      "sha256": "21d5e436f37bf46b59d09c9db2dc22089c7c836eec450723fc8c7f9e08c25300",
+      "size_bytes": 41803,
+      "sha256": "6c10ffc942be57f57bf3689daa5b07255499162050cffba35e614885495ed330",
       "executable": false
     },
     {
@@ -3801,8 +3831,8 @@
     },
     {
       "path": "tests/test_tooling.py",
-      "size_bytes": 199705,
-      "sha256": "20ea59575ef229b13321321f96a4f58c47935d138e636f21ec7c3e7135b3d7a1",
+      "size_bytes": 201856,
+      "sha256": "1eecbb72a281075e4406992916a79212ee79544aa9d6b51e9ef3105dc791cfb6",
       "executable": true
     },
     {
