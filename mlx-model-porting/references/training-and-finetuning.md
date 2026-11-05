@@ -54,6 +54,30 @@ Treat hidden mutation, Python side effects, closure-captured arrays, and
 shapeless compilation as separate risks. Do not use a compiled path as the only
 correctness oracle.
 
+The [upstream state pattern](https://github.com/ml-explore/mlx/blob/36969c094354086e15d2a327a9c50feb20b9cf11/docs/src/usage/compile.rst)
+is `state = [model.state, optimizer.state, mx.random.state]` with
+`@partial(mx.compile, inputs=state, outputs=state)` when randomness is active.
+Verify that consecutive stochastic calls advance RNG state and that restoring
+it reproduces the same next update. Evaluate the returned loss and updated
+state outside the compiled step.
+
+## Native gradients and low-bit training
+
+The reviewed 0.32.4 source contains native SDPA and gated-delta derivative
+paths; use the [versioned runtime contract](runtime-compatibility.md) before
+replacing an older fallback. Test the requested shape, dtype, mask, grouped
+heads and recurrent-state gradients against eager/source references. A native
+forward or VJP symbol does not establish all transforms or an entire model's
+training support.
+
+Distinguish frozen packed weights from differentiable training weights.
+`QuantizedLinear` / `QuantizedEmbedding` freeze their quantized parameters;
+`qqmm` requires an unquantized weight input if that weight must receive
+gradients. Do not assume that converting a module with `nn.quantize` enables
+QAT. Check trainable keys, adapter gradients and export-to-real-kernel quality
+explicitly, using the [quantized-layer source](https://github.com/ml-explore/mlx/blob/36969c094354086e15d2a327a9c50feb20b9cf11/python/mlx/nn/layers/quantized.py)
+and [QQMM contract](https://github.com/ml-explore/mlx/blob/36969c094354086e15d2a327a9c50feb20b9cf11/python/src/ops.cpp).
+
 ## Memory and graph retention
 
 A training fit claim should log active, cache, and peak memory across repeated

@@ -1,5 +1,16 @@
 # Attention and KV/state optimization
 
+## Contents
+
+- [First classify attention](#first-classify-attention)
+- [Native fast SDPA](#native-fast-sdpa)
+- [Compressed-attention state contract](#compressed-attention-state-contract)
+- [Cache designs](#cache-designs)
+- [KV quantization](#kv-quantization)
+- [Compressed-cache execution gate](#compressed-cache-execution-gate)
+- [Cache compression and sparse attention](#cache-compression-and-sparse-attention)
+- [Shared-prefix serving](#shared-prefix-serving)
+
 ## First classify attention
 
 Record:
@@ -19,6 +30,30 @@ Use the MLX fast scaled-dot-product attention path only when head grouping, mask
 For GQA/MQA, do not pre-tile K/V to the query-head count unless the source semantics require it. Validate mask form and broadcasting: causal string masks and boolean/additive masks must match the intended `[B, N, T_q, T_kv]` attention geometry. Account for float32 softmax behavior and optional attention sinks when comparing with the source.
 
 Keep sparse/window/global-token patterns separate from native fast SDPA. Sliding-window or rotating caches are supported only when the architecture semantics match; Longformer/BigBird-style global token rules, MInference/Quest/NSA-style sparse prefill, and custom FlashAttention variants are research or third-party paths until an MLX implementation and local validation gate exist.
+
+## Compressed-attention state contract
+
+Inspect the actual per-layer schedule before selecting a cache. For example,
+[DeepSeek-V4's reference implementation](https://huggingface.co/docs/transformers/model_doc/deepseek_v4)
+distinguishes local attention, overlapping compressed sparse attention, and
+non-overlapping heavily compressed attention. Shared K=V, partial RoPE with
+an inverse output rotation, and compressor/indexer state are part of its math.
+This is architecture evidence, not a claim of scaffold or MLX support.
+
+For any such port, add a tiny source-oracle fixture with:
+
+- lengths immediately before, at, and after each compression/window boundary;
+- a prefill split inside an unfinished window, then one-token decode;
+- empty compressed history, invalid-index sentinels, and fewer entries than top-k;
+- source-equivalent visibility of local and compressed entries, with no future
+  token entering attention through a partly filled compression block;
+- state save/restore and divergent suffixes from the same prefix, including
+  buffer contents, overlap, entry counts, indexer state, and absolute positions.
+
+Compare intermediate masks, selected indices, attention outputs, and final
+logits. Never substitute ordinary append-only KV or materialize a shared K=V
+tensor twice merely to fit a generic interface. Retain the readable source
+path until chunked prefill and cached decode pass the same parity gates.
 
 ## Cache designs
 
@@ -66,6 +101,36 @@ Required checks:
 - quantize/dequantize overhead;
 - decode latency and throughput;
 - interaction with fast attention and speculative verification.
+
+## Compressed-cache execution gate
+
+Treat storage format and execution path as separate decisions. The
+[TurboQuant paper](https://arxiv.org/abs/2504.19874v1) motivates online rotated
+quantization; the [vLLM evaluation](https://vllm-project.github.io/2026/05/11/turboquant.html)
+shows that additional capacity can coexist with slower execution. An October
+2026 [Apple Silicon preprint](https://arxiv.org/abs/2610.33076v1) reports
+long-context failures when its compressed caches are repeatedly reconstructed.
+These are source-reported observations, not local results or a rejection of
+all low-bit KV methods.
+
+Before recommending a packed-cache candidate, record:
+
+| Check | Required evidence |
+| --- | --- |
+| Actual storage | Packed K/V plus scales, norms, rotations/codebooks, residuals, padding, allocator capacity, and any full-precision recent-token region. |
+| Attention path | Whether attention consumes packed blocks, reconstructs one bounded tile, or expands the entire history; include all conversions in timing. |
+| Live memory | Persistent state, reconstruction workspace, and process/MLX peak measurements, with accounting definitions that avoid double counting. |
+| Growth | Context sweep through allocation and packing boundaries up to the target maximum; separate reserve/growth time from steady-state decode. |
+| Quality | Same source checkpoint and prompts; long-context retrieval, generation, and per-layer/logit checks, including zero-norm and outlier fixtures. |
+| Composition | Batched shapes, partial groups, non-contiguous inputs, trimming, prefix restore, and rejection rollback in the intended cache class. |
+
+Dense attention still reads history; compression alone does not make its
+computation sublinear. Prefer a bounded reconstruction path only after parity
+and profiling show a benefit. Roll back if the target quality limit fails,
+the peak exceeds the memory budget, or the selected latency/throughput objective
+regresses beyond noise. A capacity gain may still be useful when explicitly
+recorded as a memory-for-latency trade-off. Do not multiply compression factors
+from sequential transforms; measure their combined packed representation.
 
 ## Cache compression and sparse attention
 

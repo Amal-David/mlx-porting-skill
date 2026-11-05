@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "reviewed": "2026-07-14",
+  "reviewed": "2026-11-05",
   "review_depth_definitions": {
     "synthesized": "Directly informed a runbook, rule, or technique decision.",
     "screened": "Abstract/readme/code path reviewed for relevance and limits.",
@@ -32,7 +32,7 @@
     "A record note may narrow these boundaries. The narrowest applicable boundary always wins."
   ],
   "benchmark_assessment": "mlx-model-porting/assets/BENCHMARK_REPORT.md",
-  "count": 363,
+  "count": 400,
   "sources": [
     {
       "id": "agent-skills-spec",
@@ -4326,11 +4326,19 @@
         "mlx",
         "apple-silicon",
         "llm",
-        "runtime"
+        "runtime",
+        "m5",
+        "nax"
       ],
-      "review_depth": "screened",
-      "snapshot": "2026-06-24",
-      "note": "Practitioner context for MLX on Apple Silicon; not a validation substitute."
+      "review_depth": "synthesized",
+      "snapshot": "2026-11-05",
+      "evidence_class": "technical_blog",
+      "support_scope": "context_only",
+      "claim_types": [
+        "algorithm_candidate",
+        "risk_or_negative"
+      ],
+      "note": "Published 2025-11-19; reviewed 2026-11-05. Synthesized into references/runtime-compatibility.md: M5 GPU Neural Accelerators are separate GPU matrix hardware, MLX requires macOS >=26.2 for that path, and prefill/decode must be measured separately. Native eligibility is grounded in mlx-0324-nax-device; no source-reported hardware speedup is generalized or promoted."
     },
     {
       "id": "apple-wwdc25-mlx",
@@ -5346,19 +5354,23 @@
     },
     {
       "id": "paper-2504-19874",
-      "title": "TurboQuant: Ultra-Efficient and Accurate KV Cache Quantization for Long Context LLM Inference",
-      "url": "https://arxiv.org/abs/2504.19874",
+      "title": "TurboQuant: Online Vector Quantization with Near-optimal Distortion Rate",
+      "url": "https://arxiv.org/abs/2504.19874v1",
       "kind": "paper",
       "owner": "authors",
       "topics": [
         "kv-cache",
         "quantization",
-        "long-context",
-        "mlx-vlm"
+        "long-context"
       ],
-      "review_depth": "screened",
-      "snapshot": "2504.19874",
-      "note": "Paper evidence for TurboQuant research context; not official MLX core support."
+      "review_depth": "synthesized",
+      "snapshot": "2504.19874v1",
+      "evidence_class": "primary_paper",
+      "support_scope": "paper_only",
+      "claim_types": [
+        "algorithm_candidate"
+      ],
+      "note": "Reviewed 2026-11-05. Corrects the prior catalogue title and pins the reviewed version. Algorithm/abstract review informs the packed-cache execution gate in references/attention-and-kv.md and references/research-updates-2026-11.md. Does not establish official MLX support, local quality neutrality, or hardware speed."
     },
     {
       "id": "fal-ideogram-dspark-2026-07-08",
@@ -5509,6 +5521,821 @@
       "review_depth": "screened",
       "snapshot": "2026-06-29",
       "note": "Used to choose a top-250 public model coverage target; mutable downloads, tags, and license fields are demand signals, not proof of implementation support."
+    },
+    {
+      "id": "mlx-0324-fast-bindings",
+      "title": "MLX 0.32.4 fast-operation Python bindings",
+      "url": "https://github.com/ml-explore/mlx/blob/36969c094354086e15d2a327a9c50feb20b9cf11/python/src/fast.cpp",
+      "kind": "source-code",
+      "owner": "Apple MLX",
+      "topics": [
+        "mlx",
+        "attention",
+        "gated-delta",
+        "metal",
+        "custom-kernels"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "36969c094354086e15d2a327a9c50feb20b9cf11",
+      "evidence_class": "primary_source_code",
+      "support_scope": "official_mlx",
+      "claim_types": [
+        "api_support",
+        "risk_or_negative"
+      ],
+      "note": "Verified 2026-11-05 at the MLX 0.32.4 release commit dated 2026-10-14. Synthesized into references/runtime-compatibility.md and references/compile-and-kernels.md: lower-right causal attention, grouped heads, force_fused, kernel callable and safe-math contracts. The gated-delta state docstring is not used as the shape authority. Source/API review only; not reproduced on the target Mac and no performance claim is promoted."
+    },
+    {
+      "id": "mlx-0324-gated-delta-implementation",
+      "title": "MLX 0.32.4 gated-delta implementation and VJP",
+      "url": "https://github.com/ml-explore/mlx/blob/36969c094354086e15d2a327a9c50feb20b9cf11/mlx/fast.cpp",
+      "kind": "source-code",
+      "owner": "Apple MLX",
+      "topics": [
+        "mlx",
+        "gated-delta",
+        "recurrent-state",
+        "autodiff"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "36969c094354086e15d2a327a9c50feb20b9cf11",
+      "evidence_class": "primary_source_code",
+      "support_scope": "official_mlx",
+      "claim_types": [
+        "mlx_implementation",
+        "api_support"
+      ],
+      "note": "Verified 2026-11-05 at the MLX 0.32.4 release commit dated 2026-10-14. Synthesized into references/runtime-compatibility.md and references/training-and-finetuning.md; native-gated-delta-update candidate: linear-space decay, float32 state [B,Hv,Dv,Dk], output/final-state and transform gates. Source implementation overrides the inconsistent binding state-shape docstring. Source/API review only; not reproduced on the target Mac and no performance claim is promoted."
+    },
+    {
+      "id": "mlx-0324-gated-delta-tests",
+      "title": "MLX 0.32.4 gated-delta oracle and gradient tests",
+      "url": "https://github.com/ml-explore/mlx/blob/36969c094354086e15d2a327a9c50feb20b9cf11/python/tests/test_fast_gated_delta.py",
+      "kind": "source-code",
+      "owner": "Apple MLX",
+      "topics": [
+        "mlx",
+        "gated-delta",
+        "parity",
+        "autodiff"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "36969c094354086e15d2a327a9c50feb20b9cf11",
+      "evidence_class": "primary_source_code",
+      "support_scope": "official_mlx",
+      "claim_types": [
+        "mlx_implementation",
+        "api_support"
+      ],
+      "note": "Verified 2026-11-05 at the MLX 0.32.4 release commit dated 2026-10-14. Synthesized into references/runtime-compatibility.md; native-gated-delta-update candidate: upstream PyTorch oracle demonstrates log-to-linear decay, transposed state convention and model-owned query scaling. Upstream test code was inspected, not executed locally. Source/API review only; not reproduced on the target Mac and no performance claim is promoted."
+    },
+    {
+      "id": "mlx-0324-fft-bindings",
+      "title": "MLX 0.32.4 STFT and inverse STFT bindings",
+      "url": "https://github.com/ml-explore/mlx/blob/36969c094354086e15d2a327a9c50feb20b9cf11/python/src/fft.cpp",
+      "kind": "source-code",
+      "owner": "Apple MLX",
+      "topics": [
+        "mlx",
+        "stft",
+        "istft",
+        "audio",
+        "spectral"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "36969c094354086e15d2a327a9c50feb20b9cf11",
+      "evidence_class": "primary_source_code",
+      "support_scope": "official_mlx",
+      "claim_types": [
+        "api_support"
+      ],
+      "note": "Verified 2026-11-05 at the MLX 0.32.4 release commit dated 2026-10-14. Synthesized into references/runtime-compatibility.md; native-spectral-transforms candidate: exact window/centering/padding/hop/norm contract, complex frequency-frame output layout, explicit odd n_fft and reconstruction length. Does not establish a complete audio frontend or task quality. Source/API review only; not reproduced on the target Mac and no performance claim is promoted."
+    },
+    {
+      "id": "mlx-0324-nax-device",
+      "title": "MLX 0.32.4 Metal NAX device and build gate",
+      "url": "https://github.com/ml-explore/mlx/blob/36969c094354086e15d2a327a9c50feb20b9cf11/mlx/backend/metal/device.cpp",
+      "kind": "source-code",
+      "owner": "Apple MLX",
+      "topics": [
+        "mlx",
+        "metal",
+        "m5",
+        "nax",
+        "runtime"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "36969c094354086e15d2a327a9c50feb20b9cf11",
+      "evidence_class": "primary_source_code",
+      "support_scope": "official_mlx",
+      "claim_types": [
+        "api_support",
+        "risk_or_negative"
+      ],
+      "note": "Verified 2026-11-05 at the MLX 0.32.4 release commit dated 2026-10-14. Synthesized into references/runtime-compatibility.md; metal-nax-matmul candidate: macOS 26.2 runtime check, architecture gate and MLX_METAL_NO_NAX build disable. Version/chip/OS eligibility is not evidence of a selected kernel or a speedup. Source/API review only; not reproduced on the target Mac and no performance claim is promoted."
+    },
+    {
+      "id": "mlx-0324-device-bindings",
+      "title": "MLX 0.32.4 device capability and information bindings",
+      "url": "https://github.com/ml-explore/mlx/blob/36969c094354086e15d2a327a9c50feb20b9cf11/python/src/device.cpp",
+      "kind": "source-code",
+      "owner": "Apple MLX",
+      "topics": [
+        "mlx",
+        "devices",
+        "runtime",
+        "portability"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "36969c094354086e15d2a327a9c50feb20b9cf11",
+      "evidence_class": "primary_source_code",
+      "support_scope": "official_mlx",
+      "claim_types": [
+        "api_support"
+      ],
+      "note": "Verified 2026-11-05 at the MLX 0.32.4 release commit dated 2026-10-14. Synthesized into references/runtime-compatibility.md: backend availability and backend-dependent device_info fields. A CPU/CUDA probe does not validate Metal or NAX dispatch. Source/API review only; not reproduced on the target Mac and no performance claim is promoted."
+    },
+    {
+      "id": "mlx-0324-quantization-bindings",
+      "title": "MLX 0.32.4 quantization and QQMM API contracts",
+      "url": "https://github.com/ml-explore/mlx/blob/36969c094354086e15d2a327a9c50feb20b9cf11/python/src/ops.cpp",
+      "kind": "source-code",
+      "owner": "Apple MLX",
+      "topics": [
+        "mlx",
+        "quantization",
+        "mxfp4",
+        "mxfp8",
+        "nvfp4",
+        "qqmm"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "36969c094354086e15d2a327a9c50feb20b9cf11",
+      "evidence_class": "primary_source_code",
+      "support_scope": "official_mlx",
+      "claim_types": [
+        "api_support",
+        "risk_or_negative"
+      ],
+      "note": "Verified 2026-11-05 at the MLX 0.32.4 release commit dated 2026-10-14. Synthesized into references/runtime-compatibility.md, references/quantization.md and references/training-and-finetuning.md: exact modes/groups/bits/scales/bias arity, input quantization distinction and unquantized-weight requirement for QQMM weight gradients. Format support does not establish acceptable quality or hardware acceleration. Source/API review only; not reproduced on the target Mac and no performance claim is promoted."
+    },
+    {
+      "id": "mlx-0324-quantized-layers",
+      "title": "MLX 0.32.4 quantized module implementation",
+      "url": "https://github.com/ml-explore/mlx/blob/36969c094354086e15d2a327a9c50feb20b9cf11/python/mlx/nn/layers/quantized.py",
+      "kind": "source-code",
+      "owner": "Apple MLX",
+      "topics": [
+        "mlx",
+        "quantization",
+        "linear",
+        "embedding",
+        "training"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "36969c094354086e15d2a327a9c50feb20b9cf11",
+      "evidence_class": "primary_source_code",
+      "support_scope": "official_mlx",
+      "claim_types": [
+        "api_support",
+        "mlx_implementation"
+      ],
+      "note": "Verified 2026-11-05 at the MLX 0.32.4 release commit dated 2026-10-14. Synthesized into references/runtime-compatibility.md, references/quantization.md and references/training-and-finetuning.md: restrict quantize_input to nvfp4/mxfp8 Linear paths; quantized Linear/Embedding parameters are frozen, so nn.quantize is not itself a QAT implementation. Source/API review only; not reproduced on the target Mac and no performance claim is promoted."
+    },
+    {
+      "id": "mlx-0324-compile-guide",
+      "title": "MLX 0.32.4 compilation and state guide",
+      "url": "https://github.com/ml-explore/mlx/blob/36969c094354086e15d2a327a9c50feb20b9cf11/docs/src/usage/compile.rst",
+      "kind": "official-doc",
+      "owner": "Apple MLX",
+      "topics": [
+        "mlx",
+        "compile",
+        "shapeless",
+        "random-state",
+        "benchmarking"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "36969c094354086e15d2a327a9c50feb20b9cf11",
+      "evidence_class": "official_api_doc",
+      "support_scope": "official_mlx",
+      "claim_types": [
+        "api_support",
+        "risk_or_negative"
+      ],
+      "note": "Verified 2026-11-05 at the MLX 0.32.4 release commit dated 2026-10-14. Synthesized into references/compile-and-kernels.md, references/benchmarking.md and references/training-and-finetuning.md: explicit model/optimizer/RNG state, closure and shapeless-shape pitfalls, reusable callables, warmup and materialized timing. No source-reported numeric speedup is promoted. Source/API review only; not reproduced on the target Mac and no performance claim is promoted."
+    },
+    {
+      "id": "mlx-0324-kernel-guide",
+      "title": "MLX 0.32.4 custom Metal kernel guide",
+      "url": "https://github.com/ml-explore/mlx/blob/36969c094354086e15d2a327a9c50feb20b9cf11/docs/src/dev/custom_metal_kernels.rst",
+      "kind": "official-doc",
+      "owner": "Apple MLX",
+      "topics": [
+        "mlx",
+        "metal",
+        "custom-kernels",
+        "strides",
+        "math-mode"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "36969c094354086e15d2a327a9c50feb20b9cf11",
+      "evidence_class": "official_api_doc",
+      "support_scope": "official_mlx",
+      "claim_types": [
+        "api_support",
+        "risk_or_negative"
+      ],
+      "note": "Verified 2026-11-05 at the MLX 0.32.4 release commit dated 2026-10-14. Synthesized into references/compile-and-kernels.md: thread-count grid, reusable kernel construction, optional contiguity copies, stride-aware indexing and derivative/fallback validation. No native TensorOps feature is assumed to be exposed through every Python kernel. Source/API review only; not reproduced on the target Mac and no performance claim is promoted."
+    },
+    {
+      "id": "mlx-0324-interop-guide",
+      "title": "MLX 0.32.4 NumPy and Metal DLPack interoperability guide",
+      "url": "https://github.com/ml-explore/mlx/blob/36969c094354086e15d2a327a9c50feb20b9cf11/docs/src/usage/numpy.rst",
+      "kind": "official-doc",
+      "owner": "Apple MLX",
+      "topics": [
+        "mlx",
+        "dlpack",
+        "pytorch",
+        "mps",
+        "numpy",
+        "synchronization"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "36969c094354086e15d2a327a9c50feb20b9cf11",
+      "evidence_class": "official_api_doc",
+      "support_scope": "official_mlx",
+      "claim_types": [
+        "api_support",
+        "risk_or_negative"
+      ],
+      "note": "Verified 2026-11-05 at the MLX 0.32.4 release commit dated 2026-10-14. Synthesized into references/runtime-compatibility.md and references/porting-core.md: non-private Metal buffer sharing, copy policy, producer synchronization, documented PyTorch 2.12 shared-storage boundary, BF16 export and autodiff boundaries. Does not promise zero-copy behavior for arbitrary tensors. Source/API review only; not reproduced on the target Mac and no performance claim is promoted."
+    },
+    {
+      "id": "mlx-0324-distributed-guide",
+      "title": "MLX 0.32.4 distributed runtime and JACCL guide",
+      "url": "https://github.com/ml-explore/mlx/blob/36969c094354086e15d2a327a9c50feb20b9cf11/docs/src/usage/distributed.rst",
+      "kind": "official-doc",
+      "owner": "Apple MLX",
+      "topics": [
+        "mlx",
+        "distributed",
+        "jaccl",
+        "rdma",
+        "thunderbolt",
+        "runtime"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "36969c094354086e15d2a327a9c50feb20b9cf11",
+      "evidence_class": "official_api_doc",
+      "support_scope": "official_mlx",
+      "claim_types": [
+        "api_support",
+        "risk_or_negative"
+      ],
+      "note": "Verified 2026-11-05 at the MLX 0.32.4 release commit dated 2026-10-14. Synthesized into references/runtime-compatibility.md and references/benchmarking.md: distinguish JACCL TB5/macOS/mesh setup from ring/MPI/NCCL, validate rank count and leave MLX_METAL_FAST_SYNCH unset because the pinned guide warns of GPU hangs. This narrows the fast-sync command shown in Apple's 2026-10-15 blog. Source/API review only; not reproduced on the target Mac and no performance claim is promoted."
+    },
+    {
+      "id": "mlx-0324-distributed-bindings",
+      "title": "MLX 0.32.4 strict distributed initialization binding",
+      "url": "https://github.com/ml-explore/mlx/blob/36969c094354086e15d2a327a9c50feb20b9cf11/python/src/distributed.cpp",
+      "kind": "source-code",
+      "owner": "Apple MLX",
+      "topics": [
+        "mlx",
+        "distributed",
+        "jaccl",
+        "capability-checks"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "36969c094354086e15d2a327a9c50feb20b9cf11",
+      "evidence_class": "primary_source_code",
+      "support_scope": "official_mlx",
+      "claim_types": [
+        "api_support",
+        "risk_or_negative"
+      ],
+      "note": "Verified 2026-11-05 at the MLX 0.32.4 release commit dated 2026-10-14. Synthesized into references/runtime-compatibility.md: strict=True with an explicit backend and expected group-size validation prevents treating singleton fallback as a distributed run. Source-only contract, not local cluster validation. Source/API review only; not reproduced on the target Mac and no performance claim is promoted."
+    },
+    {
+      "id": "mlx-0324-memory-bindings",
+      "title": "MLX 0.32.4 memory accounting bindings",
+      "url": "https://github.com/ml-explore/mlx/blob/36969c094354086e15d2a327a9c50feb20b9cf11/python/src/memory.cpp",
+      "kind": "source-code",
+      "owner": "Apple MLX",
+      "topics": [
+        "mlx",
+        "memory",
+        "benchmarking",
+        "allocation"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "36969c094354086e15d2a327a9c50feb20b9cf11",
+      "evidence_class": "primary_source_code",
+      "support_scope": "official_mlx",
+      "claim_types": [
+        "api_support"
+      ],
+      "note": "Verified 2026-11-05 at the MLX 0.32.4 release commit dated 2026-10-14. Synthesized into references/benchmarking.md: distinguish active/cache/peak/system memory, reset phase peaks, and count unique evaluated backing buffers with get_array_buffer_size without equating it to process memory. Source/API review only; not reproduced on the target Mac and no performance claim is promoted."
+    },
+    {
+      "id": "mlx-0324-metal-bindings",
+      "title": "MLX 0.32.4 Metal bindings and deprecated memory aliases",
+      "url": "https://github.com/ml-explore/mlx/blob/36969c094354086e15d2a327a9c50feb20b9cf11/python/src/metal.cpp",
+      "kind": "source-code",
+      "owner": "Apple MLX",
+      "topics": [
+        "mlx",
+        "metal",
+        "memory",
+        "deprecation"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "36969c094354086e15d2a327a9c50feb20b9cf11",
+      "evidence_class": "primary_source_code",
+      "support_scope": "official_mlx",
+      "claim_types": [
+        "api_support"
+      ],
+      "note": "Verified 2026-11-05 at the MLX 0.32.4 release commit dated 2026-10-14. Synthesized into references/compile-and-kernels.md and references/runtime-compatibility.md: use top-level memory/device APIs while retaining Metal availability checks. Deprecation guidance does not change the target workload's compatibility requirement. Source/API review only; not reproduced on the target Mac and no performance claim is promoted."
+    },
+    {
+      "id": "mlx-0324-precision-guide",
+      "title": "MLX 0.32.4 numerical precision guide",
+      "url": "https://github.com/ml-explore/mlx/blob/36969c094354086e15d2a327a9c50feb20b9cf11/docs/src/usage/precision.rst",
+      "kind": "official-doc",
+      "owner": "Apple MLX",
+      "topics": [
+        "mlx",
+        "precision",
+        "float32",
+        "tf32",
+        "winograd",
+        "parity"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "36969c094354086e15d2a327a9c50feb20b9cf11",
+      "evidence_class": "official_api_doc",
+      "support_scope": "official_mlx",
+      "claim_types": [
+        "api_support",
+        "risk_or_negative"
+      ],
+      "note": "Verified 2026-11-05 at the MLX 0.32.4 release commit dated 2026-10-14. Synthesized into references/porting-core.md, references/runtime-compatibility.md and references/benchmarking.md: strict-float32 oracle settings, reduced-precision matrix dispatch and batch/shape-dependent Winograd diagnostics. Environment changes are explicit, reversible variants rather than automatic optimizations. Source/API review only; not reproduced on the target Mac and no performance claim is promoted."
+    },
+    {
+      "id": "mlx-release-0324",
+      "title": "MLX 0.32.4 release",
+      "url": "https://github.com/ml-explore/mlx/releases/tag/v0.32.4",
+      "kind": "release",
+      "owner": "Apple MLX",
+      "topics": [
+        "mlx",
+        "release",
+        "runtime"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "36969c094354086e15d2a327a9c50feb20b9cf11",
+      "evidence_class": "release_note",
+      "support_scope": "official_mlx",
+      "claim_types": [
+        "api_support"
+      ],
+      "note": "Published 2026-10-14; GitHub release/tag verified 2026-11-05. Synthesized into references/runtime-compatibility.md as a conservative source-reviewed capability floor for native-gated-delta-update, native-spectral-transforms and metal-nax-matmul. This is not an assertion about first introduction, target-model support, or benchmark performance."
+    },
+    {
+      "id": "apple-metal-tensors-wwdc26",
+      "title": "Optimize custom machine learning operations with Metal tensors",
+      "url": "https://developer.apple.com/videos/play/wwdc2026/330/",
+      "kind": "official-doc",
+      "owner": "Apple Developer",
+      "topics": [
+        "metal",
+        "tensorops",
+        "mpp",
+        "m5",
+        "quantization",
+        "cooperative-tensors"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2026-11-05",
+      "evidence_class": "official_api_doc",
+      "support_scope": "context_only",
+      "claim_types": [
+        "algorithm_candidate",
+        "risk_or_negative"
+      ],
+      "note": "WWDC26 session; transcript reviewed 2026-11-05. Synthesized into references/runtime-compatibility.md: quantized TensorOps, scale planes and cooperative-tensor inputs have SDK/OS and layout/alignment constraints, including macOS/iOS 27 features. Metal API availability is not proof of MLX Python support, target parity, or speed."
+    },
+    {
+      "id": "apple-mlx-rdma-2026-10-15",
+      "title": "Local and Distributed Large LLM Inference with MLX and RDMA on Mac Studio",
+      "url": "https://machinelearning.apple.com/research/mlx-distributed-inference",
+      "kind": "technical-blog",
+      "owner": "Apple Machine Learning Research",
+      "topics": [
+        "mlx",
+        "distributed",
+        "jaccl",
+        "rdma",
+        "tensor-parallel",
+        "pipeline-parallel"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2026-11-05",
+      "evidence_class": "technical_blog",
+      "support_scope": "context_only",
+      "claim_types": [
+        "algorithm_candidate",
+        "risk_or_negative"
+      ],
+      "note": "Published 2026-10-15; reviewed 2026-11-05. Synthesized into references/runtime-compatibility.md and references/benchmarking.md: separate pipeline/tensor capacity strategies and workload phases. The blog's MLX_METAL_FAST_SYNCH=1 command is explicitly narrowed by the pinned MLX guide's hang warning; the skill keeps the default-safe baseline. No source numeric result is promoted."
+    },
+    {
+      "id": "paper-2610-31479",
+      "title": "Evaluating the Applicability of LLM Inference Optimizations on Apple Silicon",
+      "url": "https://arxiv.org/abs/2610.31479v1",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "apple-silicon",
+        "benchmarking",
+        "kv-cache",
+        "speculative-decoding",
+        "moe",
+        "kernel-portability"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2610.31479v1",
+      "evidence_class": "primary_paper",
+      "support_scope": "paper_only",
+      "claim_types": [
+        "algorithm_candidate",
+        "risk_or_negative"
+      ],
+      "note": "Reviewed 2026-11-05. Primary arXiv search abstract and full author report reviewed. Informs workload-shaped dispatch in references/runbook-moe-transformer.md, speculation cost gates in references/decoding-and-serving.md, and references/research-updates-2026-11.md. Source-reported Apple measurements include both negative and positive configurations; no local reproduction and no blanket method rejection."
+    },
+    {
+      "id": "macpaw-apple-silicon-optimization-study-2026",
+      "title": "Evaluating the Applicability of LLM Inference Optimizations on Apple Silicon: author report",
+      "url": "https://research.macpaw.com/publications/llm-optimizations-apple-silicon",
+      "kind": "technical-blog",
+      "owner": "MacPaw Research",
+      "topics": [
+        "apple-silicon",
+        "benchmarking",
+        "kv-cache",
+        "speculative-decoding",
+        "moe",
+        "kernel-portability"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2026-11-05",
+      "evidence_class": "technical_blog",
+      "support_scope": "context_only",
+      "claim_types": [
+        "algorithm_candidate",
+        "risk_or_negative"
+      ],
+      "note": "Reviewed 2026-11-05. Full author article reviewed; page dated 2026-09-30 and linked arXiv submission dated 2026-10-22. Informs references/decoding-and-serving.md and references/runbook-moe-transformer.md. Observed regressions and configuration-specific wins motivate matched baselines, not generalized bans or portable speed claims."
+    },
+    {
+      "id": "paper-2610-33076",
+      "title": "Double KV Cache Optimization on Apple Silicon: Block-FP4, Radial Quantization, and Fused Metal Kernels",
+      "url": "https://arxiv.org/abs/2610.33076v1",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "kv-cache",
+        "quantization",
+        "long-context",
+        "memory",
+        "metal"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2610.33076v1",
+      "evidence_class": "primary_paper",
+      "support_scope": "paper_only",
+      "claim_types": [
+        "algorithm_candidate",
+        "risk_or_negative"
+      ],
+      "note": "Reviewed 2026-11-05. Canonical arXiv abstract obtained in primary search; direct full-text retrieval was unavailable. Abstract-only review informs the reconstruction-workspace and long-context gates in references/attention-and-kv.md and references/research-updates-2026-11.md. Source-reported experimental MLX behavior is unreplicated; no assertion of full-paper review, native MLX support, a general memory limit, or a reusable performance result."
+    },
+    {
+      "id": "vllm-turboquant-evaluation-2026-05-11",
+      "title": "A First Comprehensive Study of TurboQuant: Accuracy and Performance",
+      "url": "https://vllm-project.github.io/2026/05/11/turboquant.html",
+      "kind": "technical-blog",
+      "owner": "vLLM / Red Hat AI",
+      "topics": [
+        "kv-cache",
+        "quantization",
+        "long-context",
+        "benchmarking"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2026-05-11",
+      "evidence_class": "technical_blog",
+      "support_scope": "context_only",
+      "claim_types": [
+        "algorithm_candidate",
+        "risk_or_negative"
+      ],
+      "note": "Reviewed 2026-11-05. Author measurement report reviewed. Informs separating storage compression, attention computation, capacity, transient memory and latency in references/attention-and-kv.md and references/research-updates-2026-11.md. NVIDIA/vLLM observations and recommendations are not transferred to Apple/MLX."
+    },
+    {
+      "id": "paper-2503-01840",
+      "title": "EAGLE-3: Scaling up Inference Acceleration of Large Language Models via Training-Time Test",
+      "url": "https://arxiv.org/abs/2503.01840v3",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "eagle3",
+        "speculative-decoding",
+        "target-features"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2503.01840v3",
+      "evidence_class": "primary_paper",
+      "support_scope": "paper_only",
+      "claim_types": [
+        "algorithm_candidate"
+      ],
+      "note": "Reviewed 2026-11-05. Abstract and version reviewed. Informs the distinct multi-layer feature/token-prediction compatibility contract in references/decoding-and-serving.md and references/research-updates-2026-11.md; no MLX implementation or local speed claim."
+    },
+    {
+      "id": "dflash-paper-v2-2026-05-28",
+      "title": "DFlash: Block Diffusion for Flash Speculative Decoding",
+      "url": "https://arxiv.org/abs/2602.06036v2",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "dflash",
+        "speculative-decoding",
+        "block-drafting"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2602.06036v2",
+      "evidence_class": "primary_paper",
+      "support_scope": "paper_only",
+      "claim_types": [
+        "algorithm_candidate"
+      ],
+      "note": "Reviewed 2026-11-05. Camera-ready May 28 2026 version and HTML method/evaluation sections reviewed. Informs target-feature compatibility, draft-budget cost and rejection-state gates in references/decoding-and-serving.md and references/research-updates-2026-11.md. NVIDIA results do not establish Apple Silicon speed or hybrid-cache compatibility. The earlier paper-2602-06036 source record remains unchanged for historical lineage."
+    },
+    {
+      "id": "qwen3-next-architecture-2025-09-10",
+      "title": "Qwen3-Next: Towards Ultimate Training & Inference Efficiency",
+      "url": "https://qwen.ai/blog?id=qwen3-next",
+      "kind": "technical-blog",
+      "owner": "Qwen Team",
+      "topics": [
+        "hybrid",
+        "linear-attention",
+        "gated-deltanet",
+        "moe"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2025-09-10",
+      "evidence_class": "technical_blog",
+      "support_scope": "context_only",
+      "claim_types": [
+        "algorithm_candidate"
+      ],
+      "note": "Reviewed 2026-11-05. Author release and architecture sections reviewed in primary search. Informs layer-schedule and mixed-state gates in references/runbook-ssm-hybrid.md and references/research-updates-2026-11.md. No claim that the synthetic SSM scaffold supports this checkpoint."
+    },
+    {
+      "id": "paper-2605-22791",
+      "title": "Gated DeltaNet-2: Decoupling Erase and Write in Linear Attention",
+      "url": "https://arxiv.org/abs/2605.22791v1",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "hybrid",
+        "linear-attention",
+        "gated-deltanet",
+        "recurrent-state"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2605.22791v1",
+      "evidence_class": "primary_paper",
+      "support_scope": "paper_only",
+      "claim_types": [
+        "algorithm_candidate"
+      ],
+      "note": "Reviewed 2026-11-05. Abstract and HTML architecture/recurrence sections reviewed. Informs keeping erase/write gates and recurrence variants distinct in references/runbook-ssm-hybrid.md and references/research-updates-2026-11.md. Architecture evidence only; no MLX kernel or checkpoint-support claim."
+    },
+    {
+      "id": "transformers-deepseek-v4-reference-2026-11",
+      "title": "Transformers DeepSeek-V4 reference architecture and cache documentation",
+      "url": "https://huggingface.co/docs/transformers/model_doc/deepseek_v4",
+      "kind": "official-doc",
+      "owner": "Hugging Face Transformers",
+      "topics": [
+        "deepseek-v4",
+        "compressed-attention",
+        "kv-cache",
+        "moe",
+        "routing"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2026-11-05",
+      "evidence_class": "official_api_doc",
+      "support_scope": "context_only",
+      "claim_types": [
+        "algorithm_candidate"
+      ],
+      "note": "Reviewed 2026-11-05. Current official implementation documentation read, including architecture, masks and cache layers. Informs compressed-block boundary/position/state tests in references/attention-and-kv.md and selection-versus-scoring checks in references/runbook-moe-transformer.md. Mutable documentation snapshot date is not an immutable source commit; pin implementation code before porting. No MLX support claim."
+    },
+    {
+      "id": "deepseek-v4-release-2026-04-24",
+      "title": "DeepSeek V4 Preview Release",
+      "url": "https://api-docs.deepseek.com/news/news260424/",
+      "kind": "release",
+      "owner": "DeepSeek",
+      "topics": [
+        "deepseek-v4",
+        "architecture"
+      ],
+      "review_depth": "screened",
+      "snapshot": "2026-04-24",
+      "evidence_class": "release_note",
+      "support_scope": "context_only",
+      "claim_types": [
+        "algorithm_candidate"
+      ],
+      "note": "Reviewed 2026-11-05. Official release announcement establishes release provenance for references/research-updates-2026-11.md only. Model performance and MLX compatibility are not adopted."
+    },
+    {
+      "id": "vllm-mlx-paper-v2-2026-01-29",
+      "title": "Native LLM and MLLM Inference at Scale on Apple Silicon",
+      "url": "https://arxiv.org/abs/2601.19139v2",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "serving",
+        "continuous-batching",
+        "prefix-cache",
+        "multimodal"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2601.19139v2",
+      "evidence_class": "primary_paper",
+      "support_scope": "paper_only",
+      "claim_types": [
+        "algorithm_candidate",
+        "serving_semantics"
+      ],
+      "note": "Reviewed 2026-11-05. Version and HTML cache method/evaluation sections reviewed. Informs encoder-feature versus full LM-prefix cache identity and cold/warm validation in references/decoding-and-serving.md and references/research-updates-2026-11.md. Third-party vLLM-MLX source-reported experiments are not native MLX guarantees, local measurements or audio evidence. The earlier paper-2601-19139 source record remains unchanged for historical lineage."
+    },
+    {
+      "id": "paper-2604-18556",
+      "title": "GSQ: Highly-Accurate Low-Precision Scalar Quantization for LLMs via Gumbel-Softmax Sampling",
+      "url": "https://arxiv.org/abs/2604.18556v2",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "weight-quantization",
+        "mixed-precision",
+        "calibration",
+        "conversion"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2604.18556v2",
+      "evidence_class": "primary_paper",
+      "support_scope": "paper_only",
+      "claim_types": [
+        "algorithm_candidate"
+      ],
+      "note": "Reviewed 2026-11-05. Abstract and revision reviewed. Informs an experimental export/packing and held-out-quality gate in references/research-updates-2026-11.md. Scalar-kernel compatibility in the paper does not establish the MLX checkpoint ABI or an implemented MLX quantizer."
+    },
+    {
+      "id": "paper-2602-19128",
+      "title": "K-Search: LLM Kernel Generation via Co-Evolving Intrinsic World Model",
+      "url": "https://arxiv.org/abs/2602.19128v2",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "kernel-search",
+        "optimization",
+        "hypothesis-led-learning"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2602.19128v2",
+      "evidence_class": "primary_paper",
+      "support_scope": "paper_only",
+      "claim_types": [
+        "algorithm_candidate"
+      ],
+      "note": "Reviewed 2026-11-05. Abstract and version reviewed. Informs independent plan/implementation search with fixed oracle gates in references/research-updates-2026-11.md. Original CUDA/FlashInfer measurements are algorithm-search evidence only."
+    },
+    {
+      "id": "bair-k-search-mlx-2026-07-29",
+      "title": "From CUDA to MLX: How K-Search Brings Decades of Kernel Expertise to Apple Silicon",
+      "url": "https://bair.berkeley.edu/blog/2026/07/29/cuda-to-mlx-k-search/",
+      "kind": "technical-blog",
+      "owner": "UC Berkeley BAIR / IBM Research",
+      "topics": [
+        "kernel-search",
+        "metal",
+        "ssm",
+        "scan",
+        "kernel-portability"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2026-07-29",
+      "evidence_class": "technical_blog",
+      "support_scope": "context_only",
+      "claim_types": [
+        "algorithm_candidate",
+        "risk_or_negative"
+      ],
+      "note": "Reviewed 2026-11-05. Full author article reviewed. Informs independent-oracle bounded candidate search and recurrence-specific parallel-scan gates in references/runbook-ssm-hybrid.md and references/research-updates-2026-11.md. Source-reported attention is below its native MLX baseline and Mamba prefill uses a sequential baseline. Do not adopt fixed hardware limits or mapping-table/fast-math claims without target verification; no local reproduction."
+    },
+    {
+      "id": "basert-author-report-2026-07-01",
+      "title": "BaseRT: Best-in-Class LLM Inference on Apple Silicon via Native Metal",
+      "url": "https://huggingface.co/blog/basecompute/basert-release",
+      "kind": "technical-blog",
+      "owner": "Base Compute",
+      "topics": [
+        "metal",
+        "benchmarking",
+        "memory",
+        "runtime"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2026-07-01",
+      "evidence_class": "technical_blog",
+      "support_scope": "context_only",
+      "claim_types": [
+        "algorithm_candidate"
+      ],
+      "note": "Reviewed 2026-11-05. Full author report reviewed; primary arXiv full text was unavailable. Informs controlled external baselines and allocation/inline-dequantization profiling in references/research-updates-2026-11.md. BaseRT is a separate runtime, not MLX support; source-reported rankings are not reproduced or generalized."
+    },
+    {
+      "id": "paper-2411-05007",
+      "title": "SVDQuant: Absorbing Outliers by Low-Rank Components for 4-Bit Diffusion Models",
+      "url": "https://arxiv.org/abs/2411.05007v4",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "diffusion",
+        "quantization",
+        "low-rank",
+        "kernel-fusion"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2411.05007v4",
+      "evidence_class": "primary_paper",
+      "support_scope": "paper_only",
+      "claim_types": [
+        "algorithm_candidate"
+      ],
+      "note": "Reviewed 2026-11-05. November 8 2025 revision, HTML method sections and author blog reviewed. Informs separating storage, arithmetic and fused low-rank overhead in references/research-updates-2026-11.md. NVIDIA INT4/NVFP4 results do not establish MLX speed or native Apple arithmetic support."
+    },
+    {
+      "id": "paper-2411-19108",
+      "title": "Timestep Embedding Tells: It's Time to Cache for Video Diffusion Model",
+      "url": "https://arxiv.org/abs/2411.19108v2",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "diffusion",
+        "timestep-cache",
+        "approximation"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2411.19108v2",
+      "evidence_class": "primary_paper",
+      "support_scope": "paper_only",
+      "claim_types": [
+        "algorithm_candidate"
+      ],
+      "note": "Reviewed 2026-11-05. March 18 2025 revision and abstract reviewed. Informs the lossy timestep-reuse and task-specific quality gate in references/research-updates-2026-11.md; no MLX implementation, audio-quality or local performance claim."
+    },
+    {
+      "id": "paper-2610-12970",
+      "title": "Minions: A Dynamic and Distributed Virtual GPU Cloud Built on Idle Apple Silicon Devices",
+      "url": "https://arxiv.org/abs/2610.12970v1",
+      "kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "distributed",
+        "apple-silicon",
+        "task-scheduling"
+      ],
+      "review_depth": "synthesized",
+      "snapshot": "2610.12970v1",
+      "evidence_class": "primary_paper",
+      "support_scope": "paper_only",
+      "claim_types": [
+        "algorithm_candidate",
+        "serving_semantics"
+      ],
+      "note": "Reviewed 2026-11-05. Full HTML paper and Apple publication page reviewed. Informs request-level scheduling versus model-parallel execution boundaries in references/research-updates-2026-11.md. Independent local inference subtasks do not establish shared memory across Macs or an MLX distributed API release."
     }
   ]
 }

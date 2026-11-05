@@ -234,7 +234,7 @@ class RecommendationContractTests(unittest.TestCase):
                     "id": "candidate:paper:fixture-claim",
                     "kind": "source_candidate",
                     "label": "Fixture claims 999x speedup",
-                    "locator": "https://example.com/unreviewed-paper",
+                    "locator": "https://example.com/999x-throughput-unreviewed-paper",
                     "read_state": "unread_candidate",
                     "review_status": "candidate-unreviewed",
                 },
@@ -337,10 +337,17 @@ class RecommendationContractTests(unittest.TestCase):
                 self.assertNotIn("source_label", item)
                 self.assertNotIn("target_label", item)
             self.assertNotIn("999x speedup", json.dumps(advisory))
+            self.assertTrue(any(
+                item["graph_provenance"].get("source_url")
+                == "https://example.com/999x-throughput-unreviewed-paper"
+                for item in advisory["items"]
+            ))
             self.assertNotIn("score", json.dumps(advisory))
             self.assertNotIn("unreviewed-research-signal", report["advisor_buckets"])
             self.assertIn("Unreviewed research signals (experimental/review queue)", markdown)
             self.assertIn("never supply numeric claims", markdown)
+            canonical_report, _ = run_recommender(tmp, ["dense-decoder-transformer"])
+            self.assertEqual(canonical_report["research_advisory"]["status"], "available")
 
     def test_graph_advisory_fails_closed_without_crashing_recommendations(self) -> None:
         with tempfile.TemporaryDirectory() as raw_tmp:

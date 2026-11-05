@@ -2,13 +2,32 @@
 
 **Release snapshot:** 0.7.0
 
-**Review date:** 2026-07-23
+**Review date:** 2026-11-05
 
 This file separates repository-level proof from target-model proof. Offline
 tests can demonstrate deterministic routing, safety controls, evidence
 boundaries, and artifact consistency. They cannot demonstrate that an unseen
 checkpoint has been converted correctly, that a model is useful, or that an
 optimization improves a particular Mac workload.
+
+## November research refresh (unreleased)
+
+The new runtime eligibility regressions exercise missing/old/malformed package
+versions, exact chip-family matching, unknown future chips, global registry
+validation, blocked advice, stack exclusion, and canonical port-plan
+recomputation. Compatible source metadata does not establish runtime execution
+or promote a numeric claim. The Linux validation host cannot execute Metal;
+no new Apple Silicon performance or real-checkpoint parity result is claimed.
+
+The research review adds 37 source records, six guidance methods and five
+techniques. Two older bibliography entries receive a corrected title or an
+explicitly documented review; the newer DFlash and vLLM-MLX reviews use separate
+source IDs to preserve historical lineage. The graph migration incorporates
+the new sources and methods; a four-node authored supplement adds trait and
+eligibility evidence, with no new measurement nodes. An offline curator run
+reconciles the current graph and backlog from existing discovery receipts;
+it does not claim a fresh network collection. Every historical research and
+benchmark receipt remains unchanged.
 
 ## Canonical snapshot
 
@@ -17,9 +36,9 @@ optimization improves a particular Mac workload.
 | Architecture-family routes | 17 | `mlx-model-porting/assets/architectures.yaml` |
 | Executable scaffold families | 6 | `scaffold_port.py::FAMILY_GENERATORS` |
 | Checked-in real checkpoint ports | 4 | Qwen2.5, BGE base, t5-small, HuBERT base examples |
-| Evidence sources | 363 | `mlx-model-porting/assets/sources.yaml` |
-| Technique records | 70 | `mlx-model-porting/assets/techniques.yaml` |
-| Optimization-guidance methods | 28 | `mlx-model-porting/assets/optimization_guidance.yaml` |
+| Evidence sources | 400 | `mlx-model-porting/assets/sources.yaml` |
+| Technique records | 75 | `mlx-model-porting/assets/techniques.yaml` |
+| Optimization-guidance methods | 34 | `mlx-model-porting/assets/optimization_guidance.yaml` |
 | Optimization stacks | 4 | `mlx-model-porting/assets/optimization_stacks.yaml` |
 | Python scripts | 33 | `mlx-model-porting/scripts/*.py` |
 | Benchmark receipts | 13 | `mlx-model-porting/assets/benchmarks/receipt_assessments.json` |
@@ -28,8 +47,8 @@ optimization improves a particular Mac workload.
 | Rejected receipts | 1 | generated benchmark assessment |
 | Effective claims | 10 | `mlx-model-porting/assets/effective_claims.json` |
 | Promoted / withheld claims | 0 / 10 | generated effective-claim catalogue |
-| Knowledge-graph nodes / edges | 712 / 505 | `mlx-model-porting/assets/knowledge_graph.json` |
-| Offline tests | 588 | `python3 -m unittest discover -s tests` |
+| Knowledge-graph nodes / edges | 755 / 526 | `mlx-model-porting/assets/knowledge_graph.json` |
+| Offline tests | 595 | `python3 -m unittest discover -s tests` |
 
 The 17 routes are synthetic golden scenarios. They prove that every declared
 family has a fixture exercising route selection, expected weight coverage, a
