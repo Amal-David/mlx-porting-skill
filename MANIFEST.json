@@ -2,7 +2,7 @@
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
   "version": "0.7.0",
-  "generated_at": "2026-10-05T07:08:26.972745+00:00",
+  "generated_at": "2026-11-12T02:58:15.022Z",
   "file_count": 631,
   "files": [
     {
@@ -2781,8 +2781,8 @@
     },
     {
       "path": "mlx-model-porting/scripts/mlx_doctor.py",
-      "size_bytes": 20402,
-      "sha256": "28b6d132180989387a732640d63d10cc87b549d9cd1196c16080747934fdfe57",
+      "size_bytes": 22850,
+      "sha256": "82f2ff917e6e71646efaf88c83e9ee97456aee7bcb7f58db55d0a9b50e91123f",
       "executable": true
     },
     {
@@ -3657,8 +3657,8 @@
     },
     {
       "path": "tests/test_mlx_doctor.py",
-      "size_bytes": 12296,
-      "sha256": "67c107f6a81e642a8c34ec37e05be5f67c9495ded519b0d1e52912ab118889f8",
+      "size_bytes": 15357,
+      "sha256": "c39ff966b5aba107b2d25010429b8c053ec09cb71860b8c003f042b85e62edc2",
       "executable": false
     },
     {

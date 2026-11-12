@@ -165,6 +165,8 @@ def diagnose(args: argparse.Namespace) -> dict[str, Any]:
         findings = raw.get("code_surface", {}).get("risks", [])
         if project_health.get("status") in {"proof-gaps", "no-mlx-surface-detected"}:
             warnings.append(project_health.get("summary", "Project evidence is incomplete."))
+        project_storage: list[int] = []
+        unknown_project_storage = False
         for entry in raw.get("model_inspections", []):
             if not entry.get("ok"):
                 blockers.append("A project model inspection failed: " + str(entry.get("error", "unknown failure")))
@@ -176,6 +178,17 @@ def diagnose(args: argparse.Namespace) -> dict[str, Any]:
             for candidate in entry.get("architecture_candidates", []):
                 if candidate.get("family") == entry.get("recommended_family"):
                     targets.extend(candidate.get("targets", []))
+            declared = (entry.get("tensor_summary") or {}).get("estimated_bytes")
+            if entry.get("ok"):
+                if type(declared) is int and declared > 0:
+                    project_storage.append(declared)
+                else:
+                    unknown_project_storage = True
+        if project_storage:
+            # A storage lower bound, never proof of runtime fit.
+            weight_bytes = sum(project_storage)
+        if unknown_project_storage:
+            warnings.append("One or more project models have unknown tensor storage; the reported total is only a lower bound.")
     families, runbooks, targets = list(dict.fromkeys(families)), list(dict.fromkeys(runbooks)), list(dict.fromkeys(targets))
     backend = args.backend or next((target for target in targets if target in BACKENDS), None)
     runtime_blockers: list[str] = []
@@ -228,6 +241,33 @@ def make_markdown(report: dict[str, Any]) -> str:
         return str(value).replace("|", "\\|").replace("\n", " ").replace("\r", " ")
     architecture, host = report["architecture"], report["host"]
     lines = ["# MLX Doctor", "", f"**Status:** {cell(report['status'])}", "", "| Check | Finding |", "| --- | --- |", f"| Input | {cell(report['input']['kind'])}: {cell(report['input']['path'] or 'not supplied')} |", f"| Host | {cell(host['system'])} / {cell(host['machine'])}, Python {cell(host['python'])} |", f"| Architecture | {cell(', '.join(architecture['families']) or 'not established')} |", f"| Scaffold | {cell(architecture['scaffold'])} |", f"| Backend hint | {cell(report['selected_backend'] or 'not selected')} |", "| Native execution / parity | Not verified |", "| Runtime memory fit | Not verified |", ""]
+    memory = report["memory"]
+    lines.extend([
+        "## Architecture and memory evidence", "",
+        "- **Runbooks:** " + cell(", ".join(architecture["runbooks"]) or "not established"),
+        "- **Target hints:** " + cell(", ".join(architecture["target_hints"]) or "not established"),
+        "- **Artifact fingerprint:** " + cell(report["artifact_fingerprint"] or "not established"),
+        "- **Declared tensor storage (bytes):** " + cell(memory["declared_tensor_storage_bytes"] if memory["declared_tensor_storage_bytes"] is not None else "unknown"),
+        "- **Requested budget (bytes):** " + cell(memory["requested_budget_bytes"] if memory["requested_budget_bytes"] is not None else "not specified"),
+        "- **Storage scope:** " + cell(memory["scope"]),
+        "",
+        "## Installed package metadata (not device validation)", "",
+        "| Package | Version |", "| --- | --- |",
+    ])
+    for name, version in sorted(host["packages"].items()):
+        lines.append("| " + cell(name) + " | " + cell(version or "not installed") + " |")
+    lines.append("")
+    for key, title in (("license", "License evidence (static)"),
+                       ("project_health", "Project health evidence (static)")):
+        if report[key] is not None:
+            lines.extend(["## " + title, "", "```json",
+                          json.dumps(report[key], ensure_ascii=False, indent=2, sort_keys=True).replace("```", "` ` `"),
+                          "```", ""])
+    if report["findings"]:
+        lines.extend(["## Inspection findings", ""])
+        for finding in report["findings"]:
+            lines.append("- " + cell(json.dumps(finding, ensure_ascii=False, sort_keys=True) if isinstance(finding, dict) else finding))
+        lines.append("")
     for title, values in (("Inspection blockers", report["blockers"]), ("Runtime prerequisites", report["runtime_blockers"]), ("Warnings", report["warnings"])):
         if values:
             lines.extend(["## " + title, ""])
