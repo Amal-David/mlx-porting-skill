@@ -65,6 +65,8 @@ Best baseline for exact incremental parity. Preallocate when maximum context and
 
 Use only when the architecture is trained/configured for a window or when eviction semantics are explicitly accepted. Preserve sink/global tokens and positional indexing.
 
+**Regression watch (November 12, 2026):** MLX-LM's [draft PR #2041](https://github.com/ml-explore/mlx-lm/pull/2041) ([reviewed source commit](https://github.com/ml-explore/mlx-lm/commit/acddc4f35dbf31574ce7d73d5cf112d16557ca96)) proposes a fix for a rotating-cache attention mask that could hide retained sink slots during chunked prefill. This is an **unmerged proposal**, not proof that a particular released version has or lacks the defect. Before enabling rotating/sink caches, compare source/reference masks, per-layer attention, logits and greedy output with the full-cache path across unchunked versus split prefill, prefill boundaries at window capacity, repeated eviction, multiple sink counts and single-token decode. Confirm sink entries remain visible while out-of-window entries are masked; keep absolute RoPE positions and state-restore semantics unchanged. Restore full KV/cache fallback if any mask, parity or long-context quality gate fails.
+
 ### Prompt/prefix cache
 
 Reuse immutable prefix state across calls only when tokenizer template, model revision, quantization, adapter, positions, and relevant generation configuration match. Include cache namespace/versioning.

@@ -2,7 +2,7 @@
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
   "version": "0.7.0",
-  "generated_at": "2026-11-05T06:57:18.449654+00:00",
+  "generated_at": "2026-11-12T03:05:28.737Z",
   "file_count": 641,
   "files": [
     {
@@ -1534,8 +1534,9 @@
     {
       "path": "mlx-model-porting/references/attention-and-kv.md",
       "size_bytes": 9542,
-      "sha256": "342d13738e4a28f0fb79c79fdfddb10aa5860deb986d18b92419fe8db7deb23f",
-      "executable": false
+      "sha256": "6445e156e33df51a28f81ec84b11d7576526792030a57296a115f561da3a2286",
+      "executable": false,
+      "size": 10502
     },
     {
       "path": "mlx-model-porting/references/benchmarking.md",
@@ -1654,8 +1655,9 @@
     {
       "path": "mlx-model-porting/references/research-updates-2026-11.md",
       "size_bytes": 13212,
-      "sha256": "ad4a585542614339bcbc7a89ca57f94ffa09871f956007af284fdb194e583c34",
-      "executable": false
+      "sha256": "5390229abee134d4a742981cf6b7efa0fc1f414a307f566d2953f2ff78c7cc0c",
+      "executable": false,
+      "size": 15654
     },
     {
       "path": "mlx-model-porting/references/runbook-asr.md",

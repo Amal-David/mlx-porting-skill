@@ -18,6 +18,7 @@ Keep experimental candidates opt-in and preserve the existing exact fallback.
 - [9. Use native runtimes as controlled external baselines](#9-use-native-runtimes-as-controlled-external-baselines)
 - [10. Keep diffusion and audio approximations task-specific](#10-keep-diffusion-and-audio-approximations-task-specific)
 - [11. Identify what a distributed system actually distributes](#11-identify-what-a-distributed-system-actually-distributes)
+- [November 12 upstream watchlist (unmerged)](#november-12-upstream-watchlist-unmerged)
 
 ## 1. Match the workload before transferring a kernel
 
@@ -215,3 +216,36 @@ interrupted/retried work, duplicate result handling, and end-to-end transfer
 costs. Preserve a local execution path when coordination costs exceed the
 chosen objective. Consult [distributed execution](runtime-compatibility.md#distributed-execution)
 for MLX APIs.
+
+## November 12 upstream watchlist (unmerged)
+
+These primary-source MLX-LM changes were **open, not merged or included in a
+verified release** on November 12, 2026. Preserve the review-time commit, avoid
+promoting performance numbers, and do not silently enable them as supported
+features. The latest verified stable source releases remain
+[MLX 0.32.4 (October 14)](https://github.com/ml-explore/mlx/releases/tag/v0.32.4)
+and [MLX-LM 0.32.2 (October 16)](https://github.com/ml-explore/mlx-lm/releases/tag/v0.32.2).
+
+- **Cache correctness:** [draft #2041](https://github.com/ml-explore/mlx-lm/pull/2041)
+  (opened November 7; [source snapshot](https://github.com/ml-explore/mlx-lm/commit/acddc4f35dbf31574ce7d73d5cf112d16557ca96))
+  targets retained attention-sink visibility during chunked rotating-KV
+  prefill. Add split-prefill, sink/window-eviction and cached-vs-full parity
+  fixtures before claiming that a local configuration is safe. See the
+  [rotating cache gate](attention-and-kv.md#rotating-or-sliding-window-cache).
+- **Grouped low-bit experts:** [#2044](https://github.com/ml-explore/mlx-lm/pull/2044)
+  (opened November 7; [source snapshot](https://github.com/ml-explore/mlx-lm/commit/42e5d30061a959c888c58d6ff5d0b9f898a62359))
+  proposes grouped-expert Metal kernels for 4-bit MoE. Its author-reported
+  throughput is specific to an implementation and concurrency regime, not
+  reproduced MLX-porting-skill evidence. Before experimenting, compare expert
+  selection, dequantization/layout, fused output and logits to the existing
+  MLX reference, then measure matched prompts, expert shapes, precision,
+  batch/concurrency and cold/warm paths; roll back on quality or cost regressions.
+- **DSA indexing:** [#2046](https://github.com/ml-explore/mlx-lm/pull/2046)
+  (opened November 9; [source snapshot](https://github.com/ml-explore/mlx-lm/commit/e2115d96ce7e68ff3551379a8352e220ae29c7f5))
+  proposes a fused indexer head sum. Treat as a candidate only when the exact
+  DSA indexer and intermediate state are present. Compare selected indices,
+  scores, masks and logits against the unfused reference; benchmark the full
+  selection-and-attention path rather than a microkernel alone.
+
+This update records reviewed upstream *candidate status*, not a fresh research
+collector run, successful model port, device execution or promoted claim.
