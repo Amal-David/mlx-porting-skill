@@ -125,22 +125,19 @@
       "path": "README.md",
       "size_bytes": 14253,
       "sha256": "0bd46d44487536259201a0febef16868e9bc54d441e78a42503eebdd1c570b00",
-      "executable": false,
-      "size": 14253
+      "executable": false
     },
     {
       "path": "RESEARCH_REPORT.md",
       "size_bytes": 23254,
       "sha256": "e67484a884e6b0521b23af95cc4273c63e3ecf0f10d0e78439638e7101f23ba3",
-      "executable": false,
-      "size": 23254
+      "executable": false
     },
     {
       "path": "VALIDATION.md",
       "size_bytes": 21550,
       "sha256": "1da9189959ad43076b191bc0934d445bb6e0bec2f9009b905ad2618a357b7b21",
-      "executable": false,
-      "size": 21550
+      "executable": false
     },
     {
       "path": "VERSION",
