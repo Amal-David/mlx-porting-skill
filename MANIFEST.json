@@ -1533,10 +1533,9 @@
     },
     {
       "path": "mlx-model-porting/references/attention-and-kv.md",
-      "size_bytes": 9542,
+      "size_bytes": 10502,
       "sha256": "6445e156e33df51a28f81ec84b11d7576526792030a57296a115f561da3a2286",
-      "executable": false,
-      "size": 10502
+      "executable": false
     },
     {
       "path": "mlx-model-porting/references/benchmarking.md",
@@ -1654,10 +1653,9 @@
     },
     {
       "path": "mlx-model-porting/references/research-updates-2026-11.md",
-      "size_bytes": 13212,
+      "size_bytes": 15654,
       "sha256": "5390229abee134d4a742981cf6b7efa0fc1f414a307f566d2953f2ff78c7cc0c",
-      "executable": false,
-      "size": 15654
+      "executable": false
     },
     {
       "path": "mlx-model-porting/references/runbook-asr.md",
