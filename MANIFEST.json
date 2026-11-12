@@ -2,7 +2,7 @@
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
   "version": "0.7.0",
-  "generated_at": "2026-11-12T02:58:15.022Z",
+  "generated_at": "2026-11-12T03:03:19.246Z",
   "file_count": 631,
   "files": [
     {
@@ -124,20 +124,23 @@
     {
       "path": "README.md",
       "size_bytes": 14253,
-      "sha256": "db22d173aa5207ce4d65a358133392c26f81e83178660753983e4429cd3c1af4",
-      "executable": false
+      "sha256": "0bd46d44487536259201a0febef16868e9bc54d441e78a42503eebdd1c570b00",
+      "executable": false,
+      "size": 14253
     },
     {
       "path": "RESEARCH_REPORT.md",
       "size_bytes": 23254,
-      "sha256": "f855b083697c9b2496573ed88b41badd25ad7e745644518eb0c063f072ad8db5",
-      "executable": false
+      "sha256": "e67484a884e6b0521b23af95cc4273c63e3ecf0f10d0e78439638e7101f23ba3",
+      "executable": false,
+      "size": 23254
     },
     {
       "path": "VALIDATION.md",
       "size_bytes": 21550,
-      "sha256": "afc8bc5ff3c6572cda8eee1bd237b5d383d5bbfbdb5ba49c4f17bdf8acee9a1e",
-      "executable": false
+      "sha256": "1da9189959ad43076b191bc0934d445bb6e0bec2f9009b905ad2618a357b7b21",
+      "executable": false,
+      "size": 21550
     },
     {
       "path": "VERSION",
