@@ -1,14 +1,14 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-07-23T17:25:58+00:00",
-  "run_id": "2026-07-20-nightly-knowledge-curator",
+  "generated_at": "2026-11-05T06:57:17+00:00",
+  "run_id": "2026-11-05-pr42-provenance-fix",
   "policy": {
     "review_only": true,
     "auto_promote_sources": false,
     "auto_modify_recommendations": false
   },
-  "node_count": 712,
-  "edge_count": 505,
+  "node_count": 755,
+  "edge_count": 526,
   "nodes": [
     {
       "id": "approach:adaptive-kv-quantization",
@@ -148,6 +148,26 @@
       "objectives": [
         "latency",
         "throughput"
+      ]
+    },
+    {
+      "id": "approach:compressed-kv-direct-attention",
+      "kind": "approach",
+      "label": "compressed-kv-direct-attention",
+      "status": "research-candidate",
+      "category": "kv-cache",
+      "decision_state": "method_registry",
+      "summary": "Investigate blockwise attention that consumes compressed KV without reconstructing the entire cache only after measuring the existing uniform-quantized and uncompressed baselines.",
+      "validation_gate": "Pin an inspectable MLX implementation; compare numerical and task quality with uniform KV and uncompressed baselines at a matched memory budget.",
+      "rollback": "Reconstruction dominates decode or peak memory defeats the capacity objective.",
+      "applies_to": [
+        "dense-decoder-transformer",
+        "moe-decoder-transformer"
+      ],
+      "objectives": [
+        "peak-memory",
+        "long-context",
+        "decode-throughput"
       ]
     },
     {
@@ -293,6 +313,46 @@
       ]
     },
     {
+      "id": "approach:hardware-aware-kernel-search",
+      "kind": "approach",
+      "label": "hardware-aware-kernel-search",
+      "status": "research-candidate",
+      "category": "kernels",
+      "decision_state": "method_registry",
+      "summary": "Use a bounded hypothesis-and-measurement search for a demonstrated hotspot: translate algorithmic invariants and memory access patterns into Metal constraints, generate one candidate change at a time, and retain the current native MLX baseline and fallback.",
+      "validation_gate": "Capture the operator contract, current native baseline, supported shapes/dtypes, chip limits and a bounded iteration/time budget.",
+      "rollback": "A candidate fails held-out parity or depends on unsupported hardware behavior.",
+      "applies_to": [
+        "all"
+      ],
+      "objectives": [
+        "prefill-throughput",
+        "decode-throughput",
+        "latency",
+        "throughput"
+      ]
+    },
+    {
+      "id": "approach:kv-cache-pruning",
+      "kind": "approach",
+      "label": "kv-cache-pruning",
+      "status": "research-candidate",
+      "category": "kv-cache",
+      "decision_state": "method_registry",
+      "summary": "Evaluate a precisely specified KV retention policy only after baseline parity; keep positional semantics, retained indices, sinks and recent-window rules explicit. Never prune a recurrent state as if it were ordinary attention KV.",
+      "validation_gate": "Fix the retention rule and budget before comparing against the same unpruned model/runtime.",
+      "rollback": "Any required task falls below its preset quality floor.",
+      "applies_to": [
+        "dense-decoder-transformer",
+        "moe-decoder-transformer"
+      ],
+      "objectives": [
+        "peak-memory",
+        "long-context",
+        "decode-throughput"
+      ]
+    },
+    {
       "id": "approach:lazy-eval-boundaries",
       "kind": "approach",
       "label": "lazy-eval-boundaries",
@@ -309,6 +369,26 @@
         "latency",
         "throughput",
         "peak-memory"
+      ]
+    },
+    {
+      "id": "approach:metal-nax-matmul",
+      "kind": "approach",
+      "label": "metal-nax-matmul",
+      "status": "native-mlx",
+      "category": "kernels",
+      "decision_state": "method_registry",
+      "summary": "For an explicitly identified M5-family Mac with macOS>=26.2 and the reviewed MLX>=0.32.4 baseline, profile the existing native matrix dispatch before writing a replacement kernel. M4 and unreviewed chip families remain outside this recipe.",
+      "validation_gate": "Match mlx>=0.32.4, macos>=26.2 and explicit M5 chip family in TargetProfile.",
+      "rollback": "The actual build/device does not expose the required path.",
+      "applies_to": [
+        "linear-heavy-models",
+        "diffusion-flow"
+      ],
+      "objectives": [
+        "prefill-throughput",
+        "decode-throughput",
+        "throughput"
       ]
     },
     {
@@ -386,6 +466,25 @@
       ]
     },
     {
+      "id": "approach:native-gated-delta-update",
+      "kind": "approach",
+      "label": "native-gated-delta-update",
+      "status": "native-mlx",
+      "category": "recurrent-state",
+      "decision_state": "method_registry",
+      "summary": "On the reviewed MLX 0.32.4-or-newer source baseline, evaluate mx.fast.gated_delta_update only for a matching Gated DeltaNet recurrence after the eager state oracle passes; this does not make Mamba or every linear attention variant compatible.",
+      "validation_gate": "Confirm mlx>=0.32.4 and probe the actual mx.fast.gated_delta_update path on the selected device.",
+      "rollback": "State or output parity fails at any chunk boundary.",
+      "applies_to": [
+        "ssm-recurrent-hybrid"
+      ],
+      "objectives": [
+        "prefill-throughput",
+        "decode-throughput",
+        "peak-memory"
+      ]
+    },
+    {
       "id": "approach:native-low-bit-weight-quantization",
       "kind": "approach",
       "label": "native-low-bit-weight-quantization",
@@ -406,6 +505,31 @@
         "peak-memory",
         "model-size",
         "throughput"
+      ]
+    },
+    {
+      "id": "approach:native-spectral-transforms",
+      "kind": "approach",
+      "label": "native-spectral-transforms",
+      "status": "native-mlx",
+      "category": "audio",
+      "decision_state": "method_registry",
+      "summary": "Evaluate mlx.core.fft.stft/istft on the reviewed MLX 0.32.4-or-newer baseline only when the source spectral frontend or decoder has an exactly matched transform contract.",
+      "validation_gate": "Confirm mlx>=0.32.4 and exercise fft.stft and fft.istft on the selected device before adopting them.",
+      "rollback": "Spectral or waveform parity fails.",
+      "applies_to": [
+        "automatic-speech-recognition",
+        "streaming-speech",
+        "separation-enhancement",
+        "vocoder-waveform-decoder",
+        "neural-audio-codec",
+        "flow-diffusion-tts"
+      ],
+      "objectives": [
+        "first-audio-latency",
+        "rtf",
+        "latency",
+        "streaming-quality"
       ]
     },
     {
@@ -3715,8 +3839,13 @@
       "immutable_locator": "https://arxiv.org/abs/2607.15456v1",
       "paper_id": "2607.15456",
       "revision": "v1",
-      "revision_comparison": null,
-      "read_state": "unread_candidate",
+      "revision_comparison": {
+        "before": "v1",
+        "after": "v1",
+        "status": "same",
+        "basis": "previous_graph"
+      },
+      "read_state": "seen_unread_candidate",
       "known_source_id": "",
       "query": "KV cache quantization long context",
       "updated": "2026-07-16T20:58:16Z",
@@ -3769,13 +3898,13 @@
       "paper_id": "2601.19139",
       "revision": "v2",
       "revision_comparison": {
-        "before": null,
+        "before": "v2",
         "after": "v2",
-        "status": "comparison_unpinned",
+        "status": "same",
         "basis": "source_registry"
       },
-      "read_state": "updated_candidate",
-      "known_source_id": "source:paper-2601-19139",
+      "read_state": "already_read",
+      "known_source_id": "source:vllm-mlx-paper-v2-2026-01-29",
       "query": "MLX Apple Silicon inference optimization",
       "updated": "2026-01-29T06:19:19Z",
       "published": "2026-01-27T03:11:02Z",
@@ -4209,9 +4338,9 @@
       "known_source_id": "",
       "head_sha": "cf821e8ec850c6d8380feea0e84859dd8ff54cd0",
       "revision_comparison": {
-        "before": "b8b61bc692517adcd18622df260f2ddd80635122",
+        "before": "cf821e8ec850c6d8380feea0e84859dd8ff54cd0",
         "after": "cf821e8ec850c6d8380feea0e84859dd8ff54cd0",
-        "status": "changed",
+        "status": "same",
         "basis": "previous_graph"
       },
       "head_date": "2026-07-20T21:41:17Z",
@@ -4606,22 +4735,64 @@
       "snapshot": ""
     },
     {
+      "id": "source:apple-metal-tensors-wwdc26",
+      "kind": "source",
+      "source_id": "apple-metal-tensors-wwdc26",
+      "label": "Optimize custom machine learning operations with Metal tensors",
+      "locator": "https://developer.apple.com/videos/play/wwdc2026/330",
+      "read_state": "already_read",
+      "review_depth": "synthesized",
+      "source_kind": "official-doc",
+      "owner": "Apple Developer",
+      "topics": [
+        "metal",
+        "tensorops",
+        "mpp",
+        "m5",
+        "quantization",
+        "cooperative-tensors"
+      ],
+      "snapshot": "2026-11-05"
+    },
+    {
       "id": "source:apple-mlx-m5-blog",
       "kind": "source",
       "source_id": "apple-mlx-m5-blog",
       "label": "Exploring LLMs with MLX and the Neural Accelerators in the M5 GPU",
       "locator": "https://machinelearning.apple.com/research/exploring-llms-mlx-m5",
       "read_state": "already_read",
-      "review_depth": "screened",
+      "review_depth": "synthesized",
       "source_kind": "technical-blog",
       "owner": "Apple Machine Learning Research",
       "topics": [
         "mlx",
         "apple-silicon",
         "llm",
-        "runtime"
+        "runtime",
+        "m5",
+        "nax"
       ],
-      "snapshot": "2026-06-24"
+      "snapshot": "2026-11-05"
+    },
+    {
+      "id": "source:apple-mlx-rdma-2026-10-15",
+      "kind": "source",
+      "source_id": "apple-mlx-rdma-2026-10-15",
+      "label": "Local and Distributed Large LLM Inference with MLX and RDMA on Mac Studio",
+      "locator": "https://machinelearning.apple.com/research/mlx-distributed-inference",
+      "read_state": "already_read",
+      "review_depth": "synthesized",
+      "source_kind": "technical-blog",
+      "owner": "Apple Machine Learning Research",
+      "topics": [
+        "mlx",
+        "distributed",
+        "jaccl",
+        "rdma",
+        "tensor-parallel",
+        "pipeline-parallel"
+      ],
+      "snapshot": "2026-11-05"
     },
     {
       "id": "source:apple-mpsgraph",
@@ -4659,6 +4830,43 @@
       "snapshot": "2026-06-24"
     },
     {
+      "id": "source:bair-k-search-mlx-2026-07-29",
+      "kind": "source",
+      "source_id": "bair-k-search-mlx-2026-07-29",
+      "label": "From CUDA to MLX: How K-Search Brings Decades of Kernel Expertise to Apple Silicon",
+      "locator": "https://bair.berkeley.edu/blog/2026/07/29/cuda-to-mlx-k-search",
+      "read_state": "already_read",
+      "review_depth": "synthesized",
+      "source_kind": "technical-blog",
+      "owner": "UC Berkeley BAIR / IBM Research",
+      "topics": [
+        "kernel-search",
+        "metal",
+        "ssm",
+        "scan",
+        "kernel-portability"
+      ],
+      "snapshot": "2026-07-29"
+    },
+    {
+      "id": "source:basert-author-report-2026-07-01",
+      "kind": "source",
+      "source_id": "basert-author-report-2026-07-01",
+      "label": "BaseRT: Best-in-Class LLM Inference on Apple Silicon via Native Metal",
+      "locator": "https://huggingface.co/blog/basecompute/basert-release",
+      "read_state": "already_read",
+      "review_depth": "synthesized",
+      "source_kind": "technical-blog",
+      "owner": "Base Compute",
+      "topics": [
+        "metal",
+        "benchmarking",
+        "memory",
+        "runtime"
+      ],
+      "snapshot": "2026-07-01"
+    },
+    {
       "id": "source:codex-skill-loader",
       "kind": "source",
       "source_id": "codex-skill-loader",
@@ -4691,6 +4899,42 @@
         "safetensors"
       ],
       "snapshot": "45d9f309afa3"
+    },
+    {
+      "id": "source:deepseek-v4-release-2026-04-24",
+      "kind": "source",
+      "source_id": "deepseek-v4-release-2026-04-24",
+      "label": "DeepSeek V4 Preview Release",
+      "locator": "https://api-docs.deepseek.com/news/news260424",
+      "read_state": "already_read",
+      "review_depth": "screened",
+      "source_kind": "release",
+      "owner": "DeepSeek",
+      "topics": [
+        "deepseek-v4",
+        "architecture"
+      ],
+      "snapshot": "2026-04-24"
+    },
+    {
+      "id": "source:dflash-paper-v2-2026-05-28",
+      "kind": "source",
+      "source_id": "dflash-paper-v2-2026-05-28",
+      "label": "DFlash: Block Diffusion for Flash Speculative Decoding",
+      "locator": "https://arxiv.org/abs/2602.06036",
+      "read_state": "already_read",
+      "review_depth": "synthesized",
+      "source_kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "dflash",
+        "speculative-decoding",
+        "block-drafting"
+      ],
+      "snapshot": "2602.06036v2",
+      "paper_id": "2602.06036",
+      "revision": "v2",
+      "immutable_locator": "https://arxiv.org/abs/2602.06036v2"
     },
     {
       "id": "source:dgrauet-ltx2-block-streaming-source",
@@ -4826,7 +5070,7 @@
       "kind": "source",
       "source_id": "github-mlx-top100-contributors",
       "label": "GitHub API top contributors for ml-explore/mlx",
-      "locator": "https://api.github.com/repos/ml-explore/mlx/contributors",
+      "locator": "https://api.github.com/repos/ml-explore/mlx/contributors?per_page=100",
       "read_state": "already_read",
       "review_depth": "screened",
       "source_kind": "repository",
@@ -4843,7 +5087,7 @@
       "kind": "source",
       "source_id": "github-mlx-top1000-contributors",
       "label": "GitHub API top contributors for ml-explore/mlx pages 1-10",
-      "locator": "https://api.github.com/repos/ml-explore/mlx/contributors",
+      "locator": "https://api.github.com/repos/ml-explore/mlx/contributors?per_page=100&page=1",
       "read_state": "already_read",
       "review_depth": "screened",
       "source_kind": "repository",
@@ -4878,7 +5122,7 @@
       "kind": "source",
       "source_id": "hf-mlx-model-search-2026-06-27",
       "label": "Hugging Face MLX model search snapshot",
-      "locator": "https://huggingface.co/models",
+      "locator": "https://huggingface.co/models?library=mlx&search=mlx",
       "read_state": "already_read",
       "review_depth": "screened",
       "source_kind": "repository",
@@ -4932,7 +5176,7 @@
       "kind": "source",
       "source_id": "hf-top-models-api-2026-06-29",
       "label": "Hugging Face top downloaded public models API snapshot",
-      "locator": "https://huggingface.co/api/models",
+      "locator": "https://huggingface.co/api/models?sort=downloads&direction=-1&limit=250&full=true",
       "read_state": "already_read",
       "review_depth": "screened",
       "source_kind": "repository",
@@ -5089,6 +5333,328 @@
         "audio-codec"
       ],
       "snapshot": "18c46027a2fb"
+    },
+    {
+      "id": "source:macpaw-apple-silicon-optimization-study-2026",
+      "kind": "source",
+      "source_id": "macpaw-apple-silicon-optimization-study-2026",
+      "label": "Evaluating the Applicability of LLM Inference Optimizations on Apple Silicon: author report",
+      "locator": "https://research.macpaw.com/publications/llm-optimizations-apple-silicon",
+      "read_state": "already_read",
+      "review_depth": "synthesized",
+      "source_kind": "technical-blog",
+      "owner": "MacPaw Research",
+      "topics": [
+        "apple-silicon",
+        "benchmarking",
+        "kv-cache",
+        "speculative-decoding",
+        "moe",
+        "kernel-portability"
+      ],
+      "snapshot": "2026-11-05"
+    },
+    {
+      "id": "source:mlx-0324-compile-guide",
+      "kind": "source",
+      "source_id": "mlx-0324-compile-guide",
+      "label": "MLX 0.32.4 compilation and state guide",
+      "locator": "https://github.com/ml-explore/mlx/blob/36969c094354086e15d2a327a9c50feb20b9cf11/docs/src/usage/compile.rst",
+      "read_state": "already_read",
+      "review_depth": "synthesized",
+      "source_kind": "official-doc",
+      "owner": "Apple MLX",
+      "topics": [
+        "mlx",
+        "compile",
+        "shapeless",
+        "random-state",
+        "benchmarking"
+      ],
+      "snapshot": "36969c094354086e15d2a327a9c50feb20b9cf11"
+    },
+    {
+      "id": "source:mlx-0324-device-bindings",
+      "kind": "source",
+      "source_id": "mlx-0324-device-bindings",
+      "label": "MLX 0.32.4 device capability and information bindings",
+      "locator": "https://github.com/ml-explore/mlx/blob/36969c094354086e15d2a327a9c50feb20b9cf11/python/src/device.cpp",
+      "read_state": "already_read",
+      "review_depth": "synthesized",
+      "source_kind": "source-code",
+      "owner": "Apple MLX",
+      "topics": [
+        "mlx",
+        "devices",
+        "runtime",
+        "portability"
+      ],
+      "snapshot": "36969c094354086e15d2a327a9c50feb20b9cf11"
+    },
+    {
+      "id": "source:mlx-0324-distributed-bindings",
+      "kind": "source",
+      "source_id": "mlx-0324-distributed-bindings",
+      "label": "MLX 0.32.4 strict distributed initialization binding",
+      "locator": "https://github.com/ml-explore/mlx/blob/36969c094354086e15d2a327a9c50feb20b9cf11/python/src/distributed.cpp",
+      "read_state": "already_read",
+      "review_depth": "synthesized",
+      "source_kind": "source-code",
+      "owner": "Apple MLX",
+      "topics": [
+        "mlx",
+        "distributed",
+        "jaccl",
+        "capability-checks"
+      ],
+      "snapshot": "36969c094354086e15d2a327a9c50feb20b9cf11"
+    },
+    {
+      "id": "source:mlx-0324-distributed-guide",
+      "kind": "source",
+      "source_id": "mlx-0324-distributed-guide",
+      "label": "MLX 0.32.4 distributed runtime and JACCL guide",
+      "locator": "https://github.com/ml-explore/mlx/blob/36969c094354086e15d2a327a9c50feb20b9cf11/docs/src/usage/distributed.rst",
+      "read_state": "already_read",
+      "review_depth": "synthesized",
+      "source_kind": "official-doc",
+      "owner": "Apple MLX",
+      "topics": [
+        "mlx",
+        "distributed",
+        "jaccl",
+        "rdma",
+        "thunderbolt",
+        "runtime"
+      ],
+      "snapshot": "36969c094354086e15d2a327a9c50feb20b9cf11"
+    },
+    {
+      "id": "source:mlx-0324-fast-bindings",
+      "kind": "source",
+      "source_id": "mlx-0324-fast-bindings",
+      "label": "MLX 0.32.4 fast-operation Python bindings",
+      "locator": "https://github.com/ml-explore/mlx/blob/36969c094354086e15d2a327a9c50feb20b9cf11/python/src/fast.cpp",
+      "read_state": "already_read",
+      "review_depth": "synthesized",
+      "source_kind": "source-code",
+      "owner": "Apple MLX",
+      "topics": [
+        "mlx",
+        "attention",
+        "gated-delta",
+        "metal",
+        "custom-kernels"
+      ],
+      "snapshot": "36969c094354086e15d2a327a9c50feb20b9cf11"
+    },
+    {
+      "id": "source:mlx-0324-fft-bindings",
+      "kind": "source",
+      "source_id": "mlx-0324-fft-bindings",
+      "label": "MLX 0.32.4 STFT and inverse STFT bindings",
+      "locator": "https://github.com/ml-explore/mlx/blob/36969c094354086e15d2a327a9c50feb20b9cf11/python/src/fft.cpp",
+      "read_state": "already_read",
+      "review_depth": "synthesized",
+      "source_kind": "source-code",
+      "owner": "Apple MLX",
+      "topics": [
+        "mlx",
+        "stft",
+        "istft",
+        "audio",
+        "spectral"
+      ],
+      "snapshot": "36969c094354086e15d2a327a9c50feb20b9cf11"
+    },
+    {
+      "id": "source:mlx-0324-gated-delta-implementation",
+      "kind": "source",
+      "source_id": "mlx-0324-gated-delta-implementation",
+      "label": "MLX 0.32.4 gated-delta implementation and VJP",
+      "locator": "https://github.com/ml-explore/mlx/blob/36969c094354086e15d2a327a9c50feb20b9cf11/mlx/fast.cpp",
+      "read_state": "already_read",
+      "review_depth": "synthesized",
+      "source_kind": "source-code",
+      "owner": "Apple MLX",
+      "topics": [
+        "mlx",
+        "gated-delta",
+        "recurrent-state",
+        "autodiff"
+      ],
+      "snapshot": "36969c094354086e15d2a327a9c50feb20b9cf11"
+    },
+    {
+      "id": "source:mlx-0324-gated-delta-tests",
+      "kind": "source",
+      "source_id": "mlx-0324-gated-delta-tests",
+      "label": "MLX 0.32.4 gated-delta oracle and gradient tests",
+      "locator": "https://github.com/ml-explore/mlx/blob/36969c094354086e15d2a327a9c50feb20b9cf11/python/tests/test_fast_gated_delta.py",
+      "read_state": "already_read",
+      "review_depth": "synthesized",
+      "source_kind": "source-code",
+      "owner": "Apple MLX",
+      "topics": [
+        "mlx",
+        "gated-delta",
+        "parity",
+        "autodiff"
+      ],
+      "snapshot": "36969c094354086e15d2a327a9c50feb20b9cf11"
+    },
+    {
+      "id": "source:mlx-0324-interop-guide",
+      "kind": "source",
+      "source_id": "mlx-0324-interop-guide",
+      "label": "MLX 0.32.4 NumPy and Metal DLPack interoperability guide",
+      "locator": "https://github.com/ml-explore/mlx/blob/36969c094354086e15d2a327a9c50feb20b9cf11/docs/src/usage/numpy.rst",
+      "read_state": "already_read",
+      "review_depth": "synthesized",
+      "source_kind": "official-doc",
+      "owner": "Apple MLX",
+      "topics": [
+        "mlx",
+        "dlpack",
+        "pytorch",
+        "mps",
+        "numpy",
+        "synchronization"
+      ],
+      "snapshot": "36969c094354086e15d2a327a9c50feb20b9cf11"
+    },
+    {
+      "id": "source:mlx-0324-kernel-guide",
+      "kind": "source",
+      "source_id": "mlx-0324-kernel-guide",
+      "label": "MLX 0.32.4 custom Metal kernel guide",
+      "locator": "https://github.com/ml-explore/mlx/blob/36969c094354086e15d2a327a9c50feb20b9cf11/docs/src/dev/custom_metal_kernels.rst",
+      "read_state": "already_read",
+      "review_depth": "synthesized",
+      "source_kind": "official-doc",
+      "owner": "Apple MLX",
+      "topics": [
+        "mlx",
+        "metal",
+        "custom-kernels",
+        "strides",
+        "math-mode"
+      ],
+      "snapshot": "36969c094354086e15d2a327a9c50feb20b9cf11"
+    },
+    {
+      "id": "source:mlx-0324-memory-bindings",
+      "kind": "source",
+      "source_id": "mlx-0324-memory-bindings",
+      "label": "MLX 0.32.4 memory accounting bindings",
+      "locator": "https://github.com/ml-explore/mlx/blob/36969c094354086e15d2a327a9c50feb20b9cf11/python/src/memory.cpp",
+      "read_state": "already_read",
+      "review_depth": "synthesized",
+      "source_kind": "source-code",
+      "owner": "Apple MLX",
+      "topics": [
+        "mlx",
+        "memory",
+        "benchmarking",
+        "allocation"
+      ],
+      "snapshot": "36969c094354086e15d2a327a9c50feb20b9cf11"
+    },
+    {
+      "id": "source:mlx-0324-metal-bindings",
+      "kind": "source",
+      "source_id": "mlx-0324-metal-bindings",
+      "label": "MLX 0.32.4 Metal bindings and deprecated memory aliases",
+      "locator": "https://github.com/ml-explore/mlx/blob/36969c094354086e15d2a327a9c50feb20b9cf11/python/src/metal.cpp",
+      "read_state": "already_read",
+      "review_depth": "synthesized",
+      "source_kind": "source-code",
+      "owner": "Apple MLX",
+      "topics": [
+        "mlx",
+        "metal",
+        "memory",
+        "deprecation"
+      ],
+      "snapshot": "36969c094354086e15d2a327a9c50feb20b9cf11"
+    },
+    {
+      "id": "source:mlx-0324-nax-device",
+      "kind": "source",
+      "source_id": "mlx-0324-nax-device",
+      "label": "MLX 0.32.4 Metal NAX device and build gate",
+      "locator": "https://github.com/ml-explore/mlx/blob/36969c094354086e15d2a327a9c50feb20b9cf11/mlx/backend/metal/device.cpp",
+      "read_state": "already_read",
+      "review_depth": "synthesized",
+      "source_kind": "source-code",
+      "owner": "Apple MLX",
+      "topics": [
+        "mlx",
+        "metal",
+        "m5",
+        "nax",
+        "runtime"
+      ],
+      "snapshot": "36969c094354086e15d2a327a9c50feb20b9cf11"
+    },
+    {
+      "id": "source:mlx-0324-precision-guide",
+      "kind": "source",
+      "source_id": "mlx-0324-precision-guide",
+      "label": "MLX 0.32.4 numerical precision guide",
+      "locator": "https://github.com/ml-explore/mlx/blob/36969c094354086e15d2a327a9c50feb20b9cf11/docs/src/usage/precision.rst",
+      "read_state": "already_read",
+      "review_depth": "synthesized",
+      "source_kind": "official-doc",
+      "owner": "Apple MLX",
+      "topics": [
+        "mlx",
+        "precision",
+        "float32",
+        "tf32",
+        "winograd",
+        "parity"
+      ],
+      "snapshot": "36969c094354086e15d2a327a9c50feb20b9cf11"
+    },
+    {
+      "id": "source:mlx-0324-quantization-bindings",
+      "kind": "source",
+      "source_id": "mlx-0324-quantization-bindings",
+      "label": "MLX 0.32.4 quantization and QQMM API contracts",
+      "locator": "https://github.com/ml-explore/mlx/blob/36969c094354086e15d2a327a9c50feb20b9cf11/python/src/ops.cpp",
+      "read_state": "already_read",
+      "review_depth": "synthesized",
+      "source_kind": "source-code",
+      "owner": "Apple MLX",
+      "topics": [
+        "mlx",
+        "quantization",
+        "mxfp4",
+        "mxfp8",
+        "nvfp4",
+        "qqmm"
+      ],
+      "snapshot": "36969c094354086e15d2a327a9c50feb20b9cf11"
+    },
+    {
+      "id": "source:mlx-0324-quantized-layers",
+      "kind": "source",
+      "source_id": "mlx-0324-quantized-layers",
+      "label": "MLX 0.32.4 quantized module implementation",
+      "locator": "https://github.com/ml-explore/mlx/blob/36969c094354086e15d2a327a9c50feb20b9cf11/python/mlx/nn/layers/quantized.py",
+      "read_state": "already_read",
+      "review_depth": "synthesized",
+      "source_kind": "source-code",
+      "owner": "Apple MLX",
+      "topics": [
+        "mlx",
+        "quantization",
+        "linear",
+        "embedding",
+        "training"
+      ],
+      "snapshot": "36969c094354086e15d2a327a9c50feb20b9cf11"
     },
     {
       "id": "source:mlx-audio-codecs",
@@ -6031,6 +6597,23 @@
         "quantized-matmul"
       ],
       "snapshot": "v0.32.0"
+    },
+    {
+      "id": "source:mlx-release-0324",
+      "kind": "source",
+      "source_id": "mlx-release-0324",
+      "label": "MLX 0.32.4 release",
+      "locator": "https://github.com/ml-explore/mlx/releases/tag/v0.32.4",
+      "read_state": "already_read",
+      "review_depth": "synthesized",
+      "source_kind": "release",
+      "owner": "Apple MLX",
+      "topics": [
+        "mlx",
+        "release",
+        "runtime"
+      ],
+      "snapshot": "36969c094354086e15d2a327a9c50feb20b9cf11"
     },
     {
       "id": "source:mlx-repo",
@@ -9174,6 +9757,27 @@
       "immutable_locator": ""
     },
     {
+      "id": "source:paper-2411-05007",
+      "kind": "source",
+      "source_id": "paper-2411-05007",
+      "label": "SVDQuant: Absorbing Outliers by Low-Rank Components for 4-Bit Diffusion Models",
+      "locator": "https://arxiv.org/abs/2411.05007",
+      "read_state": "already_read",
+      "review_depth": "synthesized",
+      "source_kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "diffusion",
+        "quantization",
+        "low-rank",
+        "kernel-fusion"
+      ],
+      "snapshot": "2411.05007v4",
+      "paper_id": "2411.05007",
+      "revision": "v4",
+      "immutable_locator": "https://arxiv.org/abs/2411.05007v4"
+    },
+    {
       "id": "source:paper-2411-18803",
       "kind": "source",
       "source_id": "paper-2411-18803",
@@ -9191,6 +9795,26 @@
       "paper_id": "2411.18803",
       "revision": "",
       "immutable_locator": ""
+    },
+    {
+      "id": "source:paper-2411-19108",
+      "kind": "source",
+      "source_id": "paper-2411-19108",
+      "label": "Timestep Embedding Tells: It's Time to Cache for Video Diffusion Model",
+      "locator": "https://arxiv.org/abs/2411.19108",
+      "read_state": "already_read",
+      "review_depth": "synthesized",
+      "source_kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "diffusion",
+        "timestep-cache",
+        "approximation"
+      ],
+      "snapshot": "2411.19108v2",
+      "paper_id": "2411.19108",
+      "revision": "v2",
+      "immutable_locator": "https://arxiv.org/abs/2411.19108v2"
     },
     {
       "id": "source:paper-2411-19842",
@@ -9483,6 +10107,26 @@
       "immutable_locator": ""
     },
     {
+      "id": "source:paper-2503-01840",
+      "kind": "source",
+      "source_id": "paper-2503-01840",
+      "label": "EAGLE-3: Scaling up Inference Acceleration of Large Language Models via Training-Time Test",
+      "locator": "https://arxiv.org/abs/2503.01840",
+      "read_state": "already_read",
+      "review_depth": "synthesized",
+      "source_kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "eagle3",
+        "speculative-decoding",
+        "target-features"
+      ],
+      "snapshot": "2503.01840v3",
+      "paper_id": "2503.01840",
+      "revision": "v3",
+      "immutable_locator": "https://arxiv.org/abs/2503.01840v3"
+    },
+    {
       "id": "source:paper-2503-14376",
       "kind": "source",
       "source_id": "paper-2503-14376",
@@ -9600,22 +10244,21 @@
       "id": "source:paper-2504-19874",
       "kind": "source",
       "source_id": "paper-2504-19874",
-      "label": "TurboQuant: Ultra-Efficient and Accurate KV Cache Quantization for Long Context LLM Inference",
+      "label": "TurboQuant: Online Vector Quantization with Near-optimal Distortion Rate",
       "locator": "https://arxiv.org/abs/2504.19874",
       "read_state": "already_read",
-      "review_depth": "screened",
+      "review_depth": "synthesized",
       "source_kind": "paper",
       "owner": "authors",
       "topics": [
         "kv-cache",
         "quantization",
-        "long-context",
-        "mlx-vlm"
+        "long-context"
       ],
-      "snapshot": "2504.19874",
+      "snapshot": "2504.19874v1",
       "paper_id": "2504.19874",
-      "revision": "",
-      "immutable_locator": ""
+      "revision": "v1",
+      "immutable_locator": "https://arxiv.org/abs/2504.19874v1"
     },
     {
       "id": "source:paper-2505-03745",
@@ -10291,6 +10934,26 @@
       "immutable_locator": ""
     },
     {
+      "id": "source:paper-2602-19128",
+      "kind": "source",
+      "source_id": "paper-2602-19128",
+      "label": "K-Search: LLM Kernel Generation via Co-Evolving Intrinsic World Model",
+      "locator": "https://arxiv.org/abs/2602.19128",
+      "read_state": "already_read",
+      "review_depth": "synthesized",
+      "source_kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "kernel-search",
+        "optimization",
+        "hypothesis-led-learning"
+      ],
+      "snapshot": "2602.19128v2",
+      "paper_id": "2602.19128",
+      "revision": "v2",
+      "immutable_locator": "https://arxiv.org/abs/2602.19128v2"
+    },
+    {
       "id": "source:paper-2602-23200",
       "kind": "source",
       "source_id": "paper-2602-23200",
@@ -10445,6 +11108,27 @@
       "immutable_locator": ""
     },
     {
+      "id": "source:paper-2604-18556",
+      "kind": "source",
+      "source_id": "paper-2604-18556",
+      "label": "GSQ: Highly-Accurate Low-Precision Scalar Quantization for LLMs via Gumbel-Softmax Sampling",
+      "locator": "https://arxiv.org/abs/2604.18556",
+      "read_state": "already_read",
+      "review_depth": "synthesized",
+      "source_kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "weight-quantization",
+        "mixed-precision",
+        "calibration",
+        "conversion"
+      ],
+      "snapshot": "2604.18556v2",
+      "paper_id": "2604.18556",
+      "revision": "v2",
+      "immutable_locator": "https://arxiv.org/abs/2604.18556v2"
+    },
+    {
       "id": "source:paper-2604-19157",
       "kind": "source",
       "source_id": "paper-2604-19157",
@@ -10500,6 +11184,27 @@
       "paper_id": "2605.18226",
       "revision": "",
       "immutable_locator": ""
+    },
+    {
+      "id": "source:paper-2605-22791",
+      "kind": "source",
+      "source_id": "paper-2605-22791",
+      "label": "Gated DeltaNet-2: Decoupling Erase and Write in Linear Attention",
+      "locator": "https://arxiv.org/abs/2605.22791",
+      "read_state": "already_read",
+      "review_depth": "synthesized",
+      "source_kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "hybrid",
+        "linear-attention",
+        "gated-deltanet",
+        "recurrent-state"
+      ],
+      "snapshot": "2605.22791v1",
+      "paper_id": "2605.22791",
+      "revision": "v1",
+      "immutable_locator": "https://arxiv.org/abs/2605.22791v1"
     },
     {
       "id": "source:paper-2605-30852",
@@ -10639,6 +11344,71 @@
       "immutable_locator": "https://arxiv.org/abs/2607.12550v1"
     },
     {
+      "id": "source:paper-2610-12970",
+      "kind": "source",
+      "source_id": "paper-2610-12970",
+      "label": "Minions: A Dynamic and Distributed Virtual GPU Cloud Built on Idle Apple Silicon Devices",
+      "locator": "https://arxiv.org/abs/2610.12970",
+      "read_state": "already_read",
+      "review_depth": "synthesized",
+      "source_kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "distributed",
+        "apple-silicon",
+        "task-scheduling"
+      ],
+      "snapshot": "2610.12970v1",
+      "paper_id": "2610.12970",
+      "revision": "v1",
+      "immutable_locator": "https://arxiv.org/abs/2610.12970v1"
+    },
+    {
+      "id": "source:paper-2610-31479",
+      "kind": "source",
+      "source_id": "paper-2610-31479",
+      "label": "Evaluating the Applicability of LLM Inference Optimizations on Apple Silicon",
+      "locator": "https://arxiv.org/abs/2610.31479",
+      "read_state": "already_read",
+      "review_depth": "synthesized",
+      "source_kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "apple-silicon",
+        "benchmarking",
+        "kv-cache",
+        "speculative-decoding",
+        "moe",
+        "kernel-portability"
+      ],
+      "snapshot": "2610.31479v1",
+      "paper_id": "2610.31479",
+      "revision": "v1",
+      "immutable_locator": "https://arxiv.org/abs/2610.31479v1"
+    },
+    {
+      "id": "source:paper-2610-33076",
+      "kind": "source",
+      "source_id": "paper-2610-33076",
+      "label": "Double KV Cache Optimization on Apple Silicon: Block-FP4, Radial Quantization, and Fused Metal Kernels",
+      "locator": "https://arxiv.org/abs/2610.33076",
+      "read_state": "already_read",
+      "review_depth": "synthesized",
+      "source_kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "kv-cache",
+        "quantization",
+        "long-context",
+        "memory",
+        "metal"
+      ],
+      "snapshot": "2610.33076v1",
+      "paper_id": "2610.33076",
+      "revision": "v1",
+      "immutable_locator": "https://arxiv.org/abs/2610.33076v1"
+    },
+    {
       "id": "source:prompt-lookup-decoding-repo",
       "kind": "source",
       "source_id": "prompt-lookup-decoding-repo",
@@ -10743,6 +11513,24 @@
         "operators"
       ],
       "snapshot": ""
+    },
+    {
+      "id": "source:qwen3-next-architecture-2025-09-10",
+      "kind": "source",
+      "source_id": "qwen3-next-architecture-2025-09-10",
+      "label": "Qwen3-Next: Towards Ultimate Training & Inference Efficiency",
+      "locator": "https://qwen.ai/blog?id=qwen3-next",
+      "read_state": "already_read",
+      "review_depth": "synthesized",
+      "source_kind": "technical-blog",
+      "owner": "Qwen Team",
+      "topics": [
+        "hybrid",
+        "linear-attention",
+        "gated-deltanet",
+        "moe"
+      ],
+      "snapshot": "2025-09-10"
     },
     {
       "id": "source:repo-audiocraft",
@@ -11073,6 +11861,25 @@
       "snapshot": "2026-06-24"
     },
     {
+      "id": "source:transformers-deepseek-v4-reference-2026-11",
+      "kind": "source",
+      "source_id": "transformers-deepseek-v4-reference-2026-11",
+      "label": "Transformers DeepSeek-V4 reference architecture and cache documentation",
+      "locator": "https://huggingface.co/docs/transformers/model_doc/deepseek_v4",
+      "read_state": "already_read",
+      "review_depth": "synthesized",
+      "source_kind": "official-doc",
+      "owner": "Hugging Face Transformers",
+      "topics": [
+        "deepseek-v4",
+        "compressed-attention",
+        "kv-cache",
+        "moe",
+        "routing"
+      ],
+      "snapshot": "2026-11-05"
+    },
+    {
       "id": "source:tristanbilot-mlx-benchmark-repo",
       "kind": "source",
       "source_id": "tristanbilot-mlx-benchmark-repo",
@@ -11199,6 +12006,27 @@
       "snapshot": "a48c86c1a41900f7d26658471b5f67e5fdd35445"
     },
     {
+      "id": "source:vllm-mlx-paper-v2-2026-01-29",
+      "kind": "source",
+      "source_id": "vllm-mlx-paper-v2-2026-01-29",
+      "label": "Native LLM and MLLM Inference at Scale on Apple Silicon",
+      "locator": "https://arxiv.org/abs/2601.19139",
+      "read_state": "already_read",
+      "review_depth": "synthesized",
+      "source_kind": "paper",
+      "owner": "authors",
+      "topics": [
+        "serving",
+        "continuous-batching",
+        "prefix-cache",
+        "multimodal"
+      ],
+      "snapshot": "2601.19139v2",
+      "paper_id": "2601.19139",
+      "revision": "v2",
+      "immutable_locator": "https://arxiv.org/abs/2601.19139v2"
+    },
+    {
       "id": "source:vllm-mlx-repo",
       "kind": "source",
       "source_id": "vllm-mlx-repo",
@@ -11233,6 +12061,24 @@
         "serving"
       ],
       "snapshot": "a48c86c1a41900f7d26658471b5f67e5fdd35445"
+    },
+    {
+      "id": "source:vllm-turboquant-evaluation-2026-05-11",
+      "kind": "source",
+      "source_id": "vllm-turboquant-evaluation-2026-05-11",
+      "label": "A First Comprehensive Study of TurboQuant: Accuracy and Performance",
+      "locator": "https://vllm-project.github.io/2026/05/11/turboquant.html",
+      "read_state": "already_read",
+      "review_depth": "synthesized",
+      "source_kind": "technical-blog",
+      "owner": "vLLM / Red Hat AI",
+      "topics": [
+        "kv-cache",
+        "quantization",
+        "long-context",
+        "benchmarking"
+      ],
+      "snapshot": "2026-05-11"
     }
   ],
   "edges": [
@@ -11254,6 +12100,21 @@
     },
     {
       "source": "candidate:paper:a-jolt-for-the-kv-cache-near-lossless-kv-cache-compression-via-joint-tucker-and-jl-residual-allocation-for-llms",
+      "target": "approach:compressed-kv-direct-attention",
+      "relation": "candidate_relevant_to",
+      "score": 7,
+      "matched_terms": [
+        "cache",
+        "context",
+        "existing",
+        "long",
+        "memory",
+        "throughput",
+        "transformer"
+      ]
+    },
+    {
+      "source": "candidate:paper:a-jolt-for-the-kv-cache-near-lossless-kv-cache-compression-via-joint-tucker-and-jl-residual-allocation-for-llms",
       "target": "approach:native-low-bit-weight-quantization",
       "relation": "candidate_relevant_to",
       "score": 7,
@@ -11265,21 +12126,6 @@
         "size",
         "throughput",
         "transformer"
-      ]
-    },
-    {
-      "source": "candidate:paper:a-jolt-for-the-kv-cache-near-lossless-kv-cache-compression-via-joint-tucker-and-jl-residual-allocation-for-llms",
-      "target": "outcome:qwen25-05b-instruct-local-worked-port",
-      "relation": "candidate_relevant_to",
-      "score": 7,
-      "matched_terms": [
-        "cache",
-        "cross",
-        "rather",
-        "tensor",
-        "than",
-        "token",
-        "tokens"
       ]
     },
     {
@@ -11307,18 +12153,6 @@
     },
     {
       "source": "candidate:paper:affectcodec-emotion-preserving-neural-speech-codec-with-block-diagonal-residual-fsq",
-      "target": "approach:block-weight-streaming",
-      "relation": "candidate_relevant_to",
-      "score": 4,
-      "matched_terms": [
-        "block",
-        "language",
-        "stream",
-        "streaming"
-      ]
-    },
-    {
-      "source": "candidate:paper:affectcodec-emotion-preserving-neural-speech-codec-with-block-diagonal-residual-fsq",
       "target": "approach:native-low-bit-weight-quantization",
       "relation": "candidate_relevant_to",
       "score": 5,
@@ -11331,14 +12165,16 @@
       ]
     },
     {
-      "source": "candidate:paper:attention-based-on-device-streaming-speech-recognition-with-large-speech-corpus",
-      "target": "approach:adaptive-kv-quantization",
+      "source": "candidate:paper:affectcodec-emotion-preserving-neural-speech-codec-with-block-diagonal-residual-fsq",
+      "target": "approach:native-spectral-transforms",
       "relation": "candidate_relevant_to",
-      "score": 3,
+      "score": 5,
       "matched_terms": [
-        "bit",
-        "memory",
-        "quantization"
+        "audio",
+        "codec",
+        "neural",
+        "speech",
+        "streaming"
       ]
     },
     {
@@ -11352,6 +12188,18 @@
         "memory",
         "quantization",
         "size"
+      ]
+    },
+    {
+      "source": "candidate:paper:attention-based-on-device-streaming-speech-recognition-with-large-speech-corpus",
+      "target": "approach:native-spectral-transforms",
+      "relation": "candidate_relevant_to",
+      "score": 4,
+      "matched_terms": [
+        "automatic",
+        "recognition",
+        "speech",
+        "streaming"
       ]
     },
     {
@@ -11381,6 +12229,20 @@
     },
     {
       "source": "candidate:paper:augcodec-a-low-bitrate-disentangled-neural-speech-codec-via-data-augmentation",
+      "target": "approach:native-spectral-transforms",
+      "relation": "candidate_relevant_to",
+      "score": 6,
+      "matched_terms": [
+        "audio",
+        "codec",
+        "neural",
+        "speech",
+        "streaming",
+        "transform"
+      ]
+    },
+    {
+      "source": "candidate:paper:augcodec-a-low-bitrate-disentangled-neural-speech-codec-via-data-augmentation",
       "target": "outcome:audio-tts-qwen3-and-vocoder-routes",
       "relation": "candidate_relevant_to",
       "score": 5,
@@ -11390,19 +12252,6 @@
         "each",
         "rate",
         "speaker"
-      ]
-    },
-    {
-      "source": "candidate:paper:augcodec-a-low-bitrate-disentangled-neural-speech-codec-via-data-augmentation",
-      "target": "outcome:qwen25-05b-instruct-local-worked-port",
-      "relation": "candidate_relevant_to",
-      "score": 5,
-      "matched_terms": [
-        "conversion",
-        "embeddings",
-        "target",
-        "token",
-        "tokens"
       ]
     },
     {
@@ -11460,6 +12309,20 @@
     },
     {
       "source": "candidate:paper:eliteformer-an-efficient-transformer-for-fpgas",
+      "target": "approach:compressed-kv-direct-attention",
+      "relation": "candidate_relevant_to",
+      "score": 6,
+      "matched_terms": [
+        "attention",
+        "cache",
+        "context",
+        "long",
+        "memory",
+        "transformer"
+      ]
+    },
+    {
+      "source": "candidate:paper:eliteformer-an-efficient-transformer-for-fpgas",
       "target": "approach:native-low-bit-weight-quantization",
       "relation": "candidate_relevant_to",
       "score": 7,
@@ -11471,20 +12334,6 @@
         "quantization",
         "transformer",
         "weight"
-      ]
-    },
-    {
-      "source": "candidate:paper:eliteformer-an-efficient-transformer-for-fpgas",
-      "target": "approach:uniform-kv-quantization",
-      "relation": "candidate_relevant_to",
-      "score": 6,
-      "matched_terms": [
-        "cache",
-        "context",
-        "long",
-        "memory",
-        "quantization",
-        "transformer"
       ]
     },
     {
@@ -11519,28 +12368,29 @@
     },
     {
       "source": "candidate:paper:flashlabs-chroma-1-0-a-real-time-end-to-end-spoken-dialogue-model-with-personalized-voice-cloning",
-      "target": "outcome:audio-tts-qwen3-and-vocoder-routes",
+      "target": "approach:native-spectral-transforms",
       "relation": "candidate_relevant_to",
-      "score": 7,
+      "score": 8,
       "matched_terms": [
         "audio",
         "codec",
-        "generation",
+        "first",
         "latency",
+        "neural",
         "quality",
-        "speaker",
-        "text"
+        "speech",
+        "streaming"
       ]
     },
     {
       "source": "candidate:paper:flexicodec-a-dynamic-neural-audio-codec-for-low-frame-rates",
-      "target": "learning:audio-flow-tts-duration-vocoder-gates",
+      "target": "approach:native-spectral-transforms",
       "relation": "candidate_relevant_to",
       "score": 5,
       "matched_terms": [
         "audio",
         "codec",
-        "length",
+        "neural",
         "speech",
         "streaming"
       ]
@@ -11646,14 +12496,31 @@
     },
     {
       "source": "candidate:paper:hybridcodec-fast-dual-stream-semantically-enhanced-neural-audio-codec",
-      "target": "backlog:graph-geometric-scientific",
+      "target": "approach:native-spectral-transforms",
       "relation": "candidate_relevant_to",
-      "score": 4,
+      "score": 7,
       "matched_terms": [
-        "architectures",
+        "audio",
+        "codec",
         "first",
         "has",
-        "one"
+        "neural",
+        "speech",
+        "streaming"
+      ]
+    },
+    {
+      "source": "candidate:paper:kernelcraft-benchmarking-for-agentic-close-to-metal-kernel-generation-on-emerging-hardware",
+      "target": "approach:hardware-aware-kernel-search",
+      "relation": "candidate_relevant_to",
+      "score": 6,
+      "matched_terms": [
+        "generate",
+        "hardware",
+        "kernel",
+        "kernels",
+        "metal",
+        "time"
       ]
     },
     {
@@ -11669,20 +12536,6 @@
         "first",
         "has",
         "time"
-      ]
-    },
-    {
-      "source": "candidate:paper:kernelcraft-benchmarking-for-agentic-close-to-metal-kernel-generation-on-emerging-hardware",
-      "target": "learning:grid-sample-spatial-kernel",
-      "relation": "candidate_relevant_to",
-      "score": 6,
-      "matched_terms": [
-        "benchmark",
-        "custom",
-        "kernel",
-        "kernels",
-        "level",
-        "metal"
       ]
     },
     {
@@ -11832,12 +12685,12 @@
     },
     {
       "source": "candidate:paper:native-llm-and-mllm-inference-at-scale-on-apple-silicon",
-      "target": "source:paper-2601-19139",
+      "target": "source:vllm-mlx-paper-v2-2026-01-29",
       "relation": "candidate_version_of",
       "revision_comparison": {
-        "before": null,
+        "before": "v2",
         "after": "v2",
-        "status": "comparison_unpinned",
+        "status": "same",
         "basis": "source_registry"
       }
     },
@@ -11859,15 +12712,15 @@
     },
     {
       "source": "candidate:paper:pm-kvq-progressive-mixed-precision-kv-cache-quantization-for-long-cot-llms",
-      "target": "approach:uniform-kv-quantization",
+      "target": "approach:compressed-kv-direct-attention",
       "relation": "candidate_relevant_to",
       "score": 5,
       "matched_terms": [
         "cache",
         "context",
+        "existing",
         "long",
-        "memory",
-        "quantization"
+        "memory"
       ]
     },
     {
@@ -11910,14 +12763,15 @@
     },
     {
       "source": "candidate:paper:probing-neural-audio-codecs-for-distinctions-among-english-nuclear-tunes",
-      "target": "approach:native-low-bit-weight-quantization",
+      "target": "approach:native-spectral-transforms",
       "relation": "candidate_relevant_to",
-      "score": 4,
+      "score": 5,
       "matched_terms": [
         "audio",
-        "linear",
-        "transformer",
-        "use"
+        "codec",
+        "neural",
+        "speech",
+        "streaming"
       ]
     },
     {
@@ -11983,13 +12837,15 @@
     },
     {
       "source": "candidate:paper:pushing-the-limits-of-on-device-streaming-asr-a-compact-high-accuracy-english-model-for-low-latency-inference",
-      "target": "approach:audio-streaming-and-cache",
+      "target": "approach:native-spectral-transforms",
       "relation": "candidate_relevant_to",
-      "score": 5,
+      "score": 7,
       "matched_terms": [
-        "chunked",
+        "automatic",
+        "decoder",
         "latency",
         "quality",
+        "recognition",
         "speech",
         "streaming"
       ]
@@ -12059,13 +12915,14 @@
     },
     {
       "source": "candidate:paper:quantization-for-openai-s-whisper-models-a-comparative-analysis",
-      "target": "backlog:graph-geometric-scientific",
+      "target": "approach:native-spectral-transforms",
       "relation": "candidate_relevant_to",
-      "score": 3,
+      "score": 4,
       "matched_terms": [
-        "offline",
-        "one",
-        "such"
+        "latency",
+        "recognition",
+        "speech",
+        "streaming"
       ]
     },
     {
@@ -12170,18 +13027,6 @@
     },
     {
       "source": "candidate:paper:streamvoiceanon-emotion-preserving-streaming-speaker-anonymization-via-frame-level-acoustic-distillation",
-      "target": "approach:audio-reference-conditioning-cache",
-      "relation": "candidate_relevant_to",
-      "score": 4,
-      "matched_terms": [
-        "audio",
-        "codec",
-        "latency",
-        "speaker"
-      ]
-    },
-    {
-      "source": "candidate:paper:streamvoiceanon-emotion-preserving-streaming-speaker-anonymization-via-frame-level-acoustic-distillation",
       "target": "approach:audio-streaming-and-cache",
       "relation": "candidate_relevant_to",
       "score": 5,
@@ -12189,6 +13034,20 @@
         "audio",
         "codec",
         "latency",
+        "speech",
+        "streaming"
+      ]
+    },
+    {
+      "source": "candidate:paper:streamvoiceanon-emotion-preserving-streaming-speaker-anonymization-via-frame-level-acoustic-distillation",
+      "target": "approach:native-spectral-transforms",
+      "relation": "candidate_relevant_to",
+      "score": 6,
+      "matched_terms": [
+        "audio",
+        "codec",
+        "latency",
+        "neural",
         "speech",
         "streaming"
       ]
@@ -12222,15 +13081,18 @@
     },
     {
       "source": "candidate:paper:what-to-keep-what-to-forget-a-rate-distortion-view-of-memory-compaction-in-llms-and-agents",
-      "target": "approach:prompt-prefix-cache",
+      "target": "approach:kv-cache-pruning",
       "relation": "candidate_relevant_to",
-      "score": 5,
+      "score": 9,
       "matched_terms": [
-        "agents",
+        "attention",
         "cache",
-        "language",
-        "quantization",
-        "state"
+        "context",
+        "keep",
+        "long",
+        "memory",
+        "prune",
+        "recurrent"
       ]
     },
     {
@@ -13835,8 +14697,18 @@
       "relation": "contributor_in_refresh"
     },
     {
+      "source": "source:apple-metal-tensors-wwdc26",
+      "target": "approach:metal-nax-matmul",
+      "relation": "evidence_for"
+    },
+    {
       "source": "source:apple-mlx-m5-blog",
       "target": "approach:lazy-eval-boundaries",
+      "relation": "evidence_for"
+    },
+    {
+      "source": "source:apple-mlx-m5-blog",
+      "target": "approach:metal-nax-matmul",
       "relation": "evidence_for"
     },
     {
@@ -13847,6 +14719,16 @@
     {
       "source": "source:apple-wwdc25-mlx",
       "target": "approach:lazy-eval-boundaries",
+      "relation": "evidence_for"
+    },
+    {
+      "source": "source:bair-k-search-mlx-2026-07-29",
+      "target": "approach:hardware-aware-kernel-search",
+      "relation": "evidence_for"
+    },
+    {
+      "source": "source:dflash-paper-v2-2026-05-28",
+      "target": "approach:eagle-medusa-mtp-drafters",
       "relation": "evidence_for"
     },
     {
@@ -13902,6 +14784,36 @@
     {
       "source": "source:llava-onevision-blog",
       "target": "approach:visual-token-pruning-or-merge",
+      "relation": "evidence_for"
+    },
+    {
+      "source": "source:mlx-0324-fast-bindings",
+      "target": "approach:native-gated-delta-update",
+      "relation": "evidence_for"
+    },
+    {
+      "source": "source:mlx-0324-fft-bindings",
+      "target": "approach:native-spectral-transforms",
+      "relation": "evidence_for"
+    },
+    {
+      "source": "source:mlx-0324-gated-delta-implementation",
+      "target": "approach:native-gated-delta-update",
+      "relation": "evidence_for"
+    },
+    {
+      "source": "source:mlx-0324-gated-delta-tests",
+      "target": "approach:native-gated-delta-update",
+      "relation": "evidence_for"
+    },
+    {
+      "source": "source:mlx-0324-nax-device",
+      "target": "approach:metal-nax-matmul",
+      "relation": "evidence_for"
+    },
+    {
+      "source": "source:mlx-0324-quantization-bindings",
+      "target": "approach:native-low-bit-weight-quantization",
       "relation": "evidence_for"
     },
     {
@@ -14350,6 +15262,21 @@
       "relation": "evidence_for"
     },
     {
+      "source": "source:paper-2503-01840",
+      "target": "approach:eagle-medusa-mtp-drafters",
+      "relation": "evidence_for"
+    },
+    {
+      "source": "source:paper-2504-19874",
+      "target": "approach:adaptive-kv-quantization",
+      "relation": "evidence_for"
+    },
+    {
+      "source": "source:paper-2504-19874",
+      "target": "approach:compressed-kv-direct-attention",
+      "relation": "evidence_for"
+    },
+    {
       "source": "source:paper-2505-15380",
       "target": "approach:audio-streaming-and-cache",
       "relation": "evidence_for"
@@ -14400,6 +15327,11 @@
       "relation": "evidence_for_outcome"
     },
     {
+      "source": "source:paper-2602-19128",
+      "target": "approach:hardware-aware-kernel-search",
+      "relation": "evidence_for"
+    },
+    {
       "source": "source:paper-2602-23200",
       "target": "approach:adaptive-kv-quantization",
       "relation": "evidence_for"
@@ -14427,6 +15359,36 @@
     {
       "source": "source:paper-2606-24033",
       "target": "approach:adaptive-kv-quantization",
+      "relation": "evidence_for"
+    },
+    {
+      "source": "source:paper-2610-31479",
+      "target": "approach:draft-model-speculation",
+      "relation": "evidence_for"
+    },
+    {
+      "source": "source:paper-2610-31479",
+      "target": "approach:eagle-medusa-mtp-drafters",
+      "relation": "evidence_for"
+    },
+    {
+      "source": "source:paper-2610-31479",
+      "target": "approach:kv-cache-pruning",
+      "relation": "evidence_for"
+    },
+    {
+      "source": "source:paper-2610-33076",
+      "target": "approach:adaptive-kv-quantization",
+      "relation": "evidence_for"
+    },
+    {
+      "source": "source:paper-2610-33076",
+      "target": "approach:compressed-kv-direct-attention",
+      "relation": "evidence_for"
+    },
+    {
+      "source": "source:paper-2610-33076",
+      "target": "approach:uniform-kv-quantization",
       "relation": "evidence_for"
     },
     {
@@ -14510,6 +15472,11 @@
       "relation": "evidence_for_outcome"
     },
     {
+      "source": "source:vllm-mlx-paper-v2-2026-01-29",
+      "target": "approach:content-prefix-cache-vlm",
+      "relation": "evidence_for"
+    },
+    {
       "source": "source:vllm-mlx-repo",
       "target": "approach:cache-privacy-and-isolation",
       "relation": "evidence_for"
@@ -14552,10 +15519,26 @@
   ],
   "latest_delta": {
     "schema_version": 1,
-    "run_id": "2026-07-20-nightly-knowledge-curator",
-    "generated_at": "2026-07-23T17:25:58+00:00",
-    "previous_graph_generated_at": "2026-07-18T18:23:37+00:00",
+    "run_id": "2026-11-05-pr42-provenance-fix",
+    "generated_at": "2026-11-05T06:57:17+00:00",
+    "previous_graph_generated_at": "2026-11-05T06:18:31+00:00",
     "already_read_sources": [
+      {
+        "id": "candidate:paper:native-llm-and-mllm-inference-at-scale-on-apple-silicon",
+        "label": "Native LLM and MLLM Inference at Scale on Apple Silicon",
+        "locator": "https://arxiv.org/abs/2601.19139",
+        "read_state": "already_read",
+        "kind": "paper",
+        "known_source_id": "source:vllm-mlx-paper-v2-2026-01-29",
+        "immutable_locator": "https://arxiv.org/abs/2601.19139v2",
+        "revision": "v2",
+        "revision_comparison": {
+          "before": "v2",
+          "after": "v2",
+          "status": "same",
+          "basis": "source_registry"
+        }
+      },
       {
         "id": "candidate:paper:pm-kvq-progressive-mixed-precision-kv-cache-quantization-for-long-cot-llms",
         "label": "PM-KVQ: Progressive Mixed-precision KV Cache Quantization for Long-CoT LLMs",
@@ -14587,34 +15570,8 @@
         }
       }
     ],
-    "new_unread_sources": [
-      {
-        "id": "candidate:paper:looped-latent-attention-cross-loop-kv-compression-for-looped-transformers",
-        "label": "Looped Latent Attention: Cross-Loop KV Compression for Looped Transformers",
-        "locator": "https://arxiv.org/abs/2607.15456",
-        "read_state": "unread_candidate",
-        "kind": "paper",
-        "immutable_locator": "https://arxiv.org/abs/2607.15456v1",
-        "revision": "v1"
-      }
-    ],
+    "new_unread_sources": [],
     "updated_sources": [
-      {
-        "id": "candidate:paper:native-llm-and-mllm-inference-at-scale-on-apple-silicon",
-        "label": "Native LLM and MLLM Inference at Scale on Apple Silicon",
-        "locator": "https://arxiv.org/abs/2601.19139",
-        "read_state": "updated_candidate",
-        "kind": "paper",
-        "known_source_id": "source:paper-2601-19139",
-        "immutable_locator": "https://arxiv.org/abs/2601.19139v2",
-        "revision": "v2",
-        "revision_comparison": {
-          "before": null,
-          "after": "v2",
-          "status": "comparison_unpinned",
-          "basis": "source_registry"
-        }
-      },
       {
         "id": "candidate:paper:benchmarking-on-device-machine-learning-on-apple-silicon-with-mlx",
         "label": "Benchmarking On-Device Machine Learning on Apple Silicon with MLX",
@@ -14999,69 +15956,15 @@
         "read_state": "updated_candidate",
         "kind": "repository",
         "revision_comparison": {
-          "before": "b8b61bc692517adcd18622df260f2ddd80635122",
+          "before": "cf821e8ec850c6d8380feea0e84859dd8ff54cd0",
           "after": "cf821e8ec850c6d8380feea0e84859dd8ff54cd0",
-          "status": "changed",
+          "status": "same",
           "basis": "previous_graph"
         },
         "head_sha": "cf821e8ec850c6d8380feea0e84859dd8ff54cd0"
       }
     ],
     "new_approach_leads": [
-      {
-        "id": "candidate:paper:native-llm-and-mllm-inference-at-scale-on-apple-silicon",
-        "label": "Native LLM and MLLM Inference at Scale on Apple Silicon",
-        "locator": "https://arxiv.org/abs/2601.19139",
-        "read_state": "updated_candidate",
-        "kind": "paper",
-        "known_source_id": "source:paper-2601-19139",
-        "immutable_locator": "https://arxiv.org/abs/2601.19139v2",
-        "revision": "v2",
-        "revision_comparison": {
-          "before": null,
-          "after": "v2",
-          "status": "comparison_unpinned",
-          "basis": "source_registry"
-        },
-        "matches": [
-          {
-            "target": "approach:multimodal-content-prefix-cache",
-            "score": 7,
-            "matched_terms": [
-              "concurrent",
-              "content",
-              "mllm",
-              "multimodal",
-              "prefix",
-              "throughput",
-              "vision"
-            ]
-          },
-          {
-            "target": "outcome:vlm-mlx-vlm-working-route",
-            "score": 6,
-            "matched_terms": [
-              "has",
-              "multimodal",
-              "prefix",
-              "text",
-              "vision",
-              "vllm"
-            ]
-          },
-          {
-            "target": "approach:continuous-batching-serving",
-            "score": 5,
-            "matched_terms": [
-              "batching",
-              "concurrent",
-              "continuous",
-              "throughput",
-              "vision"
-            ]
-          }
-        ]
-      },
       {
         "id": "candidate:paper:benchmarking-on-device-machine-learning-on-apple-silicon-with-mlx",
         "label": "Benchmarking On-Device Machine Learning on Apple Silicon with MLX",
@@ -15141,6 +16044,19 @@
             ]
           },
           {
+            "target": "approach:compressed-kv-direct-attention",
+            "score": 7,
+            "matched_terms": [
+              "cache",
+              "context",
+              "existing",
+              "long",
+              "memory",
+              "throughput",
+              "transformer"
+            ]
+          },
+          {
             "target": "approach:native-low-bit-weight-quantization",
             "score": 7,
             "matched_terms": [
@@ -15151,68 +16067,6 @@
               "size",
               "throughput",
               "transformer"
-            ]
-          },
-          {
-            "target": "outcome:qwen25-05b-instruct-local-worked-port",
-            "score": 7,
-            "matched_terms": [
-              "cache",
-              "cross",
-              "rather",
-              "tensor",
-              "than",
-              "token",
-              "tokens"
-            ]
-          }
-        ]
-      },
-      {
-        "id": "candidate:paper:looped-latent-attention-cross-loop-kv-compression-for-looped-transformers",
-        "label": "Looped Latent Attention: Cross-Loop KV Compression for Looped Transformers",
-        "locator": "https://arxiv.org/abs/2607.15456",
-        "read_state": "unread_candidate",
-        "kind": "paper",
-        "immutable_locator": "https://arxiv.org/abs/2607.15456v1",
-        "revision": "v1",
-        "matches": [
-          {
-            "target": "outcome:qwen25-05b-instruct-local-worked-port",
-            "score": 10,
-            "matched_terms": [
-              "attention",
-              "cache",
-              "cross",
-              "default",
-              "matched",
-              "specific",
-              "tied",
-              "token"
-            ]
-          },
-          {
-            "target": "learning:block-weight-streaming",
-            "score": 6,
-            "matched_terms": [
-              "block",
-              "budget",
-              "low",
-              "output",
-              "per",
-              "weight"
-            ]
-          },
-          {
-            "target": "outcome:decoder-mlx-lm-working-route",
-            "score": 6,
-            "matched_terms": [
-              "cache",
-              "quantization",
-              "still",
-              "transformers",
-              "weight",
-              "when"
             ]
           }
         ]
@@ -15232,6 +16086,20 @@
           "basis": "previous_graph"
         },
         "matches": [
+          {
+            "target": "approach:kv-cache-pruning",
+            "score": 9,
+            "matched_terms": [
+              "attention",
+              "cache",
+              "context",
+              "keep",
+              "long",
+              "memory",
+              "prune",
+              "recurrent"
+            ]
+          },
           {
             "target": "backlog:structured-timeseries-recsys",
             "score": 6,
@@ -15253,17 +16121,6 @@
               "long",
               "memory",
               "quantization"
-            ]
-          },
-          {
-            "target": "approach:prompt-prefix-cache",
-            "score": 5,
-            "matched_terms": [
-              "agents",
-              "cache",
-              "language",
-              "quantization",
-              "state"
             ]
           }
         ]
@@ -15368,14 +16225,14 @@
             ]
           },
           {
-            "target": "approach:uniform-kv-quantization",
+            "target": "approach:compressed-kv-direct-attention",
             "score": 6,
             "matched_terms": [
+              "attention",
               "cache",
               "context",
               "long",
               "memory",
-              "quantization",
               "transformer"
             ]
           }
@@ -15510,6 +16367,18 @@
         },
         "matches": [
           {
+            "target": "approach:native-spectral-transforms",
+            "score": 6,
+            "matched_terms": [
+              "audio",
+              "codec",
+              "neural",
+              "speech",
+              "streaming",
+              "transform"
+            ]
+          },
+          {
             "target": "approach:audio-streaming-and-cache",
             "score": 5,
             "matched_terms": [
@@ -15529,17 +16398,6 @@
               "each",
               "rate",
               "speaker"
-            ]
-          },
-          {
-            "target": "outcome:qwen25-05b-instruct-local-worked-port",
-            "score": 5,
-            "matched_terms": [
-              "conversion",
-              "embeddings",
-              "target",
-              "token",
-              "tokens"
             ]
           }
         ]
@@ -15617,6 +16475,19 @@
         },
         "matches": [
           {
+            "target": "approach:native-spectral-transforms",
+            "score": 7,
+            "matched_terms": [
+              "audio",
+              "codec",
+              "first",
+              "has",
+              "neural",
+              "speech",
+              "streaming"
+            ]
+          },
+          {
             "target": "approach:audio-streaming-and-cache",
             "score": 5,
             "matched_terms": [
@@ -15635,16 +16506,6 @@
               "stream",
               "streaming",
               "unified"
-            ]
-          },
-          {
-            "target": "backlog:graph-geometric-scientific",
-            "score": 4,
-            "matched_terms": [
-              "architectures",
-              "first",
-              "has",
-              "one"
             ]
           }
         ]
@@ -15676,22 +16537,23 @@
             ]
           },
           {
+            "target": "approach:native-spectral-transforms",
+            "score": 5,
+            "matched_terms": [
+              "audio",
+              "codec",
+              "neural",
+              "speech",
+              "streaming"
+            ]
+          },
+          {
             "target": "approach:audio-streaming-and-cache",
             "score": 4,
             "matched_terms": [
               "audio",
               "codec",
               "speech",
-              "streaming"
-            ]
-          },
-          {
-            "target": "approach:block-weight-streaming",
-            "score": 4,
-            "matched_terms": [
-              "block",
-              "language",
-              "stream",
               "streaming"
             ]
           }
@@ -15737,13 +16599,14 @@
             ]
           },
           {
-            "target": "approach:native-low-bit-weight-quantization",
-            "score": 4,
+            "target": "approach:native-spectral-transforms",
+            "score": 5,
             "matched_terms": [
               "audio",
-              "linear",
-              "transformer",
-              "use"
+              "codec",
+              "neural",
+              "speech",
+              "streaming"
             ]
           }
         ]
@@ -15763,6 +16626,18 @@
           "basis": "previous_graph"
         },
         "matches": [
+          {
+            "target": "approach:native-spectral-transforms",
+            "score": 6,
+            "matched_terms": [
+              "audio",
+              "codec",
+              "latency",
+              "neural",
+              "speech",
+              "streaming"
+            ]
+          },
           {
             "target": "outcome:qwen25-05b-instruct-local-worked-port",
             "score": 6,
@@ -15784,16 +16659,6 @@
               "latency",
               "speech",
               "streaming"
-            ]
-          },
-          {
-            "target": "approach:audio-reference-conditioning-cache",
-            "score": 4,
-            "matched_terms": [
-              "audio",
-              "codec",
-              "latency",
-              "speaker"
             ]
           }
         ]
@@ -15838,12 +16703,12 @@
             ]
           },
           {
-            "target": "learning:audio-flow-tts-duration-vocoder-gates",
+            "target": "approach:native-spectral-transforms",
             "score": 5,
             "matched_terms": [
               "audio",
               "codec",
-              "length",
+              "neural",
               "speech",
               "streaming"
             ]
@@ -15865,6 +16730,20 @@
           "basis": "previous_graph"
         },
         "matches": [
+          {
+            "target": "approach:native-spectral-transforms",
+            "score": 8,
+            "matched_terms": [
+              "audio",
+              "codec",
+              "first",
+              "latency",
+              "neural",
+              "quality",
+              "speech",
+              "streaming"
+            ]
+          },
           {
             "target": "approach:audio-reference-conditioning-cache",
             "score": 7,
@@ -15889,19 +16768,6 @@
               "quality",
               "speech",
               "streaming"
-            ]
-          },
-          {
-            "target": "outcome:audio-tts-qwen3-and-vocoder-routes",
-            "score": 7,
-            "matched_terms": [
-              "audio",
-              "codec",
-              "generation",
-              "latency",
-              "quality",
-              "speaker",
-              "text"
             ]
           }
         ]
@@ -15937,6 +16803,19 @@
             ]
           },
           {
+            "target": "approach:native-spectral-transforms",
+            "score": 7,
+            "matched_terms": [
+              "automatic",
+              "decoder",
+              "latency",
+              "quality",
+              "recognition",
+              "speech",
+              "streaming"
+            ]
+          },
+          {
             "target": "outcome:diffusion-and-flow-partial-routes",
             "score": 6,
             "matched_terms": [
@@ -15946,17 +16825,6 @@
               "streaming",
               "time",
               "without"
-            ]
-          },
-          {
-            "target": "approach:audio-streaming-and-cache",
-            "score": 5,
-            "matched_terms": [
-              "chunked",
-              "latency",
-              "quality",
-              "speech",
-              "streaming"
             ]
           }
         ]
@@ -15977,6 +16845,16 @@
         },
         "matches": [
           {
+            "target": "approach:native-spectral-transforms",
+            "score": 4,
+            "matched_terms": [
+              "latency",
+              "recognition",
+              "speech",
+              "streaming"
+            ]
+          },
+          {
             "target": "approach:audio-streaming-and-cache",
             "score": 3,
             "matched_terms": [
@@ -15992,15 +16870,6 @@
               "its",
               "latency",
               "quantization"
-            ]
-          },
-          {
-            "target": "backlog:graph-geometric-scientific",
-            "score": 3,
-            "matched_terms": [
-              "offline",
-              "one",
-              "such"
             ]
           }
         ]
@@ -16032,6 +16901,16 @@
             ]
           },
           {
+            "target": "approach:native-spectral-transforms",
+            "score": 4,
+            "matched_terms": [
+              "automatic",
+              "recognition",
+              "speech",
+              "streaming"
+            ]
+          },
+          {
             "target": "learning:block-weight-streaming",
             "score": 4,
             "matched_terms": [
@@ -16039,15 +16918,6 @@
               "memory",
               "method",
               "streaming"
-            ]
-          },
-          {
-            "target": "approach:adaptive-kv-quantization",
-            "score": 3,
-            "matched_terms": [
-              "bit",
-              "memory",
-              "quantization"
             ]
           }
         ]
@@ -16094,15 +16964,15 @@
             ]
           },
           {
-            "target": "learning:grid-sample-spatial-kernel",
+            "target": "approach:hardware-aware-kernel-search",
             "score": 6,
             "matched_terms": [
-              "benchmark",
-              "custom",
+              "generate",
+              "hardware",
               "kernel",
               "kernels",
-              "level",
-              "metal"
+              "metal",
+              "time"
             ]
           }
         ]
@@ -16325,16 +17195,16 @@
     "gap_hints": [
       "cache",
       "audio",
+      "native",
       "quantization",
       "streaming",
+      "spectral",
+      "transforms",
       "weight",
-      "route",
-      "tts",
-      "working",
       "adaptive",
       "low",
-      "port",
-      "prefix"
+      "route",
+      "tts"
     ],
     "policy": {
       "review_only": true,

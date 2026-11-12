@@ -329,7 +329,7 @@ def build(assets):
     ):
         name = item["id"].split(":", 1)[1]
         record = outcomes.get(name, {})
-        promotion = _measured_result(name, record, observed)
+        promotion = _measured_result(name, record)
         if promotion is not None:
             result_node, anchors = promotion
             results.append(result_node)
@@ -470,11 +470,13 @@ MEASURED_OUTCOMES = {
         "delta_bp_ci": [3037, 3037],
         "verdict": "improved",
         "baseline_id": "local F32 port, schema-2 receipt, 2026-07-10",
+        # The receipt's measurement date must not advance on a registry refresh.
+        "observed_at": "2026-07-10",
     }
 }
 
 
-def _measured_result(name, record, observed):
+def _measured_result(name, record):
     spec = MEASURED_OUTCOMES.get(name)
     if spec is None:
         return None
@@ -496,7 +498,7 @@ def _measured_result(name, record, observed):
             ASSET_LOCATOR % "benchmarks/attestations/qwen2.5-0.5b-port-bf16/",
         ],
         ["migrated-v1", "local-observation", "held"],
-        observed,
+        spec["observed_at"],
         effect={
             "metric": spec["metric"],
             "metric_direction": spec["metric_direction"],

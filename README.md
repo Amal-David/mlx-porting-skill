@@ -54,16 +54,37 @@ quality. The receipts record which candidate won and why —
 They are local observations on one Mac and one workload, not promoted benchmark
 claims.
 
-The 0.7.0 corpus behind the skill:
+Current corpus (0.7.0 with the unreleased research refresh):
 
-- 363 evidence sources with explicit review depth; 35 currently carry classified
-  support scope and claim types, while 328 remain intentionally unclassified;
-- 33 inspectable Python scripts and 588 offline tests;
+- 400 evidence sources with explicit review depth; 74 currently carry classified
+  support scope and claim types, while 326 remain intentionally unclassified;
+- 33 inspectable Python scripts and 595 offline tests;
 - 13 benchmark receipts (12 observations, 1 rejected) and 10 effective claims,
   all withheld;
-- a compiled [evidence graph](mlx-model-porting/graph/README.md) of 319 nodes
-  and 583 edges: 64 mechanisms, 37 architecture traits, and 38 reified
+- a compiled [evidence graph](mlx-model-porting/graph/README.md) of 349 nodes
+  and 629 edges: 70 mechanisms, 45 architecture traits, and 38 reified
   measurement results with integer basis-point effects.
+
+## November 2026 research refresh
+
+The unreleased update adds version and chip eligibility to optimization advice
+and translates current primary research into concrete parity, memory, and
+workload checks. Start with [runtime compatibility](mlx-model-porting/references/runtime-compatibility.md)
+for MLX 0.32.4, M5/NAX, native recurrence and spectral operations, quantization,
+framework bridges, and multi-Mac prerequisites. Read the
+[research decisions](mlx-model-porting/references/research-updates-2026-11.md)
+for compressed attention, speculative decoding, hybrid state, and kernel search.
+
+New methods remain held when a required MLX/macOS version or chip is unknown
+or incompatible. Provide an explicit TargetProfile to the existing command:
+
+```bash
+python3 mlx-model-porting/scripts/recommend_optimizations.py inspection.json \
+  --target-profile target-profile.json --output recommendations.json
+```
+
+This is source-backed guidance and offline validation. These additions do not
+add completed model ports or promote paper results into local performance claims.
 
 ## Install
 

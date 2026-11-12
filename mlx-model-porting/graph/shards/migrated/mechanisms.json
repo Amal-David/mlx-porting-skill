@@ -149,6 +149,20 @@
     },
     {
       "confidence": "low",
+      "from": "mechanism:compressed-kv-direct-attention",
+      "rationale": "v1 approach approach:compressed-kv-direct-attention declares applies_to dense-decoder-transformer.",
+      "relation": "applies_to",
+      "to": "trait:dense-decoder-transformer"
+    },
+    {
+      "confidence": "low",
+      "from": "mechanism:compressed-kv-direct-attention",
+      "rationale": "v1 approach approach:compressed-kv-direct-attention declares applies_to moe-decoder-transformer.",
+      "relation": "applies_to",
+      "to": "trait:moe-decoder-transformer"
+    },
+    {
+      "confidence": "low",
       "from": "mechanism:content-prefix-cache-vlm",
       "rationale": "v1 approach approach:content-prefix-cache-vlm declares applies_to vision-language-omni.",
       "relation": "applies_to",
@@ -295,6 +309,34 @@
       "to": "trait:tts"
     },
     {
+      "confidence": "low",
+      "from": "mechanism:kv-cache-pruning",
+      "rationale": "v1 approach approach:kv-cache-pruning declares applies_to dense-decoder-transformer.",
+      "relation": "applies_to",
+      "to": "trait:dense-decoder-transformer"
+    },
+    {
+      "confidence": "low",
+      "from": "mechanism:kv-cache-pruning",
+      "rationale": "v1 approach approach:kv-cache-pruning declares applies_to moe-decoder-transformer.",
+      "relation": "applies_to",
+      "to": "trait:moe-decoder-transformer"
+    },
+    {
+      "confidence": "high",
+      "from": "mechanism:metal-nax-matmul",
+      "rationale": "v1 approach approach:metal-nax-matmul declares applies_to diffusion-flow.",
+      "relation": "applies_to",
+      "to": "trait:diffusion-flow"
+    },
+    {
+      "confidence": "high",
+      "from": "mechanism:metal-nax-matmul",
+      "rationale": "v1 approach approach:metal-nax-matmul declares applies_to linear-heavy-models.",
+      "relation": "applies_to",
+      "to": "trait:linear-heavy-models"
+    },
+    {
       "confidence": "high",
       "from": "mechanism:moe-expert-dispatch-and-quantization",
       "rationale": "v1 approach approach:moe-expert-dispatch-and-quantization declares applies_to moe-decoder-transformer.",
@@ -338,6 +380,13 @@
     },
     {
       "confidence": "high",
+      "from": "mechanism:native-gated-delta-update",
+      "rationale": "v1 approach approach:native-gated-delta-update declares applies_to ssm-recurrent-hybrid.",
+      "relation": "applies_to",
+      "to": "trait:ssm-recurrent-hybrid"
+    },
+    {
+      "confidence": "high",
       "from": "mechanism:native-low-bit-weight-quantization",
       "rationale": "v1 approach approach:native-low-bit-weight-quantization declares applies_to audio-lm.",
       "relation": "applies_to",
@@ -370,6 +419,48 @@
       "rationale": "v1 approach approach:native-low-bit-weight-quantization declares applies_to vision-language-omni.",
       "relation": "applies_to",
       "to": "trait:vision-language-omni"
+    },
+    {
+      "confidence": "high",
+      "from": "mechanism:native-spectral-transforms",
+      "rationale": "v1 approach approach:native-spectral-transforms declares applies_to automatic-speech-recognition.",
+      "relation": "applies_to",
+      "to": "trait:automatic-speech-recognition"
+    },
+    {
+      "confidence": "high",
+      "from": "mechanism:native-spectral-transforms",
+      "rationale": "v1 approach approach:native-spectral-transforms declares applies_to flow-diffusion-tts.",
+      "relation": "applies_to",
+      "to": "trait:flow-diffusion-tts"
+    },
+    {
+      "confidence": "high",
+      "from": "mechanism:native-spectral-transforms",
+      "rationale": "v1 approach approach:native-spectral-transforms declares applies_to neural-audio-codec.",
+      "relation": "applies_to",
+      "to": "trait:neural-audio-codec"
+    },
+    {
+      "confidence": "high",
+      "from": "mechanism:native-spectral-transforms",
+      "rationale": "v1 approach approach:native-spectral-transforms declares applies_to separation-enhancement.",
+      "relation": "applies_to",
+      "to": "trait:separation-enhancement"
+    },
+    {
+      "confidence": "high",
+      "from": "mechanism:native-spectral-transforms",
+      "rationale": "v1 approach approach:native-spectral-transforms declares applies_to streaming-speech.",
+      "relation": "applies_to",
+      "to": "trait:streaming-speech"
+    },
+    {
+      "confidence": "high",
+      "from": "mechanism:native-spectral-transforms",
+      "rationale": "v1 approach approach:native-spectral-transforms declares applies_to vocoder-waveform-decoder.",
+      "relation": "applies_to",
+      "to": "trait:vocoder-waveform-decoder"
     },
     {
       "confidence": "low",
@@ -505,7 +596,7 @@
       "to": "trait:vision-language-omni"
     }
   ],
-  "generated_at": "2026-07-23",
+  "generated_at": "2026-11-05",
   "graph_id": "mlx-porting-skill/migrated/mechanisms",
   "nodes": [
     {
@@ -514,14 +605,16 @@
         "mlx-model-porting/assets/knowledge_graph.json (approach:adaptive-kv-quantization)",
         "https://arxiv.org/abs/2502.04420",
         "https://arxiv.org/abs/2502.15075",
+        "https://arxiv.org/abs/2504.19874v1",
         "https://arxiv.org/abs/2602.23200",
         "https://arxiv.org/abs/2604.04722",
         "https://arxiv.org/abs/2606.20474",
-        "https://arxiv.org/abs/2606.24033"
+        "https://arxiv.org/abs/2606.24033",
+        "https://arxiv.org/abs/2610.33076v1"
       ],
       "id": "mechanism:adaptive-kv-quantization",
       "kind": "mechanism",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "research-candidate",
       "summary": "Treat layerwise, key/value, RoPE-aware, and hardware-aware KV bit allocation as experiments until reproduced in MLX. Validation gate: MLX implementation. Rollback: no quality advantage over uniform KV quantization.",
@@ -543,7 +636,7 @@
       "exactness_class": "exact_by_construction",
       "id": "mechanism:audio-reference-conditioning-cache",
       "kind": "mechanism",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "proven-mlx-port",
       "summary": "Cache repeated reference/ICL conditioning only with model/codec/quantization/speaker fingerprint keys. Validation gate: cold/warm parity. Rollback: speaker identity or prosody drifts.",
@@ -568,7 +661,7 @@
       "exactness_class": "approximate_legal",
       "id": "mechanism:audio-streaming-and-cache",
       "kind": "mechanism",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "proven-mlx-port",
       "summary": "Use cache-aware streaming, overlap-add, and chunked codec/vocoder execution only when chunk boundaries preserve audio quality. Validation gate: first-audio latency. Rollback: audible discontinuity.",
@@ -590,7 +683,7 @@
       ],
       "id": "mechanism:bf16-weight-cast",
       "kind": "mechanism",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "native-mlx",
       "summary": "Cast a controlled F32 MLX port to BF16 only when the exact target workload retains its declared quality window; keep timing results observation-only until every promotion gate, including external signed attestation, passes. Validation gate: deterministic F32-to-BF16 conversion manifest. Rollback: quality output leaves the declared window. Observed source band 1.0x-1.8122x on metric wall-time; the repository holds this claim (promotion_state=withheld) and emits no effective range.",
@@ -612,7 +705,7 @@
       ],
       "id": "mechanism:block-weight-streaming",
       "kind": "mechanism",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "proven-mlx-port",
       "summary": "For repeated-block models that exceed unified memory, stream block weights from inspectable safetensors into a shared block only after eager parity is established. Validation gate: block key coverage. Rollback: streamed outputs drift.",
@@ -634,7 +727,7 @@
       "exactness_class": "exact_by_construction",
       "id": "mechanism:cache-privacy-and-isolation",
       "kind": "mechanism",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "research-candidate",
       "summary": "Require namespace isolation, opt-out, padding/constant-time policy review, and leakage tests before cross-user cache reuse. Validation gate: tenant namespace tests. Rollback: unbounded cross-tenant reuse.",
@@ -656,7 +749,7 @@
       "exactness_class": "exact_by_construction",
       "id": "mechanism:compile-stable-region",
       "kind": "mechanism",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "native-mlx",
       "summary": "Compile pure repeated regions after parity is established and shapes/state containers are stable. Validation gate: compile count or cold/warm timing captured. Rollback: hidden retracing.",
@@ -671,16 +764,39 @@
     {
       "confidence": "low",
       "evidence": [
+        "mlx-model-porting/assets/knowledge_graph.json (approach:compressed-kv-direct-attention)",
+        "https://arxiv.org/abs/2504.19874v1",
+        "https://arxiv.org/abs/2610.33076v1"
+      ],
+      "id": "mechanism:compressed-kv-direct-attention",
+      "kind": "mechanism",
+      "observed_at": "2026-11-05",
+      "provenance": "research_inference",
+      "status": "research-candidate",
+      "summary": "Investigate blockwise attention that consumes compressed KV without reconstructing the entire cache only after measuring the existing uniform-quantized and uncompressed baselines. Validation gate: Pin an inspectable MLX implementation; compare numerical and task quality with uniform KV and uncompressed baselines at a matched memory budget. Rollback: Reconstruction dominates decode or peak memory defeats the capacity objective.",
+      "tags": [
+        "category/kv-cache",
+        "migrated-v1",
+        "objective/decode-throughput",
+        "objective/long-context",
+        "objective/peak-memory"
+      ],
+      "title": "Direct compressed-KV attention without full-cache reconstruction"
+    },
+    {
+      "confidence": "low",
+      "evidence": [
         "mlx-model-porting/assets/knowledge_graph.json (approach:content-prefix-cache-vlm)",
         "https://github.com/Blaizzy/mlx-vlm/blob/6a8cdff6a1f53f46a15d4adb997c3b2d5f621263/README.md",
         "https://arxiv.org/abs/2402.05099",
         "https://arxiv.org/abs/2402.15220",
         "https://arxiv.org/abs/2601.19139",
+        "https://arxiv.org/abs/2601.19139v2",
         "https://github.com/waybarrios/vllm-mlx"
       ],
       "id": "mechanism:content-prefix-cache-vlm",
       "kind": "mechanism",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "rejected-or-superseded",
       "summary": "Superseded by multimodal-content-prefix-cache; do not count this alias as a separate optimization or evidence line. Validation gate: same-image/different-encoding hit tests. Rollback: false cache hit.",
@@ -706,7 +822,7 @@
       "exactness_class": "exact_by_construction",
       "id": "mechanism:continuous-batching-serving",
       "kind": "mechanism",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "proven-mlx-port",
       "summary": "Use only for concurrent serving where scheduler complexity is justified. Validation gate: concurrency=1 and many. Rollback: tail latency regression. Observed source band 1.0x-4.3x on metric batch-throughput; the repository holds this claim (promotion_state=withheld) and emits no effective range.",
@@ -728,7 +844,7 @@
       ],
       "id": "mechanism:cuda-graphs-decode-capture",
       "kind": "mechanism",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "rejected-or-superseded",
       "summary": "Do not port. CUDA Graphs capture/replay is NVIDIA-specific; the portable MLX analog is mx.compile of the single decode step, which this skill already recommends. Validation gate: Not applicable on Metal/MLX; use the mx.compile stable-region gate instead. Rollback: Always: this method is rejected for MLX and must not be adopted.",
@@ -745,12 +861,13 @@
         "mlx-model-porting/assets/knowledge_graph.json (approach:draft-model-speculation)",
         "https://github.com/ml-explore/mlx-lm/blob/2c008fd0252b2c569227d12568356ab88ab0560a/mlx_lm/generate.py",
         "https://arxiv.org/abs/2211.17192",
-        "https://arxiv.org/abs/2302.01318"
+        "https://arxiv.org/abs/2302.01318",
+        "https://arxiv.org/abs/2610.31479v1"
       ],
       "exactness_class": "exact_by_construction",
       "id": "mechanism:draft-model-speculation",
       "kind": "mechanism",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "official-mlx-project",
       "summary": "Try only when a compatible smaller draft model shares tokenizer/vocabulary and acceptance is high enough to offset draft cost. Validation gate: lossless distribution or quality-preserving test. Rollback: acceptance too low. Observed source band 1.0x-1.3x on metric decode-tokens-per-sec; the repository holds this claim (promotion_state=withheld) and emits no effective range.",
@@ -766,16 +883,19 @@
       "confidence": "low",
       "evidence": [
         "mlx-model-porting/assets/knowledge_graph.json (approach:eagle-medusa-mtp-drafters)",
+        "https://arxiv.org/abs/2602.06036v2",
         "https://github.com/Blaizzy/mlx-vlm/blob/6a8cdff6a1f53f46a15d4adb997c3b2d5f621263/README.md",
         "https://arxiv.org/abs/2401.10774",
         "https://arxiv.org/abs/2401.15077",
         "https://arxiv.org/abs/2406.16858",
         "https://arxiv.org/abs/2412.19437",
+        "https://arxiv.org/abs/2503.01840v3",
+        "https://arxiv.org/abs/2610.31479v1",
         "https://github.com/waybarrios/vllm-mlx"
       ],
       "id": "mechanism:eagle-medusa-mtp-drafters",
       "kind": "mechanism",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "research-candidate",
       "summary": "Use only when compatible trained drafter heads/artifacts and verification code exist for the target architecture. Validation gate: drafter compatibility. Rollback: incompatible features.",
@@ -800,7 +920,7 @@
       "exactness_class": "exact_by_construction",
       "id": "mechanism:fast-sdpa",
       "kind": "mechanism",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "native-mlx",
       "summary": "Try MLX fast SDPA when Q/K/V layout, GQA/MQA grouping, mask, scale, causal alignment, sinks, and dtype semantics match the source. Validation gate: Prefill tensor parity. Rollback: Any semantic mismatch.",
@@ -823,7 +943,7 @@
       ],
       "id": "mechanism:generic-audio-prefix-cache",
       "kind": "mechanism",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "research-candidate",
       "summary": "Keep generic audio prefix cache as a research experiment until a model-specific MLX-Audio cache path exists. Validation gate: model-specific cache path. Rollback: state mismatch.",
@@ -837,6 +957,53 @@
       "title": "Generic audio prefix cache"
     },
     {
+      "confidence": "low",
+      "evidence": [
+        "mlx-model-porting/assets/knowledge_graph.json (approach:hardware-aware-kernel-search)",
+        "https://bair.berkeley.edu/blog/2026/07/29/cuda-to-mlx-k-search/",
+        "https://arxiv.org/abs/2602.19128v2"
+      ],
+      "id": "mechanism:hardware-aware-kernel-search",
+      "kind": "mechanism",
+      "observed_at": "2026-11-05",
+      "provenance": "research_inference",
+      "status": "research-candidate",
+      "summary": "Use a bounded hypothesis-and-measurement search for a demonstrated hotspot: translate algorithmic invariants and memory access patterns into Metal constraints, generate one candidate change at a time, and retain the current native MLX baseline and fallback. Validation gate: Capture the operator contract, current native baseline, supported shapes/dtypes, chip limits and a bounded iteration/time budget. Rollback: A candidate fails held-out parity or depends on unsupported hardware behavior.",
+      "tags": [
+        "category/kernels",
+        "migrated-v1",
+        "objective/decode-throughput",
+        "objective/latency",
+        "objective/prefill-throughput",
+        "objective/throughput"
+      ],
+      "title": "Hardware-aware kernel search with held-out validation"
+    },
+    {
+      "confidence": "low",
+      "evidence": [
+        "mlx-model-porting/assets/knowledge_graph.json (approach:kv-cache-pruning)",
+        "https://arxiv.org/abs/2306.14048",
+        "https://arxiv.org/abs/2404.14469",
+        "https://arxiv.org/abs/2509.04377",
+        "https://arxiv.org/abs/2610.31479v1"
+      ],
+      "id": "mechanism:kv-cache-pruning",
+      "kind": "mechanism",
+      "observed_at": "2026-11-05",
+      "provenance": "research_inference",
+      "status": "research-candidate",
+      "summary": "Evaluate a precisely specified KV retention policy only after baseline parity; keep positional semantics, retained indices, sinks and recent-window rules explicit. Never prune a recurrent state as if it were ordinary attention KV. Validation gate: Fix the retention rule and budget before comparing against the same unpruned model/runtime. Rollback: Any required task falls below its preset quality floor.",
+      "tags": [
+        "category/kv-cache",
+        "migrated-v1",
+        "objective/decode-throughput",
+        "objective/long-context",
+        "objective/peak-memory"
+      ],
+      "title": "KV cache pruning/eviction"
+    },
+    {
       "confidence": "high",
       "evidence": [
         "mlx-model-porting/assets/knowledge_graph.json (approach:lazy-eval-boundaries)",
@@ -847,7 +1014,7 @@
       ],
       "id": "mechanism:lazy-eval-boundaries",
       "kind": "mechanism",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "native-mlx",
       "summary": "Move host synchronization to intentional boundaries and avoid accidental NumPy conversion, printing, or scalar item extraction in hot loops. Validation gate: same outputs. Rollback: memory blow-up.",
@@ -863,6 +1030,29 @@
     {
       "confidence": "high",
       "evidence": [
+        "mlx-model-porting/assets/knowledge_graph.json (approach:metal-nax-matmul)",
+        "https://developer.apple.com/videos/play/wwdc2026/330/",
+        "https://machinelearning.apple.com/research/exploring-llms-mlx-m5",
+        "https://github.com/ml-explore/mlx/blob/36969c094354086e15d2a327a9c50feb20b9cf11/mlx/backend/metal/device.cpp"
+      ],
+      "id": "mechanism:metal-nax-matmul",
+      "kind": "mechanism",
+      "observed_at": "2026-11-05",
+      "provenance": "code_verified",
+      "status": "native-mlx",
+      "summary": "For an explicitly identified M5-family Mac with macOS>=26.2 and the reviewed MLX>=0.32.4 baseline, profile the existing native matrix dispatch before writing a replacement kernel. M4 and unreviewed chip families remain outside this recipe. Validation gate: Match mlx>=0.32.4, macos>=26.2 and explicit M5 chip family in TargetProfile. Rollback: The actual build/device does not expose the required path.",
+      "tags": [
+        "category/kernels",
+        "migrated-v1",
+        "objective/decode-throughput",
+        "objective/prefill-throughput",
+        "objective/throughput"
+      ],
+      "title": "Profile the native M5 GPU Neural Accelerator matrix path"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
         "mlx-model-porting/assets/knowledge_graph.json (approach:moe-expert-dispatch-and-quantization)",
         "https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.gather_mm.html",
         "https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.gather_qmm.html",
@@ -873,7 +1063,7 @@
       "exactness_class": "approximate_legal",
       "id": "mechanism:moe-expert-dispatch-and-quantization",
       "kind": "mechanism",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "native-mlx",
       "summary": "After a loop oracle passes, move to MLX gather_mm/gather_qmm expert dispatch and quantize experts only after sensitivity tests. Validation gate: loop oracle parity. Rollback: rare-expert quality regression.",
@@ -894,7 +1084,7 @@
       ],
       "id": "mechanism:moe-gate-up-fusion",
       "kind": "mechanism",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "research-candidate",
       "summary": "Treat fused MoE gate/up projection as an experimental patch, not baseline MLX support. Validation gate: token-exact parity. Rollback: proposal not available in target runtime.",
@@ -917,7 +1107,7 @@
       ],
       "id": "mechanism:moe-gather-and-expert-batching",
       "kind": "mechanism",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "native-mlx",
       "summary": "Use gather or grouped matmul primitives when expert routing creates large enough grouped matrix multiplies and duplicate/scatter semantics match. Validation gate: loop oracle parity including duplicates. Rollback: small group overhead dominates.",
@@ -942,7 +1132,7 @@
       "exactness_class": "exact_by_construction",
       "id": "mechanism:multimodal-content-prefix-cache",
       "kind": "mechanism",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "proven-mlx-port",
       "summary": "Use a media-aware block prefix cache only when restored cache coverage and media placeholder safety are proven. Validation gate: media extra hashes include content and processing knobs. Rollback: tenant isolation fails. Observed source band 1.0x-28.0x on metric repeated-media-ttft; the repository holds this claim (promotion_state=withheld) and emits no effective range.",
@@ -958,7 +1148,31 @@
     {
       "confidence": "high",
       "evidence": [
+        "mlx-model-porting/assets/knowledge_graph.json (approach:native-gated-delta-update)",
+        "https://github.com/ml-explore/mlx/blob/36969c094354086e15d2a327a9c50feb20b9cf11/python/src/fast.cpp",
+        "https://github.com/ml-explore/mlx/blob/36969c094354086e15d2a327a9c50feb20b9cf11/mlx/fast.cpp",
+        "https://github.com/ml-explore/mlx/blob/36969c094354086e15d2a327a9c50feb20b9cf11/python/tests/test_fast_gated_delta.py"
+      ],
+      "id": "mechanism:native-gated-delta-update",
+      "kind": "mechanism",
+      "observed_at": "2026-11-05",
+      "provenance": "code_verified",
+      "status": "native-mlx",
+      "summary": "On the reviewed MLX 0.32.4-or-newer source baseline, evaluate mx.fast.gated_delta_update only for a matching Gated DeltaNet recurrence after the eager state oracle passes; this does not make Mamba or every linear attention variant compatible. Validation gate: Confirm mlx>=0.32.4 and probe the actual mx.fast.gated_delta_update path on the selected device. Rollback: State or output parity fails at any chunk boundary.",
+      "tags": [
+        "category/recurrent-state",
+        "migrated-v1",
+        "objective/decode-throughput",
+        "objective/peak-memory",
+        "objective/prefill-throughput"
+      ],
+      "title": "Native Gated DeltaNet update with an explicit recurrent-state contract"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
         "mlx-model-porting/assets/knowledge_graph.json (approach:native-low-bit-weight-quantization)",
+        "https://github.com/ml-explore/mlx/blob/36969c094354086e15d2a327a9c50feb20b9cf11/python/src/ops.cpp",
         "https://github.com/Blaizzy/mlx-audio/blob/412cf7cd381c2a3f6a8189af04a95af24cb415b6/mlx_audio/convert.py",
         "https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.quantize.html",
         "https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.nn.quantize.html",
@@ -971,7 +1185,7 @@
       "exactness_class": "approximate_legal",
       "id": "mechanism:native-low-bit-weight-quantization",
       "kind": "mechanism",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "native-mlx",
       "summary": "Use MLX affine, mxfp4, mxfp8, or nvfp4 only where the target Linear path and conversion tooling support the mode. Validation gate: task quality against unquantized baseline. Rollback: quality drift exceeds budget. Observed source band 1.0x-2.4x on metric decode-tokens-per-sec; the repository holds this claim (promotion_state=withheld) and emits no effective range.",
@@ -985,6 +1199,28 @@
       "title": "Native MLX affine/MX/NV low-bit quantization modes"
     },
     {
+      "confidence": "high",
+      "evidence": [
+        "mlx-model-porting/assets/knowledge_graph.json (approach:native-spectral-transforms)",
+        "https://github.com/ml-explore/mlx/blob/36969c094354086e15d2a327a9c50feb20b9cf11/python/src/fft.cpp"
+      ],
+      "id": "mechanism:native-spectral-transforms",
+      "kind": "mechanism",
+      "observed_at": "2026-11-05",
+      "provenance": "code_verified",
+      "status": "native-mlx",
+      "summary": "Evaluate mlx.core.fft.stft/istft on the reviewed MLX 0.32.4-or-newer baseline only when the source spectral frontend or decoder has an exactly matched transform contract. Validation gate: Confirm mlx>=0.32.4 and exercise fft.stft and fft.istft on the selected device before adopting them. Rollback: Spectral or waveform parity fails.",
+      "tags": [
+        "category/audio",
+        "migrated-v1",
+        "objective/first-audio-latency",
+        "objective/latency",
+        "objective/rtf",
+        "objective/streaming-quality"
+      ],
+      "title": "Native STFT and inverse STFT with source-matched boundary semantics"
+    },
+    {
       "confidence": "low",
       "evidence": [
         "mlx-model-porting/assets/knowledge_graph.json (approach:prompt-lookup-ngram-speculation)",
@@ -993,7 +1229,7 @@
       ],
       "id": "mechanism:prompt-lookup-ngram-speculation",
       "kind": "mechanism",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "research-candidate",
       "summary": "Consider as a low-memory experiment for copy-heavy workloads only after implementing a target MLX drafter. Validation gate: hit rate. Rollback: low match rate.",
@@ -1020,7 +1256,7 @@
       "exactness_class": "exact_by_construction",
       "id": "mechanism:prompt-prefix-cache",
       "kind": "mechanism",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "official-mlx-project",
       "summary": "Reuse immutable prefix state only when model, tokenizer/template, processor, adapter, quantization, positions, and cache format version match. Validation gate: exact-hit and miss tests. Rollback: incorrect reuse. Observed source band 1.0x-23.8x on metric ttft-proxy; the repository holds this claim (promotion_state=withheld) and emits no effective range.",
@@ -1043,7 +1279,7 @@
       "exactness_class": "exact_by_construction",
       "id": "mechanism:qwen3-tts-batch-generation",
       "kind": "mechanism",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "proven-mlx-port",
       "summary": "Use Qwen3-TTS batch_generate for compatible concurrent TTS jobs after single-request quality is locked. Validation gate: single-vs-batched parity. Rollback: TTFB or P95 tail violates budget. Observed source band 1.0x-5.45x on metric batch-throughput; the repository holds this claim (promotion_state=withheld) and emits no effective range.",
@@ -1067,7 +1303,7 @@
       ],
       "id": "mechanism:spatial-grid-sample-kernel",
       "kind": "mechanism",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "proven-mlx-port",
       "summary": "Use only when the source model actually depends on PyTorch grid_sample-style spatial or volume warping; first lock a readable MLX/NumPy reference, then consider a custom Metal kernel for the profiled warp. Validation gate: coordinate order and align_corners parity. Rollback: unsupported source grid_sample mode is required. Observed source band 1.0x-10.0x on metric kernel-latency; the repository holds this claim (promotion_state=withheld) and emits no effective range.",
@@ -1086,12 +1322,13 @@
         "https://github.com/ml-explore/mlx-lm/blob/2c008fd0252b2c569227d12568356ab88ab0560a/mlx_lm/models/cache.py",
         "https://github.com/ml-explore/mlx-lm/tree/2c008fd0252b2c569227d12568356ab88ab0560a",
         "https://github.com/Blaizzy/mlx-vlm/blob/6a8cdff6a1f53f46a15d4adb997c3b2d5f621263/README.md",
-        "https://arxiv.org/abs/2402.02750"
+        "https://arxiv.org/abs/2402.02750",
+        "https://arxiv.org/abs/2610.33076v1"
       ],
       "exactness_class": "approximate_legal",
       "id": "mechanism:uniform-kv-quantization",
       "kind": "mechanism",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "official-mlx-project",
       "summary": "Start with official/proven uniform KV quantization before adaptive or rotated KV schemes. Validation gate: logit/perplexity drift over context lengths. Rollback: quality regression. Observed source band 1.0x-1.1x on metric decode-tokens-per-sec; the repository holds this claim (promotion_state=withheld) and emits no effective range.",
@@ -1114,7 +1351,7 @@
       ],
       "id": "mechanism:video-input-budgeting",
       "kind": "mechanism",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "proven-mlx-port",
       "summary": "Treat FPS/frame/pixel budgets as an explicit quality mode for video VLMs. Validation gate: visual token count recorded. Rollback: quality drops beyond budget.",
@@ -1139,7 +1376,7 @@
       "exactness_class": "exact_by_construction",
       "id": "mechanism:vision-feature-cache",
       "kind": "mechanism",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "proven-mlx-port",
       "summary": "Use for repeated identical image/video inputs after keying by content hash and processor/projector revision. Validation gate: cold/warm logits parity. Rollback: warm outputs drift from cold outputs.",
@@ -1161,7 +1398,7 @@
       ],
       "id": "mechanism:visual-token-pruning-or-merge",
       "kind": "mechanism",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "research-candidate",
       "summary": "Do not recommend generic visual-token pruning unless the model-specific MLX implementation and quality probes exist. Validation gate: MLX implementation path. Rollback: quality regression.",

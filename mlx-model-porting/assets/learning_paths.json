@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "reviewed": "2026-07-12",
+  "reviewed": "2026-11-05",
   "checkpoint_order": [
     "inspect",
     "oracle",
@@ -805,7 +805,10 @@
       "rollback": "Use the readable eager fallback on semantic mismatch, retracing instability, or no end-to-end benefit.",
       "method_ids": [
         "fast-sdpa",
-        "compile-stable-region"
+        "compile-stable-region",
+        "native-gated-delta-update",
+        "native-spectral-transforms",
+        "metal-nax-matmul"
       ]
     },
     {
@@ -827,7 +830,9 @@
       "method_ids": [
         "block-weight-streaming",
         "uniform-kv-quantization",
-        "adaptive-kv-quantization"
+        "adaptive-kv-quantization",
+        "compressed-kv-direct-attention",
+        "kv-cache-pruning"
       ]
     },
     {
@@ -884,7 +889,8 @@
       "method_ids": [
         "moe-gate-up-fusion",
         "spatial-grid-sample-kernel",
-        "cuda-graphs-decode-capture"
+        "cuda-graphs-decode-capture",
+        "hardware-aware-kernel-search"
       ]
     }
   ],
@@ -915,6 +921,14 @@
     "audio-streaming-and-cache": [
       "chunk-boundary continuity",
       "speaker similarity/intelligibility"
+    ],
+    "compressed-kv-direct-attention": [
+      "long-context retrieval/reasoning quality at matched memory budget",
+      "cache boundary and reconstruction parity"
+    ],
+    "kv-cache-pruning": [
+      "retained/evicted-fact retrieval and reasoning quality",
+      "position, mask and cache persistence semantics"
     ]
   },
   "glossary": [

@@ -21,6 +21,12 @@ Record:
 - for compiled tests, first-run compile time, warm-run timing, suspected retrace count, and shape/dtype variants;
 - for audio, streaming interval, first chunk frames, codec/vocoder context, API surface, and batch/concurrency.
 
+For newer native paths, also record the capability probe and actual dispatch
+evidence, strict/reduced-precision configuration, and any Metal math-mode
+change. For distributed runs, record rank count, topology, shard strategy,
+per-rank memory and collective time. A newer chip or runtime is an eligibility
+signal, not a measured gain; use [runtime compatibility](runtime-compatibility.md).
+
 ## Metric decomposition
 
 ### Language and autoregressive models
@@ -66,6 +72,24 @@ Record:
 7. Re-run the baseline after the candidate to detect thermal drift.
 8. Benchmark realistic and adversarial sizes; many kernels switch paths by shape.
 9. Write the rollback condition before running the candidate, then apply the same condition to the raw results.
+
+### Time completed work and count actual buffers
+
+Build/evaluate inputs before a kernel-only timer. Warm the exact callable,
+then call it anew and materialize every measured result with `mx.eval`; timing
+construction of a lazy graph or repeatedly evaluating one cached output is not
+an execution benchmark. Report compile/cold costs separately. Synchronize any
+other participating streams at the documented measurement boundary. Follow the
+[upstream timing pattern](https://github.com/ml-explore/mlx/blob/36969c094354086e15d2a327a9c50feb20b9cf11/docs/src/usage/compile.rst).
+
+Use top-level memory counters and reset peak memory at the declared phase
+boundary. Active, cached, allocator-peak and process/system memory measure
+different things. For evaluated array trees, `mx.get_array_buffer_size` counts
+unique backing buffers, including allocation beyond a view's logical extent;
+summing `.nbytes` can miss that extent or double-count aliases. It excludes
+graphs, cached buffers and other non-buffer memory. Do not describe it as total
+process memory. See the
+[pinned memory API](https://github.com/ml-explore/mlx/blob/36969c094354086e15d2a327a9c50feb20b9cf11/python/src/memory.cpp).
 
 ## Memory fit gates
 

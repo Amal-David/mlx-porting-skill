@@ -1,5 +1,19 @@
 # Runbook: state-space, recurrent, and hybrid models
 
+## Contents
+
+- [Applies to](#applies-to)
+- [Architecture fingerprint](#architecture-fingerprint)
+- [Source oracle checkpoints](#source-oracle-checkpoints)
+- [Weight conversion](#weight-conversion)
+- [Minimal MLX path](#minimal-mlx-path)
+- [Scaffolder support boundary](#scaffolder-support-boundary)
+- [Parity traps](#parity-traps)
+- [Modern hybrid state gate](#modern-hybrid-state-gate)
+- [Optimization ladder](#optimization-ladder)
+- [Parallel-scan promotion gate](#parallel-scan-promotion-gate)
+- [Completion gates](#completion-gates)
+
 ## Applies to
 
 Mamba/Mamba2, RWKV, RecurrentGemma, Jamba, Zamba, DeltaNet/linear-attention, Kimi-linear, LFM-style and other recurrent/SSM/attention hybrids.
@@ -82,6 +96,32 @@ checkpoint parity remains a separate completion gate.
 - hybrid layer schedule differs from simple periodic assumption;
 - cache/state accidentally copied each token.
 
+## Modern hybrid state gate
+
+[Qwen3-Next](https://qwen.ai/blog?id=qwen3-next) combines Gated DeltaNet and
+attention; [Gated DeltaNet-2](https://arxiv.org/abs/2605.22791v1) separates erase
+and write gates. Treat such variants as different recurrences and checkpoint
+schemas, not aliases for the synthetic `minimal_selective` scaffold. Record
+gate axes, Q/K normalization, convolution history, recurrent accumulation
+dtype, and the configured layer schedule from the actual source revision.
+
+Build a layer-indexed state manifest. Distinguish token-indexed attention
+history, fixed-size recurrent state, convolution buffers, and absolute offsets.
+For every optimized prefill/decode pair, compare both emitted outputs and the
+terminal state under these execution schedules:
+
+- all tokens at once, one token at a time, and unequal chunk partitions;
+- chunks ending before/at/after the scan or convolution boundary;
+- nonzero initial state and a long continuation after save/restore;
+- mixed sequence lengths with source-equivalent padding and reset behavior;
+- branching prefixes and speculative rejection followed by replay.
+
+The last-token logit alone is insufficient: a wrong terminal state may only
+surface later. Keep recurrence state and sensitive decay/gate math in the
+source's required precision while testing lower-precision projections. If an
+optimization changes update order, use predeclared tolerances and long-context
+task checks; do not loosen tolerances after seeing the candidate's error.
+
 ## Optimization ladder
 
 1. Keep recurrent state in MLX arrays and avoid host extraction.
@@ -92,6 +132,23 @@ checkpoint parity remains a separate completion gate.
 6. Write a custom Metal scan only after a correct loop and end-to-end profile.
 7. Quantize large projections first; keep recurrence parameters/state high precision initially.
 8. Combine with attention cache optimizations only for hybrid attention layers.
+
+## Parallel-scan promotion gate
+
+The July 2026 [K-Search MLX study](https://bair.berkeley.edu/blog/2026/07/29/cuda-to-mlx-k-search/)
+reports Mamba prefill improvements over a sequential baseline. Use that result
+to investigate a measured prefill bottleneck, not to predict single-token
+decode gains or speedups over a newer optimized baseline.
+
+Derive the associative composition from the precise recurrence before choosing
+a scan. The elementwise affine pair composition used for a scalar/diagonal
+recurrence is not a drop-in implementation of a matrix-valued delta rule.
+Preserve update order, initialization, masking, and source stabilization; real
+arithmetic associativity does not imply bitwise floating-point equivalence.
+Test non-power-of-two lengths, partial tiles, empty/short chunks when supported,
+and the state schedules above. Compare against the best installed native path
+and the loop oracle. Retain the loop/native fallback when correctness, memory,
+or end-to-end prefill fails; keep prefill and decode dispatch independent.
 
 ## Completion gates
 

@@ -1,6 +1,6 @@
 # Research report: an architecture-aware MLX porting standard
 
-**Review date:** 2026-07-23
+**Review date:** 2026-11-05
 
 **Artifact version:** 0.7.0
 
@@ -23,12 +23,27 @@ pieces into one conservative flow:
 
 `static intake → architecture route → source oracle → eager MLX graph → deterministic weight map → parity → profiling → evidence-gated advice → packaging`
 
-This repository provides that standard. Dense-decoder Transformers now have an
-executable end-to-end path proven on one real checkpoint. The other 16 routed
-families retain executable intake, planning, generic validation, and evidence
-gates, with architecture-module implementation supplied by their runbooks
-rather than a generator. No indexed architecture or technique is treated as
-locally reproduced without its own evidence.
+This repository provides that standard. Four scaffold-backed real-checkpoint
+packets cover a dense decoder, BERT encoder, T5 encoder-decoder and HuBERT
+acoustic encoder. Six families have scaffolds; MoE and selective SSM generator
+profiles retain synthetic gates. Other families use runbook-guided
+implementation. No indexed architecture or technique is treated as locally
+reproduced without its own evidence.
+
+## Research decisions reviewed 2026-11-05
+
+The new [runtime compatibility guide](mlx-model-porting/references/runtime-compatibility.md)
+and [research decisions](mlx-model-porting/references/research-updates-2026-11.md)
+translate current primary sources into version/chip prerequisites, recurrent
+and spectral parity, cache-memory accounting, committed-token speculation
+costs, and bounded kernel search. The executable recommender now distinguishes
+API applicability from compatibility with a historical numeric observation.
+
+Three native methods use MLX 0.32.4 as a conservative reviewed source floor;
+three research methods remain explicit opt-in candidates. Source review,
+including abstract-only review where documented, is not hardware reproduction.
+The newer materials update advice without changing the old benchmark receipts
+or granting a performance claim.
 
 ## Foundation reconciled in 0.4.0
 
@@ -75,20 +90,20 @@ guidance.
 
 ## Current corpus and proof boundary
 
-The 0.7.0 snapshot contains:
+The 0.7.0 corpus with this unreleased research refresh contains:
 
 | Surface | Count | Boundary |
 |---|---:|---|
-| Architecture routes | 17 | Synthetic golden route and guard scenarios; one dense-decoder model has a completed real port. |
-| Evidence sources | 363 | Every source has review depth; 35 carry classified support scope and claim types, while 328 remain intentionally unclassified. |
-| Technique records | 70 | Status describes evidence maturity, not a portable performance guarantee. |
-| Guidance methods | 28 | Target matching and evidence gates determine whether advice can be surfaced. |
+| Architecture routes | 17 | Synthetic golden route and guard scenarios; four scaffold-backed real-checkpoint packets are listed in VALIDATION.md. |
+| Evidence sources | 400 | Every source has review depth; 74 carry classified support scope and claim types, while 326 remain intentionally unclassified. |
+| Technique records | 75 | Status describes evidence maturity, not a portable performance guarantee. |
+| Guidance methods | 34 | Target matching and evidence gates determine whether advice can be surfaced. |
 | Optimization stacks | 4 | Planning structures; no positive compound number is implied. |
 | Python scripts | 33 | Inspectable intake, execution, validation, evidence, and packaging tools. |
 | Benchmark receipts | 13 | 12 performance observations, 0 promotion-ready, 1 rejected. |
 | Effective claims | 10 | All ten are withheld. |
-| Knowledge graph | 712 nodes / 505 edges | Review-only research memory with a reconciled backlog and bounded advisor projection. |
-| Offline tests | 551 | Contract, security, determinism, portability, generated-drift, learning-atlas, and gated execution coverage. |
+| Knowledge graph | 755 nodes / 526 edges | Review-only research memory with a reconciled backlog and bounded advisor projection. |
+| Offline tests | 595 | Contract, security, determinism, portability, generated-drift, learning-atlas, and gated execution coverage. |
 
 The `bf16-weight-cast` measurement is a reproducible observation for the
 captured Qwen load-plus-six-token workload. It is not promotion-ready because

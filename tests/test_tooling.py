@@ -292,7 +292,7 @@ class ToolingTests(unittest.TestCase):
         self.assertTrue(report["ok"], report)
         source_count = len(json.loads((SKILL / "assets" / "sources.yaml").read_text())["sources"])
         self.assertEqual(report["sources"], source_count)
-        self.assertEqual(report["optimization_methods"], 28)
+        self.assertEqual(report["optimization_methods"], 34)
         self.assertEqual(report["optimization_stacks"], 4)
         self.assertTrue(report["recommendation_taxonomy"])
 
@@ -1653,6 +1653,27 @@ class ToolingTests(unittest.TestCase):
     def test_knowledge_curator_builds_delta_graph_offline(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             tmp_path = Path(tmp)
+            # These URLs select different articles at the same path. Query
+            # values (including encoding, duplicates and blanks) are provenance.
+            article_urls = {
+                "qwen3-next-architecture-2025-09-10": "https://qwen.ai/blog?id=qwen3-next",
+                "fixture-distinct-qwen-article": "https://qwen.ai/blog?id=qwen3-coder",
+                "fixture-encoded-query-article": (
+                    "https://example.com/article?slug=a%2Fb&id=first&id=second"
+                    "&empty=&flag&utm_source=review"
+                ),
+            }
+            sources = json.loads((SKILL / "assets/sources.yaml").read_text())
+            for source_id in ("fixture-distinct-qwen-article", "fixture-encoded-query-article"):
+                sources["sources"].append({
+                    "id": source_id,
+                    "title": source_id,
+                    "url": article_urls[source_id],
+                    "kind": "technical-blog",
+                    "review_depth": "indexed",
+                })
+            sources_path = tmp_path / "sources.json"
+            sources_path.write_text(json.dumps(sources), encoding="utf-8")
             candidates = {
                 "repositories": [
                     {
@@ -1697,6 +1718,7 @@ class ToolingTests(unittest.TestCase):
             run_script(
                 "knowledge_curator.py",
                 "--run-id", "fixture-curator",
+                "--sources", sources_path,
                 "--update-candidates", candidates_path,
                 "--previous-graph", tmp_path / "missing-previous-graph.json",
                 "--graph-output", graph_path,
@@ -1705,6 +1727,14 @@ class ToolingTests(unittest.TestCase):
             )
             graph = json.loads(graph_path.read_text())
             delta = json.loads(delta_path.read_text())
+            by_id = {node["id"]: node for node in graph["nodes"]}
+            for source_id, expected_url in article_urls.items():
+                with self.subTest(source=source_id):
+                    self.assertEqual(by_id[f"source:{source_id}"]["locator"], expected_url)
+            self.assertEqual(
+                len({by_id[f"source:{source_id}"]["locator"] for source_id in article_urls}),
+                len(article_urls),
+            )
 
             self.assertTrue(graph["policy"]["review_only"])
             self.assertGreater(graph["node_count"], 0)
@@ -1936,6 +1966,12 @@ class ToolingTests(unittest.TestCase):
     def test_knowledge_curator_preserves_arxiv_revision_and_detects_drift(self) -> None:
         import knowledge_curator
 
+        self.assertEqual(
+            knowledge_curator.normalize_locator(
+                "https://arxiv.org/pdf/2601.12345v1.pdf?download=1#page=2"
+            ),
+            "https://arxiv.org/abs/2601.12345",
+        )
         source = knowledge_curator.source_node({
             "id": "fixture-versioned-paper",
             "title": "Versioned paper",
@@ -2034,6 +2070,14 @@ class ToolingTests(unittest.TestCase):
         self.assertIn("approach:superseded-content-cache", nodes)
 
     def test_knowledge_curator_matches_pinned_repositories_and_preserves_updates(self) -> None:
+        import knowledge_curator
+
+        self.assertEqual(
+            knowledge_curator.github_repository_identity(
+                "https://github.com/Fixture/Pinned-Repo.git/?tab=readme-ov-file#readme"
+            ),
+            "fixture/pinned-repo",
+        )
         with tempfile.TemporaryDirectory() as tmp:
             tmp_path = Path(tmp)
             pinned_sha = "a" * 40

@@ -9,16 +9,16 @@ Every effect below is an integer basis-point delta against the specific baseline
 | Node kind | Count |
 | --- | ---: |
 | applied_result | 38 |
-| constraint | 6 |
-| external_reference | 124 |
+| constraint | 7 |
+| external_reference | 139 |
 | finding | 27 |
 | hardware | 3 |
 | hypothesis | 12 |
-| mechanism | 64 |
+| mechanism | 70 |
 | model | 4 |
-| trait | 37 |
+| trait | 45 |
 | workload | 4 |
-| **edges** | 583 |
+| **edges** | 629 |
 
 ## Mechanisms with measured effects
 
@@ -291,6 +291,7 @@ These carry no `applied_result`. Some were rejected on structural grounds before
 | `mechanism:compact-draft-vocabulary-selector` | promoted | official_verified |
 | `mechanism:compile-stable-region` | native-mlx | code_verified |
 | `mechanism:compiled-swiglu` | promoted | official_verified |
+| `mechanism:compressed-kv-direct-attention` | research-candidate | research_inference |
 | `mechanism:content-prefix-cache-vlm` | rejected-or-superseded | research_inference |
 | `mechanism:cuda-graphs-decode-capture` | rejected-or-superseded | research_inference |
 | `mechanism:declared-quantized-draft-head` | promoted | official_verified |
@@ -302,13 +303,18 @@ These carry no `applied_result`. Some were rejected on structural grounds before
 | `mechanism:fused-qkv-projection` | promoted | official_verified |
 | `mechanism:fused-target-lmhead-top-two` | rejected-before-implementation | code_verified |
 | `mechanism:generic-audio-prefix-cache` | research-candidate | research_inference |
+| `mechanism:hardware-aware-kernel-search` | research-candidate | research_inference |
+| `mechanism:kv-cache-pruning` | research-candidate | research_inference |
 | `mechanism:lazy-eval-boundaries` | native-mlx | code_verified |
 | `mechanism:lazy-verification` | promoted | official_verified |
+| `mechanism:metal-nax-matmul` | native-mlx | code_verified |
 | `mechanism:moe-expert-dispatch-and-quantization` | native-mlx | code_verified |
 | `mechanism:moe-gate-up-fusion` | research-candidate | research_inference |
 | `mechanism:moe-gather-and-expert-batching` | native-mlx | code_verified |
 | `mechanism:multimodal-content-prefix-cache` | proven-mlx-port | code_verified |
+| `mechanism:native-gated-delta-update` | native-mlx | code_verified |
 | `mechanism:native-low-bit-weight-quantization` | native-mlx | code_verified |
+| `mechanism:native-spectral-transforms` | native-mlx | code_verified |
 | `mechanism:packed-gdn-beta-fold` | held | code_verified |
 | `mechanism:paired-qmv` | promoted | official_verified |
 | `mechanism:prompt-lookup-ngram-speculation` | research-candidate | research_inference |

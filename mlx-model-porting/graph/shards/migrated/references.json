@@ -2,10 +2,24 @@
   "edges": [
     {
       "confidence": "medium",
+      "from": "external:apple-metal-tensors-wwdc26",
+      "rationale": "v1 evidence_for edge from source:apple-metal-tensors-wwdc26.",
+      "relation": "supports",
+      "to": "mechanism:metal-nax-matmul"
+    },
+    {
+      "confidence": "medium",
       "from": "external:apple-mlx-m5-blog",
       "rationale": "v1 evidence_for edge from source:apple-mlx-m5-blog.",
       "relation": "supports",
       "to": "mechanism:lazy-eval-boundaries"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:apple-mlx-m5-blog",
+      "rationale": "v1 evidence_for edge from source:apple-mlx-m5-blog.",
+      "relation": "supports",
+      "to": "mechanism:metal-nax-matmul"
     },
     {
       "confidence": "medium",
@@ -22,18 +36,18 @@
       "to": "mechanism:lazy-eval-boundaries"
     },
     {
+      "confidence": "medium",
+      "from": "external:bair-k-search-mlx-2026-07-29",
+      "rationale": "v1 evidence_for edge from source:bair-k-search-mlx-2026-07-29.",
+      "relation": "supports",
+      "to": "mechanism:hardware-aware-kernel-search"
+    },
+    {
       "confidence": "low",
       "from": "external:candidate-arxiv-2001-00577",
       "rationale": "Unreviewed research candidate matched learning:block-weight-streaming on terms low, memory, method, streaming.",
       "relation": "suggests",
       "to": "finding:block-weight-streaming"
-    },
-    {
-      "confidence": "low",
-      "from": "external:candidate-arxiv-2001-00577",
-      "rationale": "Unreviewed research candidate matched approach:adaptive-kv-quantization on terms bit, memory, quantization.",
-      "relation": "suggests",
-      "to": "mechanism:adaptive-kv-quantization"
     },
     {
       "confidence": "low",
@@ -44,10 +58,10 @@
     },
     {
       "confidence": "low",
-      "from": "external:candidate-arxiv-2503-09905",
-      "rationale": "Unreviewed research candidate matched backlog:graph-geometric-scientific on terms offline, one, such.",
+      "from": "external:candidate-arxiv-2001-00577",
+      "rationale": "Unreviewed research candidate matched approach:native-spectral-transforms on terms automatic, recognition, speech, streaming.",
       "relation": "suggests",
-      "to": "hypothesis:graph-geometric-scientific"
+      "to": "mechanism:native-spectral-transforms"
     },
     {
       "confidence": "low",
@@ -62,6 +76,13 @@
       "rationale": "Unreviewed research candidate matched approach:bf16-weight-cast on terms its, latency, quantization.",
       "relation": "suggests",
       "to": "mechanism:bf16-weight-cast"
+    },
+    {
+      "confidence": "low",
+      "from": "external:candidate-arxiv-2503-09905",
+      "rationale": "Unreviewed research candidate matched approach:native-spectral-transforms on terms latency, recognition, speech, streaming.",
+      "relation": "suggests",
+      "to": "mechanism:native-spectral-transforms"
     },
     {
       "confidence": "low",
@@ -80,16 +101,9 @@
     {
       "confidence": "low",
       "from": "external:candidate-arxiv-2505-18610",
-      "rationale": "Unreviewed research candidate matched approach:uniform-kv-quantization on terms cache, context, long, memory, quantization.",
+      "rationale": "Unreviewed research candidate matched approach:compressed-kv-direct-attention on terms cache, context, existing, long, memory.",
       "relation": "suggests",
-      "to": "mechanism:uniform-kv-quantization"
-    },
-    {
-      "confidence": "low",
-      "from": "external:candidate-arxiv-2510-00981",
-      "rationale": "Unreviewed research candidate matched learning:audio-flow-tts-duration-vocoder-gates on terms audio, codec, length, speech, streaming.",
-      "relation": "suggests",
-      "to": "finding:audio-flow-tts-duration-vocoder-gates"
+      "to": "mechanism:compressed-kv-direct-attention"
     },
     {
       "confidence": "low",
@@ -104,6 +118,13 @@
       "rationale": "Unreviewed research candidate matched outcome:audio-tts-qwen3-and-vocoder-routes on terms asr, audio, but, can, codec, rate.",
       "relation": "suggests",
       "to": "finding:outcome-audio-tts-qwen3-and-vocoder-routes"
+    },
+    {
+      "confidence": "low",
+      "from": "external:candidate-arxiv-2510-00981",
+      "rationale": "Unreviewed research candidate matched approach:native-spectral-transforms on terms audio, codec, neural, speech, streaming.",
+      "relation": "suggests",
+      "to": "mechanism:native-spectral-transforms"
     },
     {
       "confidence": "low",
@@ -129,13 +150,6 @@
     {
       "confidence": "low",
       "from": "external:candidate-arxiv-2601-11141",
-      "rationale": "Unreviewed research candidate matched outcome:audio-tts-qwen3-and-vocoder-routes on terms audio, codec, generation, latency, quality, speaker, text.",
-      "relation": "suggests",
-      "to": "finding:outcome-audio-tts-qwen3-and-vocoder-routes"
-    },
-    {
-      "confidence": "low",
-      "from": "external:candidate-arxiv-2601-11141",
       "rationale": "Unreviewed research candidate matched approach:audio-reference-conditioning-cache on terms audio, cloning, codec, first, latency, speaker, voice.",
       "relation": "suggests",
       "to": "mechanism:audio-reference-conditioning-cache"
@@ -146,6 +160,13 @@
       "rationale": "Unreviewed research candidate matched approach:audio-streaming-and-cache on terms audio, codec, first, latency, quality, speech, streaming.",
       "relation": "suggests",
       "to": "mechanism:audio-streaming-and-cache"
+    },
+    {
+      "confidence": "low",
+      "from": "external:candidate-arxiv-2601-11141",
+      "rationale": "Unreviewed research candidate matched approach:native-spectral-transforms on terms audio, codec, first, latency, neural, quality, speech, streaming.",
+      "relation": "suggests",
+      "to": "mechanism:native-spectral-transforms"
     },
     {
       "confidence": "low",
@@ -173,14 +194,7 @@
       "from": "external:candidate-arxiv-2601-19139",
       "rationale": "Source registry observed revision v2 of the same work.",
       "relation": "supersedes",
-      "to": "external:paper-2601-19139"
-    },
-    {
-      "confidence": "low",
-      "from": "external:candidate-arxiv-2603-06079",
-      "rationale": "Unreviewed research candidate matched approach:audio-reference-conditioning-cache on terms audio, codec, latency, speaker.",
-      "relation": "suggests",
-      "to": "mechanism:audio-reference-conditioning-cache"
+      "to": "external:vllm-mlx-paper-v2-2026-01-29"
     },
     {
       "confidence": "low",
@@ -192,16 +206,16 @@
     {
       "confidence": "low",
       "from": "external:candidate-arxiv-2603-06079",
-      "rationale": "Unreviewed research candidate matched outcome:qwen25-05b-instruct-local-worked-port on terms all, rather, same, than, token, tokens.",
+      "rationale": "Unreviewed research candidate matched approach:native-spectral-transforms on terms audio, codec, latency, neural, speech, streaming.",
       "relation": "suggests",
-      "to": "result:v1-qwen25-05b-bf16-cast-walltime"
+      "to": "mechanism:native-spectral-transforms"
     },
     {
       "confidence": "low",
-      "from": "external:candidate-arxiv-2603-08721",
-      "rationale": "Unreviewed research candidate matched learning:grid-sample-spatial-kernel on terms benchmark, custom, kernel, kernels, level, metal.",
+      "from": "external:candidate-arxiv-2603-06079",
+      "rationale": "Unreviewed research candidate matched outcome:qwen25-05b-instruct-local-worked-port on terms all, rather, same, than, token, tokens.",
       "relation": "suggests",
-      "to": "finding:grid-sample-spatial-kernel"
+      "to": "result:v1-qwen25-05b-bf16-cast-walltime"
     },
     {
       "confidence": "low",
@@ -216,6 +230,13 @@
       "rationale": "Unreviewed research candidate matched backlog:structured-timeseries-recsys on terms architectures, based, code, error, first, has, time.",
       "relation": "suggests",
       "to": "hypothesis:structured-timeseries-recsys"
+    },
+    {
+      "confidence": "low",
+      "from": "external:candidate-arxiv-2603-08721",
+      "rationale": "Unreviewed research candidate matched approach:hardware-aware-kernel-search on terms generate, hardware, kernel, kernels, metal, time.",
+      "relation": "suggests",
+      "to": "mechanism:hardware-aware-kernel-search"
     },
     {
       "confidence": "low",
@@ -234,9 +255,9 @@
     {
       "confidence": "low",
       "from": "external:candidate-arxiv-2603-14035",
-      "rationale": "Unreviewed research candidate matched approach:native-low-bit-weight-quantization on terms audio, linear, transformer, use.",
+      "rationale": "Unreviewed research candidate matched approach:native-spectral-transforms on terms audio, codec, neural, speech, streaming.",
       "relation": "suggests",
-      "to": "mechanism:native-low-bit-weight-quantization"
+      "to": "mechanism:native-spectral-transforms"
     },
     {
       "confidence": "low",
@@ -255,9 +276,9 @@
     {
       "confidence": "low",
       "from": "external:candidate-arxiv-2604-14493",
-      "rationale": "Unreviewed research candidate matched approach:audio-streaming-and-cache on terms chunked, latency, quality, speech, streaming.",
+      "rationale": "Unreviewed research candidate matched approach:native-spectral-transforms on terms automatic, decoder, latency, quality, recognition, speech, streaming.",
       "relation": "suggests",
-      "to": "mechanism:audio-streaming-and-cache"
+      "to": "mechanism:native-spectral-transforms"
     },
     {
       "confidence": "low",
@@ -269,23 +290,16 @@
     {
       "confidence": "low",
       "from": "external:candidate-arxiv-2605-23373",
-      "rationale": "Unreviewed research candidate matched approach:block-weight-streaming on terms block, language, stream, streaming.",
-      "relation": "suggests",
-      "to": "mechanism:block-weight-streaming"
-    },
-    {
-      "confidence": "low",
-      "from": "external:candidate-arxiv-2605-23373",
       "rationale": "Unreviewed research candidate matched approach:native-low-bit-weight-quantization on terms audio, bit, language, quantization, where.",
       "relation": "suggests",
       "to": "mechanism:native-low-bit-weight-quantization"
     },
     {
       "confidence": "low",
-      "from": "external:candidate-arxiv-2606-06743",
-      "rationale": "Unreviewed research candidate matched backlog:graph-geometric-scientific on terms architectures, first, has, one.",
+      "from": "external:candidate-arxiv-2605-23373",
+      "rationale": "Unreviewed research candidate matched approach:native-spectral-transforms on terms audio, codec, neural, speech, streaming.",
       "relation": "suggests",
-      "to": "hypothesis:graph-geometric-scientific"
+      "to": "mechanism:native-spectral-transforms"
     },
     {
       "confidence": "low",
@@ -300,6 +314,13 @@
       "rationale": "Unreviewed research candidate matched approach:block-weight-streaming on terms language, stream, streaming, unified.",
       "relation": "suggests",
       "to": "mechanism:block-weight-streaming"
+    },
+    {
+      "confidence": "low",
+      "from": "external:candidate-arxiv-2606-06743",
+      "rationale": "Unreviewed research candidate matched approach:native-spectral-transforms on terms audio, codec, first, has, neural, speech, streaming.",
+      "relation": "suggests",
+      "to": "mechanism:native-spectral-transforms"
     },
     {
       "confidence": "low",
@@ -339,9 +360,9 @@
     {
       "confidence": "low",
       "from": "external:candidate-arxiv-2606-21893",
-      "rationale": "Unreviewed research candidate matched outcome:qwen25-05b-instruct-local-worked-port on terms conversion, embeddings, target, token, tokens.",
+      "rationale": "Unreviewed research candidate matched approach:native-spectral-transforms on terms audio, codec, neural, speech, streaming, transform.",
       "relation": "suggests",
-      "to": "result:v1-qwen25-05b-bf16-cast-walltime"
+      "to": "mechanism:native-spectral-transforms"
     },
     {
       "confidence": "low",
@@ -423,16 +444,16 @@
     {
       "confidence": "low",
       "from": "external:candidate-arxiv-2607-03652",
-      "rationale": "Unreviewed research candidate matched approach:native-low-bit-weight-quantization on terms language, linear, low, memory, quantization, transformer, weight.",
+      "rationale": "Unreviewed research candidate matched approach:compressed-kv-direct-attention on terms attention, cache, context, long, memory, transformer.",
       "relation": "suggests",
-      "to": "mechanism:native-low-bit-weight-quantization"
+      "to": "mechanism:compressed-kv-direct-attention"
     },
     {
       "confidence": "low",
       "from": "external:candidate-arxiv-2607-03652",
-      "rationale": "Unreviewed research candidate matched approach:uniform-kv-quantization on terms cache, context, long, memory, quantization, transformer.",
+      "rationale": "Unreviewed research candidate matched approach:native-low-bit-weight-quantization on terms language, linear, low, memory, quantization, transformer, weight.",
       "relation": "suggests",
-      "to": "mechanism:uniform-kv-quantization"
+      "to": "mechanism:native-low-bit-weight-quantization"
     },
     {
       "confidence": "low",
@@ -472,9 +493,9 @@
     {
       "confidence": "low",
       "from": "external:candidate-arxiv-2607-08032",
-      "rationale": "Unreviewed research candidate matched approach:prompt-prefix-cache on terms agents, cache, language, quantization, state.",
+      "rationale": "Unreviewed research candidate matched approach:kv-cache-pruning on terms attention, cache, context, keep, long, memory, prune, recurrent.",
       "relation": "suggests",
-      "to": "mechanism:prompt-prefix-cache"
+      "to": "mechanism:kv-cache-pruning"
     },
     {
       "confidence": "low",
@@ -486,16 +507,16 @@
     {
       "confidence": "low",
       "from": "external:candidate-arxiv-2607-12550",
-      "rationale": "Unreviewed research candidate matched approach:native-low-bit-weight-quantization on terms bit, low, memory, quantization, size, throughput, transformer.",
+      "rationale": "Unreviewed research candidate matched approach:compressed-kv-direct-attention on terms cache, context, existing, long, memory, throughput, transformer.",
       "relation": "suggests",
-      "to": "mechanism:native-low-bit-weight-quantization"
+      "to": "mechanism:compressed-kv-direct-attention"
     },
     {
       "confidence": "low",
       "from": "external:candidate-arxiv-2607-12550",
-      "rationale": "Unreviewed research candidate matched outcome:qwen25-05b-instruct-local-worked-port on terms cache, cross, rather, tensor, than, token, tokens.",
+      "rationale": "Unreviewed research candidate matched approach:native-low-bit-weight-quantization on terms bit, low, memory, quantization, size, throughput, transformer.",
       "relation": "suggests",
-      "to": "result:v1-qwen25-05b-bf16-cast-walltime"
+      "to": "mechanism:native-low-bit-weight-quantization"
     },
     {
       "confidence": "low",
@@ -688,6 +709,13 @@
     },
     {
       "confidence": "medium",
+      "from": "external:dflash-paper-v2-2026-05-28",
+      "rationale": "v1 evidence_for edge from source:dflash-paper-v2-2026-05-28.",
+      "relation": "supports",
+      "to": "mechanism:eagle-medusa-mtp-drafters"
+    },
+    {
+      "confidence": "medium",
       "from": "external:dgrauet-ltx2-block-streaming-source",
       "rationale": "v1 evidence_for_outcome edge from source:dgrauet-ltx2-block-streaming-source.",
       "relation": "supports",
@@ -762,6 +790,48 @@
       "rationale": "v1 evidence_for edge from source:llava-onevision-blog.",
       "relation": "supports",
       "to": "mechanism:visual-token-pruning-or-merge"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:mlx-0324-fast-bindings",
+      "rationale": "v1 evidence_for edge from source:mlx-0324-fast-bindings.",
+      "relation": "supports",
+      "to": "mechanism:native-gated-delta-update"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:mlx-0324-fft-bindings",
+      "rationale": "v1 evidence_for edge from source:mlx-0324-fft-bindings.",
+      "relation": "supports",
+      "to": "mechanism:native-spectral-transforms"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:mlx-0324-gated-delta-implementation",
+      "rationale": "v1 evidence_for edge from source:mlx-0324-gated-delta-implementation.",
+      "relation": "supports",
+      "to": "mechanism:native-gated-delta-update"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:mlx-0324-gated-delta-tests",
+      "rationale": "v1 evidence_for edge from source:mlx-0324-gated-delta-tests.",
+      "relation": "supports",
+      "to": "mechanism:native-gated-delta-update"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:mlx-0324-nax-device",
+      "rationale": "v1 evidence_for edge from source:mlx-0324-nax-device.",
+      "relation": "supports",
+      "to": "mechanism:metal-nax-matmul"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:mlx-0324-quantization-bindings",
+      "rationale": "v1 evidence_for edge from source:mlx-0324-quantization-bindings.",
+      "relation": "supports",
+      "to": "mechanism:native-low-bit-weight-quantization"
     },
     {
       "confidence": "medium",
@@ -1388,6 +1458,27 @@
     },
     {
       "confidence": "medium",
+      "from": "external:paper-2503-01840",
+      "rationale": "v1 evidence_for edge from source:paper-2503-01840.",
+      "relation": "supports",
+      "to": "mechanism:eagle-medusa-mtp-drafters"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:paper-2504-19874",
+      "rationale": "v1 evidence_for edge from source:paper-2504-19874.",
+      "relation": "supports",
+      "to": "mechanism:adaptive-kv-quantization"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:paper-2504-19874",
+      "rationale": "v1 evidence_for edge from source:paper-2504-19874.",
+      "relation": "supports",
+      "to": "mechanism:compressed-kv-direct-attention"
+    },
+    {
+      "confidence": "medium",
       "from": "external:paper-2505-15380",
       "rationale": "v1 evidence_for_outcome edge from source:paper-2505-15380.",
       "relation": "supports",
@@ -1458,6 +1549,13 @@
     },
     {
       "confidence": "medium",
+      "from": "external:paper-2602-19128",
+      "rationale": "v1 evidence_for edge from source:paper-2602-19128.",
+      "relation": "supports",
+      "to": "mechanism:hardware-aware-kernel-search"
+    },
+    {
+      "confidence": "medium",
       "from": "external:paper-2602-23200",
       "rationale": "v1 evidence_for edge from source:paper-2602-23200.",
       "relation": "supports",
@@ -1497,6 +1595,48 @@
       "rationale": "v1 evidence_for edge from source:paper-2606-24033.",
       "relation": "supports",
       "to": "mechanism:adaptive-kv-quantization"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:paper-2610-31479",
+      "rationale": "v1 evidence_for edge from source:paper-2610-31479.",
+      "relation": "supports",
+      "to": "mechanism:draft-model-speculation"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:paper-2610-31479",
+      "rationale": "v1 evidence_for edge from source:paper-2610-31479.",
+      "relation": "supports",
+      "to": "mechanism:eagle-medusa-mtp-drafters"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:paper-2610-31479",
+      "rationale": "v1 evidence_for edge from source:paper-2610-31479.",
+      "relation": "supports",
+      "to": "mechanism:kv-cache-pruning"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:paper-2610-33076",
+      "rationale": "v1 evidence_for edge from source:paper-2610-33076.",
+      "relation": "supports",
+      "to": "mechanism:adaptive-kv-quantization"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:paper-2610-33076",
+      "rationale": "v1 evidence_for edge from source:paper-2610-33076.",
+      "relation": "supports",
+      "to": "mechanism:compressed-kv-direct-attention"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:paper-2610-33076",
+      "rationale": "v1 evidence_for edge from source:paper-2610-33076.",
+      "relation": "supports",
+      "to": "mechanism:uniform-kv-quantization"
     },
     {
       "confidence": "medium",
@@ -1612,6 +1752,13 @@
     },
     {
       "confidence": "medium",
+      "from": "external:vllm-mlx-paper-v2-2026-01-29",
+      "rationale": "v1 evidence_for edge from source:vllm-mlx-paper-v2-2026-01-29.",
+      "relation": "supports",
+      "to": "mechanism:content-prefix-cache-vlm"
+    },
+    {
+      "confidence": "medium",
       "from": "external:vllm-mlx-repo",
       "rationale": "v1 evidence_for_outcome edge from source:vllm-mlx-repo.",
       "relation": "supports",
@@ -1667,27 +1814,53 @@
       "to": "mechanism:vision-feature-cache"
     }
   ],
-  "generated_at": "2026-07-23",
+  "generated_at": "2026-11-05",
   "graph_id": "mlx-porting-skill/migrated/references",
   "nodes": [
     {
-      "confidence": "medium",
+      "confidence": "high",
+      "evidence": [
+        "https://developer.apple.com/videos/play/wwdc2026/330"
+      ],
+      "id": "external:apple-metal-tensors-wwdc26",
+      "kind": "external_reference",
+      "observed_at": "2026-11-05",
+      "provenance": "code_verified",
+      "status": "synthesized",
+      "summary": "official-doc source owned by Apple Developer. Review depth synthesized: directly informed a rule, runbook, or registry decision",
+      "tags": [
+        "migrated-v1",
+        "review-depth/synthesized",
+        "source-kind/official-doc",
+        "topic/cooperative-tensors",
+        "topic/m5",
+        "topic/metal",
+        "topic/mpp",
+        "topic/quantization",
+        "topic/tensorops"
+      ],
+      "title": "Optimize custom machine learning operations with Metal tensors"
+    },
+    {
+      "confidence": "high",
       "evidence": [
         "https://machinelearning.apple.com/research/exploring-llms-mlx-m5"
       ],
       "id": "external:apple-mlx-m5-blog",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
-      "status": "screened",
-      "summary": "technical-blog source owned by Apple Machine Learning Research. Review depth screened: relevance and limits reviewed",
+      "status": "synthesized",
+      "summary": "technical-blog source owned by Apple Machine Learning Research. Review depth synthesized: directly informed a rule, runbook, or registry decision",
       "tags": [
         "migrated-v1",
-        "review-depth/screened",
+        "review-depth/synthesized",
         "source-kind/technical-blog",
         "topic/apple-silicon",
         "topic/llm",
+        "topic/m5",
         "topic/mlx",
+        "topic/nax",
         "topic/runtime"
       ],
       "title": "Exploring LLMs with MLX and the Neural Accelerators in the M5 GPU"
@@ -1699,7 +1872,7 @@
       ],
       "id": "external:apple-wwdc25-mlx",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "screened",
       "summary": "technical-blog source owned by Apple Developer. Review depth screened: relevance and limits reviewed",
@@ -1713,6 +1886,29 @@
         "topic/mlx"
       ],
       "title": "Get started with MLX for Apple silicon"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://bair.berkeley.edu/blog/2026/07/29/cuda-to-mlx-k-search"
+      ],
+      "id": "external:bair-k-search-mlx-2026-07-29",
+      "kind": "external_reference",
+      "observed_at": "2026-11-05",
+      "provenance": "research_inference",
+      "status": "synthesized",
+      "summary": "technical-blog source owned by UC Berkeley BAIR / IBM Research. Review depth synthesized: directly informed a rule, runbook, or registry decision",
+      "tags": [
+        "migrated-v1",
+        "review-depth/synthesized",
+        "source-kind/technical-blog",
+        "topic/kernel-portability",
+        "topic/kernel-search",
+        "topic/metal",
+        "topic/scan",
+        "topic/ssm"
+      ],
+      "title": "From CUDA to MLX: How K-Search Brings Decades of Kernel Expertise to Apple Silicon"
     },
     {
       "confidence": "low",
@@ -2158,7 +2354,7 @@
       ],
       "id": "external:candidate-blaizzy-mlx-audio",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "candidate-unreviewed",
       "summary": "Automatically collected research candidate awaiting review. It has not informed any rule, runbook, or registry decision and must not be cited as if it had. Discovery query: n/a",
@@ -2180,7 +2376,7 @@
       ],
       "id": "external:candidate-blaizzy-mlx-vlm",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "candidate-unreviewed",
       "summary": "Automatically collected research candidate awaiting review. It has not informed any rule, runbook, or registry decision and must not be cited as if it had. Discovery query: n/a",
@@ -2201,7 +2397,7 @@
       ],
       "id": "external:candidate-ml-explore-mlx",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "candidate-unreviewed",
       "summary": "Automatically collected research candidate awaiting review. It has not informed any rule, runbook, or registry decision and must not be cited as if it had. Discovery query: n/a",
@@ -2222,7 +2418,7 @@
       ],
       "id": "external:candidate-ml-explore-mlx-examples",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "candidate-unreviewed",
       "summary": "Automatically collected research candidate awaiting review. It has not informed any rule, runbook, or registry decision and must not be cited as if it had. Discovery query: n/a",
@@ -2243,7 +2439,7 @@
       ],
       "id": "external:candidate-ml-explore-mlx-lm",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "candidate-unreviewed",
       "summary": "Automatically collected research candidate awaiting review. It has not informed any rule, runbook, or registry decision and must not be cited as if it had. Discovery query: n/a",
@@ -2265,7 +2461,7 @@
       ],
       "id": "external:candidate-waybarrios-vllm-mlx",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "candidate-unreviewed",
       "summary": "Automatically collected research candidate awaiting review. It has not informed any rule, runbook, or registry decision and must not be cited as if it had. Discovery query: n/a",
@@ -2282,11 +2478,33 @@
     {
       "confidence": "high",
       "evidence": [
+        "https://arxiv.org/abs/2602.06036",
+        "https://arxiv.org/abs/2602.06036v2"
+      ],
+      "id": "external:dflash-paper-v2-2026-05-28",
+      "kind": "external_reference",
+      "observed_at": "2026-11-05",
+      "provenance": "research_inference",
+      "status": "synthesized",
+      "summary": "paper source owned by authors. Review depth synthesized: directly informed a rule, runbook, or registry decision",
+      "tags": [
+        "migrated-v1",
+        "review-depth/synthesized",
+        "source-kind/paper",
+        "topic/block-drafting",
+        "topic/dflash",
+        "topic/speculative-decoding"
+      ],
+      "title": "DFlash: Block Diffusion for Flash Speculative Decoding"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
         "https://github.com/dgrauet/ltx-2-mlx/blob/3f5897a9582b5c14379c8f88216ae0fd6e55741d/packages/ltx-core-mlx/src/ltx_core_mlx/loader/block_streaming.py"
       ],
       "id": "external:dgrauet-ltx2-block-streaming-source",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "synthesized",
       "summary": "source-code source owned by dgrauet. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -2309,7 +2527,7 @@
       ],
       "id": "external:dgrauet-ltx2-block-streaming-tests",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "synthesized",
       "summary": "source-code source owned by dgrauet. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -2332,7 +2550,7 @@
       ],
       "id": "external:dgrauet-ltx2-regression-report",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "synthesized",
       "summary": "source-code source owned by dgrauet. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -2354,7 +2572,7 @@
       ],
       "id": "external:huggingface-transformers",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "screened",
       "summary": "repository source owned by Hugging Face. Review depth screened: relevance and limits reviewed",
@@ -2375,7 +2593,7 @@
       ],
       "id": "external:katlun-grid-sample-benchmark",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "synthesized",
       "summary": "source-code source owned by katlun-lgtm. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -2397,7 +2615,7 @@
       ],
       "id": "external:katlun-grid-sample-source",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "synthesized",
       "summary": "source-code source owned by katlun-lgtm. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -2420,7 +2638,7 @@
       ],
       "id": "external:katlun-grid-sample-tests",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "synthesized",
       "summary": "source-code source owned by katlun-lgtm. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -2443,7 +2661,7 @@
       ],
       "id": "external:llava-onevision-blog",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "synthesized",
       "summary": "technical-blog source owned by LLaVA team. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -2460,11 +2678,148 @@
     {
       "confidence": "high",
       "evidence": [
+        "https://github.com/ml-explore/mlx/blob/36969c094354086e15d2a327a9c50feb20b9cf11/python/src/fast.cpp"
+      ],
+      "id": "external:mlx-0324-fast-bindings",
+      "kind": "external_reference",
+      "observed_at": "2026-11-05",
+      "provenance": "code_verified",
+      "status": "synthesized",
+      "summary": "source-code source owned by Apple MLX. Review depth synthesized: directly informed a rule, runbook, or registry decision",
+      "tags": [
+        "migrated-v1",
+        "review-depth/synthesized",
+        "source-kind/source-code",
+        "topic/attention",
+        "topic/custom-kernels",
+        "topic/gated-delta",
+        "topic/metal",
+        "topic/mlx"
+      ],
+      "title": "MLX 0.32.4 fast-operation Python bindings"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://github.com/ml-explore/mlx/blob/36969c094354086e15d2a327a9c50feb20b9cf11/python/src/fft.cpp"
+      ],
+      "id": "external:mlx-0324-fft-bindings",
+      "kind": "external_reference",
+      "observed_at": "2026-11-05",
+      "provenance": "code_verified",
+      "status": "synthesized",
+      "summary": "source-code source owned by Apple MLX. Review depth synthesized: directly informed a rule, runbook, or registry decision",
+      "tags": [
+        "migrated-v1",
+        "review-depth/synthesized",
+        "source-kind/source-code",
+        "topic/audio",
+        "topic/istft",
+        "topic/mlx",
+        "topic/spectral",
+        "topic/stft"
+      ],
+      "title": "MLX 0.32.4 STFT and inverse STFT bindings"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://github.com/ml-explore/mlx/blob/36969c094354086e15d2a327a9c50feb20b9cf11/mlx/fast.cpp"
+      ],
+      "id": "external:mlx-0324-gated-delta-implementation",
+      "kind": "external_reference",
+      "observed_at": "2026-11-05",
+      "provenance": "code_verified",
+      "status": "synthesized",
+      "summary": "source-code source owned by Apple MLX. Review depth synthesized: directly informed a rule, runbook, or registry decision",
+      "tags": [
+        "migrated-v1",
+        "review-depth/synthesized",
+        "source-kind/source-code",
+        "topic/autodiff",
+        "topic/gated-delta",
+        "topic/mlx",
+        "topic/recurrent-state"
+      ],
+      "title": "MLX 0.32.4 gated-delta implementation and VJP"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://github.com/ml-explore/mlx/blob/36969c094354086e15d2a327a9c50feb20b9cf11/python/tests/test_fast_gated_delta.py"
+      ],
+      "id": "external:mlx-0324-gated-delta-tests",
+      "kind": "external_reference",
+      "observed_at": "2026-11-05",
+      "provenance": "code_verified",
+      "status": "synthesized",
+      "summary": "source-code source owned by Apple MLX. Review depth synthesized: directly informed a rule, runbook, or registry decision",
+      "tags": [
+        "migrated-v1",
+        "review-depth/synthesized",
+        "source-kind/source-code",
+        "topic/autodiff",
+        "topic/gated-delta",
+        "topic/mlx",
+        "topic/parity"
+      ],
+      "title": "MLX 0.32.4 gated-delta oracle and gradient tests"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://github.com/ml-explore/mlx/blob/36969c094354086e15d2a327a9c50feb20b9cf11/mlx/backend/metal/device.cpp"
+      ],
+      "id": "external:mlx-0324-nax-device",
+      "kind": "external_reference",
+      "observed_at": "2026-11-05",
+      "provenance": "code_verified",
+      "status": "synthesized",
+      "summary": "source-code source owned by Apple MLX. Review depth synthesized: directly informed a rule, runbook, or registry decision",
+      "tags": [
+        "migrated-v1",
+        "review-depth/synthesized",
+        "source-kind/source-code",
+        "topic/m5",
+        "topic/metal",
+        "topic/mlx",
+        "topic/nax",
+        "topic/runtime"
+      ],
+      "title": "MLX 0.32.4 Metal NAX device and build gate"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://github.com/ml-explore/mlx/blob/36969c094354086e15d2a327a9c50feb20b9cf11/python/src/ops.cpp"
+      ],
+      "id": "external:mlx-0324-quantization-bindings",
+      "kind": "external_reference",
+      "observed_at": "2026-11-05",
+      "provenance": "code_verified",
+      "status": "synthesized",
+      "summary": "source-code source owned by Apple MLX. Review depth synthesized: directly informed a rule, runbook, or registry decision",
+      "tags": [
+        "migrated-v1",
+        "review-depth/synthesized",
+        "source-kind/source-code",
+        "topic/mlx",
+        "topic/mxfp4",
+        "topic/mxfp8",
+        "topic/nvfp4",
+        "topic/qqmm",
+        "topic/quantization"
+      ],
+      "title": "MLX 0.32.4 quantization and QQMM API contracts"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
         "https://github.com/Blaizzy/mlx-audio/tree/412cf7cd381c2a3f6a8189af04a95af24cb415b6/mlx_audio/codec/models"
       ],
       "id": "external:mlx-audio-codecs",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "synthesized",
       "summary": "source-code source owned by Blaizzy. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -2485,7 +2840,7 @@
       ],
       "id": "external:mlx-audio-convert",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "synthesized",
       "summary": "source-code source owned by Blaizzy. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -2507,7 +2862,7 @@
       ],
       "id": "external:mlx-audio-models",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "synthesized",
       "summary": "source-code source owned by Blaizzy. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -2529,7 +2884,7 @@
       ],
       "id": "external:mlx-audio-qwen3-tts-docs",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "synthesized",
       "summary": "source-code source owned by Blaizzy. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -2552,7 +2907,7 @@
       ],
       "id": "external:mlx-audio-release-044",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "synthesized",
       "summary": "release source owned by Blaizzy. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -2574,7 +2929,7 @@
       ],
       "id": "external:mlx-audio-repo",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "synthesized",
       "summary": "repository source owned by Blaizzy. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -2597,7 +2952,7 @@
       ],
       "id": "external:mlx-audio-streaming-guide",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "synthesized",
       "summary": "official-doc source owned by Blaizzy. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -2619,7 +2974,7 @@
       ],
       "id": "external:mlx-doc-compile",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "synthesized",
       "summary": "official-doc source owned by Apple MLX. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -2640,7 +2995,7 @@
       ],
       "id": "external:mlx-doc-core-quantize",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "synthesized",
       "summary": "official-doc source owned by Apple MLX. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -2661,7 +3016,7 @@
       ],
       "id": "external:mlx-doc-custom-extensions",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "synthesized",
       "summary": "official-doc source owned by Apple MLX. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -2682,7 +3037,7 @@
       ],
       "id": "external:mlx-doc-fast-sdpa",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "synthesized",
       "summary": "official-doc source owned by Apple MLX. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -2703,7 +3058,7 @@
       ],
       "id": "external:mlx-doc-gather-mm",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "synthesized",
       "summary": "official-doc source owned by Apple MLX. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -2725,7 +3080,7 @@
       ],
       "id": "external:mlx-doc-gather-qmm",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "synthesized",
       "summary": "official-doc source owned by Apple MLX. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -2748,7 +3103,7 @@
       ],
       "id": "external:mlx-doc-lazy",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "synthesized",
       "summary": "official-doc source owned by Apple MLX. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -2768,7 +3123,7 @@
       ],
       "id": "external:mlx-doc-nn-quantize",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "synthesized",
       "summary": "official-doc source owned by Apple MLX. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -2789,7 +3144,7 @@
       ],
       "id": "external:mlx-doc-quantized-matmul",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "synthesized",
       "summary": "official-doc source owned by Apple MLX. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -2810,7 +3165,7 @@
       ],
       "id": "external:mlx-docs",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "synthesized",
       "summary": "official-doc source owned by Apple MLX. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -2831,7 +3186,7 @@
       ],
       "id": "external:mlx-examples-repo",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "screened",
       "summary": "repository source owned by Apple MLX. Review depth screened: relevance and limits reviewed",
@@ -2853,7 +3208,7 @@
       ],
       "id": "external:mlx-lm-cache",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "synthesized",
       "summary": "source-code source owned by Apple MLX. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -2874,7 +3229,7 @@
       ],
       "id": "external:mlx-lm-convert",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "synthesized",
       "summary": "source-code source owned by Apple MLX. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -2895,7 +3250,7 @@
       ],
       "id": "external:mlx-lm-issue-956",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "synthesized",
       "summary": "issue-report source owned by Apple MLX. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -2917,7 +3272,7 @@
       ],
       "id": "external:mlx-lm-models",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "synthesized",
       "summary": "source-code source owned by Apple MLX. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -2937,7 +3292,7 @@
       ],
       "id": "external:mlx-lm-repo",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "synthesized",
       "summary": "repository source owned by Apple MLX. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -2959,7 +3314,7 @@
       ],
       "id": "external:mlx-lm-speculative",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "synthesized",
       "summary": "source-code source owned by Apple MLX. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -2979,7 +3334,7 @@
       ],
       "id": "external:mlx-lm-switch-layers",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "synthesized",
       "summary": "source-code source owned by Apple MLX. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -3001,7 +3356,7 @@
       ],
       "id": "external:mlx-repo",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "synthesized",
       "summary": "repository source owned by Apple MLX. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -3023,7 +3378,7 @@
       ],
       "id": "external:mlx-vlm-apc-source",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "synthesized",
       "summary": "source-code source owned by Blaizzy. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -3045,7 +3400,7 @@
       ],
       "id": "external:mlx-vlm-ar-cache-guards",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "synthesized",
       "summary": "source-code source owned by Blaizzy. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -3067,7 +3422,7 @@
       ],
       "id": "external:mlx-vlm-readme",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "synthesized",
       "summary": "source-code source owned by Blaizzy. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -3089,7 +3444,7 @@
       ],
       "id": "external:mlx-vlm-repo",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "synthesized",
       "summary": "repository source owned by Blaizzy. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -3110,7 +3465,7 @@
       ],
       "id": "external:mlx-vlm-vision-cache-source",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "synthesized",
       "summary": "source-code source owned by Blaizzy. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -3132,7 +3487,7 @@
       ],
       "id": "external:nvidia-nvfp4-blog",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "screened",
       "summary": "technical-blog source owned by NVIDIA. Review depth screened: relevance and limits reviewed",
@@ -3153,7 +3508,7 @@
       ],
       "id": "external:orca-osdi22",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "synthesized",
       "summary": "paper source owned by authors. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -3173,7 +3528,7 @@
       ],
       "id": "external:paper-2205-14135",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "synthesized",
       "summary": "paper source owned by authors. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -3193,7 +3548,7 @@
       ],
       "id": "external:paper-2211-17192",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "synthesized",
       "summary": "paper source owned by authors. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -3212,7 +3567,7 @@
       ],
       "id": "external:paper-2302-01318",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "synthesized",
       "summary": "paper source owned by authors. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -3231,7 +3586,7 @@
       ],
       "id": "external:paper-2307-08691",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "synthesized",
       "summary": "paper source owned by authors. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -3251,7 +3606,7 @@
       ],
       "id": "external:paper-2309-06180",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "synthesized",
       "summary": "paper source owned by authors. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -3271,7 +3626,7 @@
       ],
       "id": "external:paper-2310-16836",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "screened",
       "summary": "paper source owned by authors. Review depth screened: relevance and limits reviewed",
@@ -3291,7 +3646,7 @@
       ],
       "id": "external:paper-2311-08252",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "screened",
       "summary": "paper source owned by authors. Review depth screened: relevance and limits reviewed",
@@ -3311,7 +3666,7 @@
       ],
       "id": "external:paper-2401-04088",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "screened",
       "summary": "paper source owned by authors. Review depth screened: relevance and limits reviewed",
@@ -3331,7 +3686,7 @@
       ],
       "id": "external:paper-2401-10774",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "synthesized",
       "summary": "paper source owned by authors. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -3351,7 +3706,7 @@
       ],
       "id": "external:paper-2401-15077",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "synthesized",
       "summary": "paper source owned by authors. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -3371,7 +3726,7 @@
       ],
       "id": "external:paper-2402-02750",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "synthesized",
       "summary": "paper source owned by authors. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -3390,7 +3745,7 @@
       ],
       "id": "external:paper-2402-05099",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "synthesized",
       "summary": "paper source owned by authors. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -3410,7 +3765,7 @@
       ],
       "id": "external:paper-2403-15388",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "synthesized",
       "summary": "paper source owned by authors. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -3431,7 +3786,7 @@
       ],
       "id": "external:paper-2405-04434",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "synthesized",
       "summary": "paper source owned by authors. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -3452,7 +3807,7 @@
       ],
       "id": "external:paper-2406-16858",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "screened",
       "summary": "paper source owned by authors. Review depth screened: relevance and limits reviewed",
@@ -3472,7 +3827,7 @@
       ],
       "id": "external:paper-2407-08608",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "synthesized",
       "summary": "paper source owned by authors. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -3492,7 +3847,7 @@
       ],
       "id": "external:paper-2409-12191",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "screened",
       "summary": "paper source owned by authors. Review depth screened: relevance and limits reviewed",
@@ -3512,7 +3867,7 @@
       ],
       "id": "external:paper-2412-03594",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "synthesized",
       "summary": "paper source owned by authors. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -3532,7 +3887,7 @@
       ],
       "id": "external:paper-2412-04467",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "synthesized",
       "summary": "paper source owned by authors. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -3552,7 +3907,7 @@
       ],
       "id": "external:paper-2412-19437",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "screened",
       "summary": "paper source owned by authors. Review depth screened: relevance and limits reviewed",
@@ -3573,7 +3928,7 @@
       ],
       "id": "external:paper-2502-04420",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "synthesized",
       "summary": "paper source owned by authors. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -3593,7 +3948,7 @@
       ],
       "id": "external:paper-2502-13923",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "synthesized",
       "summary": "paper source owned by authors. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -3615,7 +3970,7 @@
       ],
       "id": "external:paper-2502-15075",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "screened",
       "summary": "paper source owned by authors. Review depth screened: relevance and limits reviewed",
@@ -3631,11 +3986,55 @@
     {
       "confidence": "high",
       "evidence": [
+        "https://arxiv.org/abs/2503.01840",
+        "https://arxiv.org/abs/2503.01840v3"
+      ],
+      "id": "external:paper-2503-01840",
+      "kind": "external_reference",
+      "observed_at": "2026-11-05",
+      "provenance": "research_inference",
+      "status": "synthesized",
+      "summary": "paper source owned by authors. Review depth synthesized: directly informed a rule, runbook, or registry decision",
+      "tags": [
+        "migrated-v1",
+        "review-depth/synthesized",
+        "source-kind/paper",
+        "topic/eagle3",
+        "topic/speculative-decoding",
+        "topic/target-features"
+      ],
+      "title": "EAGLE-3: Scaling up Inference Acceleration of Large Language Models via Training-Time Test"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://arxiv.org/abs/2504.19874",
+        "https://arxiv.org/abs/2504.19874v1"
+      ],
+      "id": "external:paper-2504-19874",
+      "kind": "external_reference",
+      "observed_at": "2026-11-05",
+      "provenance": "research_inference",
+      "status": "synthesized",
+      "summary": "paper source owned by authors. Review depth synthesized: directly informed a rule, runbook, or registry decision",
+      "tags": [
+        "migrated-v1",
+        "review-depth/synthesized",
+        "source-kind/paper",
+        "topic/kv-cache",
+        "topic/long-context",
+        "topic/quantization"
+      ],
+      "title": "TurboQuant: Online Vector Quantization with Near-optimal Distortion Rate"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
         "https://arxiv.org/abs/2505.15380"
       ],
       "id": "external:paper-2505-15380",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "synthesized",
       "summary": "paper source owned by authors. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -3655,7 +4054,7 @@
       ],
       "id": "external:paper-2601-15621",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "synthesized",
       "summary": "paper source owned by authors. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -3676,7 +4075,7 @@
       ],
       "id": "external:paper-2601-19139",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "synthesized",
       "summary": "paper source owned by authors. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -3693,13 +4092,35 @@
       "title": "Native LLM and MLLM Inference at Scale on Apple Silicon"
     },
     {
+      "confidence": "high",
+      "evidence": [
+        "https://arxiv.org/abs/2602.19128",
+        "https://arxiv.org/abs/2602.19128v2"
+      ],
+      "id": "external:paper-2602-19128",
+      "kind": "external_reference",
+      "observed_at": "2026-11-05",
+      "provenance": "research_inference",
+      "status": "synthesized",
+      "summary": "paper source owned by authors. Review depth synthesized: directly informed a rule, runbook, or registry decision",
+      "tags": [
+        "migrated-v1",
+        "review-depth/synthesized",
+        "source-kind/paper",
+        "topic/hypothesis-led-learning",
+        "topic/kernel-search",
+        "topic/optimization"
+      ],
+      "title": "K-Search: LLM Kernel Generation via Co-Evolving Intrinsic World Model"
+    },
+    {
       "confidence": "medium",
       "evidence": [
         "https://arxiv.org/abs/2602.23200"
       ],
       "id": "external:paper-2602-23200",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "screened",
       "summary": "paper source owned by authors. Review depth screened: relevance and limits reviewed",
@@ -3719,7 +4140,7 @@
       ],
       "id": "external:paper-2604-04722",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "screened",
       "summary": "paper source owned by authors. Review depth screened: relevance and limits reviewed",
@@ -3739,7 +4160,7 @@
       ],
       "id": "external:paper-2606-20474",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "screened",
       "summary": "paper source owned by authors. Review depth screened: relevance and limits reviewed",
@@ -3759,7 +4180,7 @@
       ],
       "id": "external:paper-2606-21842",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "screened",
       "summary": "paper source owned by authors. Review depth screened: relevance and limits reviewed",
@@ -3780,7 +4201,7 @@
       ],
       "id": "external:paper-2606-24033",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "screened",
       "summary": "paper source owned by authors. Review depth screened: relevance and limits reviewed",
@@ -3794,13 +4215,62 @@
       "title": "RoPE-Aware Bit Allocation for KV-Cache Quantization"
     },
     {
+      "confidence": "high",
+      "evidence": [
+        "https://arxiv.org/abs/2610.31479",
+        "https://arxiv.org/abs/2610.31479v1"
+      ],
+      "id": "external:paper-2610-31479",
+      "kind": "external_reference",
+      "observed_at": "2026-11-05",
+      "provenance": "research_inference",
+      "status": "synthesized",
+      "summary": "paper source owned by authors. Review depth synthesized: directly informed a rule, runbook, or registry decision",
+      "tags": [
+        "migrated-v1",
+        "review-depth/synthesized",
+        "source-kind/paper",
+        "topic/apple-silicon",
+        "topic/benchmarking",
+        "topic/kernel-portability",
+        "topic/kv-cache",
+        "topic/moe",
+        "topic/speculative-decoding"
+      ],
+      "title": "Evaluating the Applicability of LLM Inference Optimizations on Apple Silicon"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://arxiv.org/abs/2610.33076",
+        "https://arxiv.org/abs/2610.33076v1"
+      ],
+      "id": "external:paper-2610-33076",
+      "kind": "external_reference",
+      "observed_at": "2026-11-05",
+      "provenance": "research_inference",
+      "status": "synthesized",
+      "summary": "paper source owned by authors. Review depth synthesized: directly informed a rule, runbook, or registry decision",
+      "tags": [
+        "migrated-v1",
+        "review-depth/synthesized",
+        "source-kind/paper",
+        "topic/kv-cache",
+        "topic/long-context",
+        "topic/memory",
+        "topic/metal",
+        "topic/quantization"
+      ],
+      "title": "Double KV Cache Optimization on Apple Silicon: Block-FP4, Radial Quantization, and Fused Metal Kernels"
+    },
+    {
       "confidence": "medium",
       "evidence": [
         "https://github.com/apoorvumang/prompt-lookup-decoding"
       ],
       "id": "external:prompt-lookup-decoding-repo",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "screened",
       "summary": "repository source owned by Apoorv Saxena. Review depth screened: relevance and limits reviewed",
@@ -3820,7 +4290,7 @@
       ],
       "id": "external:pypi-mlx-audio",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "screened",
       "summary": "release source owned by Blaizzy / contributors. Review depth screened: relevance and limits reviewed",
@@ -3843,7 +4313,7 @@
       ],
       "id": "external:pypi-mlx-lm",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "screened",
       "summary": "release source owned by ml-explore. Review depth screened: relevance and limits reviewed",
@@ -3865,7 +4335,7 @@
       ],
       "id": "external:pytorch-doc-cuda-graphs",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "synthesized",
       "summary": "official-doc source owned by PyTorch. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -3887,7 +4357,7 @@
       ],
       "id": "external:repo-stable-audio-tools",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "indexed",
       "summary": "repository source owned by Stability AI. Review depth indexed: catalogued for future review; do not represent as fully reviewed",
@@ -3907,7 +4377,7 @@
       ],
       "id": "external:repo-whisper",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "screened",
       "summary": "repository source owned by OpenAI. Review depth screened: relevance and limits reviewed",
@@ -3927,7 +4397,7 @@
       ],
       "id": "external:spheron-nvfp4-mxfp4-guide",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "screened",
       "summary": "technical-blog source owned by Spheron. Review depth screened: relevance and limits reviewed",
@@ -3949,7 +4419,7 @@
       ],
       "id": "external:vllm-blog-anatomy",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "screened",
       "summary": "technical-blog source owned by vLLM project. Review depth screened: relevance and limits reviewed",
@@ -3972,7 +4442,7 @@
       ],
       "id": "external:vllm-doc-prefix-caching",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "screened",
       "summary": "official-doc source owned by vLLM project. Review depth screened: relevance and limits reviewed",
@@ -3993,7 +4463,7 @@
       ],
       "id": "external:vllm-mlx-continuous-batching-guide",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "synthesized",
       "summary": "source-code source owned by waybarrios. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -4014,7 +4484,7 @@
       ],
       "id": "external:vllm-mlx-mllm-batch-source",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "synthesized",
       "summary": "source-code source owned by waybarrios. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -4036,7 +4506,7 @@
       ],
       "id": "external:vllm-mlx-multimodal-guide",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "synthesized",
       "summary": "source-code source owned by waybarrios. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -4052,13 +4522,36 @@
       "title": "vLLM-MLX multimodal serving guide"
     },
     {
+      "confidence": "high",
+      "evidence": [
+        "https://arxiv.org/abs/2601.19139",
+        "https://arxiv.org/abs/2601.19139v2"
+      ],
+      "id": "external:vllm-mlx-paper-v2-2026-01-29",
+      "kind": "external_reference",
+      "observed_at": "2026-11-05",
+      "provenance": "research_inference",
+      "status": "synthesized",
+      "summary": "paper source owned by authors. Review depth synthesized: directly informed a rule, runbook, or registry decision",
+      "tags": [
+        "migrated-v1",
+        "review-depth/synthesized",
+        "source-kind/paper",
+        "topic/continuous-batching",
+        "topic/multimodal",
+        "topic/prefix-cache",
+        "topic/serving"
+      ],
+      "title": "Native LLM and MLLM Inference at Scale on Apple Silicon"
+    },
+    {
       "confidence": "medium",
       "evidence": [
         "https://github.com/waybarrios/vllm-mlx"
       ],
       "id": "external:vllm-mlx-repo",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "screened",
       "summary": "repository source owned by waybarrios. Review depth screened: relevance and limits reviewed",
@@ -4080,7 +4573,7 @@
       ],
       "id": "external:vllm-mlx-vision-cache-source",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "synthesized",
       "summary": "source-code source owned by waybarrios. Review depth synthesized: directly informed a rule, runbook, or registry decision",

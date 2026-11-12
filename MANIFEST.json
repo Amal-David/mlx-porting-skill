@@ -2,8 +2,8 @@
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
   "version": "0.7.0",
-  "generated_at": "2026-10-05T03:09:27.720951+00:00",
-  "file_count": 627,
+  "generated_at": "2026-11-12T03:05:28.737+00:00",
+  "file_count": 641,
   "files": [
     {
       "path": ".agents/skills/mlx-model-porting",
@@ -93,8 +93,8 @@
     },
     {
       "path": "CHANGELOG.md",
-      "size_bytes": 20034,
-      "sha256": "3d5acffab9d926fcf97c8de498e370d09348151950b39680bfd44674e384bc22",
+      "size_bytes": 22353,
+      "sha256": "87df24c5e54d36ff9b5b3c097cd4a2996e8408064aba75f08bb6f386e9f4ef7a",
       "executable": false
     },
     {
@@ -105,14 +105,14 @@
     },
     {
       "path": "CONTRIBUTING.md",
-      "size_bytes": 21512,
-      "sha256": "bbf8f79c95870699d0f0ea318ee039a9d280724fba512406c53ec57f2f3aba64",
+      "size_bytes": 22740,
+      "sha256": "943e1bbdf8f3cd972f7be235fc9440364f675f4ffc7d1083682d83e9dda6f52e",
       "executable": false
     },
     {
       "path": "EVIDENCE_INDEX.md",
-      "size_bytes": 121003,
-      "sha256": "8e5292ff2f11c67a7a8ecbc172cccac6d3733a9914d11513829d01fe260b69b4",
+      "size_bytes": 150366,
+      "sha256": "b2c0637096102dfd87095f9ed8350df42244283d5a2573344b39209b7d60af8d",
       "executable": false
     },
     {
@@ -123,20 +123,20 @@
     },
     {
       "path": "README.md",
-      "size_bytes": 13439,
-      "sha256": "33c8bbcba9dbc1bcea17707c7dac1cc2025ef4adcc4c07d9e14ca7236aba9b65",
+      "size_bytes": 14535,
+      "sha256": "1bbda622b311649099fda874b0c096c5805c580b828f0d1838fb8b50dbf1dfe1",
       "executable": false
     },
     {
       "path": "RESEARCH_REPORT.md",
-      "size_bytes": 23254,
-      "sha256": "c0497c88b6d42269af5fbd84ce36fdfbe50fc23d6da72df186c0ba39b077ed8f",
+      "size_bytes": 24160,
+      "sha256": "b3edd8b82438fe6fbc4d2bd0f189fd49f47a53334d72dc969bb7438be9a44f1b",
       "executable": false
     },
     {
       "path": "VALIDATION.md",
-      "size_bytes": 21550,
-      "sha256": "2bf27c8254eb267302e2dfe9bdcd10b2a2a49c2f9ecc12bae3ffbec1ab003d95",
+      "size_bytes": 22698,
+      "sha256": "1a1d3c2e773c024b5d1095170f485941634ad3f438166e348ecb422eca6a9632",
       "executable": false
     },
     {
@@ -339,8 +339,8 @@
     },
     {
       "path": "mlx-model-porting/SKILL.md",
-      "size_bytes": 13458,
-      "sha256": "eeeca7c2efc3399ad5aff640b5436c3a02a61e70d9825275440769b325154c65",
+      "size_bytes": 13301,
+      "sha256": "eee50ffb63f9e284e4c312959404d353b1bab827719ca5d798a32e8701f60608",
       "executable": false
     },
     {
@@ -1023,20 +1023,20 @@
     },
     {
       "path": "mlx-model-porting/assets/effective_claims.json",
-      "size_bytes": 17022,
-      "sha256": "053ac7d75467973e4bc3a705bc2ef6cbf35b26a85e7b3f69e952ea63d3198089",
+      "size_bytes": 17160,
+      "sha256": "8df466c563bf532c60021db2592b4d10d9f722a3832d907f9bdea8f18b45b60d",
       "executable": false
     },
     {
       "path": "mlx-model-porting/assets/knowledge_graph.json",
-      "size_bytes": 557622,
-      "sha256": "4dc1e663ab320a699a8511a0b328f2d9041aa5ce03f96c247e17dd800834d758",
+      "size_bytes": 587266,
+      "sha256": "a0c7fb9571039c64f803efa74c0719f5104a218ce3617d26216f50b3b4444312",
       "executable": false
     },
     {
       "path": "mlx-model-porting/assets/learning_paths.json",
-      "size_bytes": 56274,
-      "sha256": "abdf816bd965bfc773f0ca6b9e55b251ba0e14a60bc27b0dfdf8a9cca39de9ea",
+      "size_bytes": 56809,
+      "sha256": "d3d497fed34e4c78342711fd61d0cd2c0f9c41613f000eb5ba5bb1c250d3c30d",
       "executable": false
     },
     {
@@ -1047,8 +1047,8 @@
     },
     {
       "path": "mlx-model-porting/assets/optimization_guidance.yaml",
-      "size_bytes": 63173,
-      "sha256": "d632875c77cc84ad3d1cc4fa528aac299ff441ff6b01fedc91c4fe2e77ff5972",
+      "size_bytes": 79261,
+      "sha256": "16bbf12078e2fe6c1458cb4f747de6ab9858e0d1f923fdc9b9d342a77b9d3ce9",
       "executable": false
     },
     {
@@ -1065,8 +1065,8 @@
     },
     {
       "path": "mlx-model-porting/assets/research_backlog.json",
-      "size_bytes": 11692,
-      "sha256": "972b0384e825628323c0d0161371228a166876d3ed4bc879c051362698fcfc7f",
+      "size_bytes": 11691,
+      "sha256": "85327c2f0ced08c4ee1c9e00c87d02275b9fd0a8a06d1dd8ded857183bb0ed3b",
       "executable": false
     },
     {
@@ -1077,14 +1077,14 @@
     },
     {
       "path": "mlx-model-porting/assets/sources.yaml",
-      "size_bytes": 164962,
-      "sha256": "ea1b502e4e1d406b7d711af3b3b66ef4a3947bc411d56ed2c9447f3d990c8273",
+      "size_bytes": 203937,
+      "sha256": "38a4601ca38da3277d407b95ae1a171758959d0da18cf36121e7d27fb95156be",
       "executable": false
     },
     {
       "path": "mlx-model-porting/assets/techniques.yaml",
-      "size_bytes": 53199,
-      "sha256": "3f61e459031e2745f8be785244ee59c62bd4e1c3e691dc2b8131efd0a87f5384",
+      "size_bytes": 61260,
+      "sha256": "8c2f381ddde6863bda994660b5404426db513f7f7aebce48de12228b5ca03622",
       "executable": false
     },
     {
@@ -1347,8 +1347,8 @@
     },
     {
       "path": "mlx-model-porting/graph/MECHANISM_INDEX.md",
-      "size_bytes": 33527,
-      "sha256": "389dc964a19f42c8cbf8d48967cb7e73839c39c6a2bda312208c7fafbf0cc9ca",
+      "size_bytes": 33983,
+      "sha256": "a139c32056e798bd9d8de571161ed7835def77c6d7f7192609bd1c2f5749fc3d",
       "executable": false
     },
     {
@@ -1359,8 +1359,8 @@
     },
     {
       "path": "mlx-model-porting/graph/compiled/evidence-graph.json",
-      "size_bytes": 457060,
-      "sha256": "49fbcffb905462efa61a4903a18c9a0040f5c5e418dc9377d07498ce9dbd8749",
+      "size_bytes": 495450,
+      "sha256": "3f02f281cf48e3e61934e827d58b97e774113ed6dec4ee94f354bea8a507dd6f",
       "executable": false
     },
     {
@@ -1436,6 +1436,12 @@
       "executable": false
     },
     {
+      "path": "mlx-model-porting/graph/shards/ecosystem/research-refresh-2026-11.json",
+      "size_bytes": 6305,
+      "sha256": "aa4d8a45884a0a1bf720aea0dffa1230a907661c8328a2af2f519360bb47cc8f",
+      "executable": false
+    },
+    {
       "path": "mlx-model-porting/graph/shards/mechanisms/qwen38-mtp.json",
       "size_bytes": 46663,
       "sha256": "f03c380501380bcdc2249f61faf01ed0d9b4030385af77ce5cec37eb8402526d",
@@ -1444,37 +1450,37 @@
     {
       "path": "mlx-model-porting/graph/shards/migrated/findings.json",
       "size_bytes": 15195,
-      "sha256": "8c95b1a6dd5d69b6c7318c3dcc2e25559fb4e7a2955c65c8e79c50e1eca456e6",
+      "sha256": "c737d8511c2880bc657089d6305fe21ee33024423d3da193400ec60f04de189e",
       "executable": false
     },
     {
       "path": "mlx-model-porting/graph/shards/migrated/hypotheses.json",
       "size_bytes": 10841,
-      "sha256": "2385e2cb5527b474570cef9f379d25b808508192c76ba718a4c15dcd61b1cc3e",
+      "sha256": "a76a69a619d079011d68c39b00a12123dbbc31a4589cfb042adcd9d7a964481a",
       "executable": false
     },
     {
       "path": "mlx-model-porting/graph/shards/migrated/mechanisms.json",
-      "size_bytes": 52487,
-      "sha256": "65b078d4cde3000f1e892e8084650e15cae6c3dc71dfeeeb0da4253bbcd07aa0",
+      "size_bytes": 63964,
+      "sha256": "89a80ab25cccb940f2c0f253cc69341249d8f1c93b781578f3c49ecd643a3b88",
       "executable": false
     },
     {
       "path": "mlx-model-porting/graph/shards/migrated/references.json",
-      "size_bytes": 152818,
-      "sha256": "ba5c0083dc92cb00974e545ea8d5cbc5f2b29c824a908283a7e16da1943c02c0",
+      "size_bytes": 170369,
+      "sha256": "b819fe95cc33e2170e42f91167ec707d18b9ed7c7a0939a735a52233a93624e8",
       "executable": false
     },
     {
       "path": "mlx-model-porting/graph/shards/migrated/results.json",
       "size_bytes": 3144,
-      "sha256": "b1c3d649d9369a6ed482e130060bcf95b2111e33bb10b2728427263cfc584b13",
+      "sha256": "649de669a8735b0d830eae7e87df2944af3cdcb24356c4714a927e3290a29737",
       "executable": false
     },
     {
       "path": "mlx-model-porting/graph/shards/migrated/traits.json",
-      "size_bytes": 18965,
-      "sha256": "cedf752acaa4e010d59c63c1e3d11220b4cf60f00e34fce0d1cf561f181ffcd6",
+      "size_bytes": 22184,
+      "sha256": "dd7145133233c94cd23db1413e0fe37795c9a222471aeaac1942363cf5f9509c",
       "executable": false
     },
     {
@@ -1503,8 +1509,8 @@
     },
     {
       "path": "mlx-model-porting/graph/tools/migrate_v1.py",
-      "size_bytes": 24753,
-      "sha256": "17ddb4dda96a1707e1631c7ff32f0eacc05a1bc6288f746bdf1fa3ebeafac09e",
+      "size_bytes": 24862,
+      "sha256": "3f0f025b6020147954de595ef8b557db4f89bcadb22b97271e1937daf6a702d2",
       "executable": false
     },
     {
@@ -1527,20 +1533,20 @@
     },
     {
       "path": "mlx-model-porting/references/attention-and-kv.md",
-      "size_bytes": 5481,
-      "sha256": "e7d87f2921d994397a0e11c1dd69e55b3a1faf14c7758a6e2f649e1c6fe51645",
+      "size_bytes": 10502,
+      "sha256": "6445e156e33df51a28f81ec84b11d7576526792030a57296a115f561da3a2286",
       "executable": false
     },
     {
       "path": "mlx-model-porting/references/benchmarking.md",
-      "size_bytes": 10572,
-      "sha256": "563a3808a373eecf02bd3ebcbd4ebfdd36a6edd3ec72eba7e5547bd495790e1a",
+      "size_bytes": 12148,
+      "sha256": "073a71b9a37a99c42d820f7d32b7ed25357d0cbf4ab8b18a364683fc6e3a6546",
       "executable": false
     },
     {
       "path": "mlx-model-porting/references/compile-and-kernels.md",
-      "size_bytes": 6287,
-      "sha256": "9a5d5bc3c3762da0fe8e2f38ce3b22161e4e94a08c5d2bacedb39b5f708ab402",
+      "size_bytes": 8906,
+      "sha256": "9234f574d4a871e35d1390b6c5bd5323a034c2a022b182f1c34213d4ac68ccae",
       "executable": false
     },
     {
@@ -1551,8 +1557,8 @@
     },
     {
       "path": "mlx-model-porting/references/decoding-and-serving.md",
-      "size_bytes": 5575,
-      "sha256": "4da3ccddd947e35e5460ed19e697b50049bad4828a000aef1364d4776fc8ac66",
+      "size_bytes": 9317,
+      "sha256": "aba9a760f6dd1d8c01e5db9579666da8052aa05a4f9253535aa4bf383de367fb",
       "executable": false
     },
     {
@@ -1599,8 +1605,8 @@
     },
     {
       "path": "mlx-model-porting/references/model-advisor-playbook.md",
-      "size_bytes": 16556,
-      "sha256": "ce1fb4b9d32b67a28269e5ca047a050f9ef960514aa330ffb218332258a060c4",
+      "size_bytes": 17093,
+      "sha256": "166f04bc03b21636c7d8203cfa36760fcd425606415f89717306dbaf183d4b4e",
       "executable": false
     },
     {
@@ -1629,8 +1635,8 @@
     },
     {
       "path": "mlx-model-porting/references/porting-core.md",
-      "size_bytes": 5273,
-      "sha256": "dd9c20c3c91a1534c0252bfcab2f3ac8b8acca4111fb95a914766372161c7cc8",
+      "size_bytes": 6497,
+      "sha256": "5c7583532ade740629943118057d40aa070fe6faa13a764644a3286a55535c9b",
       "executable": false
     },
     {
@@ -1641,8 +1647,14 @@
     },
     {
       "path": "mlx-model-porting/references/quantization.md",
-      "size_bytes": 6354,
-      "sha256": "43f68180a86e42cc288f7a10c95a9509457535941105e29052b775bb56f3ed5f",
+      "size_bytes": 6891,
+      "sha256": "ef55aafd8b78f2c8ea7268883053054c1aeccb11f383fa889ab734de3ea90a33",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/references/research-updates-2026-11.md",
+      "size_bytes": 15654,
+      "sha256": "5390229abee134d4a742981cf6b7efa0fc1f414a307f566d2953f2ff78c7cc0c",
       "executable": false
     },
     {
@@ -1701,8 +1713,8 @@
     },
     {
       "path": "mlx-model-porting/references/runbook-moe-transformer.md",
-      "size_bytes": 5058,
-      "sha256": "3418479b67a1e70a7ac41d65b909a663e0051e8a5bf0ec63c277e8557ce0fe77",
+      "size_bytes": 7355,
+      "sha256": "4fffe8dd928df0552a4f1457d8ccdb4aee8f86481ebe45e50a239bcbea267263",
       "executable": false
     },
     {
@@ -1725,8 +1737,8 @@
     },
     {
       "path": "mlx-model-porting/references/runbook-ssm-hybrid.md",
-      "size_bytes": 4221,
-      "sha256": "747c65ca931f48c98e7ff2f7bf00378405a0c71a94c566a097344bfa3e49fd4b",
+      "size_bytes": 7304,
+      "sha256": "5028715dc942f48fd7e39acb77776d7e2c833baf45847e527fc63d5a706ee0ff",
       "executable": false
     },
     {
@@ -1748,9 +1760,15 @@
       "executable": false
     },
     {
+      "path": "mlx-model-porting/references/runtime-compatibility.md",
+      "size_bytes": 11057,
+      "sha256": "9cf4746fff9953549541d8ffa279d80bd7482798465adf1b004bfc62638f344b",
+      "executable": false
+    },
+    {
       "path": "mlx-model-porting/references/training-and-finetuning.md",
-      "size_bytes": 4268,
-      "sha256": "71e2333c156387de8c876dffcba386ebb06f58ef21e25311247516cd352a9c2d",
+      "size_bytes": 5841,
+      "sha256": "a66ec9421f45901ebc5e0259e0a6d455fb855fb78dde1a7b107d30913cdf27e3",
       "executable": false
     },
     {
@@ -2642,6 +2660,66 @@
       "executable": false
     },
     {
+      "path": "mlx-model-porting/research-runs/2026-11-05-pr42-provenance-fix/README.md",
+      "size_bytes": 643,
+      "sha256": "2fb4f5baf3e5d48c562a1d2c4ad983d84e97f6dd4c5e1577e85853e34ed23d7f",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/research-runs/2026-11-05-pr42-provenance-fix/knowledge-delta.json",
+      "size_bytes": 50739,
+      "sha256": "6c412200056f37dbc631b517d85c84119aab59065c8f9d75b33c1214ba5bea9f",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/research-runs/2026-11-05-pr42-provenance-fix/knowledge-delta.md",
+      "size_bytes": 12571,
+      "sha256": "142fed59bb38d5eeb3ac77efa5faf759e3ec8f5fca0c1a5e754d86434f668e40",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/research-runs/2026-11-05-pr42-provenance-fix/nightly-run.json",
+      "size_bytes": 3173,
+      "sha256": "714f93d953d50d6e5b5b1a46f7b63610f9e418065e93545d105edc623e8d656b",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/research-runs/2026-11-05-pr42-provenance-fix/nightly-run.md",
+      "size_bytes": 1607,
+      "sha256": "449a65b0ed9de0b97c21f22d263a9250fd200a9c99687cf4d27d7e175d37ab17",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/research-runs/2026-11-05-reviewed-research-refresh/README.md",
+      "size_bytes": 827,
+      "sha256": "2372aaac2ad16ad9b2d15a9a6d56619c035a654a564e6ba57adc3da505154009",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/research-runs/2026-11-05-reviewed-research-refresh/knowledge-delta.json",
+      "size_bytes": 50745,
+      "sha256": "c032546dff91643d06d8f4d08aef56dd5a4d61a23b0394e185b422470532c996",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/research-runs/2026-11-05-reviewed-research-refresh/knowledge-delta.md",
+      "size_bytes": 12577,
+      "sha256": "336e67cb2c85f47d98fdcc11f788cc1345114875573b9a194ae017bdb5734af6",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/research-runs/2026-11-05-reviewed-research-refresh/nightly-run.json",
+      "size_bytes": 3227,
+      "sha256": "f4a71fc96427b8a08094fccb02502fc90f0bf813b5cadf2a6c78400a6505e879",
+      "executable": false
+    },
+    {
+      "path": "mlx-model-porting/research-runs/2026-11-05-reviewed-research-refresh/nightly-run.md",
+      "size_bytes": 1637,
+      "sha256": "04e6b7c03a1da09806cca42b12fc65db0a78e0ff5880fcca81c8bfa8ffaae707",
+      "executable": false
+    },
+    {
       "path": "mlx-model-porting/scripts/_capture_common.py",
       "size_bytes": 25616,
       "sha256": "045f80a34b5b4b7dac15123f39f6246028cc843655468d8f9510c8921b050a24",
@@ -2727,8 +2805,8 @@
     },
     {
       "path": "mlx-model-porting/scripts/generate_site_data.py",
-      "size_bytes": 30551,
-      "sha256": "5e7eba7e4606c47439b0633b36e1252ef5b54e37fe04e1041f2cd5e366191c3a",
+      "size_bytes": 31731,
+      "sha256": "0473a2234a7f8ac8ba4923e5f58622b8027a391495ee7bf2fbba82678199a63d",
       "executable": false
     },
     {
@@ -2751,14 +2829,14 @@
     },
     {
       "path": "mlx-model-porting/scripts/knowledge_curator.py",
-      "size_bytes": 41512,
-      "sha256": "21d5e436f37bf46b59d09c9db2dc22089c7c836eec450723fc8c7f9e08c25300",
+      "size_bytes": 41803,
+      "sha256": "6c10ffc942be57f57bf3689daa5b07255499162050cffba35e614885495ed330",
       "executable": false
     },
     {
       "path": "mlx-model-porting/scripts/make_port_plan.py",
-      "size_bytes": 30616,
-      "sha256": "5e59d7488cb509eb20e18db353e5a04f2600085e68fb729e0fb41e0671bfc115",
+      "size_bytes": 31217,
+      "sha256": "cb1492a176e7a375c9de0ee2430fff96fdbcdf36e8f8d269c6936d2c636521f3",
       "executable": true
     },
     {
@@ -2787,8 +2865,8 @@
     },
     {
       "path": "mlx-model-porting/scripts/recommend_optimizations.py",
-      "size_bytes": 77432,
-      "sha256": "33dc0d41dfe1c50ed71e3ee2d8fa112378472dd7a476059330e7c21d74e5ad0f",
+      "size_bytes": 84095,
+      "sha256": "b14fec0c668b376592223d975c7fd860fd62ea6f101bebcf7fbc733ab1675b3a",
       "executable": true
     },
     {
@@ -2829,8 +2907,8 @@
     },
     {
       "path": "mlx-model-porting/scripts/validate_sources.py",
-      "size_bytes": 67720,
-      "sha256": "1c9f9459af41e75060d37c449363c7b5f5483d12028d72da16a7896be0536371",
+      "size_bytes": 67919,
+      "sha256": "44c6bcdc472aeec3cce4d4bc4329bd1073996bfe54e9f685b3f50308e87c1e8e",
       "executable": true
     },
     {
@@ -2853,14 +2931,14 @@
     },
     {
       "path": "site/data.js",
-      "size_bytes": 184637,
-      "sha256": "705f0f7d9394e66319cc7b09381aa2bf8ade62b10e485cb9bed3b31870356ced",
+      "size_bytes": 218110,
+      "sha256": "a7eee1bc6829500174506f61c8d6dacd9412d12e88b718b7f7cdbe43fff4eec9",
       "executable": false
     },
     {
       "path": "site/docs/index.html",
-      "size_bytes": 107443,
-      "sha256": "7f448a56459454877403d1e9dde8dbda496ff8329bfa6b14dcee178938e3be7b",
+      "size_bytes": 111539,
+      "sha256": "0fdfce7ff6d579810a070badbd6747589494b1b00af94f81aa3b7e4554fc1964",
       "executable": false
     },
     {
@@ -2872,7 +2950,7 @@
     {
       "path": "site/index.html",
       "size_bytes": 24755,
-      "sha256": "929365a03807720f6c615b649cb3994cf039503b023e28c8dfe16dc9abbac6ee",
+      "sha256": "30ff2c6ea3091376b72e7f959b564a6bc7401454e3d0b46578b20ab1b9748ad1",
       "executable": false
     },
     {
@@ -3549,8 +3627,8 @@
     },
     {
       "path": "tests/test_evidence_graph_contract.py",
-      "size_bytes": 20043,
-      "sha256": "7e39fad2af3f50a03f761ec0b4e0141083fad225b3a41e65a74d60cf10fed51c",
+      "size_bytes": 20445,
+      "sha256": "001da2dffccca6956f6cdaf0efd4ccb44a5b9e22379396b7b19bd029a057daad",
       "executable": false
     },
     {
@@ -3633,8 +3711,8 @@
     },
     {
       "path": "tests/test_manifest_contract.py",
-      "size_bytes": 25859,
-      "sha256": "6d847d31ea25d139ca1d51d82e990ee4ac8669cccb165aabb66f704961cfe09c",
+      "size_bytes": 26002,
+      "sha256": "0d10af202c2ab02a868124d2d525423efbad149f31ee87506331605378323e89",
       "executable": false
     },
     {
@@ -3657,8 +3735,8 @@
     },
     {
       "path": "tests/test_optimization_atlas_contract.py",
-      "size_bytes": 16568,
-      "sha256": "966ef2b8580096e0bb56fc966da75890839661b1792bfb02d00b5ad8cdb8f7e7",
+      "size_bytes": 19364,
+      "sha256": "46101c5e11a4c79dffbd50ab8483ef03537947d3ac97eef19c52cd965800e0df",
       "executable": false
     },
     {
@@ -3693,8 +3771,8 @@
     },
     {
       "path": "tests/test_recommendation_contract.py",
-      "size_bytes": 82991,
-      "sha256": "03d87143e9673ac1bfb8966dbfa01bc50c451d455f03e129cef5943381a43c75",
+      "size_bytes": 83411,
+      "sha256": "734757982764498707b37d2dd32a077d5b4d9544c22c67bdab9812e326d2b56d",
       "executable": false
     },
     {
@@ -3707,6 +3785,12 @@
       "path": "tests/test_routing_contract.py",
       "size_bytes": 10742,
       "sha256": "6e2fd92a37236cb7541907602a82767665c10f1d4ca8e696bdbf9aa48b877af9",
+      "executable": false
+    },
+    {
+      "path": "tests/test_runtime_eligibility_contract.py",
+      "size_bytes": 17005,
+      "sha256": "c232b919d0b51bba030bbcd9e45c1aa74f350afd2996e42af7c2d143bd9011fb",
       "executable": false
     },
     {
@@ -3747,8 +3831,8 @@
     },
     {
       "path": "tests/test_tooling.py",
-      "size_bytes": 199705,
-      "sha256": "51ca1eb8933ab33b029178a33d63d547db0ecb34b027b420a2f11bc4d2cbff92",
+      "size_bytes": 201856,
+      "sha256": "1eecbb72a281075e4406992916a79212ee79544aa9d6b51e9ef3105dc791cfb6",
       "executable": true
     },
     {

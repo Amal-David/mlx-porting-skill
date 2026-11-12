@@ -11,6 +11,9 @@ metadata:
 
 # MLX model porting and optimization
 
+Research refresh: **2026-11-05** (unreleased; the metadata date tracks the
+published release).
+
 ## Mission
 
 Produce or inspect a **correct, reproducible, architecture-aware MLX implementation**. Correctness before speed. Every speed or memory claim must name hardware, software versions, workload, baseline, and quality gate.
@@ -19,30 +22,28 @@ Six families have scaffolds (MoE/SSM synthetic, others runbook-guided); four
 have worked packets under [examples/](examples/porting-patterns.md): Qwen2.5,
 BGE, t5-small, HuBERT. Exact output is the built-in metric.
 
-## When to use this skill
-
-Port, convert, run, inspect, quantize, package, or publish a PyTorch/Hugging Face model or MLX project on Apple Silicon, or fix any parity, NaN/Inf, shape, tokenizer, preprocessing, output, performance, memory, cache, serving, benchmark, or provenance issue in a port. Not for CUDA/non-Apple targets, ML theory without an MLX target, or training from scratch.
-
 ## Trigger map
 
 | Signal | Load |
 | --- | --- |
-| Port/convert/run request, `config.json`, safetensors index, model directory, or Hub id. | [intake](references/intake-and-routing.md), then Workflow 1-6; [worked chain](examples/worked-port-qwen2.5-0.5b-instruct/README.md) for dense decoders, routed runbooks otherwise. |
-| User points at an existing local MLX project, running MLX app, or completed MLX port. | [inspector mode](references/inspector-mode.md) plus [inspect_mlx_project.py](scripts/inspect_mlx_project.py) |
-| User asks "what can I do with this model?", asks for capability fit, or wants model-specific advice. | [model advisor playbook](references/model-advisor-playbook.md) |
-| A known architecture family needs the right runbook. | [model support map](references/model-support-map.md), then the architecture table in Workflow step 4 below |
-| Dense decoder, BERT encoder, T5 encoder-decoder, HuBERT/Wav2Vec2 acoustic encoder, sparse MoE, or selective SSM. | Use `scaffold_port.py`; select capture/parity mode `dense-decoder` (default), `encoder`, `encoder-decoder`, `asr`, or `ssm`. |
-| NaN, Inf, cosine-similarity drift, parity failure, or garbage output appears versus the source. | [failure atlas](references/failure-atlas.md) |
-| Weight conversion, key mapping, tensor rename, transpose, reshape, split, merge, or shape transform is in scope. | [core porting method](references/porting-core.md) |
-| The user says "make it faster" but no profile, workload, or baseline exists yet. | [benchmarking](references/benchmarking.md) |
-| Speedup plan, how techniques combine, or expected compound gains. | [compound stacks](references/compound-stacks.md) |
-| KV cache, long context, recurrent state, attention memory, or prefill/decode memory is the bottleneck. | [attention and KV cache](references/attention-and-kv.md) |
+| Port/convert/run, `config.json`, safetensors, model directory, or Hub id. | [intake](references/intake-and-routing.md), Workflow 1-6; [worked chain](examples/worked-port-qwen2.5-0.5b-instruct/README.md) for dense decoders. |
+| Existing MLX project, app, or completed port. | [inspector mode](references/inspector-mode.md), [inspect_mlx_project.py](scripts/inspect_mlx_project.py) |
+| Model capability fit or model-specific advice. | [model advisor playbook](references/model-advisor-playbook.md) |
+| Architecture support or runbook selection. | [model support map](references/model-support-map.md), Workflow 4 |
+| Scaffold or capture/parity mode selection. | Workflow 4 and 6; check the exact supported config. |
+| NaN/Inf, tensor drift, parity failure, or garbage output. | [failure atlas](references/failure-atlas.md) |
+| Weight mapping, conversion, or shape transforms. | [core porting method](references/porting-core.md) |
+| Performance request without a profile or baseline. | [benchmarking](references/benchmarking.md) |
+| Combining optimizations or expected compound gains. | [compound stacks](references/compound-stacks.md) |
+| Cache, long context, recurrent state, or attention memory. | [attention and KV cache](references/attention-and-kv.md) |
 | Quantization or "4-bit". | [guide](references/quantization.md), [quality gate](references/quantization-quality-gate.md) |
 | Structured local optimization sweep. | [loop](references/optimization-loop.md) |
-| Decoding, serving, speculative decoding, batching, streaming, or API runtime behavior is requested. | [decoding and serving](references/decoding-and-serving.md) |
-| Compile behavior, `mx.compile`, custom kernel, graph capture, Metal, or operation fusion comes up. | [compile and kernels](references/compile-and-kernels.md) |
-| Publish, release, checkpoint conversion, model card, provenance, or license packaging is requested. | [packaging and publication](references/packaging-and-publication.md) |
-| The user asks for "50-100 optimization ideas", a deep model-specific hunt, or research-backed candidates. | [hypothesis-led learning](references/hypothesis-led-learning.md) |
+| Decoding, serving, speculation, batching, or streaming. | [decoding and serving](references/decoding-and-serving.md) |
+| Compilation, custom kernels, graph capture, Metal, or fusion. | [compile and kernels](references/compile-and-kernels.md) |
+| Recent MLX APIs, M5/NAX, FP4/FP8, FFT, interop, or distributed backends. | [runtime compatibility](references/runtime-compatibility.md); verify target profile and API/device path. |
+| Recent papers, compressed attention, or kernel search. | [November research update](references/research-updates-2026-11.md); apply its workload and state gates. |
+| Publish, release, model card, provenance, or licensing. | [packaging and publication](references/packaging-and-publication.md) |
+| Deep model-specific research or optimization ideas. | [hypothesis-led learning](references/hypothesis-led-learning.md) |
 | Vision-language, multimodal, or image+text (VLM) input appears. | [multimodal/omni runbook](references/runbook-multimodal-omni.md) |
 | Diffusion, flow-matching, or image/video generation appears. | [diffusion/flow runbook](references/runbook-diffusion-flow.md) |
 | Text-to-speech, vocoder, or audio generation appears. | [flow-TTS](references/runbook-flow-tts.md), [autoregressive audio](references/runbook-autoregressive-audio.md) |
@@ -77,6 +78,11 @@ publish request.
 For source models, run `scripts/inspect_model.py`, then `scripts/recommend_optimizations.py`, then `scripts/make_port_plan.py --artifact-root MODEL --recommendations ...`. An actionable plan re-inspects those bytes and recomputes the full recommendation report before advice; a blocked inspection yields only a remediation plan, and no override or registry read bypasses its blockers. An override may reorder a hybrid route but must preserve every routed family, runbook, and trait. For existing MLX projects or running ports, run `scripts/inspect_mlx_project.py` and read [inspector mode](references/inspector-mode.md) first.
 
 Read [intake and routing](references/intake-and-routing.md). Confirm source, risk, Mac, memory, performance, quality; record ambiguity in `PORT_PLAN.md`. For advice, read [model advisor playbook](references/model-advisor-playbook.md) and separate results into its five controlled advisor buckets. Numeric output may come only from `assets/effective_claims.json`; missing gates withhold the number.
+
+Use `--target-profile target-profile.json` for runtime-dependent methods.
+Missing, old, or ambiguous versions/chips hold execution even with
+`--allow-blocked`. These prerequisites do not authorize numeric claims or
+replace API, device, parity, and workload gates.
 
 ### 2. Select the closest proven MLX reference
 
@@ -127,6 +133,10 @@ Use guides: [C](references/compile-and-kernels.md),[KV](references/attention-and
 Tiers: `assets/recommendation-taxonomy.yaml`; for an experimental approach, state the gate and use the rule-11 opt-in prompt.
 
 Post-parity: one dimension; Metal only after proven bottleneck. Record hypothesis, gates, metrics, decision.
+
+Compare native baselines at the same precision; measure prefill, committed-token
+decode, peak transient memory, and cold/warm behavior separately.
+`optimize_port.py` covers only its declared affine recipes, not the new methods.
 
 ### 9. Package and publish
 
