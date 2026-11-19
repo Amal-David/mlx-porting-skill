@@ -2,7 +2,7 @@
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
   "version": "0.7.0",
-  "generated_at": "2026-10-05T03:09:27.720951+00:00",
+  "generated_at": "2026-11-19T03:18:02.072Z",
   "file_count": 627,
   "files": [
     {
@@ -45,8 +45,8 @@
     },
     {
       "path": ".github/requirements-mlx-keystones.txt",
-      "size_bytes": 51100,
-      "sha256": "1853e1a187309992a48a1b8d25bec628c7f575525684dacce3fce5334749c0c6",
+      "size_bytes": 52027,
+      "sha256": "3ceaa938c6691a1f3b10daa5772d29201f039d9d2d04078269c36143636a9c28",
       "executable": false
     },
     {
@@ -3699,8 +3699,8 @@
     },
     {
       "path": "tests/test_release_contract.py",
-      "size_bytes": 21140,
-      "sha256": "7317798e7a0f477a3f6acf1afbc9eefc42cc40cf29847eef8097d171e04394ee",
+      "size_bytes": 21974,
+      "sha256": "2b1e8df6334031e6e813be4c542687ef17e1e2145219ad68d8bacfc4deea94f7",
       "executable": false
     },
     {
