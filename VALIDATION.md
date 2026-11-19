@@ -48,7 +48,7 @@ benchmark receipt remains unchanged.
 | Effective claims | 10 | `mlx-model-porting/assets/effective_claims.json` |
 | Promoted / withheld claims | 0 / 10 | generated effective-claim catalogue |
 | Knowledge-graph nodes / edges | 755 / 526 | `mlx-model-porting/assets/knowledge_graph.json` |
-| Offline tests | 595 | `python3 -m unittest discover -s tests` |
+| Offline tests | 597 | `python3 -m unittest discover -s tests` |
 
 The 17 routes are synthetic golden scenarios. They prove that every declared
 family has a fixture exercising route selection, expected weight coverage, a

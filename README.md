@@ -58,7 +58,7 @@ Current corpus (0.7.0 with the unreleased research refresh):
 
 - 400 evidence sources with explicit review depth; 74 currently carry classified
   support scope and claim types, while 326 remain intentionally unclassified;
-- 33 inspectable Python scripts and 595 offline tests;
+- 33 inspectable Python scripts and 597 offline tests;
 - 13 benchmark receipts (12 observations, 1 rejected) and 10 effective claims,
   all withheld;
 - a compiled [evidence graph](mlx-model-porting/graph/README.md) of 349 nodes
