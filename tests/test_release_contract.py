@@ -422,7 +422,9 @@ class ReleaseContractTests(unittest.TestCase):
         self.assertEqual(locked_numpy, direct_numpy)
         self.assertRegex(lock, r"(?m)^mlx-metal==[0-9.]+ +\\$")
         self.assertNotRegex(lock, r"(?m)^(?:nvidia-[a-z0-9-]+|triton)==")
-        self.assertRegex(lock, r"(?m)^numpy==[0-9.]+ +\\\\n(?:    --hash=sha256:[0-9a-f]{64})")
+        numpy_lock_lines = lock.split("numpy==", 1)[1].splitlines()
+        self.assertGreaterEqual(len(numpy_lock_lines), 2)
+        self.assertRegex(numpy_lock_lines[1], r"^    --hash=sha256:[0-9a-f]{64}")
 
     def test_apple_silicon_lane_actually_enforces_the_keystones(self) -> None:
         workflow = WORKFLOW.read_text(encoding="utf-8")
