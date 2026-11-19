@@ -3736,7 +3736,8 @@
     {
       "path": "tests/test_november_2026_watch_contract.py",
       "size_bytes": 1922,
-      "sha256": "1f6e78ece61fb00866670c65780c25cbbd1926a394e3e1e60d1c5075cc5d2b5c"
+      "sha256": "1f6e78ece61fb00866670c65780c25cbbd1926a394e3e1e60d1c5075cc5d2b5c",
+      "executable": false
     },
     {
       "path": "tests/test_optimization_atlas_contract.py",
