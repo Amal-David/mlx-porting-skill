@@ -2,7 +2,7 @@
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
   "version": "0.7.0",
-  "generated_at": "2026-10-05T15:38:13.747848+00:00",
+  "generated_at": "2026-11-19T02:59:16.499+00:00",
   "file_count": 637,
   "files": [
     {
@@ -130,19 +130,19 @@
     {
       "path": "README.md",
       "size_bytes": 14945,
-      "sha256": "8d1181bf4fd1288aeaed4738b44c57ac670f7562894f14f62f4522e438e6015f",
+      "sha256": "f68dc4212829414cd80a12319ead62e6d11e0d7f1f6958c3971f6b49d39e9465",
       "executable": false
     },
     {
       "path": "RESEARCH_REPORT.md",
       "size_bytes": 23254,
-      "sha256": "9c15d80cf56c5c6976bdc016c5528c317be650f840eb63b16c2c86a790f47800",
+      "sha256": "ab06d4c726d7cc3c54e3e8256020a42405e54626c893e832a8b2afdcdce33c8b",
       "executable": false
     },
     {
       "path": "VALIDATION.md",
       "size_bytes": 21899,
-      "sha256": "4506d4c51d6a9f6675ddeeca52fdc7f9e5bd58884ac28ebf16cd7d804cbc5e26",
+      "sha256": "163847d0b510672b8aabcea58a1df83989ac5b7e40c18126de3958208c8bc670",
       "executable": false
     },
     {
@@ -2805,8 +2805,8 @@
     },
     {
       "path": "mlx-model-porting/scripts/mlx_doctor.py",
-      "size_bytes": 21705,
-      "sha256": "2b4faf193690b838468f04de3359de7cff549815c14ebfd6d7cdf200e7e59b82",
+      "size_bytes": 24153,
+      "sha256": "b978433f173e4fca6da37ac3c0fb49db3cd8af3e5b5eec549072219f9dfe0756",
       "executable": true
     },
     {
@@ -3693,8 +3693,8 @@
     },
     {
       "path": "tests/test_mlx_doctor.py",
-      "size_bytes": 12296,
-      "sha256": "67c107f6a81e642a8c34ec37e05be5f67c9495ded519b0d1e52912ab118889f8",
+      "size_bytes": 15357,
+      "sha256": "c39ff966b5aba107b2d25010429b8c053ec09cb71860b8c003f042b85e62edc2",
       "executable": false
     },
     {

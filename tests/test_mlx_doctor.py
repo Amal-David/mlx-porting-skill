@@ -125,6 +125,56 @@ class DoctorContractTests(unittest.TestCase):
         self.assertFalse(report["memory"]["fit_verified"])
         self.assertIsNone(report["memory"]["estimated_runtime_bytes"])
 
+    def test_project_budget_aggregates_nested_model_storage(self):
+        project = self.work / "project"
+        project.mkdir()
+        (project / "model.py").write_text("import mlx.core as mx\n")
+        raw = {"schema_version": 1, "health": {}, "code_surface": {"risks": []},
+               "model_inspections": [
+                   {"ok": True, "tensor_summary": {"estimated_bytes": 700 * 1024**2}},
+                   {"ok": True, "tensor_summary": {"estimated_bytes": 500 * 1024**2}},
+               ]}
+        with mock.patch.object(doctor, "inspect_input", return_value=raw):
+            report = self.report(project, "--kind", "project", "--model", self.model,
+                                 "--memory-budget-gib", "1", "--require-runtime", expected=1)
+        self.assertEqual(report["memory"]["declared_tensor_storage_bytes"], 1200 * 1024**2)
+        self.assertTrue(any("exceeds" in value for value in report["runtime_blockers"]))
+        self.assertFalse(report["ok"])
+        self.assertFalse(report["memory"]["fit_verified"])
+        self.assertIsNone(report["memory"]["estimated_runtime_bytes"])
+
+    def test_unknown_project_storage_remains_unknown(self):
+        project = self.work / "project"
+        project.mkdir()
+        raw = {"schema_version": 1, "health": {}, "code_surface": {"risks": []},
+               "model_inspections": [{"ok": True, "tensor_summary": {"estimated_bytes": 0}}]}
+        with mock.patch.object(doctor, "inspect_input", return_value=raw):
+            report = self.report(project, "--kind", "project", "--memory-budget-gib", "1")
+        self.assertIsNone(report["memory"]["declared_tensor_storage_bytes"])
+        self.assertTrue(any("unknown tensor storage" in warning for warning in report["warnings"]))
+
+    def test_markdown_exposes_inspection_evidence(self):
+        args = doctor.parse_args([str(self.model)])
+        raw = doctor.inspect_input(self.model, "model", args, None)
+        raw["license"] = {"status": "review-required", "source": "fixture"}
+        raw["risks"] = [{"code": "model-risk-test", "detail": "needs review"}]
+        raw["tensor_summary"]["estimated_bytes"] = 123456
+        with mock.patch.object(doctor, "inspect_input", return_value=raw):
+            code, output, err = self.run_doctor(self.model, "--format", "markdown",
+                                                "--memory-budget-gib", "1")
+        self.assertEqual(code, 0, err)
+        for snippet in ("Runbooks", "123456", "License evidence", "review-required",
+                        "model-risk-test", "Installed package metadata", "numpy", "Requested budget"):
+            self.assertIn(snippet.lower(), output.lower())
+
+    def test_project_markdown_includes_project_health(self):
+        project = self.work / "project"
+        project.mkdir()
+        (project / "model.py").write_text("import mlx.core as mx\n")
+        code, output, err = self.run_doctor(project, "--kind", "project", "--format", "markdown")
+        self.assertEqual(code, 0, err)
+        self.assertIn("Project health evidence", output)
+
     def test_project_proof_filenames_are_not_runtime_validation(self):
         project = self.work / "project"
         project.mkdir()
