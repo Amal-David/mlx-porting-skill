@@ -1,5 +1,39 @@
 # Changelog
 
+## Unreleased — 2026-11-05
+
+- Preserve article-identifying query parameters in research graph locators,
+  including the Qwen3-Next author article. Keep encoded and repeated query
+  values intact, and retain the existing arXiv/GitHub identity rules.
+- Add runtime eligibility to recommendation and canonical plan generation.
+  Minimum reviewed software versions and explicit chip families are distinct
+  from historical numeric-claim constraints; missing, malformed or incompatible
+  profiles keep methods held, including with `--allow-blocked`. Plans explain
+  the holds without placing those methods in actionable advisor buckets.
+- Review 37 new primary-source records, correct the TurboQuant bibliography,
+  and preserve older DFlash/vLLM-MLX identities by adding versioned reviews.
+  Add six complete guidance methods and five techniques for native gated-delta
+  updates, STFT/ISTFT, M5 matrix dispatch, compressed attention, KV pruning and
+  hardware-aware kernel search. No new model scaffold or numeric claim is added.
+- Add compact runtime and research references; update cache, speculation,
+  hybrid/MoE, quantization, kernel, interop, benchmark and training runbooks
+  with source-specific compatibility, correctness, measurement and rollback
+  gates. Retain reduced-precision, producer-synchronization and distributed
+  singleton/fast-sync failure checks from the reviewed MLX source.
+- Reconcile both graph representations and add a source-only trait/eligibility
+  shard. Record a new offline curator run using existing discovery receipts;
+  no network collection is implied. Refresh the evidence index, claim/site
+  projections and manifest while preserving historical research and benchmark
+  receipt bytes.
+- Keep the migrated local measurement's observation date bound to its original
+  receipt instead of advancing it to the current graph-generation date.
+- Preserve primary-source URLs containing a numerical headline as provenance
+  links without disabling the entire research advisory. Labels, effect text
+  and numeric bands remain excluded from that review-only projection.
+- Add seven runtime eligibility regression tests, including real offline
+  inspect/recommend/plan subprocesses, and keep the static site export's
+  applicability metadata. Metal execution remains a target-hardware gate.
+
 ## 0.7.0 — 2026-07-23
 
 - Completed 7/7 architecture-class coverage: every stress-tested family now has

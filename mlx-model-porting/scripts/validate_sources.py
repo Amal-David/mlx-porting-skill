@@ -24,6 +24,7 @@ from typing import Any
 
 from _common import SkillError, dump_json, load_structured, parse_band
 from generate_claim_catalog import build_claim_catalog
+from recommend_optimizations import validate_runtime_requirements
 from validate_benchmarks import build_assessment_report, build_receipts_index, render_benchmark_report
 
 IMPLEMENTATION_KINDS = {"official-doc", "repository", "source-code", "release"}
@@ -830,6 +831,10 @@ def validate(skill: Path, check_urls: bool, timeout: float, workers: int) -> tup
     method_ids = {m.get("id") for m in optimization_guidance.get("methods", []) if isinstance(m, dict)}
     for method in optimization_guidance.get("methods", []):
         mid = method.get("id")
+        try:
+            validate_runtime_requirements(method)
+        except SkillError as exc:
+            errors.append(str(exc))
         technique_id = method.get("technique_id")
         add_error(errors, not mid, "optimization guidance method missing id")
         add_error(errors, technique_id not in technique_ids, f"optimization guidance method {mid} references missing technique {technique_id}")

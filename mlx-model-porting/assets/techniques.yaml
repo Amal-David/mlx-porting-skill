@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "reviewed": "2026-07-14",
+  "reviewed": "2026-11-05",
   "statuses": [
     "native-mlx",
     "official-mlx-project",
@@ -418,9 +418,10 @@
       "evidence": [
         "mlx-lm-repo",
         "mlx-vlm-readme",
-        "paper-2402-02750"
+        "paper-2402-02750",
+        "paper-2610-33076"
       ],
-      "reviewed": "2026-06-23"
+      "reviewed": "2026-11-05"
     },
     {
       "id": "turboquant-kv",
@@ -476,9 +477,10 @@
       "evidence": [
         "mlx-lm-speculative",
         "paper-2211-17192",
-        "paper-2302-01318"
+        "paper-2302-01318",
+        "paper-2610-31479"
       ],
-      "reviewed": "2026-06-24"
+      "reviewed": "2026-11-05"
     },
     {
       "id": "prompt-lookup",
@@ -674,9 +676,10 @@
       "evidence": [
         "paper-2306-14048",
         "paper-2404-14469",
-        "paper-2509-04377"
+        "paper-2509-04377",
+        "paper-2610-31479"
       ],
-      "reviewed": "2026-06-23"
+      "reviewed": "2026-11-05"
     },
     {
       "id": "low-rank-kv",
@@ -765,9 +768,10 @@
         "mlx-doc-core-quantize",
         "mlx-doc-nn-quantize",
         "mlx-lm-convert",
-        "mlx-audio-convert"
+        "mlx-audio-convert",
+        "mlx-0324-quantization-bindings"
       ],
-      "reviewed": "2026-06-24"
+      "reviewed": "2026-11-05"
     },
     {
       "id": "activation-quant",
@@ -1321,6 +1325,104 @@
       "evidence": [],
       "reviewed": "2026-06-24",
       "rollback_condition": "Always: this method is rejected for MLX and must not be adopted."
+    },
+    {
+      "id": "native-gated-delta-update",
+      "title": "Native Gated DeltaNet update with an explicit recurrent-state contract",
+      "category": "recurrent-state",
+      "status": "native-mlx",
+      "applies_to": [
+        "ssm-recurrent-hybrid"
+      ],
+      "use_when": "On the reviewed MLX 0.32.4-or-newer source baseline, evaluate mx.fast.gated_delta_update only for a matching Gated DeltaNet recurrence after the eager state oracle passes; this does not make Mamba or every linear attention variant compatible.",
+      "avoid_when": "A matching version does not prove the symbol, backend, dtype, or recurrence is usable.",
+      "validation_gate": "Confirm mlx>=0.32.4 and probe the actual mx.fast.gated_delta_update path on the selected device. Verify float32 state [B,Hv,Dv,Dk], decay convention, normalization and upstream query scaling against the source recurrence. Compare full-sequence, chunked-prefill, token-by-token, reset, padding, fork and rejected-draft rollback outputs and final state. If trainable, compare vector-Jacobian products and gradient tolerance separately from inference parity. Measure prefill and committed-token decode, synchronization, live state and peak memory against the current native/eager baseline.",
+      "rollback_condition": "State or output parity fails at any chunk boundary. The model uses a different recurrence or the native path is unavailable. Latency or memory regresses on the intended sequence-length distribution.",
+      "evidence": [
+        "mlx-0324-fast-bindings",
+        "mlx-0324-gated-delta-implementation",
+        "mlx-0324-gated-delta-tests"
+      ],
+      "reviewed": "2026-11-05"
+    },
+    {
+      "id": "native-spectral-transforms",
+      "title": "Native STFT and inverse STFT with source-matched boundary semantics",
+      "category": "audio",
+      "status": "native-mlx",
+      "applies_to": [
+        "automatic-speech-recognition",
+        "streaming-speech",
+        "separation-enhancement",
+        "vocoder-waveform-decoder",
+        "neural-audio-codec",
+        "flow-diffusion-tts"
+      ],
+      "use_when": "Evaluate mlx.core.fft.stft/istft on the reviewed MLX 0.32.4-or-newer baseline only when the source spectral frontend or decoder has an exactly matched transform contract.",
+      "avoid_when": "Window, centering, padding and inverse overlap normalization differ across frameworks.",
+      "validation_gate": "Confirm mlx>=0.32.4 and exercise fft.stft and fft.istft on the selected device before adopting them. Match FFT length, hop, window samples, centering, padding, one-sided/full spectrum, complex layout and reconstruction length to the source. Compare silence, impulse, sinusoid, short clips and nonmultiple lengths plus whole-file versus streaming chunk boundaries. Run task quality and clipping/continuity checks; measure first-chunk latency, real-time factor and peak memory.",
+      "rollback_condition": "Spectral or waveform parity fails. The source needs unsupported padding, normalization or streaming semantics. Task quality or end-to-end audio latency regresses.",
+      "evidence": [
+        "mlx-0324-fft-bindings"
+      ],
+      "reviewed": "2026-11-05"
+    },
+    {
+      "id": "metal-nax-matmul",
+      "title": "Profile the native M5 GPU Neural Accelerator matrix path",
+      "category": "kernels",
+      "status": "native-mlx",
+      "applies_to": [
+        "linear-heavy-models",
+        "diffusion-flow"
+      ],
+      "use_when": "For an explicitly identified M5-family Mac with macOS>=26.2 and the reviewed MLX>=0.32.4 baseline, profile the existing native matrix dispatch before writing a replacement kernel. M4 and unreviewed chip families remain outside this recipe.",
+      "avoid_when": "The installed build or MLX_METAL_NO_NAX may disable NAX despite compatible version and hardware metadata.",
+      "validation_gate": "Match mlx>=0.32.4, macos>=26.2 and explicit M5 chip family in TargetProfile. Verify Metal GPU execution and inspect the installed native dispatch/build before attributing work to NAX. Check matrix layout, tails, accumulation precision and representative task quality against the readable baseline. Benchmark prefill and decode separately at the same precision, model, shape distribution, software and power conditions.",
+      "rollback_condition": "The actual build/device does not expose the required path. Numerical behavior exceeds the declared tolerance. The native alternative is faster or end-to-end gain disappears.",
+      "evidence": [
+        "apple-metal-tensors-wwdc26",
+        "mlx-0324-nax-device",
+        "apple-mlx-m5-blog"
+      ],
+      "reviewed": "2026-11-05"
+    },
+    {
+      "id": "compressed-kv-direct-attention",
+      "title": "Direct compressed-KV attention without full-cache reconstruction",
+      "category": "kv-cache",
+      "status": "research-candidate",
+      "applies_to": [
+        "dense-decoder-transformer",
+        "moe-decoder-transformer"
+      ],
+      "use_when": "Investigate blockwise attention that consumes compressed KV without reconstructing the entire cache only after measuring the existing uniform-quantized and uncompressed baselines.",
+      "avoid_when": "Packing, rotation, scales, residuals and reconstruction all consume time and memory.",
+      "validation_gate": "Pin an inspectable MLX implementation; compare numerical and task quality with uniform KV and uncompressed baselines at a matched memory budget. Measure resident cache, scale/residual metadata, transient reconstruction, allocator peak and allocation sizes separately. Sweep supported short, intermediate and deployment-long contexts, including 32K or longer only when the model and host budget support them. Verify direct compressed-block consumption, preallocation/chunk boundaries, cache persistence and nonmultiple lengths. Measure committed-token latency and first-token cost including quantization and attention; do not multiply representation-level compression factors.",
+      "rollback_condition": "Reconstruction dominates decode or peak memory defeats the capacity objective. Quality degrades beyond the preset budget. The implementation materializes the full cache on every token or fails allocation/boundary checks.",
+      "evidence": [
+        "paper-2610-33076",
+        "paper-2504-19874"
+      ],
+      "reviewed": "2026-11-05"
+    },
+    {
+      "id": "hardware-aware-kernel-search",
+      "title": "Hardware-aware kernel search with held-out validation",
+      "category": "kernels",
+      "status": "research-candidate",
+      "applies_to": [
+        "all"
+      ],
+      "use_when": "Use a bounded hypothesis-and-measurement search for a demonstrated hotspot: translate algorithmic invariants and memory access patterns into Metal constraints, generate one candidate change at a time, and retain the current native MLX baseline and fallback.",
+      "avoid_when": "Kernel search consumes tuning budget and can overfit benchmark shapes.",
+      "validation_gate": "Capture the operator contract, current native baseline, supported shapes/dtypes, chip limits and a bounded iteration/time budget. Freeze held-out correctness and workload cases before search; validate every candidate before timing. Exercise nonmultiple dimensions, strides, tails, empty/masked cases and gradients when training is in scope. Keep per-candidate source hashes, changed hypothesis, compiler/runtime identity, failures and real-device timing. Recheck finalists on held-out shapes and the end-to-end model; separate prefill from decode and cold compile from warm execution.",
+      "rollback_condition": "A candidate fails held-out parity or depends on unsupported hardware behavior. The native baseline wins or tuning gains vanish end to end. The search exhausts its budget without a reproducible improvement.",
+      "evidence": [
+        "paper-2602-19128",
+        "bair-k-search-mlx-2026-07-29"
+      ],
+      "reviewed": "2026-11-05"
     }
   ]
 }

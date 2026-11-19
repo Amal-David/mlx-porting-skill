@@ -51,6 +51,25 @@ For every primitive, make layout conversions visible. Do not hide transposes ins
 - Avoid repeated host/device conversions. Unified memory does not make Python/NumPy synchronization free.
 - Verify slice/update semantics and duplicate-index accumulation.
 
+### Precision and interop preflight
+
+Use [runtime compatibility](runtime-compatibility.md) before adopting a newer
+native primitive. A float32 output dtype alone does not prove full-precision
+matrix arithmetic: MLX may use reduced-precision matrix hardware. For a strict
+float32 baseline, launch the process with `MLX_ENABLE_TF32=0` and record the
+setting. Metal 3x3 stride-one convolutions may select Winograd based on total
+input size, including batch size; diagnose batch-dependent drift with
+`MLX_CONV_WINOGRAD=0`. Compare each optimized path against the strict baseline
+and restore the chosen settings only after parity/quality gates pass. See the
+[pinned numerical-precision guide](https://github.com/ml-explore/mlx/blob/36969c094354086e15d2a327a9c50feb20b9cf11/docs/src/usage/precision.rst).
+
+When comparing source and target through DLPack, synchronize the producer and
+verify copy/ownership behavior; shared memory does not imply completed work.
+Do not use a NumPy or foreign-framework operation inside the MLX gradient
+oracle. Preserve BF16 capture values via a float32 export rather than an
+unsupported direct NumPy conversion. Follow the
+[interop contract](runtime-compatibility.md#framework-interoperability).
+
 ## Weight conversion principles
 
 A conversion is data transformation, not model execution.

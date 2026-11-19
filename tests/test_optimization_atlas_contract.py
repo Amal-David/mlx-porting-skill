@@ -8,6 +8,7 @@ import shutil
 import subprocess
 import sys
 import unittest
+from html import unescape
 from html.parser import HTMLParser
 from pathlib import Path
 
@@ -85,6 +86,8 @@ class OptimizationAtlasContractTests(unittest.TestCase):
         learning = self.site_data["learning"]
         methods = learning["guidance_methods"]
         self.assertEqual(len(methods), len(self.guidance["methods"]))
+        guidance_by_id = {method["id"]: method for method in self.guidance["methods"]}
+        software_labels = {"mlx": "MLX", "macos": "macOS"}
         required = {
             "id", "title", "status", "applies_to", "recommendation", "expected_effect",
             "tradeoffs", "validation_gates", "rollback_conditions", "evidence_links",
@@ -110,13 +113,33 @@ class OptimizationAtlasContractTests(unittest.TestCase):
                 self.assertNotRegex(method["expected_effect"], r"(?:\d+(?:\.\d+)?\s*[x×%])")
                 self.assertIn("Targets ", method["expected_effect"])
                 self.assertTrue(all(link["url"].startswith("https://") for link in method["evidence_links"]))
+                requirements = guidance_by_id[method["id"]].get("runtime_requirements")
+                self.assertEqual(method.get("runtime_requirements"), requirements)
+                if requirements is not None:
+                    for software, minimum in requirements.get("minimum_software", {}).items():
+                        self.assertIn(
+                            f"{software_labels.get(software, software)} ≥ {minimum}",
+                            method["prerequisite"],
+                        )
+                    for chip in requirements.get("hardware", {}).get("chip_family_any", []):
+                        self.assertIn(f"{chip.upper()} family", method["prerequisite"])
+                    self.assertIn(
+                        "Unknown or incompatible runtime holds execution",
+                        method["prerequisite"],
+                    )
         generator = GENERATOR.read_text(encoding="utf-8")
         self.assertIn('claim.get("promotion_state") == "local-promotion"', generator)
         self.assertNotIn('claim.get("promotion_state") == "effective"', generator)
         expected_canonical_sources = {
             "audio-streaming-and-cache": "mlx-audio-release-044",
             "multimodal-content-prefix-cache": "vllm-mlx-mllm-batch-source",
-            "native-low-bit-weight-quantization": "mlx-doc-core-quantize",
+            "native-low-bit-weight-quantization": "mlx-0324-quantization-bindings",
+            "native-gated-delta-update": "mlx-0324-fast-bindings",
+            "native-spectral-transforms": "mlx-0324-fft-bindings",
+            "metal-nax-matmul": "mlx-0324-nax-device",
+            "compressed-kv-direct-attention": "paper-2504-19874",
+            "kv-cache-pruning": "paper-2610-31479",
+            "hardware-aware-kernel-search": "bair-k-search-mlx-2026-07-29",
             "spatial-grid-sample-kernel": "katlun-grid-sample-source",
             "video-input-budgeting": "vllm-mlx-multimodal-guide",
         }
@@ -217,6 +240,30 @@ class OptimizationAtlasContractTests(unittest.TestCase):
         ]
         self.assertCountEqual(fallback_method_ids, canonical_method_ids)
         self.assertEqual(len(fallback_method_ids), len(set(fallback_method_ids)))
+        fallback_bodies = dict(re.findall(
+            r'<li data-optimization-fallback-method="([^"]+)"[^>]*>(.*?)</li>',
+            html,
+            flags=re.DOTALL,
+        ))
+        runtime_methods = {
+            method["id"]: method["runtime_requirements"]
+            for method in self.site_data["learning"]["guidance_methods"]
+            if method.get("runtime_requirements")
+        }
+        self.assertEqual(set(runtime_methods), {
+            "native-gated-delta-update", "native-spectral-transforms", "metal-nax-matmul",
+        })
+        software_labels = {"mlx": "MLX", "macos": "macOS"}
+        for method_id, requirements in runtime_methods.items():
+            with self.subTest(runtime_fallback=method_id):
+                body = fallback_bodies[method_id]
+                self.assertIn("data-optimization-fallback-prerequisite", body)
+                visible = unescape(re.sub(r"<[^>]*>", " ", body))
+                for software, minimum in requirements.get("minimum_software", {}).items():
+                    self.assertIn(f"{software_labels[software]} ≥ {minimum}", visible)
+                for chip in requirements.get("hardware", {}).get("chip_family_any", []):
+                    self.assertIn(f"{chip.upper()} family", visible)
+                self.assertIn("Unknown or incompatible runtime holds execution", visible)
         for rejected_id in ("content-prefix-cache-vlm", "cuda-graphs-decode-capture"):
             self.assertRegex(
                 html,

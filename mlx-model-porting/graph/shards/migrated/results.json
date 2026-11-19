@@ -29,7 +29,7 @@
       "to": "workload:six-token-greedy-decode"
     }
   ],
-  "generated_at": "2026-07-23",
+  "generated_at": "2026-11-05",
   "graph_id": "mlx-porting-skill/migrated/results",
   "nodes": [
     {
@@ -52,7 +52,7 @@
       ],
       "id": "result:v1-qwen25-05b-bf16-cast-walltime",
       "kind": "applied_result",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-07-10",
       "provenance": "local_measured",
       "status": "held-observation",
       "summary": "Revision 7ae557604adf67be50417f59c2c2f167def9a775 completed the offline static-intake, Torch-oracle, standalone MLX scaffold, schema-2 weight conversion, 29-rung parity, exact greedy-generation, MLX-LM cross-check, and schema-2 receipt flow on Apple M4 Pro. Schema-2 receipts observed 0.3247475000 s F32 versus 0.2490912910 s BF16 median wall time, a recomputed 1.3037288406x inverse ratio. The measurement is retained as an observation only.",

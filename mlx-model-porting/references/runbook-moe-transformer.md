@@ -1,5 +1,18 @@
 # Runbook: Mixture-of-Experts Transformer
 
+## Contents
+
+- [Applies to](#applies-to)
+- [Architecture fingerprint](#architecture-fingerprint)
+- [Source oracle checkpoints](#source-oracle-checkpoints)
+- [Weight conversion](#weight-conversion)
+- [Minimal MLX path](#minimal-mlx-path)
+- [Parity traps](#parity-traps)
+- [Optimization ladder](#optimization-ladder)
+- [Workload-shaped dispatch gate](#workload-shaped-dispatch-gate)
+- [Quantization policy](#quantization-policy)
+- [Completion gates](#completion-gates)
+
 ## Applies to
 
 Mixtral, DeepSeek-MoE, Qwen-MoE, DBRX, Grok, MiniMax-style sparse MoE decoders and hybrids with routed experts. Use the dense decoder runbook for shared attention and non-MoE blocks.
@@ -32,6 +45,13 @@ For one MoE layer capture:
 8. final residual.
 
 Construct a fixture that routes tokens to multiple experts and creates duplicate expert assignments.
+
+Do not infer routing semantics from the family name. The
+[DeepSeek-V4 reference](https://huggingface.co/docs/transformers/model_doc/deepseek_v4)
+has token-ID-selected experts in some layers and learned top-k selection in
+others. Pin the selection/scoring distinction, correction bias, activation,
+clamping, and layer schedule. Preserve non-floating routing tables during
+conversion. Test ID selection independently from expert score computation.
 
 ## Weight conversion
 
@@ -69,7 +89,7 @@ The loop baseline is intentionally slow but provides a trustworthy oracle for op
 
 ## Optimization ladder
 
-1. Batch tokens per expert to replace per-token calls.
+1. Choose the dispatch path by actual rows per expert: evaluate grouped batching for prefill/serving and a direct gather path for single-token decode.
 2. Use `gather_mm` for indexed expert projections when loop-oracle parity passes. If indices are sorted, benchmark the sorted path separately.
 3. Use `gather_qmm` only for quantized expert matrices after recording group size, bit width, mode, scales/biases layout, and quality drift.
 4. Treat `segmented_mm` as a gated candidate: the C++ primitive is documented, but the exact Python binding and MoE segment mapping must be verified on the target MLX version.
@@ -81,6 +101,27 @@ The loop baseline is intentionally slow but provides a trustworthy oracle for op
 10. Evaluate expert memory mapping/offload only when the model does not fit unified memory.
 11. For serving, batch requests to increase tokens per active expert while monitoring tail latency.
 12. Treat expert reduction (`moe-top-k` lower than trained value) as a lossy product mode, never a default optimization.
+
+## Workload-shaped dispatch gate
+
+The [October 2026 Apple Silicon study](https://research.macpaw.com/publications/llm-optimizations-apple-silicon)
+motivates checking batch-one dispatch separately from grouped-GEMM techniques.
+Measure sorting, index construction, gather, expert matmul, and combine as well
+as the complete layer. A faster isolated matmul cannot pass a slower layer.
+
+Compare one-token decode, small verification blocks, prompt prefill, and the
+intended concurrent load. Include routing distributions with many tokens in
+one expert, scattered experts, duplicate selections across tokens, and no
+tokens in an expert. Keep exact top-k, shared experts, router precision, and
+quantization format fixed. A path selected for a small-M workload must fall
+back for unsupported shapes or dtypes rather than silently changing routing.
+
+Report total resident weight bytes separately from active parameters: sparse
+execution does not make inactive expert weights disappear from a fully
+resident model. Include dispatch workspace and metadata in peak memory.
+Roll back when expert IDs/weights or combined outputs fail parity, or when
+the target end-to-end objective regresses beyond noise. Do not promote an
+M=1 result to prefill or multiply it by an unrelated quantization speedup.
 
 ## Quantization policy
 

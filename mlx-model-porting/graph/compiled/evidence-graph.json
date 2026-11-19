@@ -93,10 +93,24 @@
     },
     {
       "confidence": "medium",
+      "from": "external:apple-metal-tensors-wwdc26",
+      "rationale": "v1 evidence_for edge from source:apple-metal-tensors-wwdc26.",
+      "relation": "supports",
+      "to": "mechanism:metal-nax-matmul"
+    },
+    {
+      "confidence": "medium",
       "from": "external:apple-mlx-m5-blog",
       "rationale": "v1 evidence_for edge from source:apple-mlx-m5-blog.",
       "relation": "supports",
       "to": "mechanism:lazy-eval-boundaries"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:apple-mlx-m5-blog",
+      "rationale": "v1 evidence_for edge from source:apple-mlx-m5-blog.",
+      "relation": "supports",
+      "to": "mechanism:metal-nax-matmul"
     },
     {
       "confidence": "medium",
@@ -113,18 +127,18 @@
       "to": "mechanism:lazy-eval-boundaries"
     },
     {
+      "confidence": "medium",
+      "from": "external:bair-k-search-mlx-2026-07-29",
+      "rationale": "v1 evidence_for edge from source:bair-k-search-mlx-2026-07-29.",
+      "relation": "supports",
+      "to": "mechanism:hardware-aware-kernel-search"
+    },
+    {
       "confidence": "low",
       "from": "external:candidate-arxiv-2001-00577",
       "rationale": "Unreviewed research candidate matched learning:block-weight-streaming on terms low, memory, method, streaming.",
       "relation": "suggests",
       "to": "finding:block-weight-streaming"
-    },
-    {
-      "confidence": "low",
-      "from": "external:candidate-arxiv-2001-00577",
-      "rationale": "Unreviewed research candidate matched approach:adaptive-kv-quantization on terms bit, memory, quantization.",
-      "relation": "suggests",
-      "to": "mechanism:adaptive-kv-quantization"
     },
     {
       "confidence": "low",
@@ -135,10 +149,10 @@
     },
     {
       "confidence": "low",
-      "from": "external:candidate-arxiv-2503-09905",
-      "rationale": "Unreviewed research candidate matched backlog:graph-geometric-scientific on terms offline, one, such.",
+      "from": "external:candidate-arxiv-2001-00577",
+      "rationale": "Unreviewed research candidate matched approach:native-spectral-transforms on terms automatic, recognition, speech, streaming.",
       "relation": "suggests",
-      "to": "hypothesis:graph-geometric-scientific"
+      "to": "mechanism:native-spectral-transforms"
     },
     {
       "confidence": "low",
@@ -153,6 +167,13 @@
       "rationale": "Unreviewed research candidate matched approach:bf16-weight-cast on terms its, latency, quantization.",
       "relation": "suggests",
       "to": "mechanism:bf16-weight-cast"
+    },
+    {
+      "confidence": "low",
+      "from": "external:candidate-arxiv-2503-09905",
+      "rationale": "Unreviewed research candidate matched approach:native-spectral-transforms on terms latency, recognition, speech, streaming.",
+      "relation": "suggests",
+      "to": "mechanism:native-spectral-transforms"
     },
     {
       "confidence": "low",
@@ -171,16 +192,9 @@
     {
       "confidence": "low",
       "from": "external:candidate-arxiv-2505-18610",
-      "rationale": "Unreviewed research candidate matched approach:uniform-kv-quantization on terms cache, context, long, memory, quantization.",
+      "rationale": "Unreviewed research candidate matched approach:compressed-kv-direct-attention on terms cache, context, existing, long, memory.",
       "relation": "suggests",
-      "to": "mechanism:uniform-kv-quantization"
-    },
-    {
-      "confidence": "low",
-      "from": "external:candidate-arxiv-2510-00981",
-      "rationale": "Unreviewed research candidate matched learning:audio-flow-tts-duration-vocoder-gates on terms audio, codec, length, speech, streaming.",
-      "relation": "suggests",
-      "to": "finding:audio-flow-tts-duration-vocoder-gates"
+      "to": "mechanism:compressed-kv-direct-attention"
     },
     {
       "confidence": "low",
@@ -195,6 +209,13 @@
       "rationale": "Unreviewed research candidate matched outcome:audio-tts-qwen3-and-vocoder-routes on terms asr, audio, but, can, codec, rate.",
       "relation": "suggests",
       "to": "finding:outcome-audio-tts-qwen3-and-vocoder-routes"
+    },
+    {
+      "confidence": "low",
+      "from": "external:candidate-arxiv-2510-00981",
+      "rationale": "Unreviewed research candidate matched approach:native-spectral-transforms on terms audio, codec, neural, speech, streaming.",
+      "relation": "suggests",
+      "to": "mechanism:native-spectral-transforms"
     },
     {
       "confidence": "low",
@@ -220,13 +241,6 @@
     {
       "confidence": "low",
       "from": "external:candidate-arxiv-2601-11141",
-      "rationale": "Unreviewed research candidate matched outcome:audio-tts-qwen3-and-vocoder-routes on terms audio, codec, generation, latency, quality, speaker, text.",
-      "relation": "suggests",
-      "to": "finding:outcome-audio-tts-qwen3-and-vocoder-routes"
-    },
-    {
-      "confidence": "low",
-      "from": "external:candidate-arxiv-2601-11141",
       "rationale": "Unreviewed research candidate matched approach:audio-reference-conditioning-cache on terms audio, cloning, codec, first, latency, speaker, voice.",
       "relation": "suggests",
       "to": "mechanism:audio-reference-conditioning-cache"
@@ -237,6 +251,13 @@
       "rationale": "Unreviewed research candidate matched approach:audio-streaming-and-cache on terms audio, codec, first, latency, quality, speech, streaming.",
       "relation": "suggests",
       "to": "mechanism:audio-streaming-and-cache"
+    },
+    {
+      "confidence": "low",
+      "from": "external:candidate-arxiv-2601-11141",
+      "rationale": "Unreviewed research candidate matched approach:native-spectral-transforms on terms audio, codec, first, latency, neural, quality, speech, streaming.",
+      "relation": "suggests",
+      "to": "mechanism:native-spectral-transforms"
     },
     {
       "confidence": "low",
@@ -264,14 +285,7 @@
       "from": "external:candidate-arxiv-2601-19139",
       "rationale": "Source registry observed revision v2 of the same work.",
       "relation": "supersedes",
-      "to": "external:paper-2601-19139"
-    },
-    {
-      "confidence": "low",
-      "from": "external:candidate-arxiv-2603-06079",
-      "rationale": "Unreviewed research candidate matched approach:audio-reference-conditioning-cache on terms audio, codec, latency, speaker.",
-      "relation": "suggests",
-      "to": "mechanism:audio-reference-conditioning-cache"
+      "to": "external:vllm-mlx-paper-v2-2026-01-29"
     },
     {
       "confidence": "low",
@@ -283,16 +297,16 @@
     {
       "confidence": "low",
       "from": "external:candidate-arxiv-2603-06079",
-      "rationale": "Unreviewed research candidate matched outcome:qwen25-05b-instruct-local-worked-port on terms all, rather, same, than, token, tokens.",
+      "rationale": "Unreviewed research candidate matched approach:native-spectral-transforms on terms audio, codec, latency, neural, speech, streaming.",
       "relation": "suggests",
-      "to": "result:v1-qwen25-05b-bf16-cast-walltime"
+      "to": "mechanism:native-spectral-transforms"
     },
     {
       "confidence": "low",
-      "from": "external:candidate-arxiv-2603-08721",
-      "rationale": "Unreviewed research candidate matched learning:grid-sample-spatial-kernel on terms benchmark, custom, kernel, kernels, level, metal.",
+      "from": "external:candidate-arxiv-2603-06079",
+      "rationale": "Unreviewed research candidate matched outcome:qwen25-05b-instruct-local-worked-port on terms all, rather, same, than, token, tokens.",
       "relation": "suggests",
-      "to": "finding:grid-sample-spatial-kernel"
+      "to": "result:v1-qwen25-05b-bf16-cast-walltime"
     },
     {
       "confidence": "low",
@@ -307,6 +321,13 @@
       "rationale": "Unreviewed research candidate matched backlog:structured-timeseries-recsys on terms architectures, based, code, error, first, has, time.",
       "relation": "suggests",
       "to": "hypothesis:structured-timeseries-recsys"
+    },
+    {
+      "confidence": "low",
+      "from": "external:candidate-arxiv-2603-08721",
+      "rationale": "Unreviewed research candidate matched approach:hardware-aware-kernel-search on terms generate, hardware, kernel, kernels, metal, time.",
+      "relation": "suggests",
+      "to": "mechanism:hardware-aware-kernel-search"
     },
     {
       "confidence": "low",
@@ -325,9 +346,9 @@
     {
       "confidence": "low",
       "from": "external:candidate-arxiv-2603-14035",
-      "rationale": "Unreviewed research candidate matched approach:native-low-bit-weight-quantization on terms audio, linear, transformer, use.",
+      "rationale": "Unreviewed research candidate matched approach:native-spectral-transforms on terms audio, codec, neural, speech, streaming.",
       "relation": "suggests",
-      "to": "mechanism:native-low-bit-weight-quantization"
+      "to": "mechanism:native-spectral-transforms"
     },
     {
       "confidence": "low",
@@ -346,9 +367,9 @@
     {
       "confidence": "low",
       "from": "external:candidate-arxiv-2604-14493",
-      "rationale": "Unreviewed research candidate matched approach:audio-streaming-and-cache on terms chunked, latency, quality, speech, streaming.",
+      "rationale": "Unreviewed research candidate matched approach:native-spectral-transforms on terms automatic, decoder, latency, quality, recognition, speech, streaming.",
       "relation": "suggests",
-      "to": "mechanism:audio-streaming-and-cache"
+      "to": "mechanism:native-spectral-transforms"
     },
     {
       "confidence": "low",
@@ -360,23 +381,16 @@
     {
       "confidence": "low",
       "from": "external:candidate-arxiv-2605-23373",
-      "rationale": "Unreviewed research candidate matched approach:block-weight-streaming on terms block, language, stream, streaming.",
-      "relation": "suggests",
-      "to": "mechanism:block-weight-streaming"
-    },
-    {
-      "confidence": "low",
-      "from": "external:candidate-arxiv-2605-23373",
       "rationale": "Unreviewed research candidate matched approach:native-low-bit-weight-quantization on terms audio, bit, language, quantization, where.",
       "relation": "suggests",
       "to": "mechanism:native-low-bit-weight-quantization"
     },
     {
       "confidence": "low",
-      "from": "external:candidate-arxiv-2606-06743",
-      "rationale": "Unreviewed research candidate matched backlog:graph-geometric-scientific on terms architectures, first, has, one.",
+      "from": "external:candidate-arxiv-2605-23373",
+      "rationale": "Unreviewed research candidate matched approach:native-spectral-transforms on terms audio, codec, neural, speech, streaming.",
       "relation": "suggests",
-      "to": "hypothesis:graph-geometric-scientific"
+      "to": "mechanism:native-spectral-transforms"
     },
     {
       "confidence": "low",
@@ -391,6 +405,13 @@
       "rationale": "Unreviewed research candidate matched approach:block-weight-streaming on terms language, stream, streaming, unified.",
       "relation": "suggests",
       "to": "mechanism:block-weight-streaming"
+    },
+    {
+      "confidence": "low",
+      "from": "external:candidate-arxiv-2606-06743",
+      "rationale": "Unreviewed research candidate matched approach:native-spectral-transforms on terms audio, codec, first, has, neural, speech, streaming.",
+      "relation": "suggests",
+      "to": "mechanism:native-spectral-transforms"
     },
     {
       "confidence": "low",
@@ -430,9 +451,9 @@
     {
       "confidence": "low",
       "from": "external:candidate-arxiv-2606-21893",
-      "rationale": "Unreviewed research candidate matched outcome:qwen25-05b-instruct-local-worked-port on terms conversion, embeddings, target, token, tokens.",
+      "rationale": "Unreviewed research candidate matched approach:native-spectral-transforms on terms audio, codec, neural, speech, streaming, transform.",
       "relation": "suggests",
-      "to": "result:v1-qwen25-05b-bf16-cast-walltime"
+      "to": "mechanism:native-spectral-transforms"
     },
     {
       "confidence": "low",
@@ -514,16 +535,16 @@
     {
       "confidence": "low",
       "from": "external:candidate-arxiv-2607-03652",
-      "rationale": "Unreviewed research candidate matched approach:native-low-bit-weight-quantization on terms language, linear, low, memory, quantization, transformer, weight.",
+      "rationale": "Unreviewed research candidate matched approach:compressed-kv-direct-attention on terms attention, cache, context, long, memory, transformer.",
       "relation": "suggests",
-      "to": "mechanism:native-low-bit-weight-quantization"
+      "to": "mechanism:compressed-kv-direct-attention"
     },
     {
       "confidence": "low",
       "from": "external:candidate-arxiv-2607-03652",
-      "rationale": "Unreviewed research candidate matched approach:uniform-kv-quantization on terms cache, context, long, memory, quantization, transformer.",
+      "rationale": "Unreviewed research candidate matched approach:native-low-bit-weight-quantization on terms language, linear, low, memory, quantization, transformer, weight.",
       "relation": "suggests",
-      "to": "mechanism:uniform-kv-quantization"
+      "to": "mechanism:native-low-bit-weight-quantization"
     },
     {
       "confidence": "low",
@@ -563,9 +584,9 @@
     {
       "confidence": "low",
       "from": "external:candidate-arxiv-2607-08032",
-      "rationale": "Unreviewed research candidate matched approach:prompt-prefix-cache on terms agents, cache, language, quantization, state.",
+      "rationale": "Unreviewed research candidate matched approach:kv-cache-pruning on terms attention, cache, context, keep, long, memory, prune, recurrent.",
       "relation": "suggests",
-      "to": "mechanism:prompt-prefix-cache"
+      "to": "mechanism:kv-cache-pruning"
     },
     {
       "confidence": "low",
@@ -577,16 +598,16 @@
     {
       "confidence": "low",
       "from": "external:candidate-arxiv-2607-12550",
-      "rationale": "Unreviewed research candidate matched approach:native-low-bit-weight-quantization on terms bit, low, memory, quantization, size, throughput, transformer.",
+      "rationale": "Unreviewed research candidate matched approach:compressed-kv-direct-attention on terms cache, context, existing, long, memory, throughput, transformer.",
       "relation": "suggests",
-      "to": "mechanism:native-low-bit-weight-quantization"
+      "to": "mechanism:compressed-kv-direct-attention"
     },
     {
       "confidence": "low",
       "from": "external:candidate-arxiv-2607-12550",
-      "rationale": "Unreviewed research candidate matched outcome:qwen25-05b-instruct-local-worked-port on terms cache, cross, rather, tensor, than, token, tokens.",
+      "rationale": "Unreviewed research candidate matched approach:native-low-bit-weight-quantization on terms bit, low, memory, quantization, size, throughput, transformer.",
       "relation": "suggests",
-      "to": "result:v1-qwen25-05b-bf16-cast-walltime"
+      "to": "mechanism:native-low-bit-weight-quantization"
     },
     {
       "confidence": "low",
@@ -779,6 +800,13 @@
     },
     {
       "confidence": "medium",
+      "from": "external:dflash-paper-v2-2026-05-28",
+      "rationale": "v1 evidence_for edge from source:dflash-paper-v2-2026-05-28.",
+      "relation": "supports",
+      "to": "mechanism:eagle-medusa-mtp-drafters"
+    },
+    {
+      "confidence": "medium",
       "from": "external:dgrauet-ltx2-block-streaming-source",
       "rationale": "v1 evidence_for_outcome edge from source:dgrauet-ltx2-block-streaming-source.",
       "relation": "supports",
@@ -853,6 +881,48 @@
       "rationale": "v1 evidence_for edge from source:llava-onevision-blog.",
       "relation": "supports",
       "to": "mechanism:visual-token-pruning-or-merge"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:mlx-0324-fast-bindings",
+      "rationale": "v1 evidence_for edge from source:mlx-0324-fast-bindings.",
+      "relation": "supports",
+      "to": "mechanism:native-gated-delta-update"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:mlx-0324-fft-bindings",
+      "rationale": "v1 evidence_for edge from source:mlx-0324-fft-bindings.",
+      "relation": "supports",
+      "to": "mechanism:native-spectral-transforms"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:mlx-0324-gated-delta-implementation",
+      "rationale": "v1 evidence_for edge from source:mlx-0324-gated-delta-implementation.",
+      "relation": "supports",
+      "to": "mechanism:native-gated-delta-update"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:mlx-0324-gated-delta-tests",
+      "rationale": "v1 evidence_for edge from source:mlx-0324-gated-delta-tests.",
+      "relation": "supports",
+      "to": "mechanism:native-gated-delta-update"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:mlx-0324-nax-device",
+      "rationale": "v1 evidence_for edge from source:mlx-0324-nax-device.",
+      "relation": "supports",
+      "to": "mechanism:metal-nax-matmul"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:mlx-0324-quantization-bindings",
+      "rationale": "v1 evidence_for edge from source:mlx-0324-quantization-bindings.",
+      "relation": "supports",
+      "to": "mechanism:native-low-bit-weight-quantization"
     },
     {
       "confidence": "medium",
@@ -1521,6 +1591,27 @@
     },
     {
       "confidence": "medium",
+      "from": "external:paper-2503-01840",
+      "rationale": "v1 evidence_for edge from source:paper-2503-01840.",
+      "relation": "supports",
+      "to": "mechanism:eagle-medusa-mtp-drafters"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:paper-2504-19874",
+      "rationale": "v1 evidence_for edge from source:paper-2504-19874.",
+      "relation": "supports",
+      "to": "mechanism:adaptive-kv-quantization"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:paper-2504-19874",
+      "rationale": "v1 evidence_for edge from source:paper-2504-19874.",
+      "relation": "supports",
+      "to": "mechanism:compressed-kv-direct-attention"
+    },
+    {
+      "confidence": "medium",
       "from": "external:paper-2505-15380",
       "rationale": "v1 evidence_for_outcome edge from source:paper-2505-15380.",
       "relation": "supports",
@@ -1591,6 +1682,13 @@
     },
     {
       "confidence": "medium",
+      "from": "external:paper-2602-19128",
+      "rationale": "v1 evidence_for edge from source:paper-2602-19128.",
+      "relation": "supports",
+      "to": "mechanism:hardware-aware-kernel-search"
+    },
+    {
+      "confidence": "medium",
       "from": "external:paper-2602-23200",
       "rationale": "v1 evidence_for edge from source:paper-2602-23200.",
       "relation": "supports",
@@ -1630,6 +1728,48 @@
       "rationale": "v1 evidence_for edge from source:paper-2606-24033.",
       "relation": "supports",
       "to": "mechanism:adaptive-kv-quantization"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:paper-2610-31479",
+      "rationale": "v1 evidence_for edge from source:paper-2610-31479.",
+      "relation": "supports",
+      "to": "mechanism:draft-model-speculation"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:paper-2610-31479",
+      "rationale": "v1 evidence_for edge from source:paper-2610-31479.",
+      "relation": "supports",
+      "to": "mechanism:eagle-medusa-mtp-drafters"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:paper-2610-31479",
+      "rationale": "v1 evidence_for edge from source:paper-2610-31479.",
+      "relation": "supports",
+      "to": "mechanism:kv-cache-pruning"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:paper-2610-33076",
+      "rationale": "v1 evidence_for edge from source:paper-2610-33076.",
+      "relation": "supports",
+      "to": "mechanism:adaptive-kv-quantization"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:paper-2610-33076",
+      "rationale": "v1 evidence_for edge from source:paper-2610-33076.",
+      "relation": "supports",
+      "to": "mechanism:compressed-kv-direct-attention"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:paper-2610-33076",
+      "rationale": "v1 evidence_for edge from source:paper-2610-33076.",
+      "relation": "supports",
+      "to": "mechanism:uniform-kv-quantization"
     },
     {
       "confidence": "medium",
@@ -1770,6 +1910,13 @@
       "rationale": "v1 evidence_for edge from source:vllm-mlx-multimodal-guide.",
       "relation": "supports",
       "to": "mechanism:video-input-budgeting"
+    },
+    {
+      "confidence": "medium",
+      "from": "external:vllm-mlx-paper-v2-2026-01-29",
+      "rationale": "v1 evidence_for edge from source:vllm-mlx-paper-v2-2026-01-29.",
+      "relation": "supports",
+      "to": "mechanism:content-prefix-cache-vlm"
     },
     {
       "confidence": "medium",
@@ -2164,6 +2311,34 @@
       "to": "trait:affine-q4-group-64"
     },
     {
+      "confidence": "medium",
+      "from": "mechanism:compressed-kv-direct-attention",
+      "rationale": "Trait relevance selects a candidate only; canonical applicability and validation gates remain required.",
+      "relation": "applies_to",
+      "to": "trait:decoder-transformer"
+    },
+    {
+      "confidence": "low",
+      "from": "mechanism:compressed-kv-direct-attention",
+      "rationale": "v1 approach approach:compressed-kv-direct-attention declares applies_to dense-decoder-transformer.",
+      "relation": "applies_to",
+      "to": "trait:dense-decoder-transformer"
+    },
+    {
+      "confidence": "medium",
+      "from": "mechanism:compressed-kv-direct-attention",
+      "rationale": "Trait relevance selects a candidate only; canonical applicability and validation gates remain required.",
+      "relation": "applies_to",
+      "to": "trait:long-context"
+    },
+    {
+      "confidence": "low",
+      "from": "mechanism:compressed-kv-direct-attention",
+      "rationale": "v1 approach approach:compressed-kv-direct-attention declares applies_to moe-decoder-transformer.",
+      "relation": "applies_to",
+      "to": "trait:moe-decoder-transformer"
+    },
+    {
       "confidence": "low",
       "from": "mechanism:content-prefix-cache-vlm",
       "rationale": "v1 approach approach:content-prefix-cache-vlm declares applies_to vision-language-omni.",
@@ -2395,6 +2570,13 @@
       "to": "trait:hybrid-attention"
     },
     {
+      "confidence": "medium",
+      "from": "mechanism:hardware-aware-kernel-search",
+      "rationale": "Trait relevance selects a candidate only; canonical applicability and validation gates remain required.",
+      "relation": "applies_to",
+      "to": "trait:profiled-native-hotspot"
+    },
+    {
       "confidence": "high",
       "from": "mechanism:head-step-cost-retune",
       "rationale": "The mechanism's correctness or payoff argument depends on this trait.",
@@ -2407,6 +2589,34 @@
       "rationale": "The scalar being retuned belongs to the promoted scheduler.",
       "relation": "depends_on",
       "to": "mechanism:adaptive-round-cost-scheduler"
+    },
+    {
+      "confidence": "medium",
+      "from": "mechanism:kv-cache-pruning",
+      "rationale": "Trait relevance selects a candidate only; canonical applicability and validation gates remain required.",
+      "relation": "applies_to",
+      "to": "trait:decoder-transformer"
+    },
+    {
+      "confidence": "low",
+      "from": "mechanism:kv-cache-pruning",
+      "rationale": "v1 approach approach:kv-cache-pruning declares applies_to dense-decoder-transformer.",
+      "relation": "applies_to",
+      "to": "trait:dense-decoder-transformer"
+    },
+    {
+      "confidence": "medium",
+      "from": "mechanism:kv-cache-pruning",
+      "rationale": "Trait relevance selects a candidate only; canonical applicability and validation gates remain required.",
+      "relation": "applies_to",
+      "to": "trait:long-context"
+    },
+    {
+      "confidence": "low",
+      "from": "mechanism:kv-cache-pruning",
+      "rationale": "v1 approach approach:kv-cache-pruning declares applies_to moe-decoder-transformer.",
+      "relation": "applies_to",
+      "to": "trait:moe-decoder-transformer"
     },
     {
       "confidence": "high",
@@ -2428,6 +2638,34 @@
       "rationale": "The mechanism's correctness or payoff argument depends on this trait.",
       "relation": "applies_to",
       "to": "trait:speculative-self-draft"
+    },
+    {
+      "confidence": "high",
+      "from": "mechanism:metal-nax-matmul",
+      "rationale": "v1 approach approach:metal-nax-matmul declares applies_to diffusion-flow.",
+      "relation": "applies_to",
+      "to": "trait:diffusion-flow"
+    },
+    {
+      "confidence": "high",
+      "from": "mechanism:metal-nax-matmul",
+      "rationale": "v1 approach approach:metal-nax-matmul declares applies_to linear-heavy-models.",
+      "relation": "applies_to",
+      "to": "trait:linear-heavy-models"
+    },
+    {
+      "confidence": "medium",
+      "from": "mechanism:metal-nax-matmul",
+      "rationale": "Trait relevance selects a candidate only; canonical applicability and validation gates remain required.",
+      "relation": "applies_to",
+      "to": "trait:m5-native-matrix-dispatch"
+    },
+    {
+      "confidence": "medium",
+      "from": "mechanism:metal-nax-matmul",
+      "rationale": "Apply software/chip eligibility before execution; source availability is not device validation.",
+      "relation": "requires_gate",
+      "to": "constraint:runtime-profile-eligibility"
     },
     {
       "confidence": "high",
@@ -2486,6 +2724,34 @@
       "to": "trait:vision-language-omni"
     },
     {
+      "confidence": "medium",
+      "from": "mechanism:native-gated-delta-update",
+      "rationale": "Trait relevance selects a candidate only; canonical applicability and validation gates remain required.",
+      "relation": "applies_to",
+      "to": "trait:fp32-recurrent-state"
+    },
+    {
+      "confidence": "medium",
+      "from": "mechanism:native-gated-delta-update",
+      "rationale": "Trait relevance selects a candidate only; canonical applicability and validation gates remain required.",
+      "relation": "applies_to",
+      "to": "trait:gated-delta-net"
+    },
+    {
+      "confidence": "high",
+      "from": "mechanism:native-gated-delta-update",
+      "rationale": "v1 approach approach:native-gated-delta-update declares applies_to ssm-recurrent-hybrid.",
+      "relation": "applies_to",
+      "to": "trait:ssm-recurrent-hybrid"
+    },
+    {
+      "confidence": "medium",
+      "from": "mechanism:native-gated-delta-update",
+      "rationale": "Apply software/chip eligibility before execution; source availability is not device validation.",
+      "relation": "requires_gate",
+      "to": "constraint:runtime-profile-eligibility"
+    },
+    {
       "confidence": "high",
       "from": "mechanism:native-low-bit-weight-quantization",
       "rationale": "v1 approach approach:native-low-bit-weight-quantization declares applies_to audio-lm.",
@@ -2519,6 +2785,62 @@
       "rationale": "v1 approach approach:native-low-bit-weight-quantization declares applies_to vision-language-omni.",
       "relation": "applies_to",
       "to": "trait:vision-language-omni"
+    },
+    {
+      "confidence": "high",
+      "from": "mechanism:native-spectral-transforms",
+      "rationale": "v1 approach approach:native-spectral-transforms declares applies_to automatic-speech-recognition.",
+      "relation": "applies_to",
+      "to": "trait:automatic-speech-recognition"
+    },
+    {
+      "confidence": "high",
+      "from": "mechanism:native-spectral-transforms",
+      "rationale": "v1 approach approach:native-spectral-transforms declares applies_to flow-diffusion-tts.",
+      "relation": "applies_to",
+      "to": "trait:flow-diffusion-tts"
+    },
+    {
+      "confidence": "high",
+      "from": "mechanism:native-spectral-transforms",
+      "rationale": "v1 approach approach:native-spectral-transforms declares applies_to neural-audio-codec.",
+      "relation": "applies_to",
+      "to": "trait:neural-audio-codec"
+    },
+    {
+      "confidence": "high",
+      "from": "mechanism:native-spectral-transforms",
+      "rationale": "v1 approach approach:native-spectral-transforms declares applies_to separation-enhancement.",
+      "relation": "applies_to",
+      "to": "trait:separation-enhancement"
+    },
+    {
+      "confidence": "medium",
+      "from": "mechanism:native-spectral-transforms",
+      "rationale": "Trait relevance selects a candidate only; canonical applicability and validation gates remain required.",
+      "relation": "applies_to",
+      "to": "trait:stft-istft-frontend"
+    },
+    {
+      "confidence": "high",
+      "from": "mechanism:native-spectral-transforms",
+      "rationale": "v1 approach approach:native-spectral-transforms declares applies_to streaming-speech.",
+      "relation": "applies_to",
+      "to": "trait:streaming-speech"
+    },
+    {
+      "confidence": "high",
+      "from": "mechanism:native-spectral-transforms",
+      "rationale": "v1 approach approach:native-spectral-transforms declares applies_to vocoder-waveform-decoder.",
+      "relation": "applies_to",
+      "to": "trait:vocoder-waveform-decoder"
+    },
+    {
+      "confidence": "medium",
+      "from": "mechanism:native-spectral-transforms",
+      "rationale": "Apply software/chip eligibility before execution; source availability is not device validation.",
+      "relation": "requires_gate",
+      "to": "constraint:runtime-profile-eligibility"
     },
     {
       "confidence": "high",
@@ -4082,7 +4404,7 @@
       "to": "workload:concurrent-serving-16-streams"
     }
   ],
-  "generated_at": "2026-08-17",
+  "generated_at": "2026-11-05",
   "graph_id": "mlx-porting-skill/evidence-graph",
   "nodes": [
     {
@@ -4169,6 +4491,25 @@
       "title": "Local timing is directional; only the official receipt promotes"
     },
     {
+      "confidence": "medium",
+      "evidence": [
+        "mlx-model-porting/scripts/recommend_optimizations.py: runtime_eligibility_holds",
+        "mlx-model-porting/references/runtime-compatibility.md"
+      ],
+      "id": "constraint:runtime-profile-eligibility",
+      "kind": "constraint",
+      "observed_at": "2026-11-05",
+      "provenance": "code_verified",
+      "status": "reviewed",
+      "summary": "Missing, old or ambiguous target versions and unreviewed chips hold applicability. Matching declared metadata still requires the actual API/device probe and parity; it never promotes a numeric performance claim.",
+      "tags": [
+        "compatibility",
+        "research-refresh-2026-11",
+        "runtime"
+      ],
+      "title": "Runtime compatibility is an independent execution prerequisite"
+    },
+    {
       "confidence": "high",
       "evidence": [
         "qwen38 campaign config, campaign.json",
@@ -4209,23 +4550,49 @@
       "title": "Target side must be bit-exact; the proposal side only moves acceptance"
     },
     {
-      "confidence": "medium",
+      "confidence": "high",
+      "evidence": [
+        "https://developer.apple.com/videos/play/wwdc2026/330"
+      ],
+      "id": "external:apple-metal-tensors-wwdc26",
+      "kind": "external_reference",
+      "observed_at": "2026-11-05",
+      "provenance": "code_verified",
+      "status": "synthesized",
+      "summary": "official-doc source owned by Apple Developer. Review depth synthesized: directly informed a rule, runbook, or registry decision",
+      "tags": [
+        "migrated-v1",
+        "review-depth/synthesized",
+        "source-kind/official-doc",
+        "topic/cooperative-tensors",
+        "topic/m5",
+        "topic/metal",
+        "topic/mpp",
+        "topic/quantization",
+        "topic/tensorops"
+      ],
+      "title": "Optimize custom machine learning operations with Metal tensors"
+    },
+    {
+      "confidence": "high",
       "evidence": [
         "https://machinelearning.apple.com/research/exploring-llms-mlx-m5"
       ],
       "id": "external:apple-mlx-m5-blog",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
-      "status": "screened",
-      "summary": "technical-blog source owned by Apple Machine Learning Research. Review depth screened: relevance and limits reviewed",
+      "status": "synthesized",
+      "summary": "technical-blog source owned by Apple Machine Learning Research. Review depth synthesized: directly informed a rule, runbook, or registry decision",
       "tags": [
         "migrated-v1",
-        "review-depth/screened",
+        "review-depth/synthesized",
         "source-kind/technical-blog",
         "topic/apple-silicon",
         "topic/llm",
+        "topic/m5",
         "topic/mlx",
+        "topic/nax",
         "topic/runtime"
       ],
       "title": "Exploring LLMs with MLX and the Neural Accelerators in the M5 GPU"
@@ -4237,7 +4604,7 @@
       ],
       "id": "external:apple-wwdc25-mlx",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "screened",
       "summary": "technical-blog source owned by Apple Developer. Review depth screened: relevance and limits reviewed",
@@ -4251,6 +4618,29 @@
         "topic/mlx"
       ],
       "title": "Get started with MLX for Apple silicon"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://bair.berkeley.edu/blog/2026/07/29/cuda-to-mlx-k-search"
+      ],
+      "id": "external:bair-k-search-mlx-2026-07-29",
+      "kind": "external_reference",
+      "observed_at": "2026-11-05",
+      "provenance": "research_inference",
+      "status": "synthesized",
+      "summary": "technical-blog source owned by UC Berkeley BAIR / IBM Research. Review depth synthesized: directly informed a rule, runbook, or registry decision",
+      "tags": [
+        "migrated-v1",
+        "review-depth/synthesized",
+        "source-kind/technical-blog",
+        "topic/kernel-portability",
+        "topic/kernel-search",
+        "topic/metal",
+        "topic/scan",
+        "topic/ssm"
+      ],
+      "title": "From CUDA to MLX: How K-Search Brings Decades of Kernel Expertise to Apple Silicon"
     },
     {
       "confidence": "low",
@@ -4696,7 +5086,7 @@
       ],
       "id": "external:candidate-blaizzy-mlx-audio",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "candidate-unreviewed",
       "summary": "Automatically collected research candidate awaiting review. It has not informed any rule, runbook, or registry decision and must not be cited as if it had. Discovery query: n/a",
@@ -4718,7 +5108,7 @@
       ],
       "id": "external:candidate-blaizzy-mlx-vlm",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "candidate-unreviewed",
       "summary": "Automatically collected research candidate awaiting review. It has not informed any rule, runbook, or registry decision and must not be cited as if it had. Discovery query: n/a",
@@ -4739,7 +5129,7 @@
       ],
       "id": "external:candidate-ml-explore-mlx",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "candidate-unreviewed",
       "summary": "Automatically collected research candidate awaiting review. It has not informed any rule, runbook, or registry decision and must not be cited as if it had. Discovery query: n/a",
@@ -4760,7 +5150,7 @@
       ],
       "id": "external:candidate-ml-explore-mlx-examples",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "candidate-unreviewed",
       "summary": "Automatically collected research candidate awaiting review. It has not informed any rule, runbook, or registry decision and must not be cited as if it had. Discovery query: n/a",
@@ -4781,7 +5171,7 @@
       ],
       "id": "external:candidate-ml-explore-mlx-lm",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "candidate-unreviewed",
       "summary": "Automatically collected research candidate awaiting review. It has not informed any rule, runbook, or registry decision and must not be cited as if it had. Discovery query: n/a",
@@ -4803,7 +5193,7 @@
       ],
       "id": "external:candidate-waybarrios-vllm-mlx",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "candidate-unreviewed",
       "summary": "Automatically collected research candidate awaiting review. It has not informed any rule, runbook, or registry decision and must not be cited as if it had. Discovery query: n/a",
@@ -4820,11 +5210,33 @@
     {
       "confidence": "high",
       "evidence": [
+        "https://arxiv.org/abs/2602.06036",
+        "https://arxiv.org/abs/2602.06036v2"
+      ],
+      "id": "external:dflash-paper-v2-2026-05-28",
+      "kind": "external_reference",
+      "observed_at": "2026-11-05",
+      "provenance": "research_inference",
+      "status": "synthesized",
+      "summary": "paper source owned by authors. Review depth synthesized: directly informed a rule, runbook, or registry decision",
+      "tags": [
+        "migrated-v1",
+        "review-depth/synthesized",
+        "source-kind/paper",
+        "topic/block-drafting",
+        "topic/dflash",
+        "topic/speculative-decoding"
+      ],
+      "title": "DFlash: Block Diffusion for Flash Speculative Decoding"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
         "https://github.com/dgrauet/ltx-2-mlx/blob/3f5897a9582b5c14379c8f88216ae0fd6e55741d/packages/ltx-core-mlx/src/ltx_core_mlx/loader/block_streaming.py"
       ],
       "id": "external:dgrauet-ltx2-block-streaming-source",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "synthesized",
       "summary": "source-code source owned by dgrauet. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -4847,7 +5259,7 @@
       ],
       "id": "external:dgrauet-ltx2-block-streaming-tests",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "synthesized",
       "summary": "source-code source owned by dgrauet. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -4870,7 +5282,7 @@
       ],
       "id": "external:dgrauet-ltx2-regression-report",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "synthesized",
       "summary": "source-code source owned by dgrauet. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -4892,7 +5304,7 @@
       ],
       "id": "external:huggingface-transformers",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "screened",
       "summary": "repository source owned by Hugging Face. Review depth screened: relevance and limits reviewed",
@@ -4913,7 +5325,7 @@
       ],
       "id": "external:katlun-grid-sample-benchmark",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "synthesized",
       "summary": "source-code source owned by katlun-lgtm. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -4935,7 +5347,7 @@
       ],
       "id": "external:katlun-grid-sample-source",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "synthesized",
       "summary": "source-code source owned by katlun-lgtm. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -4958,7 +5370,7 @@
       ],
       "id": "external:katlun-grid-sample-tests",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "synthesized",
       "summary": "source-code source owned by katlun-lgtm. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -4981,7 +5393,7 @@
       ],
       "id": "external:llava-onevision-blog",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "synthesized",
       "summary": "technical-blog source owned by LLaVA team. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -4998,11 +5410,148 @@
     {
       "confidence": "high",
       "evidence": [
+        "https://github.com/ml-explore/mlx/blob/36969c094354086e15d2a327a9c50feb20b9cf11/python/src/fast.cpp"
+      ],
+      "id": "external:mlx-0324-fast-bindings",
+      "kind": "external_reference",
+      "observed_at": "2026-11-05",
+      "provenance": "code_verified",
+      "status": "synthesized",
+      "summary": "source-code source owned by Apple MLX. Review depth synthesized: directly informed a rule, runbook, or registry decision",
+      "tags": [
+        "migrated-v1",
+        "review-depth/synthesized",
+        "source-kind/source-code",
+        "topic/attention",
+        "topic/custom-kernels",
+        "topic/gated-delta",
+        "topic/metal",
+        "topic/mlx"
+      ],
+      "title": "MLX 0.32.4 fast-operation Python bindings"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://github.com/ml-explore/mlx/blob/36969c094354086e15d2a327a9c50feb20b9cf11/python/src/fft.cpp"
+      ],
+      "id": "external:mlx-0324-fft-bindings",
+      "kind": "external_reference",
+      "observed_at": "2026-11-05",
+      "provenance": "code_verified",
+      "status": "synthesized",
+      "summary": "source-code source owned by Apple MLX. Review depth synthesized: directly informed a rule, runbook, or registry decision",
+      "tags": [
+        "migrated-v1",
+        "review-depth/synthesized",
+        "source-kind/source-code",
+        "topic/audio",
+        "topic/istft",
+        "topic/mlx",
+        "topic/spectral",
+        "topic/stft"
+      ],
+      "title": "MLX 0.32.4 STFT and inverse STFT bindings"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://github.com/ml-explore/mlx/blob/36969c094354086e15d2a327a9c50feb20b9cf11/mlx/fast.cpp"
+      ],
+      "id": "external:mlx-0324-gated-delta-implementation",
+      "kind": "external_reference",
+      "observed_at": "2026-11-05",
+      "provenance": "code_verified",
+      "status": "synthesized",
+      "summary": "source-code source owned by Apple MLX. Review depth synthesized: directly informed a rule, runbook, or registry decision",
+      "tags": [
+        "migrated-v1",
+        "review-depth/synthesized",
+        "source-kind/source-code",
+        "topic/autodiff",
+        "topic/gated-delta",
+        "topic/mlx",
+        "topic/recurrent-state"
+      ],
+      "title": "MLX 0.32.4 gated-delta implementation and VJP"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://github.com/ml-explore/mlx/blob/36969c094354086e15d2a327a9c50feb20b9cf11/python/tests/test_fast_gated_delta.py"
+      ],
+      "id": "external:mlx-0324-gated-delta-tests",
+      "kind": "external_reference",
+      "observed_at": "2026-11-05",
+      "provenance": "code_verified",
+      "status": "synthesized",
+      "summary": "source-code source owned by Apple MLX. Review depth synthesized: directly informed a rule, runbook, or registry decision",
+      "tags": [
+        "migrated-v1",
+        "review-depth/synthesized",
+        "source-kind/source-code",
+        "topic/autodiff",
+        "topic/gated-delta",
+        "topic/mlx",
+        "topic/parity"
+      ],
+      "title": "MLX 0.32.4 gated-delta oracle and gradient tests"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://github.com/ml-explore/mlx/blob/36969c094354086e15d2a327a9c50feb20b9cf11/mlx/backend/metal/device.cpp"
+      ],
+      "id": "external:mlx-0324-nax-device",
+      "kind": "external_reference",
+      "observed_at": "2026-11-05",
+      "provenance": "code_verified",
+      "status": "synthesized",
+      "summary": "source-code source owned by Apple MLX. Review depth synthesized: directly informed a rule, runbook, or registry decision",
+      "tags": [
+        "migrated-v1",
+        "review-depth/synthesized",
+        "source-kind/source-code",
+        "topic/m5",
+        "topic/metal",
+        "topic/mlx",
+        "topic/nax",
+        "topic/runtime"
+      ],
+      "title": "MLX 0.32.4 Metal NAX device and build gate"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://github.com/ml-explore/mlx/blob/36969c094354086e15d2a327a9c50feb20b9cf11/python/src/ops.cpp"
+      ],
+      "id": "external:mlx-0324-quantization-bindings",
+      "kind": "external_reference",
+      "observed_at": "2026-11-05",
+      "provenance": "code_verified",
+      "status": "synthesized",
+      "summary": "source-code source owned by Apple MLX. Review depth synthesized: directly informed a rule, runbook, or registry decision",
+      "tags": [
+        "migrated-v1",
+        "review-depth/synthesized",
+        "source-kind/source-code",
+        "topic/mlx",
+        "topic/mxfp4",
+        "topic/mxfp8",
+        "topic/nvfp4",
+        "topic/qqmm",
+        "topic/quantization"
+      ],
+      "title": "MLX 0.32.4 quantization and QQMM API contracts"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
         "https://github.com/Blaizzy/mlx-audio/tree/412cf7cd381c2a3f6a8189af04a95af24cb415b6/mlx_audio/codec/models"
       ],
       "id": "external:mlx-audio-codecs",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "synthesized",
       "summary": "source-code source owned by Blaizzy. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -5023,7 +5572,7 @@
       ],
       "id": "external:mlx-audio-convert",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "synthesized",
       "summary": "source-code source owned by Blaizzy. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -5045,7 +5594,7 @@
       ],
       "id": "external:mlx-audio-models",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "synthesized",
       "summary": "source-code source owned by Blaizzy. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -5067,7 +5616,7 @@
       ],
       "id": "external:mlx-audio-qwen3-tts-docs",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "synthesized",
       "summary": "source-code source owned by Blaizzy. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -5090,7 +5639,7 @@
       ],
       "id": "external:mlx-audio-release-044",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "synthesized",
       "summary": "release source owned by Blaizzy. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -5112,7 +5661,7 @@
       ],
       "id": "external:mlx-audio-repo",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "synthesized",
       "summary": "repository source owned by Blaizzy. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -5135,7 +5684,7 @@
       ],
       "id": "external:mlx-audio-streaming-guide",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "synthesized",
       "summary": "official-doc source owned by Blaizzy. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -5195,7 +5744,7 @@
       ],
       "id": "external:mlx-doc-compile",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "synthesized",
       "summary": "official-doc source owned by Apple MLX. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -5216,7 +5765,7 @@
       ],
       "id": "external:mlx-doc-core-quantize",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "synthesized",
       "summary": "official-doc source owned by Apple MLX. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -5237,7 +5786,7 @@
       ],
       "id": "external:mlx-doc-custom-extensions",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "synthesized",
       "summary": "official-doc source owned by Apple MLX. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -5258,7 +5807,7 @@
       ],
       "id": "external:mlx-doc-fast-sdpa",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "synthesized",
       "summary": "official-doc source owned by Apple MLX. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -5279,7 +5828,7 @@
       ],
       "id": "external:mlx-doc-gather-mm",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "synthesized",
       "summary": "official-doc source owned by Apple MLX. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -5301,7 +5850,7 @@
       ],
       "id": "external:mlx-doc-gather-qmm",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "synthesized",
       "summary": "official-doc source owned by Apple MLX. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -5324,7 +5873,7 @@
       ],
       "id": "external:mlx-doc-lazy",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "synthesized",
       "summary": "official-doc source owned by Apple MLX. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -5344,7 +5893,7 @@
       ],
       "id": "external:mlx-doc-nn-quantize",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "synthesized",
       "summary": "official-doc source owned by Apple MLX. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -5365,7 +5914,7 @@
       ],
       "id": "external:mlx-doc-quantized-matmul",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "synthesized",
       "summary": "official-doc source owned by Apple MLX. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -5386,7 +5935,7 @@
       ],
       "id": "external:mlx-docs",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "synthesized",
       "summary": "official-doc source owned by Apple MLX. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -5407,7 +5956,7 @@
       ],
       "id": "external:mlx-examples-repo",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "screened",
       "summary": "repository source owned by Apple MLX. Review depth screened: relevance and limits reviewed",
@@ -5429,7 +5978,7 @@
       ],
       "id": "external:mlx-lm-cache",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "synthesized",
       "summary": "source-code source owned by Apple MLX. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -5450,7 +5999,7 @@
       ],
       "id": "external:mlx-lm-convert",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "synthesized",
       "summary": "source-code source owned by Apple MLX. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -5471,7 +6020,7 @@
       ],
       "id": "external:mlx-lm-issue-956",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "synthesized",
       "summary": "issue-report source owned by Apple MLX. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -5493,7 +6042,7 @@
       ],
       "id": "external:mlx-lm-models",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "synthesized",
       "summary": "source-code source owned by Apple MLX. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -5532,7 +6081,7 @@
       ],
       "id": "external:mlx-lm-repo",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "synthesized",
       "summary": "repository source owned by Apple MLX. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -5554,7 +6103,7 @@
       ],
       "id": "external:mlx-lm-speculative",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "synthesized",
       "summary": "source-code source owned by Apple MLX. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -5574,7 +6123,7 @@
       ],
       "id": "external:mlx-lm-switch-layers",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "synthesized",
       "summary": "source-code source owned by Apple MLX. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -5615,7 +6164,7 @@
       ],
       "id": "external:mlx-repo",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "synthesized",
       "summary": "repository source owned by Apple MLX. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -5637,7 +6186,7 @@
       ],
       "id": "external:mlx-vlm-apc-source",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "synthesized",
       "summary": "source-code source owned by Blaizzy. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -5659,7 +6208,7 @@
       ],
       "id": "external:mlx-vlm-ar-cache-guards",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "synthesized",
       "summary": "source-code source owned by Blaizzy. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -5681,7 +6230,7 @@
       ],
       "id": "external:mlx-vlm-readme",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "synthesized",
       "summary": "source-code source owned by Blaizzy. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -5703,7 +6252,7 @@
       ],
       "id": "external:mlx-vlm-repo",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "synthesized",
       "summary": "repository source owned by Blaizzy. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -5724,7 +6273,7 @@
       ],
       "id": "external:mlx-vlm-vision-cache-source",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "synthesized",
       "summary": "source-code source owned by Blaizzy. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -5746,7 +6295,7 @@
       ],
       "id": "external:nvidia-nvfp4-blog",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "screened",
       "summary": "technical-blog source owned by NVIDIA. Review depth screened: relevance and limits reviewed",
@@ -5767,7 +6316,7 @@
       ],
       "id": "external:orca-osdi22",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "synthesized",
       "summary": "paper source owned by authors. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -5787,7 +6336,7 @@
       ],
       "id": "external:paper-2205-14135",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "synthesized",
       "summary": "paper source owned by authors. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -5807,7 +6356,7 @@
       ],
       "id": "external:paper-2211-17192",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "synthesized",
       "summary": "paper source owned by authors. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -5826,7 +6375,7 @@
       ],
       "id": "external:paper-2302-01318",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "synthesized",
       "summary": "paper source owned by authors. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -5845,7 +6394,7 @@
       ],
       "id": "external:paper-2307-08691",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "synthesized",
       "summary": "paper source owned by authors. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -5865,7 +6414,7 @@
       ],
       "id": "external:paper-2309-06180",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "synthesized",
       "summary": "paper source owned by authors. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -5885,7 +6434,7 @@
       ],
       "id": "external:paper-2310-16836",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "screened",
       "summary": "paper source owned by authors. Review depth screened: relevance and limits reviewed",
@@ -5905,7 +6454,7 @@
       ],
       "id": "external:paper-2311-08252",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "screened",
       "summary": "paper source owned by authors. Review depth screened: relevance and limits reviewed",
@@ -5925,7 +6474,7 @@
       ],
       "id": "external:paper-2401-04088",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "screened",
       "summary": "paper source owned by authors. Review depth screened: relevance and limits reviewed",
@@ -5945,7 +6494,7 @@
       ],
       "id": "external:paper-2401-10774",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "synthesized",
       "summary": "paper source owned by authors. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -5965,7 +6514,7 @@
       ],
       "id": "external:paper-2401-15077",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "synthesized",
       "summary": "paper source owned by authors. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -5985,7 +6534,7 @@
       ],
       "id": "external:paper-2402-02750",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "synthesized",
       "summary": "paper source owned by authors. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -6004,7 +6553,7 @@
       ],
       "id": "external:paper-2402-05099",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "synthesized",
       "summary": "paper source owned by authors. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -6024,7 +6573,7 @@
       ],
       "id": "external:paper-2403-15388",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "synthesized",
       "summary": "paper source owned by authors. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -6045,7 +6594,7 @@
       ],
       "id": "external:paper-2405-04434",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "synthesized",
       "summary": "paper source owned by authors. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -6066,7 +6615,7 @@
       ],
       "id": "external:paper-2406-16858",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "screened",
       "summary": "paper source owned by authors. Review depth screened: relevance and limits reviewed",
@@ -6086,7 +6635,7 @@
       ],
       "id": "external:paper-2407-08608",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "synthesized",
       "summary": "paper source owned by authors. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -6106,7 +6655,7 @@
       ],
       "id": "external:paper-2409-12191",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "screened",
       "summary": "paper source owned by authors. Review depth screened: relevance and limits reviewed",
@@ -6126,7 +6675,7 @@
       ],
       "id": "external:paper-2412-03594",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "synthesized",
       "summary": "paper source owned by authors. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -6146,7 +6695,7 @@
       ],
       "id": "external:paper-2412-04467",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "synthesized",
       "summary": "paper source owned by authors. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -6166,7 +6715,7 @@
       ],
       "id": "external:paper-2412-19437",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "screened",
       "summary": "paper source owned by authors. Review depth screened: relevance and limits reviewed",
@@ -6187,7 +6736,7 @@
       ],
       "id": "external:paper-2502-04420",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "synthesized",
       "summary": "paper source owned by authors. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -6207,7 +6756,7 @@
       ],
       "id": "external:paper-2502-13923",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "synthesized",
       "summary": "paper source owned by authors. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -6229,7 +6778,7 @@
       ],
       "id": "external:paper-2502-15075",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "screened",
       "summary": "paper source owned by authors. Review depth screened: relevance and limits reviewed",
@@ -6245,11 +6794,55 @@
     {
       "confidence": "high",
       "evidence": [
+        "https://arxiv.org/abs/2503.01840",
+        "https://arxiv.org/abs/2503.01840v3"
+      ],
+      "id": "external:paper-2503-01840",
+      "kind": "external_reference",
+      "observed_at": "2026-11-05",
+      "provenance": "research_inference",
+      "status": "synthesized",
+      "summary": "paper source owned by authors. Review depth synthesized: directly informed a rule, runbook, or registry decision",
+      "tags": [
+        "migrated-v1",
+        "review-depth/synthesized",
+        "source-kind/paper",
+        "topic/eagle3",
+        "topic/speculative-decoding",
+        "topic/target-features"
+      ],
+      "title": "EAGLE-3: Scaling up Inference Acceleration of Large Language Models via Training-Time Test"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://arxiv.org/abs/2504.19874",
+        "https://arxiv.org/abs/2504.19874v1"
+      ],
+      "id": "external:paper-2504-19874",
+      "kind": "external_reference",
+      "observed_at": "2026-11-05",
+      "provenance": "research_inference",
+      "status": "synthesized",
+      "summary": "paper source owned by authors. Review depth synthesized: directly informed a rule, runbook, or registry decision",
+      "tags": [
+        "migrated-v1",
+        "review-depth/synthesized",
+        "source-kind/paper",
+        "topic/kv-cache",
+        "topic/long-context",
+        "topic/quantization"
+      ],
+      "title": "TurboQuant: Online Vector Quantization with Near-optimal Distortion Rate"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
         "https://arxiv.org/abs/2505.15380"
       ],
       "id": "external:paper-2505-15380",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "synthesized",
       "summary": "paper source owned by authors. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -6269,7 +6862,7 @@
       ],
       "id": "external:paper-2601-15621",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "synthesized",
       "summary": "paper source owned by authors. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -6290,7 +6883,7 @@
       ],
       "id": "external:paper-2601-19139",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "synthesized",
       "summary": "paper source owned by authors. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -6307,13 +6900,35 @@
       "title": "Native LLM and MLLM Inference at Scale on Apple Silicon"
     },
     {
+      "confidence": "high",
+      "evidence": [
+        "https://arxiv.org/abs/2602.19128",
+        "https://arxiv.org/abs/2602.19128v2"
+      ],
+      "id": "external:paper-2602-19128",
+      "kind": "external_reference",
+      "observed_at": "2026-11-05",
+      "provenance": "research_inference",
+      "status": "synthesized",
+      "summary": "paper source owned by authors. Review depth synthesized: directly informed a rule, runbook, or registry decision",
+      "tags": [
+        "migrated-v1",
+        "review-depth/synthesized",
+        "source-kind/paper",
+        "topic/hypothesis-led-learning",
+        "topic/kernel-search",
+        "topic/optimization"
+      ],
+      "title": "K-Search: LLM Kernel Generation via Co-Evolving Intrinsic World Model"
+    },
+    {
       "confidence": "medium",
       "evidence": [
         "https://arxiv.org/abs/2602.23200"
       ],
       "id": "external:paper-2602-23200",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "screened",
       "summary": "paper source owned by authors. Review depth screened: relevance and limits reviewed",
@@ -6333,7 +6948,7 @@
       ],
       "id": "external:paper-2604-04722",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "screened",
       "summary": "paper source owned by authors. Review depth screened: relevance and limits reviewed",
@@ -6353,7 +6968,7 @@
       ],
       "id": "external:paper-2606-20474",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "screened",
       "summary": "paper source owned by authors. Review depth screened: relevance and limits reviewed",
@@ -6373,7 +6988,7 @@
       ],
       "id": "external:paper-2606-21842",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "screened",
       "summary": "paper source owned by authors. Review depth screened: relevance and limits reviewed",
@@ -6394,7 +7009,7 @@
       ],
       "id": "external:paper-2606-24033",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "screened",
       "summary": "paper source owned by authors. Review depth screened: relevance and limits reviewed",
@@ -6408,13 +7023,62 @@
       "title": "RoPE-Aware Bit Allocation for KV-Cache Quantization"
     },
     {
+      "confidence": "high",
+      "evidence": [
+        "https://arxiv.org/abs/2610.31479",
+        "https://arxiv.org/abs/2610.31479v1"
+      ],
+      "id": "external:paper-2610-31479",
+      "kind": "external_reference",
+      "observed_at": "2026-11-05",
+      "provenance": "research_inference",
+      "status": "synthesized",
+      "summary": "paper source owned by authors. Review depth synthesized: directly informed a rule, runbook, or registry decision",
+      "tags": [
+        "migrated-v1",
+        "review-depth/synthesized",
+        "source-kind/paper",
+        "topic/apple-silicon",
+        "topic/benchmarking",
+        "topic/kernel-portability",
+        "topic/kv-cache",
+        "topic/moe",
+        "topic/speculative-decoding"
+      ],
+      "title": "Evaluating the Applicability of LLM Inference Optimizations on Apple Silicon"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "https://arxiv.org/abs/2610.33076",
+        "https://arxiv.org/abs/2610.33076v1"
+      ],
+      "id": "external:paper-2610-33076",
+      "kind": "external_reference",
+      "observed_at": "2026-11-05",
+      "provenance": "research_inference",
+      "status": "synthesized",
+      "summary": "paper source owned by authors. Review depth synthesized: directly informed a rule, runbook, or registry decision",
+      "tags": [
+        "migrated-v1",
+        "review-depth/synthesized",
+        "source-kind/paper",
+        "topic/kv-cache",
+        "topic/long-context",
+        "topic/memory",
+        "topic/metal",
+        "topic/quantization"
+      ],
+      "title": "Double KV Cache Optimization on Apple Silicon: Block-FP4, Radial Quantization, and Fused Metal Kernels"
+    },
+    {
       "confidence": "medium",
       "evidence": [
         "https://github.com/apoorvumang/prompt-lookup-decoding"
       ],
       "id": "external:prompt-lookup-decoding-repo",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "screened",
       "summary": "repository source owned by Apoorv Saxena. Review depth screened: relevance and limits reviewed",
@@ -6434,7 +7098,7 @@
       ],
       "id": "external:pypi-mlx-audio",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "screened",
       "summary": "release source owned by Blaizzy / contributors. Review depth screened: relevance and limits reviewed",
@@ -6457,7 +7121,7 @@
       ],
       "id": "external:pypi-mlx-lm",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "screened",
       "summary": "release source owned by ml-explore. Review depth screened: relevance and limits reviewed",
@@ -6479,7 +7143,7 @@
       ],
       "id": "external:pytorch-doc-cuda-graphs",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "synthesized",
       "summary": "official-doc source owned by PyTorch. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -6540,7 +7204,7 @@
       ],
       "id": "external:repo-stable-audio-tools",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "indexed",
       "summary": "repository source owned by Stability AI. Review depth indexed: catalogued for future review; do not represent as fully reviewed",
@@ -6560,7 +7224,7 @@
       ],
       "id": "external:repo-whisper",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "screened",
       "summary": "repository source owned by OpenAI. Review depth screened: relevance and limits reviewed",
@@ -6600,7 +7264,7 @@
       ],
       "id": "external:spheron-nvfp4-mxfp4-guide",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "screened",
       "summary": "technical-blog source owned by Spheron. Review depth screened: relevance and limits reviewed",
@@ -6622,7 +7286,7 @@
       ],
       "id": "external:vllm-blog-anatomy",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "screened",
       "summary": "technical-blog source owned by vLLM project. Review depth screened: relevance and limits reviewed",
@@ -6645,7 +7309,7 @@
       ],
       "id": "external:vllm-doc-prefix-caching",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "screened",
       "summary": "official-doc source owned by vLLM project. Review depth screened: relevance and limits reviewed",
@@ -6666,7 +7330,7 @@
       ],
       "id": "external:vllm-mlx-continuous-batching-guide",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "synthesized",
       "summary": "source-code source owned by waybarrios. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -6687,7 +7351,7 @@
       ],
       "id": "external:vllm-mlx-mllm-batch-source",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "synthesized",
       "summary": "source-code source owned by waybarrios. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -6709,7 +7373,7 @@
       ],
       "id": "external:vllm-mlx-multimodal-guide",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "synthesized",
       "summary": "source-code source owned by waybarrios. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -6725,13 +7389,36 @@
       "title": "vLLM-MLX multimodal serving guide"
     },
     {
+      "confidence": "high",
+      "evidence": [
+        "https://arxiv.org/abs/2601.19139",
+        "https://arxiv.org/abs/2601.19139v2"
+      ],
+      "id": "external:vllm-mlx-paper-v2-2026-01-29",
+      "kind": "external_reference",
+      "observed_at": "2026-11-05",
+      "provenance": "research_inference",
+      "status": "synthesized",
+      "summary": "paper source owned by authors. Review depth synthesized: directly informed a rule, runbook, or registry decision",
+      "tags": [
+        "migrated-v1",
+        "review-depth/synthesized",
+        "source-kind/paper",
+        "topic/continuous-batching",
+        "topic/multimodal",
+        "topic/prefix-cache",
+        "topic/serving"
+      ],
+      "title": "Native LLM and MLLM Inference at Scale on Apple Silicon"
+    },
+    {
       "confidence": "medium",
       "evidence": [
         "https://github.com/waybarrios/vllm-mlx"
       ],
       "id": "external:vllm-mlx-repo",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "screened",
       "summary": "repository source owned by waybarrios. Review depth screened: relevance and limits reviewed",
@@ -6753,7 +7440,7 @@
       ],
       "id": "external:vllm-mlx-vision-cache-source",
       "kind": "external_reference",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "synthesized",
       "summary": "source-code source owned by waybarrios. Review depth synthesized: directly informed a rule, runbook, or registry decision",
@@ -6776,7 +7463,7 @@
       ],
       "id": "finding:audio-flow-tts-duration-vocoder-gates",
       "kind": "finding",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "held-reinforces-existing-guidance",
       "summary": "Existing flow-TTS, vocoder, audio-codec, and streaming-speech runbooks already require these gates.",
@@ -6814,7 +7501,7 @@
       ],
       "id": "finding:block-weight-streaming",
       "kind": "finding",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "adopted",
       "summary": "Add a proven-mlx-port optimization method for block weight streaming from inspectable safetensors, scoped to repeated-block models that exceed unified-memory budget. Validation gate: Block-count/key coverage, streamed-vs-eager parity on a tiny fixture, eviction/reload test, peak-memory measurement, and fallback eager path. Rollback: Disable streaming if outputs drift, block key coverage is incomplete, eviction reloads stale weights, or disk/page-fault overhead erases the memory benefit.",
@@ -6880,7 +7567,7 @@
       ],
       "id": "finding:grid-sample-spatial-kernel",
       "kind": "finding",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "adopted",
       "summary": "Add a proven-mlx-port optimization method for PyTorch-compatible grid_sample custom kernels, scoped to spatial/volume-warping ports with explicit parity and end-to-end benchmark gates. Validation gate: Coordinate order, align_corners, padding mode, interpolation, dtype, and layout parity against NumPy/Torch; unsupported-mode declaration; pure-MLX fallback; end-to-end benchmark. Rollback: Disable or hold if reflection/nearest/backward semantics are required, parity drifts, layout transposes dominate, or the model-level benchmark does not improve.",
@@ -6918,7 +7605,7 @@
       ],
       "id": "finding:layer-eval-watchdog-guard",
       "kind": "finding",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "held",
       "summary": "The skill already recommends deliberate lazy-evaluation boundaries; add a note in runtime guidance, but do not create a separate optimization method without a repo-local watchdog reproducer.",
@@ -6936,7 +7623,7 @@
       ],
       "id": "finding:layer-range-network-sharding",
       "kind": "finding",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "held-research-candidate-only",
       "summary": "The implementation is explicitly a demo/start point and lacks enough parity, failure, cancellation, scheduler, and security evidence to become supported porting guidance.",
@@ -6954,7 +7641,7 @@
       ],
       "id": "finding:mlx-onnx-export-adjacent",
       "kind": "finding",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "held-adjacent-context-only",
       "summary": "Useful adjacent ecosystem context, but not a model-to-MLX porting technique for this skill.",
@@ -6993,7 +7680,7 @@
       ],
       "id": "finding:operation-benchmark-hygiene",
       "kind": "finding",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "held-reinforces-existing-guidance",
       "summary": "The skill already separates microbenchmarks from end-to-end claims and requires hardware/workload metadata; no new supported optimization follows from operation tables alone.",
@@ -7011,7 +7698,7 @@
       ],
       "id": "finding:outcome-asr-whisper-working-adjacent-route",
       "kind": "finding",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "source_backed_working",
       "summary": "Whisper-family ASR has working Apple-platform routes, but the advisor should separate Core ML or example support from generic MLX optimization claims. Claim boundary: Claim a source-backed ASR route and quality gates, not a generic MLX performance win.",
@@ -7031,7 +7718,7 @@
       ],
       "id": "finding:outcome-audio-tts-qwen3-and-vocoder-routes",
       "kind": "finding",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "source_backed_working",
       "summary": "MLX-Audio and Qwen3-TTS evidence can guide TTS/audio candidates, but each model still needs duration, vocoder, reference-audio, and perceptual quality gates. Observed overall band 1.0x-5.45x (profile_required, claim_status=n/a). Claim boundary: Claim source-backed route evidence for matching audio/TTS families; benchmark first-audio latency, RTF, and quality locally.",
@@ -7054,7 +7741,7 @@
       ],
       "id": "finding:outcome-decoder-mlx-lm-working-route",
       "kind": "finding",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "source_backed_working",
       "summary": "For common decoder LLM families, start with MLX-LM conversion, loading, generation, cache, and quantization before writing a bespoke port. Observed overall band 1.0x-4.3x (profile_required, claim_status=held). Observed speculative_decoding band 1.0x-1.3x (performance_observation, claim_status=held). Claim boundary: Claim route support and source-backed method availability; claim speed only after local target-workload benchmark metadata exists.",
@@ -7074,7 +7761,7 @@
       ],
       "id": "finding:outcome-diffusion-and-flow-partial-routes",
       "kind": "finding",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "known_limit_or_gap",
       "summary": "Diffusion and flow models have MLX examples and contributor ports, but outcomes are model-specific and cannot be promoted to a top-model-wide route without scheduler and conditioning parity. Claim boundary: Show as model-specific partial route or benchmark-required memory pattern, not a universal diffusion speedup.",
@@ -7094,7 +7781,7 @@
       ],
       "id": "finding:outcome-encoder-embedding-top-model-gap",
       "kind": "finding",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "known_limit_or_gap",
       "summary": "Many top downloaded models are embedding, reranker, BERT, CLIP, or feature-extraction models; this skill has routing gates but not a broad proven MLX outcome matrix for them yet. Claim boundary: Show as a known coverage gap or validation backlog, not as a benchmark-required speed candidate.",
@@ -7114,7 +7801,7 @@
       ],
       "id": "finding:outcome-time-series-and-structured-gap",
       "kind": "finding",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "known_limit_or_gap",
       "summary": "Top downloaded Chronos and structured/ranking models should not inherit LLM optimization guidance; they need task-specific preprocessing and metric gates. Claim boundary: Show as validation backlog, not as an optimization candidate.",
@@ -7133,7 +7820,7 @@
       ],
       "id": "finding:outcome-vlm-mlx-vlm-working-route",
       "kind": "finding",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "source_backed_working",
       "summary": "For Qwen-VL, LLaVA-style, Pixtral, Gemma vision, and related image-text models, use MLX-VLM before inventing a new multimodal serving path. Observed overall band 1.0x-28.0x (profile_required, claim_status=n/a). Claim boundary: Claim source-backed VLM route and cache candidates; keep source-reported speedups attached to repeated-input serving setups.",
@@ -7152,7 +7839,7 @@
       ],
       "id": "finding:paged-kv-and-gather-qmm-serving",
       "kind": "finding",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "held-reinforces-existing-guidance",
       "summary": "Existing paged KV, continuous batching, and MoE gather/qmm guidance already requires block-boundary, fragmentation, cancellation, sorted/unsorted, and loop-oracle checks.",
@@ -7190,7 +7877,7 @@
       ],
       "id": "finding:rwkv-ssm-conformer-prototypes",
       "kind": "finding",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "held-insufficient-evidence",
       "summary": "The current SSM/recurrent/ASR runbooks already require full-sequence versus recurrent parity, state tests, and source oracle capture; these prototypes do not justify new supported guidance.",
@@ -7252,7 +7939,7 @@
       ],
       "id": "finding:synthetic-moe-assembly",
       "kind": "finding",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "held-research-candidate-only",
       "summary": "This is architecture creation/fine-tuning, not a source-preserving port optimization. It should remain a lossy/product-mode experiment unless a task explicitly asks to train or publish a new MoE.",
@@ -7383,7 +8070,7 @@
       ],
       "id": "hypothesis:golden-scenarios-all-families",
       "kind": "hypothesis",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "validated",
       "summary": "Golden scenarios now cover all 17 declared architecture families with reproducible synthetic fixtures. Validation gate: Keep `tests.test_scenarios` green at full family coverage: each declared family must route correctly, select the expected runbook, prove source weight keys, catch a seeded parity bug, and include or exclude one relevant optimization.",
@@ -7402,7 +8089,7 @@
       ],
       "id": "hypothesis:graph-geometric-scientific",
       "kind": "hypothesis",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "needs-validation",
       "summary": "Graph/geometric research now has first offline GCN-style message-passing routing coverage with a synthetic fixture and runbook. Point-cloud, neighbor/sampling, equivariant, protein, chemistry, and energy/force scientific ports remain validation backlog. Validation gate: Keep the GCN-style graph-message-passing scenario green, then add point-cloud neighbor/sampling fixtures and one equivariant or energy-force fixture. Gates must include scatter/segment/reduce parity, permutation invariance, rotation/reflection equivariance probes, neighbor-list/radius graph fixtures, ragged batching, sparse/dense aggregation comparisons, units/symmetry/energy-force constraints, and task metrics such as OGB accuracy/ROC-AUC, ModelNet/ShapeNet accuracy or mIoU, molecular MAE/RMSE, and energy/force errors.",
@@ -7421,7 +8108,7 @@
       ],
       "id": "hypothesis:multi-source-research-sampling",
       "kind": "hypothesis",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "validated",
       "summary": "The deep research loop now embeds explicit sample targets for official docs, papers, Hugging Face, package registries, technical blogs, community leads, repositories, and repo-local audits in every assignment, and reports planned non-GitHub coverage before findings return. Validation gate: Keep scaffold-only, offline-fixture, and local-executor research-loop tests green; planned sample targets must be reported separately from actual findings, stay review-only, and never auto-promote sources or execute remote model code.",
@@ -7440,7 +8127,7 @@
       ],
       "id": "hypothesis:non-generative-cv",
       "kind": "hypothesis",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "needs-validation",
       "summary": "Non-generative CV now has first offline backbone/classifier routing coverage with a synthetic ResNet-style fixture and runbook. Dense/promptable vision, OCR, depth, pose, feature extraction on real checkpoints, and detection-style postprocessing remain validation backlog. Validation gate: Keep the ResNet/CIFAR-style backbone/classifier scenario green, then add scoped fixtures before broader support claims: SAM-style prompt-to-mask, DINOv2 feature extraction, SegFormer semantic segmentation, Depth-Anything relative depth, and later DETR/Table Transformer boxes. Gates must include preprocessing parity, NCHW/NHWC conversion, logits/masks/boxes/depth/keypoint/string parity, coordinate and resize semantics, IoU/AP/Dice/AbsRel/RMSE/OKS/edit-distance/top-k metrics, and readable MLX or NumPy fallbacks for NMS, ROIAlign, and grid-sample-like paths.",
@@ -7541,7 +8228,7 @@
       ],
       "id": "hypothesis:source-formats-beyond-pytorch-hf",
       "kind": "hypothesis",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "needs-validation",
       "summary": "Static intake now emits ONNX, GGUF, Flax/Orbax, TensorFlow SavedModel, Keras archive, Core ML package, and safetensors-checkpoint manifests, with conservative operator/layer coverage reports for ONNX, TensorFlow, and Keras plus deterministic weight-map shape coverage for ONNX initializers and GGUF tensor tables. Broader checkpoint-only repo fixtures remain. Validation gate: Static manifest extraction without import or execution: keep ONNX ModelProto/opset/initializer/external-data inspection, GGUF header/metadata/tensor table coverage, Flax/Orbax tree metadata, TensorFlow SavedModel and Keras archive signatures/config, Core ML package metadata, ONNX/TensorFlow/Keras static coverage reports, safetensors-only checkpoint holds, ONNX/GGUF source-format weight-map validation, and no silent fallback to manual routing green; add broader checkpoint-only repo fixtures.",
@@ -7560,7 +8247,7 @@
       ],
       "id": "hypothesis:structured-timeseries-recsys",
       "kind": "hypothesis",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "needs-validation",
       "summary": "Structured/time-series research now has first offline forecasting routing coverage with a synthetic Time-Series-Transformer-style fixture and runbook. Tabular/skops, deep tabular, text ranking, and recommender subfamilies remain validation backlog. Validation gate: Keep the time-series forecasting scenario green, then create separate fixtures for tabular/skops or deep tabular, cross-encoder text ranking, and later recommender subfamilies. Gates must include scaler/normalizer parity, lag construction, observed-mask handling, context/prediction split, quantile or forecast-patch parity, known-future covariate leakage checks, categorical vocab and missing-value policy, jagged offsets/lengths and embedding pooling parity, pair-score parity, candidate-id versus score-based retrieval checks, NDCG/AUC/top-k/forecast-error task gates, loader family, remote-code risk, and rollback condition.",
@@ -7579,7 +8266,7 @@
       ],
       "id": "hypothesis:top1000-contributor-long-tail-rescreening",
       "kind": "hypothesis",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "needs-validation",
       "summary": "The current MLX contributor refresh requested 1000 contributors, captured 263 linked contributors and 269 anon=true author buckets through 2026-07-20. Collection remains source-selection evidence only; repository/code-search rescreening and implementation review remain open. Validation gate: Refresh contributors with `scripts/collect_contributors.py`, following GitHub Link headers until no rel=\"next\" remains or the explicit cap is reached; record requested count, linked count, anon=true count without raw anonymous identities, status codes, ETags, Last-Modified headers, rate-limit state, repository/code search total_count and incomplete_results, replay missed queries, inspect newly matched repos by architecture/source-format family, and record each result as adopted, held, rejected, or backlog.",
@@ -7598,7 +8285,7 @@
       ],
       "id": "hypothesis:training-as-port-target",
       "kind": "hypothesis",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "needs-validation",
       "summary": "Official MLX autograd, Module, optimizer, compile, memory, checkpoint, and LoRA references now define a concrete training-port contract, but no local training parity fixture has been run. Validation gate: Add a tiny training fixture before support claims: scalar loss parity, selected gradient parity, trainable/frozen parameter membership, tiny overfit, optimizer state round-trip, exact checkpoint resume with optimizer config, scheduler, random state, data cursor and accumulation remainder, deterministic seed replay, train/eval mode checks, adapter key/shape manifest, adapter merge/fuse parity, eager-vs-compiled state-capture parity, gradient-checkpoint on/off parity, active/cache/peak memory logs, and memory graph-retention checks.",
@@ -7615,14 +8302,16 @@
         "mlx-model-porting/assets/knowledge_graph.json (approach:adaptive-kv-quantization)",
         "https://arxiv.org/abs/2502.04420",
         "https://arxiv.org/abs/2502.15075",
+        "https://arxiv.org/abs/2504.19874v1",
         "https://arxiv.org/abs/2602.23200",
         "https://arxiv.org/abs/2604.04722",
         "https://arxiv.org/abs/2606.20474",
-        "https://arxiv.org/abs/2606.24033"
+        "https://arxiv.org/abs/2606.24033",
+        "https://arxiv.org/abs/2610.33076v1"
       ],
       "id": "mechanism:adaptive-kv-quantization",
       "kind": "mechanism",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "research-candidate",
       "summary": "Treat layerwise, key/value, RoPE-aware, and hardware-aware KV bit allocation as experiments until reproduced in MLX. Validation gate: MLX implementation. Rollback: no quality advantage over uniform KV quantization.",
@@ -7693,7 +8382,7 @@
       "exactness_class": "exact_by_construction",
       "id": "mechanism:audio-reference-conditioning-cache",
       "kind": "mechanism",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "proven-mlx-port",
       "summary": "Cache repeated reference/ICL conditioning only with model/codec/quantization/speaker fingerprint keys. Validation gate: cold/warm parity. Rollback: speaker identity or prosody drifts.",
@@ -7718,7 +8407,7 @@
       "exactness_class": "approximate_legal",
       "id": "mechanism:audio-streaming-and-cache",
       "kind": "mechanism",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "proven-mlx-port",
       "summary": "Use cache-aware streaming, overlap-add, and chunked codec/vocoder execution only when chunk boundaries preserve audio quality. Validation gate: first-audio latency. Rollback: audible discontinuity.",
@@ -7761,7 +8450,7 @@
       ],
       "id": "mechanism:bf16-weight-cast",
       "kind": "mechanism",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "native-mlx",
       "summary": "Cast a controlled F32 MLX port to BF16 only when the exact target workload retains its declared quality window; keep timing results observation-only until every promotion gate, including external signed attestation, passes. Validation gate: deterministic F32-to-BF16 conversion manifest. Rollback: quality output leaves the declared window. Observed source band 1.0x-1.8122x on metric wall-time; the repository holds this claim (promotion_state=withheld) and emits no effective range.",
@@ -7783,7 +8472,7 @@
       ],
       "id": "mechanism:block-weight-streaming",
       "kind": "mechanism",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "proven-mlx-port",
       "summary": "For repeated-block models that exceed unified memory, stream block weights from inspectable safetensors into a shared block only after eager parity is established. Validation gate: block key coverage. Rollback: streamed outputs drift.",
@@ -7805,7 +8494,7 @@
       "exactness_class": "exact_by_construction",
       "id": "mechanism:cache-privacy-and-isolation",
       "kind": "mechanism",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "research-candidate",
       "summary": "Require namespace isolation, opt-out, padding/constant-time policy review, and leakage tests before cross-user cache reuse. Validation gate: tenant namespace tests. Rollback: unbounded cross-tenant reuse.",
@@ -7849,7 +8538,7 @@
       "exactness_class": "exact_by_construction",
       "id": "mechanism:compile-stable-region",
       "kind": "mechanism",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "native-mlx",
       "summary": "Compile pure repeated regions after parity is established and shapes/state containers are stable. Validation gate: compile count or cold/warm timing captured. Rollback: hidden retracing.",
@@ -7931,16 +8620,39 @@
     {
       "confidence": "low",
       "evidence": [
+        "mlx-model-porting/assets/knowledge_graph.json (approach:compressed-kv-direct-attention)",
+        "https://arxiv.org/abs/2504.19874v1",
+        "https://arxiv.org/abs/2610.33076v1"
+      ],
+      "id": "mechanism:compressed-kv-direct-attention",
+      "kind": "mechanism",
+      "observed_at": "2026-11-05",
+      "provenance": "research_inference",
+      "status": "research-candidate",
+      "summary": "Investigate blockwise attention that consumes compressed KV without reconstructing the entire cache only after measuring the existing uniform-quantized and uncompressed baselines. Validation gate: Pin an inspectable MLX implementation; compare numerical and task quality with uniform KV and uncompressed baselines at a matched memory budget. Rollback: Reconstruction dominates decode or peak memory defeats the capacity objective.",
+      "tags": [
+        "category/kv-cache",
+        "migrated-v1",
+        "objective/decode-throughput",
+        "objective/long-context",
+        "objective/peak-memory"
+      ],
+      "title": "Direct compressed-KV attention without full-cache reconstruction"
+    },
+    {
+      "confidence": "low",
+      "evidence": [
         "mlx-model-porting/assets/knowledge_graph.json (approach:content-prefix-cache-vlm)",
         "https://github.com/Blaizzy/mlx-vlm/blob/6a8cdff6a1f53f46a15d4adb997c3b2d5f621263/README.md",
         "https://arxiv.org/abs/2402.05099",
         "https://arxiv.org/abs/2402.15220",
         "https://arxiv.org/abs/2601.19139",
+        "https://arxiv.org/abs/2601.19139v2",
         "https://github.com/waybarrios/vllm-mlx"
       ],
       "id": "mechanism:content-prefix-cache-vlm",
       "kind": "mechanism",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "rejected-or-superseded",
       "summary": "Superseded by multimodal-content-prefix-cache; do not count this alias as a separate optimization or evidence line. Validation gate: same-image/different-encoding hit tests. Rollback: false cache hit.",
@@ -7966,7 +8678,7 @@
       "exactness_class": "exact_by_construction",
       "id": "mechanism:continuous-batching-serving",
       "kind": "mechanism",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "proven-mlx-port",
       "summary": "Use only for concurrent serving where scheduler complexity is justified. Validation gate: concurrency=1 and many. Rollback: tail latency regression. Observed source band 1.0x-4.3x on metric batch-throughput; the repository holds this claim (promotion_state=withheld) and emits no effective range.",
@@ -7988,7 +8700,7 @@
       ],
       "id": "mechanism:cuda-graphs-decode-capture",
       "kind": "mechanism",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "rejected-or-superseded",
       "summary": "Do not port. CUDA Graphs capture/replay is NVIDIA-specific; the portable MLX analog is mx.compile of the single decode step, which this skill already recommends. Validation gate: Not applicable on Metal/MLX; use the mx.compile stable-region gate instead. Rollback: Always: this method is rejected for MLX and must not be adopted.",
@@ -8026,12 +8738,13 @@
         "mlx-model-porting/assets/knowledge_graph.json (approach:draft-model-speculation)",
         "https://github.com/ml-explore/mlx-lm/blob/2c008fd0252b2c569227d12568356ab88ab0560a/mlx_lm/generate.py",
         "https://arxiv.org/abs/2211.17192",
-        "https://arxiv.org/abs/2302.01318"
+        "https://arxiv.org/abs/2302.01318",
+        "https://arxiv.org/abs/2610.31479v1"
       ],
       "exactness_class": "exact_by_construction",
       "id": "mechanism:draft-model-speculation",
       "kind": "mechanism",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "official-mlx-project",
       "summary": "Try only when a compatible smaller draft model shares tokenizer/vocabulary and acceptance is high enough to offset draft cost. Validation gate: lossless distribution or quality-preserving test. Rollback: acceptance too low. Observed source band 1.0x-1.3x on metric decode-tokens-per-sec; the repository holds this claim (promotion_state=withheld) and emits no effective range.",
@@ -8068,16 +8781,19 @@
       "confidence": "low",
       "evidence": [
         "mlx-model-porting/assets/knowledge_graph.json (approach:eagle-medusa-mtp-drafters)",
+        "https://arxiv.org/abs/2602.06036v2",
         "https://github.com/Blaizzy/mlx-vlm/blob/6a8cdff6a1f53f46a15d4adb997c3b2d5f621263/README.md",
         "https://arxiv.org/abs/2401.10774",
         "https://arxiv.org/abs/2401.15077",
         "https://arxiv.org/abs/2406.16858",
         "https://arxiv.org/abs/2412.19437",
+        "https://arxiv.org/abs/2503.01840v3",
+        "https://arxiv.org/abs/2610.31479v1",
         "https://github.com/waybarrios/vllm-mlx"
       ],
       "id": "mechanism:eagle-medusa-mtp-drafters",
       "kind": "mechanism",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "research-candidate",
       "summary": "Use only when compatible trained drafter heads/artifacts and verification code exist for the target architecture. Validation gate: drafter compatibility. Rollback: incompatible features.",
@@ -8170,7 +8886,7 @@
       "exactness_class": "exact_by_construction",
       "id": "mechanism:fast-sdpa",
       "kind": "mechanism",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "native-mlx",
       "summary": "Try MLX fast SDPA when Q/K/V layout, GQA/MQA grouping, mask, scale, causal alignment, sinks, and dtype semantics match the source. Validation gate: Prefill tensor parity. Rollback: Any semantic mismatch.",
@@ -8238,7 +8954,7 @@
       ],
       "id": "mechanism:generic-audio-prefix-cache",
       "kind": "mechanism",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "research-candidate",
       "summary": "Keep generic audio prefix cache as a research experiment until a model-specific MLX-Audio cache path exists. Validation gate: model-specific cache path. Rollback: state mismatch.",
@@ -8295,6 +9011,29 @@
       "title": "Grouped SDPA with shared K/V reads"
     },
     {
+      "confidence": "low",
+      "evidence": [
+        "mlx-model-porting/assets/knowledge_graph.json (approach:hardware-aware-kernel-search)",
+        "https://bair.berkeley.edu/blog/2026/07/29/cuda-to-mlx-k-search/",
+        "https://arxiv.org/abs/2602.19128v2"
+      ],
+      "id": "mechanism:hardware-aware-kernel-search",
+      "kind": "mechanism",
+      "observed_at": "2026-11-05",
+      "provenance": "research_inference",
+      "status": "research-candidate",
+      "summary": "Use a bounded hypothesis-and-measurement search for a demonstrated hotspot: translate algorithmic invariants and memory access patterns into Metal constraints, generate one candidate change at a time, and retain the current native MLX baseline and fallback. Validation gate: Capture the operator contract, current native baseline, supported shapes/dtypes, chip limits and a bounded iteration/time budget. Rollback: A candidate fails held-out parity or depends on unsupported hardware behavior.",
+      "tags": [
+        "category/kernels",
+        "migrated-v1",
+        "objective/decode-throughput",
+        "objective/latency",
+        "objective/prefill-throughput",
+        "objective/throughput"
+      ],
+      "title": "Hardware-aware kernel search with held-out validation"
+    },
+    {
       "confidence": "high",
       "evidence": [
         "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/146",
@@ -8321,6 +9060,30 @@
       "title": "Draft head-step cost retune"
     },
     {
+      "confidence": "low",
+      "evidence": [
+        "mlx-model-porting/assets/knowledge_graph.json (approach:kv-cache-pruning)",
+        "https://arxiv.org/abs/2306.14048",
+        "https://arxiv.org/abs/2404.14469",
+        "https://arxiv.org/abs/2509.04377",
+        "https://arxiv.org/abs/2610.31479v1"
+      ],
+      "id": "mechanism:kv-cache-pruning",
+      "kind": "mechanism",
+      "observed_at": "2026-11-05",
+      "provenance": "research_inference",
+      "status": "research-candidate",
+      "summary": "Evaluate a precisely specified KV retention policy only after baseline parity; keep positional semantics, retained indices, sinks and recent-window rules explicit. Never prune a recurrent state as if it were ordinary attention KV. Validation gate: Fix the retention rule and budget before comparing against the same unpruned model/runtime. Rollback: Any required task falls below its preset quality floor.",
+      "tags": [
+        "category/kv-cache",
+        "migrated-v1",
+        "objective/decode-throughput",
+        "objective/long-context",
+        "objective/peak-memory"
+      ],
+      "title": "KV cache pruning/eviction"
+    },
+    {
       "confidence": "high",
       "evidence": [
         "mlx-model-porting/assets/knowledge_graph.json (approach:lazy-eval-boundaries)",
@@ -8331,7 +9094,7 @@
       ],
       "id": "mechanism:lazy-eval-boundaries",
       "kind": "mechanism",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "native-mlx",
       "summary": "Move host synchronization to intentional boundaries and avoid accidental NumPy conversion, printing, or scalar item extraction in hot loops. Validation gate: same outputs. Rollback: memory blow-up.",
@@ -8389,6 +9152,29 @@
     {
       "confidence": "high",
       "evidence": [
+        "mlx-model-porting/assets/knowledge_graph.json (approach:metal-nax-matmul)",
+        "https://developer.apple.com/videos/play/wwdc2026/330/",
+        "https://machinelearning.apple.com/research/exploring-llms-mlx-m5",
+        "https://github.com/ml-explore/mlx/blob/36969c094354086e15d2a327a9c50feb20b9cf11/mlx/backend/metal/device.cpp"
+      ],
+      "id": "mechanism:metal-nax-matmul",
+      "kind": "mechanism",
+      "observed_at": "2026-11-05",
+      "provenance": "code_verified",
+      "status": "native-mlx",
+      "summary": "For an explicitly identified M5-family Mac with macOS>=26.2 and the reviewed MLX>=0.32.4 baseline, profile the existing native matrix dispatch before writing a replacement kernel. M4 and unreviewed chip families remain outside this recipe. Validation gate: Match mlx>=0.32.4, macos>=26.2 and explicit M5 chip family in TargetProfile. Rollback: The actual build/device does not expose the required path.",
+      "tags": [
+        "category/kernels",
+        "migrated-v1",
+        "objective/decode-throughput",
+        "objective/prefill-throughput",
+        "objective/throughput"
+      ],
+      "title": "Profile the native M5 GPU Neural Accelerator matrix path"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
         "https://github.com/Layr-Labs/qwen-3.8-mtp-challenge/pull/360",
         "qwen38 campaign promotion ledger, PROMOTION_LEDGER.md (PR360)"
       ],
@@ -8420,7 +9206,7 @@
       "exactness_class": "approximate_legal",
       "id": "mechanism:moe-expert-dispatch-and-quantization",
       "kind": "mechanism",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "native-mlx",
       "summary": "After a loop oracle passes, move to MLX gather_mm/gather_qmm expert dispatch and quantize experts only after sensitivity tests. Validation gate: loop oracle parity. Rollback: rare-expert quality regression.",
@@ -8441,7 +9227,7 @@
       ],
       "id": "mechanism:moe-gate-up-fusion",
       "kind": "mechanism",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "research-candidate",
       "summary": "Treat fused MoE gate/up projection as an experimental patch, not baseline MLX support. Validation gate: token-exact parity. Rollback: proposal not available in target runtime.",
@@ -8464,7 +9250,7 @@
       ],
       "id": "mechanism:moe-gather-and-expert-batching",
       "kind": "mechanism",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "native-mlx",
       "summary": "Use gather or grouped matmul primitives when expert routing creates large enough grouped matrix multiplies and duplicate/scatter semantics match. Validation gate: loop oracle parity including duplicates. Rollback: small group overhead dominates.",
@@ -8489,7 +9275,7 @@
       "exactness_class": "exact_by_construction",
       "id": "mechanism:multimodal-content-prefix-cache",
       "kind": "mechanism",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "proven-mlx-port",
       "summary": "Use a media-aware block prefix cache only when restored cache coverage and media placeholder safety are proven. Validation gate: media extra hashes include content and processing knobs. Rollback: tenant isolation fails. Observed source band 1.0x-28.0x on metric repeated-media-ttft; the repository holds this claim (promotion_state=withheld) and emits no effective range.",
@@ -8505,7 +9291,31 @@
     {
       "confidence": "high",
       "evidence": [
+        "mlx-model-porting/assets/knowledge_graph.json (approach:native-gated-delta-update)",
+        "https://github.com/ml-explore/mlx/blob/36969c094354086e15d2a327a9c50feb20b9cf11/python/src/fast.cpp",
+        "https://github.com/ml-explore/mlx/blob/36969c094354086e15d2a327a9c50feb20b9cf11/mlx/fast.cpp",
+        "https://github.com/ml-explore/mlx/blob/36969c094354086e15d2a327a9c50feb20b9cf11/python/tests/test_fast_gated_delta.py"
+      ],
+      "id": "mechanism:native-gated-delta-update",
+      "kind": "mechanism",
+      "observed_at": "2026-11-05",
+      "provenance": "code_verified",
+      "status": "native-mlx",
+      "summary": "On the reviewed MLX 0.32.4-or-newer source baseline, evaluate mx.fast.gated_delta_update only for a matching Gated DeltaNet recurrence after the eager state oracle passes; this does not make Mamba or every linear attention variant compatible. Validation gate: Confirm mlx>=0.32.4 and probe the actual mx.fast.gated_delta_update path on the selected device. Rollback: State or output parity fails at any chunk boundary.",
+      "tags": [
+        "category/recurrent-state",
+        "migrated-v1",
+        "objective/decode-throughput",
+        "objective/peak-memory",
+        "objective/prefill-throughput"
+      ],
+      "title": "Native Gated DeltaNet update with an explicit recurrent-state contract"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
         "mlx-model-porting/assets/knowledge_graph.json (approach:native-low-bit-weight-quantization)",
+        "https://github.com/ml-explore/mlx/blob/36969c094354086e15d2a327a9c50feb20b9cf11/python/src/ops.cpp",
         "https://github.com/Blaizzy/mlx-audio/blob/412cf7cd381c2a3f6a8189af04a95af24cb415b6/mlx_audio/convert.py",
         "https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.quantize.html",
         "https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.nn.quantize.html",
@@ -8518,7 +9328,7 @@
       "exactness_class": "approximate_legal",
       "id": "mechanism:native-low-bit-weight-quantization",
       "kind": "mechanism",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "native-mlx",
       "summary": "Use MLX affine, mxfp4, mxfp8, or nvfp4 only where the target Linear path and conversion tooling support the mode. Validation gate: task quality against unquantized baseline. Rollback: quality drift exceeds budget. Observed source band 1.0x-2.4x on metric decode-tokens-per-sec; the repository holds this claim (promotion_state=withheld) and emits no effective range.",
@@ -8530,6 +9340,28 @@
         "objective/throughput"
       ],
       "title": "Native MLX affine/MX/NV low-bit quantization modes"
+    },
+    {
+      "confidence": "high",
+      "evidence": [
+        "mlx-model-porting/assets/knowledge_graph.json (approach:native-spectral-transforms)",
+        "https://github.com/ml-explore/mlx/blob/36969c094354086e15d2a327a9c50feb20b9cf11/python/src/fft.cpp"
+      ],
+      "id": "mechanism:native-spectral-transforms",
+      "kind": "mechanism",
+      "observed_at": "2026-11-05",
+      "provenance": "code_verified",
+      "status": "native-mlx",
+      "summary": "Evaluate mlx.core.fft.stft/istft on the reviewed MLX 0.32.4-or-newer baseline only when the source spectral frontend or decoder has an exactly matched transform contract. Validation gate: Confirm mlx>=0.32.4 and exercise fft.stft and fft.istft on the selected device before adopting them. Rollback: Spectral or waveform parity fails.",
+      "tags": [
+        "category/audio",
+        "migrated-v1",
+        "objective/first-audio-latency",
+        "objective/latency",
+        "objective/rtf",
+        "objective/streaming-quality"
+      ],
+      "title": "Native STFT and inverse STFT with source-matched boundary semantics"
     },
     {
       "confidence": "high",
@@ -8626,7 +9458,7 @@
       ],
       "id": "mechanism:prompt-lookup-ngram-speculation",
       "kind": "mechanism",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "research-candidate",
       "summary": "Consider as a low-memory experiment for copy-heavy workloads only after implementing a target MLX drafter. Validation gate: hit rate. Rollback: low match rate.",
@@ -8653,7 +9485,7 @@
       "exactness_class": "exact_by_construction",
       "id": "mechanism:prompt-prefix-cache",
       "kind": "mechanism",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "official-mlx-project",
       "summary": "Reuse immutable prefix state only when model, tokenizer/template, processor, adapter, quantization, positions, and cache format version match. Validation gate: exact-hit and miss tests. Rollback: incorrect reuse. Observed source band 1.0x-23.8x on metric ttft-proxy; the repository holds this claim (promotion_state=withheld) and emits no effective range.",
@@ -8741,7 +9573,7 @@
       "exactness_class": "exact_by_construction",
       "id": "mechanism:qwen3-tts-batch-generation",
       "kind": "mechanism",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "proven-mlx-port",
       "summary": "Use Qwen3-TTS batch_generate for compatible concurrent TTS jobs after single-request quality is locked. Validation gate: single-vs-batched parity. Rollback: TTFB or P95 tail violates budget. Observed source band 1.0x-5.45x on metric batch-throughput; the repository holds this claim (promotion_state=withheld) and emits no effective range.",
@@ -8808,7 +9640,7 @@
       ],
       "id": "mechanism:spatial-grid-sample-kernel",
       "kind": "mechanism",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "proven-mlx-port",
       "summary": "Use only when the source model actually depends on PyTorch grid_sample-style spatial or volume warping; first lock a readable MLX/NumPy reference, then consider a custom Metal kernel for the profiled warp. Validation gate: coordinate order and align_corners parity. Rollback: unsupported source grid_sample mode is required. Observed source band 1.0x-10.0x on metric kernel-latency; the repository holds this claim (promotion_state=withheld) and emits no effective range.",
@@ -8914,12 +9746,13 @@
         "https://github.com/ml-explore/mlx-lm/blob/2c008fd0252b2c569227d12568356ab88ab0560a/mlx_lm/models/cache.py",
         "https://github.com/ml-explore/mlx-lm/tree/2c008fd0252b2c569227d12568356ab88ab0560a",
         "https://github.com/Blaizzy/mlx-vlm/blob/6a8cdff6a1f53f46a15d4adb997c3b2d5f621263/README.md",
-        "https://arxiv.org/abs/2402.02750"
+        "https://arxiv.org/abs/2402.02750",
+        "https://arxiv.org/abs/2610.33076v1"
       ],
       "exactness_class": "approximate_legal",
       "id": "mechanism:uniform-kv-quantization",
       "kind": "mechanism",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "official-mlx-project",
       "summary": "Start with official/proven uniform KV quantization before adaptive or rotated KV schemes. Validation gate: logit/perplexity drift over context lengths. Rollback: quality regression. Observed source band 1.0x-1.1x on metric decode-tokens-per-sec; the repository holds this claim (promotion_state=withheld) and emits no effective range.",
@@ -8964,7 +9797,7 @@
       ],
       "id": "mechanism:video-input-budgeting",
       "kind": "mechanism",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "proven-mlx-port",
       "summary": "Treat FPS/frame/pixel budgets as an explicit quality mode for video VLMs. Validation gate: visual token count recorded. Rollback: quality drops beyond budget.",
@@ -8989,7 +9822,7 @@
       "exactness_class": "exact_by_construction",
       "id": "mechanism:vision-feature-cache",
       "kind": "mechanism",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "proven-mlx-port",
       "summary": "Use for repeated identical image/video inputs after keying by content hash and processor/projector revision. Validation gate: cold/warm logits parity. Rollback: warm outputs drift from cold outputs.",
@@ -9011,7 +9844,7 @@
       ],
       "id": "mechanism:visual-token-pruning-or-merge",
       "kind": "mechanism",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "research_inference",
       "status": "research-candidate",
       "summary": "Do not recommend generic visual-token pruning unless the model-specific MLX implementation and quality probes exist. Validation gate: MLX implementation path. Rollback: quality regression.",
@@ -10306,7 +11139,7 @@
       ],
       "id": "result:v1-qwen25-05b-bf16-cast-walltime",
       "kind": "applied_result",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-07-10",
       "provenance": "local_measured",
       "status": "held-observation",
       "summary": "Revision 7ae557604adf67be50417f59c2c2f167def9a775 completed the offline static-intake, Torch-oracle, standalone MLX scaffold, schema-2 weight conversion, 29-rung parity, exact greedy-generation, MLX-LM cross-check, and schema-2 receipt flow on Apple M4 Pro. Schema-2 receipts observed 0.3247475000 s F32 versus 0.2490912910 s BF16 median wall time, a recomputed 1.3037288406x inverse ratio. The measurement is retained as an observation only.",
@@ -10402,7 +11235,7 @@
       ],
       "id": "trait:agents",
       "kind": "trait",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "declared",
       "summary": "Applicability class used by the v1 optimization registry to scope a method. Derived from approach.applies_to; it is a coarse family or deployment-shape trait, not a measured structural property.",
@@ -10419,7 +11252,7 @@
       ],
       "id": "trait:audio-codec",
       "kind": "trait",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "declared",
       "summary": "Applicability class used by the v1 optimization registry to scope a method. Derived from approach.applies_to; it is a coarse family or deployment-shape trait, not a measured structural property.",
@@ -10436,7 +11269,7 @@
       ],
       "id": "trait:audio-lm",
       "kind": "trait",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "declared",
       "summary": "Applicability class used by the v1 optimization registry to scope a method. Derived from approach.applies_to; it is a coarse family or deployment-shape trait, not a measured structural property.",
@@ -10451,9 +11284,26 @@
       "evidence": [
         "mlx-model-porting/assets/knowledge_graph.json (approach.applies_to)"
       ],
+      "id": "trait:automatic-speech-recognition",
+      "kind": "trait",
+      "observed_at": "2026-11-05",
+      "provenance": "code_verified",
+      "status": "declared",
+      "summary": "Applicability class used by the v1 optimization registry to scope a method. Derived from approach.applies_to; it is a coarse family or deployment-shape trait, not a measured structural property.",
+      "tags": [
+        "family-trait",
+        "migrated-v1"
+      ],
+      "title": "automatic speech recognition"
+    },
+    {
+      "confidence": "medium",
+      "evidence": [
+        "mlx-model-porting/assets/knowledge_graph.json (approach.applies_to)"
+      ],
       "id": "trait:autoregressive-audio-lm",
       "kind": "trait",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "declared",
       "summary": "Applicability class used by the v1 optimization registry to scope a method. Derived from approach.applies_to; it is a coarse family or deployment-shape trait, not a measured structural property.",
@@ -10470,7 +11320,7 @@
       ],
       "id": "trait:autoregressive-decoder",
       "kind": "trait",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "declared",
       "summary": "Applicability class used by the v1 optimization registry to scope a method. Derived from approach.applies_to; it is a coarse family or deployment-shape trait, not a measured structural property.",
@@ -10487,7 +11337,7 @@
       ],
       "id": "trait:autoregressive-transformer",
       "kind": "trait",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "declared",
       "summary": "Applicability class used by the v1 optimization registry to scope a method. Derived from approach.applies_to; it is a coarse family or deployment-shape trait, not a measured structural property.",
@@ -10504,7 +11354,7 @@
       ],
       "id": "trait:code",
       "kind": "trait",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "declared",
       "summary": "Applicability class used by the v1 optimization registry to scope a method. Derived from approach.applies_to; it is a coarse family or deployment-shape trait, not a measured structural property.",
@@ -10521,7 +11371,7 @@
       ],
       "id": "trait:decoder-transformer",
       "kind": "trait",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "declared",
       "summary": "Applicability class used by the v1 optimization registry to scope a method. Derived from approach.applies_to; it is a coarse family or deployment-shape trait, not a measured structural property.",
@@ -10538,7 +11388,7 @@
       ],
       "id": "trait:dense-decoder-transformer",
       "kind": "trait",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "declared",
       "summary": "Applicability class used by the v1 optimization registry to scope a method. Derived from approach.applies_to; it is a coarse family or deployment-shape trait, not a measured structural property.",
@@ -10555,7 +11405,7 @@
       ],
       "id": "trait:diffusion-flow",
       "kind": "trait",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "declared",
       "summary": "Applicability class used by the v1 optimization registry to scope a method. Derived from approach.applies_to; it is a coarse family or deployment-shape trait, not a measured structural property.",
@@ -10572,7 +11422,7 @@
       ],
       "id": "trait:encoder-decoder-transformer",
       "kind": "trait",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "declared",
       "summary": "Applicability class used by the v1 optimization registry to scope a method. Derived from approach.applies_to; it is a coarse family or deployment-shape trait, not a measured structural property.",
@@ -10589,7 +11439,7 @@
       ],
       "id": "trait:encoder-transformer",
       "kind": "trait",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "declared",
       "summary": "Applicability class used by the v1 optimization registry to scope a method. Derived from approach.applies_to; it is a coarse family or deployment-shape trait, not a measured structural property.",
@@ -10606,7 +11456,7 @@
       ],
       "id": "trait:flow-diffusion-tts",
       "kind": "trait",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "declared",
       "summary": "Applicability class used by the v1 optimization registry to scope a method. Derived from approach.applies_to; it is a coarse family or deployment-shape trait, not a measured structural property.",
@@ -10677,7 +11527,7 @@
       ],
       "id": "trait:linear-heavy-models",
       "kind": "trait",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "declared",
       "summary": "Applicability class used by the v1 optimization registry to scope a method. Derived from approach.applies_to; it is a coarse family or deployment-shape trait, not a measured structural property.",
@@ -10694,7 +11544,7 @@
       ],
       "id": "trait:long-context",
       "kind": "trait",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "declared",
       "summary": "Applicability class used by the v1 optimization registry to scope a method. Derived from approach.applies_to; it is a coarse family or deployment-shape trait, not a measured structural property.",
@@ -10711,7 +11561,7 @@
       ],
       "id": "trait:long-context-vlm",
       "kind": "trait",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "declared",
       "summary": "Applicability class used by the v1 optimization registry to scope a method. Derived from approach.applies_to; it is a coarse family or deployment-shape trait, not a measured structural property.",
@@ -10724,11 +11574,27 @@
     {
       "confidence": "medium",
       "evidence": [
+        "https://github.com/ml-explore/mlx/blob/36969c094354086e15d2a327a9c50feb20b9cf11/mlx/backend/metal/device.cpp"
+      ],
+      "id": "trait:m5-native-matrix-dispatch",
+      "kind": "trait",
+      "observed_at": "2026-11-05",
+      "provenance": "research_inference",
+      "status": "reviewed",
+      "summary": "A profiled matrix workload on a reviewed M5 chip with compatible OS/build; the chip name alone does not establish NAX execution.",
+      "tags": [
+        "research-refresh-2026-11"
+      ],
+      "title": "M5 native matrix dispatch"
+    },
+    {
+      "confidence": "medium",
+      "evidence": [
         "mlx-model-porting/assets/knowledge_graph.json (approach.applies_to)"
       ],
       "id": "trait:moe-decoder-transformer",
       "kind": "trait",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "declared",
       "summary": "Applicability class used by the v1 optimization registry to scope a method. Derived from approach.applies_to; it is a coarse family or deployment-shape trait, not a measured structural property.",
@@ -10745,7 +11611,7 @@
       ],
       "id": "trait:multimodal-serving",
       "kind": "trait",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "declared",
       "summary": "Applicability class used by the v1 optimization registry to scope a method. Derived from approach.applies_to; it is a coarse family or deployment-shape trait, not a measured structural property.",
@@ -10778,9 +11644,42 @@
       "evidence": [
         "mlx-model-porting/assets/knowledge_graph.json (approach.applies_to)"
       ],
+      "id": "trait:neural-audio-codec",
+      "kind": "trait",
+      "observed_at": "2026-11-05",
+      "provenance": "code_verified",
+      "status": "declared",
+      "summary": "Applicability class used by the v1 optimization registry to scope a method. Derived from approach.applies_to; it is a coarse family or deployment-shape trait, not a measured structural property.",
+      "tags": [
+        "family-trait",
+        "migrated-v1"
+      ],
+      "title": "neural audio codec"
+    },
+    {
+      "confidence": "medium",
+      "evidence": [
+        "https://bair.berkeley.edu/blog/2026/07/29/cuda-to-mlx-k-search/"
+      ],
+      "id": "trait:profiled-native-hotspot",
+      "kind": "trait",
+      "observed_at": "2026-11-05",
+      "provenance": "research_inference",
+      "status": "reviewed",
+      "summary": "Kernel search begins with a measured operator hotspot and a current native baseline plus an independent correctness oracle.",
+      "tags": [
+        "research-refresh-2026-11"
+      ],
+      "title": "A measured hotspot with a native baseline"
+    },
+    {
+      "confidence": "medium",
+      "evidence": [
+        "mlx-model-porting/assets/knowledge_graph.json (approach.applies_to)"
+      ],
       "id": "trait:rag",
       "kind": "trait",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "declared",
       "summary": "Applicability class used by the v1 optimization registry to scope a method. Derived from approach.applies_to; it is a coarse family or deployment-shape trait, not a measured structural property.",
@@ -10797,7 +11696,7 @@
       ],
       "id": "trait:repetitive-prompts",
       "kind": "trait",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "declared",
       "summary": "Applicability class used by the v1 optimization registry to scope a method. Derived from approach.applies_to; it is a coarse family or deployment-shape trait, not a measured structural property.",
@@ -10812,9 +11711,26 @@
       "evidence": [
         "mlx-model-porting/assets/knowledge_graph.json (approach.applies_to)"
       ],
+      "id": "trait:separation-enhancement",
+      "kind": "trait",
+      "observed_at": "2026-11-05",
+      "provenance": "code_verified",
+      "status": "declared",
+      "summary": "Applicability class used by the v1 optimization registry to scope a method. Derived from approach.applies_to; it is a coarse family or deployment-shape trait, not a measured structural property.",
+      "tags": [
+        "family-trait",
+        "migrated-v1"
+      ],
+      "title": "separation enhancement"
+    },
+    {
+      "confidence": "medium",
+      "evidence": [
+        "mlx-model-porting/assets/knowledge_graph.json (approach.applies_to)"
+      ],
       "id": "trait:server",
       "kind": "trait",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "declared",
       "summary": "Applicability class used by the v1 optimization registry to scope a method. Derived from approach.applies_to; it is a coarse family or deployment-shape trait, not a measured structural property.",
@@ -10866,7 +11782,7 @@
       ],
       "id": "trait:speech-to-speech",
       "kind": "trait",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "declared",
       "summary": "Applicability class used by the v1 optimization registry to scope a method. Derived from approach.applies_to; it is a coarse family or deployment-shape trait, not a measured structural property.",
@@ -10881,9 +11797,42 @@
       "evidence": [
         "mlx-model-porting/assets/knowledge_graph.json (approach.applies_to)"
       ],
+      "id": "trait:ssm-recurrent-hybrid",
+      "kind": "trait",
+      "observed_at": "2026-11-05",
+      "provenance": "code_verified",
+      "status": "declared",
+      "summary": "Applicability class used by the v1 optimization registry to scope a method. Derived from approach.applies_to; it is a coarse family or deployment-shape trait, not a measured structural property.",
+      "tags": [
+        "family-trait",
+        "migrated-v1"
+      ],
+      "title": "ssm recurrent hybrid"
+    },
+    {
+      "confidence": "medium",
+      "evidence": [
+        "https://github.com/ml-explore/mlx/blob/36969c094354086e15d2a327a9c50feb20b9cf11/python/src/fft.cpp"
+      ],
+      "id": "trait:stft-istft-frontend",
+      "kind": "trait",
+      "observed_at": "2026-11-05",
+      "provenance": "research_inference",
+      "status": "reviewed",
+      "summary": "The source includes an STFT or inverse STFT whose window, boundary and reconstruction contract can be preserved.",
+      "tags": [
+        "research-refresh-2026-11"
+      ],
+      "title": "Source-matched spectral transform"
+    },
+    {
+      "confidence": "medium",
+      "evidence": [
+        "mlx-model-porting/assets/knowledge_graph.json (approach.applies_to)"
+      ],
       "id": "trait:streaming-speech",
       "kind": "trait",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "declared",
       "summary": "Applicability class used by the v1 optimization registry to scope a method. Derived from approach.applies_to; it is a coarse family or deployment-shape trait, not a measured structural property.",
@@ -10900,7 +11849,7 @@
       ],
       "id": "trait:stt",
       "kind": "trait",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "declared",
       "summary": "Applicability class used by the v1 optimization registry to scope a method. Derived from approach.applies_to; it is a coarse family or deployment-shape trait, not a measured structural property.",
@@ -10917,7 +11866,7 @@
       ],
       "id": "trait:tts",
       "kind": "trait",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "declared",
       "summary": "Applicability class used by the v1 optimization registry to scope a method. Derived from approach.applies_to; it is a coarse family or deployment-shape trait, not a measured structural property.",
@@ -10934,7 +11883,7 @@
       ],
       "id": "trait:video-vlm",
       "kind": "trait",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "declared",
       "summary": "Applicability class used by the v1 optimization registry to scope a method. Derived from approach.applies_to; it is a coarse family or deployment-shape trait, not a measured structural property.",
@@ -10951,7 +11900,7 @@
       ],
       "id": "trait:vision-language-omni",
       "kind": "trait",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "declared",
       "summary": "Applicability class used by the v1 optimization registry to scope a method. Derived from approach.applies_to; it is a coarse family or deployment-shape trait, not a measured structural property.",
@@ -10968,7 +11917,7 @@
       ],
       "id": "trait:vlm",
       "kind": "trait",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "declared",
       "summary": "Applicability class used by the v1 optimization registry to scope a method. Derived from approach.applies_to; it is a coarse family or deployment-shape trait, not a measured structural property.",
@@ -10985,7 +11934,7 @@
       ],
       "id": "trait:vocoder",
       "kind": "trait",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "declared",
       "summary": "Applicability class used by the v1 optimization registry to scope a method. Derived from approach.applies_to; it is a coarse family or deployment-shape trait, not a measured structural property.",
@@ -11000,9 +11949,26 @@
       "evidence": [
         "mlx-model-porting/assets/knowledge_graph.json (approach.applies_to)"
       ],
+      "id": "trait:vocoder-waveform-decoder",
+      "kind": "trait",
+      "observed_at": "2026-11-05",
+      "provenance": "code_verified",
+      "status": "declared",
+      "summary": "Applicability class used by the v1 optimization registry to scope a method. Derived from approach.applies_to; it is a coarse family or deployment-shape trait, not a measured structural property.",
+      "tags": [
+        "family-trait",
+        "migrated-v1"
+      ],
+      "title": "vocoder waveform decoder"
+    },
+    {
+      "confidence": "medium",
+      "evidence": [
+        "mlx-model-porting/assets/knowledge_graph.json (approach.applies_to)"
+      ],
       "id": "trait:voice-cloning",
       "kind": "trait",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "declared",
       "summary": "Applicability class used by the v1 optimization registry to scope a method. Derived from approach.applies_to; it is a coarse family or deployment-shape trait, not a measured structural property.",

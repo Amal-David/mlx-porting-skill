@@ -61,6 +61,14 @@ and what not to use.
    recomputes the complete recommendation report before using it. A family
    override may reorder an inspected hybrid route, but cannot discard its other
    families, runbooks, or traits.
+   Supply `--target-profile target-profile.json` to the recommender for recent
+   version- or hardware-dependent methods. Use the profile shape in
+   [runtime compatibility](runtime-compatibility.md). Report runtime
+   `eligibility_holds` separately from withheld numeric `claim_holds`: an
+   available API is not a measured speedup, and a native method may still be
+   incompatible with the supplied Mac or package. Do not clear a hold by
+   assuming an unknown version, upgrading packages automatically, or using
+   `--allow-blocked`.
 3. **Classify the route.** Load `assets/architectures.yaml`,
    `references/model-support-map.md`, and the selected runbook. If source
    format manifests are present, treat them as static triage until parity and

@@ -1,6 +1,6 @@
 {
   "edges": [],
-  "generated_at": "2026-07-23",
+  "generated_at": "2026-11-05",
   "graph_id": "mlx-porting-skill/migrated/traits",
   "nodes": [
     {
@@ -10,7 +10,7 @@
       ],
       "id": "trait:agents",
       "kind": "trait",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "declared",
       "summary": "Applicability class used by the v1 optimization registry to scope a method. Derived from approach.applies_to; it is a coarse family or deployment-shape trait, not a measured structural property.",
@@ -27,7 +27,7 @@
       ],
       "id": "trait:audio-codec",
       "kind": "trait",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "declared",
       "summary": "Applicability class used by the v1 optimization registry to scope a method. Derived from approach.applies_to; it is a coarse family or deployment-shape trait, not a measured structural property.",
@@ -44,7 +44,7 @@
       ],
       "id": "trait:audio-lm",
       "kind": "trait",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "declared",
       "summary": "Applicability class used by the v1 optimization registry to scope a method. Derived from approach.applies_to; it is a coarse family or deployment-shape trait, not a measured structural property.",
@@ -59,9 +59,26 @@
       "evidence": [
         "mlx-model-porting/assets/knowledge_graph.json (approach.applies_to)"
       ],
+      "id": "trait:automatic-speech-recognition",
+      "kind": "trait",
+      "observed_at": "2026-11-05",
+      "provenance": "code_verified",
+      "status": "declared",
+      "summary": "Applicability class used by the v1 optimization registry to scope a method. Derived from approach.applies_to; it is a coarse family or deployment-shape trait, not a measured structural property.",
+      "tags": [
+        "family-trait",
+        "migrated-v1"
+      ],
+      "title": "automatic speech recognition"
+    },
+    {
+      "confidence": "medium",
+      "evidence": [
+        "mlx-model-porting/assets/knowledge_graph.json (approach.applies_to)"
+      ],
       "id": "trait:autoregressive-audio-lm",
       "kind": "trait",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "declared",
       "summary": "Applicability class used by the v1 optimization registry to scope a method. Derived from approach.applies_to; it is a coarse family or deployment-shape trait, not a measured structural property.",
@@ -78,7 +95,7 @@
       ],
       "id": "trait:autoregressive-decoder",
       "kind": "trait",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "declared",
       "summary": "Applicability class used by the v1 optimization registry to scope a method. Derived from approach.applies_to; it is a coarse family or deployment-shape trait, not a measured structural property.",
@@ -95,7 +112,7 @@
       ],
       "id": "trait:autoregressive-transformer",
       "kind": "trait",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "declared",
       "summary": "Applicability class used by the v1 optimization registry to scope a method. Derived from approach.applies_to; it is a coarse family or deployment-shape trait, not a measured structural property.",
@@ -112,7 +129,7 @@
       ],
       "id": "trait:code",
       "kind": "trait",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "declared",
       "summary": "Applicability class used by the v1 optimization registry to scope a method. Derived from approach.applies_to; it is a coarse family or deployment-shape trait, not a measured structural property.",
@@ -129,7 +146,7 @@
       ],
       "id": "trait:decoder-transformer",
       "kind": "trait",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "declared",
       "summary": "Applicability class used by the v1 optimization registry to scope a method. Derived from approach.applies_to; it is a coarse family or deployment-shape trait, not a measured structural property.",
@@ -146,7 +163,7 @@
       ],
       "id": "trait:dense-decoder-transformer",
       "kind": "trait",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "declared",
       "summary": "Applicability class used by the v1 optimization registry to scope a method. Derived from approach.applies_to; it is a coarse family or deployment-shape trait, not a measured structural property.",
@@ -163,7 +180,7 @@
       ],
       "id": "trait:diffusion-flow",
       "kind": "trait",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "declared",
       "summary": "Applicability class used by the v1 optimization registry to scope a method. Derived from approach.applies_to; it is a coarse family or deployment-shape trait, not a measured structural property.",
@@ -180,7 +197,7 @@
       ],
       "id": "trait:encoder-decoder-transformer",
       "kind": "trait",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "declared",
       "summary": "Applicability class used by the v1 optimization registry to scope a method. Derived from approach.applies_to; it is a coarse family or deployment-shape trait, not a measured structural property.",
@@ -197,7 +214,7 @@
       ],
       "id": "trait:encoder-transformer",
       "kind": "trait",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "declared",
       "summary": "Applicability class used by the v1 optimization registry to scope a method. Derived from approach.applies_to; it is a coarse family or deployment-shape trait, not a measured structural property.",
@@ -214,7 +231,7 @@
       ],
       "id": "trait:flow-diffusion-tts",
       "kind": "trait",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "declared",
       "summary": "Applicability class used by the v1 optimization registry to scope a method. Derived from approach.applies_to; it is a coarse family or deployment-shape trait, not a measured structural property.",
@@ -231,7 +248,7 @@
       ],
       "id": "trait:linear-heavy-models",
       "kind": "trait",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "declared",
       "summary": "Applicability class used by the v1 optimization registry to scope a method. Derived from approach.applies_to; it is a coarse family or deployment-shape trait, not a measured structural property.",
@@ -248,7 +265,7 @@
       ],
       "id": "trait:long-context",
       "kind": "trait",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "declared",
       "summary": "Applicability class used by the v1 optimization registry to scope a method. Derived from approach.applies_to; it is a coarse family or deployment-shape trait, not a measured structural property.",
@@ -265,7 +282,7 @@
       ],
       "id": "trait:long-context-vlm",
       "kind": "trait",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "declared",
       "summary": "Applicability class used by the v1 optimization registry to scope a method. Derived from approach.applies_to; it is a coarse family or deployment-shape trait, not a measured structural property.",
@@ -282,7 +299,7 @@
       ],
       "id": "trait:moe-decoder-transformer",
       "kind": "trait",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "declared",
       "summary": "Applicability class used by the v1 optimization registry to scope a method. Derived from approach.applies_to; it is a coarse family or deployment-shape trait, not a measured structural property.",
@@ -299,7 +316,7 @@
       ],
       "id": "trait:multimodal-serving",
       "kind": "trait",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "declared",
       "summary": "Applicability class used by the v1 optimization registry to scope a method. Derived from approach.applies_to; it is a coarse family or deployment-shape trait, not a measured structural property.",
@@ -314,9 +331,26 @@
       "evidence": [
         "mlx-model-porting/assets/knowledge_graph.json (approach.applies_to)"
       ],
+      "id": "trait:neural-audio-codec",
+      "kind": "trait",
+      "observed_at": "2026-11-05",
+      "provenance": "code_verified",
+      "status": "declared",
+      "summary": "Applicability class used by the v1 optimization registry to scope a method. Derived from approach.applies_to; it is a coarse family or deployment-shape trait, not a measured structural property.",
+      "tags": [
+        "family-trait",
+        "migrated-v1"
+      ],
+      "title": "neural audio codec"
+    },
+    {
+      "confidence": "medium",
+      "evidence": [
+        "mlx-model-porting/assets/knowledge_graph.json (approach.applies_to)"
+      ],
       "id": "trait:rag",
       "kind": "trait",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "declared",
       "summary": "Applicability class used by the v1 optimization registry to scope a method. Derived from approach.applies_to; it is a coarse family or deployment-shape trait, not a measured structural property.",
@@ -333,7 +367,7 @@
       ],
       "id": "trait:repetitive-prompts",
       "kind": "trait",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "declared",
       "summary": "Applicability class used by the v1 optimization registry to scope a method. Derived from approach.applies_to; it is a coarse family or deployment-shape trait, not a measured structural property.",
@@ -348,9 +382,26 @@
       "evidence": [
         "mlx-model-porting/assets/knowledge_graph.json (approach.applies_to)"
       ],
+      "id": "trait:separation-enhancement",
+      "kind": "trait",
+      "observed_at": "2026-11-05",
+      "provenance": "code_verified",
+      "status": "declared",
+      "summary": "Applicability class used by the v1 optimization registry to scope a method. Derived from approach.applies_to; it is a coarse family or deployment-shape trait, not a measured structural property.",
+      "tags": [
+        "family-trait",
+        "migrated-v1"
+      ],
+      "title": "separation enhancement"
+    },
+    {
+      "confidence": "medium",
+      "evidence": [
+        "mlx-model-porting/assets/knowledge_graph.json (approach.applies_to)"
+      ],
       "id": "trait:server",
       "kind": "trait",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "declared",
       "summary": "Applicability class used by the v1 optimization registry to scope a method. Derived from approach.applies_to; it is a coarse family or deployment-shape trait, not a measured structural property.",
@@ -367,7 +418,7 @@
       ],
       "id": "trait:speech-to-speech",
       "kind": "trait",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "declared",
       "summary": "Applicability class used by the v1 optimization registry to scope a method. Derived from approach.applies_to; it is a coarse family or deployment-shape trait, not a measured structural property.",
@@ -382,9 +433,26 @@
       "evidence": [
         "mlx-model-porting/assets/knowledge_graph.json (approach.applies_to)"
       ],
+      "id": "trait:ssm-recurrent-hybrid",
+      "kind": "trait",
+      "observed_at": "2026-11-05",
+      "provenance": "code_verified",
+      "status": "declared",
+      "summary": "Applicability class used by the v1 optimization registry to scope a method. Derived from approach.applies_to; it is a coarse family or deployment-shape trait, not a measured structural property.",
+      "tags": [
+        "family-trait",
+        "migrated-v1"
+      ],
+      "title": "ssm recurrent hybrid"
+    },
+    {
+      "confidence": "medium",
+      "evidence": [
+        "mlx-model-porting/assets/knowledge_graph.json (approach.applies_to)"
+      ],
       "id": "trait:streaming-speech",
       "kind": "trait",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "declared",
       "summary": "Applicability class used by the v1 optimization registry to scope a method. Derived from approach.applies_to; it is a coarse family or deployment-shape trait, not a measured structural property.",
@@ -401,7 +469,7 @@
       ],
       "id": "trait:stt",
       "kind": "trait",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "declared",
       "summary": "Applicability class used by the v1 optimization registry to scope a method. Derived from approach.applies_to; it is a coarse family or deployment-shape trait, not a measured structural property.",
@@ -418,7 +486,7 @@
       ],
       "id": "trait:tts",
       "kind": "trait",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "declared",
       "summary": "Applicability class used by the v1 optimization registry to scope a method. Derived from approach.applies_to; it is a coarse family or deployment-shape trait, not a measured structural property.",
@@ -435,7 +503,7 @@
       ],
       "id": "trait:video-vlm",
       "kind": "trait",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "declared",
       "summary": "Applicability class used by the v1 optimization registry to scope a method. Derived from approach.applies_to; it is a coarse family or deployment-shape trait, not a measured structural property.",
@@ -452,7 +520,7 @@
       ],
       "id": "trait:vision-language-omni",
       "kind": "trait",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "declared",
       "summary": "Applicability class used by the v1 optimization registry to scope a method. Derived from approach.applies_to; it is a coarse family or deployment-shape trait, not a measured structural property.",
@@ -469,7 +537,7 @@
       ],
       "id": "trait:vlm",
       "kind": "trait",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "declared",
       "summary": "Applicability class used by the v1 optimization registry to scope a method. Derived from approach.applies_to; it is a coarse family or deployment-shape trait, not a measured structural property.",
@@ -486,7 +554,7 @@
       ],
       "id": "trait:vocoder",
       "kind": "trait",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "declared",
       "summary": "Applicability class used by the v1 optimization registry to scope a method. Derived from approach.applies_to; it is a coarse family or deployment-shape trait, not a measured structural property.",
@@ -501,9 +569,26 @@
       "evidence": [
         "mlx-model-porting/assets/knowledge_graph.json (approach.applies_to)"
       ],
+      "id": "trait:vocoder-waveform-decoder",
+      "kind": "trait",
+      "observed_at": "2026-11-05",
+      "provenance": "code_verified",
+      "status": "declared",
+      "summary": "Applicability class used by the v1 optimization registry to scope a method. Derived from approach.applies_to; it is a coarse family or deployment-shape trait, not a measured structural property.",
+      "tags": [
+        "family-trait",
+        "migrated-v1"
+      ],
+      "title": "vocoder waveform decoder"
+    },
+    {
+      "confidence": "medium",
+      "evidence": [
+        "mlx-model-porting/assets/knowledge_graph.json (approach.applies_to)"
+      ],
       "id": "trait:voice-cloning",
       "kind": "trait",
-      "observed_at": "2026-07-23",
+      "observed_at": "2026-11-05",
       "provenance": "code_verified",
       "status": "declared",
       "summary": "Applicability class used by the v1 optimization registry to scope a method. Derived from approach.applies_to; it is a coarse family or deployment-shape trait, not a measured structural property.",
