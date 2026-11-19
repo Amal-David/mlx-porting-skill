@@ -79,6 +79,23 @@ Use the top-level `mx.get_active_memory`, `mx.get_cache_memory`,
 `mx.metal.*` memory aliases are deprecated in the reviewed
 [binding](https://github.com/ml-explore/mlx/blob/36969c094354086e15d2a327a9c50feb20b9cf11/python/src/metal.cpp).
 
+## Half-precision SDPA backward gate
+
+A correct fused SDPA **forward** path is not proof of numerically correct
+backpropagation. [MLX #4910](https://github.com/ml-explore/mlx/pull/4910)
+(opened November 19, 2026; [reviewed commit](https://github.com/ml-explore/mlx/commit/1c117492fd66047c0bfe5433f4a5a47f6119d214))
+reports bf16/fp16 backward-score rounding and possible overflow at large Q/K
+magnitudes. Its float32-score workaround was **unmerged at review** and is not
+established in a released runtime.
+
+For training paths, compare dQ/dK/dV with an independent float32/eager
+reference across causal/unmasked attention, grouped/multi-head layouts,
+nonmultiple tile sizes, ordinary and large-magnitude scores, and both half
+dtypes. Fail on nonfinite gradients or predeclared error limits. Benchmark
+backward latency and temporary peak memory on the target chip; using float32
+intermediate scores may increase memory. Retain the eager/float32 reference as
+fallback; an inference-only benchmark is not a gradient validation gate.
+
 ## Custom Metal kernel gate
 
 A custom kernel is justified only if profiling shows a stable hotspot that cannot be removed by graph, layout, cache, or native-op changes.

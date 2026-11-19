@@ -67,6 +67,20 @@ Use only when the architecture is trained/configured for a window or when evicti
 
 **Regression watch (November 12, 2026):** MLX-LM's [draft PR #2041](https://github.com/ml-explore/mlx-lm/pull/2041) ([reviewed source commit](https://github.com/ml-explore/mlx-lm/commit/acddc4f35dbf31574ce7d73d5cf112d16557ca96)) proposes a fix for a rotating-cache attention mask that could hide retained sink slots during chunked prefill. This is an **unmerged proposal**, not proof that a particular released version has or lacks the defect. Before enabling rotating/sink caches, compare source/reference masks, per-layer attention, logits and greedy output with the full-cache path across unchunked versus split prefill, prefill boundaries at window capacity, repeated eviction, multiple sink counts and single-token decode. Confirm sink entries remain visible while out-of-window entries are masked; keep absolute RoPE positions and state-restore semantics unchanged. Restore full KV/cache fallback if any mask, parity or long-context quality gate fails.
 
+**Distinct batched-wrap hazard (November 19 review):**
+[MLX-LM #2076](https://github.com/ml-explore/mlx-lm/pull/2076)
+([pinned commit](https://github.com/ml-explore/mlx-lm/commit/88df6e796caeaf59eb98af3f4564c8b119fac177),
+**unmerged at review**) reports that after the ring wraps,
+`BatchRotatingKVCache.make_mask` can use a cursor to trim left padding even
+though `update_and_fetch` has reordered keys chronologically. A multi-token
+update of a left-padded row may then hide its oldest real key. This is a
+**different** failure from #2041's retained-sink mask. Compare per-row
+`RotatingKVCache` and batched masks, logits and greedy output over unequal
+left-padded row lengths, 1/2/3-token chunks, the first and repeated wraps,
+nonzero sink counts, and speculative rejection/replay. A passing batch shape
+is not evidence of a valid mask. Retain a verified per-row or full-cache
+fallback on any divergence; do not assume an unmerged patch ships in MLX-LM.
+
 ### Prompt/prefix cache
 
 Reuse immutable prefix state across calls only when tokenizer template, model revision, quantization, adapter, positions, and relevant generation configuration match. Include cache namespace/versioning.

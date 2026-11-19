@@ -12,6 +12,7 @@
 - [Modern hybrid state gate](#modern-hybrid-state-gate)
 - [Optimization ladder](#optimization-ladder)
 - [Parallel-scan promotion gate](#parallel-scan-promotion-gate)
+- [Checkpointed training memory gate](#checkpointed-training-memory-gate)
 - [Completion gates](#completion-gates)
 
 ## Applies to
@@ -149,6 +150,23 @@ Test non-power-of-two lengths, partial tiles, empty/short chunks when supported,
 and the state schedules above. Compare against the best installed native path
 and the loop oracle. Retain the loop/native fallback when correctness, memory,
 or end-to-end prefill fails; keep prefill and decode dispatch independent.
+
+## Checkpointed training memory gate
+
+A chunked recurrence may have exact forward output yet retain a growing
+backward graph of recomputed states. The [MLX #4907 proposal](https://github.com/ml-explore/mlx/pull/4907)
+(opened November 17, 2026; [reviewed commit](https://github.com/ml-explore/mlx/commit/bbc8c5d0c17b375bc4534e53ed8c740e573400ac))
+proposes **both** an incoming-cotangent gate and a VJP-completion barrier.
+It was unmerged, with CPU tests but no verified Metal execution at review.
+
+Compare parameter, initial-state and per-step-input gradients with an
+independent unchunked oracle. Sweep growing lengths, unequal chunk divisions,
+all-input versus subset-only gradients, and repeated backward passes. Measure
+synchronized process peak plus MLX active/cache memory after controlled
+warmup; compare growth slopes, not just a single absolute allocation.
+Gradient equality alone does not establish bounded memory. Keep the prior
+correct training implementation as fallback on numerical error, growing
+peak memory, or end-to-end training regression on the target Apple device.
 
 ## Completion gates
 

@@ -19,6 +19,7 @@ Keep experimental candidates opt-in and preserve the existing exact fallback.
 - [10. Keep diffusion and audio approximations task-specific](#10-keep-diffusion-and-audio-approximations-task-specific)
 - [11. Identify what a distributed system actually distributes](#11-identify-what-a-distributed-system-actually-distributes)
 - [November 12 upstream watchlist (unmerged)](#november-12-upstream-watchlist-unmerged)
+- [November 19 upstream follow-up (release-aware)](#november-19-upstream-follow-up-release-aware)
 
 ## 1. Match the workload before transferring a kernel
 
@@ -249,3 +250,63 @@ and [MLX-LM 0.32.2 (October 16)](https://github.com/ml-explore/mlx-lm/releases/t
 
 This update records reviewed upstream *candidate status*, not a fresh research
 collector run, successful model port, device execution or promoted claim.
+
+## November 19 upstream follow-up (release-aware)
+
+**Source-reviewed only; not a new collector run, model port or reproduced MLX
+measurement.** As checked November 19, 2026, GitHub's latest tagged releases
+are [MLX 0.32.4 (October 14)](https://github.com/ml-explore/mlx/releases/tag/v0.32.4)
+and [MLX-LM 0.32.2 (October 16)](https://github.com/ml-explore/mlx-lm/releases/tag/v0.32.2).
+A fix merged on upstream `main` is not yet contained in either tagged release.
+The reviewed 40-character commit links below are source snapshots, not promises
+about what an installed wheel supports.
+
+- **New, separate batched rotating-cache correctness issue:**
+  [MLX-LM #2076](https://github.com/ml-explore/mlx-lm/pull/2076) (opened
+  November 18; [reviewed commit](https://github.com/ml-explore/mlx-lm/commit/88df6e796caeaf59eb98af3f4564c8b119fac177);
+  **unmerged at review**) reports that after the ring wraps,
+  `BatchRotatingKVCache.make_mask` can use the ring cursor to trim padding
+  even though the keys were reordered chronologically. This can hide the
+  oldest *real* key in a left-padded row during a multi-token update.
+  Compare batched against independent single-row masks, logits and outputs
+  across repeated wraps, mixed-length rows, 1- and 3-token updates, and
+  speculative verification. This differs from #2041's attention-sink bug.
+  See [rotating cache](attention-and-kv.md#rotating-or-sliding-window-cache).
+- **Half-precision backward safety:** [MLX #4910](https://github.com/ml-explore/mlx/pull/4910)
+  (opened November 19; [reviewed commit](https://github.com/ml-explore/mlx/commit/1c117492fd66047c0bfe5433f4a5a47f6119d214);
+  **unmerged at review**) reports fused SDPA VJP wrong gradients for large
+  bf16/fp16 scores despite a correct forward path. Verify dQ/dK/dV against
+  float32/eager across causal/unmasked, GQA and irregular tiles, and measure
+  the higher-precision score intermediate's memory/latency cost. An
+  inference-only parity test cannot establish training correctness.
+  See [backward gate](compile-and-kernels.md#half-precision-sdpa-backward-gate).
+- **Recurrent checkpoint training memory:** [MLX #4907](https://github.com/ml-explore/mlx/pull/4907)
+  (opened November 17; [reviewed commit](https://github.com/ml-explore/mlx/commit/bbc8c5d0c17b375bc4534e53ed8c740e573400ac);
+  **unmerged at review**) proposes cotangent-arrival and VJP-completion
+  barriers for chunked recurrence backward scheduling. The author reports
+  CPU checks only; Metal remains unvalidated. Compare full gradients and
+  growing-length peak memory, including per-step and initial-state gradients,
+  before claiming a bounded-memory training path. See
+  [training memory gate](runbook-ssm-hybrid.md#checkpointed-training-memory-gate).
+- **Distributed NVFP4 expert scales:** [MLX-LM #2077](https://github.com/ml-explore/mlx-lm/pull/2077)
+  (opened November 18; [reviewed commit](https://github.com/ml-explore/mlx-lm/commit/77b5eb61800785a7ec219e75cccd8890e0e5b864);
+  **unmerged at review**) keeps per-expert `global_scale` vectors replicated
+  across tensor-parallel ranks while ordinary scales/biases follow weight
+  sharding. Test varying expert counts, gate/up/down projections, rank
+  reconstruction, checkpoint reload and single-rank parity; the author's
+  two ranks ran on one physical GPU, **not** multiple Macs.
+- **Merged on upstream main, not yet in a tagged MLX-LM release:**
+  [MLX-LM #1788](https://github.com/ml-explore/mlx-lm/pull/1788) merged
+  **November 16** ([reviewed commit](https://github.com/ml-explore/mlx-lm/commit/e4c4af820905a2c660d7e4879a1cce5cc912b1f4))
+  for Qwen3.8-Flash-Next (`qwen4_exp`). Its conversion convention folds the
+  source RMSNorm `+1` **once** into selected non-gated norm weights from the
+  raw Hugging Face layout; converted checkpoints must not be re-folded or
+  have the offset subtracted. Check idempotent conversion, intermediate norms,
+  padded-batch and cached-continuation parity. Previously converted weights
+  with the old convention can silently degrade and require re-conversion.
+  This upstream result is not a completed port by this repository.
+
+On a failed correctness, task-quality or memory gate, revert to the tested
+full-cache, eager-gradient, single-rank or readable recurrence reference.
+Benchmark only matched model/input/software/hardware conditions after those
+gates pass. No numeric result or runtime capability is promoted here.

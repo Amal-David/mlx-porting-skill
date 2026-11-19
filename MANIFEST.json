@@ -2,8 +2,8 @@
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
   "version": "0.7.0",
-  "generated_at": "2026-11-12T03:05:28.737+00:00",
-  "file_count": 641,
+  "generated_at": "2026-11-19T02:49:08.066+00:00",
+  "file_count": 642,
   "files": [
     {
       "path": ".agents/skills/mlx-model-porting",
@@ -1533,8 +1533,8 @@
     },
     {
       "path": "mlx-model-porting/references/attention-and-kv.md",
-      "size_bytes": 10502,
-      "sha256": "6445e156e33df51a28f81ec84b11d7576526792030a57296a115f561da3a2286",
+      "size_bytes": 11457,
+      "sha256": "6e8c12d2c3f72b003796ae9935c60630c332341ea900c67d66d92d7bb9d03d06",
       "executable": false
     },
     {
@@ -1545,8 +1545,8 @@
     },
     {
       "path": "mlx-model-porting/references/compile-and-kernels.md",
-      "size_bytes": 8906,
-      "sha256": "9234f574d4a871e35d1390b6c5bd5323a034c2a022b182f1c34213d4ac68ccae",
+      "size_bytes": 9936,
+      "sha256": "22355e093d4961ae4612e86ec762bc7461d5494e6e4bdf6bb2e4803774a15756",
       "executable": false
     },
     {
@@ -1653,8 +1653,8 @@
     },
     {
       "path": "mlx-model-porting/references/research-updates-2026-11.md",
-      "size_bytes": 15654,
-      "sha256": "5390229abee134d4a742981cf6b7efa0fc1f414a307f566d2953f2ff78c7cc0c",
+      "size_bytes": 20162,
+      "sha256": "5ee9a3d3ca267307ba6d7e61860abe56af56c29133b695658ad4aa4fe93b97e0",
       "executable": false
     },
     {
@@ -1737,8 +1737,8 @@
     },
     {
       "path": "mlx-model-porting/references/runbook-ssm-hybrid.md",
-      "size_bytes": 7304,
-      "sha256": "5028715dc942f48fd7e39acb77776d7e2c833baf45847e527fc63d5a706ee0ff",
+      "size_bytes": 8465,
+      "sha256": "0c90daca6e0fe1cd8710792ea5b630b5e2ccccf847dfb1fe68859e37264dab9f",
       "executable": false
     },
     {
@@ -3732,6 +3732,11 @@
       "size_bytes": 11029,
       "sha256": "c71c504a9a09f93234b02ece36bd96a4af956d11fff02adb4c45a3a21929af43",
       "executable": false
+    },
+    {
+      "path": "tests/test_november_2026_watch_contract.py",
+      "size_bytes": 1922,
+      "sha256": "1f6e78ece61fb00866670c65780c25cbbd1926a394e3e1e60d1c5075cc5d2b5c"
     },
     {
       "path": "tests/test_optimization_atlas_contract.py",
