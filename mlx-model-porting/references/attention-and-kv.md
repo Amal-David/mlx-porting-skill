@@ -74,3 +74,16 @@ Methods such as heavy-hitter eviction, attention-based pruning, low-rank project
 ## Shared-prefix serving
 
 Prefix-aware batching can improve arithmetic intensity and memory reuse. Group requests only when the prefix is byte/token identical under the same model/template and cache namespace. Report TTFT and throughput separately; an approach that helps throughput can hurt an isolated interactive request.
+
+## Layered and persistent cache contracts
+
+The [engine survey](inference-engine-selection.md) distinguishes true per-block KV
+slices from boundary snapshots for recurrent/pooling state. Use per-layer cache
+topology and immutable leases; concatenating every full-prefix snapshot into
+every block can create quadratic storage. Namespace by target/draft, tokenizer,
+template, adapter, precision/layout, cache ABI, tenant and media preprocessing.
+
+Budget live state, copy-on-write expansion and restoration transients, not only
+serialized SSD size. Packed codecs with BF16 mirrors may save no resident memory.
+Corrupt, stale or incompatible persistent cache entries must trigger recomputation,
+not an unsafe restore. SSD KV eviction is not model-weight offloading.

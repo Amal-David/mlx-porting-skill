@@ -98,3 +98,12 @@ For `gather_qmm`, scales and biases must follow the quantized expert weight batc
 - benchmarks report active experts/tokens per expert and batch/concurrency;
 - benchmarks report sorted flag, expert matmul time, dispatch/combine time, compile count, and peak memory;
 - any top-k reduction or expert pruning is labeled lossy.
+
+## Sparse serving versus capacity experiments
+
+The [engine survey](inference-engine-selection.md) separates routed-expert gather
+kernels, active-expert SSD streaming, KV eviction and multi-device placement.
+Preserve exact router/expert selections and compare against resident execution.
+Budget I/O overlap buffers and system reserve. Lowering router top-k is a lossy
+model change requiring task-quality evaluation; SSD streaming cannot guarantee
+freedom from out-of-memory failures or acceptable tail latency.

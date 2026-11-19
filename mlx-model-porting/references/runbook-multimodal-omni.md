@@ -99,3 +99,11 @@ Generic visual-token pruning, merging, or FastVLM-style encoder replacement stay
 - cold/warm cache parity for projected features and prefix KV/APC;
 - task quality for every advertised modality;
 - benchmark includes modality preprocessing/encoding and not only LM decode.
+
+## Engine and media-cache qualification
+
+Use the [engine survey](inference-engine-selection.md), not an old unbatched
+MLX-VLM comparison. Bind vision/audio content, crop/frame ordering, processor
+revision, template and adapter into any reused encoder or language state.
+Test changed media with unchanged text: this must not reuse incompatible state.
+A generic text-serving endpoint or parsed vision_config is not modality proof.

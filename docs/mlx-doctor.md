@@ -121,3 +121,12 @@ weight map, source oracle, staged parity, workload quality, then benchmarking.
 Doctor only makes the first step easier to discover. It does not depend on the
 companion inference preview being merged or installed, and a successful Doctor
 report is not permission to activate an unverified runtime profile.
+
+## Serving research candidates
+
+Add `--workload coding-agent` (or another supported workload) for an alphabetical
+research shortlist. Add `--include-comparators` for non-MLX/opaque comparison
+baselines; default output explicitly lists its exclusions. Inspection blockers
+and runtime prerequisites remain distinct and neither can be cleared by a
+source-declared engine feature. Installed skills can run advisor queries and
+`--validate`; report regeneration/check modes require the source checkout.

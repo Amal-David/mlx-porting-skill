@@ -94,3 +94,15 @@ translation, and permutation probes before benchmark metrics matter.
 - using host scalar extraction inside the decode loop;
 - copying a CUDA tile/block design without considering Metal execution and MLX dispatch;
 - measuring only the second invocation while hiding compilation cost for an interactive workload.
+
+## Native serving-kernel qualification
+
+The [engine survey](inference-engine-selection.md) identifies small-M verification
+QMM, paged variable-length attention, GDN recurrence and fused MoE paths as
+profile-led candidates. Pin compiler/metallib/ABI and assert dtype, group size,
+strides, mask, sequence boundary and device feature support. M5-specific NAX
+paths require actual capability probes and a validated fallback on other chips.
+
+Precompiled packaging and a complete runtime environment are alternatives to
+fragile runtime JIT, not permission to weaken isolation. Python-free execution
+removes some integration costs; it does not prove the numerical kernels improve.

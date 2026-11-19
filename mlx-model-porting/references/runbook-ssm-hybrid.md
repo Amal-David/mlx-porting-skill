@@ -101,3 +101,11 @@ checkpoint parity remains a separate completion gate.
 - long sequences remain numerically stable;
 - performance report distinguishes prefill scan from recurrent decode;
 - custom scan has fallback and odd-length tests.
+
+## Serving checkpoint and rollback gate
+
+Consult [engine selection](inference-engine-selection.md) for mixed cache topology.
+Store cumulative recurrent state at the exact accepted-token boundary alongside
+sliceable attention KV. Speculative rejection needs a tested snapshot/rollback or
+tape-replay implementation; ordinary KV trimming is insufficient. Test cold/warm
+continuation, partial-prefix reuse, cancellation and draft history restoration.

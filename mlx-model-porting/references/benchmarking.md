@@ -218,3 +218,19 @@ bound-output path; use a new label for a new evidence run.
 ## Receipt harness
 
 `scripts/benchmark_generation.py` wraps `mlx_lm generate`-style commands and writes receipt JSON under `assets/benchmarks/` by default. Each measured run must print prompt tokens/s, generation tokens/s, and peak memory lines; missing metrics or nonzero exits fail loudly. Receipts include environment metadata, exact command arguments, config notes, per-run metrics, aggregate median/min/max values, and a labeled `ttft_proxy` computed as prompt tokens divided by prompt throughput. The harness records `speedup_vs_baseline` only when `--baseline-receipt` is provided, so standalone receipts never contain speedup numbers.
+
+## Cross-engine comparison protocol
+
+Follow the [engine method inventory](inference-engine-selection.md). Keep model
+artifact, tokenizer/processor/template, adapters, workload, quality contract,
+sampler, context/output caps, cache precision, hardware and load policy explicit.
+Report separate cold, warm and partial-prefix cells; interleave baseline/candidate
+runs with thermal observations and preserve failures. Backend revisions may differ
+by design, but must be pinned and recorded, not conflated with model changes.
+
+Physical prefill rate uses computed tokens only. Apparent logical prompt rate
+includes restored tokens and is not a kernel-rate claim. First-content latency is
+measured from the declared request boundary; HTTP headers and keepalives do not
+count. Record actual compute batch widths, not just client count. Separate model
+loading, tokenization/encoder work, prefill, draft, verify, rollback and output.
+RSS, Metal allocated bytes, cache bytes, SSD I/O and swap are different metrics.

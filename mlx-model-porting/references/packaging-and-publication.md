@@ -65,3 +65,12 @@ Hugging Face cards are mutable metadata. Use them for publication hygiene and ar
 - deterministic smoke test passes;
 - README commands use pinned/minimum compatible versions;
 - limitations include unsupported batching, streaming, training, or quantization modes.
+
+## Runtime and upstream-engine boundaries
+
+The [engine survey](inference-engine-selection.md) treats Python environment,
+framework libraries, native ABI, compiler/metallib and device support as one
+execution contract. Copying an interpreter binary alone may break relocation or
+load ambient packages. Test the full packaged environment inside the intended
+sandbox. Review per-file licenses/NOTICE before reuse; a public tooling repository
+does not necessarily publish the underlying inference engine or model weights.

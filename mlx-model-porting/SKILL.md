@@ -9,11 +9,11 @@ metadata:
   last-reviewed: "2026-07-23"
 ---
 
-# MLX model porting and optimization
+# MLX porting and optimization
 
 ## Mission
 
-Produce or inspect a **correct, reproducible, architecture-aware MLX implementation**. Correctness before speed. Every speed or memory claim must name hardware, software versions, workload, baseline, and quality gate.
+**Correctness before speed.** Produce reproducible, architecture-aware MLX ports. Speed or memory claims must name hardware, software versions, workload, baseline and quality gate.
 
 Six families have scaffolds (MoE/SSM synthetic, others runbook-guided); four
 have worked packets under [examples/](examples/porting-patterns.md): Qwen2.5,
@@ -39,7 +39,7 @@ Port, convert, run, inspect, quantize, package, or publish a PyTorch/Hugging Fac
 | KV cache, long context, recurrent state, attention memory, or prefill/decode memory is the bottleneck. | [attention and KV cache](references/attention-and-kv.md) |
 | Quantization or "4-bit". | [guide](references/quantization.md), [quality gate](references/quantization-quality-gate.md) |
 | Structured local optimization sweep. | [loop](references/optimization-loop.md) |
-| Decoding, serving, speculative decoding, batching, streaming, or API runtime behavior is requested. | [decoding and serving](references/decoding-and-serving.md) |
+| Engine selection, decoding, serving, caching, batching, streaming, speculation or API runtime. | [engine selection](references/inference-engine-selection.md), [decoding](references/decoding-and-serving.md) |
 | Compile behavior, `mx.compile`, custom kernel, graph capture, Metal, or operation fusion comes up. | [compile and kernels](references/compile-and-kernels.md) |
 | Publish, release, checkpoint conversion, model card, provenance, or license packaging is requested. | [packaging and publication](references/packaging-and-publication.md) |
 | The user asks for "50-100 optimization ideas", a deep model-specific hunt, or research-backed candidates. | [hypothesis-led learning](references/hypothesis-led-learning.md) |

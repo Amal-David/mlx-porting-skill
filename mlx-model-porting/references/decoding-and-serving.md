@@ -101,3 +101,19 @@ For audio caches, do not import text/VLM speedup numbers. Include codec/vocoder 
 ## Serving validation
 
 Test concurrency one and many, mixed lengths, cancellation, timeout, malformed requests, streaming disconnect, model reload, cache eviction, and repeated prefixes. Store raw load/TTFT/decode/throughput/memory distributions.
+
+## Current engine comparison and transfer gates
+
+Use the [engine survey](inference-engine-selection.md) before selecting a runtime.
+Current MLX-VLM is itself a batched, state-aware serving baseline. oMLX/vllm-mlx
+add lifecycle and scheduler policy; upstream vLLM Metal is a different plugin.
+Specialized MTP/DFlash verification kernels are not a universal replacement.
+
+Measure actual model batch width, not HTTP concurrency. Treat prompt-only,
+generated-prefix and recurrent/MTP history checkpoints as distinct boundaries.
+A cumulative SSM/GDN state cannot be trimmed like dense KV. Keep leases until
+consumers finish. Match cache restore and cancellation against cold execution.
+
+Separate exact rejection sampling, greedy target verification and approximate
+acceptance modes. Optional typical acceptance, expert reduction and sparse prefill
+need independently declared task-quality gates. Heartbeats are not first tokens.

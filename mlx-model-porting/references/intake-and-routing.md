@@ -98,3 +98,11 @@ Pause for review when:
 - model output depends on nondeterministic external services;
 - architecture class and weight key patterns disagree;
 - hidden state/cache semantics cannot be inferred from source tests.
+
+## Separate model routing from engine selection
+
+After canonical intake, query the [engine-selection workflow](inference-engine-selection.md).
+Its workload shortlist is not a model compatibility matrix. All original
+serialization, artifact, license and hybrid-routing blockers remain in force.
+Engine, model library, specialization adapter and non-MLX comparator are different
+layers; choose a pinned backend only after exact model/runtime qualification.
