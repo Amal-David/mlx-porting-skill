@@ -2,7 +2,7 @@
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
   "version": "0.7.0",
-  "generated_at": "2026-10-05T03:09:27.720951+00:00",
+  "generated_at": "2026-11-19T03:12:06.892Z",
   "file_count": 627,
   "files": [
     {
@@ -52,7 +52,7 @@
     {
       "path": ".github/workflows/daily-research.yml",
       "size_bytes": 7497,
-      "sha256": "22660a2725535c5a06d5ca21bda70316dbda41f78962df2d54ecea7f2f75813d",
+      "sha256": "fa077f57bc1a4d609ca292a4a555edc1e734ee1b27661b2cb3a0ecffd556cf96",
       "executable": false
     },
     {
@@ -70,13 +70,13 @@
     {
       "path": ".github/workflows/source-health.yml",
       "size_bytes": 1212,
-      "sha256": "8b63023ab1c998c281c749287eab427e43913c12c2c1d3d9bbe89b4f1cfd3264",
+      "sha256": "621f1008bcb686091226c3fbbc1d5f88357abdccd9a1197e114c846a3529bb60",
       "executable": false
     },
     {
       "path": ".github/workflows/validate.yml",
       "size_bytes": 7572,
-      "sha256": "4abd199e252e5adc1c0823f988eeb92e077faacfa0ce2ebc103c3bfd3c498297",
+      "sha256": "1344bfcf2dd151962f2f7584b679e0cee1b6ab4828af6414ff7b3fe368a3c1ae",
       "executable": false
     },
     {
@@ -3700,7 +3700,7 @@
     {
       "path": "tests/test_release_contract.py",
       "size_bytes": 21140,
-      "sha256": "7317798e7a0f477a3f6acf1afbc9eefc42cc40cf29847eef8097d171e04394ee",
+      "sha256": "76d01d5be52de9576ef643c182076d98b09bc5638f6b2028cef47efbb86de31d",
       "executable": false
     },
     {
