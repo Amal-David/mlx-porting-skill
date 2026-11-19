@@ -7,7 +7,7 @@
 # it also requires Safetensors >=0.8.0. Keep this tested group compatible.
 mlx==0.32.0
 mlx-lm==0.31.3
-numpy==2.2.6
+numpy==2.5.3
 safetensors==0.8.0
 tokenizers==0.23.1
 torch==2.9.1

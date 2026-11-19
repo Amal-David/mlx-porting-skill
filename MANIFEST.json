@@ -2,7 +2,7 @@
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
   "version": "0.7.0",
-  "generated_at": "2026-10-05T03:09:27.720951+00:00",
+  "generated_at": "2026-11-19T03:23:01.529+00:00",
   "file_count": 627,
   "files": [
     {
@@ -40,13 +40,13 @@
     {
       "path": ".github/requirements-mlx-keystones.in",
       "size_bytes": 621,
-      "sha256": "82ef4e6cf9048c9df60e983121af3d45d58c48f3c00f4437c6197428805bb897",
+      "sha256": "9489f3315738fc5ca7f0ace63b25fbf91889d0fc9b8e65b626da8f6a4a7cede9",
       "executable": false
     },
     {
       "path": ".github/requirements-mlx-keystones.txt",
-      "size_bytes": 51100,
-      "sha256": "1853e1a187309992a48a1b8d25bec628c7f575525684dacce3fce5334749c0c6",
+      "size_bytes": 52027,
+      "sha256": "3ceaa938c6691a1f3b10daa5772d29201f039d9d2d04078269c36143636a9c28",
       "executable": false
     },
     {
@@ -124,7 +124,7 @@
     {
       "path": "README.md",
       "size_bytes": 13439,
-      "sha256": "33c8bbcba9dbc1bcea17707c7dac1cc2025ef4adcc4c07d9e14ca7236aba9b65",
+      "sha256": "ce2181755fc87d635caa52a92ab5d8736250a3c3252a8efa24685cea7f941d28",
       "executable": false
     },
     {
@@ -136,7 +136,7 @@
     {
       "path": "VALIDATION.md",
       "size_bytes": 21550,
-      "sha256": "2bf27c8254eb267302e2dfe9bdcd10b2a2a49c2f9ecc12bae3ffbec1ab003d95",
+      "sha256": "48fd094602d0630370280d6e1e02bed8beff15c794abe23a4434b5f29da0d630",
       "executable": false
     },
     {
@@ -3699,8 +3699,8 @@
     },
     {
       "path": "tests/test_release_contract.py",
-      "size_bytes": 21140,
-      "sha256": "7317798e7a0f477a3f6acf1afbc9eefc42cc40cf29847eef8097d171e04394ee",
+      "size_bytes": 22086,
+      "sha256": "2574a896e7a6e5b57b8a919285fa13e16fbef0f99f677fd8cc0b35fe064bc729",
       "executable": false
     },
     {

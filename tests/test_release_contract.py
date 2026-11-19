@@ -412,6 +412,20 @@ class ReleaseContractTests(unittest.TestCase):
             self.assertIn(acknowledgement, block)
             self.assertIn("MLX_KEYSTONE_REQUIRED=1", block)
 
+    def test_apple_keystone_lock_stays_macos_specific(self) -> None:
+        """A platform-mismatched lock must never make the Apple runner install CUDA wheels."""
+        source = (ROOT / ".github" / "requirements-mlx-keystones.in").read_text(encoding="utf-8")
+        lock = (ROOT / ".github" / "requirements-mlx-keystones.txt").read_text(encoding="utf-8")
+        direct_numpy = re.findall(r"(?m)^numpy==([0-9.]+)$", source)
+        locked_numpy = re.findall(r"(?m)^numpy==([0-9.]+) +\\$", lock)
+        self.assertEqual(len(direct_numpy), 1)
+        self.assertEqual(locked_numpy, direct_numpy)
+        self.assertRegex(lock, r"(?m)^mlx-metal==[0-9.]+ +\\$")
+        self.assertNotRegex(lock, r"(?m)^(?:nvidia-[a-z0-9-]+|triton)==")
+        numpy_lock_lines = lock.split("numpy==", 1)[1].splitlines()
+        self.assertGreaterEqual(len(numpy_lock_lines), 2)
+        self.assertRegex(numpy_lock_lines[1], r"^    --hash=sha256:[0-9a-f]{64}")
+
     def test_apple_silicon_lane_actually_enforces_the_keystones(self) -> None:
         workflow = WORKFLOW.read_text(encoding="utf-8")
         block = job_block(workflow, "apple-silicon-keystones")
