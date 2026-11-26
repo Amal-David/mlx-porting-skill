@@ -129,6 +129,18 @@ objective regresses beyond the measured noise floor. Keep autoregressive
 generation selectable. Do not silently change precision or the task to turn
 a failed speculation experiment into an apparent win.
 
+### Release-specific verification geometry
+
+[MLX 0.32.5](https://github.com/ml-explore/mlx/releases/tag/v0.32.5)
+contains [Metal split-attention kernels for intermediate verification sizes](https://github.com/ml-explore/mlx/commit/065ec4683cce3c4d3d1d846b4759ad59c13a4ffd)
+on NAX and pre-NAX paths. The upstream change targets up to eight query tokens
+and the intermediate row regime (query tokens times query heads per KV head).
+It can change the optimal draft budget without changing the model. Sweep the
+previous best, no-draft and neighboring budgets at both short and long
+contexts, including different GQA ratios; validate forced rejection, EOS and
+subsequent cache reuse before comparing throughput. Do not copy the upstream
+contributor's throughput into a generic recommendation.
+
 ## Continuous batching
 
 A correct scheduler must handle:
@@ -160,6 +172,34 @@ positions. Test same media with changed questions and reordered media, plus
 same text with changed media. Treat a cold/warm mismatch as a cache miss and
 fall back to recomputation. Keep cold, encoder-hit, prefix-hit, and mixed-hit
 benchmarks distinct.
+
+### Speculative cache publication and looped-layer state
+
+An emitted token need not yet have been consumed by the target forward pass.
+[MLX-LM #2083](https://github.com/ml-explore/mlx-lm/pull/2083)
+([reviewed proposal](https://github.com/ml-explore/mlx-lm/commit/a4b972f312184988fbd19b57ed10a8b41dad8630),
+open on November 26) documents a cache key that includes one more token than
+its KV state after speculative generation ends. At publication, bind the key
+to the *verified processed prefix*, not the emitted text or a guessed physical
+buffer length. Track logical offsets and per-component state; rotating and
+recurrent caches cannot generally be repaired by trimming to a tensor length.
+If state cannot be aligned and verified, skip publication and recompute.
+Test all-accepted rounds ending exactly at the token limit, EOS, cancellation,
+partial rejection and a second request sharing/diverging at the last token.
+Compare warm continuation with cold greedy output and cache positions.
+
+For weight-shared looped transformers, count **execution visits**, not unique
+parameter layers, when allocating per-visit state. [Inkling 2 Mini proposal #2086](https://github.com/ml-explore/mlx-lm/pull/2086)
+([reviewed source](https://github.com/ml-explore/mlx-lm/commit/e2b5bbd3bd9d186dea895e60802aa765e70b9d93),
+open on November 26) repeats middle layers and uses separate cache entries for
+each visit; its pipeline method rejects looped configurations. Distinguish
+parameter bytes from per-visit KV/convolution/message state and intermediate
+memory. Check visit order, weight identity, per-visit state, full/chunked
+prefill, greedy continuation and cache reset, including image inputs where
+applicable. Tensor-parallel and pipeline-parallel support must be verified
+independently. Do not route this as a supported scaffold or infer pipeline
+compatibility from a non-looped relative. Roll back to the source oracle on
+any discrepancy.
 
 ## Serving validation
 

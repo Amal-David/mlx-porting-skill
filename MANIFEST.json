@@ -2,7 +2,7 @@
   "schema_version": 1,
   "artifact": "mlx-porting-skill",
   "version": "0.7.0",
-  "generated_at": "2026-11-19T02:54:35.628+00:00",
+  "generated_at": "2026-11-26T02:51:14+00:00",
   "file_count": 642,
   "files": [
     {
@@ -1557,8 +1557,8 @@
     },
     {
       "path": "mlx-model-porting/references/decoding-and-serving.md",
-      "size_bytes": 9317,
-      "sha256": "aba9a760f6dd1d8c01e5db9579666da8052aa05a4f9253535aa4bf383de367fb",
+      "size_bytes": 12037,
+      "sha256": "4be6934122865bc388d859e4cc47e39b1faca745c2069c4b9d74addbdf238ef4",
       "executable": false
     },
     {
@@ -1653,8 +1653,8 @@
     },
     {
       "path": "mlx-model-porting/references/research-updates-2026-11.md",
-      "size_bytes": 20162,
-      "sha256": "5ee9a3d3ca267307ba6d7e61860abe56af56c29133b695658ad4aa4fe93b97e0",
+      "size_bytes": 23723,
+      "sha256": "5f8317754349c2f8ae6cc8f69e8e3bb36ad943bcb0822360db7be125c705c620",
       "executable": false
     },
     {
@@ -1761,8 +1761,8 @@
     },
     {
       "path": "mlx-model-porting/references/runtime-compatibility.md",
-      "size_bytes": 11057,
-      "sha256": "9cf4746fff9953549541d8ffa279d80bd7482798465adf1b004bfc62638f344b",
+      "size_bytes": 15025,
+      "sha256": "a5d51723fc298bc62a64dba7723226435c7b127851489402a2e004ce4ed68bee",
       "executable": false
     },
     {

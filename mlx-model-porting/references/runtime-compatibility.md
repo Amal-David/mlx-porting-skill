@@ -6,10 +6,13 @@ This is source/API verification, not execution on the target Mac. Treat 0.32.4
 as a conservative source-reviewed floor for the new candidates below, not a
 claim about the first version that implemented each feature.
 
+**Release follow-up (2026-11-26):** [MLX 0.32.5](https://github.com/ml-explore/mlx/releases/tag/v0.32.5) was released November 25 at [the pinned source revision](https://github.com/ml-explore/mlx/tree/cfc675e9e59cb6ee29a647cf8fe87ef844eff879). For affected paths, apply the additional correctness gates below. The original registry minima remain source-reviewed API floors, not a guarantee that older implementations are free of correctness bugs.
+
 ## Contents
 
 - [Resolve the actual runtime](#resolve-the-actual-runtime)
 - [Native operation gates](#native-operation-gates)
+- [0.32.5 release-specific correctness gates](#0325-release-specific-correctness-gates)
 - [Quantization format contract](#quantization-format-contract)
 - [Metal and M5 boundaries](#metal-and-m5-boundaries)
 - [Framework interoperability](#framework-interoperability)
@@ -79,6 +82,23 @@ lower-right alignment in this snapshot. Keep grouped K/V heads unexpanded.
 `force_fused=True` is a diagnostic option that raises if no fused path exists;
 it may trade speed for memory and is not a universal optimization. Compare the
 explicit mask reference on unequal query/key lengths before enabling it.
+
+## 0.32.5 release-specific correctness gates
+
+These are source-reviewed migration checks, not automatic package upgrades or
+local Metal measurements. Pin both MLX and the model/runtime revision before
+changing one variable; preserve a known-good environment and readable oracle.
+
+- **Sliding-window SDPA:** the [0.32.5 Python binding](https://github.com/ml-explore/mlx/blob/cfc675e9e59cb6ee29a647cf8fe87ef844eff879/python/src/fast.cpp) adds keyword-only `window_size` (default `-1`, no window; zero invalid). For query position `i + T_kv - T_q`, the window admits keys with absolute position difference strictly smaller than the window. It is not causal by itself; use `mask="causal"` for causal local attention, or an explicit model-specific combined mask. Compare with the [upstream explicit-mask tests](https://github.com/ml-explore/mlx/blob/cfc675e9e59cb6ee29a647cf8fe87ef844eff879/python/tests/test_fast_sdpa.py): unequal query/key lengths, grouped heads, boundary keys, additive/boolean masks, sinks and cached continuation. A window mask does not itself evict KV storage. Fall back to explicit masking or the prior cache implementation on disagreement.
+- **Gated-delta precision:** [float32 decay and beta](https://github.com/ml-explore/mlx/commit/946077b5f490555d901cec54058d3b08cc797fab) and [per-channel gate indexing](https://github.com/ml-explore/mlx/commit/9e2e8e233187ca3ca9f3d150652f7f462741c85f) fixes are in 0.32.5. Prefer this reviewed release for those affected native paths; do not cast decay/beta to activation dtype merely to save memory. Test scalar and per-channel decay, unequal key/value dimensions, grouped heads, nonzero initial state, masks and repeated chunks against the unfused recurrence; compare final state as well as output. Retain the reference on older or failing builds.
+- **Affine quantization:** [the signed-group fix and tests](https://github.com/ml-explore/mlx/commit/32a183e1211b4dfe434b0919dcd8c7709c1fa298) cover all-negative GPU groups. Exercise negative-only, positive-only, mixed, constant and zero groups for each selected bit/group recipe; compare dequantized values, reload and downstream logits/task quality. An old packed artifact does not become correct by upgrading the loader; reconvert from pinned source weights when parity fails.
+- **NAX runtime probe:** 0.32.5 exposes [`mx.metal.is_nax_available()`](https://github.com/ml-explore/mlx/commit/5c89894465a9a010bc81109b646207bbfed84c4d). Check the callable exists, Metal is available, and the probe returns true before treating NAX as available. False or missing means retain ordinary dispatch. Even true does not prove a particular shape/dtype uses a NAX kernel; record the actual device, build, OS, shape, precision and dispatch evidence.
+- **NumPy interop:** [the same-width dtype fix](https://github.com/ml-explore/mlx/commit/59cf1adcd830772b72966ccd865ca8f4551897c0) requires matching source/destination dtype for zero-copy adoption. Test int32-to-float32 value conversion (not reinterpretation), same-dtype sharing, and rejection with `copy=False` when conversion is required. Use an explicit copying conversion or reject the path on mismatch.
+
+After correctness, compare cold/warm latency, prefill/decode or training
+phase, peak memory and quality on the same workload and hardware. Revert the
+runtime or disable the affected optimization if the agreed gates fail. A
+release fix is not a promoted performance claim.
 
 ## Quantization format contract
 

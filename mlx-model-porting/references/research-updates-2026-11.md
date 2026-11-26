@@ -218,7 +218,7 @@ costs. Preserve a local execution path when coordination costs exceed the
 chosen objective. Consult [distributed execution](runtime-compatibility.md#distributed-execution)
 for MLX APIs.
 
-## November 12 upstream watchlist (unmerged)
+## November 12 upstream watchlist (unmerged at review)
 
 These primary-source MLX-LM changes were **open, not merged or included in a
 verified release** on November 12, 2026. Preserve the review-time commit, avoid
@@ -310,3 +310,51 @@ On a failed correctness, task-quality or memory gate, revert to the tested
 full-cache, eager-gradient, single-rank or readable recurrence reference.
 Benchmark only matched model/input/software/hardware conditions after those
 gates pass. No numeric result or runtime capability is promoted here.
+
+## November 26 release and architecture follow-up
+
+Source review on November 26, 2026; no collector run, new device execution or
+promoted numeric claims. MLX [0.32.5](https://github.com/ml-explore/mlx/releases/tag/v0.32.5)
+was published November 25 at [cfc675e](https://github.com/ml-explore/mlx/tree/cfc675e9e59cb6ee29a647cf8fe87ef844eff879).
+MLX-LM [0.32.2](https://github.com/ml-explore/mlx/releases/tag/v0.32.2)
+(October 16) remains the latest tagged MLX-LM release reviewed. Main-branch
+merges below do not imply inclusion in that release.
+
+- **Released:** native SDPA window semantics, gated-delta precision and
+  per-channel indexing, affine signed-group correctness, the NAX availability
+  probe and NumPy same-width dtype conversion. See
+  [release-specific gates](runtime-compatibility.md#0325-release-specific-correctness-gates).
+  The November 19 [half-precision SDPA VJP fix](https://github.com/ml-explore/mlx/commit/25f42f69c76bf5a5db6570df423abf9087fbfb0e)
+  merged November 23, and [recurrence checkpoint scheduling](https://github.com/ml-explore/mlx/commit/6793c9ac4d641fea33247d49828ec68e4168b184)
+  merged November 24; both appear in the release notes. Keep the original
+  gradient and peak-memory gates; release inclusion is not device validation.
+- **Merged, not released in MLX-LM 0.32.2:** the DSA head sum from November 12
+  landed November 21 at [1bf8da0](https://github.com/ml-explore/mlx-lm/commit/1bf8da05a1ef30a3eb2e8a634180be6557fd3ca0).
+  The reviewed test checks compiled head-order accumulation against unfused
+  values across shapes/dtypes. Compare top-k selections and downstream logits
+  as well; do not promote author-reported throughput.
+- **Server V2:** [#2040](https://github.com/ml-explore/mlx-lm/pull/2040)
+  merged November 24 at [6fe0ce4](https://github.com/ml-explore/mlx-lm/commit/6fe0ce48c90cec11f2c305830ceba461051c33b2).
+  At that revision V2 is batch-only, serves one model without swapping, and
+  lacks image input, speculative decoding and KV quantization; the old server
+  coexists. Do not migrate a workload solely for reported throughput.
+  Compare the same requests, parsing/streaming, stops, cancellations, cache
+  isolation, tail latency and memory; keep the old server for missing features.
+- **Open correctness candidates:** [speculative prompt cache #2083](https://github.com/ml-explore/mlx-lm/pull/2083)
+  and [Nemotron-H padding #2100](https://github.com/ml-explore/mlx-lm/pull/2100)
+  ([reviewed commit](https://github.com/ml-explore/mlx-lm/commit/38278c69a4cea3beebad94e609251ac91ffb3376))
+  expose two distinct state-boundary risks. The latter passes cache lengths
+  into the SSM update; compare independent versus mixed-length padded batch
+  continuation and final recurrent state, holding TF32/backend and dtype
+  fixed. If parity fails, disable batched execution rather than relaxing
+  tolerance without an oracle.
+- **Open architecture candidate:** [Inkling 2 Mini #2086](https://github.com/ml-explore/mlx-lm/pull/2086),
+  opened November 20, implements repeated middle-layer execution with
+  distinct per-visit cache state. See
+  [the serving-state gate](decoding-and-serving.md#speculative-cache-publication-and-looped-layer-state).
+  No new scaffold or validated checkpoint port is claimed.
+
+These notes leave the existing executable recommendation and numeric-claim
+registries unchanged. Recheck the exact installed package and the cited
+revision before adopting a path; retain the previous implementation when
+correctness, memory or workload-specific performance gates fail.
