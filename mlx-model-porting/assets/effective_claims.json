@@ -76,6 +76,7 @@
       "evidence_source_ids": [
         "mlx-vlm-readme",
         "paper-2601-19139",
+        "vllm-mlx-paper-v2-2026-01-29",
         "vllm-mlx-repo"
       ],
       "evidence_lineage_ids": [
@@ -150,7 +151,8 @@
         "mlx-lm-release-0313",
         "mlx-lm-speculative",
         "paper-2211-17192",
-        "paper-2302-01318"
+        "paper-2302-01318",
+        "paper-2610-31479"
       ],
       "evidence_lineage_ids": [
         "local-qwen25-coder-speculative-k-sweep-2026-07-06"
@@ -278,6 +280,7 @@
       "experiment_fingerprint": null,
       "promotion_state": "withheld",
       "evidence_source_ids": [
+        "mlx-0324-quantization-bindings",
         "mlx-audio-convert",
         "mlx-doc-core-quantize",
         "mlx-doc-nn-quantize",
@@ -503,7 +506,8 @@
         "mlx-lm-cache",
         "mlx-lm-release-0313",
         "mlx-vlm-readme",
-        "paper-2402-02750"
+        "paper-2402-02750",
+        "paper-2610-33076"
       ],
       "evidence_lineage_ids": [
         "local-qwen25-coder-7b-kv4-8k-2026-07-06"

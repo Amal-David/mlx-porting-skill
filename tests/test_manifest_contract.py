@@ -464,7 +464,10 @@ class ManifestContractTests(unittest.TestCase):
 
             ignored_fifo.unlink()
             socket_path = root / "unsupported.sock"
-            unix_socket = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+            try:
+                unix_socket = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+            except PermissionError:
+                self.skipTest("sandbox forbids creating Unix-domain socket fixtures")
             try:
                 try:
                     unix_socket.bind(str(socket_path))

@@ -92,6 +92,7 @@ def default_markdown_path(run_id: str) -> Path:
 
 
 def normalize_locator(value: str | None) -> str:
+    """Normalize a source locator without losing query-selected content."""
     if not value:
         return ""
     text = str(value).strip()
@@ -106,7 +107,10 @@ def normalize_locator(value: str | None) -> str:
         path = parsed.path.rstrip("/")
         if path.endswith(".git"):
             path = path[:-4]
-        return urlunparse((parsed.scheme.lower(), parsed.netloc.lower(), path, "", "", ""))
+        # Query fields can identify an article or revision. Preserve their raw
+        # ordering, escaping and unknown parameters rather than guessing which
+        # fields are merely tracking metadata.
+        return urlunparse((parsed.scheme.lower(), parsed.netloc.lower(), path, "", parsed.query, ""))
     if "/" in text and " " not in text:
         return f"https://github.com/{text.strip('/')}"
     return text.lower()

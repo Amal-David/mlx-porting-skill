@@ -19,6 +19,14 @@ Use framework/library-supported affine or floating low-bit modes first. Test at 
 
 Current MLX quantization modes include `affine`, `mxfp4`, `mxfp8`, and `nvfp4`, with mode-specific group-size, bit-width, scale, and bias behavior. For `mlx.nn.quantize`, activation/input quantization through `quantize_input=True` is limited to supported Linear-layer paths such as `nvfp4` and `mxfp8`; do not generalize it to embeddings, norms, convolutions, or arbitrary modules.
 
+Use the [versioned format table](runtime-compatibility.md#quantization-format-contract)
+to validate exact grouping, bit width, scale type and return arity. Treat
+weight-only `quantized_matmul` and input-quantizing `qqmm` as different recipes.
+Select supported modules explicitly; preserve scale metadata and round-trip
+the actual packed checkpoint. A newly supported bit width does not establish
+usable quality, a compatible external packing format, or hardware acceleration
+on every Mac. Keep a conservative higher-precision fallback.
+
 MLX-Audio documents `affine`, `mxfp4`, `mxfp8`, and `nvfp4` conversion modes plus 3/4/6/8-bit recipes. Its size-reduction guidance is source-reported and should remain tied to the documented model family and recipe. TTS needs listening and speaker/prosody checks; STT needs WER/CER and timestamp checks.
 
 For every recipe record:

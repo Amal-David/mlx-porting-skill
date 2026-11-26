@@ -8,7 +8,7 @@ views, and tests agree.
 
 Good first contributions are small, verifiable, and grounded in the real backlog:
 
-- **Classify an evidence source.** Pick one of the ~328 sources that remain
+- **Classify an evidence source.** Pick one of the ~326 sources that remain
   intentionally unclassified in
   [`mlx-model-porting/assets/sources.yaml`](mlx-model-porting/assets/sources.yaml),
   add an honest support scope and claim type, then regenerate
@@ -100,6 +100,31 @@ to `assets/optimization_guidance.yaml` only when its matching constraints,
 validation gate, evidence lineage, and rollback are complete. Stack pairs not
 explicitly validated together remain `unknown`; do not infer composability or
 multiply per-method ceilings.
+
+For version- or chip-dependent methods, declare the optional, closed
+`runtime_requirements` object in `optimization_guidance.yaml`:
+
+```json
+{
+  "minimum_software": {"mlx": "0.32.4", "macos": "26.2"},
+  "hardware": {"chip_family_any": ["m5"]}
+}
+```
+
+Use only the constraints a method needs. Software keys are `mlx`, `mlx_lm`,
+`mlx_vlm`, `mlx_audio`, and `macos`; values are numeric release strings with
+one to three components. Chip families are explicit lower-case identifiers
+such as `m5`. The corresponding TargetProfile supplies `software.mlx`,
+`software.macos`, and `hardware.chip` (for example `Apple M5 Pro`). A reviewed
+minimum is a conservative source baseline, not necessarily the release that
+introduced the feature. Document that distinction and the confirming source.
+
+The recommender validates every requirement before filtering methods. Missing,
+old, malformed, prerelease, or unrecognized target information holds the
+method. A compatible profile permits consideration only: the actual API,
+device, layout, parity, and task-quality checks still apply. Preserve
+`target_constraints` for historical numeric-observation compatibility; do not
+reuse it as an API-availability gate or relax its exact-version checks.
 
 An experimental contributor, blog, package, paper, or repository approach must
 stay in the `experimental-approach` advisor bucket and require the prompt:

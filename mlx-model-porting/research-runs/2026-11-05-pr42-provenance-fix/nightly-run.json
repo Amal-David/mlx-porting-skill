@@ -1,0 +1,82 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-11-05-pr42-provenance-fix",
+  "started_at": "2026-11-05T06:57:17+00:00",
+  "finished_at": "2026-11-05T06:57:18+00:00",
+  "review_only": true,
+  "graph_output": "mlx-model-porting/assets/knowledge_graph.json",
+  "delta_output": "mlx-model-porting/research-runs/2026-11-05-pr42-provenance-fix/knowledge-delta.json",
+  "delta_markdown": "mlx-model-porting/research-runs/2026-11-05-pr42-provenance-fix/knowledge-delta.md",
+  "research_loop_output": "",
+  "gap_hints": [
+    "cache",
+    "audio",
+    "native",
+    "quantization",
+    "streaming",
+    "spectral",
+    "transforms",
+    "weight",
+    "adaptive",
+    "low",
+    "route",
+    "tts"
+  ],
+  "commands": [
+    {
+      "command": [
+        "python3",
+        "mlx-model-porting/scripts/knowledge_curator.py",
+        "--run-id",
+        "2026-11-05-pr42-provenance-fix",
+        "--update-candidates",
+        "mlx-model-porting/assets/update-candidates.json",
+        "--contributor-refresh",
+        "mlx-model-porting/assets/contributor-refresh.json",
+        "--research-backlog",
+        "mlx-model-porting/assets/research_backlog.json",
+        "--previous-graph",
+        "mlx-model-porting/assets/knowledge_graph.json",
+        "--graph-output",
+        "mlx-model-porting/assets/knowledge_graph.json",
+        "--delta-output",
+        "mlx-model-porting/research-runs/2026-11-05-pr42-provenance-fix/knowledge-delta.json",
+        "--markdown-output",
+        "mlx-model-porting/research-runs/2026-11-05-pr42-provenance-fix/knowledge-delta.md"
+      ],
+      "cwd": ".",
+      "started_at": "2026-11-05T06:57:17+00:00",
+      "finished_at": "2026-11-05T06:57:18+00:00",
+      "returncode": 0,
+      "timed_out": false,
+      "stdout": "wrote ./mlx-model-porting/assets/knowledge_graph.json: 755 nodes, 526 edges\nwrote ./mlx-model-porting/research-runs/2026-11-05-pr42-provenance-fix/knowledge-delta.json\nwrote ./mlx-model-porting/research-runs/2026-11-05-pr42-provenance-fix/knowledge-delta.md\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "python3",
+        "mlx-model-porting/scripts/knowledge_curator.py",
+        "--reconcile-backlog",
+        "--previous-graph",
+        "mlx-model-porting/assets/knowledge_graph.json",
+        "--update-candidates",
+        "mlx-model-porting/assets/update-candidates.json",
+        "--research-backlog",
+        "mlx-model-porting/assets/research_backlog.json"
+      ],
+      "cwd": ".",
+      "started_at": "2026-11-05T06:57:18+00:00",
+      "finished_at": "2026-11-05T06:57:18+00:00",
+      "returncode": 0,
+      "timed_out": false,
+      "stdout": "wrote ./mlx-model-porting/assets/research_backlog.json: 8 items from graph 2026-11-05-pr42-provenance-fix\n",
+      "stderr": ""
+    }
+  ],
+  "next_actions": [
+    "Review knowledge-delta.md for already-read, unread, and updated sources.",
+    "Review the graph-derived research_backlog.json reconciliation and keep its check mode green.",
+    "Dispatch or inspect research-loop/campaign.json before turning new leads into skill/app/CLI edits.",
+    "If a finding is promotion-ready, make a separate review PR with tests and rollback conditions."
+  ]
+}

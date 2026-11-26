@@ -360,6 +360,11 @@ def build_learning_payload(
     }
     for identifier in sorted(method_ids):
         method = {field: guidance_by_id[identifier][field] for field in GUIDANCE_SITE_FIELDS}
+        runtime_requirements = guidance_by_id[identifier].get("runtime_requirements")
+        if runtime_requirements is not None:
+            # Preserve applicability in exported study data, independently of
+            # the numeric claim's historical target_constraints.
+            method["runtime_requirements"] = runtime_requirements
         technique_id = method["technique_id"]
         method["title"] = technique_by_id[technique_id]["title"]
         evidence_rows: list[tuple[str, str]] = []
@@ -418,6 +423,23 @@ def build_learning_payload(
             "A parity-passing readable baseline and a profile showing this bottleneck: "
             f"{family['bottleneck']}"
         )
+        if runtime_requirements is not None:
+            software_labels = {"mlx": "MLX", "macos": "macOS"}
+            runtime_prerequisites = [
+                f"{software_labels.get(software, software)} ≥ {minimum}"
+                for software, minimum in sorted(
+                    runtime_requirements.get("minimum_software", {}).items()
+                )
+            ]
+            chip_families = runtime_requirements.get("hardware", {}).get("chip_family_any", [])
+            if chip_families:
+                runtime_prerequisites.append(
+                    " or ".join(f"{chip.upper()} family" for chip in chip_families)
+                )
+            method["prerequisite"] += (
+                f" Requires {'; '.join(runtime_prerequisites)}. "
+                "Unknown or incompatible runtime holds execution."
+            )
         method["proof_gate"] = family["proof_gate"]
         method["quality_gate"] = method_quality_gates.get(identifier, [])
         method["advisor"] = advisor_by_status[method["status"]]

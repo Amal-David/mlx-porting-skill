@@ -198,6 +198,15 @@ class GraphValidityTests(unittest.TestCase):
                 self.assertEqual(
                     "hardware:yukon-mlxfast-runner", measured_on.get(node["id"])
                 )
+        receipt = json.loads(
+            (GRAPH_ROOT.parent / "assets/benchmarks/qwen2.5-0.5b-port-bf16.json")
+            .read_text(encoding="utf-8")
+        )
+        historical = next(
+            node for node in self.compiled["nodes"]
+            if node["id"] == "result:v1-qwen25-05b-bf16-cast-walltime"
+        )
+        self.assertEqual(receipt["timestamp"][:10], historical["observed_at"])
 
 
 class DeterminismTests(unittest.TestCase):

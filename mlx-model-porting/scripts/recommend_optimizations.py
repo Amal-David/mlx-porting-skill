@@ -40,6 +40,10 @@ STATUS_RANK = {
     "rejected-or-superseded": 4,
 }
 NUMERIC_MULTIPLIER_RE = re.compile(r"\b\d+(?:\.\d+)?x\b", re.IGNORECASE)
+RUNTIME_SOFTWARE_KEYS = frozenset({"mlx", "mlx_lm", "mlx_vlm", "mlx_audio", "macos"})
+RUNTIME_RELEASE_RE = re.compile(r"(?:0|[1-9][0-9]*)(?:\.(?:0|[1-9][0-9]*)){0,2}")
+CHIP_FAMILY_RE = re.compile(r"m[1-9][0-9]*")
+APPLE_CHIP_RE = re.compile(r"(?:apple )?(m[1-9][0-9]*)(?: (?:pro|max|ultra))?", re.ASCII)
 TRUSTED_INSPECTION_SCHEMA_VERSION = 1
 TRUSTED_INSPECTION_MODE = "static-no-model-import"
 TRUSTED_INSPECTION_FIELDS = {
@@ -517,6 +521,125 @@ def validate_objective_ids(objectives: set[str], taxonomy: dict[str, Any]) -> No
         raise SkillError("unknown objective ids: " + ", ".join(unknown))
 
 
+def _runtime_release(value: Any) -> tuple[int, int, int] | None:
+    """Parse 1-3 ASCII numeric release components, never prereleases or guesses."""
+    if not isinstance(value, str) or len(value) > 32 or RUNTIME_RELEASE_RE.fullmatch(value) is None:
+        return None
+    parts = [int(part) for part in value.split(".")]
+    return tuple((parts + [0, 0])[:3])
+
+
+def validate_runtime_requirements(method: dict[str, Any]) -> dict[str, Any] | None:
+    """Validate an optional closed applicability contract, separate from numeric claims.
+
+    ``minimum_software`` maps controlled software keys to conservative reviewed
+    release floors, not first-support dates. ``hardware`` contains only
+    ``chip_family_any``: a nonempty, unique list of lowercase families such as
+    ``m5``. Future families require explicit entries; no generation ordering is
+    inferred. Omission preserves legacy behavior, but empty or malformed
+    declarations fail closed, including on methods that will not be selected.
+    """
+    if "runtime_requirements" not in method:
+        return None
+    label = f"method {method.get('id', '<missing>')} runtime_requirements"
+    requirements = method["runtime_requirements"]
+    if not isinstance(requirements, dict) or not requirements:
+        raise SkillError(f"{label} must be a nonempty mapping")
+    unknown = set(requirements) - {"minimum_software", "hardware"}
+    if unknown:
+        raise SkillError(f"{label} has unknown fields: " + ", ".join(sorted(map(str, unknown))))
+    if "minimum_software" in requirements:
+        minimum = requirements["minimum_software"]
+        if not isinstance(minimum, dict) or not minimum:
+            raise SkillError(f"{label}.minimum_software must be a nonempty mapping")
+        unknown = set(minimum) - RUNTIME_SOFTWARE_KEYS
+        if unknown:
+            raise SkillError(
+                f"{label}.minimum_software has unknown software keys: "
+                + ", ".join(sorted(map(str, unknown)))
+            )
+        for key, value in minimum.items():
+            if _runtime_release(value) is None:
+                raise SkillError(
+                    f"{label}.minimum_software.{key} must be a numeric release string "
+                    "with 1-3 components (no prerelease, suffix, whitespace, or leading zeros)"
+                )
+    if "hardware" in requirements:
+        hardware = requirements["hardware"]
+        if not isinstance(hardware, dict) or set(hardware) != {"chip_family_any"}:
+            raise SkillError(f"{label}.hardware must contain only chip_family_any")
+        families = hardware["chip_family_any"]
+        if (
+            not isinstance(families, list)
+            or not families
+            or any(not isinstance(item, str) or CHIP_FAMILY_RE.fullmatch(item) is None for item in families)
+            or len(set(families)) != len(families)
+        ):
+            raise SkillError(
+                f"{label}.hardware.chip_family_any must be a nonempty unique list "
+                "of lowercase Apple chip families such as m5"
+            )
+    return requirements
+
+
+def validate_guidance_runtime_requirements(guidance: Any) -> None:
+    """Validate every method before objective, family, or shortlist filtering."""
+    if not isinstance(guidance, dict) or not isinstance(guidance.get("methods"), list):
+        raise SkillError("optimization guidance must contain a methods list")
+    for method in guidance["methods"]:
+        if not isinstance(method, dict):
+            raise SkillError("optimization guidance methods must be mappings")
+        validate_runtime_requirements(method)
+
+
+def runtime_eligibility_holds(
+    method: dict[str, Any],
+    target_profile: dict[str, Any] | None,
+) -> list[str]:
+    """Hold incompatible/unknown runtimes without changing performance authority.
+
+    Read versions from ``software.<key>`` and the chip from ``hardware.chip``.
+    Only whole labels M5 / Apple M5, optionally Pro, Max, or Ultra, are accepted
+    after ASCII case and whitespace normalization. A substring match never
+    establishes hardware support. Passing these gates still requires the
+    method's runtime probe, parity, and workload validation.
+    """
+    requirements = validate_runtime_requirements(method)
+    if requirements is None:
+        return []
+    profile = target_profile if isinstance(target_profile, dict) else {}
+    holds: list[str] = []
+    for key, minimum in sorted(requirements.get("minimum_software", {}).items()):
+        actual = _runtime_release(_path_value(profile, f"software.{key}"))
+        if actual is None:
+            holds.append(
+                f"runtime compatibility requires software.{key} >= {minimum}; "
+                "target version is missing or invalid (use a numeric release with 1-3 components)"
+            )
+        elif actual < _runtime_release(minimum):
+            holds.append(
+                f"runtime compatibility requires software.{key} >= {minimum}; "
+                f"target release {'.'.join(map(str, actual))} is older than this reviewed minimum"
+            )
+    if "hardware" in requirements:
+        families = requirements["hardware"]["chip_family_any"]
+        chip = _path_value(profile, "hardware.chip")
+        # Restrict normalization to ASCII; e.g. Unicode lookalikes are not evidence.
+        label = " ".join(chip.lower().split()) if isinstance(chip, str) and chip.isascii() else ""
+        match = APPLE_CHIP_RE.fullmatch(label)
+        if match is None:
+            holds.append(
+                "runtime compatibility requires hardware.chip in " + ", ".join(families)
+                + "; chip is missing or not a recognized Apple Silicon label"
+            )
+        elif match.group(1) not in families:
+            holds.append(
+                f"runtime compatibility excludes chip family {match.group(1)}; "
+                "reviewed families: " + ", ".join(families)
+            )
+    return holds
+
+
 def validate_family_ids(families: list[str], architectures: dict[str, Any]) -> None:
     allowed = {
         str(item.get("id"))
@@ -628,8 +751,9 @@ def validate_knowledge_graph(graph: Any) -> tuple[dict[str, dict[str, Any]], lis
         locator = _graph_plain_text(node.get("locator"), f"node[{index}].locator")
         if locator and (not locator.startswith("https://") or len(locator) > 2048):
             raise SkillError(f"graph node[{index}].locator must be an HTTPS URL")
-        if locator and NUMERIC_MULTIPLIER_RE.search(locator):
-            raise SkillError(f"graph node[{index}].locator contains a numeric-claim-like token")
+        # A source URL can legitimately contain its author's numerical headline.
+        # Preserve that locator as provenance only; _graph_signal_item excludes
+        # labels, effect text and bands, and never grants numeric-claim authority.
         for field in ("applies_to", "families"):
             _graph_string_list(node.get(field), f"node[{index}].{field}")
         for field in ("review_status", "read_state", "review_depth", "decision_state", "status"):
@@ -1281,6 +1405,10 @@ def prepare_candidate(
     target_profile: dict[str, Any] | None,
     taxonomy: dict[str, Any],
 ) -> dict[str, Any]:
+    eligibility_holds = list(dict.fromkeys([
+        *eligibility_holds,
+        *runtime_eligibility_holds(method, target_profile),
+    ]))
     candidate, catalog_holds = prepare_effective_claim(method, effective_claim)
     target_holds = target_claim_holds(candidate, target_profile)
     claim_holds = list(dict.fromkeys([*catalog_holds, *target_holds]))
@@ -1322,6 +1450,8 @@ def _candidate_rows(items: list[dict[str, Any]]) -> list[str]:
         effect = str(item.get("expected_effect", ""))
         if item.get("claim_holds"):
             effect += " Claim held: " + "; ".join(str(value) for value in item["claim_holds"])
+        if item.get("eligibility_holds"):
+            effect += " Eligibility held: " + "; ".join(str(value) for value in item["eligibility_holds"])
         rows.append(f"| `{item['id']}` | `{item['status']}` | {effect} | {gate} |")
     return rows or ["| None | | | |"]
 
@@ -1505,7 +1635,7 @@ def write_markdown(report: dict[str, Any], path: str | Path) -> None:
             if provenance.get("source_url"):
                 lines.append(f"  - Source URL: {provenance['source_url']}")
     if report.get("held_candidates"):
-        lines += ["", "## Held by missing capability or workload evidence", "", "| Method | Status | Expected effect | First gate |", "|---|---|---|---|"]
+        lines += ["", "## Held by capability, workload, or runtime compatibility evidence", "", "| Method | Status | Expected effect | First gate |", "|---|---|---|---|"]
         lines += _candidate_rows(report["held_candidates"])
     Path(path).write_text("\n".join(lines) + "\n", encoding="utf-8")
 
@@ -1515,6 +1645,7 @@ def main() -> int:
     try:
         inspection = validate_trusted_inspection(load_structured(args.inspection))
         guidance = load_structured(args.guidance)
+        validate_guidance_runtime_requirements(guidance)
         stacks = load_structured(args.stacks)
         taxonomy = load_structured(args.taxonomy)
         architectures = load_structured(args.architectures)

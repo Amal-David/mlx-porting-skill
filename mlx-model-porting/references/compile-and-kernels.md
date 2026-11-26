@@ -1,5 +1,8 @@
 # MLX runtime, compilation, and custom kernels
 
+Use [runtime compatibility](runtime-compatibility.md) for the source-reviewed
+0.32.4 API floor, M5/OS gates, interop synchronization and distributed limits.
+
 ## Optimization order
 
 ### 1. Evaluation boundaries
@@ -13,6 +16,12 @@ Choose dtype by numerical role rather than applying one global cast. Check that 
 ### 3. Native fast operations
 
 Prefer MLX-provided fused primitives where semantics match, including fast attention, normalization, RoPE, quantized matmul, and available segmented/gather/block-masked operations. Confirm masks, head grouping, sinks, and causal semantics.
+
+Re-check the installed native path before carrying an older workaround forward.
+In the reviewed runtime, gated-delta updates and spectral transforms are native
+candidates. Their presence does not establish checkpoint support, fused dispatch,
+or trainability for every shape. Preserve a small eager reference and follow the
+operation contracts in [runtime compatibility](runtime-compatibility.md).
 
 After making a large matmul cheaper, profile the operations around it again.
 Normalization, gated activation, casts, reshapes, and intermediate
@@ -48,6 +57,13 @@ Use shapeless compilation only when operation semantics permit and benchmark bot
 
 For compiled decode or streaming steps, make stale-state failure testable: run at least two sequence lengths or chunk sizes, verify cache/state mutation across consecutive calls, and include a closure-constant change or explicit state-refresh test when the source path mutates generation settings.
 
+Pass mutable arrays explicitly or capture both inputs and outputs; include
+`mx.random.state` for stochastic steps. Do not recreate lambdas per iteration.
+Shapeless replay must not retain dimensions calculated from the first call's
+Python `x.shape`: prefer `flatten` where applicable. Check values and state on
+consecutive calls with different legal shapes. Follow the
+[pinned compilation guide](https://github.com/ml-explore/mlx/blob/36969c094354086e15d2a327a9c50feb20b9cf11/docs/src/usage/compile.rst).
+
 ### 5. Streams and overlap
 
 Use separate streams only for genuinely independent work with enough granularity. Validate dependencies explicitly. Candidate use cases include overlapping CPU preprocessing with GPU work, independent encoder branches, or asynchronous materialization. Avoid stream complexity for tiny operations.
@@ -57,6 +73,28 @@ Treat asynchronous evaluation as an explicit scheduling choice. Put `mx.synchron
 ### 6. Memory behavior
 
 Measure active, cache, and peak memory. Reuse caches and scratch buffers when safe, donate/discard intermediates where supported, and avoid retaining lazy graphs through Python references. Unified memory can still page or pressure the system.
+
+Use the top-level `mx.get_active_memory`, `mx.get_cache_memory`,
+`mx.get_peak_memory` and `mx.reset_peak_memory` APIs; the corresponding
+`mx.metal.*` memory aliases are deprecated in the reviewed
+[binding](https://github.com/ml-explore/mlx/blob/36969c094354086e15d2a327a9c50feb20b9cf11/python/src/metal.cpp).
+
+## Half-precision SDPA backward gate
+
+A correct fused SDPA **forward** path is not proof of numerically correct
+backpropagation. [MLX #4910](https://github.com/ml-explore/mlx/pull/4910)
+(opened November 19, 2026; [reviewed commit](https://github.com/ml-explore/mlx/commit/1c117492fd66047c0bfe5433f4a5a47f6119d214))
+reports bf16/fp16 backward-score rounding and possible overflow at large Q/K
+magnitudes. Its float32-score workaround was **unmerged at review** and is not
+established in a released runtime.
+
+For training paths, compare dQ/dK/dV with an independent float32/eager
+reference across causal/unmasked attention, grouped/multi-head layouts,
+nonmultiple tile sizes, ordinary and large-magnitude scores, and both half
+dtypes. Fail on nonfinite gradients or predeclared error limits. Benchmark
+backward latency and temporary peak memory on the target chip; using float32
+intermediate scores may increase memory. Retain the eager/float32 reference as
+fallback; an inference-only benchmark is not a gradient validation gate.
 
 ## Custom Metal kernel gate
 
@@ -72,6 +110,26 @@ Required deliverables:
 - compile-cache behavior;
 - fallback path;
 - end-to-end benchmark proving material value.
+
+### Python Metal-kernel contract
+
+The [pinned custom-kernel guide](https://github.com/ml-explore/mlx/blob/36969c094354086e15d2a327a9c50feb20b9cf11/docs/src/dev/custom_metal_kernels.rst)
+and [binding](https://github.com/ml-explore/mlx/blob/36969c094354086e15d2a327a9c50feb20b9cf11/python/src/fast.cpp)
+establish these implementation checks:
+
+- Construct the kernel once and reuse its callable; `source` is the function
+  body and `header` holds includes/helpers.
+- `grid` counts threads, not CUDA blocks. Test tiny grids, nonmultiple sizes and
+  each multidimensional dispatch; set legal threadgroups for those grids.
+- The default `ensure_row_contiguous=True` may copy inputs. Measure that cost.
+  With `False`, consume the generated shape/stride metadata correctly and test
+  transposed, sliced and negative-stride inputs.
+- Outputs are uninitialized unless `init_value` is provided. Write every output
+  or initialize it before accumulation; do not read unwritten data.
+- Preserve safe math for infinities and masked softmax. Treat relaxed/fast math
+  as an independent, reversible numerical change.
+- Supply and test custom derivative rules when required. Forward success does
+  not establish gradient, `vmap`, compile or export compatibility.
 
 Common candidates in model ports include unusual fused projections, codec quantizer distance/search, recurrent scan, specialized convolution/upsampling, PyTorch-style spatial or volume sampling, sparse expert dispatch, and streaming overlap-add. None is automatically worthwhile.
 

@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "reviewed": "2026-07-10",
+  "reviewed": "2026-11-05",
   "evidence_lineage_policy": {
     "required_for_numeric_band": true,
     "rule": "Every numeric band names one or more evidence_lineage_ids. The same lineage may describe alternatives, but it may contribute at most once to a compound result.",
@@ -358,7 +358,9 @@
         "task quality against unquantized baseline",
         "load/save roundtrip",
         "latency and peak memory benchmark",
-        "fallback precision recorded"
+        "fallback precision recorded",
+        "Validate the mode-specific bit width, group size, scale/bias tuple and eligible layer path against the pinned runtime; do not treat FP4/FP8 formats as interchangeable.",
+        "Report quantized weights separately from peak live memory, and profile the full repeated block after lowering matmul cost."
       ],
       "rollback_conditions": [
         "quality drift exceeds budget",
@@ -373,7 +375,8 @@
         ],
         "repositories": [
           "mlx-lm-convert",
-          "mlx-audio-convert"
+          "mlx-audio-convert",
+          "mlx-0324-quantization-bindings"
         ],
         "papers": [
           "paper-2310-16836"
@@ -382,7 +385,8 @@
           "nvidia-nvfp4-blog",
           "spheron-nvfp4-mxfp4-guide"
         ]
-      }
+      },
+      "reviewed": "2026-11-05"
     },
     {
       "id": "uniform-kv-quantization",
@@ -411,7 +415,8 @@
         "retrieval/reasoning quality",
         "bytes/token/layer",
         "decode latency",
-        "cache reset/reuse tests"
+        "cache reset/reuse tests",
+        "Separate stored KV bytes from metadata and transient dequantization/reconstruction allocations; include long-context peak and allocation limits."
       ],
       "rollback_conditions": [
         "quality regression",
@@ -425,7 +430,8 @@
           "mlx-vlm-readme"
         ],
         "papers": [
-          "paper-2402-02750"
+          "paper-2402-02750",
+          "paper-2610-33076"
         ],
         "technical_blogs": []
       },
@@ -478,7 +484,8 @@
           "mlx-lm-cache",
           "mlx-lm-release-0313"
         ]
-      }
+      },
+      "reviewed": "2026-11-05"
     },
     {
       "id": "adaptive-kv-quantization",
@@ -515,7 +522,8 @@
         "long-context quality",
         "bytes/token/layer",
         "decode latency",
-        "fallback mode"
+        "fallback mode",
+        "Compare with current uniform KV at matched storage and task quality; include rotation/residual metadata and reconstruction time."
       ],
       "rollback_conditions": [
         "no quality advantage over uniform KV quantization",
@@ -530,10 +538,13 @@
           "paper-2602-23200",
           "paper-2604-04722",
           "paper-2606-20474",
-          "paper-2606-24033"
+          "paper-2606-24033",
+          "paper-2610-33076",
+          "paper-2504-19874"
         ],
         "technical_blogs": []
-      }
+      },
+      "reviewed": "2026-11-05"
     },
     {
       "id": "prompt-prefix-cache",
@@ -781,10 +792,12 @@
           "mlx-vlm-readme"
         ],
         "papers": [
-          "paper-2601-19139"
+          "paper-2601-19139",
+          "vllm-mlx-paper-v2-2026-01-29"
         ],
         "technical_blogs": []
-      }
+      },
+      "reviewed": "2026-11-05"
     },
     {
       "id": "draft-model-speculation",
@@ -862,12 +875,15 @@
         "lossless distribution or quality-preserving test",
         "acceptance length",
         "target verification cost",
-        "TTFT/decode benchmark"
+        "TTFT/decode benchmark",
+        "Measure draft, verification, synchronization and rollback time per committed token against the same target-only baseline across short/long contexts.",
+        "Sweep draft size/token budget and verify cache composition, reset and rejection rollback; acceptance rate alone is not a speed metric."
       ],
       "rollback_conditions": [
         "acceptance too low",
         "memory budget exceeded",
-        "quality/distribution mismatch"
+        "quality/distribution mismatch",
+        "Disable speculation when committed-token latency or deployment tail latency regresses, even with high acceptance."
       ],
       "evidence_refs": {
         "official_docs": [],
@@ -876,10 +892,12 @@
         ],
         "papers": [
           "paper-2211-17192",
-          "paper-2302-01318"
+          "paper-2302-01318",
+          "paper-2610-31479"
         ],
         "technical_blogs": []
-      }
+      },
+      "reviewed": "2026-11-05"
     },
     {
       "id": "prompt-lookup-ngram-speculation",
@@ -956,7 +974,8 @@
         "drafter compatibility",
         "acceptance/tree stats",
         "distribution or task quality",
-        "end-to-end benchmark"
+        "end-to-end benchmark",
+        "Pin target feature taps, drafter checkpoint, tokenizer mapping and verification policy; test every rejection offset and all recurrent/KV state before benchmarking."
       ],
       "rollback_conditions": [
         "incompatible features",
@@ -973,10 +992,14 @@
           "paper-2401-10774",
           "paper-2401-15077",
           "paper-2406-16858",
-          "paper-2412-19437"
+          "paper-2412-19437",
+          "dflash-paper-v2-2026-05-28",
+          "paper-2503-01840",
+          "paper-2610-31479"
         ],
         "technical_blogs": []
-      }
+      },
+      "reviewed": "2026-11-05"
     },
     {
       "id": "moe-gather-and-expert-batching",
@@ -1582,7 +1605,8 @@
         "loop oracle parity",
         "sorted/unsorted duplicate tests",
         "tokens_per_expert histogram",
-        "quality and peak-memory benchmark"
+        "quality and peak-memory benchmark",
+        "Compare batch-one routed GEMV against grouped prefill/batch GEMM; include routing, sorting, gathers and partial-output reduction in the timed block."
       ],
       "rollback_conditions": [
         "rare-expert quality regression",
@@ -1602,7 +1626,8 @@
           "paper-2405-04434"
         ],
         "technical_blogs": []
-      }
+      },
+      "reviewed": "2026-11-05"
     },
     {
       "id": "moe-gate-up-fusion",
@@ -1755,6 +1780,319 @@
           "pytorch-doc-cuda-graphs"
         ]
       }
+    },
+    {
+      "id": "native-gated-delta-update",
+      "technique_id": "native-gated-delta-update",
+      "category": "recurrent-state",
+      "status": "native-mlx",
+      "objectives": [
+        "prefill-throughput",
+        "decode-throughput",
+        "peak-memory"
+      ],
+      "applies_to": [
+        "ssm-recurrent-hybrid"
+      ],
+      "match": {
+        "families_any": [
+          "ssm-recurrent-hybrid"
+        ],
+        "capabilities_all": [
+          "gated-delta-recurrence"
+        ]
+      },
+      "runtime_requirements": {
+        "minimum_software": {
+          "mlx": "0.32.4"
+        }
+      },
+      "recommendation": "On the reviewed MLX 0.32.4-or-newer source baseline, evaluate mx.fast.gated_delta_update only for a matching Gated DeltaNet recurrence after the eager state oracle passes; this does not make Mamba or every linear attention variant compatible.",
+      "expected_effect": "Profile-required. Native recurrent updates may replace Python or custom-kernel work; prefill and token decode have different costs.",
+      "tradeoffs": [
+        "A matching version does not prove the symbol, backend, dtype, or recurrence is usable.",
+        "The binding prose and tested state layout differ in the reviewed snapshot; resolve the contract against implementation and tests."
+      ],
+      "validation_gates": [
+        "Confirm mlx>=0.32.4 and probe the actual mx.fast.gated_delta_update path on the selected device.",
+        "Verify float32 state [B,Hv,Dv,Dk], decay convention, normalization and upstream query scaling against the source recurrence.",
+        "Compare full-sequence, chunked-prefill, token-by-token, reset, padding, fork and rejected-draft rollback outputs and final state.",
+        "If trainable, compare vector-Jacobian products and gradient tolerance separately from inference parity.",
+        "Measure prefill and committed-token decode, synchronization, live state and peak memory against the current native/eager baseline."
+      ],
+      "rollback_conditions": [
+        "State or output parity fails at any chunk boundary.",
+        "The model uses a different recurrence or the native path is unavailable.",
+        "Latency or memory regresses on the intended sequence-length distribution."
+      ],
+      "evidence_refs": {
+        "official_docs": [],
+        "repositories": [
+          "mlx-0324-fast-bindings",
+          "mlx-0324-gated-delta-implementation",
+          "mlx-0324-gated-delta-tests"
+        ],
+        "papers": [],
+        "technical_blogs": []
+      },
+      "reviewed": "2026-11-05"
+    },
+    {
+      "id": "native-spectral-transforms",
+      "technique_id": "native-spectral-transforms",
+      "category": "audio",
+      "status": "native-mlx",
+      "objectives": [
+        "first-audio-latency",
+        "rtf",
+        "latency",
+        "streaming-quality"
+      ],
+      "applies_to": [
+        "automatic-speech-recognition",
+        "streaming-speech",
+        "separation-enhancement",
+        "vocoder-waveform-decoder",
+        "neural-audio-codec",
+        "flow-diffusion-tts"
+      ],
+      "runtime_requirements": {
+        "minimum_software": {
+          "mlx": "0.32.4"
+        }
+      },
+      "recommendation": "Evaluate mlx.core.fft.stft/istft on the reviewed MLX 0.32.4-or-newer baseline only when the source spectral frontend or decoder has an exactly matched transform contract.",
+      "expected_effect": "Profile-required. A native transform can remove host/framework crossings; it is not a complete mel frontend or streaming audio implementation.",
+      "tradeoffs": [
+        "Window, centering, padding and inverse overlap normalization differ across frameworks.",
+        "A file-level round trip can conceal stream-boundary defects or latency regressions."
+      ],
+      "validation_gates": [
+        "Confirm mlx>=0.32.4 and exercise fft.stft and fft.istft on the selected device before adopting them.",
+        "Match FFT length, hop, window samples, centering, padding, one-sided/full spectrum, complex layout and reconstruction length to the source.",
+        "Compare silence, impulse, sinusoid, short clips and nonmultiple lengths plus whole-file versus streaming chunk boundaries.",
+        "Run task quality and clipping/continuity checks; measure first-chunk latency, real-time factor and peak memory."
+      ],
+      "rollback_conditions": [
+        "Spectral or waveform parity fails.",
+        "The source needs unsupported padding, normalization or streaming semantics.",
+        "Task quality or end-to-end audio latency regresses."
+      ],
+      "evidence_refs": {
+        "official_docs": [],
+        "repositories": [
+          "mlx-0324-fft-bindings"
+        ],
+        "papers": [],
+        "technical_blogs": []
+      },
+      "reviewed": "2026-11-05"
+    },
+    {
+      "id": "metal-nax-matmul",
+      "technique_id": "metal-nax-matmul",
+      "category": "kernels",
+      "status": "native-mlx",
+      "objectives": [
+        "prefill-throughput",
+        "decode-throughput",
+        "throughput"
+      ],
+      "applies_to": [
+        "linear-heavy-models",
+        "diffusion-flow"
+      ],
+      "runtime_requirements": {
+        "minimum_software": {
+          "mlx": "0.32.4",
+          "macos": "26.2"
+        },
+        "hardware": {
+          "chip_family_any": [
+            "m5"
+          ]
+        }
+      },
+      "recommendation": "For an explicitly identified M5-family Mac with macOS>=26.2 and the reviewed MLX>=0.32.4 baseline, profile the existing native matrix dispatch before writing a replacement kernel. M4 and unreviewed chip families remain outside this recipe.",
+      "expected_effect": "Profile-required. M5 GPU Neural Accelerator dispatch is shape-, dtype-, build- and workload-dependent; it is not an Apple Neural Engine path or a universal decode speedup.",
+      "tradeoffs": [
+        "The installed build or MLX_METAL_NO_NAX may disable NAX despite compatible version and hardware metadata.",
+        "Tiny matrix-vector decode and irregular expert shapes may prefer another native dispatch."
+      ],
+      "validation_gates": [
+        "Match mlx>=0.32.4, macos>=26.2 and explicit M5 chip family in TargetProfile.",
+        "Verify Metal GPU execution and inspect the installed native dispatch/build before attributing work to NAX.",
+        "Check matrix layout, tails, accumulation precision and representative task quality against the readable baseline.",
+        "Benchmark prefill and decode separately at the same precision, model, shape distribution, software and power conditions."
+      ],
+      "rollback_conditions": [
+        "The actual build/device does not expose the required path.",
+        "Numerical behavior exceeds the declared tolerance.",
+        "The native alternative is faster or end-to-end gain disappears."
+      ],
+      "evidence_refs": {
+        "official_docs": [
+          "apple-metal-tensors-wwdc26"
+        ],
+        "repositories": [
+          "mlx-0324-nax-device"
+        ],
+        "papers": [],
+        "technical_blogs": [
+          "apple-mlx-m5-blog"
+        ]
+      },
+      "reviewed": "2026-11-05"
+    },
+    {
+      "id": "compressed-kv-direct-attention",
+      "technique_id": "compressed-kv-direct-attention",
+      "category": "kv-cache",
+      "status": "research-candidate",
+      "objectives": [
+        "peak-memory",
+        "long-context",
+        "decode-throughput"
+      ],
+      "applies_to": [
+        "dense-decoder-transformer",
+        "moe-decoder-transformer"
+      ],
+      "match": {
+        "families_any": [
+          "decoder-transformer"
+        ],
+        "capabilities_all": [
+          "kv-cache"
+        ],
+        "workloads_any": [
+          "long-context"
+        ]
+      },
+      "recommendation": "Investigate blockwise attention that consumes compressed KV without reconstructing the entire cache only after measuring the existing uniform-quantized and uncompressed baselines.",
+      "expected_effect": "Research hypothesis. Smaller stored KV can coexist with larger transient allocations and slower decode; no local performance claim is established.",
+      "tradeoffs": [
+        "Packing, rotation, scales, residuals and reconstruction all consume time and memory.",
+        "A fused reconstruction kernel alone does not establish compressed-attention support or long-context scalability."
+      ],
+      "validation_gates": [
+        "Pin an inspectable MLX implementation; compare numerical and task quality with uniform KV and uncompressed baselines at a matched memory budget.",
+        "Measure resident cache, scale/residual metadata, transient reconstruction, allocator peak and allocation sizes separately.",
+        "Sweep supported short, intermediate and deployment-long contexts, including 32K or longer only when the model and host budget support them.",
+        "Verify direct compressed-block consumption, preallocation/chunk boundaries, cache persistence and nonmultiple lengths.",
+        "Measure committed-token latency and first-token cost including quantization and attention; do not multiply representation-level compression factors."
+      ],
+      "rollback_conditions": [
+        "Reconstruction dominates decode or peak memory defeats the capacity objective.",
+        "Quality degrades beyond the preset budget.",
+        "The implementation materializes the full cache on every token or fails allocation/boundary checks."
+      ],
+      "evidence_refs": {
+        "official_docs": [],
+        "repositories": [],
+        "papers": [
+          "paper-2610-33076",
+          "paper-2504-19874"
+        ],
+        "technical_blogs": []
+      },
+      "reviewed": "2026-11-05"
+    },
+    {
+      "id": "kv-cache-pruning",
+      "technique_id": "kv-pruning",
+      "category": "kv-cache",
+      "status": "research-candidate",
+      "objectives": [
+        "peak-memory",
+        "long-context",
+        "decode-throughput"
+      ],
+      "applies_to": [
+        "dense-decoder-transformer",
+        "moe-decoder-transformer"
+      ],
+      "match": {
+        "families_any": [
+          "decoder-transformer"
+        ],
+        "capabilities_all": [
+          "kv-cache"
+        ],
+        "workloads_any": [
+          "long-context"
+        ]
+      },
+      "recommendation": "Evaluate a precisely specified KV retention policy only after baseline parity; keep positional semantics, retained indices, sinks and recent-window rules explicit. Never prune a recurrent state as if it were ordinary attention KV.",
+      "expected_effect": "Research hypothesis. Apple Silicon results motivate a target-workload trial; they do not establish quality preservation or speed on another model.",
+      "tradeoffs": [
+        "Pruning changes attention outputs and can discard information needed later.",
+        "Selection/gather overhead and decode regime determine whether reduced KV traffic pays off."
+      ],
+      "validation_gates": [
+        "Fix the retention rule and budget before comparing against the same unpruned model/runtime.",
+        "Test retrieval at dispersed positions, multi-turn continuation, summarization and reasoning, including probes for retained versus evicted facts.",
+        "Check absolute position, RoPE, mask, sink, reset and persistence behavior, and keep recurrent state independent.",
+        "Benchmark actual short/long contexts, batch-one and intended concurrency with selection/gather time, peak memory and tail latency."
+      ],
+      "rollback_conditions": [
+        "Any required task falls below its preset quality floor.",
+        "Index/position semantics drift.",
+        "Selection overhead removes the end-to-end benefit on deployment workloads."
+      ],
+      "evidence_refs": {
+        "official_docs": [],
+        "repositories": [],
+        "papers": [
+          "paper-2610-31479"
+        ],
+        "technical_blogs": []
+      },
+      "reviewed": "2026-11-05"
+    },
+    {
+      "id": "hardware-aware-kernel-search",
+      "technique_id": "hardware-aware-kernel-search",
+      "category": "kernels",
+      "status": "research-candidate",
+      "objectives": [
+        "prefill-throughput",
+        "decode-throughput",
+        "latency",
+        "throughput"
+      ],
+      "applies_to": [
+        "all"
+      ],
+      "recommendation": "Use a bounded hypothesis-and-measurement search for a demonstrated hotspot: translate algorithmic invariants and memory access patterns into Metal constraints, generate one candidate change at a time, and retain the current native MLX baseline and fallback.",
+      "expected_effect": "Research method, not a promised faster kernel. A generated candidate may lose to current native MLX; prefill-only wins do not imply faster decode.",
+      "tradeoffs": [
+        "Kernel search consumes tuning budget and can overfit benchmark shapes.",
+        "CUDA warp, asynchronous-copy and memory assumptions require a new Metal design; paper search scores are not measurements."
+      ],
+      "validation_gates": [
+        "Capture the operator contract, current native baseline, supported shapes/dtypes, chip limits and a bounded iteration/time budget.",
+        "Freeze held-out correctness and workload cases before search; validate every candidate before timing.",
+        "Exercise nonmultiple dimensions, strides, tails, empty/masked cases and gradients when training is in scope.",
+        "Keep per-candidate source hashes, changed hypothesis, compiler/runtime identity, failures and real-device timing.",
+        "Recheck finalists on held-out shapes and the end-to-end model; separate prefill from decode and cold compile from warm execution."
+      ],
+      "rollback_conditions": [
+        "A candidate fails held-out parity or depends on unsupported hardware behavior.",
+        "The native baseline wins or tuning gains vanish end to end.",
+        "The search exhausts its budget without a reproducible improvement."
+      ],
+      "evidence_refs": {
+        "official_docs": [],
+        "repositories": [],
+        "papers": [
+          "paper-2602-19128"
+        ],
+        "technical_blogs": [
+          "bair-k-search-mlx-2026-07-29"
+        ]
+      },
+      "reviewed": "2026-11-05"
     }
   ]
 }

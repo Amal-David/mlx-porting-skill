@@ -447,6 +447,20 @@ def recommendation_lines(report: dict[str, Any] | None) -> list[str]:
                 )
             lines.append(line)
         lines.append("")
+    runtime_held = [
+        item for item in report["held_candidates"]
+        if item.get("runtime_requirements") and item.get("eligibility_holds")
+    ]
+    if runtime_held:
+        lines.extend([
+            "### Held runtime-dependent methods",
+            "",
+            "These methods are excluded from the actionable plan. Resolve the stated prerequisites and regenerate recommendations before considering execution.",
+            "",
+        ])
+        for item in runtime_held:
+            lines.append(f"- `{item['id']}`: " + "; ".join(item["eligibility_holds"]))
+        lines.append("")
     research = report["research_advisory"]
     lines.extend([
         "### Unreviewed research signals (experimental/review queue)",
